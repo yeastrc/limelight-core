@@ -1,16 +1,6 @@
-<<<<<<< HEAD
-/.gradle/
-/build/
-/bin/
-/.settings/
-.classpath
-.project
-
-=======
 /bin/
 /.gradle/
 /build/
 /.settings/
 .classpath
 .project
->>>>>>> refs/heads/emozi_to_limelight
