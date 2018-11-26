@@ -1,0 +1,79 @@
+
+
+
+  	<div  style="position: relative;" class="page-label">
+  		<div class="error-message-container error_message_container_jq" id="error_message_all_fields_required">
+  			<div class="error-message-inner-container" >
+	  			<span class="error-message-text" >All fields are required
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+		  	</div>
+	  	</div>
+  		<div class="error-message-container error_message_container_jq" id="error_message_password_confirm_password_not_match">
+  			<div class="error-message-inner-container" >
+	  			<span class="error-message-text" >Password and Confirm Password must match
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+		  	</div>
+	  	</div>
+
+  		<div class="error-message-container error_message_container_jq" id="error_message_username_taken">
+  			<div class="error-message-inner-container" >
+	  			<span class="error-message-text" >Username already taken
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+	  		</div>
+	  	</div>
+  		<div class="error-message-container error_message_container_jq" id="error_message_email_taken">
+  			<div class="error-message-inner-container" >
+	  			<span class="error-message-text" >Email address already taken
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+	  		</div>
+	  	</div>
+  		<div class="error-message-container error_message_container_jq" id="error_message_username_email_taken">
+  			<div class="error-message-inner-container" >
+	  			<span class="error-message-text" >Username already taken.  Email address already taken.
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+	  		</div>
+	  	</div>
+
+  		<div class="error-message-container error_message_container_jq" id="error_message_from_server">
+  			<div class="error-message-inner-container" >
+  				<div class="error-message-close-x error_message_close_x_jq">X</div>
+	  			<div class="error-message-text" id="error_message_from_server_text"></div>
+	  		</div>
+	  	</div>
+	  	
+  		<div class="error-message-container error_message_container_jq" id="error_message_system_error">
+  			<div class="error-message-inner-container" >
+	  			<span class="error-message-text" >System Error
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+		  	</div>
+	  	</div>
+	  	
+  		<div class="success-message-container error_message_container_jq" id="success_message_system_success">
+  			<div class="success-message-inner-container" >
+  				<div class="success-message-close-x error_message_close_x_jq">X</div>
+	  			<div class="success-message-text" >Account Created</div>
+		  	</div>
+	  	</div>
+	  		  
+  		Create new user
+  	</div>
+  	
+  	<div class="page-text">
+		You have been invited to <span class="Limelight-DB-text" >limelight DB</span>.  Fill out the form below to create an account.
+	</div>
+  	
+  	
+	<form action="" id="create_account_form" >
+	
+		<input type="text" id="firstName" placeholder="First name" title="First name" class="input-field input_field_jq" maxlength="40"/><br>
+		<input type="text" id="lastName" placeholder="Last name" title="Last name" class="input-field input_field_jq" maxlength="60" /><br>
+		<input type="text" id="organization" placeholder="Organization" title="Organization" class="input-field input_field_jq" maxlength="2000" /><br>
+		<input type="text" id="email" placeholder="Email address" title="Email address" class="input-field input_field_jq" maxlength="255" /><br>
+
+		<input type="text" id="username" placeholder="Username" title="Username" class="input-field input_field_jq" maxlength="40" /><br>
+
+		<input type="password" id="password" placeholder="Password" title="Password" class="input-field input_field_jq" maxlength="40" /><br>
+		<input type="password" id="passwordConfirm" placeholder="Confirm Password" title="Confirm Password" class="input-field input_field_jq" maxlength="40" /><br>
+		
+	 	<INPUT TYPE="submit" class="submit-button" VALUE="Create Account" id="create_account_button">
+	</form>

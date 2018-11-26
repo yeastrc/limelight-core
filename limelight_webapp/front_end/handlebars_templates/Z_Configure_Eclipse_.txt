@@ -1,0 +1,14 @@
+
+https://help.eclipse.org/luna/index.jsp?topic=%2Forg.eclipse.wst.sse.doc.user%2Ftopics%2Ftcontenttype.html
+
+Associating editors with additional files types
+You can associate certain editors with a file type by clicking on Window > Preferences > General > Editors > File Association and setting up the associations in the File Associations Window.
+
+Some Eclipse-based editors, however, will only recognize a file based on the contents of the file. Consequently, if you want to associate an additional file type with some editors, you may have to first map the content type with its file extension. To map a content type with a file extension, complete the following steps:
+
+Click Window > General > Content Types. The Content Type window appears.
+Select a content type in the Content Type window, and then select Add . The Define a New File Type window appears.
+Type the name of the file type, and then click OK.
+
+
+Associate *.handlebars with conten type HTML and with HTML editor

@@ -1,0 +1,60 @@
+ {{!-- A comment: --}}
+<tr class=" invited_person_entry_jq ">
+	
+  {{#if canRemoveAnyOfEntries }}
+	<td nowrap  style="padding-right: 5px;">
+	  {{#if userInviteItem.canRemoveEntry }}
+	 	<input type="image" src="static/images/icon-circle-delete.png" data-tooltip="Remove from project" 
+	 		class="tool_tip_attached_jq revoke_project_invite_control_jq  icon-small "  
+	 		title="Revoke Invite" />
+	  {{/if}}
+	</td>
+  {{else}}
+  	<td ></td>
+  {{/if}}
+	
+	<td nowrap>
+	 	<span class="invited_person_entry_email_address_jq">{{ userInviteItem.invitedUserEmail }}</span>
+	</td>
+
+  {{#if canPromoteDemoteAnyOfEntries }}	 
+	<td nowrap style="padding-left: 5px; padding-right: 5px;">
+	  {{#if userInviteItem.canDemoteEntry }}
+		<input type="image" src="static/images/icon-down-arrow.png" 
+			class="tool_tip_attached_jq change_to_assistant_owner_control_jq  icon-small " data-tooltip="Demote to researcher"
+			title="Demote to researcher" />
+	  {{/if}}  
+	  {{#if userInviteItem.canPromoteEntry }}
+		<input type="image" src="static/images/icon-up-arrow.png" 
+			class="tool_tip_attached_jq change_to_owner_control_jq  icon-small " data-tooltip="Promote to owner"
+			title="Promote to owner" />
+	  {{/if}}  
+	</td>
+  {{else}}
+  	<td ></td>
+  {{/if}}  
+	
+	<td nowrap>
+	  {{#if userInviteItem.accessLevelProjectOwner }}
+		<span >Owner</span>		
+	  {{else}}
+		<span >Researcher</span>
+	  {{/if}}  
+	</td>
+	
+	<td nowrap class="invited-person-invite-date-block">
+	  Invited on {{ userInviteItem.inviteDate }}
+	</td>
+			   
+	<td  >
+		{{#if userInviteItem.canResendInviteEmail }}
+		  <div style="padding-left: 20px;">
+			<input type="button" value="Resend Email" class=" submit-button tool_tip_attached_jq resend_invite_email_button_jq " 
+				data-tooltip="Resend Invite Email" >
+		  </div>
+		{{/if}}
+	</td>
+	<td style="width: 100%" ></td>
+
+</tr>
+	

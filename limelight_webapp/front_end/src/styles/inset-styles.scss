@@ -1,0 +1,89 @@
+/*
+ * Insets used by login page, forgot password, invite user,
+ * and so on.
+ */
+ body.inset-body-class {
+
+    background-color:$site-color-medium;
+
+    /*  lock the footer to the bottom of the page */
+    inset-body-class-main-outermost-div {
+      min-height:100%;
+      position:relative;
+    }
+  
+    div.page-content-outer-container {
+      width: 100%;
+      text-align: center;
+      padding-bottom: 40px;
+    }
+  
+    div.page-content-container {
+      width: 466px;
+      margin-top: 140px;
+      display: inline-block;
+    }
+  
+    div.page-content {
+      text-align: center;
+      border-width: 2px;
+      border-color: $site-color-gray;
+      background-color: $color-white;
+      border-style: solid;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+  
+    div.logo-large-container {}
+  
+    .page-label {
+      font-size:20px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+  
+    .page-text {
+      font-size: 14px;
+      text-align: left;
+    }
+  
+    .input-field, div.page-text, .submit-button {
+      display: inline-block;
+      width: 302px;
+      margin-bottom: 4px;
+    }
+  
+    .input-field {
+      font-size:21px;
+      color: $font-color-dark;
+      opacity:0.8;
+      filter:alpha(opacity=80);
+    }
+    
+    input, select, input[type="button"], input[type="submit"] {
+      font-size:21px;
+    }
+  
+    .bottom-tab {
+      float: right;
+      padding: 8px;
+      border-left-width: 2px;
+      border-right-width: 2px;
+      border-bottom-width: 2px;
+      border-top-width: 0px; // Exclude top border since using border of box right above it
+      border-color: $site-color-gray;
+      border-style: solid;
+      background-color: $color-white;
+  
+      a {
+        color: $font-color-dark;
+        background-color: $site-color-light;
+        opacity:0.5;
+        filter:alpha(opacity=50);
+        text-decoration: none;
+      }
+    }
+  
+  } // end inset page styles
+  
+  

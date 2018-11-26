@@ -1,0 +1,40 @@
+
+<tr class=" peptide_data_row_root_container_jq " style="cursor: pointer;" >
+  <td style="text-align: left;" >
+	{{ searchId }}
+  </td>
+  <td  style="text-align: left;">
+	{{ reportedPeptideId }}
+  </td>
+  <td style="text-align: left;" >
+	{{ reportedPeptideSequence }}
+  </td>
+  <td>
+   {{#each modMassList }}{{#if this.firstEntry }}{{else}}, {{/if}}
+   	{{ this.position }}:{{ this.mass }}
+   {{/each}}  
+  </td>
+  <td style="text-align: right;">
+	{{#if numPsmsNotSet}}
+		Not Set
+	{{else}}
+		{{ numPsms }}
+	{{/if}}
+  </td>
+  <td>
+   {{#each proteinNameList }}{{#if this.firstEntry }}{{else}}, {{/if}}
+   	<span data-protein_id="{{ this.proteinSequenceVersionId }}" >{{ this.proteinName }}</span>
+   {{/each}}  
+  </td>
+
+   {{#each reportedPeptideAnnotationDisplayEntries }}
+	  	<td style="text-align: right;">
+	  		{{ this.valueString }}
+	  	</td>
+   {{/each}}
+   {{#each psmAnnotationDisplayEntries }}
+	  	<td style="text-align: right;">
+	  		{{ this.valueString }}
+	  	</td>
+   {{/each}}  
+</tr>

@@ -1,0 +1,222 @@
+{{!--  protein_page_single_protein_display_in_overlay_template.handlebars --}}
+<div class="modal-overlay-body-standard-padding" >
+
+	<div class=" selector_section_above_reported_peptides_list_block " > {{!--   display of data above Reported Peptides --}}
+
+	  <div style="float: right; position: relative; padding-left: 20px; padding-right: 10px; margin-bottom: 15px;" > {{!-- width: 300px;  Float Right of Main content --}}
+		
+		
+		<div class="single-protein-box-on-right"> <!-- Summary Data -->
+			<div class="header-label">
+				Summary Statistics:
+			</div>
+			
+			<div class="box-contents"
+				style="display: grid; grid-template-columns: 150px 55px ;">
+				<div class="box-line" style="text-align: right; padding-right: 10px;">
+					Sequence coverage:
+				</div>
+				<div class="box-line" >
+					{{ summaryStatistics.sequenceCoverageAsPercent }}%
+				</div>
+				<div class="box-line"  style="text-align: right; padding-right: 10px;">
+					Peptides:
+				</div>
+				<div class="box-line"  >
+					{{ summaryStatistics.peptideCountDisplay }}
+				</div>
+				<div class="box-line"  style="text-align: right; padding-right: 10px;">
+					Unique peptides:
+				</div>
+				<div class="box-line"  >
+					{{ summaryStatistics.uniquePeptideCountDisplay }}
+				</div>
+				<div class="box-line"  style="text-align: right; padding-right: 10px;">
+					Spectral count:
+				</div>
+				<div class="box-line"  >
+					{{ summaryStatistics.psmCountDisplay }}
+				</div>
+			</div>	
+	   	</div>
+	
+		<div class="single-protein-box-on-right" style="margin-top: 15px;"> <!-- External Links: -->
+			<div class="header-label">
+				External Links:
+			</div>
+			
+			<div class="box-contents" >
+				<div class="box-line" >
+					NCBI Blast 
+					<a href="{{ linksToExternalResources.NCBI_Blast_URL }}"
+						target="_blank" 
+						class=" selector_ncbi_blast_link "
+						><img class=" icon-small "
+							src="static/images/icon-linkout-dark.png"></a>
+				</div>
+				<div class="box-line"  >
+					PDR Blast 
+					<a href="{{ linksToExternalResources.PDR_Blast_URL }}" 
+						target="_blank" 
+						class=" selector_pdr_blast_link "
+						><img class=" icon-small "
+							src="static/images/icon-linkout-dark.png"></a>
+				</div>
+				<div class="box-line"  >
+					UniProtKB Search
+					<a href="{{ linksToExternalResources.UniProtKB_Search_URL }}" 
+						target="_blank" 
+						class=" selector_uniprotkb_search_link "
+						><img class=" icon-small "
+							src="static/images/icon-linkout-dark.png"></a>
+				</div>
+				<div class="box-line"  >
+					NCBI Search
+					<a href="{{ linksToExternalResources.NCBI_Search_URL }}" 
+						target="_blank" 
+						class=" selector_ncbi_search_link "
+						><img class=" icon-small "
+							src="static/images/icon-linkout-dark.png"></a>
+				</div>
+			</div>	
+	   	</div>
+
+		<div class=" selector_downloads_block single-protein-box-on-right " 
+			style="margin-top: 15px; display: none;"> <!-- Reports: -->
+			<div class="header-label">  <!--  Initial Hide until Reported Peptide data is loaded -->
+				Reports:  <!-- Downloads of data -->
+			</div>
+			
+			<div class="box-contents" style="display: grid; grid-template-columns: 65px 35px 20px 60px 20px;">
+				<div class="box-line" >
+					Peptides 
+				</div>
+
+				<div class="box-line" style="text-align: right; padding-right: 5px;">
+					all
+				</div>
+				<div class="box-line" >
+					<img class=" selector_download_peptides_all icon-small " style="cursor: pointer;" 
+						src="static/images/icon-download-dark.png">
+				</div>
+				<div class="box-line" style="text-align: right; padding-right: 5px;">
+					shown
+				</div>
+				<div class="box-line" >
+					<img class=" selector_download_peptides_shown icon-small " style="cursor: pointer;" 
+						src="static/images/icon-download-dark.png">
+				</div>
+				<div class="box-line"  >
+					PSMs 
+				</div>
+				<div class="box-line" style="text-align: right; padding-right: 5px;">
+					all
+				</div>
+				<div class="box-line" >
+					<img class=" selector_download_psms_all icon-small " style="cursor: pointer;" 
+						src="static/images/icon-download-dark.png">
+				</div>
+				<div class="box-line" style="text-align: right; padding-right: 5px;">
+					shown
+				</div>
+				<div class="box-line" >
+					<img class=" selector_download_psms_shown icon-small " style="cursor: pointer;" 
+						src="static/images/icon-download-dark.png">
+				</div>
+			</div>	
+	   	</div>
+	   	   
+	  </div>  {{!-- END: Float Right of Main content --}}
+	
+	  <div >  <!-- Main Content above Reported Peptides -->
+		<table class=" selector_filter_section " style="border-width:0px;" >
+		</table>
+		{{!--
+		<!-- Search Name -->
+		<div style="margin-bottom: 10px; display: grid; grid-template-columns: 65px 600px;">
+
+			<div >
+				Search:
+			</div>
+			<div >
+				{{ searchNameObject.searchName }} ({{ searchNameObject.searchId }})
+			</div>
+		</div>
+		--}}
+		
+		<div style="font-size: 24px; font-weight: bold; padding-bottom: 10px;">
+			Name (from FASTA): {{ proteinData.name }}
+		</div>
+		{{#if proteinData.description }}
+		  <div style="font-size: 14px; font-weight: bold; padding-bottom: 10px;">
+			{{ proteinData.description }}
+		  </div>
+		{{/if}}
+		
+		<div >
+			<span style="font-size: 18px; font-weight: bold; ">Sequence Coverage:</span> 
+		</div> 
+		
+		<div class=" selector_protein_sequence_container "> {{!-- Container for Protein Sequence --}}
+			Loading Protein Sequence
+		</div>
+
+		<div class=" selector_protein_mod_list_block ">
+		</div>
+		
+		{{!-- Hack to force the div < div class=" selector_reported_peptides_outer_container " > 
+				to below the float right items
+		 --}}
+		 
+		 <table style="width: 100%">
+		 	<tr>
+		 		<td  style="width: 100%; font-size: 1px;">&nbsp;</td>
+		 	</tr> 
+		 </table>
+	  </div>  {{!-- END: Main Content above Reported Peptides --}}
+
+	</div>  {{!-- Close display of data above Reported Peptides --}}
+
+
+	<div >  {{!-- Display of Reported Peptides --}}
+
+		<div class=" selector_reported_peptides_outer_container " >
+			
+			<div style=" margin-top: 10px; padding-bottom: 10px;">
+				<div>
+					<span style="font-size: 18px;" >
+						<span style="font-weight: bold;">Reported Peptides:</span>
+						<span >(Click row to expand.)</span>
+					</span>
+				</div>
+				 {{!-- 
+				<div class=" selector_reported_peptides_filtered_on_protein_sequence_positions " style="display: none;">
+					(Filtered on positions selected on protein sequence)
+				</div> 
+				 --}}
+				 <div >
+				 	Currently showing: 
+				 	<span class=" selector_number_of_reported_peptides_shown " ></span>
+				 	peptides
+				 	 (<span class=" selector_number_of_psms_for_reported_peptides_shown " ></span> PSMs)
+				 </div>
+			</div>
+			
+			<div style="padding-left: 20px;">
+				 {{!-- Container for Reported Peptides using Data Table --}}
+				<div class=" selector_reported_peptides_data_table_container "
+					>  {{!-- Padding to make room for expand icon to left of each row of data --}}
+					{{!-- Loading Reported Peptides --}}
+				</div>
+				
+				<div  class=" selector_reported_peptides_none_to_display " style="display: none;">
+					No peptides meet the current filtering criteria.
+				</div>
+			</div>
+		</div>
+
+	  </div>  {{!--  END: Main Content  --}}
+
+	</div> {{!--   END Display of Reported Peptides  --}}
+	
+</div>

@@ -1,0 +1,17 @@
+<div style="margin-top:0px;margin-bottom:10px;">
+
+    <div id="protein-position-filter-info" style="display:inline-block;">
+        {{#if isEmpty}}
+            Showing all proteins and positions.
+        {{else}}
+            Showing: 
+            {{#each filterItems as |filterItem| }}
+                <div class="protein-filter-item">{{filterItem.displayString}}</div>
+            {{/each}}
+        {{/if}}
+    </div>
+
+    <div id="protein-position-filter-launch" style="display:inline-block;" class="fake-link">[Change]</div>
+    <div id="report-download-link" style="display:inline-block;" class="fake-link">[Download]</div>
+
+</div>

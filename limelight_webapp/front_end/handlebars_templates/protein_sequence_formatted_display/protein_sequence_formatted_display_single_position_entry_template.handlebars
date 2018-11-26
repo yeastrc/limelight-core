@@ -1,0 +1,8 @@
+{{!-- protein_sequence_formatted_display_single_position_entry_template.handlebars
+
+		A single position in the Protein sequence
+ --}}
+<div 
+	class=" selector_seq_at_pos {{ cssClassNames }} "
+	data-pos="{{ position }}"  {{!-- data-pos= is info only, not used by code. Code uses .data( ) attached to this DOM element --}}
+>{{ sequenceLetter }}</div>

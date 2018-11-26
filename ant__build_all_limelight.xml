@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="US-ASCII" ?>
+<project name="Limelight_Root_Build_All_Limelight" default="createInstallables" basedir=".">
+
+	<!--
+
+	  Ant build to build everything for Limelight.
+
+	  Run the default target to build everything.
+
+	  If ant is installed and on the PATH,
+	  enter on the command line   "ant -f  ant__build_all_limelight.xml"
+	  in the base directory to build everything.
+
+	  -->
+
+
+	<property name="config_file" value="aa_ant__build_all_limelight_config.properties" />
+	
+	<property name="config_file_with_path" 
+		value="${config_file}"/>
+
+	<echo>Using Config file ${config_file_with_path}</echo>
+	
+	<fail message="ERROR: '${config_file}' file not found, check the path. filename with path: ${config_file_with_path}">
+		<condition>
+		    <not>
+		    	<available file="${config_file_with_path}" />
+		    </not>
+		</condition>
+	</fail>
+	
+	<echo>config_file_with_path: ${config_file_with_path}</echo>
+	
+	<!-- This does not fail if the file is not found -->
+	<property file="${config_file_with_path}" />
+	
+	<echo>Properties after read config file:</echo>
+	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
+	<echo>npm.executable: ${npm.executable}</echo>
+		
+		
+	<!-- Set Properties if not set in config -->
+	<condition property="npm.executable" value="npm">
+	   <not>  
+	      <isset property="npm.executable"/>
+	   </not>
+	</condition>
+
+	<echo>Properties after read config file and then set defaults:</echo>
+	
+	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
+	<echo>npm.executable: ${npm.executable}</echo>
+		
+
+	<!--  -->
+	<target name="clean" >
+		<delete dir="deploy" />
+	</target>
+
+	<!-- Prepare depends on clean -->
+	<target name="prepare" depends="clean">
+		<mkdir dir="deploy" />
+	</target>
+
+
+	<!--
+		npm install depends on prepare
+		executes 'npm install' in the web app to populate 'node_modules' folder
+	 -->
+	<target name="npm_install" depends="prepare">
+
+		<!--  web app - npm install  -->		
+		<exec executable="npm" dir="limelight_webapp/front_end" failonerror="true" >
+			<arg value="install" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+	</target>
+	
+	<!--
+		compileAllSubmodules depends on npm_install
+		executes external builds for each sub project
+	 -->
+	<target name="compileAllSubmodules" depends="npm_install">
+
+		<!--  Build submodules and create runnable jars -->
+
+		<!--  web app  -->		
+		<exec executable="${gradle.wrapper.executable}" dir="limelight_webapp" failonerror="true" >
+			<arg value="build" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+
+		<!--  importer  -->		
+		<exec executable="${gradle.wrapper.executable}" dir="limelight_importer" failonerror="true" >
+			<arg value="build" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		<!--  importer executable jar -->		
+		<ant dir="limelight_importer/build_runnable_jar" antfile="ant__create_runnable_jar_importer.xml" />
+
+		<!-- run importer  -->		
+		<exec executable="${gradle.wrapper.executable}" dir="limelight_run_importer" failonerror="true" >
+			<arg value="build" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		<!-- run importer executable jar -->		
+		<ant dir="limelight_run_importer/build_runnable_jar" antfile="ant__create_runnable_jar_run_importer.xml" />
+		
+		<!-- submit import  -->		
+		<exec executable="${gradle.wrapper.executable}" dir="limelight_submit_import" failonerror="true" >
+			<arg value="build" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		<!-- submit import executable jar -->		
+		<ant dir="limelight_submit_import/build_runnable_jar" antfile="ant__create_runnable_jar_submit_import.xml" />
+		
+		
+	</target>
+	
+
+	<!--
+		createInstallables depends on compileAllSubmodules
+	-->
+	<target name="createInstallables" depends="compileAllSubmodules">
+
+		<!-- copy files from subdir 'deploy' to deploy -->
+		<copy file="limelight_webapp/build/libs/limelight.war" todir="deploy" />
+		<copy file="limelight_importer/build_runnable_jar/deploy/limelightImporter_XMLFile_ScanFiles.jar" todir="deploy" />
+		<copy file="limelight_run_importer/build_runnable_jar/deploy/limelightRunImporter.jar" todir="deploy" />
+		<copy file="limelight_submit_import/build_runnable_jar/deploy/limelightSubmitImport.jar" todir="deploy" />
+		
+	</target>
+	
+</project>

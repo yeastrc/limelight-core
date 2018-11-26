@@ -1,0 +1,149 @@
+/*
+	Potential changes to build.gradle for webpack
+	
+	!@@@@  Just initial ideas.  Not a finished product  @@@@
+
+
+ * This build file was Copied from https://spring.io/guides/gs/serving-web-content/.
+ *
+ */
+ 
+ //  New way to import gradle plugin for node:  per https://plugins.gradle.org/plugin/com.moowork.node
+
+/* 
+ plugins {
+  id "com.moowork.node" version "1.2.0"
+} 
+ */
+ 
+// import com.moowork.gradle.node.task.NodeTask
+
+buildscript {
+    repositories {
+        mavenCentral()
+         jcenter()
+         
+      maven {
+     	 url "https://plugins.gradle.org/m2/"
+    	}
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE")
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+    }
+}
+
+apply plugin: "com.moowork.node"
+
+
+apply plugin: 'java'
+
+apply plugin: 'war' // creating war
+
+apply plugin: 'eclipse'
+// apply plugin: 'idea'
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+/*
+  Doesn't seem to work.  See file settings.gradle for generated war name
+war {
+    baseName = 'limelight'
+    version = '0.0.1-SNAPSHOT'
+}
+ */
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'	
+	
+	// https://mvnrepository.com/artifact/org.slf4j/log4j-over-slf4j
+	compile group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.25'
+	
+	// Used by included yeastrc jars
+	// https://mvnrepository.com/artifact/com.google.guava/guava
+	compile group: 'com.google.guava', name: 'guava', version: '24.0-jre'
+	
+	
+	compile('javax.servlet:jstl')
+	
+	
+	//   Apache Commons
+	
+	//  Old StringUtils
+	// https://mvnrepository.com/artifact/commons-lang/commons-lang
+	compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+	
+	//  New StringUtils
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	
+	
+	//  Log4j 1 to 2 bridge
+//	compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.2'
+		
+	//  Other Limelight Jars
+		
+	//  Jars built from other Limelight Github repositories
+	compile fileTree(dir: '../libs_limelight_github_jars', include: ['*.jar'])
+	
+	//  Other Yeastrc Jars
+	
+	//  Jars built from other Yeastrc Github repositories
+	compile fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])
+
+	//  Jars built from other Yeastrc Github repositories - Webapp only	
+	compile fileTree(dir: 'libs_webapp__yeastrc_github_jars', include: ['*.jar'])
+	
+//  Specify dependency on Limelight Shared Code
+	
+	compile project(":limelight_shared_code")
+	
+	
+    // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
+    providedCompile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.29'
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
+	compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.0.0.RELEASE'
+    
+	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
+	compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.4.RELEASE'
+    
+    //  Mark provided since creating a war
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+
+task webpack(type: NodeTask, dependsOn: 'npmInstall') {
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/webpack/bin/webpack.js')
+  } else {
+    script = project.file('node_modules/.bin/webpack')
+  }
+}
+
+
+processResources.dependsOn 'webpack'
+
+clean.delete << file('node_modules')
+clean.delete << file('src/main/webapp/dist')
+
+
+

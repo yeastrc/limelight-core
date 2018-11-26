@@ -1,0 +1,23 @@
+{{!-- project_notes_add_note_add_note_input.handlebars
+
+    Added when user clicks '+Note'
+
+    The note input
+ --}}
+
+
+<div  class=" selector_add_note_container " style="position: relative;">
+
+    <div class="error-message-container  selector_error_message_project_note_required error_message_container_jq" >
+    
+        <div class="error-message-inner-container" style="width: 300px;">
+            <div class="error-message-close-x error_message_close_x_jq">X</div>
+            <div class="error-message-text" >Project Note cannot be empty</div>
+        </div>
+    </div>
+
+    <textarea class=" selector_add_note_field " rows="10" cols="100" maxlength="5000"></textarea>
+    <br>
+    <input class=" selector_add_note_save_button  submit-button" type="button" value="Add">
+    <input class=" selector_add_note_cancel_button  submit-button" type="button" value="Cancel">
+</div>

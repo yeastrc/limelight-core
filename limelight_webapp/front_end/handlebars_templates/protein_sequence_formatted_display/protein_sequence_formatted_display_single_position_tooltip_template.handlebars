@@ -1,0 +1,22 @@
+{{!-- protein_sequence_formatted_display_single_position_tooltip_template.handlebars
+
+		Tooltip Contents for a single position in the Protein sequence
+ 
+ --}}
+ <div >
+ 	<div style="margin-bottom: 5px; font-weight: bold">
+ 		Position: {{ position }}
+ 	</div>
+ 	
+	 {{#if modMasses }}
+	 	<div style="margin-bottom: 3px; font-weight: bold">
+	 		Modifications:
+	 	</div>
+ 		<div >
+	 	  {{#each modMasses as |modMass| }}
+	 	  	{{ modMass }}{{#if @last}}{{else}}, {{/if}}
+	 	  {{/each}}
+	 	</div>
+	 {{/if}}
+ </div>
+ 

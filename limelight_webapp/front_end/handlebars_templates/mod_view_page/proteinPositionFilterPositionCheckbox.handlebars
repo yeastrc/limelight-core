@@ -1,0 +1,19 @@
+<div class="protein-position-filter-position-checkbox" style="vertical-align:middle;">
+
+    <div class="fake-checkbox clickable" style="margin-top:5px;margin-left:10px;display:inline-block;">
+        {{#if isSelected}}
+                <svg width="18px" height="18px" preserveAspectRatio="none">
+                    <rect x="2" y="2" width="14px" height="14px" style="fill-opacity:1.0;fill:#32cd32;stroke-width:2;stroke:#005602;" />
+                    <line x1="2" y1="2" x2="16" y2="16" style="stroke:#005602;stroke-width:2" />
+                    <line x1="2" y1="16" x2="16" y2="2" style="stroke:#005602;stroke-width:2" />
+                </svg>
+        {{else}}
+                <svg width="18px" height="18px" preserveAspectRatio="none">
+                    <rect x="2" y="2" width="14px" height="14px" style="fill-opacity:0.0;fill:rgb(255,255,255);stroke-width:2;stroke:#005602;" />
+                </svg>
+        {{/if}}
+    </div>
+
+    <div style="font-size:12px;display:inline-block;">{{position}} ({{residue}})</div>
+
+</div>

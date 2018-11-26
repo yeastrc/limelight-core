@@ -1,0 +1,34 @@
+
+Usage: java -jar limelightImporter_XMLFile_ScanFiles.jar -p project_id  \
+                                    -i import_file.xml \
+                                    [ --no-scan-files ] 
+                                    [ -s scan_file.mzML ]
+                                    [ "--search-name=search name" ]  Put whole thing in quotes to deal with spaces in search name
+								  	
+
+Examples:
+
+    To import a Limelight XML file (with no scans):
+    java -jar limelightImporter_XMLFile_ScanFiles.jar -p 1 -i limelightInput.xml -n -c /path/to/db_config_file.properties
+
+    To import a Limelight XML file and related scan file:
+    java -jar limelightImporter_XMLFile_ScanFiles.jar -p 1 -i limelightInput.xml -s /path/to/file.mzML -c /path/to/db_config_file.properties
+	
+	
+Parameters:
+
+    -p (--project-id=) : [Required] : The id for the Limelight project into which the data are being loaded.
+
+    -i (--import-file=) : [Required] : The Limelight XML file to import, with it's relative or absolute path.
+	
+    -s (--scan-file=) : [Optional] : The scan file ( mzML or mzXML ), with it's relative or absolute path.
+								  
+                                     -s can be repeated multiple times if multiple scan files will be imported.
+								  
+    -n (--no-scan-files) : [Optional] : Must be set if no Scan files are present, the Limelight XML file
+                                        will be imported without any scan files. May not be set if -s is used.
+                                        
+    --search-name : [Optional] : Specify the search name for the created search in the database.
+    						     Put whole thing in quotes to deal with spaces in search name.
+    
+    							Example: "--search-name=search name"

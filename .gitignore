@@ -1,0 +1,41 @@
+
+/bin/
+/.gradle/
+/build/
+/deploy/
+/download_zip_file/
+
+aa_ant__build_all_limelight_config.properties
+
+/.settings/
+.classpath
+.project
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+# *.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# MySQL Workbench Backup File:
+/database_scripts/mysql_workbench_model/*.mwb.bak
+
+# Eclipse project file
+.project

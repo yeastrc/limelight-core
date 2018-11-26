@@ -1,0 +1,12 @@
+
+ZZZ_Front_End_First_Install_Things_Globally.txt
+
+
+Things to install:
+
+Node - Use latest - a package manager may/probably will install an old version.
+
+npm - if not installed by node - same install latest.
+		Google how to have node update itself.
+		
+

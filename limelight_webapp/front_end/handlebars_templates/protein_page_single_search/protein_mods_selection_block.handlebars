@@ -1,0 +1,27 @@
+{{!--  protein_mods_selection_block.handlebars --}}
+
+<div >
+    <div style="margin-top: 20px;" class=" selector_protein_mod_block  modification-mass-selection-outer-block ">
+        <div style="font-size: 18px; font-weight: bold; float: left; ">Filter On Modifications:</div>
+        <div class="modification-mass-selection-block" >
+          <div style="margin-top: 2px;">
+            {{#if showNoModificationsMsg }}
+                No Modifications
+            {{else}}
+                {{#if showNoModificationsForSelectedPositionsMsg }}
+                    No Modifications for selected positions
+                {{else}}
+                    <div class=" selector_protein_mod_list "></div>
+                    {{#if showSelectedPositionsMsg }}
+                        <div style=" margin-left: 4px; margin-top: 2px; margin-bottom: 3px; ">  {{!-- margin-left: 4px; to match checkbox styling --}}
+                            Filter only applies to selected positions
+                        </div>
+                    {{/if}}
+                    <div class=" selector_protein_mod_change_selection_link_container "></div>
+                {{/if}}
+            {{/if}}
+          </div>
+        </div> 
+    </div>
+    <div style="clear: both;"></div>
+</div>

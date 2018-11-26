@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." name="Limelight buildFrontEnd_CopyToTomcat" default="built-copy-front-end">
+
+	<!--  Build the 'front end' and copy to a Tomcat Deploy  -->
+	
+	<!--
+	<property environment="env" />
+	<property name="gradle.wrapper.executable" location="${env.GRADLE_HOME}/bin/gradle" />
+	
+	<echo>env:${env}</echo>
+	<echo>env.GRADLE_HOME:${env.GRADLE_HOME}</echo>
+	-->
+	
+	<property name="config_file" value="ant_buildFrontEnd_CopyToTomcat.settings.properties" />
+	
+	<property name="config_file_with_path" 
+		value="${config_file}"/>
+		
+	<fail message="ERROR: '${config_file}' file not found, check the path. filename with path: ${config_file_with_path}">
+		<condition>
+		    <not>
+		    	<available file="${config_file_with_path}" />
+		    </not>
+		</condition>
+	</fail>
+	
+	<echo>config_file_with_path: ${config_file_with_path}</echo>
+	
+	<!-- This does not fail if the file is not found -->
+	<property file="${config_file_with_path}" />
+	
+	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
+	
+	<echo>tomcat.webapps.root: ${tomcat.webapps.root}</echo>
+	<echo>limelight.context: ${limelight.context}</echo>
+
+	<property name="tomcat.limelight.webapp.root" value="${tomcat.webapps.root}${file.separator}${limelight.context}" />
+	
+	
+	<property name="tomcat.static" value="${tomcat.limelight.webapp.root}${file.separator}static" />
+	<property name="tomcat.jsp" value="${tomcat.limelight.webapp.root}${file.separator}WEB-INF${file.separator}jsp" />
+	
+	<target name="built-copy-front-end" description="">
+		
+		<echo>Executing gradle using executable: ${gradle.wrapper.executable}</echo>
+		
+		<exec executable="${gradle.wrapper.executable}" dir="." failonerror="true" >
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		
+	      <delete dir="${tomcat.static}"/>
+	      <mkdir  dir="${tomcat.static}"/>
+		
+	      <delete dir="${tomcat.jsp}"/>
+	      <mkdir  dir="${tomcat.jsp}"/>
+		
+		<copy todir="${tomcat.static}" >
+  		    <fileset dir="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}static" />
+		</copy>			 
+				
+		<copy todir="${tomcat.jsp}" >
+  		    <fileset dir="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}WEB-INF${file.separator}jsp" />
+		</copy>			 
+
+	</target>
+
+</project>

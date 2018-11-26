@@ -1,0 +1,51 @@
+{{!-- A comment: project_searches_copy_move_finished_container_template.handlebars --}}
+
+<div class="modal-overlay-body-standard-padding">
+
+    {{#if successful }}
+        <div style="margin-bottom: 10px;">
+            Searches {{#if doCopy }}copied{{else}}moved{{/if}}
+                successfully to "{{ chosenProjectTitle }}"?
+            
+        </div>
+        <div >
+            <input type="button" value="Go to project the searches were copied to" class=" submit-button selector_show_project_searches_copied_moved_to " >
+
+            <input type="button" value="Return to Project" class="  submit-button  selector_copy_move_searches_return_to_project " >
+        </div>			
+    {{/if}}
+    {{#if copyToProjectMarkedForDeletion }}
+        <div  style="margin-bottom: 10px;">
+            <div >
+                Copy Searches Failed.  
+                {{!--Project copying to is marked for deletion.  --}}
+                Project copying to has been deleted.
+            </div>
+            <div >
+                Please reload the page to get a current list of valid projects to copy to.
+            </div>
+        </div>
+    {{/if}}
+    {{#if copyToProjectDisabled }}
+        <div  style="margin-bottom: 10px;">
+            <div >
+                Copy Searches Failed.  Project copying to is disabled.
+            </div>
+            <div >
+                Please reload the page to get a current list of valid projects to copy to.
+            </div>
+        </div>
+    {{/if}}
+    {{#if failed }}
+        <div  style="margin-bottom: 10px;">
+            <div >
+                Copy Searches Failed.  Please reload the page to get a current list of valid projects to copy to.  
+            </div>
+            <div >
+                If you continue to get this error message, contact the administrator.
+            </div>
+        </div>
+    {{/if}}
+
+</div>
+

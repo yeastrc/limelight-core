@@ -1,0 +1,74 @@
+/*
+* Original author: Daniel Jaschob <djaschob .at. uw.edu>
+*                  
+* Copyright 2018 University of Washington - Seattle, WA
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Request object for POST to Webservice Project_UploadData_UploadSubmit_RestWebserviceController
+ *
+ */
+@XmlRootElement(name="submitImport_FinalSubmit_Request_PgmXML")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SubmitImport_FinalSubmit_Request_PgmXML extends SubmitImport_FinalSubmit_Request_Base {
+
+	@XmlAttribute
+	private String userSubmitImportProgramKey;
+	
+	/**
+	 * For submitting on same machine
+	 */
+	@XmlAttribute
+	private boolean submitterSameMachine;
+	/**
+	 * For submitting on same machine
+	 */
+	@XmlAttribute
+	private String submitterKey;
+	
+	@XmlAttribute
+	private String searchPath;
+	
+	public boolean isSubmitterSameMachine() {
+		return submitterSameMachine;
+	}
+	public void setSubmitterSameMachine(boolean submitterSameMachine) {
+		this.submitterSameMachine = submitterSameMachine;
+	}
+	public String getSubmitterKey() {
+		return submitterKey;
+	}
+	public void setSubmitterKey(String submitterKey) {
+		this.submitterKey = submitterKey;
+	}
+	public String getSearchPath() {
+		return searchPath;
+	}
+	public void setSearchPath(String searchPath) {
+		this.searchPath = searchPath;
+	}
+	public String getUserSubmitImportProgramKey() {
+		return userSubmitImportProgramKey;
+	}
+	public void setUserSubmitImportProgramKey(String userSubmitImportProgramKey) {
+		this.userSubmitImportProgramKey = userSubmitImportProgramKey;
+	}
+}

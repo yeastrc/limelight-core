@@ -1,0 +1,7 @@
+
+// grabbed from http://zerosixthree.se/8-sass-mixins-you-must-have-in-your-toolbox/
+@mixin opacity($opacity) {
+    opacity: $opacity;
+    $opacity-ie: $opacity * 100;
+    filter: alpha(opacity=$opacity-ie); //IE8
+}

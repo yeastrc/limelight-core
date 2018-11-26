@@ -1,0 +1,246 @@
+/*
+* Original author: Daniel Jaschob <djaschob .at. uw.edu>
+*                  
+* Copyright 2018 University of Washington - Seattle, WA
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package org.yeastrc.limelight.limelight_run_importer.config;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFile;
+import org.yeastrc.limelight.limelight_run_importer.exceptions.ConfigPropertiesFileErrorException;
+
+/**
+ * 
+ *
+ */
+public class ProcessImporterRunnerConfigFile {
+
+	private static final Logger log = LoggerFactory.getLogger( ProcessImporterRunnerConfigFile.class );
+
+	private static final String NO_PROPERTIES_FILE_ERROR_MESSAGE = "No DB Connection Properties file found.";
+	
+	private static final String CONFIG_FILENAME = "run_importer_config_file.properties";
+
+	private static final String PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS = "wait.time.for.next.check.for.import.to.process";
+
+	private static final String PROPERTY_NAME__JAVA_EXECUTABLE_WITH_PATH = "java.executable.with.path";
+	private static String PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS = "java.executable.parameters";
+	
+	private static final String PROPERTY_NAME__IMPORTER_JAR_WITH_PATH = "importer.jar.with.path";
+	
+	private static final String PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH = "importer.db.config.file.with.path";
+	
+	private static final String PROPERTY_NAME__LIMELIGHT_WEB_APP_BASE_URL = "limelight.web.app.base.url";
+	
+	private static final String PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT = "command.run.successful.import";
+	private static final String PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT_SYSOUT_SYSERR_DIR = "command.run.successful.import.sysout.syserr.dir";
+	
+	/**
+	 * private constructor
+	 */
+	private ProcessImporterRunnerConfigFile() { }
+
+	/**
+	 * @return newly created instance
+	 */
+	public static ProcessImporterRunnerConfigFile getInstance() { 
+		return new ProcessImporterRunnerConfigFile(); 
+	}
+	
+	
+	/**
+	 * Process the import runner config file, saving the config and 
+	 * return a IDBConnectionParametersProvider object configured with DB params
+	 * 
+	 * 
+	 * @param configFileFromCommandLine
+	 * @return
+	 * @throws Exception 
+	 */
+	public DBConnectionParametersProviderFromPropertiesFile processConfigFile( File configFileFromCommandLine ) throws Exception {
+		
+		try {
+			Properties configProps = null;
+			InputStream propertiesFileAsStream = null;
+			
+			try {
+				if ( configFileFromCommandLine != null ) {
+					if ( ! configFileFromCommandLine.exists() ) {
+						System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
+						String msg = "Properties file not found: " + configFileFromCommandLine.getAbsolutePath();
+						//					log.error( msg );
+						throw new ConfigPropertiesFileErrorException( msg );
+					}
+
+					try {
+						propertiesFileAsStream = new FileInputStream(configFileFromCommandLine);
+
+					} catch ( FileNotFoundException e ) {
+						System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
+						String msg = "Properties file not found: " + configFileFromCommandLine.getAbsolutePath() + " exception: " + e.toString();
+						//					log.error( msg, e );
+						throw new ConfigPropertiesFileErrorException( msg );
+					}
+				} else {
+					//  Get config file from class path
+
+					ClassLoader thisClassLoader = this.getClass().getClassLoader();
+					URL configFileUrlObjUrlLocal = thisClassLoader.getResource( CONFIG_FILENAME );
+
+					if ( configFileUrlObjUrlLocal == null ) {
+						System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
+						String msg = "Properties file '" + CONFIG_FILENAME + "' not found in class path.";
+						//					log.error( msg );
+						throw new ConfigPropertiesFileErrorException( msg );
+					} else {
+						if ( log.isInfoEnabled() ) {
+							log.info( "Properties file '" + CONFIG_FILENAME + "' found, load path = " + configFileUrlObjUrlLocal.getFile() );
+						}
+					}
+
+					propertiesFileAsStream = configFileUrlObjUrlLocal.openStream();
+
+					if ( propertiesFileAsStream == null ) {
+						System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
+						String msg = "Properties file '" + CONFIG_FILENAME + "' not found in class path.";
+						//					log.error( msg );
+						throw new ConfigPropertiesFileErrorException( msg );
+					}
+				}
+
+
+				configProps = new Properties();
+
+				configProps.load(propertiesFileAsStream);
+
+			} finally {
+				
+				if ( propertiesFileAsStream != null ) {
+					
+					propertiesFileAsStream.close();
+				}
+			}
+			
+			String waitTimeForNextCheckForImportToProcess_InSecondsString = configProps.getProperty( PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS );
+			
+			String javaExecutableWithPath = configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_WITH_PATH );
+			String javaExecutableParametersString = configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS );
+			
+			String importerJarWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_JAR_WITH_PATH );
+			String importerDbConfigWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH );
+			
+			String limelightWebAppBaseURL = configProps.getProperty( PROPERTY_NAME__LIMELIGHT_WEB_APP_BASE_URL );
+			
+			String commandToRunOnSuccessfulImport = configProps.getProperty( PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT );
+			String commandToRunOnSuccessfulImportSyoutSyserrDir = configProps.getProperty( PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT_SYSOUT_SYSERR_DIR );
+
+			if ( StringUtils.isNotEmpty( waitTimeForNextCheckForImportToProcess_InSecondsString ) ) {
+
+				int waitTimeForNextCheckForImportToProcess_InSeconds = -1;
+				try {
+					waitTimeForNextCheckForImportToProcess_InSeconds = Integer.parseInt( waitTimeForNextCheckForImportToProcess_InSecondsString );
+				} catch (Exception e ) {
+					String msg = "For config file: parameter '" 
+							+ PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS 
+							+ "' is provided but is not an integer.  Value in config file: "
+							+ waitTimeForNextCheckForImportToProcess_InSecondsString;
+					log.error( msg, e );
+					throw new ConfigPropertiesFileErrorException(msg);
+				}
+
+				ImporterRunnerConfigData.setWaitTimeForNextCheckForImportToProcess_InSeconds( waitTimeForNextCheckForImportToProcess_InSeconds );
+				
+				log.warn( "INFO: Config file property '" 
+						+ PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS
+						+ "' has value: " 
+						+ waitTimeForNextCheckForImportToProcess_InSeconds
+						+ " seconds" );
+			}
+
+			if ( StringUtils.isEmpty( limelightWebAppBaseURL ) ) {
+
+				String msg = "For config file: parameter '" + PROPERTY_NAME__LIMELIGHT_WEB_APP_BASE_URL + "' is not provided or is empty string.";
+				log.warn( msg );
+			}
+
+
+			if ( StringUtils.isNotEmpty( javaExecutableWithPath ) ) {
+				ImporterRunnerConfigData.setJavaExecutableWithPath( javaExecutableWithPath );
+			}
+			
+			if ( StringUtils.isNotEmpty( javaExecutableParametersString ) ) {
+				String[] javaExecutableParametersArray = javaExecutableParametersString.split( " " );
+				List<String> javaExecutableParametersLocal = new ArrayList<>( javaExecutableParametersArray.length );
+				for ( String javaExecutableParameter : javaExecutableParametersArray ) {
+					if ( StringUtils.isNotEmpty(javaExecutableParameter) ) {
+						javaExecutableParametersLocal.add( javaExecutableParameter );
+					}
+				}
+				if ( ! javaExecutableParametersLocal.isEmpty() ) {
+					ImporterRunnerConfigData.setJavaExecutableParameters( javaExecutableParametersLocal );
+				}
+			}
+			
+			ImporterRunnerConfigData.setImporterJarWithPath( importerJarWithPath );
+			
+			if ( StringUtils.isNotEmpty( importerDbConfigWithPath ) ) {
+				ImporterRunnerConfigData.setImporterDbConfigWithPath( importerDbConfigWithPath );
+			}
+			
+			ImporterRunnerConfigData.setLimelightWebAppBaseURL( limelightWebAppBaseURL );
+
+			if ( StringUtils.isNotEmpty( commandToRunOnSuccessfulImport ) ) {
+				ImporterRunnerConfigData.setCommandToRunOnSuccessfulImport( commandToRunOnSuccessfulImport );
+			}
+			if ( StringUtils.isNotEmpty( commandToRunOnSuccessfulImportSyoutSyserrDir ) ) {
+				ImporterRunnerConfigData.setCommandToRunOnSuccessfulImportSyoutSyserrDir( commandToRunOnSuccessfulImportSyoutSyserrDir );
+			}
+			
+			
+			
+			ImporterRunnerConfigData.setConfigured(true);
+			
+
+			DBConnectionParametersProviderFromPropertiesFile dbConnectionParametersProviderFromPropertiesFile =
+					new DBConnectionParametersProviderFromPropertiesFile();
+
+			dbConnectionParametersProviderFromPropertiesFile.getConfigPropertiesFromPropertiesObj( configProps );
+
+			dbConnectionParametersProviderFromPropertiesFile.init();
+
+			return dbConnectionParametersProviderFromPropertiesFile;
+			
+
+		} catch ( RuntimeException e ) {
+
+			log.error( "In init(),   Properties file '" + CONFIG_FILENAME + "', exception: " + e.toString(), e );
+
+			throw e;
+		}
+		
+	}
+
+}

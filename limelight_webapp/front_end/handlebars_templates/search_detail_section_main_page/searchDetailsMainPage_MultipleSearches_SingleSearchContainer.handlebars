@@ -1,0 +1,39 @@
+{{!-- A comment:  searchDetailsMainPage_MultipleSearches_SingleSearchContainer.handlebars
+ 
+		For Multiple Searches:  The container for a Single Search
+ --}}
+<table class="table-no-border-no-cell-spacing-no-cell-padding  selector_search_item_root_container " 
+	 	data-project_search_id="{{ projectSearchId }}"
+	 	style="border-width:0px;" >
+  <tr>
+    <td style="vertical-align: top; padding-right: 3px;" > {{!-- Color Block for the search --}}
+        <span style="margin-right:10px;padding-left:10px;padding-right:10px; " class=" merged-search-search-background-color-{{ mergeColorId }}  "></span>
+    </td>
+    <td class=" " style="vertical-align: top;">
+      <img class="icon-small fake-link-image selector_search_item_expand " src="static/images/pointer-right.png" >
+      <img class="icon-small fake-link-image selector_search_item_collapse " src="static/images/pointer-down.png" style="display: none;">
+    </td>
+    <td style="vertical-align: top; padding-right: 3px;" >
+        
+     <table class="table-no-border-no-cell-spacing-no-cell-padding" style="border-width:0px;" >
+       <tr>
+        <td class=" " style=" padding-bottom: 6px;">
+          <div class=" selector_search_name_details_holder " style="">
+          </div>
+          <div class=" selector_search_details_container " style="display: none;">
+          </div>
+        </td>
+       </tr>
+     </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>{{!-- Spacer for Color Block for the search --}}
+    <td></td>{{!-- Spacer for Expand search Icon --}}
+    <td style="vertical-align: top; padding-right: 3px; padding-bottom: 3px;" >
+        
+     <table class="table-no-border-no-cell-spacing-no-cell-padding selector_cutoffs_holder " style="border-width:0px;" >
+     </table>
+    </td>
+  </tr>
+</table>

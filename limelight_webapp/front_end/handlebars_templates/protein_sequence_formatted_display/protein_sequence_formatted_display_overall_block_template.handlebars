@@ -1,0 +1,66 @@
+{{!-- protein_sequence_formatted_display_overall_block_template.handlebars --}}
+
+<div >
+
+	<div class=" selector_sequence_data protein-sequence-formatted-sequence-data-block " >
+	</div>
+
+		{{!-- added class 'protein-sequence-formatted-sequence-data-block' so formatting of 'pos' ... is same 
+				as in the protein sequence
+		--}}
+	<div  class=" protein-sequence-formatted-sequence-data-block "
+		style="display: grid; grid-template-columns: 66px 290px 125px 210px;  margin-top: 10px;">
+	
+		<div class=" pos-legend-top-labels pos-legend-boxes-other-than-seq-examples " >
+			Legend:
+		</div>
+		
+		<div >
+			<div style="display: grid; grid-template-columns: 35px 85px 35px 135px;">
+			
+				<div class=" pos-legend-items ">
+					<div class=" pos ">
+						KGS
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					uncovered  
+				</div>
+				<div class=" pos-legend-items ">
+					<div class=" pos pos-has-mods ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					modified
+				</div>
+				<div class=" pos-legend-items ">
+					<div class=" pos pos-has-seq-cov ">
+							LNE
+					</div>
+				</div>			
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					covered 
+				</div>
+				<div class=" pos-legend-items ">
+					<div  class=" pos pos-sel ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					selected residues
+				</div>		
+			</div>
+		</div>
+		
+		<div class=" pos-legend-top-labels " style="text-align: right; padding-right: 10px;">
+			Instructions:
+		</div>
+		<div class=" pos-instructions-text pos-legend-boxes-other-than-seq-examples " >
+			Click residue to select it and update displayed peptides. 
+			Control-click to select multiple residues.
+		</div>
+	</div>
+
+
+</div>

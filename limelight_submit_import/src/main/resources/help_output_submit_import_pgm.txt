@@ -1,0 +1,20 @@
+Submit Import Help:
+
+--user-submit-import-key=
+
+-c (--config=) <configuration file> 
+
+-p (--project-id=) <project id>
+
+-i (--limelight-xml-file=) <limelightXML file>
+
+-s (--scan-file=)  <scan file>
+
+-n (--no-scan-files)  :  If no scan files
+
+--search-description=
+
+--no-search-description
+
+--send-search-path
+

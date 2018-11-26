@@ -1,0 +1,34 @@
+
+ZZZ_Front_End_Build_Using_Gradle.txt
+
+This is the directory for the front end build using Gradle which uses Handlebars Precompile and Webpack.
+
+Everything built here will be included into the war.
+
+  * This build.gradle script will copy (after building)  
+    the contents of 'webpack_build_output' to the parent directory
+    to where it is needed to build the war.
+    
+  
+Start by following ZZZ_Front_End_First_Install_Things.txt
+
+
+Start in this project by running (At beginning and after 'package.json' changes):
+		(It is best to remove subdir 'node_modules' before running this command)
+
+    npm install
+    
+Then to build front end: run 'gradle'
+
+    gradle will run handlebars in multiple directories and then webpack
+
+    webpack can be run directly by running:
+
+		npx webpack --config webpack.config.js
+
+    
+    *****  Important:
+    
+      Folder 'node_modules' must be in .gitignore since the contents are sometimes different
+                            between Windows and Linux and Mac. 
+

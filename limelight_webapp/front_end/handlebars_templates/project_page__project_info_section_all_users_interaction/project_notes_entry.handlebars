@@ -1,0 +1,17 @@
+{{!-- project_notes_entry.handlebars --}}
+
+<div class=" selector_note_root_container_div " style="" data-note_id="{{ id }}">
+    <div class="note-display-div  selector_note_display_container " >
+        <span class="notes_text_jq" >{{ noteText }}</span>
+        
+        {{#if canEdit }} 
+            <img class=" icon-small clickable selector_note_update tool_tip_attached_jq" data-tooltip="Edit note" src="static/images/icon-edit.png">
+        {{/if}}
+        {{#if canDelete }} 
+            <img class=" icon-small clickable selector_note_remove tool_tip_attached_jq" data-tooltip="Remove note" src="static/images/icon-circle-delete.png">
+        {{/if}}
+    </div>
+    {{#if canEdit }} 
+        <div class=" selector_note_update_container " style=" position: relative; " ></div>
+    {{/if}}
+</div>

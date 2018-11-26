@@ -1,0 +1,50 @@
+ {{!-- searchDetails_ExpandSearchContents.handlebars --}}
+
+<table class=" selector_search_details_root_table "
+    style="border-width:0px; border-spacing: 0px; padding: 0px; margin-left: 30px; margin-top: 7px;">
+    <tbody>
+        {{#if path}}
+            <tr>
+                <td style="vertical-align: top;">
+                    Path:
+                </td>
+                <td style="vertical-align: top;">
+                    {{ path }}
+                </td>
+            </tr>
+        {{/if}}
+        {{#if searchProgramsPerSearchList}}
+            <tr>
+                <td style="vertical-align: top; white-space: nowrap;  padding-right: 4px;">
+                    Search Programs:
+                </td>        
+                <td style="vertical-align: top; padding-top: 0px;">
+                    <table style="border-width:0px; border-spacing: 0px; padding: 0px;">
+                        {{#each searchProgramsPerSearchList as |searchProgram|}}
+						    <tr>
+						      <td style="padding-right: 5px;">
+						     	{{ searchProgram.displayName }}
+						      </td>
+						      <td >
+						     	{{ searchProgram.version }}
+						      </td>
+						    </tr>
+                        {{/each}}
+                    </table>
+                </td>        
+            </tr>
+        {{/if}}
+            <tr>
+                <td>Upload:</td>
+                <td>{{ formattedLoadTime }}</td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top; white-space: nowrap;">
+                    FASTA file:
+                </td>
+                <td style="vertical-align: top;">
+                    {{ fastaFilename }}
+                </td>
+            </tr>
+    </tbody>
+</table>

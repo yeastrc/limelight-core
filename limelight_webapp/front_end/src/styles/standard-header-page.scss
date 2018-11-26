@@ -1,0 +1,103 @@
+/*
+ * Styles found only on "standard header" pages.
+ * Any page with the 'standard' header:
+ *    top left:  logo, 'projects' link, project link if project based page
+ *    top right: user info if logged in, log in or log out icon, etc
+ *   
+ *   **  Includes footer-outer-container  **
+ */
+
+ body.standard-header-pages {
+ 
+    div.header-outer-container {
+        height: 30px;
+        padding-top: 4px;
+        background-color: $site-color-medium;
+        border-bottom-style: solid;
+        border-bottom-color: $site-color-gray;
+        border-bottom-width: 1px;
+        position:fixed;
+        top:0px;
+        margin:auto;
+        min-width:1000px;
+        width:100%;
+        z-index:500;
+
+
+        div.header-right-edge-container, div.header-right-icons, div.header-user-name-container {
+            float: right;
+        }
+
+        div.header-right-edge-container {
+            margin-top:4px;
+            margin-right:4px;
+        }
+
+        div.header-user-name-container {
+            padding-right: 7px;
+            padding-top: 3px;
+        }
+
+        .header-user-name {
+            font-size: 12px;
+            @include opacity(0.9);
+        }
+
+        div.header-logo {
+            float: left;
+            margin-left:4px;
+        }
+
+        div.header-left-main-container {
+            margin-top:4px;
+        }
+
+        div.header-pointer-right {
+            float: left;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        div.header-projects-label-div {
+            float: left;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .header-projects-label {
+            color: #000000;
+            font-size: 18px;
+            font-weight: bold;
+            @include opacity(0.9);
+            text-decoration: none;
+        }
+
+        div.header-projects-list-container {
+            box-shadow: 10px 10px 22px 15px rgba(0, 0, 0, 0.2);
+            top: 24px;
+            width: 330px;
+            display: none;
+            position: absolute;
+            overflow-y: auto;
+            background-color: $color-white;
+            padding: 15px;
+            white-space: nowrap;
+            padding: 15px;
+            z-index: 2;
+        }
+        
+    }
+
+    .overall-enclosing-block {
+        padding-top:35px;
+        padding-left: 40px;
+        padding-right: 40px;
+        padding-bottom: 31px;
+    }
+ 
+    .header-outer-container, .footer-outer-container {
+        min-width: 1000px;
+    }
+ 
+ }
+ 

@@ -1,0 +1,34 @@
+/**
+ * proteinViewPage_RootLaunch_PublicUser.js
+ * 
+ * For proteinView.jsp page  
+ * 
+ * Root Launch Javascript for Public User, or Project Is Locked
+ * 
+ * Create and initialize object of class ProteinViewPage_RootClass_Common
+ * 
+ * 
+ */
+
+
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+
+
+//  From local dir
+import { ProteinViewPage_RootClass_Common }  
+	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_RootClass_Common.js';
+
+///////////////
+
+$(document).ready(function() {
+
+	try {
+		var proteinViewPage_RootClass_Common = new ProteinViewPage_RootClass_Common();
+		proteinViewPage_RootClass_Common.initialize();
+
+	} catch( e ) {
+		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+		throw e;
+	}
+
+});

@@ -1,0 +1,21 @@
+// styles specific to the projects list page
+
+body.projects-list-page {
+
+    .your-projects-title {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .new-project-container-bottom-border, .project-container-bottom-border {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: $site-color-dark;
+        @include opacity(0.6);
+    }
+
+}

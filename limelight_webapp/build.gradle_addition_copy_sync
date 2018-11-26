@@ -1,0 +1,21 @@
+
+
+This will copy from directory to to directory and delete anything else in the to directory
+
+https://docs.gradle.org/current/userguide/working_with_files.html#sec:sync_task
+
+task copyFrontEnd(type: Sync) { //  Optional 'dependsOn' put in the parens:   , dependsOn: 'webpack') {
+    from "FrontEnd/webapp_prebuild"
+    into "src/main/webapp"
+}
+
+
+This will copy a directory
+
+https://docs.gradle.org/current/userguide/working_with_files.html#sec:copying_files
+
+task copyTask(type: Copy) {
+    from 'src/main/webapp'
+    into 'build/explodedWar'
+}
+

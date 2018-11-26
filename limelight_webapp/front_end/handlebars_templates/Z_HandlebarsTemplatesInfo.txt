@@ -1,0 +1,10 @@
+
+
+Handlebars Templates are precompiled with --amt so they can be imported using syntax:
+
+	require("...")
+	
+	
+Currently no way to have the output have the ES6 export statement
+
+ 

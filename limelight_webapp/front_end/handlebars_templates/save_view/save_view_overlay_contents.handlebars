@@ -1,0 +1,25 @@
+{{!--  save_view_overlay_contents.handlebars
+
+    Placed in the overlay for save a view
+--}}
+
+<div class=" modal-overlay-body-standard-padding selector_save_view_overlay_root_container ">
+
+    <div >
+        Label for view:
+        <input type="text" style="width: 200px;" class=" selector_save_view_label ">
+    </div>
+    <div >
+        {{#if canSetDefault }} 
+            
+            Set as default:
+            <input type="checkbox" class=" selector_save_view_as_default_checkbox ">
+            
+        {{/if}}
+    </div>
+    <div >
+        <input type="button" value="Save This View" 
+            class=" selector_save_view_button ">
+    </div>
+
+</div>

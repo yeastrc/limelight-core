@@ -1,0 +1,25 @@
+
+
+Usage: java -jar limelightRunImporter.jar  -c run_importer_config_file.properties
+								  	
+
+Examples:
+
+    To run the
+    java -jar limelightRunImporter.jar -c /path/to/run_importer_config_file.properties
+
+	
+Parameters:
+	
+    -c (--config=) : [Required] : The configuration file, with it's relative or absolute path.
+    
+    An example file is in the release zip file at:
+	
+	(the path may change but the filename will not change)
+	
+	Releases are at:   https://github.com/yeastrc/
+	
+	The file run_importer_config_file.properties is also in the Github repository, currently at:
+	https://github.com/yeastrc/
+	
+	

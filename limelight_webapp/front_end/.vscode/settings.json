@@ -1,0 +1,4 @@
+{
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "typescript.useCodeSnippetsOnMethodSuggest": true
+}
