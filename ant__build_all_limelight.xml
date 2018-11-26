@@ -38,8 +38,13 @@
 	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
 	<echo>npm.executable: ${npm.executable}</echo>
 		
-		
+
 	<!-- Set Properties if not set in config -->
+	<condition property="gradle.wrapper.executable" value="gradle">
+	   <not>  
+	      <isset property="gradle.wrapper.executable"/>
+	   </not>
+	</condition>
 	<condition property="npm.executable" value="npm">
 	   <not>  
 	      <isset property="npm.executable"/>
@@ -70,7 +75,7 @@
 	<target name="npm_install" depends="prepare">
 
 		<!--  web app - npm install  -->		
-		<exec executable="npm" dir="limelight_webapp/front_end" failonerror="true" >
+		<exec executable="${npm.executable}" dir="limelight_webapp/front_end" failonerror="true" >
 			<arg value="install" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
