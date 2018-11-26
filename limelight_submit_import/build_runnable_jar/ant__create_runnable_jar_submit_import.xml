@@ -79,7 +79,7 @@
 				<attribute name="Time" value="${build-info.current-time}" />
 -->
             </manifest>
-            <zipfileset src="jar-in-jar-loader.zip"/>
+            <zipfileset src="jar-in-jar-loader.zip.class.files"/>
             <zipfileset dir="${expand_zip_jars_dir}" />
 <!--
             <zipfileset dir="${jar_db_config_file_dir}" />
