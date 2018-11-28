@@ -13,7 +13,7 @@ gradle.wrapper.executable=
 # gradle.wrapper.executable=/opt/gradle/gradle-4.5/bin/gradle
 
 # possible Windows path (depending on version)
-# gradle.wrapper.executable=C:\\gradle\\gradle-4.6\\bin\\gradle
+# gradle.wrapper.executable=C:\\gradle\\gradle-4.6\\bin\\gradle.bat
 
 #  Path to npm executable
 
