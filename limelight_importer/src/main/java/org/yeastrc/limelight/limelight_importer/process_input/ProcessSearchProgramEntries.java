@@ -329,8 +329,16 @@ public class ProcessSearchProgramEntries {
 		}
 		SearchProgram.PsmAnnotationTypes psmAnnotationTypes =
 				searchProgram.getPsmAnnotationTypes();
+		if ( psmAnnotationTypes == null ) {
+			//  No psm annotation types so exit 
+			return; // EARLY EXIT
+		}
 		FilterablePsmAnnotationTypes filterablePsmAnnotationTypes =
 				psmAnnotationTypes.getFilterablePsmAnnotationTypes();
+		if ( filterablePsmAnnotationTypes == null ) {
+			//  No filterable psm annotation types so exit 
+			return;  //  EARLY EXIT
+		}
 		List<FilterablePsmAnnotationType> filterablePsmAnnotationTypeList =
 				filterablePsmAnnotationTypes.getFilterablePsmAnnotationType();
 		
@@ -401,6 +409,10 @@ public class ProcessSearchProgramEntries {
 					searchProgramInfo.getDefaultVisibleAnnotations().getVisiblePsmAnnotations().getSearchAnnotation();
 		}
 		SearchProgram.PsmAnnotationTypes psmAnnotationTypes = searchProgram.getPsmAnnotationTypes();
+		if ( psmAnnotationTypes == null ) {
+			//  No psmAnnotationTypes
+			return; // EARLY EXIT
+		}
 		DescriptivePsmAnnotationTypes descriptivePsmAnnotationTypes = psmAnnotationTypes.getDescriptivePsmAnnotationTypes();
 		if ( descriptivePsmAnnotationTypes == null ) {
 			//  No descriptive annotation types so exit 
