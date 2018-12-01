@@ -448,10 +448,6 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		this._sortProteinList( { proteinList : proteinResultListResult, projectSearchId, annotationTypeRecords_DisplayOrder } );
 
-		this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
-
-		this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap
-
 		return { proteinList : proteinResultListResult, annotationTypeRecords_DisplayOrder, reportedPeptideCount_TotalForSearch, psmCount_TotalForSearch };
 	}
 
@@ -684,8 +680,10 @@ export class ProteinViewPage_Display_SingleSearch {
 		const reportedPeptideCount_TotalForSearch_Display = proteinDisplayData.reportedPeptideCount_TotalForSearch.toLocaleString();
 		const psmCount_TotalForSearch_Display = proteinDisplayData.psmCount_TotalForSearch.toLocaleString();
 
-		$("#protein_list_size").text( proteinListLength );
+		$("#protein_list_size").text( proteinCount );
+		$("#reported_peptide_count_label").show();
 		$("#reported_peptide_count_display").text( reportedPeptideCount_TotalForSearch_Display );
+		$("#psm_count_label").show();
 		$("#psm_count_display").text( psmCount_TotalForSearch_Display );
 		
 		$protein_list_container.empty();

@@ -62,13 +62,13 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 	/**
 	 * proteinSequenceString
-	 * proteinCoverageObject : class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
+	 * widget_SequenceCoverageParam : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
 	 * modsForProtein : mods per sequence position { <position 1 based> : [ <mass> ] }
 	 * containerHTML_Element : HTML Element in DOM to insert the Protein Sequence In
 	 */
 	constructor( { 
 		proteinSequenceString, 
-		proteinCoverageObject, 
+		widget_SequenceCoverageParam,
 		modsForProtein, 
 		containerHTML_Element, 
 		callbackMethodForSelectedChange }) {
@@ -77,7 +77,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		this._proteinSequenceString = proteinSequenceString;
 		this._proteinSequenceAsArray = proteinSequenceString.split("");
 		
-		this._proteinCoverageObject = proteinCoverageObject; 
+		this._widget_SequenceCoverageParam = widget_SequenceCoverageParam; 
 		this._modsForProtein = modsForProtein;
 		
 		this._containerHTML_Element = containerHTML_Element;
@@ -292,8 +292,8 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 		/////////////
 		
-		//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
-		const proteinCoverageObject = this._proteinCoverageObject;
+		//  widget_SequenceCoverageParam is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
+		const widget_SequenceCoverageParam = this._widget_SequenceCoverageParam;
 		
 		////  Create and Assemble DOM Parts
 		
@@ -404,7 +404,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 						$selector_sequence_data, 
 						positionGroupSize, 
 						proteinLength_StringLength, 
-						proteinCoverageObject,
+						widget_SequenceCoverageParam,
 						// Separators
 						sequenceGroupSeparator,
 						separatorBetweenStartLabelAndSequence,
@@ -436,7 +436,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 				$selector_sequence_data, 
 				positionGroupSize, 
 				proteinLength_StringLength, 
-				proteinCoverageObject,
+				widget_SequenceCoverageParam,
 				// Separators
 				sequenceGroupSeparator,
 				separatorBetweenStartLabelAndSequence,
@@ -477,7 +477,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 			
 			this._addProteinSequenceGroupToContainer( 
 					{ proteinSequenceForGroupStartIndex, proteinSequenceForGroupEndIndex, proteinSequenceAsArray, 
-						proteinCoverageObject, $lineElement } );
+						widget_SequenceCoverageParam, $lineElement } );
 		}
 
 		// Display End Position if requested
@@ -509,7 +509,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	 */
 	_addProteinSequenceGroupToContainer( 
 			{ proteinSequenceForGroupStartIndex, proteinSequenceForGroupEndIndex, proteinSequenceAsArray,
-				proteinCoverageObject, $lineElement } ) {
+				widget_SequenceCoverageParam, $lineElement } ) {
 		
 		const objectThis = this;
 		
@@ -524,7 +524,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 			let cssClassNamesArr = [ _CSS_CLASS_NAME__SEQUENCE_POSITION_MAIN ]; 
 			
 			//  Fastest way to determine is Protein Coverage At Position 
-			const isProteinCoverageAtPosition = proteinCoverageObject.isProteinCoverageAtPosition( { position : proteinSequencePosition } );
+			const isProteinCoverageAtPosition = widget_SequenceCoverageParam.isProteinCoverageAtPosition( { position : proteinSequencePosition } );
 			if ( isProteinCoverageAtPosition ) {
 				cssClassNamesArr.push( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE );
 			}

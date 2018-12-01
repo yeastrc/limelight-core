@@ -36,9 +36,9 @@
 		  <%--  Not implemented on Peptide Page yet 
 			<input type="button" value="Merge Peptide View" id="merge_peptide_view_button" class=" merge_searches_button_jq ">
 		  --%>
-		  <%--  Not implemented on Protein Page yet 
+		  <%--  Not implemented on Protein Page yet --%> 
 			<input type="button" value="Merge Protein View" id="merge_protein_view_button" class=" merge_searches_button_jq ">
-		  --%>
+		  
 		  <%--  Not implemented on Mod Page yet 		  --%>
 			<input type="button" value="Merge Mod View" id="merge_mod_view_button" class=" merge_searches_button_jq ">
 

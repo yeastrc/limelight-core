@@ -21,8 +21,9 @@ import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_p
 import { downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
 
 //  From local dir
- import { ProteinViewPage_Display_SingleSearch }  
-	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleSearch.js';
+import { ProteinViewPage_Display_SingleSearch } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleSearch.js';
+
+import { ProteinViewPage_Display_MultipleSearches } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_MultipleSearches.js';
 
 /**
  * 
@@ -62,6 +63,16 @@ export class ProteinViewPage_DisplayDataOnPage {
 		} );
 		
 		this._proteinViewPage_Display_SingleSearch = new ProteinViewPage_Display_SingleSearch( {
+
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			centralPageStateManager : this._centralPageStateManager,
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+		});
+
+		this._proteinViewPage_Display_MultipleSearches = new ProteinViewPage_Display_MultipleSearches( {
 
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
@@ -110,23 +121,52 @@ export class ProteinViewPage_DisplayDataOnPage {
 		var projectSearchIds = 
 			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
 
-		if ( projectSearchIds.length !== 1 ) {
-			alert("More than one Search is not supported" );
-			throw Error( "More than one Search is not supported" );
+		if ( projectSearchIds.length === 0 ) {
+			throw Error( "projectSearchIds.length === 0 " );
 		}
+
+		if ( projectSearchIds.length !== 1 ) {
+
+			//  Multiple Project Search Ids
+			this.populateProteinListBlock_MultipleSearches({ projectSearchIds });
+
+			return;  //  EARLY EXIT
+		}
+
+		//  Single Project Search Id
 
 		let projectSearchId = projectSearchIds[0];
 
+		this.populateProteinListBlock_SingleSearch({ projectSearchId }) ;
+
+	}
+
+
+	/**
+	 * 
+	 */
+	populateProteinListBlock_MultipleSearches({ projectSearchIds }) {
+
+		const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
+		if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'protein_counts_download_assoc_psms_block'");
+		}
+		$protein_counts_download_assoc_psms_block.show();
 		
+		this._proteinViewPage_Display_MultipleSearches.populateProteinList({ projectSearchIds });
+	}
+
+	/**
+	 * 
+	 */
+	populateProteinListBlock_SingleSearch({ projectSearchId }) {
+		
+		const objectThis = this;
+
 		if ( ! this._downloadPSMClickHandlerAttached ) {
 	
 			//  Download PSMs container and link.  Only supported for 1 project search id
 		
-			if ( projectSearchIds.length !== 1 ) {
-				alert("More than one Search is not supported" );
-				throw Error( "More than one Search is not supported" );
-			}
-
 			const $protein_download_assoc_psms = $("#protein_download_assoc_psms");
 			$protein_download_assoc_psms.show();
 
@@ -167,6 +207,12 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 			this._downloadPSMClickHandlerAttached = true;
 		}
+
+		const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
+		if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'protein_counts_download_assoc_psms_block'");
+		}
+		$protein_counts_download_assoc_psms_block.show();
 		
 		this._proteinViewPage_Display_SingleSearch.populateProteinList({ projectSearchId });
 

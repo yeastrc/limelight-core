@@ -73,12 +73,13 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	/**
 	 * 
 	 */
-	constructor({ rootDisplayJquerySelector, proteinSequenceVersionId, loadedDataCommonHolder, loadedDataPerProjectSearchIdHolder, callbackMethodForSelectedChange } ) {
+	constructor({ rootDisplayJquerySelector, projectSearchIds, proteinSequenceVersionId, loadedDataCommonHolder, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, callbackMethodForSelectedChange } ) {
 
         this._rootDisplayJquerySelector = rootDisplayJquerySelector;
+        this._projectSearchIds = projectSearchIds;
         this._proteinSequenceVersionId = proteinSequenceVersionId;
         this._loadedDataCommonHolder = loadedDataCommonHolder;
-        this._loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
+        this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
         this._callbackMethodForSelectedChange = callbackMethodForSelectedChange;
 
 		// From common template:
@@ -1014,26 +1015,34 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	 */
 	_createModsSet() {
 
-		const modificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_modificationsOnProtein_KeyProteinSequenceVersionId();
-		const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
-
 		//  Unique Mod masses for the protein or selected positions
         const modUniqueMassesSet = new Set(); 
 
-        if ( modificationsOnProtein ) {
-			for ( const modificationOnProtein of modificationsOnProtein) {
-				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-				const position = modificationOnProtein.position;
-                const mass = modificationOnProtein.mass;
-                const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+        for ( const projectSearchId of this._projectSearchIds ) {
 
-                if ( this._selectedProteinSequencePositions && ( ! this._selectedProteinSequencePositions.has( position ) ) ) {
-                    //  Not for selection position(s) so skip
-                    continue;
+            const loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+            if ( ! loadedDataPerProjectSearchIdHolder ) {
+                throw Error("No entry in this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
+            }
+
+            const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_modificationsOnProtein_KeyProteinSequenceVersionId();
+            const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
+
+            if ( modificationsOnProtein ) {
+                for ( const modificationOnProtein of modificationsOnProtein) {
+                    //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+                    const position = modificationOnProtein.position;
+                    const mass = modificationOnProtein.mass;
+                    const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
+                    if ( this._selectedProteinSequencePositions && ( ! this._selectedProteinSequencePositions.has( position ) ) ) {
+                        //  Not for selection position(s) so skip
+                        continue;
+                    }
+
+                    modUniqueMassesSet.add( mass );
                 }
-
-                modUniqueMassesSet.add( mass );
-			}
+            }
         }
 
         return modUniqueMassesSet;
@@ -1046,42 +1055,50 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	 */
 	_createModsAndPsmCountsMap() {
 
-        const numPsmsForReportedPeptideIdMap = this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
-
-		const modificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_modificationsOnProtein_KeyProteinSequenceVersionId();
-		const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
-
         //    For Overlay
 		//  Unique Mod masses And their PSM Counts for the protein or selected positions 
 		const modUniqueMassesWithTheirPsmCountsMap = new Map(); // <mass, {id, mass, psmCount}>  id === mass
 
-        if ( modificationsOnProtein ) {
-			for ( const modificationOnProtein of modificationsOnProtein) {
-				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-				const position = modificationOnProtein.position;
-                const mass = modificationOnProtein.mass;
-                const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+        for ( const projectSearchId of this._projectSearchIds ) {
 
-                if ( this._selectedProteinSequencePositions && ( ! this._selectedProteinSequencePositions.has( position ) ) ) {
-                    //  Not for selection position(s) so skip
-                    continue;
-                }
+            const loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+            if ( ! loadedDataPerProjectSearchIdHolder ) {
+                throw Error("No entry in this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
+            }
 
-                const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
-                if ( ! numPsmsForReportedPeptideId ) {
-                    throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", proteinSequenceVersionId: " + proteinSequenceVersionId );
-                }
+            const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
-                let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
-                if ( ! modMassPsmCount ) {
-                    modMassPsmCount = { 
-                        uniqueId : mass, // Set for Data Table to identify the entry in the table
-                        mass: mass, psmCount : 0 }; 
-                    modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
+            const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_modificationsOnProtein_KeyProteinSequenceVersionId();
+            const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
+        
+            if ( modificationsOnProtein ) {
+                for ( const modificationOnProtein of modificationsOnProtein) {
+                    //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+                    const position = modificationOnProtein.position;
+                    const mass = modificationOnProtein.mass;
+                    const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
+                    if ( this._selectedProteinSequencePositions && ( ! this._selectedProteinSequencePositions.has( position ) ) ) {
+                        //  Not for selection position(s) so skip
+                        continue;
+                    }
+
+                    const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
+                    if ( ! numPsmsForReportedPeptideId ) {
+                        throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", proteinSequenceVersionId: " + proteinSequenceVersionId );
+                    }
+
+                    let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
+                    if ( ! modMassPsmCount ) {
+                        modMassPsmCount = { 
+                            uniqueId : mass, // Set for Data Table to identify the entry in the table
+                            mass: mass, psmCount : 0 }; 
+                        modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
+                    }
+                    modMassPsmCount.psmCount += numPsmsForReportedPeptideId;
+                    
                 }
-                modMassPsmCount.psmCount += numPsmsForReportedPeptideId;
-                
-			}
+            }
         }
 
         return modUniqueMassesWithTheirPsmCountsMap;

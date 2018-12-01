@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayData_SingleProtein_ReportedPeptideList.js
+ * proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.js
  * 
  * Javascript for proteinView.jsp page - Single Protein Overlay - Show Reported Peptide List
  * 
@@ -27,7 +27,7 @@ import { PSMListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/psmL
 /**
  * 
  */
-export class ProteinViewPage_DisplayData_SingleProtein_ReportedPeptideList {
+export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList {
 
 	/**
 	 * 
