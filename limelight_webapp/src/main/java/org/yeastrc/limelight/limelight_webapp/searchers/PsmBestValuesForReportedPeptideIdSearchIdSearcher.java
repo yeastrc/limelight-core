@@ -76,14 +76,18 @@ public class PsmBestValuesForReportedPeptideIdSearchIdSearcher extends Limelight
 	
 	private final String SQL_WHERE_REPORTED_PEPTIDE_IDS_END = " ) ";
 	
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.searchers.PsmBestValuesForReportedPeptideIdSearchIdSearcherIF#getBestPsmValuesList(int, java.util.List, org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel)
+	 */
 	@Override
 	public List<PsmBestValuesForReportedPeptideIdSearchIdResult>  getBestPsmValuesList( 
 			int searchId, 
 			List<Integer> reportedPeptideIds,
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
 
-		if ( reportedPeptideIds == null || reportedPeptideIds.isEmpty() ) {
-			throw new IllegalArgumentException("reportedPeptideIds is null or empty");
+		if ( reportedPeptideIds.isEmpty() ) {
+			//  No Reported Peptide Ids so return empty list
+			return new ArrayList<>();
 		}
 		
 		List<PsmBestValuesForReportedPeptideIdSearchIdResult> resultList = new ArrayList<>();

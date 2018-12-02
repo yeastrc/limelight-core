@@ -59,8 +59,13 @@ public class ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher extend
 			List<Integer> reportedPeptideIdList
 			) throws SQLException {
 
-		List<ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher> resultList = new ArrayList<>();
+		if ( reportedPeptideIdList.isEmpty() ) {
+			//  No Reported Peptide Ids so return empty list
+			return new ArrayList<>();
+		}
 
+		List<ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher> resultList = new ArrayList<>();
+		
 		StringBuilder querySQLSB = new StringBuilder( 10000 );
 		
 		querySQLSB.append( QUERY_SQL );

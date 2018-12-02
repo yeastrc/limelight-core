@@ -75,6 +75,16 @@ public class PsmBestFilterableData_For_ReportedPeptideIds_AnnTypeIds_ProjectSear
     		List<Integer> reportedPeptideIds,
     		List<Integer> annotationTypeIds ) throws SQLException {
 
+		if ( reportedPeptideIds.isEmpty() ) {
+			//  No Reported Peptide Ids so return empty list
+			return new ArrayList<>();
+		}
+
+		if ( annotationTypeIds.isEmpty() ) {
+			//  No Ann Type Ids so return empty list
+			return new ArrayList<>();
+		}
+		
 		List<PsmBestFilterableData_For_ReportedPeptideIds_AnnTypeIds_ProjectSearchId_Searcher_Item> resultList = new ArrayList<>( 10000 );
 		
 		StringBuilder sqlSB = new StringBuilder( 50000 );
