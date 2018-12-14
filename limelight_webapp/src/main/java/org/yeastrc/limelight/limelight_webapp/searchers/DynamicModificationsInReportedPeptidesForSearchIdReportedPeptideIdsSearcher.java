@@ -30,16 +30,16 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 
 /**
- * 
+ * Dynamic Mods for Reported Peptide Ids and Search Id
  *
  */
 @Component
-public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher extends Limelight_JDBC_Base implements ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF {
+public class DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher extends Limelight_JDBC_Base implements DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF {
 
-	private static final Logger log = LoggerFactory.getLogger( ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.class );
+	private static final Logger log = LoggerFactory.getLogger( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.class );
 		
 	private static final String QUERY_SQL = 
 			"SELECT reported_peptide_id,  position, mass "
@@ -51,15 +51,15 @@ public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearche
 	 * Results
 	 *
 	 */
-	public static class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result {
+	public static class DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result {
 		
-		Map<Integer,List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId;
+		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId;
 
-		public Map<Integer, List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> getResults_Key_ReportedPeptideId() {
+		public Map<Integer, List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> getResults_Key_ReportedPeptideId() {
 			return results_Key_ReportedPeptideId;
 		}
 		public void setResults_Key_ReportedPeptideId(
-				Map<Integer, List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId) {
+				Map<Integer, List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId) {
 			this.results_Key_ReportedPeptideId = results_Key_ReportedPeptideId;
 		}
 	}
@@ -71,7 +71,7 @@ public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearche
 	 * @throws SQLException
 	 */
 	@Override
-	public ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result getModificationsInReportedPeptidesForSearchIdReportedPeptideIds(
+	public DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds(
 			int searchId, List<Integer> reportedPeptideIds ) throws SQLException {
 
 		if ( reportedPeptideIds == null ) {
@@ -80,11 +80,11 @@ public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearche
 			throw new IllegalArgumentException( msg );
 		}
 		
-		Map<Integer,List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId = new HashMap<>();
+		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId = new HashMap<>();
 		
 		if ( reportedPeptideIds.isEmpty() ) {
 			//  No Reported Peptides so return empty 
-			ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result result = new ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result();
+			DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result result = new DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result();
 			result.results_Key_ReportedPeptideId = results_Key_ReportedPeptideId;
 			return result;  //  EARLY RETURN
 		}
@@ -118,11 +118,11 @@ public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearche
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
 					Integer reportedPeptideId = rs.getInt( "reported_peptide_id" );
-					ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item item = new ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item();
+					DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item item = new DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item();
 					item.setPosition( rs.getInt( "position" ) );
 					item.setMass( rs.getDouble( "mass" ) );
 					
-					List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> resultList = results_Key_ReportedPeptideId.get( reportedPeptideId );
+					List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> resultList = results_Key_ReportedPeptideId.get( reportedPeptideId );
 					if ( resultList == null ) {
 						resultList = new ArrayList<>();
 						results_Key_ReportedPeptideId.put( reportedPeptideId, resultList );
@@ -135,7 +135,7 @@ public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearche
 			throw e;
 		}
 		
-		ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result result = new ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result();
+		DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result result = new DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result();
 		
 		result.results_Key_ReportedPeptideId = results_Key_ReportedPeptideId;
 		

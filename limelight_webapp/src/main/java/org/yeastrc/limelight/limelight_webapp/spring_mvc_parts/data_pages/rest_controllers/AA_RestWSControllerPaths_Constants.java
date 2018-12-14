@@ -271,7 +271,11 @@ public class AA_RestWSControllerPaths_Constants {
 
 
 	// Results from Single Project Search Id and Other Criteria
-	
+
+	//  Static Mods for Project Search Id
+	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/static-mods-single-project-search-id";
+
 	//  Used across various pages beyond just Reported Peptides Page
 	//    Pass in Project Search Id and Cutoff Criteria
 	//    Returns Reported Peptide Ids and in some cases the Number of PSMs
@@ -321,6 +325,10 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PSM_COUNT_FOR_RESIDUES_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-count-for-residues-searchcriteria";
 
+	public static final String PEPTIDE_IDS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids";
+
+	public static final String PEPTIDE_SEQUENCE_STRINGS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids";
+
 	public static final String REPORTED_PEPTIDE_STRINGS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/reported-peptide-strings-for-reported-peptide-ids";
 
 	public static final String PROTEIN_SEQUENCE_VERSION_IDS_FOR_REPORTED_PEPTIDE_IDS_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-sequence-version-ids-for-reported-peptide-ids";
@@ -344,8 +352,8 @@ public class AA_RestWSControllerPaths_Constants {
 			"d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
 
 	//  Reported Peptide Modifications for each Reported Peptide Id in request
-	public static final String MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
+	public static final String DYNAMIC_MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/dynamic-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
 
 	
 	//    used on many pages 

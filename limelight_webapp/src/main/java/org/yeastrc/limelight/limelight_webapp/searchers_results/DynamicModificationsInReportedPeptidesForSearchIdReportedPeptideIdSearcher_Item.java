@@ -21,7 +21,7 @@ package org.yeastrc.limelight.limelight_webapp.searchers_results;
  * Result item from ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher
  *
  */
-public class ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item {
+public class DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item {
 
 	private int position;
 	private double mass;

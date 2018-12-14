@@ -265,12 +265,12 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 					reportedPeptideIdsSelection = new Set();  // Build set of filtered reportedPeptideIds if only filter on Mod Mass
 				}
 
-				const modificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_modificationsOnProtein_KeyProteinSequenceVersionId();
-				const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(proteinSequenceVersionId);
+				const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+				const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get(proteinSequenceVersionId);
 		
-				if ( modificationsOnProtein ) {
+				if ( dynamicModificationsOnProtein ) {
 					//  Have modifications for this protein so process them
-					for ( const modificationOnProtein of modificationsOnProtein) {
+					for ( const modificationOnProtein of dynamicModificationsOnProtein) {
 						//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
 						const position = modificationOnProtein.position;
 						const mass = modificationOnProtein.mass;
@@ -315,10 +315,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 							throw Error("_createReportedPeptideDisplayData: No reportedPeptideIds for proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
 						}
 				
-						const modificationsOnReportedPeptide_KeyReportedPeptideId = this._loadedDataPerProjectSearchIdHolder.get_modificationsOnReportedPeptide_KeyReportedPeptideId();
+						const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = this._loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
 						for ( const reportedPeptideId of reportedPeptideIds_All_ForNoModsSearch ) {
-							const modificationsForReportedPeptide = modificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
+							const modificationsForReportedPeptide = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
 							if ( ! modificationsForReportedPeptide ) {
 								reportedPeptideIdsSelection.add(reportedPeptideId);
 							}
@@ -349,9 +349,9 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 						}
 
 						//  Remove any reported peptide ids with modifications at any of the selected positions
-						if ( modificationsOnProtein ) {
+						if ( dynamicModificationsOnProtein ) {
 							//  Have modifications for this protein so process them
-							for ( const modificationOnProtein of modificationsOnProtein) {
+							for ( const modificationOnProtein of dynamicModificationsOnProtein) {
 								//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
 								const position = modificationOnProtein.position;
 								const mass = modificationOnProtein.mass;
@@ -456,7 +456,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 
 		//  Various Maps, key Reported Peptide Id
 		const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
-//		const modificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_modificationsOnReportedPeptide_KeyReportedPeptideId();
+//		const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 		const reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId();
 		const reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId();
 		const psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId();
@@ -480,7 +480,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 			}
 			peptideItem.numPsms = numPsms;
 			
-//			const modificationsArray = modificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
+//			const modificationsArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
 //			if ( modificationsArray && modificationsArray.length !== 0 ) {
 //				//  [{mass, position, reportedPeptideId}]
 //				peptideItem.modMassList = modificationsArray;

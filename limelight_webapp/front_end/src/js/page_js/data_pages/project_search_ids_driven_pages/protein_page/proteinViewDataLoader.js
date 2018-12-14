@@ -29,6 +29,64 @@ export class ProteinViewDataLoader {
 	initialize() {}
 	
 	/**
+	 * Get Static Mods For Single Project Search Id
+	 * 
+	 * result list item { String residue, BigDecimal mass }
+	 */
+	static getStaticMods( { projectSearchId } ) {
+
+		let promise = new Promise( function( resolve, reject ) {
+
+			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
+
+			let requestObject = {
+					projectSearchId : projectSearchId
+			};
+
+			let _URL = "d/rws/for-page/psb/static-mods-single-project-search-id/" + getWebserviceSyncTrackingCode();
+
+			let requestData = JSON.stringify( requestObject );
+
+			console.log("AJAX Call to get Static Mods List START, Now: " + new Date() );
+
+			// let request =
+			$.ajax({
+				type : "POST",
+				url : _URL,
+				data : requestData,
+				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
+				dataType : "json",
+				success : function( responseData ) {
+					try {
+						console.log("AJAX Call to get Static Mods List END, Now: " + new Date() );
+
+						resolve( responseData.staticModsList );
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				},
+				failure: function(errMsg) {
+					handleAJAXFailure( errMsg );
+					reject( errMsg );
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+
+					handleAJAXError(jqXHR, textStatus, errorThrown);
+
+					reject( textStatus );
+
+					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
+					// textStatus: " + textStatus );
+				}
+			});
+		});
+		
+		return promise;
+	};
+
+	/**
 	 * Get Reported Peptide Ids For Single Project Search Id
 	 * 
 	 * Also returns Number of PSMs per Reported Peptide Id under specific conditions (Default Cutoffs, ...)
@@ -147,7 +205,128 @@ export class ProteinViewDataLoader {
 		return promise;
 	};
 
+	/**
+	 * Get Peptide Ids from Reported Peptide Ids and Project Search Id
+	 */
+	static getPeptideIdsFromReportedPeptideIds( { projectSearchId, reportedPeptideIds } ) {
 
+		let promise = new Promise( function( resolve, reject ) {
+
+			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
+
+			let requestObject = {
+					projectSearchId : projectSearchId,
+					reportedPeptideIds : reportedPeptideIds,
+			};
+
+			let _URL = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids/" + getWebserviceSyncTrackingCode();
+
+			let requestData = JSON.stringify( requestObject );
+
+			console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids START, Now: " + new Date() );
+
+			// let request =
+			$.ajax({
+				type : "POST",
+				url : _URL,
+				data : requestData,
+				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
+				dataType : "json",
+				success : function( responseData ) {
+					try {
+						console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids END, Now: " + new Date() );
+
+						//  JS Object.
+
+						resolve( 
+								{ peptideIdReportedPeptideIdMappingList : responseData.resultList,
+									foundAllReportedPeptideIdsForProjectSearchId : responseData.foundAllReportedPeptideIdsForProjectSearchId } );
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				},
+				failure: function(errMsg) {
+					handleAJAXFailure( errMsg );
+					reject( errMsg );
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+
+					handleAJAXError(jqXHR, textStatus, errorThrown);
+
+					reject( textStatus );
+
+					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
+					// textStatus: " + textStatus );
+				}
+			});
+		});
+		
+		return promise;
+	};
+	
+	/**
+	 * Get Peptide Sequence Strings from Reported Peptide Ids and Project Search Id
+	 */
+	static getPeptideSequenceStringsFromReportedPeptideIds( { projectSearchId, reportedPeptideIds } ) {
+
+		let promise = new Promise( function( resolve, reject ) {
+
+			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
+
+			let requestObject = {
+					projectSearchId : projectSearchId,
+					reportedPeptideIds : reportedPeptideIds,
+			};
+
+			let _URL = "d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids/" + getWebserviceSyncTrackingCode();
+
+			let requestData = JSON.stringify( requestObject );
+
+			console.log("AJAX Call to get d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids START, Now: " + new Date() );
+
+			// let request =
+			$.ajax({
+				type : "POST",
+				url : _URL,
+				data : requestData,
+				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
+				dataType : "json",
+				success : function( responseData ) {
+					try {
+						console.log("AJAX Call to get d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids END, Now: " + new Date() );
+
+						//  JS Object.
+
+						resolve( 
+								{ peptideSequenceString_PeptideId_MappingList : responseData.resultList,
+									foundAllReportedPeptideIdsForProjectSearchId : responseData.foundAllReportedPeptideIdsForProjectSearchId } );
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				},
+				failure: function(errMsg) {
+					handleAJAXFailure( errMsg );
+					reject( errMsg );
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+
+					handleAJAXError(jqXHR, textStatus, errorThrown);
+
+					reject( textStatus );
+
+					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
+					// textStatus: " + textStatus );
+				}
+			});
+		});
+		
+		return promise;
+	};
+	
 	/**
 	 * Get Reported Peptide Strings from Reported Peptide Ids
 	 */
@@ -179,7 +358,7 @@ export class ProteinViewDataLoader {
 					try {
 						console.log("AJAX Call to get d/rws/for-page/psb/reported-peptide-strings-for-reported-peptide-ids END, Now: " + new Date() );
 
-						//  JS Object.  Key ProteinSequenceVersionId, value, Protein Info 
+						//  JS Object.
 
 						resolve( 
 								{ reportedPeptideStrings_Key_reportedPeptideId : responseData.reportedPeptideStrings,
@@ -630,9 +809,9 @@ export class ProteinViewDataLoader {
 	};
 
 	/**
-	 * Get Modification Data From Reported Peptide Ids
+	 * Get Dynamic Modification Data From Reported Peptide Ids
 	 */
-	static getModificationsForReportedPeptideids( { projectSearchId, reportedPeptideIds } ) {
+	static getDynamicModificationsForReportedPeptideids( { projectSearchId, reportedPeptideIds } ) {
 
 		let promise = new Promise( function( resolve, reject ) {
 
@@ -643,11 +822,11 @@ export class ProteinViewDataLoader {
 					reportedPeptideIds : reportedPeptideIds
 			};
 
-			let _URL = "d/rws/for-page/psb/modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id/" + getWebserviceSyncTrackingCode();
+			let _URL = "d/rws/for-page/psb/dynamic-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id/" + getWebserviceSyncTrackingCode();
 
 			let requestData = JSON.stringify( requestObject );
 
-			console.log("AJAX Call to get modifications-per-reported-peptide-id START, Now: " + new Date() );
+			console.log("AJAX Call to get dynamic-modifications-per-reported-peptide-id START, Now: " + new Date() );
 
 			// let request =
 			$.ajax({
@@ -658,11 +837,11 @@ export class ProteinViewDataLoader {
 				dataType : "json",
 				success : function( responseData ) {
 					try {
-						console.log("AJAX Call to get modifications-per-reported-peptide-id END, Now: " + new Date() );
+						console.log("AJAX Call to get dynamic-modifications-per-reported-peptide-id END, Now: " + new Date() );
 
 						//  JS Object.  <Reported Peptide Id, [{}]>  
 
-						resolve( responseData.modification_KeyReportedPeptideId );
+						resolve( responseData.dynamicModification_KeyReportedPeptideId );
 
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

@@ -83,9 +83,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 	////////////////////////
 	/**
-	 * 
+	 * @param retrieveForSingleSearch : boolean, true if retrieving for use with Single Search
+	 * @param retrieveForMultipleSearches : boolean, true if retrieving for use with Multiple Searches
 	 */
-	loadDataAfterInitialOverlayShow( { proteinSequenceVersionId, projectSearchId } ) {
+	loadDataAfterInitialOverlayShow( { retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId } ) {
 
 		const objectThis = this;
 
@@ -93,14 +94,27 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 			const promises_LoadData_Array = [];
 
-			const promise_loadReportedPeptideStringsIfNeeded = objectThis._loadReportedPeptideStringsIfNeeded( { proteinSequenceVersionId, projectSearchId } );
-			if ( promise_loadReportedPeptideStringsIfNeeded ) {
-				promises_LoadData_Array.push( promise_loadReportedPeptideStringsIfNeeded );
+			if ( retrieveForSingleSearch ) {
+				//  Called from display of Single Search
+
+				const promise_loadReportedPeptideStringsIfNeeded = objectThis._loadReportedPeptideStringsIfNeeded( { proteinSequenceVersionId, projectSearchId } );
+				if ( promise_loadReportedPeptideStringsIfNeeded ) {
+					promises_LoadData_Array.push( promise_loadReportedPeptideStringsIfNeeded );
+				}
+			
+				const promise_loadReportedPeptideAnnotationDataIfNeeded = objectThis._loadReportedPeptideAnnotationDataIfNeeded( { proteinSequenceVersionId, projectSearchId } );
+				if ( promise_loadReportedPeptideAnnotationDataIfNeeded ) {
+					promises_LoadData_Array.push( promise_loadReportedPeptideAnnotationDataIfNeeded );
+				}
 			}
 
-			const promise_loadReportedPeptideAnnotationDataIfNeeded = objectThis._loadReportedPeptideAnnotationDataIfNeeded( { proteinSequenceVersionId, projectSearchId } );
-			if ( promise_loadReportedPeptideAnnotationDataIfNeeded ) {
-				promises_LoadData_Array.push( promise_loadReportedPeptideAnnotationDataIfNeeded );
+			if ( retrieveForMultipleSearches ) {
+				//  Called from display of Multiple Searches
+
+				const promise_loadPeptideIdsIfNeeded = objectThis._loadPeptideIdsIfNeeded( { proteinSequenceVersionId, projectSearchId } );
+				if ( promise_loadPeptideIdsIfNeeded ) {
+					promises_LoadData_Array.push( promise_loadPeptideIdsIfNeeded );
+				}
 			}
 
 			if ( promises_LoadData_Array.length !== 0 ) {
@@ -122,6 +136,71 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 			}
 		})
 	}
+
+	/////////////////////
+
+	//   Multiple Searches Retrievals
+
+	/**
+	 * 
+	 */
+	_loadPeptideIdsIfNeeded( { proteinSequenceVersionId, projectSearchId } ) {
+
+		const objectThis = this;
+
+		const reportedPeptideIdsKeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();
+
+		const reportedPeptideIdsFor_proteinSequenceVersionId = reportedPeptideIdsKeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+		if ( reportedPeptideIdsFor_proteinSequenceVersionId === undefined ) {
+			throw Error("_loadPeptideIdsIfNeeded(...): No reportedPeptideIds for proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
+		}
+
+		const reportedPeptideIdsToLoadPeptideIdsFor = [];
+		{
+			for ( const reportedPeptideId of reportedPeptideIdsFor_proteinSequenceVersionId ) {
+
+				if ( this._loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId( { reportedPeptideId } ) === undefined ) {
+					reportedPeptideIdsToLoadPeptideIdsFor.push( reportedPeptideId );
+				}
+			}
+		}
+
+		if ( reportedPeptideIdsToLoadPeptideIdsFor.length === 0 ) {
+			//  No data needs to be loaded
+			return null; // EARLY RETURN
+		}
+
+		return new Promise( function(resolve, reject) {
+
+			const promise_getPeptideIdsFromReportedPeptideIds = 
+				ProteinViewDataLoader.getPeptideIdsFromReportedPeptideIds( 
+						{ projectSearchId : projectSearchId, 
+							reportedPeptideIds : reportedPeptideIdsToLoadPeptideIdsFor } );
+
+			promise_getPeptideIdsFromReportedPeptideIds.
+			then( function( { peptideIdReportedPeptideIdMappingList, foundAllReportedPeptideIdsForProjectSearchId } ) {
+
+				if ( ! foundAllReportedPeptideIdsForProjectSearchId ) {
+					throw Error("_loadPeptideIdsIfNeeded(...) response 'foundAllReportedPeptideIdsForProjectSearchId' is false");
+				}
+
+				for ( const peptideIdReportedPeptideIdMappingEntry of peptideIdReportedPeptideIdMappingList ) {
+
+					objectThis._loadedDataPerProjectSearchIdHolder.add_peptideIdForReportedPeptide_KeyReportedPeptideId({ 
+						peptideId : peptideIdReportedPeptideIdMappingEntry.peptideId, 
+						reportedPeptideId : peptideIdReportedPeptideIdMappingEntry.reportedPeptideId } );
+				}
+				resolve();
+			});
+			promise_getPeptideIdsFromReportedPeptideIds.catch(function(reason) {
+				reject(reason);
+			})
+		})
+
+	}
+	/////////////////////
+
+	//   Single Search Retrievals
 
 	/**
 	 * 
@@ -157,8 +236,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 			return null; // EARLY RETURN
 		}
 
-
-
 		return new Promise( function(resolve, reject) {
 
 			const promise_getReportedPeptideStringsFromReportedPeptideIds = 
@@ -188,7 +265,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 				reject(reason);
 			})
 		})
-
 	}
 
 	/**

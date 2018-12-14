@@ -59,14 +59,14 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.AnnotationTypeListForSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
@@ -117,7 +117,7 @@ public class PSMs_For_SingleProjectSearchId_SearchCriteria_Optional__ReportedPep
 	private ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher;
 
 	@Autowired
-	private ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
+	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
 	
 	@Autowired
 	private PeptideStringForSearchIdReportedPeptideIdSearcherIF peptideStringForSearchIdReportedPeptideIdSearcher;
@@ -340,10 +340,10 @@ public class PSMs_For_SingleProjectSearchId_SearchCriteria_Optional__ReportedPep
 			
 			//  Get Mods for Reported Peptides
 			
-			ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result =
+			DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result =
 					modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher
-					.getModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
-			Map<Integer,List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId =
+					.getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
+			Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId =
 					modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result.getResults_Key_ReportedPeptideId();
 			
 			//  Get Scan Data if search has scans
@@ -512,7 +512,7 @@ public class PSMs_For_SingleProjectSearchId_SearchCriteria_Optional__ReportedPep
 			Boolean searchHasScanData, 
 			List<AnnotationTypeDTO> annotationTypeDTO_ForDisplayInOrder,
 			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
-			Map<Integer,List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId,
+			Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId,
 			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId,
 			HttpServletResponse httpServletResponse )
 			throws Exception {
@@ -580,14 +580,14 @@ public class PSMs_For_SingleProjectSearchId_SearchCriteria_Optional__ReportedPep
 
 				String modString = null;
 
-				List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> modsList = mods_Key_ReportedPeptideId.get( reportedPeptideId );
+				List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> modsList = mods_Key_ReportedPeptideId.get( reportedPeptideId );
 				if ( modsList == null || modsList.isEmpty() ) {
 					modString = "";
 				} else {
-					Collections.sort( modsList, new Comparator<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>() {
+					Collections.sort( modsList, new Comparator<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>() {
 						@Override
-						public int compare(ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item o1,
-								ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item o2) {
+						public int compare(DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item o1,
+								DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item o2) {
 							if ( o1.getPosition() < o2.getPosition() ) {
 								return -1;
 							}
@@ -598,7 +598,7 @@ public class PSMs_For_SingleProjectSearchId_SearchCriteria_Optional__ReportedPep
 						}
 					});
 					StringBuilder modStringSB = new StringBuilder( 1000 );
-					for ( ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item mod : modsList ) {
+					for ( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item mod : modsList ) {
 						if ( modStringSB.length() != 0 ) {
 							modStringSB.append( "," );
 						}

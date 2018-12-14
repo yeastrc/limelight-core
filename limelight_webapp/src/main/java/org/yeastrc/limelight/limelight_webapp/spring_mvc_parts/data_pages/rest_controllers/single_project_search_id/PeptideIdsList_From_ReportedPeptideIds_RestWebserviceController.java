@@ -19,9 +19,9 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,49 +41,49 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.searchers.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PeptideIdsForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.PeptideIdsForSearchIdReportedPeptideIds_Item;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 
 /**
- * Retrieve Modifications on Reported Peptides Per Reported Peptide Id for Reported Peptide Ids, Project Search ID
- *
+ * Get Peptide Ids from Reported Peptide Ids and Project Search Id.  
+ * 
+ * A boolean in the response indicates if all Reported Peptide Ids were found
+ * 
+ * Returns List<>
  */
 @RestController
-public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController {
+public class PeptideIdsList_From_ReportedPeptideIds_RestWebserviceController {
   
-	private static final Logger log = LoggerFactory.getLogger( Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( PeptideIdsList_From_ReportedPeptideIds_RestWebserviceController.class );
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
-	
+		
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 
 	@Autowired
-	private ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
+	private PeptideIdsForSearchIdReportedPeptideIdsSearcherIF peptideIdsForSearchIdReportedPeptideIdsSearcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
-
+	
     /**
 	 * 
 	 */
-	public Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController() {
+	public PeptideIdsList_From_ReportedPeptideIds_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -101,7 +101,7 @@ public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_Proj
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER
+					+ AA_RestWSControllerPaths_Constants.PEPTIDE_IDS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER
 					+ AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
@@ -111,7 +111,7 @@ public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_Proj
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
-    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
+    public @ResponseBody ResponseEntity<byte[]>  controllerEntry(
 
 			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
     		String webserviceSyncTracking,
@@ -122,35 +122,28 @@ public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_Proj
     		) throws Exception {
     	
     	try {
-//    		log.warn( "peptideView(...) called" );
+//    		log.warn( "controllerEntry(...) called" );
 
     		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
     		//    to return specific error to web app JS code if webserviceSyncTracking is not current value
     		validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( webserviceSyncTracking );
 
     		//  Always accept POST body as byte[] and parse to JSON here so have POST body for caching or other needs
-    		
-    		if ( postBody == null || postBody.length == 0 ) {
+
+    		if ( postBody == null ) {
     			log.warn( "No Post Body" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
+    		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
+
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot webserviceRequest =
-    				unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot.class );
-
     		Integer projectSearchId = webserviceRequest.getProjectSearchId();
-
     		if ( projectSearchId == null ) {
-    			log.warn( "No Project Search Ids" );
+    			log.warn( "No Project Search Id" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-			if ( webserviceRequest.getReportedPeptideIds() == null ) {
-				String msg = "reportedPeptideIds == null: " + projectSearchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
 
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
@@ -167,45 +160,53 @@ public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_Proj
     		
     		////////////////
    		
-    		
-    		Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
+    		    		
+    		List<Integer> reportedPeptideIds = webserviceRequest.getReportedPeptideIds();
+    		if ( reportedPeptideIds == null || reportedPeptideIds.isEmpty() ) {
+    			log.warn( "No reportedPeptideIds.  projectSearchId: " + projectSearchId );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+
+    		Integer searchId =	searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
 			if ( searchId == null ) {
-				String msg = "No searchId for projectSearchId: " + projectSearchId;
-				log.warn( msg );
+    			log.warn( "projectSearchId not in DB:" + projectSearchId );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-    		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
-    		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
+    		List<PeptideIdsForSearchIdReportedPeptideIds_Item> searcherResultList = 
+    				peptideIdsForSearchIdReportedPeptideIdsSearcher
+    				.getPeptideIdsForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
+			
+    		List<WebserviceResulItem> resultList = new ArrayList<>( searcherResultList.size() );
     		
-    		ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
-    				modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher
-    				.getModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, webserviceRequest.getReportedPeptideIds() );
-    		Map<Integer,List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId =
-    				searcherResult.getResults_Key_ReportedPeptideId();
+    		//  Validate all ReportedPeptideId found in DB
+    		Set<Integer> reportedPeptideIdsRequestedAsSet = new HashSet<>( reportedPeptideIds );
     		
-    		Map<Integer,List<ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item>> modification_KeyReportedPeptideId = new HashMap<>();
+    		for ( PeptideIdsForSearchIdReportedPeptideIds_Item searcherResult : searcherResultList ) {
 
-    		for ( Map.Entry<Integer,List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> entry : results_Key_ReportedPeptideId.entrySet() ) {
-
-    			Integer reportedPeptideId = entry.getKey();
-    			List<ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> dbItemList = entry.getValue();
+    			WebserviceResulItem resultItem = new WebserviceResulItem();
+    			resultItem.setReportedPeptideId( searcherResult.getReportedPeptideId() );
+    			resultItem.setPeptideId( searcherResult.getPeptideId() );
+    			resultList.add( resultItem );
     			
-    			//  Result from WS
-    			List<ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item> wsItemList = new ArrayList<>( dbItemList.size() );
-    			modification_KeyReportedPeptideId.put( reportedPeptideId, wsItemList );
-    			
-    			for ( ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item dbItem : dbItemList ) {
-    				ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item wsItem = new ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item( dbItem );
-    				wsItem.setReportedPeptideId( reportedPeptideId );
-    				wsItemList.add( wsItem );
-    			}
+        		//  Validate all ReportedPeptideId found in DB
+    			reportedPeptideIdsRequestedAsSet.remove( searcherResult.getReportedPeptideId() );
     		}
-    			
-    		WebserviceResult result = new WebserviceResult();
-    		result.modification_KeyReportedPeptideId = modification_KeyReportedPeptideId;
     		
-    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
+    		//  Validate all ReportedPeptideId found in DB
+    		boolean foundAllReportedPeptideIdsForProjectSearchId = true;
+    		if ( ! reportedPeptideIdsRequestedAsSet.isEmpty() ) {
+    			foundAllReportedPeptideIdsForProjectSearchId = false;
+    			String msg = "For projectSearchId: " + projectSearchId
+    					+ ", Failed to get Peptide Ids.  reportedPeptideIds Not Found: " + reportedPeptideIdsRequestedAsSet;
+    			log.warn( msg );
+    		}
+
+    		WebserviceResult webserviceResult = new WebserviceResult();
+    		webserviceResult.resultList = resultList;
+    		webserviceResult.foundAllReportedPeptideIdsForProjectSearchId = foundAllReportedPeptideIdsForProjectSearchId;
+
+    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
 
@@ -221,24 +222,81 @@ public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_Proj
     	}
     }
     
+    
+    //////////////////////////////////////////
+    
+    //   Webservice Request and Result
+    
+    /**
+     * 
+     *
+     */
+    public static class WebserviceRequest {
+
+    	private Integer projectSearchId;
+    	private List<Integer> reportedPeptideIds;
+    	
+		public List<Integer> getReportedPeptideIds() {
+			return reportedPeptideIds;
+		}
+		public void setReportedPeptideIds(List<Integer> reportedPeptideIds) {
+			this.reportedPeptideIds = reportedPeptideIds;
+		}
+		public Integer getProjectSearchId() {
+			return projectSearchId;
+		}
+		public void setProjectSearchId(Integer projectSearchId) {
+			this.projectSearchId = projectSearchId;
+		}
+
+
+    }
+    
     /**
      * 
      *
      */
     public static class WebserviceResult {
+    
+    	private List<WebserviceResulItem> resultList;
+    	private boolean foundAllReportedPeptideIdsForProjectSearchId;
     	
-    	Map<Integer,List<ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item>> modification_KeyReportedPeptideId;
-
-		public Map<Integer, List<ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item>> getModification_KeyReportedPeptideId() {
-			return modification_KeyReportedPeptideId;
+		public List<WebserviceResulItem> getResultList() {
+			return resultList;
 		}
-
-		public void setModification_KeyReportedPeptideId(
-				Map<Integer, List<ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item>> modification_KeyReportedPeptideId) {
-			this.modification_KeyReportedPeptideId = modification_KeyReportedPeptideId;
+		public void setResultList(List<WebserviceResulItem> resultList) {
+			this.resultList = resultList;
+		}
+		public boolean isFoundAllReportedPeptideIdsForProjectSearchId() {
+			return foundAllReportedPeptideIdsForProjectSearchId;
+		}
+		public void setFoundAllReportedPeptideIdsForProjectSearchId(boolean foundAllReportedPeptideIdsForProjectSearchId) {
+			this.foundAllReportedPeptideIdsForProjectSearchId = foundAllReportedPeptideIdsForProjectSearchId;
 		}
 
     }
+    
+    public static class WebserviceResulItem {
+        
+    	private Integer reportedPeptideId;
+    	private Integer peptideId;
+    	
+		public Integer getReportedPeptideId() {
+			return reportedPeptideId;
+		}
+		public void setReportedPeptideId(Integer reportedPeptideId) {
+			this.reportedPeptideId = reportedPeptideId;
+		}
+		public Integer getPeptideId() {
+			return peptideId;
+		}
+		public void setPeptideId(Integer peptideId) {
+			this.peptideId = peptideId;
+		}
+
+    }
+
+    
 }
 
 

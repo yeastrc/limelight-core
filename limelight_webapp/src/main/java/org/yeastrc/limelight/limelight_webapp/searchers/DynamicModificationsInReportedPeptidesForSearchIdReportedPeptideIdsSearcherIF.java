@@ -20,13 +20,13 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.yeastrc.limelight.limelight_webapp.searchers.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
 
 /**
  * @author danj
  *
  */
-public interface ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF {
+public interface DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF {
 
 	/**
 	 * @param searchId
@@ -34,7 +34,7 @@ public interface ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSea
 	 * @return
 	 * @throws SQLException
 	 */
-	ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result getModificationsInReportedPeptidesForSearchIdReportedPeptideIds(
+	DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds(
 			int searchId, List<Integer> reportedPeptideIds) throws SQLException;
 
 }

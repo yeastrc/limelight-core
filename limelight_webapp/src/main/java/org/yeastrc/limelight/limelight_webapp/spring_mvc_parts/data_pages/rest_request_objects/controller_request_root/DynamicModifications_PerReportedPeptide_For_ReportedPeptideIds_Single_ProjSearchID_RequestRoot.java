@@ -25,7 +25,7 @@ import java.util.List;
  * This is the representation that the Javascript code uses
  *
  */
-public class Modifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot {
+public class DynamicModifications_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot {
 
 	private Integer projectSearchId;
 	private List<Integer> reportedPeptideIds;

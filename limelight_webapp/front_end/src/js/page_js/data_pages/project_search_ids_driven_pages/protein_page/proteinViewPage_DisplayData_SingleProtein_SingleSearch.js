@@ -29,7 +29,7 @@ import { ProteinSequenceFormattedDisplay_Main_displayWidget } from 'page_js/data
 import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.js';
 import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.js';
 
-import { getModificationsForProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_Modifications_Processing.js';
+import { getDynamicModificationsForProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_DynamicModifications_Processing.js';
 
 import { ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.js';
 
@@ -207,16 +207,16 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			}
 
 			try {
-				const promise_getModificationsForProteinSequenceVersionId = getModificationsForProteinSequenceVersionId({ //  Imported function
+				const promise_getDynamicModificationsForProteinSequenceVersionId = getDynamicModificationsForProteinSequenceVersionId({ //  Imported function
 					loadedDataPerProjectSearchIdHolder : objectThis._loadedDataPerProjectSearchIdHolder, 
 					proteinSequenceVersionId, 
 					projectSearchId });
 
-				if (promise_getModificationsForProteinSequenceVersionId) {
-					promises_LoadData_Array.push(promise_getModificationsForProteinSequenceVersionId);
+				if (promise_getDynamicModificationsForProteinSequenceVersionId) {
+					promises_LoadData_Array.push(promise_getDynamicModificationsForProteinSequenceVersionId);
 				}
 			} catch( e ) {
-				console.log("Exception caught calling getModificationsForProteinSequenceVersionId:");
+				console.log("Exception caught calling getDynamicModificationsForProteinSequenceVersionId:");
 				console.log( e );
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -250,14 +250,14 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		const objectThis = this;
 
-		const modificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_modificationsOnProtein_KeyProteinSequenceVersionId();
-		const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(proteinSequenceVersionId);
+		const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+		const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get(proteinSequenceVersionId);
 
 		//  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget: mods per sequence position { <position 1 based> : [ <mass> ] }
 		const modsOnProteinByPosition = {};  //  Object for Handlebars
 
-		if ( modificationsOnProtein ) {
-			for ( const modificationOnProtein of modificationsOnProtein) {
+		if ( dynamicModificationsOnProtein ) {
+			for ( const modificationOnProtein of dynamicModificationsOnProtein) {
 				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
 				const position = modificationOnProtein.position;
 				const mass = modificationOnProtein.mass;
@@ -390,10 +390,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		const promise_loadDataAfterInitialOverlayShow = 
 			this
 			._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
-			.loadDataAfterInitialOverlayShow({
-				proteinSequenceVersionId ,
-				projectSearchId
-			});
+			.loadDataAfterInitialOverlayShow({ retrieveForSingleSearch : true, proteinSequenceVersionId, projectSearchId });
 
 		promise_loadDataAfterInitialOverlayShow.catch(function(reason) {});
 

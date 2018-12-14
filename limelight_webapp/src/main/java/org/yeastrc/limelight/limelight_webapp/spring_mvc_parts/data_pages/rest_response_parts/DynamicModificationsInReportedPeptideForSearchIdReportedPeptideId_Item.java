@@ -17,21 +17,21 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts;
 
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 
 /**
  * Entry per Search Id, Reported Peptide Id
  *
  */
-public class ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item {
+public class DynamicModificationsInReportedPeptideForSearchIdReportedPeptideId_Item {
 	
 	private int reportedPeptideId;
 	private int position;
 	private double mass;
 	
-	public ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item() {}
+	public DynamicModificationsInReportedPeptideForSearchIdReportedPeptideId_Item() {}
 		
-	public ModificationsInReportedPeptideForSearchIdReportedPeptideId_Item( ModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item item ) {
+	public DynamicModificationsInReportedPeptideForSearchIdReportedPeptideId_Item( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item item ) {
 		this.position = item.getPosition();
 		this.mass = item.getMass();
 	}

@@ -30,6 +30,9 @@ export class ProteinView_LoadedDataCommonHolder {
 
 		//  Per reportedPeptideId
 		this._reportedPeptideStringData_KeyReportedPeptideId = undefined; // Map <integer,Object> <reportedPeptideId, ReportedPeptideStringData_For_ReportedPeptideId>
+
+		//  Per peptideId
+		this._peptideSequenceString_KeyPeptideId = undefined; // Map <integer,String> <peptideId, PeptideSequence>
 	}
 	
 	//  _proteinSequenceData_KeyProteinSequenceVersionId
@@ -74,5 +77,27 @@ export class ProteinView_LoadedDataCommonHolder {
 			return undefined;
 		}
 		return this._reportedPeptideStringData_KeyReportedPeptideId.get( reportedPeptideId );
+	}
+
+	//  _peptideSequenceString_KeyPeptideId
+
+	get_peptideSequenceString_KeyPeptideId() {
+		return this._peptideSequenceString_KeyPeptideId;
+	}
+	set_peptideSequenceString_KeyPeptideId( peptideSequenceString_KeyPeptideId ) {
+		this._peptideSequenceString_KeyPeptideId = peptideSequenceString_KeyPeptideId;
+	}
+
+	add_peptideSequenceString_KeyPeptideId( { peptideSequenceString, peptideId } ) {
+		if ( ! this._peptideSequenceString_KeyPeptideId ) {
+			this._peptideSequenceString_KeyPeptideId = new Map();
+		}
+		this._peptideSequenceString_KeyPeptideId.set( peptideId, peptideSequenceString );
+	}
+	get_peptideSequenceString_For_peptideId( { peptideId } ) {
+		if ( ! this._peptideSequenceString_KeyPeptideId ) {
+			return undefined;
+		}
+		return this._peptideSequenceString_KeyPeptideId.get( peptideId );
 	}
 }
