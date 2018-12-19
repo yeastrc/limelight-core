@@ -64,9 +64,9 @@ public class AA_DataDownloadControllersPaths_Constants {
 			"d/dnld/psb/search-file";
 	
 	/**
-	 * Download PSMs for a Project Search Id and Search Criteria. Optional Single Protein.  Used on Protein Page, Single Protein Overlay. 
+	 * Download PSMs for Project Search Ids and Search Criteria. Optional Single Protein.  Used on Protein Page, Single Protein Overlay. 
 	 */
-	public static final String PSMS_FOR_SINGLE_PROJECT_SEARCH_ID_SEARCH_CRITERIA_DOWNLOAD_CONTROLLER = 
-			"d/dnld/psb/psms-for-single-project-search-id-search-criteria";
+	public static final String PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_DOWNLOAD_CONTROLLER = 
+			"d/dnld/psb/psms-for-project-search-ids-search-criteria";
 	
 }

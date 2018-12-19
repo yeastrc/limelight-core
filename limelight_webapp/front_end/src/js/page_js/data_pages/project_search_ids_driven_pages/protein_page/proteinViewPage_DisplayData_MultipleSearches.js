@@ -878,29 +878,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		
 		const proteinNameDescriptionParam = { name : proteinNameDescription.name, description : proteinNameDescription.description };
 		
-
-		// const proteinCoverage_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
-		// const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
-		// if ( proteinCoverageObject === undefined ) {
-		// 	throw Error("No proteinCoverageObject found.  proteinSequenceVersionId: " + proteinSequenceVersionId );
-		// }
-		// const proteinCoverageRatio = proteinCoverageObject.getProteinSequenceCoverageRatio();
-		// const sequenceCoverageAsPercent = ( proteinCoverageRatio * 100 ).toFixed( 1 );
-
-		// const countsFor_proteinSequenceVersionId = 
-		// 	this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId );
-		// if ( countsFor_proteinSequenceVersionId === undefined ) {
-		// 	throw Error("No countsFor_proteinSequenceVersionId found.  proteinSequenceVersionId: " + proteinSequenceVersionId );
-		// }
-
-
-		// const proteinSummaryStatisticsParam = {
-		// 		sequenceCoverageAsPercent : sequenceCoverageAsPercent,
-		// 		peptideCount : countsFor_proteinSequenceVersionId.numReportedPeptides,
-		// 		uniquePeptideCount : countsFor_proteinSequenceVersionId.numReportedPeptidesUnique,
-		// 		psmCount : countsFor_proteinSequenceVersionId.numPsms,
-		// };
-
 		if ($target) {
 
 			if ($target.hasClass("selector_protein_name")) {
@@ -950,7 +927,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 				{ proteinSequenceVersionId, 
 					projectSearchIds : this._projectSearchIds, 
 					proteinNameDescription : proteinNameDescriptionParam,
-					// proteinSummaryStatistics : proteinSummaryStatisticsParam,
 					singleProteinCloseCallback } );
 	}
 

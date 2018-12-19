@@ -32,6 +32,14 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	initialize() {}
 
 	/**
+	 * Protein Length
+	 */
+	getProteinLength() {
+		
+		return this._proteinLength;
+	}
+
+	/**
 	 * Protein Coverage as ratio: (number of covered positions) / (protein length)
 	 */
 	getProteinSequenceCoverageRatio() {

@@ -15,16 +15,17 @@
  * 
  * Open URL in new window to download from server
  * 
- * @param reportedPeptideIds - optional
+ * @param reportedPeptideIdsPerProjectSearchId - optional - JS object where property names are ProjectSearchId and property values are Array of reportedPeptideIds 
  * @param proteinSequenceVersionIds - optional
  */
-var downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds = function( { 
-    projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, reportedPeptideIds, proteinSequenceVersionIds } ) {
+const downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds = function( { 
+	
+	projectSearchIds, searchDataLookupParamsRoot, reportedPeptideIdsPerProjectSearchId, proteinSequenceVersionIds } ) {
     
     const requestJSONObject = {
-            projectSearchId : projectSearchId,
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
-            reportedPeptideIds : reportedPeptideIds,
+    		projectSearchIds : projectSearchIds,
+    		searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+    		reportedPeptideIdsPerProjectSearchId : reportedPeptideIdsPerProjectSearchId,
             proteinSequenceVersionIds : proteinSequenceVersionIds
     }
     
@@ -37,7 +38,7 @@ var downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds = function
     $( form ).hide();
 
     form.setAttribute( "method", "post" );
-    form.setAttribute( "action", "d/dnld/psb/psms-for-single-project-search-id-search-criteria" );
+    form.setAttribute( "action", "d/dnld/psb/psms-for-project-search-ids-search-criteria" );
     form.setAttribute( "target", "_blank" );
 
     const requestJSONStringField = document.createElement( "textarea" );
@@ -58,4 +59,4 @@ var downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds = function
 
 }
 
-export { downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds }
+export { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds }
