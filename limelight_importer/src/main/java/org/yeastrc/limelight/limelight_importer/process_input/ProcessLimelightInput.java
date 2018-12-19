@@ -31,10 +31,9 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabels;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchDAO;
-import org.yeastrc.limelight.limelight_importer.dao.SearchCommentDAO;
+import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchCommentDAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProjectSearchDTO;
-import org.yeastrc.limelight.limelight_importer.dto.SearchCommentDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
@@ -47,6 +46,7 @@ import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PreprocessValidate_ScanFiles_ScanFilenames;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_UpdateForSpectralStorageService_API_Key;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchCommentDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
@@ -143,11 +143,13 @@ public class ProcessLimelightInput {
 			projectSearchDTOInserted = projectSearchDTO;
 			
 			if ( StringUtils.isNotEmpty( limelightInput.getComment() ) ) {
-				SearchCommentDTO searchCommentDTO = new SearchCommentDTO();
-				searchCommentDTO.setProjectSearchid( projectSearchDTOInserted.getId() );
-				searchCommentDTO.setComment( limelightInput.getComment() );
-				searchCommentDTO.setUserId( null ); //  TODO  May have the user id if submitted using a user id
-				SearchCommentDAO.getInstance().save( searchCommentDTO );
+				
+				ProjectSearchCommentDTO projectSearchCommentDTO = new ProjectSearchCommentDTO();
+				projectSearchCommentDTO.setProjectSearchId( projectSearchDTOInserted.getId() );
+				projectSearchCommentDTO.setCommentText( limelightInput.getComment() );
+				projectSearchCommentDTO.setUserIdCreated( userIdInsertingSearch ); 
+				projectSearchCommentDTO.setUserIdLastUpdated( userIdInsertingSearch );
+				ProjectSearchCommentDAO.getInstance().save( projectSearchCommentDTO );
 			}
 			
 			//  Insert scan file data for search into database.

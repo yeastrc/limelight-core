@@ -25,54 +25,60 @@ import java.sql.Statement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_importer.dto.SearchCommentDTO;
+import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchCommentDTO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 
 /**
- * table search_comment_tbl for Importer
+ * table project_search__comment_tbl for Importer
  *
  */
-public class SearchCommentDAO {
+public class ProjectSearchCommentDAO {
 
-	private static final Logger log = LoggerFactory.getLogger( SearchCommentDAO.class );
+	private static final Logger log = LoggerFactory.getLogger( ProjectSearchCommentDAO.class );
 	
-	private SearchCommentDAO() { }
-	public static SearchCommentDAO getInstance() { return new SearchCommentDAO(); }
+	private ProjectSearchCommentDAO() { }
+	public static ProjectSearchCommentDAO getInstance() { return new ProjectSearchCommentDAO(); }
 
 	private static final String INSERT_SQL =
-			"INSERT INTO search_comment_tbl "
-			+ "( project_search_id, comment, auth_user_id, created_auth_user_id ) "
-			+ "VALUES (?,?,?,?, NOW() )";
+			"INSERT INTO project_search__comment_tbl "
+					+ " (project_search_id, comment, created_user_id, last_updated_user_id) "
+					+ " VALUES ( ?, ?, ?, ? ) ";
 
 	/**
 	 * Save the given comment to the database. Assumes it's not already in the database.
 	 * @param comment
 	 * @throws Exception
 	 */
-	public void save( SearchCommentDTO comment ) throws Exception {
+	public void save( ProjectSearchCommentDTO item ) throws Exception {
 		
 		final String sql = INSERT_SQL;
 
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
-
-				pstmt.setInt( 1, comment.getProjectSearchid() );
-				pstmt.setString( 2, comment.getComment() );
-
-				if ( comment.getUserId() != null ) {
-					pstmt.setInt( 3, comment.getUserId() );
-					pstmt.setInt( 4, comment.getUserId() );
+				int counter = 0;
+				counter++;
+				pstmt.setInt( counter, item.getProjectSearchId() );
+				counter++;
+				pstmt.setString( counter, item.getCommentText() );
+				counter++;
+				if ( item.getUserIdCreated() != null ) {
+					pstmt.setInt( counter, item.getUserIdCreated() );
 				} else {
-					pstmt.setNull( 3, java.sql.Types.INTEGER );
-					pstmt.setNull( 4, java.sql.Types.INTEGER );
+					pstmt.setNull( counter, java.sql.Types.INTEGER );
 				}
-
+				counter++;
+				if ( item.getUserIdLastUpdated() != null ) {
+					pstmt.setInt( counter, item.getUserIdLastUpdated() );
+				} else {
+					pstmt.setNull( counter, java.sql.Types.INTEGER );
+				}
+				
 				pstmt.executeUpdate();
 			
 				try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
 					if( rs.next() ) {
-						comment.setId( rs.getInt( 1 ) );
+						item.setId( rs.getInt( 1 ) );
 					} else
 						throw new LimelightImporterDatabaseException( "Failed to insert comment" );
 				}
