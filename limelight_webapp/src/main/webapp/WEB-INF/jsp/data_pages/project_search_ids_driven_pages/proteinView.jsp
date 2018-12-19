@@ -67,6 +67,8 @@
 		<span id="psm_count_label" style="padding-left: 10px; display: none;">PSM Count: 
 			</span><span id="psm_count_display"></span>
 	
+		<span style="padding-left: 10px; display: none;" id="protein_download_proteins" class=" fake-link " >Download Proteins</span>
+	
 		<span style="padding-left: 10px; display: none;" id="protein_download_assoc_psms" class=" fake-link " >Download PSMs</span>
 	</div>
 	
