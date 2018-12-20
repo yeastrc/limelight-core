@@ -163,27 +163,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		
 		const objectThis = this;
 
-		if ( ! this._downloadProteinsClickHandlerAttached ) {
-	
-			//  Download Proteins container and link.  Only supported for 1 project search id
-		
-			const $protein_download_proteins = $("#protein_download_proteins");
-			$protein_download_proteins.show();
-
-			$protein_download_proteins.click( function(eventObject) {
-				try {
-					eventObject.preventDefault();
-
-					objectThis._proteinViewPage_Display_SingleSearch.downloadProteinList();
-
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-					throw e;
-				}
-			});
-
-			this._downloadProteinsClickHandlerAttached = true;
-		}
+		// Wait to show and attach click handler for #protein_download_proteins until after protein list is displayed
 
 		if ( ! this._downloadPSMClickHandlerAttached ) {
 	

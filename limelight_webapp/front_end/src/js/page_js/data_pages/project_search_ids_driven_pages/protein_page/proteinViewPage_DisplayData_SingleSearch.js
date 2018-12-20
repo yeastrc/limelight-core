@@ -207,126 +207,6 @@ export class ProteinViewPage_Display_SingleSearch {
 	}
 
 	
-	
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-	
-	/**
-	 * Download Protein List
-	 */
-	downloadProteinList() {
-
-		const projectSearchId = this._projectSearchId;
-		
-		const proteinDisplayData = this._createProteinDisplayData( { projectSearchId : projectSearchId } );
-
-		const proteinDisplayDataAsString = this._createProteinDisplayDownloadDataAsString( { proteinDisplayData } );
-
-
-		//  For getting search info for projectSearchIds
-		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
-
-		const searchNameObject = searchNamesKeyProjectSearchId[ projectSearchId ];
-		if ( ! searchNameObject ) {
-			throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
-		}
-		
-		const filename = 'proteins-search-' + searchNameObject.searchId + '.txt';
-		
-        StringDownloadUtils.downloadStringAsFile( 
-			{ stringToDownload : proteinDisplayDataAsString, filename: filename } );
-	};
-
-	/**
-	 * 
-	 */
-	_createProteinDisplayDownloadDataAsString( { proteinDisplayData } ) {
-
-		const proteinList = proteinDisplayData.proteinList;
-		const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder;
-
-		const psmAnnotationTypes = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-		const reportedPeptideAnnotationTypes = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;;
-
-		// the columns for the data being shown on the page
-		const columns = this._getProteinDataTableColumns( 
-			{ psmAnnotationTypes : annotationTypeRecords_DisplayOrder.psmAnnotationTypesForProteinListEntries,
-				reportedPeptideAnnotationTypes : annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForProteinListEntries } );
-
-				// {
-				// 	let column = {
-				// 		id :           'proteins',
-				// 		width :        '500px',
-				// 		displayName :  'Protein(s)',
-				// 		dataProperty : 'proteinName', 
-				// 		sort : 'string',
-				// 		style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
-				// 		css_class : ' clickable ' + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' ' 
-				// 	};
-		
-
-		//   Protein List of objects with properties for Data Table
-		const proteinList_ForDataTable = this._createProteinList_ForDataTable( { proteinList, annotationTypeRecords_DisplayOrder } );
-
-		//  Array of Arrays of reportLineParts
-		const reportLineParts_AllLines = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
-		
-		//  reportLineParts will be joined with separator '\t'
-
-		//  Header Line
-		{
-			const reportLineParts = [];
-
-			for ( const column of columns ) {
-			
-				reportLineParts.push( column.displayName );
-			}
-
-			reportLineParts_AllLines.push( reportLineParts );
-		}
-
-        //  Data Lines
-		for ( const proteinItem of proteinList_ForDataTable ) {
-		
-			const reportLineParts = [];
-
-			for ( const column of columns ) {
-			
-				const dataForColumn = proteinItem[ column.dataProperty ];
-				reportLineParts.push( dataForColumn )
-			}
-
-			reportLineParts_AllLines.push( reportLineParts );
-		}
-		
-		//  Join all line parts into strings, delimit on '\t'
-		
-		const reportLine_AllLines = [];
-		
-		let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
-		const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
-
-		for ( const reportLineParts of reportLineParts_AllLines ) {
-			
-			reportLineParts_AllLinesIndex++;
-			
-			let reportLine = reportLineParts.join( "\t" );
-			if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
-				reportLine += '\n'; // Add '\n' to last line
-			}
-			reportLine_AllLines.push( reportLine );
-		}
-7		
-		//  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
-		
-		const reportLinesSingleString = reportLine_AllLines.join( '\n' );
-		
-		return reportLinesSingleString;
-	}
-
-	
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
@@ -335,6 +215,8 @@ export class ProteinViewPage_Display_SingleSearch {
 	 * Display Protein List on Page
 	 */
 	_displayProteinListOnPage( { projectSearchId } ) {
+
+		const objectThis = this;
 		
 		const proteinDisplayData = this._createProteinDisplayData( { projectSearchId } );
 
@@ -346,6 +228,36 @@ export class ProteinViewPage_Display_SingleSearch {
 			//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
 			this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL } ) ;
 		}
+
+
+		if ( ! this._downloadProteinsClickHandlerAttached ) {
+	
+			//  Download Proteins container and link.  The version for 1 project search id
+
+			//  Show and attach click handler here since now have the data loaded for downloading
+		
+			const $protein_download_proteins = $("#protein_download_proteins");
+
+			//  First remove any previous click handler
+			$protein_download_proteins.off("click");
+			
+			$protein_download_proteins.show();
+
+			$protein_download_proteins.click( function(eventObject) {
+				try {
+					eventObject.preventDefault();
+
+					objectThis._downloadProteinList();
+
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+					throw e;
+				}
+			});
+
+			this._downloadProteinsClickHandlerAttached = true;
+		}
+
 	};
 
 	
@@ -1352,4 +1264,124 @@ export class ProteinViewPage_Display_SingleSearch {
 		
 		return tooltipHTML;
 	}
+
+
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	
+	/**
+	 * Download Protein List
+	 */
+	_downloadProteinList() {
+
+		const projectSearchId = this._projectSearchId;
+		
+		const proteinDisplayData = this._createProteinDisplayData( { projectSearchId : projectSearchId } );
+
+		const proteinDisplayDataAsString = this._createProteinDisplayDownloadDataAsString( { proteinDisplayData } );
+
+
+		//  For getting search info for projectSearchIds
+		const searchNamesKeyProjectSearchId = 
+			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+
+		const searchNameObject = searchNamesKeyProjectSearchId[ projectSearchId ];
+		if ( ! searchNameObject ) {
+			throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
+		}
+		
+		const filename = 'proteins-search-' + searchNameObject.searchId + '.txt';
+		
+        StringDownloadUtils.downloadStringAsFile( 
+			{ stringToDownload : proteinDisplayDataAsString, filename: filename } );
+	};
+
+	/**
+	 * 
+	 */
+	_createProteinDisplayDownloadDataAsString( { proteinDisplayData } ) {
+
+		const proteinList = proteinDisplayData.proteinList;
+		const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder;
+
+		const psmAnnotationTypes = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
+		const reportedPeptideAnnotationTypes = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;;
+
+		// the columns for the data being shown on the page
+		const columns = this._getProteinDataTableColumns( 
+			{ psmAnnotationTypes : annotationTypeRecords_DisplayOrder.psmAnnotationTypesForProteinListEntries,
+				reportedPeptideAnnotationTypes : annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForProteinListEntries } );
+
+				// {
+				// 	let column = {
+				// 		id :           'proteins',
+				// 		width :        '500px',
+				// 		displayName :  'Protein(s)',
+				// 		dataProperty : 'proteinName', 
+				// 		sort : 'string',
+				// 		style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
+				// 		css_class : ' clickable ' + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' ' 
+				// 	};
+		
+
+		//   Protein List of objects with properties for Data Table
+		const proteinList_ForDataTable = this._createProteinList_ForDataTable( { proteinList, annotationTypeRecords_DisplayOrder } );
+
+		//  Array of Arrays of reportLineParts
+		const reportLineParts_AllLines = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
+		
+		//  reportLineParts will be joined with separator '\t'
+
+		//  Header Line
+		{
+			const reportLineParts = [];
+
+			for ( const column of columns ) {
+			
+				reportLineParts.push( column.displayName );
+			}
+
+			reportLineParts_AllLines.push( reportLineParts );
+		}
+
+        //  Data Lines
+		for ( const proteinItem of proteinList_ForDataTable ) {
+		
+			const reportLineParts = [];
+
+			for ( const column of columns ) {
+			
+				const dataForColumn = proteinItem[ column.dataProperty ];
+				reportLineParts.push( dataForColumn )
+			}
+
+			reportLineParts_AllLines.push( reportLineParts );
+		}
+		
+		//  Join all line parts into strings, delimit on '\t'
+		
+		const reportLine_AllLines = [];
+		
+		let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
+		const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
+
+		for ( const reportLineParts of reportLineParts_AllLines ) {
+			
+			reportLineParts_AllLinesIndex++;
+			
+			let reportLine = reportLineParts.join( "\t" );
+			if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
+				reportLine += '\n'; // Add '\n' to last line
+			}
+			reportLine_AllLines.push( reportLine );
+		}
+7		
+		//  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
+		
+		const reportLinesSingleString = reportLine_AllLines.join( '\n' );
+		
+		return reportLinesSingleString;
+	}
+
 }
