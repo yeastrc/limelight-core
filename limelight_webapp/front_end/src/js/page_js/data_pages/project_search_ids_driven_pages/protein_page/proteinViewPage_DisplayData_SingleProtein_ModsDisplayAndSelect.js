@@ -375,6 +375,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         }
 
         this._modListDisplay_Internal();
+
+        this._modSelectionsChanged();  //  Trigger changed callback
     }
 
 
