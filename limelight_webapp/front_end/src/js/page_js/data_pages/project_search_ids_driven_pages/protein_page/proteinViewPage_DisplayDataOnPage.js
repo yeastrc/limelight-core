@@ -18,7 +18,7 @@ import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/data
 
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
 
-import { downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
+import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
 
 //  From local dir
 import { ProteinViewPage_Display_SingleSearch } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleSearch.js';
@@ -186,17 +186,17 @@ export class ProteinViewPage_DisplayDataOnPage {
 					
 					let projectSearchId_InDownloadClickHandler = projectSearchIds_InDownloadClickHandler[0];
 					
-					const searchDataLookupParams_For_Single_ProjectSearchId = 
-					objectThis._searchDetailsBlockDataMgmtProcessing.
-					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId_InDownloadClickHandler } );
+					const searchDataLookupParamsRoot = 
+						objectThis._searchDetailsBlockDataMgmtProcessing.
+						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
-					if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
-						throw Error("searchDataLookupParams_For_Single_ProjectSearchId not found for projectSearchId_InDownloadClickHandler: " + projectSearchId_InDownloadClickHandler );
+					if ( ! searchDataLookupParamsRoot ) {
+						throw Error( "searchDataLookupParamsRoot not found" );
 					}
 
-					downloadPsmsFor_projectSearchId_FilterCriteria_RepPeptProtSeqVIds( { 
-						projectSearchId : projectSearchId_InDownloadClickHandler,
-						searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
+					downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( { 
+						projectSearchIds : [ projectSearchId_InDownloadClickHandler ],
+						searchDataLookupParamsRoot : searchDataLookupParamsRoot,
 						//  No value for reportedPeptideIds or proteinSequenceVersionIds so don't use those to filter download
 						// reportedPeptideIds : reportedPeptideIds, 
 						// proteinSequenceVersionIds 
