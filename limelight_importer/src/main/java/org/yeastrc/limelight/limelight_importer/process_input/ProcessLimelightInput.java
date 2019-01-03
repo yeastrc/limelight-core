@@ -142,15 +142,8 @@ public class ProcessLimelightInput {
 			ProjectSearchDAO.getInstance().saveToDatabase( projectSearchDTO );
 			projectSearchDTOInserted = projectSearchDTO;
 			
-			if ( StringUtils.isNotEmpty( limelightInput.getComment() ) ) {
-				
-				ProjectSearchCommentDTO projectSearchCommentDTO = new ProjectSearchCommentDTO();
-				projectSearchCommentDTO.setProjectSearchId( projectSearchDTOInserted.getId() );
-				projectSearchCommentDTO.setCommentText( limelightInput.getComment() );
-				projectSearchCommentDTO.setUserIdCreated( userIdInsertingSearch ); 
-				projectSearchCommentDTO.setUserIdLastUpdated( userIdInsertingSearch );
-				ProjectSearchCommentDAO.getInstance().save( projectSearchCommentDTO );
-			}
+			//  Insert comments, if there are any
+			ProcessSaveComments.getInstance().processComments( limelightInput, projectSearchDTOInserted, userIdInsertingSearch );
 			
 			//  Insert scan file data for search into database.
 			//  If have scan files, send scan file(s) to spectral storage service for insert

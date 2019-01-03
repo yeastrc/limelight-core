@@ -32,6 +32,6 @@ public class Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant {
 	/**
 	 * The "/" specifies to start at the root of the package path
 	 */
-	public static final String Limelight_XSD_XML_SCHEMA_FILENAME_WITH_PATH = "/limelight-xml-v0.6.0.xsd";
+	public static final String Limelight_XSD_XML_SCHEMA_FILENAME_WITH_PATH = "/limelight-xml-v0.7.0.xsd";
 	
 }
