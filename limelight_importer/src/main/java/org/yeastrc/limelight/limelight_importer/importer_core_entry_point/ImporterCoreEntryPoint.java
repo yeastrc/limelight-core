@@ -47,6 +47,7 @@ import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectCont
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateAnnotationTypeRecords;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatchedProteinSection;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightInput;
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
@@ -253,6 +254,9 @@ public class ImporterCoreEntryPoint {
 			
 			//   Throws LimelightImporterDataException if data error found
 			ValidateMatchedProteinSection.getInstance().validateMatchedProteinSection( limelightInputForImport );
+
+			//   Throws LimelightImporterDataException if data error found
+			ValidateModificationsOnReportedPeptidesAndPSMs.getInstance().validateModificationsOnReportedPeptidesAndPSMs( limelightInputForImport );
 			
 			//  Process Limelight Input
 			processLimelightInput = ProcessLimelightInput.getInstance();
