@@ -31,7 +31,6 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabels;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchDAO;
-import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchCommentDAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProjectSearchDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
@@ -46,7 +45,6 @@ import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PreprocessValidate_ScanFiles_ScanFilenames;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_UpdateForSpectralStorageService_API_Key;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
-import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchCommentDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
@@ -141,6 +139,9 @@ public class ProcessLimelightInput {
 			}
 			ProjectSearchDAO.getInstance().saveToDatabase( projectSearchDTO );
 			projectSearchDTOInserted = projectSearchDTO;
+			
+			//  Insert Conversion Program data
+			ProcessSaveConversionProgram.getInstance().processComments( limelightInput, searchDTO, userIdInsertingSearch );
 			
 			//  Insert comments, if there are any
 			ProcessSaveComments.getInstance().processComments( limelightInput, projectSearchDTOInserted, userIdInsertingSearch );

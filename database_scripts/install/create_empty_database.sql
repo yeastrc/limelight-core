@@ -1976,6 +1976,27 @@ ENGINE = InnoDB;
 CREATE INDEX dt_pg_svd_vw_assc_prj_srch_id_assc_mn_id_idx ON data_page_saved_view_assoc_project_search_id_tbl (assoc_main_id ASC);
 
 
+-- -----------------------------------------------------
+-- Table conversion_program_tbl
+-- -----------------------------------------------------
+CREATE TABLE  conversion_program_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  name VARCHAR(4000) NOT NULL,
+  version VARCHAR(4000) NOT NULL,
+  conversion_date DATETIME NOT NULL,
+  pgm_arguments MEDIUMTEXT NOT NULL,
+  pgm_uri VARCHAR(4000) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT conv_pgm_search_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX conv_pgm_search_id_fk_idx ON conversion_program_tbl (search_id ASC);
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
