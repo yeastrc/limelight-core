@@ -21,15 +21,12 @@ package org.yeastrc.limelight.limelight_shared.dto;
  * Table unified_rp__search__rep_pept__best_psm_value_lookup_tbl
  *
  */
-public class UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
+public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 
 	
 	private int searchId;
 	private int reportedPeptideId;
 	private int annotationTypeId;
-
-	private int unifiedReportedPeptideId;
-	
 	
 	private boolean hasDynamicModifications;
 	private boolean hasIsotopeLabels;
@@ -39,11 +36,10 @@ public class UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	
 	//  Constructors
 	
-	public UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO() { }
+	public Search_ReportedPeptide_BestPsmValue_Lookup__DTO() { }
 
-	public UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO( UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO unifiedRepPep_Search_ReportedPeptide__Lookup__DTO ) {
+	public Search_ReportedPeptide_BestPsmValue_Lookup__DTO( Search_ReportedPeptide__Lookup__DTO unifiedRepPep_Search_ReportedPeptide__Lookup__DTO ) {
 
-		this.unifiedReportedPeptideId = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.getUnifiedReportedPeptideId();
 		this.reportedPeptideId = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.getReportedPeptideId();
 		this.searchId = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.getSearchId();
 		
@@ -68,12 +64,6 @@ public class UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	}
 	public void setAnnotationTypeId(int annotationTypeId) {
 		this.annotationTypeId = annotationTypeId;
-	}
-	public int getUnifiedReportedPeptideId() {
-		return unifiedReportedPeptideId;
-	}
-	public void setUnifiedReportedPeptideId(int unifiedReportedPeptideId) {
-		this.unifiedReportedPeptideId = unifiedReportedPeptideId;
 	}
 	public boolean isHasDynamicModifications() {
 		return hasDynamicModifications;

@@ -24,25 +24,25 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
-import org.yeastrc.limelight.limelight_shared.dto.UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
 
 /**
- * table unified_rp__search__rep_pept__best_psm_value_lookup_tbl
+ * table search__rep_pept__best_psm_value_lookup_tbl
  *
  */
-public class DB_Insert_UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
+public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 
-	private static final Logger log = LoggerFactory.getLogger( DB_Insert_UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.class );
+	private static final Logger log = LoggerFactory.getLogger( DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.class );
 	
-	private DB_Insert_UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO() { }
-	public static DB_Insert_UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO getInstance() { return new DB_Insert_UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO(); }
+	private DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO() { }
+	public static DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO getInstance() { return new DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO(); }
 	
 
 	/**
-	 * @param UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO
+	 * @param Search_ReportedPeptide_BestPsmValue_Lookup__DTO
 	 * @throws Exception
 	 */
-	public void saveToDatabase( UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO item ) throws Exception {
+	public void saveToDatabase( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item ) throws Exception {
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
@@ -54,26 +54,24 @@ public class DB_Insert_UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Generic
 	}
 
 	private static final String SAVE_SQL =
-			"INSERT INTO unified_rp__search__rep_pept__best_psm_value_lookup_tbl "
-			+ 	"( unified_reported_peptide_id, reported_peptide_id, search_id, "
+			"INSERT INTO search__rep_pept__best_psm_value_lookup_tbl "
+			+ 	"( reported_peptide_id, search_id, "
 			+ 		" annotation_type_id, "
 			+  		" has_dynamic_modifictions, has_isotope_labels, "
 			+ 		" best_psm_value_for_ann_type_id, psm_id_for_best_value__non_fk ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
 	 * @param conn
 	 * @throws Exception
 	 */
-	public void saveToDatabase( UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO item, Connection dbConnection ) throws Exception {
+	public void saveToDatabase( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item, Connection dbConnection ) throws Exception {
 		
 		final String sql = SAVE_SQL;
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 			int counter = 0;
 			
-			counter++;
-			pstmt.setInt( counter, item.getUnifiedReportedPeptideId() );
 			counter++;
 			pstmt.setInt( counter, item.getReportedPeptideId() );
 			counter++;

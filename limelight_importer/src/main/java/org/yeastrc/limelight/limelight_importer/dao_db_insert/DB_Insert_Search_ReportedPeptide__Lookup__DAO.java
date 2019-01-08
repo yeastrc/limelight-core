@@ -24,25 +24,25 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
-import org.yeastrc.limelight.limelight_shared.dto.UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide__Lookup__DTO;
 
 /**
- * table unified_rp__search_reported_peptide_fltbl_value_lookup_tbl
+ * table search__rep_pept__lookup_tbl
  *
  */
-public class DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DAO {
+public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 
-	private static final Logger log = LoggerFactory.getLogger( DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DAO.class );
+	private static final Logger log = LoggerFactory.getLogger( DB_Insert_Search_ReportedPeptide__Lookup__DAO.class );
 	
-	private DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DAO() { }
-	public static DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DAO getInstance() { return new DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DAO(); }
+	private DB_Insert_Search_ReportedPeptide__Lookup__DAO() { }
+	public static DB_Insert_Search_ReportedPeptide__Lookup__DAO getInstance() { return new DB_Insert_Search_ReportedPeptide__Lookup__DAO(); }
 	
 
 	/**
-	 * @param UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO
+	 * @param Search_ReportedPeptide__Lookup__DTO
 	 * @throws Exception
 	 */
-	public void saveToDatabase( UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO item ) throws Exception {
+	public void saveToDatabase( Search_ReportedPeptide__Lookup__DTO item ) throws Exception {
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
@@ -54,32 +54,28 @@ public class DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup_
 	}
 
 	private static final String SAVE_SQL =
-			"INSERT INTO unified_rp__search_reported_peptide_fltbl_value_lookup_tbl "
-			+ 	"( unified_reported_peptide_id, reported_peptide_id, search_id, "
-			+ 		" annotation_type_id, "
-			+  		" has_dynamic_modifictions, has_isotope_labels, "
-			+ 		" peptide_value_for_ann_type_id ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?  )";
+			"INSERT INTO search__rep_pept__lookup_tbl "
+			+ 	"( reported_peptide_id, search_id, "
+			+  		" has_dynamic_modifictions, has_isotope_labels, any_psm_has_dynamic_modifications, "
+			+ 		" psm_num_at_default_cutoff, "
+			+ 		" peptide_meets_default_cutoffs, related_peptide_unique_for_search ) "
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
 	 * @param conn
 	 * @throws Exception
 	 */
-	public void saveToDatabase( UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO item, Connection dbConnection ) throws Exception {
+	public void saveToDatabase( Search_ReportedPeptide__Lookup__DTO item, Connection dbConnection ) throws Exception {
 		
 		final String sql = SAVE_SQL;
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 			int counter = 0;
 			
 			counter++;
-			pstmt.setInt( counter, item.getUnifiedReportedPeptideId() );
-			counter++;
 			pstmt.setInt( counter, item.getReportedPeptideId() );
 			counter++;
 			pstmt.setInt( counter, item.getSearchId() );
-			counter++;
-			pstmt.setInt( counter, item.getAnnotationTypeId() );
 			counter++;
 			if ( item.isHasDynamicModifications() ) {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
@@ -92,10 +88,26 @@ public class DB_Insert_UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup_
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
+			counter++;
+			if ( item.isAnyPsmHasDynamicModifications() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
 			
 			counter++;
-			pstmt.setDouble( counter, item.getPeptideValueForAnnTypeId() );
-						
+			pstmt.setInt( counter, item.getPsmNumAtDefaultCutoff() );
+			
+			counter++;
+			pstmt.setString( counter, item.getPeptideMeetsDefaultCutoffs().value() );
+
+			counter++;
+			if ( item.isRelatedPeptideUniqueForSearch() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			
 			pstmt.executeUpdate();
 			
 		} catch ( Exception e ) {

@@ -23,12 +23,11 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.Yes_No__NOT_APPLICABL
  * Table unified_rp__search__rep_pept__lookup_tbl
  *
  */
-public class UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO {
+public class Search_ReportedPeptide__Lookup__DTO {
 
 
 	private int searchId;
 	private int reportedPeptideId;
-	private int unifiedReportedPeptideId;
 
 	private boolean hasDynamicModifications;
 	private boolean hasIsotopeLabels;
@@ -51,7 +50,7 @@ public class UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO {
 	@Override
 	public String toString() {
 		return "UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO [searchId=" + searchId + ", reportedPeptideId="
-				+ reportedPeptideId + ", unifiedReportedPeptideId=" + unifiedReportedPeptideId
+				+ reportedPeptideId 
 				+ ", hasDynamicModifications=" + hasDynamicModifications + ", hasIsotopeLabels=" + hasIsotopeLabels
 				+ ", anyPsmHasDynamicModifications=" + anyPsmHasDynamicModifications
 				+ ", relatedPeptideUniqueForSearch=" + relatedPeptideUniqueForSearch + ", psmNumAtDefaultCutoff="
@@ -74,14 +73,6 @@ public class UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO {
 
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
-	}
-
-	public int getUnifiedReportedPeptideId() {
-		return unifiedReportedPeptideId;
-	}
-
-	public void setUnifiedReportedPeptideId(int unifiedReportedPeptideId) {
-		this.unifiedReportedPeptideId = unifiedReportedPeptideId;
 	}
 
 	public boolean isHasDynamicModifications() {

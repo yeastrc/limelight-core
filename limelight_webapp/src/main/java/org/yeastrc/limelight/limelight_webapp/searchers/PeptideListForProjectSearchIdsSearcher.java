@@ -64,15 +64,14 @@ public class PeptideListForProjectSearchIdsSearcher extends Limelight_JDBC_Base 
 	private final String PEPTIDE_VALUE_FILTER_TABLE_ALIAS = "srch__rep_pept_fltrbl_tbl_";
 	
 	private final String SQL_FIRST_PART = 
-			"SELECT unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id, "
-			+ " unified_rp__search__rep_pept__lookup_tbl.unified_reported_peptide_id, "
-			+ " unified_rp__search__rep_pept__lookup_tbl.psm_num_at_default_cutoff, "
-			+ " unified_rp__search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff ";
+			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
+			+ " search__rep_pept__lookup_tbl.psm_num_at_default_cutoff, "
+			+ " search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff ";
 	
-	private final String SQL_MAIN_FROM_START = " FROM unified_rp__search__rep_pept__lookup_tbl ";
+	private final String SQL_MAIN_FROM_START = " FROM search__rep_pept__lookup_tbl ";
 
 	private final String SQL_MAIN_WHERE_START = 
-			" WHERE unified_rp__search__rep_pept__lookup_tbl.search_id = ? ";
+			" WHERE search__rep_pept__lookup_tbl.search_id = ? ";
 
 	private final String SQL_LAST_PART = "";
 
@@ -182,16 +181,16 @@ public class PeptideListForProjectSearchIdsSearcher extends Limelight_JDBC_Base 
 				//  Add inner join for each PSM cutoff
 				for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 					sqlSB.append( " INNER JOIN " );
-					sqlSB.append( " unified_rp__search__rep_pept__best_psm_value_lookup_tbl AS " );
+					sqlSB.append( " search__rep_pept__best_psm_value_lookup_tbl AS " );
 					sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 					sqlSB.append( Integer.toString( counter ) );
 					sqlSB.append( " ON "  );
-					sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.search_id = "  );
+					sqlSB.append( " search__rep_pept__lookup_tbl.search_id = "  );
 					sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 					sqlSB.append( Integer.toString( counter ) );
 					sqlSB.append( ".search_id" );
 					sqlSB.append( " AND " );
-					sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id = "  );
+					sqlSB.append( " search__rep_pept__lookup_tbl.reported_peptide_id = "  );
 					sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 					sqlSB.append( Integer.toString( counter ) );
 					sqlSB.append( ".reported_peptide_id" );
@@ -209,12 +208,12 @@ public class PeptideListForProjectSearchIdsSearcher extends Limelight_JDBC_Base 
 					sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
 					sqlSB.append( Integer.toString( counter ) );
 					sqlSB.append( " ON "  );
-					sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.search_id = "  );
+					sqlSB.append( " search__rep_pept__lookup_tbl.search_id = "  );
 					sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
 					sqlSB.append( Integer.toString( counter ) );
 					sqlSB.append( ".search_id" );
 					sqlSB.append( " AND " );
-					sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id = "  );
+					sqlSB.append( " search__rep_pept__lookup_tbl.reported_peptide_id = "  );
 					sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
 					sqlSB.append( Integer.toString( counter ) );
 					sqlSB.append( ".reported_peptide_id" );
@@ -424,9 +423,7 @@ public class PeptideListForProjectSearchIdsSearcher extends Limelight_JDBC_Base 
 			) throws SQLException {
 		ReportedPeptideBasicObjectsSearcherResultEntry item = new ReportedPeptideBasicObjectsSearcherResultEntry();
 		int reportedPeptideId = rs.getInt( "reported_peptide_id" );
-		int unifiedReportedPeptideId = rs.getInt( "unified_reported_peptide_id" );
 		item.setReportedPeptideId(reportedPeptideId);
-		item.setUnifiedReportedPeptideId( unifiedReportedPeptideId );
 		
 		if ( defaultCutoffsExactlyMatchAnnTypeDataToSearchData ) {
 			int numPsmsForDefaultCutoffs = rs.getInt( "psm_num_at_default_cutoff" );

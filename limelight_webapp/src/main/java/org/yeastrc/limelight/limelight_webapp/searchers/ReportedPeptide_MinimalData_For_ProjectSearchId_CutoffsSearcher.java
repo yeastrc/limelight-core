@@ -46,9 +46,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_
  *    * Change call to psmCountForSearchIdReportedPeptideIdSearcher.getPsmCountForSearchIdReportedPeptideIdCutoffs(...)
  *        to a call to only validate that the min number of PSMs specified exist for the reported peptide
  * 
- * 	  * Remove table unified_rp__search__rep_pept__lookup_tbl from join unless need 
- * 		field unified_reported_peptide_id later on.
- * 		 Maybe field unified_reported_peptide_id is available in the other tables.
+ * 	  * Remove table search__rep_pept__lookup_tbl from join.
  * 
  * Criteria:
  *    Search Id
@@ -80,14 +78,13 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 	private final String PEPTIDE_VALUE_FILTER_TABLE_ALIAS = "srch__rep_pept_fltrbl_tbl_";
 	
 	private final String SQL_FIRST_PART = 
-			"SELECT unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id "
-//			+ " unified_rp__search__rep_pept__lookup_tbl.unified_reported_peptide_id "
+			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id "
 			;
 	
-	private final String SQL_MAIN_FROM_START = " FROM unified_rp__search__rep_pept__lookup_tbl ";
+	private final String SQL_MAIN_FROM_START = " FROM search__rep_pept__lookup_tbl ";
 
 	private final String SQL_MAIN_WHERE_START = 
-			" WHERE unified_rp__search__rep_pept__lookup_tbl.search_id = ? ";
+			" WHERE search__rep_pept__lookup_tbl.search_id = ? ";
 
 	private final String SQL_LAST_PART = "";
 
@@ -184,16 +181,16 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 			//  Add inner join for each PSM cutoff
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 				sqlSB.append( " INNER JOIN " );
-				sqlSB.append( " unified_rp__search__rep_pept__best_psm_value_lookup_tbl AS " );
+				sqlSB.append( " search__rep_pept__best_psm_value_lookup_tbl AS " );
 				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( " ON "  );
-				sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.search_id = "  );
+				sqlSB.append( " search__rep_pept__lookup_tbl.search_id = "  );
 				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( ".search_id" );
 				sqlSB.append( " AND " );
-				sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id = "  );
+				sqlSB.append( " search__rep_pept__lookup_tbl.reported_peptide_id = "  );
 				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( ".reported_peptide_id" );
@@ -207,12 +204,12 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( " ON "  );
-				sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.search_id = "  );
+				sqlSB.append( " search__rep_pept__lookup_tbl.search_id = "  );
 				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( ".search_id" );
 				sqlSB.append( " AND " );
-				sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id = "  );
+				sqlSB.append( " search__rep_pept__lookup_tbl.reported_peptide_id = "  );
 				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( ".reported_peptide_id" );

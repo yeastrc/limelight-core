@@ -43,7 +43,7 @@ public class PsmBestFilterableData_For_ReportedPeptideIds_AnnTypeIds_ProjectSear
 	private final String SQL_MAIN = 
 			"SELECT reported_peptide_id, annotation_type_id, best_psm_value_for_ann_type_id  "
 
-			+ " FROM unified_rp__search__rep_pept__best_psm_value_lookup_tbl "
+			+ " FROM search__rep_pept__best_psm_value_lookup_tbl "
 
 			+ " WHERE search_id = ? "
 			;

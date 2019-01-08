@@ -32,7 +32,7 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_shared.shared_searchers.PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher;
 
 /**
- * Post Search Insert, update table unified_rp__search__rep_pept__lookup_tbl
+ * Post Search Insert, update table search__rep_pept__lookup_tbl
  *
  */
 public class Update_unified_rp__search__rep_pept__lookup_tbl_table {
@@ -47,10 +47,10 @@ public class Update_unified_rp__search__rep_pept__lookup_tbl_table {
 	}
 
 	/**
-	 * Post Search Insert, update table unified_rp__search__rep_pept__lookup_tbl
+	 * Post Search Insert, update table search__rep_pept__lookup_tbl
 	 * 
-	 * Populate unified_rp__search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff
-	 * since cannot populate while inserting unified_rp__search__rep_pept__lookup_tbl records
+	 * Populate search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff
+	 * since cannot populate while inserting search__rep_pept__lookup_tbl records
 	 * 
 	 * @param searchId
 	 * @param searcherCutoffValuesSearchLevel
@@ -87,7 +87,7 @@ public class Update_unified_rp__search__rep_pept__lookup_tbl_table {
 	}
 	
 	private static final String getReportedPeptidesForRecordsWhereUniquePSMCountIsNULLSQL = 
-			"SELECT reported_peptide_id FROM unified_rp__search__rep_pept__lookup_tbl "
+			"SELECT reported_peptide_id FROM search__rep_pept__lookup_tbl "
 			+ "WHERE search_id = ? AND num_unique_psm_at_default_cutoff IS NULL";
 
 	/**

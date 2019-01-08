@@ -28,7 +28,6 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationDataBaseDTO;
 public class ReportedPeptideBasicObjectsSearcherResultEntry {
 
 	private int reportedPeptideId;
-	private int unifiedReportedPeptideId;
 
 	//  These are null if not computed
 	private Integer numPsms;
@@ -44,12 +43,6 @@ public class ReportedPeptideBasicObjectsSearcherResultEntry {
 	}
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
-	}
-	public int getUnifiedReportedPeptideId() {
-		return unifiedReportedPeptideId;
-	}
-	public void setUnifiedReportedPeptideId(int unifiedReportedPeptideId) {
-		this.unifiedReportedPeptideId = unifiedReportedPeptideId;
 	}
 	public Integer getNumPsms() {
 		return numPsms;

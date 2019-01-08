@@ -29,7 +29,6 @@ public class PsmBestValuesForReportedPeptideIdSearchIdResult {
 
 
 	private int reportedPeptideId;
-	private int unifiedReportedPeptideId;
 
 	//  These are null if not computed
 	private Integer numPsms;
@@ -44,14 +43,6 @@ public class PsmBestValuesForReportedPeptideIdSearchIdResult {
 
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
-	}
-
-	public int getUnifiedReportedPeptideId() {
-		return unifiedReportedPeptideId;
-	}
-
-	public void setUnifiedReportedPeptideId(int unifiedReportedPeptideId) {
-		this.unifiedReportedPeptideId = unifiedReportedPeptideId;
 	}
 
 	public Integer getNumPsms() {

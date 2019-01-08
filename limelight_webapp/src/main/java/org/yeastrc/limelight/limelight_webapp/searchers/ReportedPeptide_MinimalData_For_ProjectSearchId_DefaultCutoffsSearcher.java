@@ -48,14 +48,13 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 	private static final Logger log = LoggerFactory.getLogger( ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearcher.class );
 	
 	private final String SQL = 
-			"SELECT unified_rp__search__rep_pept__lookup_tbl.reported_peptide_id, "
-					+ " unified_rp__search__rep_pept__lookup_tbl.psm_num_at_default_cutoff "
-//			+ " unified_rp__search__rep_pept__lookup_tbl.unified_reported_peptide_id, "
-//			+ " unified_rp__search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff "
-			+ " FROM unified_rp__search__rep_pept__lookup_tbl "
+			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
+					+ " search__rep_pept__lookup_tbl.psm_num_at_default_cutoff "
+//			+ " search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff "
+			+ " FROM search__rep_pept__lookup_tbl "
 
-			+ " WHERE unified_rp__search__rep_pept__lookup_tbl.search_id = ? "
-			+ " AND unified_rp__search__rep_pept__lookup_tbl.psm_num_at_default_cutoff >= ? ";
+			+ " WHERE search__rep_pept__lookup_tbl.search_id = ? "
+			+ " AND search__rep_pept__lookup_tbl.psm_num_at_default_cutoff >= ? ";
 	
 	/**
 	 * @param searchId
@@ -85,7 +84,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 		sqlSB.append( SQL );
 		
 		sqlSB.append( " AND " );
-		sqlSB.append( " unified_rp__search__rep_pept__lookup_tbl.peptide_meets_default_cutoffs = '" );
+		sqlSB.append( " search__rep_pept__lookup_tbl.peptide_meets_default_cutoffs = '" );
 		if ( peptideCutoffValuesList == null || peptideCutoffValuesList.isEmpty() ) {
 			sqlSB.append( Yes_No__NOT_APPLICABLE_Enum.NOT_APPLICABLE.value() );
 		} else {

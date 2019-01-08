@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,69 +31,60 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideFilterableAnnotationDTO;
-import org.yeastrc.limelight.limelight_shared.dto.UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
-import org.yeastrc.limelight.limelight_shared.dto.UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO;
-import org.yeastrc.limelight.limelight_shared.dto.UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide__Lookup__DTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
 import org.yeastrc.limelight.limelight_shared.enum_classes.Yes_No__NOT_APPLICABLE_Enum;
 
 /**
  * Create records to insert in:
  * 
- *    unified_rp__search__rep_pept__lookup_tbl
+ *    search__rep_pept__lookup_tbl
  *        * Search/Reported Peptide level roll up info
  *        
- *    unified_rp__search_reported_peptide_fltbl_value_lookup_tbl
- *        * Search/Reported Peptide per Filterable Annotation level roll up info
- *         
- *    unified_rp__search__rep_pept__best_psm_value_lookup_tbl
+ *    search__rep_pept__best_psm_value_lookup_tbl
  *        * Search/Reported Peptide Best PSM Filterable Annotation level Value roll up info    
  *
  */
-public class CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords {
+public class CreateSearchReportedPeptideLevelLookupRecords {
 
-	private static final Logger log = LoggerFactory.getLogger( CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords.class );
+	private static final Logger log = LoggerFactory.getLogger( CreateSearchReportedPeptideLevelLookupRecords.class );
 	
-	private CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords() { }
-	public static CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords getInstance() { return new CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords(); }
+	private CreateSearchReportedPeptideLevelLookupRecords() { }
+	public static CreateSearchReportedPeptideLevelLookupRecords getInstance() { return new CreateSearchReportedPeptideLevelLookupRecords(); }
 
 	/**
-	 * Result from createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords
+	 * Result from createSearchReportedPeptideLevelLookupRecords
 	 *
 	 */
-	public static class CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result {
+	public static class CreateSearchReportedPeptideLevelLookupRecords_Result {
 		
-		private UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO unifiedRepPep_Search_ReportedPeptide__Lookup__DTO;
-		private List<UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO> unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List;
-		private List<UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO> unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO_List;
+		private Search_ReportedPeptide__Lookup__DTO search_ReportedPeptide__Lookup__DTO;
+		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List;
 		
-		public UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO getUnifiedRepPep_Search_ReportedPeptide__Lookup__DTO() {
-			return unifiedRepPep_Search_ReportedPeptide__Lookup__DTO;
+		public Search_ReportedPeptide__Lookup__DTO getSearch_ReportedPeptide__Lookup__DTO() {
+			return search_ReportedPeptide__Lookup__DTO;
 		}
-		public List<UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO> getUnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List() {
-			return unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List;
-		}
-		public List<UnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getUnifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO_List() {
-			return unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO_List;
+		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List() {
+			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List;
 		}
 	}
-
 
 	/**
 	 * @param reportedPeptide
 	 * @param searchId
-	 * @param unifiedReportedPeptideLookupDTO
-	 * @param reportedPeptideDTO
+	 * @param savedReportedPeptideDTO
+	 * @param savedSearchReportedPeptideDTO
 	 * @param searchReportedPeptideFilterableAnnotationDTOList
 	 * @param psmStatisticsAndBestValues
 	 * @param filterableReportedPeptideAnnotationTypesOnId
+	 * @param proteinVersionIdsForReportedPeptideCount
 	 * @return
 	 * @throws Exception
 	 */
-	public CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords( 
+	public CreateSearchReportedPeptideLevelLookupRecords_Result createSearchReportedPeptideLevelLookupRecords( 
 			ReportedPeptide reportedPeptide,
 			int searchId,
-			int unifiedReportedPeptideLookup_Id,
 			ReportedPeptideDTO savedReportedPeptideDTO,
 			SearchReportedPeptideDTO savedSearchReportedPeptideDTO,
 			List<SearchReportedPeptideFilterableAnnotationDTO> searchReportedPeptideFilterableAnnotationDTOList,
@@ -105,8 +95,8 @@ public class CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords {
 		
 		int reportedPeptide_Id = savedReportedPeptideDTO.getId();
 		
-		CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result methodResult =
-				new CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result();
+		CreateSearchReportedPeptideLevelLookupRecords_Result methodResult =
+				new CreateSearchReportedPeptideLevelLookupRecords_Result();
 		
 		boolean relatedPeptideUniqueForSearch = true;
 		boolean hasDynamicModifications = false;
@@ -197,39 +187,24 @@ public class CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords {
 		}
 		
 		//  Per Search Reported Peptide record
-		UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO unifiedRepPep_Search_ReportedPeptide__Lookup__DTO =
-				new UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO();
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setSearchId( searchId );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setUnifiedReportedPeptideId( unifiedReportedPeptideLookup_Id );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setReportedPeptideId( reportedPeptide_Id );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setRelatedPeptideUniqueForSearch( relatedPeptideUniqueForSearch );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setHasDynamicModifications( hasDynamicModifications );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setHasIsotopeLabels( hasIsotopeLabels );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setAnyPsmHasDynamicModifications( anyPsmHasDynamicModifications );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setPsmNumAtDefaultCutoff( psmStatisticsAndBestValues.getPsmCountPassDefaultCutoffs() );
-		unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.setPeptideMeetsDefaultCutoffs( peptideMeetsDefaultCutoffs );
+		Search_ReportedPeptide__Lookup__DTO search_ReportedPeptide__Lookup__DTO =
+				new Search_ReportedPeptide__Lookup__DTO();
+		search_ReportedPeptide__Lookup__DTO.setSearchId( searchId );
+		search_ReportedPeptide__Lookup__DTO.setReportedPeptideId( reportedPeptide_Id );
+		search_ReportedPeptide__Lookup__DTO.setRelatedPeptideUniqueForSearch( relatedPeptideUniqueForSearch );
+		search_ReportedPeptide__Lookup__DTO.setHasDynamicModifications( hasDynamicModifications );
+		search_ReportedPeptide__Lookup__DTO.setHasIsotopeLabels( hasIsotopeLabels );
+		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasDynamicModifications( anyPsmHasDynamicModifications );
+		search_ReportedPeptide__Lookup__DTO.setPsmNumAtDefaultCutoff( psmStatisticsAndBestValues.getPsmCountPassDefaultCutoffs() );
+		search_ReportedPeptide__Lookup__DTO.setPeptideMeetsDefaultCutoffs( peptideMeetsDefaultCutoffs );
 		
-		methodResult.unifiedRepPep_Search_ReportedPeptide__Lookup__DTO = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO;
-		
-		List<UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO> unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List = 
-				new ArrayList<> ( searchReportedPeptideFilterableAnnotationDTOList.size() );
-		methodResult.unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List = unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List;
-		
-		for ( SearchReportedPeptideFilterableAnnotationDTO searchReportedPeptideFilterableAnnotationDTO : searchReportedPeptideFilterableAnnotationDTOList ) {
-			//   Peptide Annotation Values
-			UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO =
-					new UnifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO( unifiedRepPep_Search_ReportedPeptide__Lookup__DTO );
-			unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO.setAnnotationTypeId( searchReportedPeptideFilterableAnnotationDTO.getAnnotationTypeId() );
-			unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO.setPeptideValueForAnnTypeId( searchReportedPeptideFilterableAnnotationDTO.getValueDouble() );
-
-			unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO_List.add( unifiedRepPep_Search_ReportedPeptide_PeptideValue_Lookup__DTO );
-		}
+		methodResult.search_ReportedPeptide__Lookup__DTO = search_ReportedPeptide__Lookup__DTO;
 		
 		//  Best PSM Annotation Values
 		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing = psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing();
 		
-		methodResult.unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO_List =
-				bestPsmFilterableAnnotationProcessing.getBestPsmValues( unifiedRepPep_Search_ReportedPeptide__Lookup__DTO );
+		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List =
+				bestPsmFilterableAnnotationProcessing.getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
 		
 		return methodResult;
 	}

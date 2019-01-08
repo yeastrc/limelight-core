@@ -578,55 +578,6 @@ CREATE INDEX search_links_user_id_fk_idx ON project_search__web_links_tbl (user_
 
 
 -- -----------------------------------------------------
--- Table unified_reported_peptide_lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  unified_reported_peptide_lookup_tbl (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  peptide_id INT UNSIGNED NOT NULL,
-  has_dynamic_modifictions TINYINT UNSIGNED NOT NULL,
-  has_isotope_labels TINYINT NOT NULL DEFAULT 0,
-  unified_sequence VARCHAR(2000) NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT unifd_rep_pept_lkp_peptide_id_fk
-    FOREIGN KEY (peptide_id)
-    REFERENCES peptide_tbl (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_general_ci;
-
-CREATE INDEX unified_reported_peptide__unified_sequence_idx ON unified_reported_peptide_lookup_tbl (unified_sequence(20) ASC);
-
-CREATE INDEX unifd_rep_pept_lkp_peptide_id_fk_idx ON unified_reported_peptide_lookup_tbl (peptide_id ASC);
-
-
--- -----------------------------------------------------
--- Table unified_rep_pep_dynamic_mod_lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  unified_rep_pep_dynamic_mod_lookup_tbl (
-  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  unified_reported_peptide_lookup_id INT(10) UNSIGNED NOT NULL,
-  position INT(10) UNSIGNED NOT NULL,
-  mass DOUBLE NOT NULL,
-  mass_rounded DOUBLE NOT NULL,
-  mass_rounded_string VARCHAR(200) NOT NULL,
-  mass_rounding_places SMALLINT NOT NULL,
-  mod_order SMALLINT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT unified_rp_dynamic_mod__unf_rep_pept_id_fk
-    FOREIGN KEY (unified_reported_peptide_lookup_id)
-    REFERENCES unified_reported_peptide_lookup_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_general_ci;
-
-CREATE INDEX unified_rp_dynamic_mod__unf_rep_pept_id_fk_idx ON unified_rep_pep_dynamic_mod_lookup_tbl (unified_reported_peptide_lookup_id ASC);
-
-
--- -----------------------------------------------------
 -- Table search__dynamic_mod_mass_lookup_tbl
 -- -----------------------------------------------------
 CREATE TABLE  search__dynamic_mod_mass_lookup_tbl (
@@ -882,12 +833,11 @@ CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__dynamic_mod_tbl (repor
 
 
 -- -----------------------------------------------------
--- Table unified_rp__search__rep_pept__lookup_tbl
+-- Table search__rep_pept__lookup_tbl
 -- -----------------------------------------------------
-CREATE TABLE  unified_rp__search__rep_pept__lookup_tbl (
+CREATE TABLE  search__rep_pept__lookup_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   reported_peptide_id INT(10) UNSIGNED NOT NULL,
-  unified_reported_peptide_id INT(10) UNSIGNED NOT NULL,
   has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
   has_isotope_labels TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -896,107 +846,55 @@ CREATE TABLE  unified_rp__search__rep_pept__lookup_tbl (
   related_peptide_unique_for_search TINYINT(1) NOT NULL DEFAULT 0,
   num_unique_psm_at_default_cutoff INT(10) UNSIGNED NULL COMMENT 'Allow num_unique_psm_at_default_cutoff since don\'t have value at record insert.',
   PRIMARY KEY (search_id, reported_peptide_id),
-  CONSTRAINT unified_rp__search__rep_pept__gnrc_lkp_reported_peptide_id_fk
+  CONSTRAINT search__rep_pept__gnrc_lkp_reported_peptide_id_fk
     FOREIGN KEY (reported_peptide_id)
     REFERENCES reported_peptide_tbl (id)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
-  CONSTRAINT unified_rp__search__rep_pept__gnrc_lkp_search_id_fk
+  CONSTRAINT search__rep_pept__gnrc_lkp_search_id_fk
     FOREIGN KEY (search_id)
     REFERENCES search_tbl (id)
     ON DELETE CASCADE
-    ON UPDATE RESTRICT,
-  CONSTRAINT unified_rp__search__rep_pept__gnrc_lkp_unified_rp_id_fk
-    FOREIGN KEY (unified_reported_peptide_id)
-    REFERENCES unified_reported_peptide_lookup_tbl (id)
-    ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX search__rep_pept__generic_lookup__reported_peptide_id_f_idx ON unified_rp__search__rep_pept__lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX search__rep_pept__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept__lookup_tbl (reported_peptide_id ASC);
 
-CREATE INDEX search__rep_pept__generic_lookup__search_id_fk_idx ON unified_rp__search__rep_pept__lookup_tbl (search_id ASC);
+CREATE INDEX search__rep_pept__generic_lookup__search_id_fk_idx ON search__rep_pept__lookup_tbl (search_id ASC);
 
-CREATE INDEX search__rep_pept__generic_lookup_search__srch_type_mts_dflt_idx ON unified_rp__search__rep_pept__lookup_tbl (search_id ASC, peptide_meets_default_cutoffs ASC);
-
-CREATE INDEX unified_rp__search__rep_pept__generic_lookup_unified_rp_id__idx ON unified_rp__search__rep_pept__lookup_tbl (unified_reported_peptide_id ASC);
+CREATE INDEX search__rep_pept__generic_lookup_search__srch_type_mts_dflt_idx ON search__rep_pept__lookup_tbl (search_id ASC, peptide_meets_default_cutoffs ASC);
 
 
 -- -----------------------------------------------------
--- Table unified_rp__search_reported_peptide_fltbl_value_lookup_tbl
+-- Table search__rep_pept__best_psm_value_lookup_tbl
 -- -----------------------------------------------------
-CREATE TABLE  unified_rp__search_reported_peptide_fltbl_value_lookup_tbl (
+CREATE TABLE  search__rep_pept__best_psm_value_lookup_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   reported_peptide_id INT(10) UNSIGNED NOT NULL,
   annotation_type_id INT(10) UNSIGNED NOT NULL,
-  unified_reported_peptide_id INT(10) UNSIGNED NOT NULL,
-  has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
-  has_isotope_labels TINYINT(3) NOT NULL DEFAULT 0,
-  peptide_value_for_ann_type_id DOUBLE NOT NULL,
-  PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
-  CONSTRAINT unified_rp_srch_rep_pept_fltbl_val_gnrc_lkp_srch_id_rep_pept_id
-    FOREIGN KEY (reported_peptide_id)
-    REFERENCES reported_peptide_tbl (id)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT unified_rp_srch_rep_pept_fltbl_value_generic_lookup_search_id
-    FOREIGN KEY (search_id)
-    REFERENCES search_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT,
-  CONSTRAINT unified_rp_srch_rep_pept_fltbl_vl_gnrc_lkp_unified_rp_id_fk
-    FOREIGN KEY (unified_reported_peptide_id)
-    REFERENCES unified_reported_peptide_lookup_tbl (id)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
-
-CREATE INDEX reported_peptide_id_f_idx ON unified_rp__search_reported_peptide_fltbl_value_lookup_tbl (reported_peptide_id ASC);
-
-CREATE INDEX search__srch_type_pept_val_idx ON unified_rp__search_reported_peptide_fltbl_value_lookup_tbl (search_id ASC, peptide_value_for_ann_type_id ASC);
-
-CREATE INDEX unified_rp_srch_rep_pept_fltbl_vl_gnrc_lkp_unified_rp_id_fk_idx ON unified_rp__search_reported_peptide_fltbl_value_lookup_tbl (unified_reported_peptide_id ASC);
-
-
--- -----------------------------------------------------
--- Table unified_rp__search__rep_pept__best_psm_value_lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  unified_rp__search__rep_pept__best_psm_value_lookup_tbl (
-  search_id MEDIUMINT UNSIGNED NOT NULL,
-  reported_peptide_id INT(10) UNSIGNED NOT NULL,
-  annotation_type_id INT(10) UNSIGNED NOT NULL,
-  unified_reported_peptide_id INT(10) UNSIGNED NOT NULL,
   has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
   has_isotope_labels TINYINT(3) NOT NULL DEFAULT 0,
   best_psm_value_for_ann_type_id DOUBLE NOT NULL,
   psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
-  CONSTRAINT unified_rp_srch_rp_ppt_bst_psm_vl_gnrc_lkp_rep_pept_id_fk
+  CONSTRAINT srch_rp_ppt_bst_psm_vl_gnrc_lkp_rep_pept_id_fk
     FOREIGN KEY (reported_peptide_id)
     REFERENCES reported_peptide_tbl (id)
     ON DELETE CASCADE
     ON UPDATE RESTRICT,
-  CONSTRAINT unified_rp_srch_rp_ppt_bst_psm_vl_gnrc_lkp_search_id_fk
+  CONSTRAINT srch_rp_ppt_bst_psm_vl_gnrc_lkp_search_id_fk
     FOREIGN KEY (search_id)
     REFERENCES search_tbl (id)
     ON DELETE CASCADE
-    ON UPDATE RESTRICT,
-  CONSTRAINT unified_rp_srch_rp_ppt_bst_psm_vl_gnrc_lkp_unified_rp_pept_id_fk
-    FOREIGN KEY (unified_reported_peptide_id)
-    REFERENCES unified_reported_peptide_lookup_tbl (id)
-    ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-CREATE INDEX reported_peptide_id_f_idx ON unified_rp__search__rep_pept__best_psm_value_lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__best_psm_value_lookup_tbl (reported_peptide_id ASC);
 
-CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON unified_rp__search__rep_pept__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC);
-
-CREATE INDEX unified_rp_srch_rp_ppt_bst_psm_vl_gnrc_lkp_unified_rp_pept__idx ON unified_rp__search__rep_pept__best_psm_value_lookup_tbl (unified_reported_peptide_id ASC);
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC);
 
 
 -- -----------------------------------------------------
@@ -1677,33 +1575,6 @@ CREATE INDEX search__isotope_label_lookup__isotope_label_id_fk_idx ON search__is
 
 
 -- -----------------------------------------------------
--- Table unified_rep_pep_isotope_label_lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  unified_rep_pep_isotope_label_lookup_tbl (
-  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  unified_reported_peptide_lookup_id INT(10) UNSIGNED NOT NULL,
-  isotope_label_id INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT unified_rep_pep_istop_lb_lkp_unfd_rep_pept_id_fk
-    FOREIGN KEY (unified_reported_peptide_lookup_id)
-    REFERENCES unified_reported_peptide_lookup_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT,
-  CONSTRAINT unified_rep_pep_isotope_label_lookup_isotope_label_id_fk
-    FOREIGN KEY (isotope_label_id)
-    REFERENCES isotope_label_tbl (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_general_ci;
-
-CREATE INDEX unified_rep_pep_isotope_label_lookup_isotope_label_id_fk_idx ON unified_rep_pep_isotope_label_lookup_tbl (isotope_label_id ASC);
-
-CREATE INDEX unified_rep_pep_istop_lb_lkp_unfd_rep_pept_id_fk_idx ON unified_rep_pep_isotope_label_lookup_tbl (unified_reported_peptide_lookup_id ASC);
-
-
--- -----------------------------------------------------
 -- Table search_scan_file_importer_tbl
 -- -----------------------------------------------------
 CREATE TABLE  search_scan_file_importer_tbl (
@@ -1991,7 +1862,8 @@ CREATE TABLE  conversion_program_tbl (
   CONSTRAINT conv_pgm_search_id_fk
     FOREIGN KEY (search_id)
     REFERENCES search_tbl (id)
-    ON DELETE CASCADE)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
 CREATE INDEX conv_pgm_search_id_fk_idx ON conversion_program_tbl (search_id ASC);

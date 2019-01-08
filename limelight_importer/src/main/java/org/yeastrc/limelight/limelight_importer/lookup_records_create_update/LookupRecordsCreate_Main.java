@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_importer.unified_reported_peptide;
+package org.yeastrc.limelight.limelight_importer.lookup_records_create_update;
 
 import java.util.List;
 import java.util.Map;
@@ -24,24 +24,23 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
-import org.yeastrc.limelight.limelight_importer.process_input.CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords;
-import org.yeastrc.limelight.limelight_importer.process_input.CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords.CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result;
+import org.yeastrc.limelight.limelight_importer.process_input.CreateSearchReportedPeptideLevelLookupRecords;
+import org.yeastrc.limelight.limelight_importer.process_input.CreateSearchReportedPeptideLevelLookupRecords.CreateSearchReportedPeptideLevelLookupRecords_Result;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideFilterableAnnotationDTO;
-import org.yeastrc.limelight.limelight_shared.dto.UnifiedReportedPeptideLookupDTO;
 
 /**
- * Main Processing for creating and saving the Unified Reported Peptide records for a single Reported Peptide
+ * Main Processing for creating and saving the Lookup records for a single Reported Peptide for the Search
  *
  */
-public class UnifiedReportedPeptide_Main {
+public class LookupRecordsCreate_Main {
 
-	private static final Logger log = LoggerFactory.getLogger( UnifiedReportedPeptide_Main.class );
+	private static final Logger log = LoggerFactory.getLogger( LookupRecordsCreate_Main.class );
 	
-	private UnifiedReportedPeptide_Main() { }
-	public static UnifiedReportedPeptide_Main getInstance() { return new UnifiedReportedPeptide_Main(); }
+	private LookupRecordsCreate_Main() { }
+	public static LookupRecordsCreate_Main getInstance() { return new LookupRecordsCreate_Main(); }
 	
 	public void unifiedReportedPeptide_MainProcessing(
 			ReportedPeptide reportedPeptide,
@@ -55,16 +54,11 @@ public class UnifiedReportedPeptide_Main {
 
 			) throws Exception {
 
-		//  Create Unified Reported Peptide data and insert to DB if necessary or get id otherwise.
-		UnifiedReportedPeptideLookupDTO unifiedReportedPeptideLookupDTO =
-				UnifiedReportedPeptideAndChildren_InsertIfNotInDB.getInstance().insertIfNotInDBUnifiedReportedPeptideAndChildren( reportedPeptide );
-
-		CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result =
-				CreateUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords.getInstance()
-				.createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords( 
+		CreateSearchReportedPeptideLevelLookupRecords_Result createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result =
+				CreateSearchReportedPeptideLevelLookupRecords.getInstance()
+				.createSearchReportedPeptideLevelLookupRecords( 
 						reportedPeptide, 
 						searchId, 
-						unifiedReportedPeptideLookupDTO.getId(),
 						savedReportedPeptideDTO,
 						savedSearchReportedPeptideDTO,
 						searchReportedPeptideFilterableAnnotationDTOList, 
@@ -72,7 +66,7 @@ public class UnifiedReportedPeptide_Main {
 						filterableReportedPeptideAnnotationTypesOnId,
 						proteinVersionIdsForReportedPeptideCount );
 
-		UnifiedReportedPeptide_SavePerSearchLookupRecords.getInstance()
-		.savePerSearchLookupRecords( createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result, unifiedReportedPeptideLookupDTO.getId() );
+		LookupRecords_SavePerSearchLookupRecords.getInstance()
+		.savePerSearchLookupRecords( createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result );
 	}
 }

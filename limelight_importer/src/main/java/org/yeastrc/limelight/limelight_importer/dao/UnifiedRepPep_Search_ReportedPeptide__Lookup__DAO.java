@@ -25,7 +25,7 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunI
 import org.slf4j.Logger;
 
 /**
- * table unified_rp__search__rep_pept__lookup_tbl
+ * table search__rep_pept__lookup_tbl
  *
  */
 public class UnifiedRepPep_Search_ReportedPeptide__Lookup__DAO {
@@ -50,7 +50,7 @@ public class UnifiedRepPep_Search_ReportedPeptide__Lookup__DAO {
 	}
 	
 	private static final String update_num_unique_psm_at_default_cutoffsql = 
-			"UPDATE unified_rp__search__rep_pept__lookup_tbl "
+			"UPDATE search__rep_pept__lookup_tbl "
 			+ " SET num_unique_psm_at_default_cutoff = ? WHERE search_id = ? AND reported_peptide_id = ?";
 
 	/**

@@ -37,12 +37,12 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchIs
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.dto.SearchProteinVersionDTO;
+import org.yeastrc.limelight.limelight_importer.lookup_records_create_update.LookupRecordsCreate_Main;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessSave_SingleReportedPeptide.ProcessSave_SingleReportedPeptide_Results;
-import org.yeastrc.limelight.limelight_importer.unified_reported_peptide.UnifiedReportedPeptide_Main;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
@@ -145,7 +145,7 @@ public class ProcessReportedPeptidesAndPSMs {
 									searchScanFileEntry_KeyScanFilename
 									);
 
-					UnifiedReportedPeptide_Main.getInstance()
+					LookupRecordsCreate_Main.getInstance()
 					.unifiedReportedPeptide_MainProcessing( 
 							reportedPeptide, 
 							searchId, 
