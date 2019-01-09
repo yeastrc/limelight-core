@@ -21,7 +21,52 @@
 
     <property name="deploy" value="deploy" />
 
-  <target name="unzip_import_file" >
+	<!-- config file 2 directories above -->
+	
+	<property name="config_file" value="..${file.separator}..${file.separator}aa_ant__build_all_limelight_config.properties" />
+	
+	<property name="config_file_with_path" 
+		value="${config_file}"/>
+
+	<echo>Using Config file ${config_file_with_path}</echo>
+	
+	<fail message="ERROR: '${config_file}' file not found, check the path. filename with path: ${config_file_with_path}">
+		<condition>
+		    <not>
+		    	<available file="${config_file_with_path}" />
+		    </not>
+		</condition>
+	</fail>
+	
+	<echo>config_file_with_path: ${config_file_with_path}</echo>
+	
+	<!-- This does not fail if the file is not found -->
+	<property file="${config_file_with_path}" />
+	
+	
+	<echo>gradle.wrapper.executable in file: ${gradle.wrapper.executable}</echo>
+	
+
+	<!-- Set Properties if not set in config -->
+	<condition property="gradle.wrapper.executable" value="gradle">
+	   <not>  
+	      <isset property="gradle.wrapper.executable"/>
+	   </not>
+	</condition>
+
+	<echo>gradle.wrapper.executable after default set if necessary: ${gradle.wrapper.executable}</echo>
+	
+
+  <target name="build_import_zip" >
+
+	<exec executable="${gradle.wrapper.executable}" dir=".." failonerror="true" >
+		<arg value="build" />
+		<!--   <arg value="XXXX" /> -->
+	</exec>
+    </target>
+	
+
+  <target name="unzip_import_file" depends="build_import_zip" >
 
 <!--
 	<copy overwrite="true" file="${input_run_importer_zip_file_dir}/${input_run_importer_zip_filename}"  todir="Importer_Zip_File_From_Build_Goes_Here" />
