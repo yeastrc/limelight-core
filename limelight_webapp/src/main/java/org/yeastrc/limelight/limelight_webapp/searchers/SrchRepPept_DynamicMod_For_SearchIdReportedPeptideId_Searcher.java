@@ -27,6 +27,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPeptDynamicModDTO;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 
@@ -69,6 +70,15 @@ public class SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher exten
 					item.setReportedPeptideId( reportedPeptideId );
 					item.setPosition( rs.getInt( "position" ) );
 					item.setMass( rs.getDouble( "mass" ) );
+
+					int is_n_terminal = rs.getInt( "is_n_terminal" );
+					if ( is_n_terminal == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+						item.setIs_N_Terminal( true );
+					}
+					int is_c_terminal = rs.getInt( "is_c_terminal" );
+					if ( is_c_terminal == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+						item.setIs_C_Terminal( true );
+					}
 					
 					resultList.add( item );
 				}

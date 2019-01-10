@@ -37,6 +37,13 @@ const peptideSequence_CreateCommonDisplayString = function({ peptideSequence, mo
 
     for ( const entry of modificationEntries ) {
 
+        if (  entry.is_N_Terminal !== undefined || entry.is_C_Terminal !== undefined ) {
+
+            const msg = "peptideSequence_CreateCommonDisplayString: ERROR: entry.is_N_Terminal or entry.is_C_Terminal exists.  This code does not handle those properties being true.";
+            console.log( msg );
+            throw Error( msg );
+        }
+
         let mapEntry = modsByPosition.get( entry.position );
         if ( ! mapEntry ) {
             mapEntry = [];

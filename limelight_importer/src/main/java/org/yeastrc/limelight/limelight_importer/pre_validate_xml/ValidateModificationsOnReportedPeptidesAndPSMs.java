@@ -79,13 +79,13 @@ public class ValidateModificationsOnReportedPeptidesAndPSMs {
 	 */
 	private void validateModificationsOnSingleReportedPeptideAndItsPSMs( ReportedPeptide reportedPeptide ) throws LimelightImporterDataException {
 
-		String peptideSequence = reportedPeptide.getSequence();
-		
-		int peptideSequenceLength = peptideSequence.length();
-
 		PeptideModifications peptideModifications = reportedPeptide.getPeptideModifications();
 		
 		Set<BigInteger> peptideModificationPositions = new HashSet<>();
+		
+		boolean is_n_terminal = false;
+		boolean is_c_terminal = false;
+		
 
 		if ( peptideModifications != null ) {
 
@@ -93,28 +93,17 @@ public class ValidateModificationsOnReportedPeptidesAndPSMs {
 			if ( peptideModificationList != null && ( ! peptideModificationList.isEmpty() ) ) {
 				for ( PeptideModification peptideModification : peptideModificationList ) {
 					
-					if ( peptideModification.getPosition() == null ) {
-						String msg = "Peptide Modification Position is null or not assigned.  Reported Peptide: " + reportedPeptide.getReportedPeptideString();
-						log.error( msg );
-						throw new LimelightImporterDataException( msg );
-					}
-					if ( peptideModification.getPosition().intValue() < 1 ) {
-						String msg = "Peptide Modification Position is < 1. Position: " + peptideModification.getPosition().intValue()
-								+ ". Peptide Sequence Length: " + peptideSequenceLength
-								+ " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
-						log.error( msg );
-						throw new LimelightImporterDataException( msg );
-					}
+					if ( peptideModification.getPosition() != null ) {
 
-					if ( peptideModification.getPosition().intValue() > peptideSequenceLength ) {
-						String msg = "Peptide Modification Position is > than length of peptide sequence. Position: " + peptideModification.getPosition().intValue()
-								+ ". Peptide Sequence Length: " + peptideSequenceLength
-								+ " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
-						log.error( msg );
-						throw new LimelightImporterDataException( msg );
+						peptideModificationPositions.add( peptideModification.getPosition() );
 					}
 					
-					peptideModificationPositions.add( peptideModification.getPosition() );
+					if ( peptideModification.isIsNTerminal() != null && peptideModification.isIsNTerminal().booleanValue() ) {
+						is_n_terminal = true;
+					}
+					if ( peptideModification.isIsCTerminal() != null && peptideModification.isIsCTerminal().booleanValue() ) {
+						is_c_terminal = true;
+					}
 				}
 			}
 		}
@@ -122,7 +111,7 @@ public class ValidateModificationsOnReportedPeptidesAndPSMs {
 		if ( reportedPeptide.getPsms() != null ) {
 			for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
 				
-				validateModificationsOnSinglePSM( psm, peptideModificationPositions, reportedPeptide );
+				validateModificationsOnSinglePSM( psm, peptideModificationPositions, is_n_terminal, is_c_terminal, reportedPeptide );
 			}
 		}
 	}
@@ -132,7 +121,12 @@ public class ValidateModificationsOnReportedPeptidesAndPSMs {
 	 * @param limelightInput
 	 * @throws LimelightImporterDataException for data errors
 	 */
-	private void validateModificationsOnSinglePSM( Psm psm, Set<BigInteger> peptideModificationPositions, ReportedPeptide reportedPeptide ) throws LimelightImporterDataException {
+	private void validateModificationsOnSinglePSM( 
+			Psm psm,
+			Set<BigInteger> peptideModificationPositions,
+			boolean is_n_terminal,
+			boolean is_c_terminal,
+			ReportedPeptide reportedPeptide ) throws LimelightImporterDataException {
 				
 		if ( psm.getPsmModifications() != null 
 				&& psm.getPsmModifications().getPsmModification() != null
@@ -140,30 +134,93 @@ public class ValidateModificationsOnReportedPeptidesAndPSMs {
 			
 			List<PsmModification> psmModificationList = psm.getPsmModifications().getPsmModification();
 			for ( PsmModification psmModification : psmModificationList ) {
-				
-				if ( psmModification.getPosition() == null ) {
-					String msg = "PSM Modification Position is null or not assigned.  ";
-					if ( psm.getScanNumber() != null ) {
-						msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+
+				if ( psmModification.isIsNTerminal() != null && psmModification.isIsNTerminal() ) {
+					if ( psmModification.getPosition() != null ) {
+						String msg = "PSM Modification Position is populated when modification is marked as 'n' terminal. Position: " + psmModification.getPosition().intValue();
+						if ( psmModification.getMass() != null ) {
+							msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+						}
+						if ( psm.getScanNumber() != null ) {
+							msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+						}
+						msg += " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
 					}
-					msg +=  "Reported Peptide: " + reportedPeptide.getReportedPeptideString();
-					log.error( msg );
-					throw new LimelightImporterDataException( msg );
+					if ( ! is_n_terminal ) {
+						String msg = "PSM Modification 'is_n_terminal' is true but associated Reported Peptide has no modification where 'is_n_terminal' is true";
+						if ( psmModification.getMass() != null ) {
+							msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+						}
+						if ( psm.getScanNumber() != null ) {
+							msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+						}
+						msg += " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+				}
+				if ( psmModification.isIsCTerminal() != null && psmModification.isIsCTerminal() ) {
+					if ( psmModification.getPosition()!= null ) {
+						String msg = "PSM Modification Position is populated when modification is marked as 'c' terminal. Position: " + psmModification.getPosition().intValue();
+						if ( psmModification.getMass() != null ) {
+							msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+						}
+						if ( psm.getScanNumber() != null ) {
+							msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+						}
+						msg += " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+					if ( ! is_c_terminal ) {
+						String msg = "PSM Modification 'is_c_terminal' is true but associated Reported Peptide has no modification where 'is_c_terminal' is true";
+						if ( psmModification.getMass() != null ) {
+							msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+						}
+						if ( psm.getScanNumber() != null ) {
+							msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+						}
+						msg += " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
 				}
 				
-				if ( ! peptideModificationPositions.contains( psmModification.getPosition() ) ) {
-					String msg = "PSM Modification Position is is not in the list of Reported Peptide level Modification Positions. PSM Modification Position: " 
-							+ psmModification.getPosition() + ".  "
-							+ "Peptide level Modification Positions: " + peptideModificationPositions + ".  ";
-					if ( psmModification.getMass() != null ) {
-						msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+				if ( ( psmModification.isIsNTerminal() == null || ( ! psmModification.isIsNTerminal().booleanValue() ) ) ) {
+					if ( psmModification.isIsCTerminal() == null || ( ! psmModification.isIsCTerminal().booleanValue() ) ) {
+
+						//  Neither 'is_n_terminal' nor 'is_c_terminal' is set so must have a valid position
+
+						if ( psmModification.getPosition() == null ) {
+							String msg = "PSM Modification Position is null or not assigned and at least one of 'is_n_terminal' or 'is_c_terminal' is not populated and true. ";
+							if ( psmModification.getMass() != null ) {
+								msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+							}
+							if ( psm.getScanNumber() != null ) {
+								msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+							}
+							msg += " Reported Peptide: " + reportedPeptide.getReportedPeptideString();
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						}
+
+						if ( ! peptideModificationPositions.contains( psmModification.getPosition() ) ) {
+							String msg = "PSM Modification Position is is not in the list of Reported Peptide level Modification Positions. PSM Modification 'position' value: " 
+									+ psmModification.getPosition() + ".  "
+									+ "Peptide level Modification 'position' values: " + peptideModificationPositions + ".  ";
+							if ( psmModification.getMass() != null ) {
+								msg += "Modification Mass: " + psmModification.getMass() + ".  "; 
+							}
+							if ( psm.getScanNumber() != null ) {
+								msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
+							}
+							msg +=  "Reported Peptide: " + reportedPeptide.getReportedPeptideString();
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						}
 					}
-					if ( psm.getScanNumber() != null ) {
-						msg += "PSM Scan Number: " + psm.getScanNumber() + ".  "; 
-					}
-					msg +=  "Reported Peptide: " + reportedPeptide.getReportedPeptideString();
-					log.error( msg );
-					throw new LimelightImporterDataException( msg );
 				}
 			}
 		}

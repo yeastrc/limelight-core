@@ -6,6 +6,8 @@
  * Combines the Dynamic and Static Modifications for each reported peptide, also saves a rounded mass value
  *      and adds that to the same instance of ProteinViewPage_LoadedDataPerProjectSearchIdHolder
  * 
+ *        !!!!!!!!!!  IMPORTANT:  Ignores 'n' and 'c' terminus flags on Dynamic Modifications.  Assumes they are at the position specified.
+ *                                      (The flags are not saved as part of the output datastructure)
  * 
  * Resulting value in loadedDataPerProjectSearchIdHolder.get_modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId():
  * 
@@ -57,6 +59,10 @@ const computeTotalModifications_For_ReportedPeptides = function({ loadedDataPerP
     }
 }
 
+
+/**
+ * Internal Function
+ */
 const _computeTotalModifications_For_ReportedPeptides_Internal = function({ 
     dynamicModificationsOnReportedPeptide_KeyReportedPeptideId,
     staticModsForSearch,

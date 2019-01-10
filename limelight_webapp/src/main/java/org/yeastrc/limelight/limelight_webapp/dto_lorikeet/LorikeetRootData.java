@@ -68,7 +68,10 @@ public class LorikeetRootData {
 	 * Variable Mods / Dynamic Mods
 	 */
 	private List<LorikeetVariableMod> variableMods; 
-
+	
+	private double ntermMod = 0; // additional mass to be added to the n-term
+	private double ctermMod = 0; // additional mass to be added to the c-term
+	
 	private String label;		// stable isotope label name
 	
 	/**
@@ -263,6 +266,26 @@ public class LorikeetRootData {
 
 	public void setRetentionTimeSeconds(Float retentionTimeSeconds) {
 		this.retentionTimeSeconds = retentionTimeSeconds;
+	}
+
+
+	public double getNtermMod() {
+		return ntermMod;
+	}
+
+
+	public void setNtermMod(double ntermMod) {
+		this.ntermMod = ntermMod;
+	}
+
+
+	public double getCtermMod() {
+		return ctermMod;
+	}
+
+
+	public void setCtermMod(double ctermMod) {
+		this.ctermMod = ctermMod;
 	}
 
 

@@ -79,6 +79,8 @@ public class ProcessPSMsForReportedPeptide {
 			Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId,
 			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws LimelightImporterDataException, Exception {
 		
+		String peptideString = reportedPeptide.getSequence();
+		
 		Psms psms =	reportedPeptide.getPsms();
 		List<Psm> psmList = psms.getPsm();
 		
@@ -119,7 +121,17 @@ public class ProcessPSMsForReportedPeptide {
 				for ( PsmModification psmModification : psmModificationList ) {
 					PsmDynamicModificationDTO psmDynamicModificationDTO = new PsmDynamicModificationDTO();
 					psmDynamicModificationDTO.setPsmId( psmDTO.getId() );
-					psmDynamicModificationDTO.setPosition( psmModification.getPosition().intValue() );
+					if ( psmModification.getPosition() != null ) {
+						psmDynamicModificationDTO.setPosition( psmModification.getPosition().intValue() );
+					}
+					if ( psmModification.isIsNTerminal() != null && psmModification.isIsNTerminal().booleanValue() ) {
+						psmDynamicModificationDTO.setIs_N_Terminal(true);
+						psmDynamicModificationDTO.setPosition( 1 );
+					}
+					if ( psmModification.isIsCTerminal() != null && psmModification.isIsCTerminal().booleanValue() ) {
+						psmDynamicModificationDTO.setIs_C_Terminal(true);
+						psmDynamicModificationDTO.setPosition( peptideString.length() );
+					}
 					psmDynamicModificationDTO.setMass( psmModification.getMass().doubleValue() );
 					db_Insert_PsmDynamicModificationDAO.saveToDatabase( psmDynamicModificationDTO );
 				}

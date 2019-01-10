@@ -141,7 +141,7 @@ public class ProcessSave_SingleReportedPeptide {
 		Map<ProteinImporterContainer, Collection<Integer>> proteins_PeptidePositionsInProtein =
 				getProteinsForPeptideResult.getProteins_PeptidePositionsInProtein();
 				
-		//  If no proteins Mapped, skip processing this reported peptide
+		//  If no proteins Mapped, throw error
 		if ( proteins_PeptidePositionsInProtein.isEmpty() ) {
 			
 			//  TODO   !!!!!!!!!  Put this back in place after load bad data
@@ -149,12 +149,6 @@ public class ProcessSave_SingleReportedPeptide {
 			String msg = "Failed to find any proteins for reported peptide: " + reportedPeptideString;
 			log.error( msg );
 			throw new LimelightImporterDataException(msg);
-			
-			//  WAS
-			//  No Proteins Mapped, so skip processing this reported peptide
-//			log.warn( "No Mapped Proteins for this reported peptide so not inserting Reported Peptide or PSMs: " + 
-//					reportedPeptide.getReportedPeptideString() );
-//			return null;  // EARLY EXIT  to skip to next record
 		}
 		
 		//  Retrieves reported_peptide record or inserts it if not in the database.
@@ -235,6 +229,7 @@ public class ProcessSave_SingleReportedPeptide {
 			List<PeptideModification> peptideModificationList = peptideModifications.getPeptideModification();
 			if ( peptideModificationList != null && ( ! peptideModificationList.isEmpty() ) ) {
 				DB_Insert_SrchRepPeptDynamicModDAO dao = DB_Insert_SrchRepPeptDynamicModDAO.getInstance();
+				
 				for ( PeptideModification peptideModification : peptideModificationList ) {
 					SrchRepPeptDynamicModDTO dto = new SrchRepPeptDynamicModDTO();
 					BigDecimal massBD = peptideModification.getMass();
@@ -244,13 +239,22 @@ public class ProcessSave_SingleReportedPeptide {
 						throw new LimelightImporterDataException( msg );
 					}
 					double massDbl = massBD.doubleValue();
-					if ( peptideModification.getPosition() == null ) {
-						String msg = "position on peptideModification is missing.  reported peptide: " + reportedPeptideString;
-						log.error( msg );
-						throw new LimelightImporterDataException( msg );
-					}
 					dto.setMass( massDbl );
-					dto.setPosition( peptideModification.getPosition().intValue() );
+					
+					if ( peptideModification.getPosition() != null ) {
+						dto.setPosition( peptideModification.getPosition().intValue() );
+					}
+					
+					//   For Database, set position to first or last position of peptide if N or C terminus is set
+					if ( peptideModification.isIsNTerminal() != null && peptideModification.isIsNTerminal().booleanValue() ) {
+						dto.setIs_N_Terminal(true);
+						dto.setPosition( 1 );
+					}
+					if ( peptideModification.isIsCTerminal() != null && peptideModification.isIsCTerminal().booleanValue() ) {
+						dto.setIs_C_Terminal(true);
+						dto.setPosition( peptideString.length() );
+					}
+					
 					dto.setSearchId( searchId );
 					dto.setReportedPeptideId( reportedPeptideId );
 					dao.save( dto );

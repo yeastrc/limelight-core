@@ -812,6 +812,8 @@ CREATE TABLE  srch_rep_pept__dynamic_mod_tbl (
   reported_peptide_id INT(10) UNSIGNED NOT NULL,
   position MEDIUMINT UNSIGNED NOT NULL,
   mass DOUBLE NOT NULL,
+  is_n_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  is_c_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   CONSTRAINT srch_rp_ppt__dn_md_srch_id_fk
     FOREIGN KEY (search_id)
@@ -1757,6 +1759,8 @@ CREATE TABLE  psm_dynamic_modification_tbl (
   psm_id BIGINT UNSIGNED NOT NULL,
   position MEDIUMINT UNSIGNED NOT NULL,
   mass DOUBLE NOT NULL,
+  is_n_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  is_c_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   CONSTRAINT psm_dynmc_modfctn__psm_id_fk
     FOREIGN KEY (psm_id)
@@ -1765,7 +1769,7 @@ CREATE TABLE  psm_dynamic_modification_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX psm_id_position_unique_idx ON psm_dynamic_modification_tbl (psm_id ASC, position ASC);
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_dynamic_modification_tbl (psm_id ASC);
 
 
 -- -----------------------------------------------------

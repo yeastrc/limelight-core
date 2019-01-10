@@ -80,7 +80,11 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  *             Need to validate Project Search ID values in URL with values in POST JSON
  *
- */
+ *
+ * !!!!!!!!!!!   WARNING:  Many changes to this would also require changes to 
+ * 								Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController
+ * 								since that data is used for initial Lorikeet display. 
+*/
 @RestController
 public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceController {
   
@@ -325,10 +329,13 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			}
     			result.setPeptideSequence( peptideSequence );
 
-    	        // Variable Mods
-
+    	        // Variable Mods, N and C terminus Mods
+    			
     			List<LorikeetVariableMod> variableMods = null;
 
+    			double ntermMod = 0; // additional mass to be added to the n-term
+    			double ctermMod = 0; // additional mass to be added to the c-term
+    			
     			if ( psmDTOForFoundPsmId.isHasModifications() ) {
     				
     				//  Use Dynamic Mod records at PSM level
@@ -339,14 +346,26 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 
     				variableMods = new ArrayList<>( srchRepPeptDynamicModDTOList.size() );
     				
-    				for ( PsmDynamicModificationDTO srchRepPeptDynamicModDTO : srchRepPeptDynamicModDTOList ) {
-    					int dynamicModPosition = srchRepPeptDynamicModDTO.getPosition();
-    					String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
-    					LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
-    					lorikeetVariableMod.setIndex( srchRepPeptDynamicModDTO.getPosition() );
-    					lorikeetVariableMod.setModMass( srchRepPeptDynamicModDTO.getMass() );
-    					lorikeetVariableMod.setAminoAcid( aminoAcid );
-    					variableMods.add( lorikeetVariableMod );
+    				for ( PsmDynamicModificationDTO psmDynamicModificationDTO : srchRepPeptDynamicModDTOList ) {
+    				
+    					if ( psmDynamicModificationDTO.isIs_N_Terminal() && psmDynamicModificationDTO.isIs_C_Terminal() ) {
+    						String msg = "psmDynamicModificationDTO has both Is_N_Terminal and Is_C_Terminal true. id: " + psmDynamicModificationDTO.getId();
+    						log.error( msg );
+    						throw new LimelightInternalErrorException(msg);
+    					}
+    					if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
+    						ntermMod += psmDynamicModificationDTO.getMass();
+    					} else if ( psmDynamicModificationDTO.isIs_C_Terminal() ) {
+    						ctermMod += psmDynamicModificationDTO.getMass();
+    					} else {
+	    					int dynamicModPosition = psmDynamicModificationDTO.getPosition();
+	    					String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
+	    					LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
+	    					lorikeetVariableMod.setIndex( psmDynamicModificationDTO.getPosition() );
+	    					lorikeetVariableMod.setModMass( psmDynamicModificationDTO.getMass() );
+	    					lorikeetVariableMod.setAminoAcid( aminoAcid );
+	    					variableMods.add( lorikeetVariableMod );
+    					}
     				}
     				
     			} else {
@@ -360,18 +379,33 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     				variableMods = new ArrayList<>( srchRepPeptDynamicModDTOList.size() );
     				
     				for ( SrchRepPeptDynamicModDTO srchRepPeptDynamicModDTO : srchRepPeptDynamicModDTOList ) {
-    					int dynamicModPosition = srchRepPeptDynamicModDTO.getPosition();
-    					String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
-    					LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
-    					lorikeetVariableMod.setIndex( srchRepPeptDynamicModDTO.getPosition() );
-    					lorikeetVariableMod.setModMass( srchRepPeptDynamicModDTO.getMass() );
-    					lorikeetVariableMod.setAminoAcid( aminoAcid );
-    					variableMods.add( lorikeetVariableMod );
+    					
+    					if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() && srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
+    						String msg = "SrchRepPeptDynamicModDTO has both Is_N_Terminal and Is_C_Terminal true. id: " + srchRepPeptDynamicModDTO.getId();
+    						log.error( msg );
+    						throw new LimelightInternalErrorException(msg);
+    					}
+    					if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() ) {
+    						ntermMod += srchRepPeptDynamicModDTO.getMass();
+    					} else if ( srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
+    						ctermMod += srchRepPeptDynamicModDTO.getMass();
+    					} else {
+	    					int dynamicModPosition = srchRepPeptDynamicModDTO.getPosition();
+	    					String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
+	    					LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
+	    					lorikeetVariableMod.setIndex( srchRepPeptDynamicModDTO.getPosition() );
+	    					lorikeetVariableMod.setModMass( srchRepPeptDynamicModDTO.getMass() );
+	    					lorikeetVariableMod.setAminoAcid( aminoAcid );
+	    					variableMods.add( lorikeetVariableMod );
+    					}
     				}
     			}
     	        
     	        result.setVariableMods( variableMods );
-    	        
+
+    	        result.setNtermMod( ntermMod );
+    	        result.setCtermMod( ctermMod );
+
     			
     			Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap = new HashMap<>();
     			

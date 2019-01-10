@@ -29,6 +29,7 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 
@@ -42,7 +43,7 @@ public class DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds
 	private static final Logger log = LoggerFactory.getLogger( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.class );
 		
 	private static final String QUERY_SQL = 
-			"SELECT reported_peptide_id,  position, mass "
+			"SELECT reported_peptide_id,  position, mass, is_n_terminal, is_c_terminal "
 			+ " FROM "
 			+ " srch_rep_pept__dynamic_mod_tbl "
 			+ " WHERE search_id = ? AND reported_peptide_id IN ( "; //  Add closing ")" in code
@@ -121,6 +122,15 @@ public class DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds
 					DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item item = new DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item();
 					item.setPosition( rs.getInt( "position" ) );
 					item.setMass( rs.getDouble( "mass" ) );
+										
+					int is_n_terminal = rs.getInt( "is_n_terminal" );
+					if ( is_n_terminal == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+						item.setIs_N_Terminal( true );
+					}
+					int is_c_terminal = rs.getInt( "is_c_terminal" );
+					if ( is_c_terminal == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+						item.setIs_C_Terminal( true );
+					}
 					
 					List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> resultList = results_Key_ReportedPeptideId.get( reportedPeptideId );
 					if ( resultList == null ) {

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPeptDynamicModDTO;
 
 /**
@@ -42,16 +43,16 @@ public class DB_Insert_SrchRepPeptDynamicModDAO {
 	private static final String INSERT_SQL = "INSERT INTO srch_rep_pept__dynamic_mod_tbl "
 
 			+ " ( search_id, reported_peptide_id, "
-			+   " position, mass )"
+			+   " position, mass, is_n_terminal, is_c_terminal )"
 
-			+ " VALUES ( ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ? )";
 
-	private static final String QUERY_UNIQUE_RECORD_SQL = 
-			
-			"SELECT id FROM srch_rep_pept__dynamic_mod_tbl "
-
-			+ " WHERE search_id = ? AND reported_peptide_id = ? "
-			+   " AND position = ? AND mass = ? ";
+//	private static final String QUERY_UNIQUE_RECORD_SQL = 
+//			
+//			"SELECT id FROM srch_rep_pept__dynamic_mod_tbl "
+//
+//			+ " WHERE search_id = ? AND reported_peptide_id = ? "
+//			+   " AND position = ? AND mass = ? ";
 
 	
 	/**
@@ -85,6 +86,20 @@ public class DB_Insert_SrchRepPeptDynamicModDAO {
 			pstmt.setInt( counter,  item.getPosition() );
 			counter++;
 			pstmt.setDouble( counter,  item.getMass() );
+
+			counter++;
+			if ( item.isIs_N_Terminal() ) {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			counter++;
+			if ( item.isIs_C_Terminal() ) {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			
 			pstmt.executeUpdate();
 
 			rs = pstmt.getGeneratedKeys();

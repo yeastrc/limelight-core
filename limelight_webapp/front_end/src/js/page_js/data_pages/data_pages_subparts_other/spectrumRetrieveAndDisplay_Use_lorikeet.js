@@ -648,8 +648,6 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 			alert( msg );
 		}
 		
-		const psmPeptideData = loadedDataFromServer.psmPeptideData.resultList;
-
 		//  Add these items to the lorikeetOptions variable
 		lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM;
 		lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM;
@@ -769,146 +767,155 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		}
 	}
 
+
+
+	///////////////////////////////////////////////
+
+	/////    !!!!!!!!     WARNING
+
+	////////     This following function _createLorikeetViewerInOverlay is like out of date.  Update it if use it.
+
 	/**
 	 * 
 	 */
-	_createLorikeetViewerInOverlay( { psmId, primaryLorikeetData } ) {
+// 	_createLorikeetViewerInOverlay( { psmId, primaryLorikeetData } ) {
 		
-		let objectThis = this;
+// 		let objectThis = this;
 		
-		//  Attach Lorikeet Overlay and it's background to the body
+// 		//  Attach Lorikeet Overlay and it's background to the body
 		
-		let $body = $("body");
+// 		let $body = $("body");
 		
-		let backgroundHTML = this._lorikeet_overlay_background_template_Template( {} );
-		let $background = $( backgroundHTML ).appendTo( $body );
+// 		let backgroundHTML = this._lorikeet_overlay_background_template_Template( {} );
+// 		let $background = $( backgroundHTML ).appendTo( $body );
 
-		let overlayHTML = this._lorikeet_overlay_main_template_Template( {} );
-		let $overlayRoot = $( overlayHTML ).appendTo( $body );
+// 		let overlayHTML = this._lorikeet_overlay_main_template_Template( {} );
+// 		let $overlayRoot = $( overlayHTML ).appendTo( $body );
 		
-		let $view_spectra_overlay_X_for_exit_overlay = $("#view_spectra_overlay_X_for_exit_overlay");
+// 		let $view_spectra_overlay_X_for_exit_overlay = $("#view_spectra_overlay_X_for_exit_overlay");
 		
-		//  Add Close Click handlers
+// 		//  Add Close Click handlers
 		
-		$background.click( function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._removeLorikeetSpectrumOverlay();
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
+// 		$background.click( function(eventObject) {
+// 			try {
+// 				eventObject.preventDefault();
+// 				objectThis._removeLorikeetSpectrumOverlay();
+// 			} catch( e ) {
+// 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 				throw e;
+// 			}
+// 		});
 		
-		$view_spectra_overlay_X_for_exit_overlay.click( function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._removeLorikeetSpectrumOverlay();
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
+// 		$view_spectra_overlay_X_for_exit_overlay.click( function(eventObject) {
+// 			try {
+// 				eventObject.preventDefault();
+// 				objectThis._removeLorikeetSpectrumOverlay();
+// 			} catch( e ) {
+// 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 				throw e;
+// 			}
+// 		});
 
-		var lorikeetOptions = primaryLorikeetData.data;
+// 		var lorikeetOptions = primaryLorikeetData.data;
 
-		if ( lorikeetOptions === undefined || lorikeetOptions === null ) {
+// 		if ( lorikeetOptions === undefined || lorikeetOptions === null ) {
 
-			var msg = "Error retrieving data.  lorikeetOptions === undefined || lorikeetOptions === null";
+// 			var msg = "Error retrieving data.  lorikeetOptions === undefined || lorikeetOptions === null";
 
-//			handleGeneralServerError( { msg: msg  });
+// //			handleGeneralServerError( { msg: msg  });
 			
-			alert( msg );
-		}
+// 			alert( msg );
+// 		}
 		
-		//  Set Lorikeet options
+// 		//  Set Lorikeet options
 		
-		lorikeetOptions.peakDetect = false;
+// 		lorikeetOptions.peakDetect = false;
 		
 		
-		//  Need to at least set lorikeetOptions.ms1scanLabel to something to get the "MS1 Scan:" to show up on the MS1 scan
-//		lorikeetOptions.ms1scanLabel = "ms1scanLabel";  //  TODO  set this to something else
-		lorikeetOptions.ms1scanLabel = " ";  //  TODO  set this to something else
+// 		//  Need to at least set lorikeetOptions.ms1scanLabel to something to get the "MS1 Scan:" to show up on the MS1 scan
+// //		lorikeetOptions.ms1scanLabel = "ms1scanLabel";  //  TODO  set this to something else
+// 		lorikeetOptions.ms1scanLabel = " ";  //  TODO  set this to something else
 
-		//  Add these items to the lorikeetOptions variable
-		lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_HEIGHT_PARAM;
-		lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_WIDTH_PARAM;
+// 		//  Add these items to the lorikeetOptions variable
+// 		lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_HEIGHT_PARAM;
+// 		lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_WIDTH_PARAM;
 
 
-		//  Adjust the overlay positon to be within the viewport
-		var scrollTopWindow = $(window).scrollTop();
-		if ( scrollTopWindow > 0 ) {
-			//  User has scrolled down
-			var overlayTop = scrollTopWindow + 10;
-			$overlayRoot.css( { top: overlayTop + "px" } );
-		} else {
+// 		//  Adjust the overlay positon to be within the viewport
+// 		var scrollTopWindow = $(window).scrollTop();
+// 		if ( scrollTopWindow > 0 ) {
+// 			//  User has scrolled down
+// 			var overlayTop = scrollTopWindow + 10;
+// 			$overlayRoot.css( { top: overlayTop + "px" } );
+// 		} else {
 
-			$overlayRoot.css( { top: "10px" } );
-		}
+// 			$overlayRoot.css( { top: "10px" } );
+// 		}
 
-		lorikeetOptions.sizeChangeCallbackFunction = function() {
-			objectThis._resizeLorikeetOverlayBackgroundToLorikeetSize();
-		};
+// 		lorikeetOptions.sizeChangeCallbackFunction = function() {
+// 			objectThis._resizeLorikeetOverlayBackgroundToLorikeetSize();
+// 		};
 
-		var overlayZIndex = $overlayRoot.css("z-index");
+// 		var overlayZIndex = $overlayRoot.css("z-index");
 
-		//  overlayZIndex is a string so this is the equivalent to ( overlayZIndex * 10 ) + 2
-		//   which achieves the desired affect of lorikeetOptions.tooltipZIndex > overlayZIndex
+// 		//  overlayZIndex is a string so this is the equivalent to ( overlayZIndex * 10 ) + 2
+// 		//   which achieves the desired affect of lorikeetOptions.tooltipZIndex > overlayZIndex
 
-		lorikeetOptions.tooltipZIndex = overlayZIndex + 2; // set higher than overlay z index so the tooltip will display
+// 		lorikeetOptions.tooltipZIndex = overlayZIndex + 2; // set higher than overlay z index so the tooltip will display
 
-		let $lorikeet_holder_div = $("#lorikeet_holder_div");
+// 		let $lorikeet_holder_div = $("#lorikeet_holder_div");
 
-		$lorikeet_holder_div.specview( lorikeetOptions );
+// 		$lorikeet_holder_div.specview( lorikeetOptions );
 
-		this._resizeLorikeetOverlayBackgroundToLorikeetSize();
-	}
+// 		this._resizeLorikeetOverlayBackgroundToLorikeetSize();
+// 	}
 	
 	/**
 	 * 
 	 */
-	_resizeLorikeetOverlayBackgroundToLorikeetSize() {
+// 	_resizeLorikeetOverlayBackgroundToLorikeetSize() {
 		
-		//  Adjust width of overlay as necessary
+// 		//  Adjust width of overlay as necessary
 
-		var $lorikeetOuterTable = $("#lorikeet_holder_div table.lorikeet-outer-table");
+// 		var $lorikeetOuterTable = $("#lorikeet_holder_div table.lorikeet-outer-table");
 
-		if ( $lorikeetOuterTable.length === 0 ) {
-			//  did not find the element on the page
-			return;  ///  EXIT Function
-		}
+// 		if ( $lorikeetOuterTable.length === 0 ) {
+// 			//  did not find the element on the page
+// 			return;  ///  EXIT Function
+// 		}
 
-		var lorikeetOuterTableOuterWidth = $lorikeetOuterTable.outerWidth();
+// 		var lorikeetOuterTableOuterWidth = $lorikeetOuterTable.outerWidth();
 		
-		//  Fix the width of the overlay to match the width of the lorikeet viewer
+// 		//  Fix the width of the overlay to match the width of the lorikeet viewer
 
-		var $view_spectra_overlay_div = $("#view_spectra_overlay_div");
+// 		var $view_spectra_overlay_div = $("#view_spectra_overlay_div");
 
-		//  The width of the overall overlay
-//		var view_spectra_overlay_div_outerWidth = $view_spectra_overlay_div.outerWidth();
+// 		//  The width of the overall overlay
+// //		var view_spectra_overlay_div_outerWidth = $view_spectra_overlay_div.outerWidth();
 
-		var $view_spectra_overlay_body = $("#view_spectra_overlay_body");
+// 		var $view_spectra_overlay_body = $("#view_spectra_overlay_body");
 
-		var paddingLeft = parseInt( $view_spectra_overlay_body.css("padding-left"), 10);
-		var paddingRight = parseInt( $view_spectra_overlay_body.css("padding-right"), 10);
+// 		var paddingLeft = parseInt( $view_spectra_overlay_body.css("padding-left"), 10);
+// 		var paddingRight = parseInt( $view_spectra_overlay_body.css("padding-right"), 10);
 
-		var newOverlayDivWidth = lorikeetOuterTableOuterWidth + paddingLeft + paddingRight + 10;
+// 		var newOverlayDivWidth = lorikeetOuterTableOuterWidth + paddingLeft + paddingRight + 10;
 
-		$view_spectra_overlay_div.width( newOverlayDivWidth );
+// 		$view_spectra_overlay_div.width( newOverlayDivWidth );
 
-//		var readOverlayDivWidth = $view_spectra_overlay_div.width( );
+// //		var readOverlayDivWidth = $view_spectra_overlay_div.width( );
 
-	};
+// 	};
 
 	/**
 	 * 
 	 */
-	_removeLorikeetSpectrumOverlay() {
+// 	_removeLorikeetSpectrumOverlay() {
 		
-		let $view_spectra_overlay_div = $("#view_spectra_overlay_div");
-		let $lorikeet_modal_dialog_overlay_background = $("#lorikeet_modal_dialog_overlay_background");
+// 		let $view_spectra_overlay_div = $("#view_spectra_overlay_div");
+// 		let $lorikeet_modal_dialog_overlay_background = $("#lorikeet_modal_dialog_overlay_background");
 		
-		$view_spectra_overlay_div.remove();
-		$lorikeet_modal_dialog_overlay_background.remove();
-	}
+// 		$view_spectra_overlay_div.remove();
+// 		$lorikeet_modal_dialog_overlay_background.remove();
+// 	}
+
 }

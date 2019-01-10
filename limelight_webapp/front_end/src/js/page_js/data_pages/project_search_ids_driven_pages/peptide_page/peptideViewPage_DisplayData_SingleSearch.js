@@ -346,9 +346,56 @@ export class PeptideViewPage_Display_SingleSearch {
 					context.numUniquePsmsNotSet = true;
 				};
 				
-				let modMassList = peptideListItem.modMassList;
-				if ( modMassList ) {
-					modMassList.sort( function( a, b ) {
+				const modMassesAllList = peptideListItem.modMassList;
+
+				if ( modMassesAllList ) {
+
+					const _MOD_MASS_POSITION_LABEL__N_TERMINAL = 'n';
+					const _MOD_MASS_POSITION_LABEL__C_TERMINAL = 'c';
+
+					//  Extract 'n' and 'c' terminal mod masses into separate arrays
+
+					const modMasses_Main_List = []; // Not 'n' or 'c' terminal
+					const modMasses_N_Terminal_List = []; // 'n' terminal
+					const modMasses_C_Terminal_List = []; // 'c' terminal
+
+					for ( const modEntry of modMassesAllList ) {
+
+						if ( modEntry.is_N_Terminal ) {
+							modEntry.position = _MOD_MASS_POSITION_LABEL__N_TERMINAL;
+							modMasses_N_Terminal_List.push( modEntry );
+						} else if ( modEntry.is_C_Terminal ) {
+							modEntry.position = _MOD_MASS_POSITION_LABEL__C_TERMINAL;
+							modMasses_C_Terminal_List.push( modEntry );
+						} else {
+							modMasses_Main_List.push( modEntry );
+						}
+					}
+
+					//  Sort 'n' terminal mods
+					modMasses_N_Terminal_List.sort( function( a, b ) {
+						if ( a.mass < b.mass ) {
+							return -1;
+						}
+						if ( a.mass > b.mass ) {
+							return 1;
+						}
+						return 0;
+					} );
+
+					//  Sort 'c' terminal mods
+					modMasses_C_Terminal_List.sort( function( a, b ) {
+						if ( a.mass < b.mass ) {
+							return -1;
+						}
+						if ( a.mass > b.mass ) {
+							return 1;
+						}
+						return 0;
+					} );
+
+					// Sort Not 'n' or 'c' terminal mods
+					modMasses_Main_List.sort( function( a, b ) {
 						if ( a.position < b.position ) {
 							return -1;
 						}
@@ -363,6 +410,21 @@ export class PeptideViewPage_Display_SingleSearch {
 						}
 						return 0;
 					} );
+
+					//  Create combined output list
+
+					const modMassList = [];
+
+					for ( const modEntry of modMasses_N_Terminal_List ) {
+						modMassList.push( modEntry );
+					}
+					for ( const modEntry of modMasses_Main_List ) {
+						modMassList.push( modEntry );
+					}
+					for ( const modEntry of modMasses_C_Terminal_List ) {
+						modMassList.push( modEntry );
+					}
+
 					if ( modMassList.length > 0 ) {
 						modMassList[ 0 ].firstEntry = true;
 					}

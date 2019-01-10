@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 
 /**
@@ -61,8 +62,8 @@ public class DB_Insert_PsmDynamicModificationDAO {
 	private static final String INSERT_SQL =
 			
 			"INSERT INTO psm_dynamic_modification_tbl "
-			+ " ( psm_id, position, mass )"
-			+ " VALUES ( ?, ?, ? )";
+			+ " ( psm_id, position, mass, is_n_terminal, is_c_terminal )"
+			+ " VALUES ( ?, ?, ?, ?, ? )";
 	
 	/**
 	 * @param psm
@@ -84,6 +85,20 @@ public class DB_Insert_PsmDynamicModificationDAO {
 			pstmt.setInt( counter,  item.getPosition() );
 			counter++;
 			pstmt.setDouble( counter,  item.getMass() );
+
+			counter++;
+			if ( item.isIs_N_Terminal() ) {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			counter++;
+			if ( item.isIs_C_Terminal() ) {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			
 			pstmt.executeUpdate();
 			
 			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {

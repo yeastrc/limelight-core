@@ -302,12 +302,14 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 			throw Error("No data for psmId: " + psmIdOfClicked );
 		}
 		//  storedPsmPeptideDataForPsmId
-		//		charge, peptideSequence, variableMods [{aminoAcid,index,modMass}]
+		//		charge, peptideSequence, variableMods [{aminoAcid,index,modMass}], ntermMod, ctermMod,
 		//		psmId, reportedPeptideId, reportedPeptideString, scanNumber
 
 		new_lorikeetOptions.charge = storedPsmPeptideDataForPsmId.charge;
 		new_lorikeetOptions.sequence = storedPsmPeptideDataForPsmId.peptideSequence;
 		new_lorikeetOptions.variableMods = storedPsmPeptideDataForPsmId.variableMods;
+		new_lorikeetOptions.ntermMod = storedPsmPeptideDataForPsmId.ntermMod;
+		new_lorikeetOptions.ctermMod = storedPsmPeptideDataForPsmId.ctermMod;
 		new_lorikeetOptions.label = storedPsmPeptideDataForPsmId.label;
 		
 		this._addLorikeetToPageInternal( { lorikeetOptions : new_lorikeetOptions } );
