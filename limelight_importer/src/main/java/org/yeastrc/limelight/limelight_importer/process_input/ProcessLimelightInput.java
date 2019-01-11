@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinForPeptide;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinsForPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabels;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
@@ -124,6 +126,7 @@ public class ProcessLimelightInput {
 			}
 				
 			searchDTO.setHasIsotopeLabel( peptideContainsIsotopeLabel( limelightInput ) );
+			searchDTO.setReportedPeptideMatchedProteinMappingProvided( reportedPeptides_Any_Contain_MatchedProteinForPeptide( limelightInput ) );
 				
 			SearchDAO.getInstance().saveToDatabase( searchDTO );
 			searchDTOInserted = searchDTO;
@@ -331,4 +334,47 @@ public class ProcessLimelightInput {
 		
 		return false;
 	}
+
+	/**
+	 * All "reported_peptide" contains "matched_protein_for_peptide"
+	 * @param limelightInput
+	 * @throws LimelightImporterDataException for data errors
+	 */
+	private boolean reportedPeptides_Any_Contain_MatchedProteinForPeptide( LimelightInput limelightInput ) throws LimelightImporterDataException {
+		
+		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
+		if ( reportedPeptides != null ) {
+			List<ReportedPeptide> reportedPeptideList =
+					reportedPeptides.getReportedPeptide();
+			if ( reportedPeptideList != null && ( ! reportedPeptideList.isEmpty() ) ) {
+				for ( ReportedPeptide reportedPeptide : reportedPeptideList ) {
+					if ( reportedPeptideContainsMatchedProteinForPeptide_ProcessSingleReportedPeptide( reportedPeptide ) ) {
+						//  This reported peptide contains "matched_protein_for_peptide"
+						return true;  //  EARLY RETURN
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * @param reportedPeptide
+	 * @throws LimelightImporterDataException
+	 */
+	private boolean reportedPeptideContainsMatchedProteinForPeptide_ProcessSingleReportedPeptide( ReportedPeptide reportedPeptide ) throws LimelightImporterDataException {
+		
+		MatchedProteinsForPeptide matchedProteinsForPeptide = reportedPeptide.getMatchedProteinsForPeptide();
+		if ( matchedProteinsForPeptide != null ) {
+			List<MatchedProteinForPeptide> matchedProteinForPeptideList = matchedProteinsForPeptide.getMatchedProteinForPeptide();
+			if ( ! matchedProteinForPeptideList.isEmpty() ) {
+				// Reported Peptide contains "matched_protein_for_peptide"
+				return true; // EARLY RETURN
+			}
+		}
+		
+		return false;
+	}
+
 }

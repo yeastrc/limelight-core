@@ -17,16 +17,21 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProtein;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinForPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinsForPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
@@ -70,6 +75,9 @@ public class GetProteinsForPeptide {
 
 	//  Built from matchedProteinsFromLimelightXML
 	private Map<Integer, List<InternalHolder_ProteinsFromMatchedProteins>> proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId = new HashMap<>();
+
+	//  Built from matchedProteinsFromLimelightXML
+	private Map<Integer, Map<BigInteger, InternalHolder_ProteinsFromMatchedProteins>> proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId = new HashMap<>();
 	
 	
 	/**
@@ -181,83 +189,127 @@ public class GetProteinsForPeptide {
 //			return cachedproteinMatches;
 //		}
 		
-		List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList = 
-				proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.get( peptide_IsotopeLabelId );
-		
-		if ( proteinsFromMatchedProteinsList == null ) {
-			if ( peptide_IsotopeLabelString != null ) {
-				String msg = "No proteins were found in <matched_proteins> with isotope label '" + peptide_IsotopeLabelString + "'.  "
-						+ "Processing Peptide with isotope label '" + peptide_IsotopeLabelString + "' and sequence: "
-						+ reportedPeptideFromLimelightXMLFile.getSequence()
-						+ ", reported peptide string: "
-						+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
-				log.error( msg );
-				throw new LimelightImporterDataException( msg );
-			} else {
-				String msg = "No proteins were found in <matched_proteins> with no isotope label.  "
-						+ "Processing Peptide with sequence: "
-						+ reportedPeptideFromLimelightXMLFile.getSequence()
-						+ ", reported peptide string: "
-						+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
-				log.error( msg );
-				throw new LimelightImporterDataException( msg );
-			}
-		}
-		
-		//  Process Matched Proteins list, returning proteins that match the peptide in the request 
-		
-		for ( InternalHolder_ProteinsFromMatchedProteins holder : proteinsFromMatchedProteinsList ) {
-			
-			MatchedProtein matchedProteinFromLimelightXMLFile = holder.matchedProteinFromLimelightXML;
-			String proteinSequenceForProteinInference = holder.proteinSequenceForProteinInference;
-			int protein_IsotopeLabelId = holder.protein_IsotopeLabelId;
-			
-			//  Redundant Isotope Label Id check 
-			if ( peptide_IsotopeLabelId != protein_IsotopeLabelId ) {
-				// Isotope labels don't match so skip.  There is a isotope label id for no label
-				continue;  // EARLY CONTINUE
-			}
-			
-			//  Search protein sequence that has been converted where I and L are replaced with J
-			List<Integer> peptidePositionInProteinList = new ArrayList<>();
-			int fromIndex = 0;
-			int peptideIndex = 0;
-			while ( ( peptideIndex = proteinSequenceForProteinInference.indexOf( peptideSequenceForProteinInference, fromIndex ) ) >= 0 ) {
-				fromIndex = peptideIndex + 1; // Advance fromIndex past peptideIndex
+		{
+			MatchedProteinsForPeptide matchedProteinsForPeptide = reportedPeptideFromLimelightXMLFile.getMatchedProteinsForPeptide();
 
-				int proteinStartPosition = peptideIndex + 1;  //  Positions are 1 based
-				peptidePositionInProteinList.add( proteinStartPosition );
-			}
-			
-			if ( peptidePositionInProteinList.isEmpty() ) {
-				//  Peptide not found in protein
-				continue;  //  EARLY LOOP CONTINUE
-			}
+			if ( matchedProteinsForPeptide!= null 
+					&& matchedProteinsForPeptide.getMatchedProteinForPeptide() != null
+					&& ( ! matchedProteinsForPeptide.getMatchedProteinForPeptide().isEmpty() ) ) {
 
-			PeptideOrProteinSequence_IsotopeLabelId proteinSequence_IsotopeLabelId = new PeptideOrProteinSequence_IsotopeLabelId();
-			proteinSequence_IsotopeLabelId.peptideOrProteinSequence_ForProteinInference =  matchedProteinFromLimelightXMLFile.getSequence();
-			proteinSequence_IsotopeLabelId.isotopeLabelId = protein_IsotopeLabelId;
-			
-			ProteinImporterContainer proteinImporterContainer =
-					proteinSequenceToProteinImporterContainer_Map.get( proteinSequence_IsotopeLabelId );
-			if ( proteinImporterContainer == null ) {
-				//  getIsotopeLabelIdFor_Protein_FromLimelightXMLFile also called in here.  May want to pass in protein_IsotopeLabelId instead 
-				proteinImporterContainer = ProteinImporterContainer.getInstance( matchedProteinFromLimelightXMLFile );
-				proteinSequenceToProteinImporterContainer_Map.put( proteinSequence_IsotopeLabelId, proteinImporterContainer );
-			}
+				//  Have specific <matched_protein> ids for this reported peptide
+				//  Only search <matched_protein> entries with those ids
+				//  The reported peptide MUST be found in every one of the <matched_protein> entries
 
-			Object proteinPositionListPrev =
-					proteins_PeptidePositionsInProteinResult.put(proteinImporterContainer, peptidePositionInProteinList);
-			if ( proteinPositionListPrev != null ) {
-				String isotopeLabelIdText = ", No protein isotope label id available since not set yet.";
-				if ( proteinImporterContainer.getProteinSequenceVersionDTO() != null ) {
-					isotopeLabelIdText = ", protein isotope label id: " + proteinImporterContainer.getProteinSequenceVersionDTO().getIsotopeLabelId();
+				Map<BigInteger, InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsMap_KeyedOnId =
+						proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId.get( peptide_IsotopeLabelId );
+
+				if ( proteinsFromMatchedProteinsMap_KeyedOnId == null ) {
+					if ( peptide_IsotopeLabelString != null ) {
+						String msg = "Processing <matched_protein_for_peptide> entries: No proteins were found in <matched_proteins> with isotope label '" + peptide_IsotopeLabelString + "'.  "
+								+ "Processing Peptide with isotope label '" + peptide_IsotopeLabelString + "' and sequence: "
+								+ reportedPeptideFromLimelightXMLFile.getSequence()
+								+ ", reported peptide string: "
+								+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					} else {
+						String msg = "Processing <matched_protein_for_peptide> entries: No proteins were found in <matched_proteins> with no isotope label.  "
+								+ "Processing Peptide with sequence: "
+								+ reportedPeptideFromLimelightXMLFile.getSequence()
+								+ ", reported peptide string: "
+								+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
 				}
-				String msg = "proteinImporterContainer already in map. protein sequence: "
-						+ proteinImporterContainer.getProteinSequenceDTO().getSequence()
-						+ isotopeLabelIdText;
-				log.error( msg );
-				throw new LimelightImporterInternalException(msg);
+				
+				// Get unique <matched_protein_for_peptide> 'id' for this Reported Peptide
+
+				Set<BigInteger> matchedProteinForPeptide_IDs_This_ReportedPeptide = new HashSet<>();
+				
+				for ( MatchedProteinForPeptide matchedProteinForPeptide : matchedProteinsForPeptide.getMatchedProteinForPeptide() ) {
+					
+					BigInteger matchedProteinId = matchedProteinForPeptide.getId();
+					matchedProteinForPeptide_IDs_This_ReportedPeptide.add( matchedProteinId );
+				}
+				
+				for ( BigInteger matchedProteinId : matchedProteinForPeptide_IDs_This_ReportedPeptide ) {
+
+					InternalHolder_ProteinsFromMatchedProteins holder = proteinsFromMatchedProteinsMap_KeyedOnId.get( matchedProteinId );
+					if ( holder == null ) {
+						if ( peptide_IsotopeLabelString != null ) {
+							String msg = "Processing <matched_protein_for_peptide> 'id' not found in <matched_protein> entries:  " + matchedProteinId
+									+ "Processing Peptide with isotope label '" + peptide_IsotopeLabelString + "' and sequence: "
+									+ reportedPeptideFromLimelightXMLFile.getSequence()
+									+ ", reported peptide string: "
+									+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						} else {
+							String msg = "Processing <matched_protein_for_peptide> 'id' not found in <matched_protein> entries:  " + matchedProteinId
+									+ "Processing Peptide with no isotope label and sequence: "
+									+ reportedPeptideFromLimelightXMLFile.getSequence()
+									+ ", reported peptide string: "
+									+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						
+						}
+					}
+					
+					if ( ! processOneProteinForPeptideToProteinMapping( holder, peptide_IsotopeLabelId, peptideSequenceForProteinInference, proteins_PeptidePositionsInProteinResult ) ) {
+						if ( peptide_IsotopeLabelString != null ) {
+							String msg = "reported peptide not found in <matched_protein> entry specified by  <matched_protein_for_peptide> id: " + matchedProteinId
+									+ ".  Processing Peptide with isotope label '" + peptide_IsotopeLabelString + "' and sequence: "
+									+ reportedPeptideFromLimelightXMLFile.getSequence()
+									+ ", reported peptide string: "
+									+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString()
+									+ ", Protein sequence: " + holder.matchedProteinFromLimelightXML.getSequence();
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						} else {
+							String msg = "reported peptide not found in <matched_protein> entry specified by  <matched_protein_for_peptide> id: " + matchedProteinId
+									+ ".  Processing Peptide with no isotope label and sequence: "
+									+ reportedPeptideFromLimelightXMLFile.getSequence()
+									+ ", reported peptide string: "
+									+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString()
+									+ ", Protein sequence: " + holder.matchedProteinFromLimelightXML.getSequence();
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						}
+					}
+				}
+
+			} else {
+
+				List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList = 
+						proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.get( peptide_IsotopeLabelId );
+
+				if ( proteinsFromMatchedProteinsList == null ) {
+					if ( peptide_IsotopeLabelString != null ) {
+						String msg = "No proteins were found in <matched_proteins> with isotope label '" + peptide_IsotopeLabelString + "'.  "
+								+ "Processing Peptide with isotope label '" + peptide_IsotopeLabelString + "' and sequence: "
+								+ reportedPeptideFromLimelightXMLFile.getSequence()
+								+ ", reported peptide string: "
+								+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					} else {
+						String msg = "No proteins were found in <matched_proteins> with no isotope label.  "
+								+ "Processing Peptide with sequence: "
+								+ reportedPeptideFromLimelightXMLFile.getSequence()
+								+ ", reported peptide string: "
+								+ reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+				}
+
+				//  Process Matched Proteins list, returning proteins that match the peptide in the request 
+
+				for ( InternalHolder_ProteinsFromMatchedProteins holder : proteinsFromMatchedProteinsList ) {
+					processOneProteinForPeptideToProteinMapping( holder, peptide_IsotopeLabelId, peptideSequenceForProteinInference, proteins_PeptidePositionsInProteinResult );
+				}
 			}
 		}
 		
@@ -271,6 +323,84 @@ public class GetProteinsForPeptide {
 		getProteinsForPeptide_totalElapsedTimeInMilliSeconds += ( elapsedTimeNanoSeconds / 1000000 );
 		
 		return getProteinsForPeptideResult;
+	}
+	
+	/**
+	 * @param holder
+	 * @param peptide_IsotopeLabelId
+	 * @param peptideSequenceForProteinInference
+	 * @param proteins_PeptidePositionsInProteinResult
+	 * @return - true if peptide found in protein
+	 * @throws Exception
+	 */
+	private boolean processOneProteinForPeptideToProteinMapping( 
+			InternalHolder_ProteinsFromMatchedProteins holder,
+			int peptide_IsotopeLabelId,
+			String peptideSequenceForProteinInference,
+			Map<ProteinImporterContainer, Collection<Integer>> proteins_PeptidePositionsInProteinResult ) throws Exception {
+
+		MatchedProtein matchedProteinFromLimelightXMLFile = holder.matchedProteinFromLimelightXML;
+		String proteinSequenceForProteinInference = holder.proteinSequenceForProteinInference;
+		int protein_IsotopeLabelId = holder.protein_IsotopeLabelId;
+		
+		//  Redundant Isotope Label Id check 
+		if ( peptide_IsotopeLabelId != protein_IsotopeLabelId ) {
+			// Isotope labels don't match so skip.  There is a isotope label id for no label
+			//  Internal error
+			String msg = "peptide_IsotopeLabelId != protein_IsotopeLabelId. peptide_IsotopeLabelId: " 
+					+ peptide_IsotopeLabelId 
+					+ ", protein_IsotopeLabelId: " + protein_IsotopeLabelId
+					+ ", peptideSequenceForProteinInference: " + peptideSequenceForProteinInference
+					+ ", protein sequence: " + holder.matchedProteinFromLimelightXML.getSequence();
+			log.error( msg );
+			throw new LimelightImporterInternalException( msg );
+			//  !!  Cannot return false since used for a different thing
+			// return;  // EARLY EXIT
+		}
+		
+		//  Search protein sequence that has been converted where I and L are replaced with J
+		List<Integer> peptidePositionInProteinList = new ArrayList<>();
+		int fromIndex = 0;
+		int peptideIndex = 0;
+		while ( ( peptideIndex = proteinSequenceForProteinInference.indexOf( peptideSequenceForProteinInference, fromIndex ) ) >= 0 ) {
+			fromIndex = peptideIndex + 1; // Advance fromIndex past peptideIndex
+
+			int proteinStartPosition = peptideIndex + 1;  //  Positions are 1 based
+			peptidePositionInProteinList.add( proteinStartPosition );
+		}
+		
+		if ( peptidePositionInProteinList.isEmpty() ) {
+			//  Peptide not found in protein
+			return false;  //  EARLY EXIT
+		}
+
+		PeptideOrProteinSequence_IsotopeLabelId proteinSequence_IsotopeLabelId = new PeptideOrProteinSequence_IsotopeLabelId();
+		proteinSequence_IsotopeLabelId.peptideOrProteinSequence_ForProteinInference =  matchedProteinFromLimelightXMLFile.getSequence();
+		proteinSequence_IsotopeLabelId.isotopeLabelId = protein_IsotopeLabelId;
+		
+		ProteinImporterContainer proteinImporterContainer =
+				proteinSequenceToProteinImporterContainer_Map.get( proteinSequence_IsotopeLabelId );
+		if ( proteinImporterContainer == null ) {
+			//  getIsotopeLabelIdFor_Protein_FromLimelightXMLFile also called in here.  May want to pass in protein_IsotopeLabelId instead 
+			proteinImporterContainer = ProteinImporterContainer.getInstance( matchedProteinFromLimelightXMLFile );
+			proteinSequenceToProteinImporterContainer_Map.put( proteinSequence_IsotopeLabelId, proteinImporterContainer );
+		}
+
+		Object proteinPositionListPrev =
+				proteins_PeptidePositionsInProteinResult.put(proteinImporterContainer, peptidePositionInProteinList);
+		if ( proteinPositionListPrev != null ) {
+			String isotopeLabelIdText = ", No protein isotope label id available since not set yet.";
+			if ( proteinImporterContainer.getProteinSequenceVersionDTO() != null ) {
+				isotopeLabelIdText = ", protein isotope label id: " + proteinImporterContainer.getProteinSequenceVersionDTO().getIsotopeLabelId();
+			}
+			String msg = "proteinImporterContainer already in map. protein sequence: "
+					+ proteinImporterContainer.getProteinSequenceDTO().getSequence()
+					+ isotopeLabelIdText;
+			log.error( msg );
+			throw new LimelightImporterInternalException(msg);
+		}
+		
+		return true; // found peptide to protein mapping
 	}
 	
 	/**
@@ -311,9 +441,13 @@ public class GetProteinsForPeptide {
 		List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList_IsotopeLabelId_None = new ArrayList<>( matchedProteinList.size() );
 		proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.put( IsotopeLabelsConstants.ID_NONE, proteinsFromMatchedProteinsList_IsotopeLabelId_None );
 		
+		//  Special instance of proteinsFromMatchedProteinsMap_KeyedOnId for no labels
+		Map<BigInteger, InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId_None = new HashMap<>( matchedProteinList.size() );
+		proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId.put( IsotopeLabelsConstants.ID_NONE, proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId_None );
 		
 		
 		for ( MatchedProtein matchedProteinFromLimelightXMLFile : matchedProteinList ) {
+			
 			String proteinSequenceForProteinInference = 
 					PeptideProteinSequenceForProteinInference.getSingletonInstance().
 					convert_PeptideOrProtein_SequenceFor_I_L_Equivalence_ChangeTo_J( matchedProteinFromLimelightXMLFile.getSequence() );
@@ -337,16 +471,38 @@ public class GetProteinsForPeptide {
 				
 				proteinsFromMatchedProteinsList_IsotopeLabelId_None.add( holder );
 				
+				if ( matchedProteinFromLimelightXMLFile.getId() != null ) {
+					proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId_None
+					.put( matchedProteinFromLimelightXMLFile.getId(), holder );
+				}
+				
 			} else {
 
-				List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList = 
-						proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.get( protein_IsotopeLabelId );
-			
-				if ( proteinsFromMatchedProteinsList == null ) {
-					proteinsFromMatchedProteinsList = new ArrayList<>();
-					proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.put( protein_IsotopeLabelId, proteinsFromMatchedProteinsList);
+				{
+					List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList = 
+							proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.get( protein_IsotopeLabelId );
+
+					if ( proteinsFromMatchedProteinsList == null ) {
+						proteinsFromMatchedProteinsList = new ArrayList<>();
+						proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.put( protein_IsotopeLabelId, proteinsFromMatchedProteinsList);
+					}
+					proteinsFromMatchedProteinsList.add( holder );
 				}
-				proteinsFromMatchedProteinsList.add( holder );
+				{
+					if ( matchedProteinFromLimelightXMLFile.getId() != null ) {
+						
+						Map<BigInteger, InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsMap_KeyedOnId = 
+								proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId.get( protein_IsotopeLabelId );
+						
+						if ( proteinsFromMatchedProteinsMap_KeyedOnId == null ) {
+							proteinsFromMatchedProteinsMap_KeyedOnId = new HashMap<>();
+							proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId.put( protein_IsotopeLabelId, proteinsFromMatchedProteinsMap_KeyedOnId);
+						}
+						proteinsFromMatchedProteinsMap_KeyedOnId
+						.put( matchedProteinFromLimelightXMLFile.getId(), holder );
+					}
+				}
+				
 			}
 		}
 

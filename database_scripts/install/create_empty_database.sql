@@ -133,6 +133,7 @@ CREATE TABLE  search_tbl (
   has_scan_data TINYINT UNSIGNED NOT NULL DEFAULT 0,
   has_isotope_label TINYINT NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT NOT NULL DEFAULT 0,
+  reported_peptide_matched_protein_mapping_provided TINYINT NOT NULL DEFAULT 0,
   import_end_timestamp TIMESTAMP NULL,
   created_by_user_id INT UNSIGNED NULL,
   created_date_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP,

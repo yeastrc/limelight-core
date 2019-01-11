@@ -17,6 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_importer.pre_validate_xml;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,16 @@ public class ValidateMatchedProteinSection {
 		//  Validate that all protein annotation names are unique
 		
 		Set<String> proteinLabelNames = new HashSet<>();
+
+		//  Validate that all protein 'id' are populated or not and have different values
+
+		boolean firstMatchedProtein = true;
+		
+		boolean matchedProteinsContainIdAttribute = false;
+		
+		Set<BigInteger> matchedProteinIDs = new HashSet<>();
+		
+		
 		MatchedProteins matchedProteins = limelightInput.getMatchedProteins();
 		if ( matchedProteins == null ) {
 			return;  //  TODO  maybe throw exception
@@ -66,6 +77,33 @@ public class ValidateMatchedProteinSection {
 		}
 		for ( MatchedProtein matchedProtein : matchedProteinList ) {
 			
+			BigInteger matchedProteinId = matchedProtein.getId();
+			
+			if ( firstMatchedProtein ) {
+				firstMatchedProtein = false;
+				if ( matchedProteinId != null ) {
+					matchedProteinsContainIdAttribute = true;
+				} else {
+					matchedProteinsContainIdAttribute = false;
+				}
+			} else {
+				if ( ( matchedProteinId != null && ( ! matchedProteinsContainIdAttribute ) )
+						|| ( matchedProteinId == null && ( matchedProteinsContainIdAttribute ) ) ) {
+					String msg = "All <matched_protein> entries must all have 'id' attribute or NOT have 'id' attribute.  Found at least one of each.";
+					log.error( msg );
+					throw new LimelightImporterDataException(msg);
+				}
+			}
+			
+			if ( matchedProteinId != null ) {
+				
+				if ( ! matchedProteinIDs.add( matchedProteinId ) ) {
+					String msg = "All <matched_protein> entries must have unique 'id' attribute values.  Found value more than once: " + matchedProteinId;
+					log.error( msg );
+					throw new LimelightImporterDataException(msg);
+				}
+			}
+
 //			String proteinIsotopeLabelString = null;
 //
 //			ProteinIsotopeLabels proteinIsotopeLabels = matchedProtein.getProteinIsotopeLabels();

@@ -57,9 +57,9 @@ public class SearchDAO {
 	private static final String INSERT_SQL =
 			"INSERT INTO search_tbl "
 			+ " (path, directory_name, fasta_filename, "
-			+   " has_scan_filenames, has_scan_data, has_isotope_label, "
+			+   " has_scan_filenames, has_scan_data, has_isotope_label, reported_peptide_matched_protein_mapping_provided, "
 			+   " status_id, created_by_user_id ) "
-			+ " VALUES (?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
+			+ " VALUES (?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
 			+ " )";
 	/**
 	 * This will INSERT the given SearchDTO into the database... even if an id is already set.
@@ -92,6 +92,12 @@ public class SearchDAO {
 			}
 			counter++;
 			if ( item.isHasIsotopeLabel() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			counter++;
+			if ( item.isReportedPeptideMatchedProteinMappingProvided() ) {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
