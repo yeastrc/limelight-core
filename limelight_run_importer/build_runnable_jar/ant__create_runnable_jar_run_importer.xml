@@ -23,25 +23,25 @@
 
 	<!-- config file 2 directories above -->
 	
-	<property name="config_file" value="..${file.separator}..${file.separator}aa_ant__build_all_limelight_config.properties" />
+	<property name="config_file_run_importer" value="..${file.separator}..${file.separator}aa_ant__build_all_limelight_config.properties" />
 	
-	<property name="config_file_with_path" 
-		value="${config_file}"/>
+	<property name="config_file_run_importer_with_path" 
+		value="${config_file_run_importer}"/>
 
-	<echo>Using Config file ${config_file_with_path}</echo>
+	<echo>Using Config file ${config_file_run_importer_with_path}</echo>
 	
-	<fail message="ERROR: '${config_file}' file not found, check the path. filename with path: ${config_file_with_path}">
+	<fail message="ERROR: '${config_file_run_importer}' file not found, check the path. filename with path: ${config_file_run_importer_with_path}">
 		<condition>
 		    <not>
-		    	<available file="${config_file_with_path}" />
+		    	<available file="${config_file_run_importer_with_path}" />
 		    </not>
 		</condition>
 	</fail>
 	
-	<echo>config_file_with_path: ${config_file_with_path}</echo>
+	<echo>config_file_run_importer_with_path: ${config_file_run_importer_with_path}</echo>
 	
 	<!-- This does not fail if the file is not found -->
-	<property file="${config_file_with_path}" />
+	<property file="${config_file_run_importer_with_path}" />
 	
 	
 	<echo>gradle.wrapper.executable in file: ${gradle.wrapper.executable}</echo>
@@ -78,13 +78,13 @@
   </target>
 
 <!--
-  <target name="jar_db_config_file" >
-	<jar destfile="${jar_db_config_file_dir}/${db_config_file_jar_filename}" basedir="db_connection_file" />
+  <target name="jar_db_config_file_run_importer" >
+	<jar destfile="${jar_db_config_file_run_importer_dir}/${db_config_file_run_importer_jar_filename}" basedir="db_connection_file" />
 
   </target>
 -->	
 
-    <target name="create_run_jar"  depends="clean,unzip_import_file"> <!-- ,jar_db_config_file -->
+    <target name="create_run_jar"  depends="clean,unzip_import_file"> <!-- ,jar_db_config_file_run_importer -->
     	
     	<!-- Add the jars in the 'expand_zip/limelight_run_importer/lib' folder to the class path   -->
     	
@@ -100,7 +100,7 @@
 		    <flattenmapper />
 		</pathconvert>
 
-    	<property name="final.classpath" value="./ ${jars.classpath} "/> <!-- ${db_config_file_jar_filename}  -->
+    	<property name="final.classpath" value="./ ${jars.classpath} "/> <!-- ${db_config_file_run_importer_jar_filename}  -->
     	
     	
 		<echo >Classpath for runnable jar ${final.classpath}</echo>
@@ -127,7 +127,7 @@
             <zipfileset src="jar-in-jar-loader.zip.class.files"/>
             <zipfileset dir="${expand_zip_jars_dir}" />
 <!--
-            <zipfileset dir="${jar_db_config_file_dir}" />
+            <zipfileset dir="${jar_db_config_file_run_importer_dir}" />
 -->
         </jar>
 
@@ -151,8 +151,8 @@
     	<mkdir  dir="${expand_zip}"/>
 
 <!--
-    	<delete dir="${jar_db_config_file_dir}"/>
-    	<mkdir  dir="${jar_db_config_file_dir}"/>
+    	<delete dir="${jar_db_config_file_run_importer_dir}"/>
+    	<mkdir  dir="${jar_db_config_file_run_importer_dir}"/>
 -->
     </target>
 	
