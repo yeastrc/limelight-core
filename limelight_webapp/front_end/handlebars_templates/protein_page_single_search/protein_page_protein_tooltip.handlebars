@@ -1,18 +1,16 @@
 {{!--  protein_page_protein_tooltip.handlebars --}}
 
-{{#if proteinDescription }}
+<div style="margin-bottom:10px;" class="isTooltip">
+
 	<div style="margin-bottom:10px;" class="isTooltip">
-	<div style="margin-bottom:10px;" class="isTooltip">
-	<span class='is-tooltip-label'>Description(s) uploaded to Limelight:</span> 
+	<span class='is-tooltip-label'>Name(s) and description(s) uploaded to Limelight:</span> 
 	</div>
 
-	<div style="margin-bottom:10px;margin-left:10px;" class="isTooltip">
-	<span>{{ proteinDescription }}</span> 
-	</div>
+	{{#each proteinNamesAndDescriptions as |proteinNamesAndDescription|}}
 
+		<div style="margin-bottom:15px;margin-left:10px;" class="isTooltip">
+		<span>{{ name }}</span> <span>{{ description }}</span>
+		</div>
 
-	</div>		
-{{else}}
-	<div style="margin-bottom:10px;" class="isTooltip"
-		><span class='is-tooltip-label'>No description uploaded to Limelight.</span></div>
-{{/if}}
+	{{/each}}
+</div>		

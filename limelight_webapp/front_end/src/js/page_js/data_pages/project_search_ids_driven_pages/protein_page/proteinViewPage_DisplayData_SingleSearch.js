@@ -132,6 +132,9 @@ export class ProteinViewPage_Display_SingleSearch {
 		//   Cached: Protein Name and Description in a Map, Key ProteinSequenceVersionId
 		this._proteinNameDescription_Key_ProteinSequenceVersionId = undefined;
 		
+		//   Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
+		this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId = undefined;
+		
 		//   Cached: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
 		this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId = undefined;
 	}
@@ -157,6 +160,9 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		//   Clear: Protein Name and Description in a Map, Key ProteinSequenceVersionId
 		this._proteinNameDescription_Key_ProteinSequenceVersionId = new Map();
+
+		//   Clear: Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
+		this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId = new Map();
 
 		//   Clear: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
 		this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId = new Map();
@@ -337,8 +343,10 @@ export class ProteinViewPage_Display_SingleSearch {
 			let proteinItemForProjectSearch = { proteinSequenceVersionId : proteinSequenceVersionId };
 			
 			{
-				let proteinName = undefined;
-				let proteinDescription = undefined;
+				let proteinName = undefined;			//  For "," delimited string
+				let proteinDescription = undefined;		//  For "," delimited string
+
+				const proteinNamesAndDescriptionsArray = [];  // For Tooltip
 
 				proteinItemForProjectSearch.proteinInfo = proteinInfo;
 
@@ -360,6 +368,12 @@ export class ProteinViewPage_Display_SingleSearch {
 								proteinDescription += "," + description;
 							}
 						}
+						// For Tooltip, matches Tooltip template
+						const proteinNamesAndDescriptionsEntry = {
+							name : name,
+							description : description
+						};
+						proteinNamesAndDescriptionsArray.push( proteinNamesAndDescriptionsEntry );
 					}
 				}
 
@@ -375,6 +389,9 @@ export class ProteinViewPage_Display_SingleSearch {
 
 				//   Protein Name and Description in a Map, Key ProteinSequenceVersionId
 				this._proteinNameDescription_Key_ProteinSequenceVersionId.set( proteinSequenceVersionId, proteinNameDescriptionCacheEntry );
+
+				//   Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
+				this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId.set( proteinSequenceVersionId, proteinNamesAndDescriptionsArray );
 			}
 			
 			let numReportedPeptides = 0;
@@ -803,6 +820,7 @@ export class ProteinViewPage_Display_SingleSearch {
 		{ uniqueId : proteinListItem.proteinSequenceVersionId, // Set for Data Table to identify the entry in the table
 				proteinSequenceVersionId : proteinListItem.proteinSequenceVersionId,
 				proteinName : proteinListItem.proteinName,
+				proteinDescription : proteinListItem.proteinDescription,
 				proteinCoverageRatio : proteinListItem.proteinCoverageRatio,
 				proteinCoverageRatioDisplay : proteinListItem.proteinCoverageRatioDisplay,
 				numPsms : proteinListItem.numPsms,
@@ -840,11 +858,25 @@ export class ProteinViewPage_Display_SingleSearch {
 		{
 			let column = {
 				id :           'proteins',
-				width :        '500px',
+				width :        '300px',
 				displayName :  'Protein(s)',
 				dataProperty : 'proteinName', 
                 sort : 'string',
                 style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
+                css_class : ' clickable ' + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' ' 
+			};
+
+			columns.push( column );
+        }
+
+		{
+			let column = {
+				id :           'protein_descriptions',
+				width :        '325px',
+				displayName :  'Protein Descripton(s)',
+				dataProperty : 'proteinDescription', 
+                sort : 'string',
+                style_override : 'white-space:nowrap;overflow:hidden;text-overflow: ellipsis;font-size:12px;',   //prevent line breaks and scroll if too long
                 css_class : ' clickable ' + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' ' 
 			};
 
@@ -862,6 +894,7 @@ export class ProteinViewPage_Display_SingleSearch {
 				showHorizontalGraph: true,
 				graphMaxValue: 1,
 				graphWidth:50,
+				style_override : 'font-size:12px;',
 				css_class : ' clickable ' 
 			};
 			
@@ -1249,16 +1282,13 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		//  Only displaying the name and description uploaded with the search
 
-		//  proteinDescription is a merge of all descriptions "," delim
+		const proteinNamesAndDescriptionsArray = this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId.get( proteinSequenceVersionIdInt );
 
-		const proteinNameDescription = this._proteinNameDescription_Key_ProteinSequenceVersionId.get( proteinSequenceVersionIdInt );
-		if ( proteinNameDescription === undefined ) {
-			return "Description Not Found";
+		if ( proteinNamesAndDescriptionsArray === undefined ) {
+			return "Name and Description Not Found";
 		}
-		
-		const tooltipContext = {
-				proteinDescription : proteinNameDescription.description
-		};
+
+		const tooltipContext = { proteinNamesAndDescriptions : proteinNamesAndDescriptionsArray };
 		
 		const tooltipHTML = this._protein_page_protein_tooltip_Template( tooltipContext );
 		
