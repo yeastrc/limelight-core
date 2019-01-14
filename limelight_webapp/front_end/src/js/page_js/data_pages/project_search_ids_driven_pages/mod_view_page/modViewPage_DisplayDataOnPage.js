@@ -32,6 +32,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 */
 	constructor( params ) {
 
+		const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = params.searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers;
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = params.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 		this._searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
@@ -40,6 +41,7 @@ export class ModViewPage_DisplayDataOnPage {
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,

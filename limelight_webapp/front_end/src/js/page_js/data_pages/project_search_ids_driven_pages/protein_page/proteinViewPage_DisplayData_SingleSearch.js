@@ -55,6 +55,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	 * 
 	 */
 	constructor( {
+		searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
@@ -98,6 +99,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			})
 		
 		this._proteinViewPage_Display_SingleProtein_SingleSearch = new ProteinViewPage_Display_SingleProtein_SingleSearch( {
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 			proteinViewPage_Display_SingleSearch : this,
 			proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,

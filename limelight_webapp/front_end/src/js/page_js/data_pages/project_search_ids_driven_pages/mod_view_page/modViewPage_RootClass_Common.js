@@ -70,8 +70,11 @@ export class ModViewPage_RootClass_Common {
 	 */
 	constructor( params ) {
 
+		let searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = undefined;
+
 		if ( params ) {
 			this._saveView_dataPages = params.saveView_dataPages;
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = params.searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers;
 		}
 
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
@@ -111,6 +114,7 @@ export class ModViewPage_RootClass_Common {
 		
 		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
 			
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing

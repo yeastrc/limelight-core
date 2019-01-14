@@ -31,6 +31,7 @@ export class PeptideViewPage_DisplayDataOnPage {
 	 * 
 	 */
 	constructor( {
+		searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
@@ -48,6 +49,7 @@ export class PeptideViewPage_DisplayDataOnPage {
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,

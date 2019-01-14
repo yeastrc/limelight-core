@@ -1,0 +1,25 @@
+{{!-- A comment: project_search_details_add_weblink_dialog_template.handlebars
+
+  When user clicks "+Link to Raw file" this is displayed to get new web link
+ --}}
+
+<div class=" selector_weblinks_add_link_container "  style="position: relative;">
+    <div class="error-message-container error_message_container_jq  selector_error_message_web_link_url_invalid " 
+            style="width: 600px;">
+        <div class="error-message-inner-container" >
+            <div class="error-message-close-x error_message_close_x_jq">X</div>
+            <div class="error-message-text" >Web Link URL is invalid</div>
+        </div>
+    </div>	
+    <div>
+        URL:
+        <input class=" selector_weblinks_add_link_input_url " type="text" style="font-size:80%;width:200px;">
+        Label:
+        <input class=" selector_weblinks_add_link_input_label "  type="text" style="font-size:80%;width:200px;">
+        <input style="font-size:80%;" class="submit-button selector_weblinks_add_link_add_button " type="button" value="Add URL for a RAW file" >
+        <input style="font-size:80%;" class="submit-button selector_weblinks_add_link_cancel_button " type="button" value="Cancel" >
+    </div>
+    <div style="font-size: 80%;">
+        The URL must start with "http://", "https://", "ftp://" or some other transport protocal
+    </div>
+</div>

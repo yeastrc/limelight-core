@@ -57,6 +57,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	 * 
 	 */
 	constructor( {
+		searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
@@ -94,6 +95,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinViewPage_Display_MultipleSearches_SingleProtein( {
 			proteinViewPage_Display_MultipleSearch : this,
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server,

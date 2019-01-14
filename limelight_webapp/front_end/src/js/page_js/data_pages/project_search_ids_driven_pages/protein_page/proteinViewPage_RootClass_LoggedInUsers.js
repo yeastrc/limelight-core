@@ -16,6 +16,8 @@
 
 import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages.js';
 
+import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.js';
+
 //  From local dir
 import { ProteinViewPage_RootClass_Common }  
 	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_RootClass_Common.js';
@@ -39,7 +41,9 @@ export class ProteinViewPage_RootClass_LoggedInUsers {
 
         const saveView_dataPages = new SaveView_dataPages();
         
-        const proteinViewPage_RootClass_Common = new ProteinViewPage_RootClass_Common({ saveView_dataPages });
+		const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = new SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers({});
+
+        const proteinViewPage_RootClass_Common = new ProteinViewPage_RootClass_Common({ saveView_dataPages, searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers });
         proteinViewPage_RootClass_Common.initialize();
     }
 }

@@ -98,6 +98,9 @@ task createHandlebarsOutputDirs {
   	  dirToCreate = rootDir + "search_detail_section_main_page"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
+  	  dirToCreate = rootDir + "search_detail_section_main_page_logged_in_users"
+  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
+  	  
   	  dirToCreate = rootDir + "search_detail_section_user_input_section"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -259,6 +262,21 @@ task handlebarsPrecompile_search_detail_section_main_page(type: NodeTask) {
    ]
 }
 
+//  Handlebars Precompile for input handlebars_templates/search_detail_section_main_page_logged_in_users
+
+task handlebarsPrecompile_search_detail_section_main_page_logged_in_users(type: NodeTask) {
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/handlebars/bin/handlebars')
+  } else {
+    script = project.file('node_modules/.bin/handlebars')
+  }
+  args = [ '--amd' , // parameters must be before file list
+  '--min',
+  '-f', 'handlebars_templates_precompiled/search_detail_section_main_page_logged_in_users/search_detail_section_main_page_logged_in_users_template-bundle.js',
+   'handlebars_templates/search_detail_section_main_page_logged_in_users'
+   ]
+}
 
 //  Handlebars Precompile for input handlebars_templates/search_detail_section_user_input_section
 
@@ -549,7 +567,9 @@ task copyFrontEndCSS(type: Sync) {
 task frontEndBuild(type: GradleBuild) {
    tasks = [ 
      'delete_outputDirs', 
+     
      'createHandlebarsOutputDirs', 
+     
      'handlebarsPrecompile_peptide_page', 
      'handlebarsPrecompile_protein_page',
      'handlebarsPrecompile_mod_view_page',
@@ -557,6 +577,7 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_save_view',
      'handlebarsPrecompile_protein_sequence_formatted_display',
      'handlebarsPrecompile_search_detail_section_main_page',
+     'handlebarsPrecompile_search_detail_section_main_page_logged_in_users',
      'handlebarsPrecompile_search_detail_section_user_input_section',
      'handlebarsPrecompile_psm_list',
      'handlebarsPrecompile_lorikeet_overlay',
@@ -573,7 +594,9 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_user_account_login_forgot_password',
      'handlebarsPrecompile_user_invite_processing',
      'handlebarsPrecompile_dummy_template',
-     'webpack',
+     
+     'webpack', // Run webpack
+     
      'copyFrontEndJS',
      'copyFrontEndCSS'
    ]

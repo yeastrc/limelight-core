@@ -51,6 +51,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	constructor(
 			{ proteinViewPage_Display_SingleSearch,
 				proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer, 
+				searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
 				dataPageStateManager_OtherUserSelections, 
 				dataPageStateManager_DataFrom_Server,
@@ -119,6 +120,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
 			displayOnly : true,  //  Display only.  No attach click handlers to allow changes
+			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
