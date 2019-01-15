@@ -54,7 +54,6 @@ import { CentralPageStateManager } from '../../central_page_state_manager/centra
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
 
 //  From local dir
-import { ModViewPage_FilterCriteriaDataDisplayUserInput }  from './modViewPage_FilterCriteriaDataDisplayUserInput.js';
 import { ModViewPage_DisplayDataOnPage }  from './modViewPage_DisplayDataOnPage.js';
 
 import { SearchColorManager }
@@ -103,15 +102,6 @@ export class ModViewPage_RootClass_Common {
 			searchColorManager : this._searchColors_CentralStateManagerObject
 		});
 
-		
-		
-		this._modViewPage_FilterCriteriaDataDisplayUserInput = new ModViewPage_FilterCriteriaDataDisplayUserInput( {
-			
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
-		});
-		
 		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
 			
 			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
@@ -156,8 +146,6 @@ export class ModViewPage_RootClass_Common {
 		////Instance of class
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		mainPagesPopulateHeader.initialize();
-		
-		this._modViewPage_FilterCriteriaDataDisplayUserInput.initialize();
 		
 		let searchDataLookupParametersFromPage = 
 			this._getSearchDataLookupParametersFromPage.getSearchDataLookupParametersFromPage();

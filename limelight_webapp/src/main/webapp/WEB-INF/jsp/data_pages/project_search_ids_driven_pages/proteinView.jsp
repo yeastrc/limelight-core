@@ -43,12 +43,7 @@
 	<%@ include file="/WEB-INF/jsp/jsp_includes/data_pages_navigation_links.jsp" %>
 	
 	<h4>Filters:</h4>
-	
-	<div style="position: relative;">
-		<%-- Filters Overlay --%>
-		<%@ include file="/WEB-INF/jsp/data_pages/project_search_ids_driven_pages/proteinView_filtersOverlay.jsp" %>
-	</div>
-	
+		
 	<table class=" selector_filter_section " style="border-width:0px;" >
 	</table>
 	
