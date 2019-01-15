@@ -36,12 +36,17 @@ export class ModalOverlay {
         let $modalOverlayContainer = this.$overlayDiv;
         let $modalOverlayBackground = this.$backgroundDiv
 
+        const $window = $(window);
+        const viewportHeight = $window.height();
+        const scrollTopWindow = $window.scrollTop();
+
+        const topOfModalOverlay = ( viewportHeight / 2 ) - ( this.height /* modal overlay height */ / 2 ) + scrollTopWindow;
+
         $modalOverlayContainer.css( 'width', this.width + 'px' );
         $modalOverlayContainer.css( 'left', '50%' );
-        $modalOverlayContainer.css( 'top', '50%' );
+        $modalOverlayContainer.css( 'top', topOfModalOverlay + 'px' );
         $modalOverlayContainer.css( 'margin-left', '-' + ( this.width / 2 ) + 'px' );
         $modalOverlayContainer.css( 'height', this.height + 'px' );
-        $modalOverlayContainer.css( 'margin-top', '-' + ( this.height  / 2 ) + 'px') ;
 
         $modalOverlayContainer.find('div.modal-overlay-content-body').empty();
         $modalOverlayContainer.find('div.modal-overlay-content-body').append( this.$contentDiv );
