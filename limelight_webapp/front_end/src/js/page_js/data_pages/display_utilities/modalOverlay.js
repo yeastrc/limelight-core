@@ -96,6 +96,32 @@ export class ModalOverlay {
             this.createOverlayDiv();
         }
 
+        //  Adjust position if needed to show in view port
+
+        const $window = $(window);
+        const viewportHeight = $window.height();
+        const viewportWidth = $window.width();
+        const scrollTopWindow = $window.scrollTop();
+
+        let topOfModalOverlay = ( viewportHeight / 2 ) - ( this.height /* modal overlay height */ / 2 ) + scrollTopWindow;
+        if ( topOfModalOverlay < 1 ) {
+            topOfModalOverlay = 1;
+        }
+        if ( topOfModalOverlay < scrollTopWindow ) {
+            topOfModalOverlay = scrollTopWindow;
+        }
+
+        let leftOfModalOverlay = ( viewportWidth / 2 ) - ( this.width /* modal overlay width */ / 2 );
+        if ( leftOfModalOverlay < 1 ) {
+            leftOfModalOverlay = 1;
+        }
+
+        this.$overlayDiv.css( 'width', this.width + 'px' );
+        this.$overlayDiv.css( 'height', this.height + 'px' );
+
+        this.$overlayDiv.css( 'left', leftOfModalOverlay + 'px' );
+        this.$overlayDiv.css( 'top', topOfModalOverlay + 'px' );
+
         this.$backgroundDiv.show();
         this.$overlayDiv.show();
 
