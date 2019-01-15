@@ -24,8 +24,27 @@ export class ModalOverlay {
 
         let objectThis = this;
 
+
+        const $window = $(window);
+        const viewportHeight = $window.height();
+        const viewportWidth = $window.width();
+        const scrollTopWindow = $window.scrollTop();
+
+        let topOfModalOverlay = ( viewportHeight / 2 ) - ( this.height /* modal overlay height */ / 2 ) + scrollTopWindow;
+        if ( topOfModalOverlay < 1 ) {
+            topOfModalOverlay = 1;
+        }
+        if ( topOfModalOverlay < scrollTopWindow ) {
+            topOfModalOverlay = scrollTopWindow;
+        }
+
+        let leftOfModalOverlay = ( viewportWidth / 2 ) - ( this.width /* modal overlay width */ / 2 );
+        if ( leftOfModalOverlay < 1 ) {
+            leftOfModalOverlay = 1;
+        }
+
         let template = Handlebars.templates.modalOverlay;
-        let html = template( { title : this.title } );
+        let html = template( { title : this.title, cssWidth : this.width, cssHeight : this.height, cssLeft : leftOfModalOverlay, cssTop : topOfModalOverlay } );
         this.$overlayDiv = $( html );
 
         template = Handlebars.templates.modalBackground;
@@ -35,18 +54,6 @@ export class ModalOverlay {
 
         let $modalOverlayContainer = this.$overlayDiv;
         let $modalOverlayBackground = this.$backgroundDiv
-
-        const $window = $(window);
-        const viewportHeight = $window.height();
-        const scrollTopWindow = $window.scrollTop();
-
-        const topOfModalOverlay = ( viewportHeight / 2 ) - ( this.height /* modal overlay height */ / 2 ) + scrollTopWindow;
-
-        $modalOverlayContainer.css( 'width', this.width + 'px' );
-        $modalOverlayContainer.css( 'left', '50%' );
-        $modalOverlayContainer.css( 'top', topOfModalOverlay + 'px' );
-        $modalOverlayContainer.css( 'margin-left', '-' + ( this.width / 2 ) + 'px' );
-        $modalOverlayContainer.css( 'height', this.height + 'px' );
 
         $modalOverlayContainer.find('div.modal-overlay-content-body').empty();
         $modalOverlayContainer.find('div.modal-overlay-content-body').append( this.$contentDiv );
