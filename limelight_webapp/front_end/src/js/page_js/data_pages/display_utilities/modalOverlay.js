@@ -116,9 +116,6 @@ export class ModalOverlay {
             leftOfModalOverlay = 1;
         }
 
-        this.$overlayDiv.css( 'width', this.width + 'px' );
-        this.$overlayDiv.css( 'height', this.height + 'px' );
-
         this.$overlayDiv.css( 'left', leftOfModalOverlay + 'px' );
         this.$overlayDiv.css( 'top', topOfModalOverlay + 'px' );
 
