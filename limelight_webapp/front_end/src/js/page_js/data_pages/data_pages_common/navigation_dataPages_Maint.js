@@ -38,6 +38,8 @@ class Navigation_dataPages_Maint {
 
 		this._projectSearchIdsOnPage = projectSearchIds;
 
+		this._insertNavLinksFromTemplateInHead();
+
 		this._updateNavLinks();
 
 		const $data_pages_nav_links_outer_container = $("#data_pages_nav_links_outer_container");
@@ -61,6 +63,25 @@ class Navigation_dataPages_Maint {
 	updateNavLinksForPageURL_Change() {
 
 		this._updateNavLinks();
+	}
+
+	/**
+	 * Copy contents of <script type="text/text" id="page_navigation_links_template">  </script>
+	 * to <div id="data_pages_nav_links_page_container" ></div>
+	 */	
+	_insertNavLinksFromTemplateInHead() {
+
+		const $page_navigation_links_template = $("#page_navigation_links_template");
+		if ( $page_navigation_links_template.length === 0 ) {
+			throw Error("No DOM element with id 'page_navigation_links_template'");
+		}
+		const page_navigation_links_templateHTML = $page_navigation_links_template.html();
+
+		const $data_pages_nav_links_page_container = $("#data_pages_nav_links_page_container");
+		if ( $data_pages_nav_links_page_container.length === 0 ) {
+			throw Error("No DOM element with id 'data_pages_nav_links_page_container'");
+		}
+		$data_pages_nav_links_page_container.html( page_navigation_links_templateHTML );
 	}
 
 	/**

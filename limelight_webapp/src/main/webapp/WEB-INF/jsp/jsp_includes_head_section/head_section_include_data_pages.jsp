@@ -27,3 +27,10 @@
  --%>
 
 <script type="text/text" id="page_user_default_url">${ defaultURL }</script>
+
+<script type="text/text" id="page_navigation_links_template">
+
+	<%--  Navigation Links --%>
+	<%@ include file="/WEB-INF/jsp/jsp_includes/data_pages_navigation_links.jsp" %>
+	
+</script>

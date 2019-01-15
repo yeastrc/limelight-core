@@ -39,8 +39,8 @@
 		List search mods:
 	</h3>
 	
-	<%--  Navigation Links --%>
-	<%@ include file="/WEB-INF/jsp/jsp_includes/data_pages_navigation_links.jsp" %>
+	<!--  Navigation Links -->
+	<div id="data_pages_nav_links_page_container" ></div>
 	
 	<h4>Filters:</h4>
 		

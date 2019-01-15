@@ -1,7 +1,9 @@
 <%--
 	data_pages_navigation_links.jsp
 	
-	Included on Data Pages (Peptide, Protein, Mod) for navigation between them
+	Included on Data Pages Header In: head_section_include_data_pages.jsp
+	
+	  (inside <script type="text/text" id="page_navigation_links_template">)
 
 --%>
 
