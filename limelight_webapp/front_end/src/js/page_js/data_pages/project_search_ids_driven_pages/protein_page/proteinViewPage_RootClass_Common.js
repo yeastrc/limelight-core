@@ -77,11 +77,12 @@ export class ProteinViewPage_RootClass_Common {
 	 */
 	constructor( params ) {
 
-		let searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = undefined;
-
 		if ( params ) {
-			this._saveView_dataPages = params.saveView_dataPages;
-			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = params.searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers;
+			this._dataPages_LoggedInUser_CommonObjectsFactory = params.dataPages_LoggedInUser_CommonObjectsFactory;
+		}
+
+		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
+			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
 		}
 
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
@@ -116,7 +117,7 @@ export class ProteinViewPage_RootClass_Common {
 
 		this._proteinViewPage_DisplayDataOnPage = new ProteinViewPage_DisplayDataOnPage( {
 			
-			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
@@ -169,10 +170,6 @@ export class ProteinViewPage_RootClass_Common {
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		mainPagesPopulateHeader.initialize();
 		
-//		this._proteinViewPage_FilterCriteriaDataDisplayUserInput.initialize();
-		
-		this._proteinViewPage_DisplayDataOnPage.initialize();
-		
 		let searchDataLookupParametersFromPage = 
 			this._getSearchDataLookupParametersFromPage.getSearchDataLookupParametersFromPage();
 		
@@ -185,6 +182,8 @@ export class ProteinViewPage_RootClass_Common {
 				dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM, projectSearchIds );
 
 
+		this._proteinViewPage_DisplayDataOnPage.initialize({ projectSearchIds });
+		
 		navigation_dataPages_Maint_Instance.initializePageOnLoad({ projectSearchIds }); // Initialize
 
 

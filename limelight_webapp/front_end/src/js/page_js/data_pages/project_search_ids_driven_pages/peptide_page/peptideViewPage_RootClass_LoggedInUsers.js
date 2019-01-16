@@ -14,8 +14,6 @@
 
  //  Imports
 
-import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages.js';
-
 import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.js';
 
 //  From local dir
@@ -39,11 +37,10 @@ export class PeptideViewPage_RootClass_LoggedInUsers {
 	 */
 	initialize() {
 
-        const saveView_dataPages = new SaveView_dataPages();
-        
-		const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = new SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers({});
+		const dataPages_LoggedInUser_CommonObjectsFactory = new DataPages_LoggedInUser_CommonObjectsFactory();
+		dataPages_LoggedInUser_CommonObjectsFactory.initialize();
 
-        const peptideViewPage_RootClass_Common = new PeptideViewPage_RootClass_Common({ saveView_dataPages, searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers });
+        const peptideViewPage_RootClass_Common = new PeptideViewPage_RootClass_Common({ dataPages_LoggedInUser_CommonObjectsFactory });
         peptideViewPage_RootClass_Common.initialize();
     }
 }

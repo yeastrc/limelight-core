@@ -38,12 +38,12 @@ export class SearchDetailsAndFilterBlock_MainPage {
 	/**
 	 * 
 	 * @param displayOnly - Do not attach click handlers for changing filters
-	 * @param searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers - Optional - passed in when logged in user
+	 * @param dataPages_LoggedInUser_CommonObjectsFactory - Optional - passed in when logged in user
 	 */
 	constructor( 
 			{ 
 				displayOnly,
-				searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+				dataPages_LoggedInUser_CommonObjectsFactory,
 				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
 				dataPageStateManager_DataFrom_Server, 
 				searchDetailsBlockDataMgmtProcessing,
@@ -126,7 +126,7 @@ export class SearchDetailsAndFilterBlock_MainPage {
 		this._searchDetails_GetCoreDataFromServer = new SearchDetails_GetCoreDataFromServer();
 
 		this._searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers =
-			new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({ searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers });
+			new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({ dataPages_LoggedInUser_CommonObjectsFactory });
 
 		this._searchDetailsDataLoaded_ProjectSearchIds = new Set();
 		this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds = new Set();

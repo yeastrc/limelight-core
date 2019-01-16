@@ -58,14 +58,15 @@ export class SaveView_dataPages {
 
         //  Populate Button for Save View
 
-        const $save_view_root_container = $("#save_view_root_container");
-        if ( $save_view_root_container.length === 0 ) {
-            console.log("Unable to initialize class SaveView_dataPages.  No DOM element with id 'save_view_root_container'");
+        const $selector_save_view_root_container = $(".selector_save_view_root_container");
+        if ( $selector_save_view_root_container.length === 0 ) {
+            console.log("Unable to initialize class SaveView_dataPages.  No DOM element with class 'selector_save_view_root_container'");
             return;
         }
-        const attr_project_owner = $save_view_root_container.attr("data-project_owner");
-
-        if ( attr_project_owner ) {
+        
+        //  Get is user Project Owner
+        const $page_auth_access_level_project_owner_allowed = $("#page_auth_access_level_project_owner_allowed");
+        if ( $page_auth_access_level_project_owner_allowed.length !== 0 ) {
             this._userIsProjectOwner = true;
         }
 
@@ -73,9 +74,9 @@ export class SaveView_dataPages {
     	
 
         const saveViewMainPageHTML = this._save_view__on_main_page_root_Template();
-        $save_view_root_container.append( saveViewMainPageHTML );
+        $selector_save_view_root_container.append( saveViewMainPageHTML );
 
-        const $selector_save_view_button = $save_view_root_container.find(".selector_save_view_button");
+        const $selector_save_view_button = $selector_save_view_root_container.find(".selector_save_view_button");
 
         $selector_save_view_button.click( function(eventObject) {
 			try {

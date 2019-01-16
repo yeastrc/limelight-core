@@ -45,16 +45,18 @@ import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pag
 export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 	/**
-	 * @param searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers - Optional - passed in when logged in user
+	 * @param dataPages_LoggedInUser_CommonObjectsFactory - Optional - passed in when logged in user
 	 */
     constructor({ 
-        searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers
+        dataPages_LoggedInUser_CommonObjectsFactory
     }) {
 
         this._initializeCalled = false;
-        
-        this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers;
-
+		
+		if ( dataPages_LoggedInUser_CommonObjectsFactory ) {
+	        this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers();
+		}
+		
 		this._searchDetails_GetCoreDataFromServer = new SearchDetails_GetCoreDataFromServer();
 
 		if (!_search_detail_section_main_page_template.searchDetails_ExpandSearchContents_Additions) {

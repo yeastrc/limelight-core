@@ -11,6 +11,11 @@
 
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_main_pages.jsp" %>
 
+	<%--  Only test for presence of this tag for is project owner allowed  --%>
+<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
+  <script type="text/text" id="page_auth_access_level_project_owner_allowed">x</script>
+ </c:if>
+
 <%--  Search Details Section Extras --%>
 <%@ include file="/WEB-INF/jsp/jsp_includes/searchDetailsSection_Extras.jsp" %>
 

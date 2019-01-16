@@ -38,7 +38,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   constructor({ }) {
+   constructor() {
        this._initializeCalled = false;
 
        if ( ! _search_detail_section_main_page_logged_in_users_template.project_search_details_add_weblink_link_template ) {

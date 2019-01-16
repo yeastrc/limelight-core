@@ -30,18 +30,22 @@ export class ModViewPage_DisplayDataOnPage {
 	/**
 	 * 
 	 */
-	constructor( params ) {
+	constructor({ 
+		dataPages_LoggedInUser_CommonObjectsFactory, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+		dataPageStateManager_DataFrom_Server,
+		searchDetailsBlockDataMgmtProcessing
+	 }) {
 
-		const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers = params.searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers;
-		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = params.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
-		this._searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
+		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
+		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 
 		//  Bind method to 'this' to pass to callback
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
-			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,

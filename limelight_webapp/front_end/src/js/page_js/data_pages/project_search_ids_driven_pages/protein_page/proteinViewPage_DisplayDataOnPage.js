@@ -34,7 +34,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 	 * 
 	 */
 	constructor( {
-		searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+		dataPages_LoggedInUser_CommonObjectsFactory,
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
@@ -58,7 +58,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
 
-			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
@@ -67,7 +67,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		
 		this._proteinViewPage_Display_SingleSearch = new ProteinViewPage_Display_SingleSearch( {
 
-			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
@@ -78,7 +78,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 		this._proteinViewPage_Display_MultipleSearches = new ProteinViewPage_Display_MultipleSearches( {
 
-			searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers,
+			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
@@ -91,7 +91,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 	/**
 	 * 
 	 */
-	initialize() {
+	initialize({ projectSearchIds }) {
 		
 		// @param rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto - Root DOM element to search for DOM element to insert the Search Details and Filters in
 

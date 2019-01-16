@@ -47,10 +47,9 @@
 	<table class=" selector_filter_section " style="border-width:0px;" >
 	</table>
 	
-	<%--  Save View Button --%>
-	<c:if test="${ webSessionAuthAccessLevel.assistantProjectOwnerAllowed }">
-		<%@ include file="/WEB-INF/jsp/jsp_includes/data_pages_save_view.jsp" %>
-	</c:if>
+	<!--  Save View Button -->
+	<div class=" selector_save_view_root_container" ></div>
+
 	<h3>
 		Protein List:
 	</h3>

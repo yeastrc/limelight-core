@@ -47,17 +47,15 @@
 	<table class=" selector_filter_section " style="border-width:0px;" >
 	</table>
 
-	<%--  Save View Button --%>
-	<c:if test="${ webSessionAuthAccessLevel.assistantProjectOwnerAllowed }">
-		<%@ include file="/WEB-INF/jsp/jsp_includes/data_pages_save_view.jsp" %>
-	</c:if>
-	
-  <div id="mod_list_container">
-  
-	<h2>Loading modification data...</h2>
+	<!--  Save View Button -->
+	<div class=" selector_save_view_root_container" ></div>
 
-  	
-  </div>
+	
+    <div id="mod_list_container">
+  
+	  <h2>Loading modification data...</h2>
+ 	
+    </div>
   
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 
