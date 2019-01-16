@@ -100,7 +100,7 @@ export class PeptideListingUtilsSingleSearch {
 			let column = {
 				id :           'sequence',
 				width :        '500px',
-				displayName :  'Sequence',
+				displayName :  'Reported Peptide',
 				dataProperty : 'sequence',
                 sort : 'string',
                 style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long

@@ -138,7 +138,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 
 		//  Header Line
 		{
-			const reportLineParts = [ 'Sequence', 'PSM Count' ]
+			const reportLineParts = [ 'Reported Peptide', 'PSM Count' ]
 			
 			for ( let annotation of reportedPeptideAnnotationTypes ) {
 				reportLineParts.push( annotation.name );
@@ -944,7 +944,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 			let column = {
 				id :           'sequence',
 				width :        '500px',
-				displayName :  'Sequence',
+				displayName :  'Reported Peptide',
 				dataProperty : 'reportedPeptideSequence', // 'sequence',
                 sort : 'string',
                 style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long

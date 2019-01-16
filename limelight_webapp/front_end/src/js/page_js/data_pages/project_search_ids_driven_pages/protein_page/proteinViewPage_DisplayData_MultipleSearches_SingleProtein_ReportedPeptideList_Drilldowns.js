@@ -171,19 +171,6 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 		// add in the click handlers for sorting the table
 		tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );
 
-		//  expansion at bottom level for PSMs
-
-		// add in the click and over handlers for the rows
-		// {
-		// 	const functionParams = { };
-		// 	functionParams.projectSearchId = projectSearchId;
-		// 	functionParams.searchDetailsBlockDataMgmtProcessing = this._searchDetailsBlockDataMgmtProcessing;
-		// 	functionParams.dataPageStateManager_DataFrom_Server = this._dataPageStateManager_DataFrom_Server;
-
-		// 	tableDisplayHandler.addExpansionHandlerToRows( 
-		// 			{ $tableContainerDiv, getElementToInsertFunction : PSMListingUtilsSingleSearch.createJQueryElementForPSMListing, functionParams } );
-		// }
-
 		//  Show the Reported Peptides for the search
 
 		// add in the click and over handlers for the rows
