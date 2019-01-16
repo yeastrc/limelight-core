@@ -12,6 +12,9 @@ let _common_template_bundle =
 	require("../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+    
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils.js';
 import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
