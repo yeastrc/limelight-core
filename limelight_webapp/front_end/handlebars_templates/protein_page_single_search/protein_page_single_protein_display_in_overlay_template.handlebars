@@ -144,14 +144,19 @@
 		</div>
 		--}}
 		
-		<div style="font-size: 24px; font-weight: bold; padding-bottom: 10px;">
-			Name (from FASTA): {{ proteinData.name }}
+		<div style="padding-bottom: 15px;">
+			<div style="font-size: 24px; font-weight: bold; ">
+				Name (from FASTA): {{ proteinData.name }}
+			</div>
+			{{#if proteinData.description }}
+			<div style="font-size: 14px; font-weight: bold; padding-top: 10px;">
+				{{ proteinData.description }}
+			</div>
+			{{/if}}
 		</div>
-		{{#if proteinData.description }}
-		  <div style="font-size: 14px; font-weight: bold; padding-bottom: 10px;">
-			{{ proteinData.description }}
-		  </div>
-		{{/if}}
+		
+		<div class=" selector_protein_mod_list_block ">
+		</div>
 		
 		<div >
 			<span style="font-size: 18px; font-weight: bold; ">Sequence Coverage:</span> 
@@ -161,9 +166,6 @@
 			Loading Protein Sequence
 		</div>
 
-		<div class=" selector_protein_mod_list_block ">
-		</div>
-		
 		{{!-- Hack to force the div < div class=" selector_reported_peptides_outer_container " > 
 				to below the float right items
 		 --}}

@@ -3,6 +3,6 @@
 		A single position in the Protein sequence
  --}}
 <div 
-	class=" selector_seq_at_pos {{ cssClassNames }} "
+	class=" selector_seq_at_pos selector_seq_at_pos_{{ position }} {{ cssClassNames }} "
 	data-pos="{{ position }}"  {{!-- data-pos= is info only, not used by code. Code uses .data( ) attached to this DOM element --}}
 >{{ sequenceLetter }}</div>

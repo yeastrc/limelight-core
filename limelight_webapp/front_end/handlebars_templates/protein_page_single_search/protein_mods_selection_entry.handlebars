@@ -1,11 +1,11 @@
 {{!--  protein_mods_selection_entry.handlebars --}}
-<div class=" mod-mass-outer-div">
+<div class=" mod-mass-outer-div  {{#if unmodifiedEntry }} selector_unmodified_entry {{else}} selector_not_unmodified_entry {{/if}}">
     <label>
         <div style="display: inline-block">
             <input type="checkbox" class=" selector_mod_entry_checkbox " {{#if isSelected }} checked {{/if}}>
         </div>
         <div style="display: inline-block">
-            {{ modMass }}
+            {{#if unmodifiedEntry }} unmodified {{else}} {{ modMass }} {{/if}}
         </div>
         {{!--  
         <div class=" selector_mod_entry clickable mod-mass {{ classAdditions }} ">{{ modMass }}</div>

@@ -42,7 +42,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 		const instance = new ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId();
 		
 		const proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId = 
-			instance._proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } );
+			instance._create_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } );
 
 		const proteinCoverageMergedRanges_KeyProteinSequenceVersionId =
 			instance._proteinSequenceCoverage_MergeRanges_Per_proteinSequenceVersionId( { proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId } );
@@ -81,7 +81,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	/**
 	 * Map the protein sequence coverage to be per proteinSequenceVersionId
 	 */
-	_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } ) {
+	_create_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } ) {
 
 		const proteinCoverage_KeyProteinSequenceVersionId = new Map()
 

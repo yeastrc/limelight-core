@@ -27,8 +27,6 @@ import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplay
 import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants.js';
 
 
-const _UNMODIFIED_TEXT_FOR_PAGE = "unmodified";
-
 const _UNMODIFIED_SELECTED = "U"; // A value that a mod mass can never be
 
 const _MAX_MODS_DISPLAY_NON_SELECTED = 20;
@@ -85,6 +83,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         loadedDataCommonHolder, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
         callbackMethodForSelectedChange } ) {
+
+        this._initializeCalled = false;
 
         this._useCombinedModificationMasses = useCombinedModificationMasses;
         this._rootDisplayJquerySelector = rootDisplayJquerySelector;
@@ -161,7 +161,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                 console.log("initialize(...): Provided initial_modificationsSelected param must be type Set");
                 throw Error("Provided initial_modificationsSelected param must be type Set");
             }
-			this._modificationsSelected = initial_modificationsSelected;
+            this._modificationsSelected = initial_modificationsSelected;
+            this._initialModificationsSelectedCleanup();
 		} else if ( ! encodedStateData ) {
 			this._modificationsSelected.clear(); // Reset to None
 		}
@@ -173,8 +174,21 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             this._selectedProteinSequencePositions = undefined;
         }
         
+        this._initializeCalled = true;
     }
 
+	/**
+	 * Clean up this._modificationsSelected due to not allowing unmodified to be selected when anything else is selected.
+     * 
+     * If any mass selected, the unmodified will be removed.
+	 */
+	_initialModificationsSelectedCleanup() {
+
+        if ( this._modificationsSelected.size > 1 ) {
+            //  If the set contains _UNMODIFIED_SELECTED and anything else, remove _UNMODIFIED_SELECTED
+            this._modificationsSelected.delete( _UNMODIFIED_SELECTED );
+        }
+    }
 
     //////////////////////////////////////
 
@@ -331,7 +345,9 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             }
         }
 
-		this._modificationsSelected = newSet_selectedModificationMasses;
+        this._modificationsSelected = newSet_selectedModificationMasses;
+        
+        this._initialModificationsSelectedCleanup();
 	}
 
     //////////////////////////////////
@@ -355,6 +371,15 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	 */
     isModificationSelected( modMass ) {
         return this._modificationsSelected.has( modMass );
+    }
+
+	/**
+	 * Return a Set of the currently selected modifications, excluding the "No Modification" selection option
+	 */
+    getModificationsSelected_ExcludingNoModificationOption() {
+        const selectionCopy = new Set( this._modificationsSelected );
+        selectionCopy.delete( _UNMODIFIED_SELECTED );
+        return selectionCopy;
     }
 
 	/**
@@ -544,10 +569,13 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                     // $selector_protein_mod_list.append('<span style="" >&nbsp;&nbsp;</span>');
                 }
 
-                const modEntryContext = { modMass : modEntry };
+                let unmodifiedEntry = false;
                 if ( modEntry === _UNMODIFIED_SELECTED ) {
-                    modEntryContext.modMass = _UNMODIFIED_TEXT_FOR_PAGE;
+                    unmodifiedEntry = true;
                 }
+
+                const modEntryContext = { modMass : modEntry, unmodifiedEntry };
+
                 if ( this._modificationsSelected.has( modEntry ) ) {
                     modEntryContext.isSelected = true;
                 }
@@ -555,18 +583,32 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                 const $modEntryDOM = $( modEntryHTML );
                 $modEntryDOM.appendTo( $selector_protein_mod_list );
                 addedModMassesToPage = true;
+
+                if ( modEntry !== _UNMODIFIED_SELECTED ) {
+                    const $selector_hide_modification_mass_choice = $modEntryDOM.find(".selector_hide_modification_mass_choice");
+                    $selector_hide_modification_mass_choice.qtip( {
+                        content: {
+                            text: "Modification mass will not be used since 'unmodified' was chosen."
+                        },
+                        position: {
+                            target: 'mouse',
+                            adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
+                            viewport: $(window)
+                        }
+                    });		
+                }
+
                 const $selector_mod_entry_checkbox = $modEntryDOM.find(".selector_mod_entry_checkbox");
                 if ( $selector_mod_entry_checkbox.length === 0 ) {
                     throw Error("No DOM element found with class 'selector_mod_entry_checkbox'");
                 }
-        
                 $selector_mod_entry_checkbox.change( function(eventObject) {
                     try {
                         eventObject.preventDefault();
                         const clickThis = this;
                         window.setTimeout( function() { //  Use setTimeout to run update later so checkbox shows or clears check immediately
                             try {
-                                objectThis._modMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry });
+                                objectThis._modMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry, unmodifiedEntry });
                             } catch( e ) {
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
@@ -640,14 +682,38 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	/**
 	 * Mod Mass displayed on page clicked
 	 */
-    _modMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry }) {
+    _modMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry, unmodifiedEntry }) {
 
         // check 'checked' property on DOM element checkbox
         // if ( clickThis.checked ) {
 
         const $clickThis = $( clickThis );
         if ( $clickThis.prop('checked') ) {
+
+            if ( unmodifiedEntry ) {
+                //  remove from Set and uncheck all not unmodified entries
+
+                this._modificationsSelected.clear();
+                const $selector_protein_mod_block = $clickThis.closest(".selector_protein_mod_block");
+                const $selector_not_unmodified_entryAll = $selector_protein_mod_block.find(".selector_not_unmodified_entry");
+                $selector_not_unmodified_entryAll.each( function( index, element ) {
+                    const $selector_not_unmodified_entry = $( this );
+                    const $selector_mod_entry_checkbox = $selector_not_unmodified_entry.find(".selector_mod_entry_checkbox");
+                    $selector_mod_entry_checkbox.prop( 'checked', false );
+                })
+                
+            } else {
+
+                //  remove from Set and uncheck the unmodified entry
+                this._modificationsSelected.delete( _UNMODIFIED_SELECTED );
+                const $selector_protein_mod_block = $clickThis.closest(".selector_protein_mod_block");
+                const $selector_unmodified_entry = $selector_protein_mod_block.find(".selector_unmodified_entry");
+                const $selector_mod_entry_checkbox = $selector_unmodified_entry.find(".selector_mod_entry_checkbox");
+                $selector_mod_entry_checkbox.prop( 'checked', false );
+            }
+
             this._modificationsSelected.add( modEntry );
+
         } else {
             this._modificationsSelected.delete( modEntry );
         }
@@ -963,8 +1029,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         const objectThis = this;
 
+        const $clickThis = $( clickThis );
+
         //  Up DOM tree to Container
-        const $selector_mods_selection_dialog_root = $( clickThis ).closest(".selector_mods_selection_dialog_root");
+        const $selector_mods_selection_dialog_root = $clickThis.closest(".selector_mods_selection_dialog_root");
         if ( $selector_mods_selection_dialog_root.length === 0 ) {
             throw Error("_selectionDialog_UpdateSelectedMods_fromMarkedSelectedMods_Clicked(...): Failed to find DOM element with class 'selector_mods_selection_dialog_root'");
         }
@@ -987,19 +1055,19 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         this._hide_remove_ModalOverlay();
 
-        //  Save off unmodified selection status
-        let unmodifiedSelected = false;
+
         if ( this._modificationsSelected.has( _UNMODIFIED_SELECTED ) ) {
-            unmodifiedSelected = true;
+
+            //  remove from Set and uncheck the unmodified entry
+            this._modificationsSelected.delete( _UNMODIFIED_SELECTED );
+            const $selector_protein_mod_block = $clickThis.closest(".selector_protein_mod_block");
+            const $selector_unmodified_entry = $selector_protein_mod_block.find(".selector_unmodified_entry");
+            const $selector_mod_entry_checkbox = $selector_unmodified_entry.find(".selector_mod_entry_checkbox");
+            $selector_mod_entry_checkbox.prop( 'checked', false );
         }
 
         //  Clear main mod mass selections
         this._modificationsSelected.clear();
-
-        //  Add back in unmodified selection status
-        if ( unmodifiedSelected ) {
-            this._modificationsSelected.add( _UNMODIFIED_SELECTED );
-        }
 
         //  Add in newly selected mod masses
         for ( const modSelected of modificationsSelectedInDialog ) {

@@ -377,7 +377,7 @@
 
             display: block;
         
-            width: 980px;
+            width: 1090px; //  Starting width to allow for sequence coverage block
         }
         
         .view-single-protein-overlay-header { 
@@ -482,7 +482,7 @@
 
 	//  Protein Sequence Formatted
 	.protein-sequence-formatted-sequence-data-block {
-		font-family: Courier, monospace;
+        font-family: Courier, monospace;
 		
 		span.header-pos-spacer-tick-number { // number for tick mark
 			margin-left: 1px;  // Same width as div.pos
@@ -555,7 +555,11 @@
 		}
     } // end .protein-sequence-formatted-sequence-data-block
 
-    
+    	//  Protein Sequence Formatted - Only applied to the actual sequence
+	.protein-sequence-formatted-sequence-data-block-actual-sequence {
+        font-size: 16px;
+    }
+
     //  Modification Mass Selection - main page (or single protein)
 
     .modification-mass-selection-outer-block {
@@ -570,8 +574,8 @@
     
         .mod-mass-outer-div {
             display: inline-block;
-            white-space: nowrap;
             position: relative;
+            white-space: nowrap;
             padding-right: 10px;
             margin-bottom: 2px;
         }
