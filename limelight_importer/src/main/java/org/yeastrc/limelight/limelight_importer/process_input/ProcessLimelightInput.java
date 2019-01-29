@@ -110,8 +110,15 @@ public class ProcessLimelightInput {
 			if ( ( skipPopulatingPathOnSearchLineOptChosen == null ) 
 					|| ( ! skipPopulatingPathOnSearchLineOptChosen ) ) {
 				
-				// TODO May need a change for web submitted imports 
-				searchDTO.setPath( importDirectory );
+				if ( StringUtils.isNotEmpty( importDirectory ) ) {
+					
+					//  importDirectory is override of path: part of import submission
+					
+					searchDTO.setPath( importDirectory );
+				} else {
+				
+					searchDTO.setPath( limelightInput.getDataPath() );
+				}
 			}
 			
 			if ( ! scanFilenamesLimelightXMLInputSet.isEmpty() ) {
