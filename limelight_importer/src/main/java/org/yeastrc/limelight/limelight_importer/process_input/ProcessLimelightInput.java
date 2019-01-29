@@ -115,10 +115,19 @@ public class ProcessLimelightInput {
 					//  importDirectory is override of path: part of import submission
 					
 					searchDTO.setPath( importDirectory );
-				} else {
-				
-					searchDTO.setPath( limelightInput.getDataPath() );
 				}
+			}
+			
+			System.out.println( "After skipPopulatingPathOnSearchLineOptChosen ... StringUtils.isNotEmpty( importDirectory )");
+			
+			System.out.println( "searchDTO.getPath(): " + searchDTO.getPath() );
+			System.out.println( "limelightInput.getDataPath(): " + limelightInput.getDataPath() );
+			
+			if ( searchDTO.getPath() == null
+					&& StringUtils.isNotEmpty( limelightInput.getDataPath() ) ) {
+			
+				System.out.println( "executing searchDTO.setPath( limelightInput.getDataPath() );");
+				searchDTO.setPath( limelightInput.getDataPath() );
 			}
 			
 			if ( ! scanFilenamesLimelightXMLInputSet.isEmpty() ) {
