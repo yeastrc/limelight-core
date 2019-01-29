@@ -12,9 +12,9 @@
  * 
  */
 
- //  Imports
+//  Imports
 
-import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.js';
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory.js';
 
 //  From local dir
 import { PeptideViewPage_RootClass_Common }  
