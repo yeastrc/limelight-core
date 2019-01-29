@@ -172,6 +172,19 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	}
 	
 	/**
+	 * @param initial_modsForProtein
+	 */
+	set_initial_modsForProtein({ initial_modsForProtein }) {
+	
+		if ( this._initializeCalled ) {
+			const msg = "Cannot call set_initial_modsForProtein(...) after initialize() has been called.";
+			console.log( msg );
+			throw Error( msg );
+		}
+		this._modsForProtein = initial_modsForProtein; 
+	}
+
+	/**
 	 * @param initial_widget_SequenceCoverageParam : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
 	 */
 	set_initial_widget_SequenceCoverageParam({ initial_widget_SequenceCoverageParam }) {
@@ -680,7 +693,11 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 						// Only show modification highlight where have sequence coverage
 						
 						//  modification masses for display at this position
-						const modMassesAtPosition = this._modsForProtein.get( proteinSequencePosition );
+						let modMassesAtPosition = undefined;
+						
+						if ( this._modsForProtein ) {
+							modMassesAtPosition = this._modsForProtein.get( proteinSequencePosition );
+						}
 							
 						if ( modMassesAtPosition ) {
 							if ( this._modPositionHightlightOverrideMasses ) {
