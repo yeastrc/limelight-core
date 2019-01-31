@@ -9,6 +9,7 @@ Submit Import Help:
 -i (--limelight-xml-file=) <limelightXML file>
 
 -s (--scan-file=)  <scan file>
+   (can have more than one scan file)
 
 -n (--no-scan-files)  :  If no scan files
 
