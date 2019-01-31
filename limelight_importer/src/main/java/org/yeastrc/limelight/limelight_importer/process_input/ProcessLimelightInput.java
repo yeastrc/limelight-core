@@ -107,27 +107,26 @@ public class ProcessLimelightInput {
 			searchDTO.setCreatedByUserId( userIdInsertingSearch );
 			searchDTO.setFastaFilename( limelightInput.getFastaFilename() );
 			
-			if ( ( skipPopulatingPathOnSearchLineOptChosen == null ) 
-					|| ( ! skipPopulatingPathOnSearchLineOptChosen ) ) {
+
+			if ( StringUtils.isNotEmpty( limelightInput.getDataPath() ) ) {
 				
-				if ( StringUtils.isNotEmpty( importDirectory ) ) {
-					
-					//  importDirectory is override of path: part of import submission
-					
-					searchDTO.setPath( importDirectory );
-				}
-			}
-			
-			System.out.println( "After skipPopulatingPathOnSearchLineOptChosen ... StringUtils.isNotEmpty( importDirectory )");
-			
-			System.out.println( "searchDTO.getPath(): " + searchDTO.getPath() );
-			System.out.println( "limelightInput.getDataPath(): " + limelightInput.getDataPath() );
-			
-			if ( searchDTO.getPath() == null
-					&& StringUtils.isNotEmpty( limelightInput.getDataPath() ) ) {
+				//  Always set searchDTO.Path to limelightInput.getDataPath if limelightInput.getDataPath is set
 			
 				System.out.println( "executing searchDTO.setPath( limelightInput.getDataPath() );");
 				searchDTO.setPath( limelightInput.getDataPath() );
+			
+			} else {
+				
+				if ( ( skipPopulatingPathOnSearchLineOptChosen == null ) 
+						|| ( ! skipPopulatingPathOnSearchLineOptChosen ) ) {
+					
+					if ( StringUtils.isNotEmpty( importDirectory ) ) {
+						
+						//  importDirectory is override of path: part of import submission
+						
+						searchDTO.setPath( importDirectory );
+					}
+				}
 			}
 			
 			if ( ! scanFilenamesLimelightXMLInputSet.isEmpty() ) {
