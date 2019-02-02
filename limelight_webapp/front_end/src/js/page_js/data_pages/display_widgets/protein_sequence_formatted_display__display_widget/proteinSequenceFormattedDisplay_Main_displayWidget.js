@@ -28,13 +28,35 @@ const _HTML_ELEMENT_DATA_KEY__SEQUENCE_POSITION = "position";
 
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_SELECTOR_AT_POSITION_PREFIX = "selector_seq_at_pos_";
 
+//  CSS Class Names for each position of protein sequence
+
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_MAIN = "pos";
 
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_SELECTED = "pos-sel";
 
-const _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE = "pos-has-seq-cov";
+//  CSS Class Names for styling each position based on sequence coverage (overall and filtered) and presence of mods and mods selections
 
-const _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS = "pos-has-mods";
+//		One and only one of these CSS Class names will be applied to each sequence position
+
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_UNCOVERED = "pos-uncovered";   // uncovered residue:  'fade out' the text
+
+//         This 'filter' is the Modification and Sequence Position selections
+
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_MOD = "pos-covered-outside-filter-mod";  // covered residue. not in filtered peptide list
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_NO_MOD = "pos-covered-outside-filter-nomod";  // covered residue, covered by filtered peptide list
+
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_NO_MOD = "pos-covered-within-filter-nomod";  // modded residue in filtered peptide list
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER = "pos-covered-within-filter-mod-within-filter";  // modded residue in filtered peptide list, has a mod == a mod filter
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTER = "pos-covered-within-filter-mod-outside-filter";  // modded residue in filtered peptide list, does not have a mod in mod filter 
+
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD = "pos-covered-nofilters-mod";  // modded residue, no filters (mod or position)
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_NO_MOD = "pos-covered-nofilters-nomod";  // not modded residue, no filters (mod or position)
+
+//  OLD
+
+// const _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE = "pos-has-seq-cov";
+
+// const _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS = "pos-has-mods";
 
 ////////////////////
 
@@ -63,54 +85,51 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 	/**
 	 * @param proteinSequenceString
-	 * @param widget_SequenceCoverageParam : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
 	 * 
-	 * @param modsForProtein : mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
+	 * @param modificationMassesForProteinPositions : modification masses per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
 	 * 
-	 * @param modPositionHightlightOverridePositions : positions on protein to hightlight as having mods :  [ <position 1 based>, ... ]
-	 * 				This overrides the default highlighting on the protein sequence using mods in param 'modsForProtein'.
-	 * 				This overrides the limiting of the highlighting to the areas with sequence coverage.
-	 * @param modPositionHightlightOverrideMasses : Masses in modsForProtein to hightlight as having mods :  [ <Modification Mass>, ... ]
-	 * 				The Modification Masses in this Array are matched to the masses in modsForProtein to determine the 
-	 * 					the positions on protein to hightlight as having mods.
-	 * 				This overrides the default highlighting on the protein sequence using mods in param 'modsForProtein'.
-	 * 				This is restricted to the areas with sequence coverage, like the default.
+	 * @param modificationMassesToFilterOn : modification masses that the user has selected to filter on - Initial value - Set
 	 * 
-	 *     !!  modPositionHightlightOverridePositions and modPositionHightlightOverrideMasses cannot both be populated.
+	 * @param widget_SequenceCoverageParam_All_Peptides : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
+	 * 				* For all peptides for this protein, not filtering on Modification or Protein Position selections.
+	 * 
+	 * @param widget_SequenceCoverageParam_Selected_Peptides : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
+	 * 				* For peptides for this protein, filtering on Modification or Protein Position selections.
+	 * 				* Probably not set since need to get Protein Position selections from this object.
 	 * 
 	 * @param containerHTML_Element : HTML Element in DOM to insert the Protein Sequence In
 	 * @param callbackMethodForSelectedChange : function called when user changes the selected positions
 	 */
 	constructor( { 
 		proteinSequenceString, 
-		widget_SequenceCoverageParam,
+		modificationMassesForProteinPositions, 
+		modificationMassesToFilterOn,
 
-		modsForProtein, 
-		modPositionHightlightOverridePositions,
-		modPositionHightlightOverrideMasses,
+		widget_SequenceCoverageParam_All_Peptides,
+		widget_SequenceCoverageParam_Selected_Peptides, // Probably not set since need to get Protein Position selections from this object.
 
 		containerHTML_Element, 
 		callbackMethodForSelectedChange }) {
 
 		this._initializeCalled = false;
 
-		if ( modPositionHightlightOverridePositions && modPositionHightlightOverrideMasses ) {
-			const msg = "ProteinSequenceFormattedDisplay_Main_displayWidget contructor: Error: modPositionHightlightOverridePositions && modPositionHightlightOverrideMasses both populated";
-			console.log( msg )
+		//  Hold onto these since need when user initiates interaction with the protein sequence widget
+
+		if ( proteinSequenceString === undefined || proteinSequenceString === null ) {
+			const msg = "ProteinSequenceFormattedDisplay_Main_displayWidget: constructor: proteinSequenceString cannot be undefined or null";
+			console.log( msg );
 			throw Error( msg );
 		}
-
-		//  Hold onto these since need when user initiates interaction with the protein sequence widget
 		
 		this._proteinSequenceString = proteinSequenceString;
 		this._proteinSequenceAsArray = proteinSequenceString.split("");
 		
-		this._widget_SequenceCoverageParam = widget_SequenceCoverageParam; 
-
-		this._modsForProtein = modsForProtein;
-		this._modPositionHightlightOverridePositions = modPositionHightlightOverridePositions;
-		this._modPositionHightlightOverrideMasses = modPositionHightlightOverrideMasses;
+		this._modificationMassesForProteinPositions = modificationMassesForProteinPositions;
+		this._modificationMassesToFilterOn = modificationMassesToFilterOn;  //  Always set to undefined if no selections
 		
+		this._widget_SequenceCoverageParam_All_Peptides = widget_SequenceCoverageParam_All_Peptides; 
+		this._widget_SequenceCoverageParam_Selected_Peptides = widget_SequenceCoverageParam_Selected_Peptides;  //  Always is undefined if no selections
+
 		this._containerHTML_Element = containerHTML_Element;
 		
 		this._callbackMethodForSelectedChange = callbackMethodForSelectedChange;
@@ -127,8 +146,17 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template ) {
 			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template");
 		}
-		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template ) {
-			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template");
+		// if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template ) {
+		// 	throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template");
+		// }
+		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template ) {
+			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template");
+		}
+		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template ) {
+			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template");
+		}
+		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_mass_entry_template ) {
+			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_mass_entry_template");
 		}
 		
 		this._protein_sequence_formatted_display_overall_block_template_Template = 
@@ -140,13 +168,25 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		this._protein_sequence_formatted_display_single_position_entry_template_Template = 
 			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template;
 
-		this._protein_sequence_formatted_display_single_position_tooltip_template_Template = 
-			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template;
+		// this._protein_sequence_formatted_display_single_position_tooltip_template_Template = 
+		// 	_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template;
+
+		this._protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template_Template = 
+			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template;
+		this._protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template_Template = 
+			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template;
+		this._protein_sequence_formatted_display_single_position_tooltip_mass_entry_template_Template = 
+			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_mass_entry_template;
+
 
 		this._selectedProteinSequencePositions = new Set();
 
-		this._proteinCoverage_ProteinSequencePositions = new Set();
-		this._modificationHighlighted_ProteinSequencePositions = new Set();
+		this._sequencePositions_Applied_Labels_CssClassNames = [];  // Use sequence position (1 based) as index into this array
+
+		//  OLD
+
+		// this._proteinCoverage_ProteinSequencePositions = new Set();
+		// this._modificationHighlighted_ProteinSequencePositions = new Set();
 	}
 
 	/**
@@ -172,29 +212,55 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	}
 	
 	/**
-	 * @param initial_modsForProtein
+	 * @param initial_modificationMassesForProteinPositions
 	 */
-	set_initial_modsForProtein({ initial_modsForProtein }) {
+	set_initial_modificationMassesForProteinPositions({ initial_modificationMassesForProteinPositions }) {
 	
 		if ( this._initializeCalled ) {
-			const msg = "Cannot call set_initial_modsForProtein(...) after initialize() has been called.";
+			const msg = "Cannot call set_initial_modificationMassesForProteinPositions(...) after initialize() has been called.";
 			console.log( msg );
 			throw Error( msg );
 		}
-		this._modsForProtein = initial_modsForProtein; 
+		this._modificationMassesForProteinPositions = initial_modificationMassesForProteinPositions; 
 	}
 
 	/**
-	 * @param initial_widget_SequenceCoverageParam : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
+	 * @param initial_modificationMassesToFilterOn
 	 */
-	set_initial_widget_SequenceCoverageParam({ initial_widget_SequenceCoverageParam }) {
+	set_initial_modificationMassesToFilterOn({ initial_modificationMassesToFilterOn }) {
 	
 		if ( this._initializeCalled ) {
-			const msg = "Cannot call set_initial_widget_SequenceCoverageParam(...) after initialize() has been called.";
+			const msg = "Cannot call set_initial_modificationMassesToFilterOn(...) after initialize() has been called.";
 			console.log( msg );
 			throw Error( msg );
 		}
-		this._widget_SequenceCoverageParam = initial_widget_SequenceCoverageParam; 
+		this._modificationMassesToFilterOn = initial_modificationMassesToFilterOn; 
+	}
+
+	/**
+	 * @param initial_widget_SequenceCoverageParam_All_Peptides : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
+	 */
+	set_initial_widget_SequenceCoverageParam_All_Peptides({ initial_widget_SequenceCoverageParam_All_Peptides }) {
+	
+		if ( this._initializeCalled ) {
+			const msg = "Cannot call set_initial_widget_SequenceCoverageParam_All_Peptides(...) after initialize() has been called.";
+			console.log( msg );
+			throw Error( msg );
+		}
+		this._widget_SequenceCoverageParam_All_Peptides = initial_widget_SequenceCoverageParam_All_Peptides; 
+	}
+
+	/**
+	 * @param initial_widget_SequenceCoverageParam_Selected_Peptides : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
+	 */
+	set_initial_widget_SequenceCoverageParam_Selected_Peptides({ initial_widget_SequenceCoverageParam_Selected_Peptides }) {
+	
+		if ( this._initializeCalled ) {
+			const msg = "Cannot call set_initial_widget_SequenceCoverageParam_Selected_Peptides(...) after initialize() has been called.";
+			console.log( msg );
+			throw Error( msg );
+		}
+		this._widget_SequenceCoverageParam_Selected_Peptides = initial_widget_SequenceCoverageParam_Selected_Peptides; 
 	}
 
 	/**
@@ -221,58 +287,45 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	}
 
 	/**
-	 * @param modsForProtein : updated mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
+	 * @param modificationMassesForProteinPositions : updated mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
 	 * 
 	 */
-	update_modsForProtein( { modsForProtein } ) {
+	update_modificationMassesForProteinPositions( { modificationMassesForProteinPositions } ) {
 
-		this._modsForProtein = modsForProtein;
+		this._modificationMassesForProteinPositions = modificationMassesForProteinPositions;
 
-		this._updateDisplay_modPositionHightlight();
+		this._updateDisplay_positionStyling();
 	}
 
 	/**
-	 * @param modPositionHightlightOverridePositions : positions on protein to hightlight as having mods :  [ <position 1 based>, ... ]
-	 * 				This overrides the default highlighting on the protein sequence using mods in param 'modsForProtein'.
+	 * @param modificationMassesToFilterOn : updated mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
 	 * 
-	 *     !!  modPositionHightlightOverridePositions and modPositionHightlightOverrideMasses cannot both be populated.
-	 * 			Updating 1 to a value will change the other to be undefined
 	 */
-	update_modPositionHightlightOverridePositions( { modPositionHightlightOverridePositions } ) {
+	update_modificationMassesToFilterOn( { modificationMassesToFilterOn } ) {
 
-		this._modPositionHightlightOverridePositions = modPositionHightlightOverridePositions;
-		this._modPositionHightlightOverrideMasses = undefined;
+		this._modificationMassesToFilterOn = modificationMassesToFilterOn;
 
-		this._updateDisplay_modPositionHightlight();
+		this._updateDisplay_positionStyling();
 	}
 
 	/**
-	 * @param modPositionHightlightOverrideMasses : Masses in modsForProtein to hightlight as having mods :  [ <Modification Mass>, ... ]
-	 * 				The Modification Masses in this Array are matched to the masses in modsForProtein to determine the 
-	 * 					the positions on protein to hightlight as having mods.
-	 * 				This overrides the default highlighting on the protein sequence using mods in param 'modsForProtein'.
-	 * 
-	 *     !!  modPositionHightlightOverridePositions and modPositionHightlightOverrideMasses cannot both be populated.
-	 * 			Updating 1 to a value will change the other to be undefined
+	 * @param widget_SequenceCoverageParam_All_Peptides : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
 	 */
-	update_modPositionHightlightOverrideMasses( { modPositionHightlightOverrideMasses } ) {
-
-		this._modPositionHightlightOverrideMasses = modPositionHightlightOverrideMasses;
-		this._modPositionHightlightOverridePositions = undefined;
-
-		this._updateDisplay_modPositionHightlight();
-	}
-
-	/**
-	 * @param widget_SequenceCoverageParam : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
-	 */
-	update_widget_SequenceCoverageParam({ widget_SequenceCoverageParam }) {
+	update_widget_SequenceCoverageParam_All_Peptides({ widget_SequenceCoverageParam_All_Peptides }) {
 	
-		this._widget_SequenceCoverageParam = widget_SequenceCoverageParam; 
+		this._widget_SequenceCoverageParam_All_Peptides = widget_SequenceCoverageParam_All_Peptides; 
 
-		this._updateDisplay_ForChanged_widget_SequenceCoverageParam();
+		this._updateDisplay_positionStyling();
+	}
 
-		this._updateDisplay_modPositionHightlight();
+	/**
+	 * @param widget_SequenceCoverageParam_Selected_Peptides : class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
+	 */
+	update_widget_SequenceCoverageParam_Selected_Peptides({ widget_SequenceCoverageParam_Selected_Peptides }) {
+	
+		this._widget_SequenceCoverageParam_Selected_Peptides = widget_SequenceCoverageParam_Selected_Peptides; 
+
+		this._updateDisplay_positionStyling();
 	}
 
 	/**
@@ -289,7 +342,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 		if (this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0) {
 
-			const positionsAsArray = Array.from(this._selectedProteinSequencePositions);
+			const positionsAsArray = Array.from( this._selectedProteinSequencePositions );
 
 			positionsAsArray.sort(function (a, b) {
 				if (a < b) {
@@ -650,79 +703,20 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 			const proteinSequencePosition = proteinSequenceIndex + 1; // '1' based
 			const proteinSequenceAtPosition = proteinSequenceAsArray[  proteinSequenceIndex]; 
 			
-			let cssClassNamesArr = [ _CSS_CLASS_NAME__SEQUENCE_POSITION_MAIN ]; 
+			const cssClassNamesArr = [ _CSS_CLASS_NAME__SEQUENCE_POSITION_MAIN ]; 
 
-			//  this._widget_SequenceCoverageParam is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
-
-			//  Fastest way to determine is Protein Coverage At Position 
-			if ( this._widget_SequenceCoverageParam ) {
-				const isProteinCoverageAtPosition = this._widget_SequenceCoverageParam.isProteinCoverageAtPosition( { position : proteinSequencePosition } );
-				if ( isProteinCoverageAtPosition ) {
-					this._proteinCoverage_ProteinSequencePositions.add( proteinSequencePosition );
-					cssClassNamesArr.push( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE );
-				}
+			{
+				const className_ForStyling_ForProteinSequencePosition = this._get_className_ForStyling_ForProteinSequencePosition({ proteinSequencePosition });
+				cssClassNamesArr.push( className_ForStyling_ForProteinSequencePosition );
+				this._sequencePositions_Applied_Labels_CssClassNames[ proteinSequencePosition ] = className_ForStyling_ForProteinSequencePosition;
 			}
-			
+
 			if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.has( proteinSequencePosition ) ) {
 				cssClassNamesArr.push( _CSS_CLASS_NAME__SEQUENCE_POSITION_SELECTED );
 			}
-			
-			{
-				//  Add CSS Class for Position has Modification highlighting for this Protein Sequence Position
 
-				//  Add if position has modifications, allow for overrides by position or by modification masses
+			//  this._widget_SequenceCoverageParam is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 
-				let modificationHighlightAtPosition = false;
-
-				if ( this._modPositionHightlightOverridePositions ) {
-
-					//  Position overrides provided override everything else
-
-					if ( this._modPositionHightlightOverridePositions.includes( proteinSequencePosition ) ) {
-						modificationHighlightAtPosition = true;
-					}
-				} else {
-
-					let isProteinCoverageAtPosition = false;
-					if ( this._widget_SequenceCoverageParam ) {
-						isProteinCoverageAtPosition = this._widget_SequenceCoverageParam.isProteinCoverageAtPosition( { position : proteinSequencePosition } );
-					}
-
-					if ( isProteinCoverageAtPosition ) {
-
-						// Only show modification highlight where have sequence coverage
-						
-						//  modification masses for display at this position
-						let modMassesAtPosition = undefined;
-						
-						if ( this._modsForProtein ) {
-							modMassesAtPosition = this._modsForProtein.get( proteinSequencePosition );
-						}
-							
-						if ( modMassesAtPosition ) {
-							if ( this._modPositionHightlightOverrideMasses ) {
-
-								//  Have modification mass override so only highlight when one of the provided mod mass overrides is at this position
-
-								for ( const modMassAtPosition of modMassesAtPosition ) {
-									if ( this._modPositionHightlightOverrideMasses.has( modMassAtPosition ) ) {
-										modificationHighlightAtPosition = true;
-										break;
-									}
-								}
-							} else {
-
-								modificationHighlightAtPosition = true;
-							}
-						}
-					}
-				}
-				if ( modificationHighlightAtPosition ) {
-					this._modificationHighlighted_ProteinSequencePositions.add( proteinSequencePosition );
-					cssClassNamesArr.push( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS );
-				}
-			}
-			
 			const cssClassNames = cssClassNamesArr.join( "  " );  //  create string of CSS class names in array
 
 			const context = { position : proteinSequencePosition, sequenceLetter : proteinSequenceAtPosition, cssClassNames };
@@ -758,6 +752,103 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		
 		return resultNumberString;
 	}
+
+	/**
+	 * Get the CSS Class Name for Styling for this Protein Sequence Position
+	 */
+	_get_className_ForStyling_ForProteinSequencePosition({ proteinSequencePosition }) {
+
+
+		if ( ! this._widget_SequenceCoverageParam_All_Peptides.isProteinCoverageAtPosition( { position : proteinSequencePosition } ) ) {
+
+			//  position has no sequence coverage, by default, then has no mods
+
+			return _CSS_CLASS_NAME__SEQUENCE_POSITION_UNCOVERED; // EARLY RETURN   // uncovered residue:
+		}
+
+		if ( ! this._widget_SequenceCoverageParam_Selected_Peptides ) {
+
+			//  no user selection
+
+			if ( this._proteinSequencePosition_ContainsAnyModificationMasses({ proteinSequencePosition }) ) {
+
+				return _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD; // EARLY RETURN // modded residue, no filters (mod or position)
+			}
+
+			return _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_NO_MOD; // EARLY RETURN  // not modded residue, no filters (mod or position)
+		}
+
+		//  Have User Selection
+
+		if ( this._widget_SequenceCoverageParam_Selected_Peptides.isProteinCoverageAtPosition( { position : proteinSequencePosition } ) ) {
+
+			//  Position is inside selected peptides coverage
+
+			if ( this._proteinSequencePosition_Contains_Selected_ModificationMasses({ proteinSequencePosition }) ) {
+
+				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER; // EARLY RETURN   // modded residue in filtered peptide list, has a mod == a mod filter
+			}
+
+			if ( this._proteinSequencePosition_ContainsAnyModificationMasses({ proteinSequencePosition }) ) {
+
+				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTER; // EARLY RETURN  // modded residue in filtered peptide list, does not have a mod in mod filter 
+			}
+
+			return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_NO_MOD; // EARLY RETURN    // modded residue in filtered peptide list
+		}
+
+		//  Position is outside selected peptides coverage
+
+		if ( this._proteinSequencePosition_ContainsAnyModificationMasses({ proteinSequencePosition }) ) {
+
+			return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_MOD; // EARLY RETURN   // covered residue. not in filtered peptide list or no filters selected
+		}
+
+		return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_NO_MOD;  // covered residue, covered by filtered peptide list
+	}
+
+	/**
+	 * Does this Protein Sequence Position contain any SELECTED modification masses
+	 */
+	_proteinSequencePosition_Contains_Selected_ModificationMasses({ proteinSequencePosition }) {
+
+		if ( ! this._modificationMassesToFilterOn ) {
+			//  No selections
+			return false;  // EARLY RETURN
+		}
+
+		const modificationMassesAtPosition = this._modificationMassesForProteinPositions.get( proteinSequencePosition ); // modification masses per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >. )
+
+		if ( modificationMassesAtPosition && modificationMassesAtPosition.length !== 0 ) { 
+			//  Modification Masses found at position
+
+			for ( const modificationMassAtPosition of modificationMassesAtPosition ) {
+				for ( const modMassToFilterOn of this._modificationMassesToFilterOn ) {
+
+					if ( modificationMassAtPosition === modMassToFilterOn ) {
+						//  Found mod mass at position that are filtering on
+						return true; // EARLY RETURN
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Does this Protein Sequence Position contain any modification masses
+	 */
+	_proteinSequencePosition_ContainsAnyModificationMasses({ proteinSequencePosition }) {
+
+		const modificationMassesAtPosition = this._modificationMassesForProteinPositions.get( proteinSequencePosition ); // modification masses per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >. )
+
+		if ( modificationMassesAtPosition && modificationMassesAtPosition.length !== 0 ) { 
+			//  Modification Masses found at position
+			return true; // EARLY RETURN
+		}
+		return false;
+	}
+
 	
 	////////////////////////////////////////////////////////
 
@@ -924,12 +1015,8 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 				const proteinSequencePosition = dataPos;
 				
-				if ( proteinSequencePosition === 5 ) {
-					var z = 0;
-				}
-
 				//  modification masses for display
-				const modMasses = objectThis._modsForProtein.get( proteinSequencePosition );
+				const modMasses = objectThis._modificationMassesForProteinPositions.get( proteinSequencePosition );
 
 				const tooltipContext = {
 						position : proteinSequencePosition
@@ -938,7 +1025,41 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 					tooltipContext.modMasses = modMasses;
 				}
 
-				const tooltipContentsHTML = objectThis._protein_sequence_formatted_display_single_position_tooltip_template_Template( tooltipContext );
+				// 	this._protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template_Template = 
+				// 	_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template;
+				// this._protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template_Template = 
+				// 	_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template;
+				// this._protein_sequence_formatted_display_single_position_tooltip_mass_entry_template_Template = 
+
+				const tooltipContentsHTML_Start = objectThis._protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template_Template( tooltipContext );
+				
+				const tooltipContentsHTML_Parts = [ tooltipContentsHTML_Start ];
+
+				
+				if ( modMasses ) {
+					const modMassesLength = modMasses.length;
+					for ( let index = 0; index < modMassesLength; index++  ) {
+						const modMass = modMasses[ index ];
+						if ( index > 0 ) {
+							tooltipContentsHTML_Parts.push( ", " );
+						}
+
+						const massEntryContext = { modMass : modMass };
+
+						if ( objectThis._modificationMassesToFilterOn && objectThis._modificationMassesToFilterOn.has( modMass ) ) {
+							massEntryContext.highlightMass = true;
+						}
+						const tooltipContentsHTML_MassEntry = objectThis._protein_sequence_formatted_display_single_position_tooltip_mass_entry_template_Template( massEntryContext );
+
+						tooltipContentsHTML_Parts.push( tooltipContentsHTML_MassEntry );
+					}
+				}
+
+				const tooltipContentsHTML_End = objectThis._protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template_Template( tooltipContext );
+
+				tooltipContentsHTML_Parts.push( tooltipContentsHTML_End );
+
+				const tooltipContentsHTML = tooltipContentsHTML_Parts.join("");
 
 				//  Update tool tip contents
 				qtipAPI.set('content.text', tooltipContentsHTML );
@@ -968,11 +1089,9 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	///////////////////////////////////
 	
 	/**
-	 * update Display ForChanged modPositionHightlightOverridePositions OR modPositionHightlightOverrideMasses
-	 * 
-	 * Add or remove CSS class in _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS
+	 * update CSS class for styling
 	 */
-	_updateDisplay_modPositionHightlight() {
+	_updateDisplay_positionStyling() {
 
 		const $containerHTML_Element = $( this._containerHTML_Element );
 
@@ -985,120 +1104,27 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 		for ( let proteinSequencePosition = 1; proteinSequencePosition <= proteinSequenceLenth; proteinSequencePosition++ ) {
 
-			//  Add CSS Class for Position has Modification highlighting for this Protein Sequence Position
+			//  Get new Position Styling CSS Classname
 
-			//  Add if position has modifications, allow for overrides by position or by modification masses
+			const old_className_ForStyling_ForProteinSequencePosition = this._sequencePositions_Applied_Labels_CssClassNames[ proteinSequencePosition ];
 
-			let modificationHighlightAtPosition = false;
+			const new_className_ForStyling_ForProteinSequencePosition = this._get_className_ForStyling_ForProteinSequencePosition({ proteinSequencePosition });
 
-			if ( this._modPositionHightlightOverridePositions ) {
-
-				//  Position overrides provided override everything else
-
-				if ( this._modPositionHightlightOverridePositions.includes( proteinSequencePosition ) ) {
-					modificationHighlightAtPosition = true;
-				}
-			} else {
-
-				let isProteinCoverageAtPosition = false;
-				if ( this._widget_SequenceCoverageParam ) {
-					isProteinCoverageAtPosition = this._widget_SequenceCoverageParam.isProteinCoverageAtPosition( { position : proteinSequencePosition } );
-				}
-
-				if ( isProteinCoverageAtPosition ) {
-
-					// Only show modification highlight where have sequence coverage
-					
-					//  modification masses for display at this position
-					const modMassesAtPosition = this._modsForProtein.get( proteinSequencePosition );
-						
-					if ( modMassesAtPosition ) {
-						if ( this._modPositionHightlightOverrideMasses ) {
-
-							//  Have modification mass override so only highlight when one of the provided mod mass overrides is at this position
-							
-							for ( const modMassAtPosition of modMassesAtPosition ) {
-								if ( this._modPositionHightlightOverrideMasses.has( modMassAtPosition ) ) {
-									modificationHighlightAtPosition = true;
-									break;
-								}
-							}
-						} else {
-
-							modificationHighlightAtPosition = true;
-						}
-					}
-				}
+			if ( old_className_ForStyling_ForProteinSequencePosition === new_className_ForStyling_ForProteinSequencePosition ) {
+				//  No change so skip to next position
+				continue; //  EARLY CONTINUE
 			}
-			if ( modificationHighlightAtPosition ) {
+			
+			//  update saved CSS Class name
+			this._sequencePositions_Applied_Labels_CssClassNames[ proteinSequencePosition ] = new_className_ForStyling_ForProteinSequencePosition;
 
-				if ( ! this._modificationHighlighted_ProteinSequencePositions.has( proteinSequencePosition ) ) {
+			//  Remove old class name from DOM element and Add new class name to DOM element
 
-					const $target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
-					this._modificationHighlighted_ProteinSequencePositions.add( proteinSequencePosition );
-					$target.addClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS );
-				}
-			} else {
-
-				if ( this._modificationHighlighted_ProteinSequencePositions.has( proteinSequencePosition ) ) {
-
-					const $target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
-					this._modificationHighlighted_ProteinSequencePositions.delete( proteinSequencePosition );
-					$target.removeClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS );
-				}
-			}
+			const $target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
+			$target.removeClass( old_className_ForStyling_ForProteinSequencePosition );
+			$target.addClass( new_className_ForStyling_ForProteinSequencePosition );
 		}
 	}
-
-	///////////////////////////////////
-	
-	/**
-	 * update Display ForChanged _widget_SequenceCoverageParam
-	 * 
-	 * Add or remove CSS class in _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE
-	 */
-	_updateDisplay_ForChanged_widget_SequenceCoverageParam() {
-
-		const $containerHTML_Element = $( this._containerHTML_Element );
-
-		const $selector_sequence_data = $containerHTML_Element.find(".selector_sequence_data");
-		if ( $selector_sequence_data.length === 0 ) {
-			throw Error("_updateDisplay_ForChanged_widget_SequenceCoverageParam: Failed to find DOM element with class 'selector_sequence_data'");
-		}
-
-		const proteinSequenceLenth = this._proteinSequenceString.length;
-
-		for ( let proteinSequencePosition = 1; proteinSequencePosition <= proteinSequenceLenth; proteinSequencePosition++ ) {
-
-			//  Add CSS Class for Position has Sequence Coverage highlighting for this Protein Sequence Position
-
-			//  Add if position has Sequence Coverage
-
-			let isProteinCoverageAtPosition = false;
-			if ( this._widget_SequenceCoverageParam ) {
-				isProteinCoverageAtPosition = this._widget_SequenceCoverageParam.isProteinCoverageAtPosition( { position : proteinSequencePosition } );
-			}
-
-			if ( isProteinCoverageAtPosition ) {
-
-				if ( ! this._proteinCoverage_ProteinSequencePositions.has( proteinSequencePosition ) ) {
-
-					const $target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
-					this._proteinCoverage_ProteinSequencePositions.add( proteinSequencePosition );
-					$target.addClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE );
-				}
-			} else {
-
-				if ( this._proteinCoverage_ProteinSequencePositions.has( proteinSequencePosition ) ) {
-
-					const $target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
-					this._proteinCoverage_ProteinSequencePositions.delete( proteinSequencePosition );
-					$target.removeClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE );
-				}
-			}
-		}
-	}
-	
 
 	/**
 	 * Get Protein sequence Single Residue single DOM element (as jQuery object)

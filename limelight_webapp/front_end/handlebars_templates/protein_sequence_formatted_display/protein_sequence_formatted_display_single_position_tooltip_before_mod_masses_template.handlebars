@@ -1,6 +1,8 @@
-{{!-- protein_sequence_formatted_display_single_position_tooltip_template.handlebars
+{{!-- protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template.handlebars
 
 		Tooltip Contents for a single position in the Protein sequence
+
+		HTML Before the Mod Mass List
  
  --}}
  <div >
@@ -13,10 +15,6 @@
 	 		Modifications:
 	 	</div>
  		<div >
-	 	  {{#each modMasses as |modMass| }}
-	 	  	{{ modMass }}{{#if @last}}{{else}}, {{/if}}
-	 	  {{/each}}
-	 	</div>
-	 {{/if}}
- </div>
- 
+
+ 	 {{/if}}
+			 {{!-- Mod Mass List Starts Here --}}

@@ -480,10 +480,11 @@
         font-size:12px;
     }
 
+    $protein-sequence-primary-font: Courier, monospace; //  Used for all but legend text that is not an example residue string
+        
 	//  Protein Sequence Formatted
 	.protein-sequence-formatted-sequence-data-block {
-        font-family: Courier, monospace;
-		
+
 		span.header-pos-spacer-tick-number { // number for tick mark
 			margin-left: 1px;  // Same width as div.pos
 		}	
@@ -506,7 +507,7 @@
 		
 		div.pos-legend-items { margin-bottom: 3px; }
 		
-		div.pos { // single sequence position
+		div.pos { // single sequence position - Base class for formatting every residue
 			cursor: pointer;
 			display: inline-block;
 
@@ -541,22 +542,62 @@
 				padding-right: 0px;
 				padding-top: 0px; 
 				padding-bottom: 0px;
-			}	
+            }	
+            
+            //  use of '&' means that it applies when both class 'pos' (containing class) and the class after the '&' are on the elemennt
 
-			&.pos-has-seq-cov {  //  Applies when both classes 'pos' and 'pos-has-seq-cov' are on the elemennt
+            //         This 'filter' is the Modification and Sequence Position selections
+
+            &.pos-uncovered {   // uncovered residue
+                color: $font-color-light-gray; // 'fade out' the text
+            }
+
+            &.pos-covered-outside-filter-mod {  // covered residue. not in filtered peptide list or no filters selected
+                color: white;
+                background-color: black
+            }
+            &.pos-covered-outside-filter-nomod {  // covered residue, covered by filtered peptide list
+				font-weight: bold;
+            }
+
+            &.pos-covered-within-filter-nomod {  // modded residue not in filtered peptide list (or no filters selected)
 				color: red;
 				font-weight: bold;
-			}			
-			
-			&.pos-has-mods {  //  Applies when both classes 'pos' and 'pos-has-mods' are on the elemennt
-				color: white;
+            }
+            &.pos-covered-within-filter-mod-within-filter {  // modded residue in filtered peptide list, has a mod == a mod filter
+	            color: white;
 				background-color: $site-color-dark; 
-			}
+            }
+            &.pos-covered-within-filter-mod-outside-filter {  // modded residue in filtered peptide list, does not have a mod in mod filter 
+	            color: white;
+				background-color: $site-color-medium; 
+            }
+
+            &.pos-covered-nofilters-mod {  // modded residue, no filters (mod or position)
+	            color: white;
+				background-color: black; 
+            }
+            &.pos-covered-nofilters-nomod {  // not modded residue, no filters (mod or position)
+                font-weight: bold;
+            }
+
+                //  OLD
+
+			// &.pos-has-seq-cov {  //  Applies when both classes 'pos' and 'pos-has-seq-cov' are on the elemennt
+			// 	color: red;
+			// 	font-weight: bold;
+			// }			
+			
+			// &.pos-has-mods {  //  Applies when both classes 'pos' and 'pos-has-mods' are on the elemennt
+			// 	color: white;
+			// 	background-color: $site-color-dark; 
+			// }
 		}
     } // end .protein-sequence-formatted-sequence-data-block
 
-    	//  Protein Sequence Formatted - Only applied to the actual sequence
+    	//  Protein Sequence Formatted - Only applied to the actual sequence, and surrounding numbers for positions
 	.protein-sequence-formatted-sequence-data-block-actual-sequence {
+        font-family: $protein-sequence-primary-font;
         font-size: 16px;
     }
 

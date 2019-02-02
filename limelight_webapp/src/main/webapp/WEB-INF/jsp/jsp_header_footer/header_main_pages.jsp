@@ -127,10 +127,10 @@
 <%-- 		
 --%>	 
 	 <c:choose>
-	  <c:when test="${ not empty headerUser }">
+	  <c:when test="${ not empty headerUserInfo }">
 	   </a>
 	  </c:when>
-	  <c:when test="${ not empty headerProject }">
+	  <c:when test="${ not empty headerProjectInfo }">
 	   </a>
 	  </c:when>
 	 </c:choose>
