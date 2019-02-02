@@ -52,12 +52,6 @@ const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTE
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD = "pos-covered-nofilters-mod";  // modded residue, no filters (mod or position)
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_NO_MOD = "pos-covered-nofilters-nomod";  // not modded residue, no filters (mod or position)
 
-//  OLD
-
-// const _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_SEQUENCE_COVERAGE = "pos-has-seq-cov";
-
-// const _CSS_CLASS_NAME__SEQUENCE_POSITION_HAS_MODIFICATIONS = "pos-has-mods";
-
 ////////////////////
 
 ///  Constants for encoding/decoding state for storage on URL
@@ -146,9 +140,6 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template ) {
 			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template");
 		}
-		// if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template ) {
-		// 	throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template");
-		// }
 		if ( ! _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template ) {
 			throw Error("Nothing in _protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template");
 		}
@@ -168,9 +159,6 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		this._protein_sequence_formatted_display_single_position_entry_template_Template = 
 			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template;
 
-		// this._protein_sequence_formatted_display_single_position_tooltip_template_Template = 
-		// 	_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_template;
-
 		this._protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template_Template = 
 			_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_before_mod_masses_template;
 		this._protein_sequence_formatted_display_single_position_tooltip_after_mod_masses_template_Template = 
@@ -182,11 +170,6 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		this._selectedProteinSequencePositions = new Set();
 
 		this._sequencePositions_Applied_Labels_CssClassNames = [];  // Use sequence position (1 based) as index into this array
-
-		//  OLD
-
-		// this._proteinCoverage_ProteinSequencePositions = new Set();
-		// this._modificationHighlighted_ProteinSequencePositions = new Set();
 	}
 
 	/**
