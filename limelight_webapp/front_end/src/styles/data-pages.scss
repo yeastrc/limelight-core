@@ -552,7 +552,7 @@
                 color: $font-color-light-gray; // 'fade out' the text
             }
 
-            &.pos-covered-outside-filter-mod {  // covered residue. not in filtered peptide list or no filters selected
+            &.pos-covered-outside-filter-mod {  // covered residue. not in filtered peptide list
                 color: white;
                 background-color: black
             }
@@ -560,7 +560,7 @@
 				font-weight: bold;
             }
 
-            &.pos-covered-within-filter-nomod {  // modded residue not in filtered peptide list (or no filters selected)
+            &.pos-covered-within-filter-nomod {  // modded residue not in filtered peptide list
 				color: red;
 				font-weight: bold;
             }

@@ -9,53 +9,91 @@
 				as in the protein sequence
 		--}}
 	<div  class=" protein-sequence-formatted-sequence-data-block "
-		style="display: grid; grid-template-columns: 66px 290px 125px 210px;  margin-top: 10px;">
+		style="display: grid; grid-template-columns: 66px 480px 210px;  margin-top: 10px;">
+			{{!-- Grid: "Legend:", <Samples and Text Blocks>, <Instructions> --}}
 	
 		<div class=" pos-legend-top-labels pos-legend-boxes-other-than-seq-examples " >
 			Legend:
 		</div>
 		
 		<div >
-			<div style="display: grid; grid-template-columns: 35px 85px 35px 135px;">
+			<div style="display: grid; grid-template-columns: 35px 199px 35px 199px;">
 			
 				<div class=" pos-legend-items ">
-					<div class=" pos ">
+					<div class=" pos pos-uncovered ">
 						KGS
 					</div>
 				</div>
 				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
-					uncovered  
+					pos-uncovered  
 				</div>
 				<div class=" pos-legend-items ">
-					<div class=" pos pos-has-mods ">
+					<div class=" pos pos-covered-outside-filter-mod ">
 							LNE
 					</div>
 				</div>
 				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
-					modified
+					pos-covered-outside-filter-mod
 				</div>
 				<div class=" pos-legend-items ">
-					<div class=" pos pos-has-seq-cov ">
+					<div class=" pos pos-covered-outside-filter-nomod ">
 							LNE
 					</div>
 				</div>			
 				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
-					covered 
+					pos-covered-outside-filter-nomod
 				</div>
 				<div class=" pos-legend-items ">
-					<div  class=" pos pos-sel ">
+					<div  class=" pos pos-covered-within-filter-nomod ">
 							LNE
 					</div>
 				</div>
 				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
-					selected residues
-				</div>		
+					pos-covered-within-filter-nomod
+				</div>
+				<div class=" pos-legend-items ">
+					<div  class=" pos pos-covered-within-filter-nomod ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					pos-covered-within-filter-nomod
+				</div>
+				<div class=" pos-legend-items ">
+					<div  class=" pos pos-covered-within-filter-mod-within-filter ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					pos-covered-within-filter-mod-within-filter
+				</div>
+				<div class=" pos-legend-items ">
+					<div  class=" pos pos-covered-within-filter-mod-outside-filter ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					pos-covered-within-filter-mod-outside-filter
+				</div>
+				<div class=" pos-legend-items ">
+					<div  class=" pos pos-covered-nofilters-mod ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					pos-covered-nofilters-mod
+				</div>
+				<div class=" pos-legend-items ">
+					<div  class=" pos pos-covered-nofilters-nomod ">
+							LNE
+					</div>
+				</div>
+				<div class=" pos-legend-labels pos-legend-items pos-legend-boxes-other-than-seq-examples ">
+					pos-covered-nofilters-nomod
+				</div>
 			</div>
 		</div>
 		
-		<div class=" pos-legend-top-labels " style="text-align: right; padding-right: 10px;">
-			Instructions:
-		</div>
 		<div class=" pos-instructions-text pos-legend-boxes-other-than-seq-examples " >
 			Click residue to select it and update displayed peptides. 
 			Control-click to select multiple residues.
