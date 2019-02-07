@@ -45,7 +45,8 @@ const _CSS_CLASS_NAME__SEQUENCE_POSITION_UNCOVERED = "pos-uncovered";   // uncov
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_MOD = "pos-covered-outside-filter-mod";  // covered residue. not in filtered peptide list
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_NO_MOD = "pos-covered-outside-filter-nomod";  // covered residue, covered by filtered peptide list
 
-const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_NO_MOD = "pos-covered-within-filter-nomod";  // modded residue in filtered peptide list
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_NO_MOD = "pos-covered-within-filter-nomod";  // not modded residue in filtered peptide list
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_NO_FILTER = "pos-covered-within-filter-mod-no-filter";  // covered residue,  covered by filtered peptide list, mod, no mod filter
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER = "pos-covered-within-filter-mod-within-filter";  // modded residue in filtered peptide list, has a mod == a mod filter
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTER = "pos-covered-within-filter-mod-outside-filter";  // modded residue in filtered peptide list, does not have a mod in mod filter 
 
@@ -767,6 +768,11 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 			//  Position is inside selected peptides coverage
 
+			if ( this._proteinSequencePosition_ContainsAnyModificationMasses_No_Selected_ModificationMasses({ proteinSequencePosition }) ) {
+
+				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_NO_FILTER; // EARLY RETURN // covered residue,  covered by filtered peptide list, mod, no mod filter
+			}
+
 			if ( this._proteinSequencePosition_Contains_Selected_ModificationMasses({ proteinSequencePosition }) ) {
 
 				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER; // EARLY RETURN   // modded residue in filtered peptide list, has a mod == a mod filter
@@ -788,6 +794,19 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		}
 
 		return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_NO_MOD;  // covered residue, covered by filtered peptide list
+	}
+
+	/**
+	 * Does this Protein Sequence Position contain any modification masses AND there are NO SELECTED modification masses
+	 */
+	_proteinSequencePosition_ContainsAnyModificationMasses_No_Selected_ModificationMasses({ proteinSequencePosition }) {
+
+		if ( this._modificationMassesToFilterOn ) {
+			//  YES selections
+			return false;  // EARLY RETURN
+		}
+
+		return this._proteinSequencePosition_ContainsAnyModificationMasses({ proteinSequencePosition });
 	}
 
 	/**

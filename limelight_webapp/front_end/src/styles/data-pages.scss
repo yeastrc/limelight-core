@@ -556,14 +556,16 @@
                 color: white;
                 background-color: black
             }
-            &.pos-covered-outside-filter-nomod {  // covered residue, covered by filtered peptide list
+            &.pos-covered-outside-filter-nomod {  // covered residue, not covered by filtered peptide list
 				font-weight: bold;
             }
 
-            &.pos-covered-within-filter-nomod {  // modded residue not in filtered peptide list
+            &.pos-covered-within-filter-nomod {  // covered residue, not modded, covered by filtered peptide list
 				color: red;
 				font-weight: bold;
             }
+            //  WARNING:  Create separate legend entries if split these CSS classes
+            &.pos-covered-within-filter-mod-no-filter, // covered residue,  covered by filtered peptide list, mod, no mod filter
             &.pos-covered-within-filter-mod-within-filter {  // modded residue in filtered peptide list, has a mod == a mod filter
 	            color: white;
 				background-color: $site-color-dark; 
@@ -580,18 +582,6 @@
             &.pos-covered-nofilters-nomod {  // not modded residue, no filters (mod or position)
                 font-weight: bold;
             }
-
-                //  OLD
-
-			// &.pos-has-seq-cov {  //  Applies when both classes 'pos' and 'pos-has-seq-cov' are on the elemennt
-			// 	color: red;
-			// 	font-weight: bold;
-			// }			
-			
-			// &.pos-has-mods {  //  Applies when both classes 'pos' and 'pos-has-mods' are on the elemennt
-			// 	color: white;
-			// 	background-color: $site-color-dark; 
-			// }
 		}
     } // end .protein-sequence-formatted-sequence-data-block
 
