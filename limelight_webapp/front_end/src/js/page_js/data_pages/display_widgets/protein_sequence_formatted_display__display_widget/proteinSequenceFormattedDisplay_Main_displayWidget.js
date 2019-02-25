@@ -824,7 +824,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 			//  no user selection
 
-			if ( this._proteinSequencePosition_ContainsAnyVariableModificationMasses({ proteinSequencePosition }) ) {
+			if ( this._proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses({ proteinSequencePosition }) ) {
 
 				return _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD; // EARLY RETURN // modded residue, no filters (mod or position)
 			}
@@ -838,7 +838,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 			//  Position is inside selected peptides coverage
 
-			if ( this._proteinSequencePosition_ContainsAnyVariableModificationMasses_No_Selected_ModificationMasses({ proteinSequencePosition }) ) {
+			if ( this._proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses_No_Selected_ModificationMasses({ proteinSequencePosition }) ) {
 
 				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_NO_FILTER; // EARLY RETURN // covered residue,  covered by filtered peptide list, mod, no mod filter
 			}
@@ -848,7 +848,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER; // EARLY RETURN   // modded residue in filtered peptide list, has a mod == a mod filter
 			}
 
-			if ( this._proteinSequencePosition_ContainsAnyVariableModificationMasses({ proteinSequencePosition }) ) {
+			if ( this._proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses({ proteinSequencePosition }) ) {
 
 				return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTER; // EARLY RETURN  // modded residue in filtered peptide list, does not have a mod in mod filter 
 			}
@@ -858,7 +858,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 		//  Position is outside selected peptides coverage
 
-		if ( this._proteinSequencePosition_ContainsAnyVariableModificationMasses({ proteinSequencePosition }) ) {
+		if ( this._proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses({ proteinSequencePosition }) ) {
 
 			return _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_MOD; // EARLY RETURN   // covered residue. not in filtered peptide list or no filters selected
 		}
@@ -867,16 +867,16 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	}
 
 	/**
-	 * Does this Protein Sequence Position contain any modification masses AND there are NO SELECTED modification masses
+	 * Does this Protein Sequence Position contain any Variable modification masses AND there are NO SELECTED modification masses
 	 */
-	_proteinSequencePosition_ContainsAnyVariableModificationMasses_No_Selected_ModificationMasses({ proteinSequencePosition }) {
+	_proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses_No_Selected_ModificationMasses({ proteinSequencePosition }) {
 
 		if ( this._variableModificationSelectionUnmodifiedSelected || this._variableModificationMassesToFilterOn || this._staticModificationMassesToFilterOn ) {
 			//  YES selections
 			return false;  // EARLY RETURN
 		}
 
-		return this._proteinSequencePosition_ContainsAnyVariableModificationMasses({ proteinSequencePosition });
+		return this._proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses({ proteinSequencePosition });
 	}
 
 	/**
@@ -942,7 +942,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	/**
 	 * Does this Protein Sequence Position contain any Variable Modification masses
 	 */
-	_proteinSequencePosition_ContainsAnyVariableModificationMasses({ proteinSequencePosition }) {
+	_proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedStaticModificationMasses({ proteinSequencePosition }) {
 
 		if ( this._variableModificationMassesForProteinPositions ) {
 			const variableModificationMassesAtPosition = this._variableModificationMassesForProteinPositions.get( proteinSequencePosition ); // modification masses per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >. )
@@ -952,6 +952,35 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 				return true; // EARLY RETURN
 			}
 		}
+
+		//     this._staticModificationMassesForProteinPositions :
+		//  Map<integer, Object> < position 1 based (integer) : { Object: residue  (string), masses: [ mass (number) ] } >>
+		if ( this._staticModificationMassesForProteinPositions ) {
+			const staticModificationDataAtPosition = this._staticModificationMassesForProteinPositions.get( proteinSequencePosition ); // modification masses per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >. )
+
+			if ( staticModificationDataAtPosition && this._staticModificationMassesToFilterOn ) { 
+
+				//  Static Modification Masses found at position AND this._staticModificationMassesToFilterOn is populated
+
+				const staticModificationAtPosition_Residue = staticModificationDataAtPosition.residue;
+				const staticModificationAtPosition_Masses = staticModificationDataAtPosition.massesArray;
+
+				for ( const staticModificationAtPosition_Mass of staticModificationAtPosition_Masses ) {
+
+					const staticModificationMassesToFilterOn_Masses_ForResidue = this._staticModificationMassesToFilterOn.get( staticModificationAtPosition_Residue );
+					if ( staticModificationMassesToFilterOn_Masses_ForResidue ) {
+						for ( const staticModificationToFilterOn_Mass of staticModificationMassesToFilterOn_Masses_ForResidue ) {
+
+							if ( staticModificationAtPosition_Mass === staticModificationToFilterOn_Mass ) {
+								//  Found Static Modification mass at position that are filtering on
+								return true; // EARLY RETURN
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return false;
 	}
 
