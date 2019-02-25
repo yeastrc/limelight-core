@@ -94,7 +94,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 	 */
 	createOrUpdateReportedPeptideDisplayData( { 
 		reportedPeptideIdsForDisplay, 
-		filteredOn_selectedModificationMasses, 
 		filteredOn_selectedProteinSequencePositions, 
 		proteinSequenceVersionId, projectSearchId, $reported_peptides_outer_container } ) {
 

@@ -81,6 +81,10 @@ input[type="radio"], input[type="checkbox"] {
   margin-bottom: 0px;
 }
 
+input[type="checkbox"], .left-margin-same-as-checkbox {
+  margin-left: 4px; //  Repeat from Browser default since add same to some text to left align with checkbox
+}
+
 img.icon-small { max-height: 16px; }
 
 //  Basic error text color

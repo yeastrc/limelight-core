@@ -28,7 +28,7 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		//  Peptide Id for Reported Peptide Id.   
 		this._peptideIdForReportedPeptide_KeyReportedPeptideId = undefined; // Map <integer,integer> <reportedPeptideId,peptideId>
 
-		//  Modifications Per Reported Peptide Id.   position is int, mass is double
+		//  Dynamic/Variable Modifications Per Reported Peptide Id.   position is int, mass is double
 		this._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = undefined; // Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, position, mass }]>>
 
 		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
@@ -74,8 +74,11 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		//  Protein Sequence Version Ids for Current Cutoffs/Filters - in Array, sorted
 		this._proteinSequenceVersionIdsArray = undefined; // Array [integer] : [proteinSequenceVersionIds] - unique values, sorted
 
-		//  Dynamic Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. Can have multiple entries with same position and mass with diff reportedPeptideId
+		//  Dynamic/Variable Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. Can have multiple entries with same position and mass with diff reportedPeptideId
 		this._dynamicModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer,Object> <proteinSequenceVersionId,<{ reportedPeptideId, position, mass }>>
+
+		//  Static Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. 
+		this._staticModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer, Map<integer, Object> <proteinSequenceVersionId, Map < position 1 based (integer) : { Object: residue  (string), masses: [ mass (number) ] } >>
 
 		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
 		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
@@ -155,6 +158,9 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 		//  Modifications Per ProteinSequenceersion Id.   position is int, mass is double
 		this._dynamicModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer,Object> <proteinSequenceVersionId,<{ reportedPeptideId, position, mass }>>
+
+		//  Static Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. 
+		this._staticModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer, Map<integer, Object> <proteinSequenceVersionId, Map < position 1 based (integer) : { Object: residue  (string), masses: [ mass (number) ] } >>
 
 		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
 		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
@@ -337,7 +343,13 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._dynamicModificationsOnProtein_KeyProteinSequenceVersionId = dynamicModificationsOnProtein_KeyProteinSequenceVersionId;
 	}
 
-
+	get_staticModificationsOnProtein_KeyProteinSequenceVersionId() {
+		return this._staticModificationsOnProtein_KeyProteinSequenceVersionId;
+	}
+	set_staticModificationsOnProtein_KeyProteinSequenceVersionId(staticModificationsOnProtein_KeyProteinSequenceVersionId) {
+		this._staticModificationsOnProtein_KeyProteinSequenceVersionId = staticModificationsOnProtein_KeyProteinSequenceVersionId;
+	}
+	
 		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
 		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
 		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)

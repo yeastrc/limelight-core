@@ -486,23 +486,25 @@
 	.protein-sequence-formatted-sequence-data-block {
 
 		span.header-pos-spacer-tick-number { // number for tick mark
-			margin-left: 1px;  // Same width as div.pos
+            margin-left: 1px;  // Same width as div.pos
+            margin-right: 2px;
 		}	
 		span.header-pos-spacer { // One per sequence entry to position the header tick marks
-			margin-left: 1px;  // Same width as div.pos
+            margin-left: 1px;  // Same width as div.pos
+            margin-right: 2px;
 		}
 		//  For (# digits - 1) in tick number, substitute this for 'header-position-spacer'
 		//  One per sequence entry to position the header tick marks
 		span.header-pos-spacer-after-tick-number { // extra pixel each side to account for missing padding for digits in tick mark
-			margin-left: 2px; // same as span.header-pos-spacer but margin each side is margin * 2
+			margin-left: 6px; // same as span.header-pos-spacer but margin each side is margin * 2
 		}
 		
 		//   Boxes other than sequence examples so can add padding or margin top 
 		//   to match vertical positioning of sequence examples
-		div.pos-legend-boxes-other-than-seq-examples { margin-top: 0px; } // margin-top: 0px; match div.pos
+		div.pos-legend-boxes-other-than-seq-examples { margin-top: 0px; margin-right: 10px; } // margin-top: 0px; match div.pos
 		
 		div.pos-legend-top-labels { font-weight: bold; }
-		div.pos-legend-labels { font-weight: bold; font-size: 13px; margin-top: 2px; } // label for each sequence example
+		div.pos-legend-labels { font-weight: 500; font-size: 13px; margin-top: 1px; } // label for each sequence example
 		div.pos-instructions-text { font-size: 13px; }
 		
 		div.pos-legend-items { margin-bottom: 3px; }
@@ -511,15 +513,15 @@
 			cursor: pointer;
 			display: inline-block;
 
-			padding-left: 0px;    //  Update span.header-pos-spacer and span.header-pos-spacer-after-tick-number
-			padding-right: 0px;   //  if change padding or margin left or right
+			padding-left: 1px;    //  Update span.header-pos-spacer and span.header-pos-spacer-after-tick-number
+			padding-right: 1px;   //  if change padding or margin left or right
 			padding-top: 0px; 
 			padding-bottom: 0px;
 
-			margin-left: 1px;
-			margin-right: 0px;
+			margin-left: 0px;
+			margin-right: 1px;
 			margin-top: 0px;
-			margin-bottom: 0px;
+			margin-bottom: 2px;
 			
 			position:relative;
 			
@@ -534,8 +536,8 @@
 				bottom: 0px;
 				left: -1px;
 				right: -1px;
-				border-color: black; 
-				border-width: 1px; 
+				border-color: #000000; 
+				border-width: 2px; 
 				border-style: solid;
 				//  clear padding
 				padding-left: 0px; 
@@ -552,43 +554,43 @@
                 color: $font-color-light-gray; // 'fade out' the text
             }
 
-            &.pos-covered-outside-filter-mod {  // covered residue. not in filtered peptide list
-                color: white;
-                background-color: black
+            //  WARNING:  Create separate legend entries if split these CSS classes
+            &.pos-covered-outside-filter-mod,  // covered residue. not in filtered peptide list
+            &.pos-covered-nofilters-mod {  // modded residue, no filters (mod or position)
+                    color: white;
+                background-color: #000000
             }
-            &.pos-covered-outside-filter-nomod {  // covered residue, not covered by filtered peptide list
-				font-weight: bold;
+
+            //  WARNING:  Create separate legend entries if split these CSS classes
+            &.pos-covered-outside-filter-nomod,  // covered residue, not covered by filtered peptide list
+            &.pos-covered-nofilters-nomod {  // not modded residue, no filters (mod or position)
+				font-weight: 900;
             }
 
             &.pos-covered-within-filter-nomod {  // covered residue, not modded, covered by filtered peptide list
-				color: red;
+				color: #ff0000;
 				font-weight: bold;
             }
+
             //  WARNING:  Create separate legend entries if split these CSS classes
             &.pos-covered-within-filter-mod-no-filter, // covered residue,  covered by filtered peptide list, mod, no mod filter
             &.pos-covered-within-filter-mod-within-filter {  // modded residue in filtered peptide list, has a mod == a mod filter
 	            color: white;
-				background-color: $site-color-dark; 
+				background-color: #ff0000; 
             }
             &.pos-covered-within-filter-mod-outside-filter {  // modded residue in filtered peptide list, does not have a mod in mod filter 
 	            color: white;
-				background-color: $site-color-medium; 
+				background-color: $font-background-color-gray; 
             }
 
-            &.pos-covered-nofilters-mod {  // modded residue, no filters (mod or position)
-	            color: white;
-				background-color: black; 
-            }
-            &.pos-covered-nofilters-nomod {  // not modded residue, no filters (mod or position)
-                font-weight: bold;
-            }
+
 		}
     } // end .protein-sequence-formatted-sequence-data-block
 
     	//  Protein Sequence Formatted - Only applied to the actual sequence, and surrounding numbers for positions
 	.protein-sequence-formatted-sequence-data-block-actual-sequence {
         font-family: $protein-sequence-primary-font;
-        font-size: 16px;
+        font-size: 14px;
     }
 
     //  Modification Mass Selection - main page (or single protein)
@@ -598,7 +600,7 @@
         .modification-mass-selection-block {
 
             width: 480px; 
-            margin-left: 210px; 
+            margin-left: 290px; 
             padding-top: 1px; 
             position: relative;
         }

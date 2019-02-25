@@ -242,14 +242,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			const promise_getDataFromServer = this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId } );
 
 			getDataFromServer_AllPromises.push( promise_getDataFromServer );
-
-			{  // * Performed here since currently not used for single search
-				if ( ! loadedDataPerProjectSearchIdHolder.get_staticMods() ) {
-					//  No static mods so load them
-					const promise = this._getAndProcessStaticMods_forProjectSearchId( { projectSearchId, loadedDataPerProjectSearchIdHolder } );
-					getDataFromServer_AllPromises.push( promise );
-				}
-			}
 		}
 
 		const promise_getDataFromServer_AllPromises = Promise.all( getDataFromServer_AllPromises );
@@ -261,37 +253,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		})
 	}
 
-	/**
-	 * Performed here since currently not used for single search
-	 */
-	_getAndProcessStaticMods_forProjectSearchId( { projectSearchId, loadedDataPerProjectSearchIdHolder } ) {
-
-		const objectThis = this;
-		
-		return new Promise((resolve, reject) => {
-			try {
-				const promise_getData = ProteinViewDataLoader.getStaticMods( { projectSearchId } );
-
-				promise_getData.catch((reason) => { reject(reason)});
-
-				promise_getData.then((staticModsList) => {
-
-					// DB Results: staticModsList: result list item { String residue, BigDecimal mass }
-					// Store: Array [{ String residue, BigDecimal mass }] : [Static Mods]
-
-					loadedDataPerProjectSearchIdHolder.set_staticMods(staticModsList)
-
-					resolve();
-				});
-			} catch( e ) {
-				console.log("Exception caught in New Promise in _getAndProcessStaticMods_forProjectSearchId(...)");
-				console.log( e );
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-	}
-	
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////

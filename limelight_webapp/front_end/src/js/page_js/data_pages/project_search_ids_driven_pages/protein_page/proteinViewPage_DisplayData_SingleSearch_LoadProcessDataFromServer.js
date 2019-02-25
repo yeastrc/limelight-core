@@ -87,6 +87,13 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 			const promise_get_Data_From_ReportedPeptideIdList = promise_getReportedPeptideIdList.then( function( reportedPeptideCoreDataArray ) {
 
 				const promiseAllArray = [];
+
+				//  Static Mods - Arbitrarily put here
+				if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_staticMods() ) {
+					//  No static mods so load them
+					const promise = objectThis._getAndProcessStaticMods_forProjectSearchId( { projectSearchId } );
+					promiseAllArray.push( promise );
+				}
 				
 				objectThis._processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
 				
@@ -144,6 +151,39 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 			})
 		});
 	}
+
+
+	/**
+	 * Performed here since currently not used for single search
+	 */
+	_getAndProcessStaticMods_forProjectSearchId( { projectSearchId } ) {
+
+		const objectThis = this;
+		
+		return new Promise((resolve, reject) => {
+			try {
+				const promise_getData = ProteinViewDataLoader.getStaticMods( { projectSearchId } );
+
+				promise_getData.catch((reason) => { reject(reason)});
+
+				promise_getData.then((staticModsList) => {
+
+					// DB Results: staticModsList: result list item { String residue, BigDecimal mass }
+					// Store: Array [{ String residue, BigDecimal mass }] : [Static Mods]
+
+					objectThis._loadedDataPerProjectSearchIdHolder.set_staticMods(staticModsList)
+
+					resolve();
+				});
+			} catch( e ) {
+				console.log("Exception caught in New Promise in _getAndProcessStaticMods_forProjectSearchId(...)");
+				console.log( e );
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+	}
+	
 
 
 	/**

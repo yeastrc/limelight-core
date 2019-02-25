@@ -48,7 +48,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	/**
 	 * 
 	 */
-	loadProteinSequenceIfNeeded( { proteinSequenceVersionId, projectSearchId } ) {
+	loadDataForInitialOverlayShow( { proteinSequenceVersionId, projectSearchId } ) {
 
 		const objectThis = this;
 		
@@ -65,13 +65,16 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 			promise_getProteinSequencesFromProteinSequenceVersionIds.
 			then( function( { proteinSequences_Key_proteinSequenceVersionId, foundAllProteinSequenceVersionIdsForProjectSearchIds } ) {
 				
-				const proteinSequence = proteinSequences_Key_proteinSequenceVersionId[ proteinSequenceVersionId ];
-				if ( proteinSequence === undefined ) {
+				const proteinSequenceObject = proteinSequences_Key_proteinSequenceVersionId[ proteinSequenceVersionId ];
+				if ( proteinSequenceObject === undefined ) {
 					throw Error("No Protein sequence for proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
 				}
-				const proteinSequenceData = new ProteinSequenceData_For_ProteinSequenceVersionId( { proteinSequence : proteinSequence.sequence } );
+				const proteinSequenceString = proteinSequenceObject.sequence;
+				const proteinSequenceData = new ProteinSequenceData_For_ProteinSequenceVersionId( { proteinSequence : proteinSequenceString } );
 				
 				objectThis._loadedDataCommonHolder.add_proteinSequenceData_KeyProteinSequenceVersionId( { proteinSequenceData, proteinSequenceVersionId } );
+
+				objectThis._populateStaticModificationsPositionsOnProteinSequence({ proteinSequenceVersionId, proteinSequenceString });
 				
 				resolve();
 			});
@@ -196,6 +199,93 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 		})
 	}
 
+
+	/////////////////////
+
+	//   Single Search Processing
+
+	/**
+	 * Find the Positions on the Protein Sequence String of the Static modifications for the Search 
+	 * Store on this._loadedDataPerProjectSearchIdHolder
+	 */
+	_populateStaticModificationsPositionsOnProteinSequence({ proteinSequenceVersionId, proteinSequenceString }) {
+
+		{
+			const staticModificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_staticModificationsOnProtein_KeyProteinSequenceVersionId();
+
+			if ( staticModificationsOnProtein_KeyProteinSequenceVersionId && staticModificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId ) ) {
+				//  Already populated for proteinSequenceVersionId
+				return;  // EARLY EXIT
+			}
+		}
+
+		//  Map < position 1 based (integer) : { Object: residue  (string), massesArray: [ mass (number) ], massesSet : Set( mass (number) ) } > 
+		//  (Format for class ProteinSequenceFormattedDisplay_Main_displayWidget)
+
+		const staticModificationMassesByProteinPosition = new Map();
+
+		const staticModsForSearch = this._loadedDataPerProjectSearchIdHolder.get_staticMods();
+
+		if ( ( ! staticModsForSearch ) || staticModsForSearch.length === 0 ) {
+			//  No Static Modifications so Exit
+			return; // EARLY EXIT
+		}
+
+		for ( const staticModForSearch of staticModsForSearch ) {
+
+			const staticModResidue = staticModForSearch.residue;
+			const staticModMass = staticModForSearch.mass;
+
+			//  Search for static mod residue in protein
+			let residueFoundIndex = undefined;
+			let searchStartIndex = 0;
+			while ( ( residueFoundIndex = proteinSequenceString.indexOf( staticModResidue, searchStartIndex ) ) != -1 ) {
+			
+				const proteinPosition = residueFoundIndex + 1; // '1' based
+				let staticModificationResiduesMassesForProteinPosition = staticModificationMassesByProteinPosition.get( proteinPosition );
+				if ( ! staticModificationResiduesMassesForProteinPosition ) {
+					staticModificationResiduesMassesForProteinPosition = { residue : staticModResidue, massesSet: new Set() };
+					staticModificationMassesByProteinPosition.set( proteinPosition, staticModificationResiduesMassesForProteinPosition );
+				}
+				staticModificationResiduesMassesForProteinPosition.massesSet.add( staticModMass );
+
+				searchStartIndex = residueFoundIndex + 1; // advance to searching to after last found index
+			}
+		}
+
+		//  Sort masses at each position
+		for ( const staticModificationMassesByProteinPositionEntry of staticModificationMassesByProteinPosition.entries() ) {
+			const position = staticModificationMassesByProteinPositionEntry[ 0 ];
+			const staticModificationResiduesMassesForProteinPosition = staticModificationMassesByProteinPositionEntry[ 1 ];
+			const residue = staticModificationResiduesMassesForProteinPosition.residue;
+			const massesAtPositionSet = staticModificationResiduesMassesForProteinPosition.massesSet;
+			const massesAtPositionArray = Array.from( massesAtPositionSet );
+			massesAtPositionArray.sort( function(a, b) {
+				if ( a < b ) {
+					return -1;
+				}
+				if ( a > b ) {
+					return 1;
+				}
+				return 0;
+			});
+			//  Place the sorted Array in the final output Object in the map
+
+			staticModificationResiduesMassesForProteinPosition.massesArray = massesAtPositionArray;
+		}
+
+		{
+			let staticModificationsOnProtein_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_staticModificationsOnProtein_KeyProteinSequenceVersionId();
+
+			if ( ! staticModificationsOnProtein_KeyProteinSequenceVersionId ) {
+				staticModificationsOnProtein_KeyProteinSequenceVersionId = new Map();
+				this._loadedDataPerProjectSearchIdHolder.set_staticModificationsOnProtein_KeyProteinSequenceVersionId( staticModificationsOnProtein_KeyProteinSequenceVersionId );
+			}
+				
+			staticModificationsOnProtein_KeyProteinSequenceVersionId.set( proteinSequenceVersionId, staticModificationMassesByProteinPosition );
+		}
+
+	}
 
 	/////////////////////
 

@@ -48,24 +48,28 @@ const _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS = "mod-mass-dialog-selected"
 
 ///  Constants for encoding/decoding state for storage on URL
 
-// VERSION 1 ENCODING STRING:  Selected Modification Masses are separated into Integer and non-Integer values
+// VERSION 1 ENCODING STRING:  
+
+//  Selected Variable Modification Masses are separated into Integer and non-Integer values
 //    The Integer values are sorted ascending first and encoded in the following string
 // '<first mod mass, base 35 encoded number>Z<Offset from first mod mass, base 35 encoded number>Z<Offset from second mod mass, base 35 encoded number>'
 //  The non-Integer mod masses are sorted and stored in an Array
+
+//  Selected Static Modification Masses are sorted and stored in an Array
 
 const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 
 
 const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
-const _ENCODED_DATA__MOD_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME = 'b';
-const _ENCODED_DATA__MOD_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME = 'c';
+const _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME = 'b';
+const _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME = 'c';
+const _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME = 'd';
 
-const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_BASE = 35;
-const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR = 'Z';
+const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_BASE = 35;         // Only specific Variable Modifications
+const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR = 'Z';   // Only specific Variable Modifications
 
 ///////
-
 
 /**
  * 
@@ -108,13 +112,18 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 		if (!_protein_table_template_bundle.protein_mods_selection_block) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_block");
 		}
-		this._protein_mods_selection_block_Template = _protein_table_template_bundle.protein_mods_selection_block;
+        this._protein_mods_selection_block_Template = _protein_table_template_bundle.protein_mods_selection_block;
 
 		if (!_protein_table_template_bundle.protein_mods_selection_entry) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_entry");
 		}
         this._protein_mods_selection_entry_Template = _protein_table_template_bundle.protein_mods_selection_entry;
 
+		if (!_protein_table_template_bundle.protein_mods_static_selection_entry) {
+			throw Error("Nothing in _protein_table_template_bundle.protein_mods_static_selection_entry");
+		}
+        this._protein_mods_static_selection_entry_Template = _protein_table_template_bundle.protein_mods_static_selection_entry;
+        
 		if (!_protein_table_template_bundle.protein_mods_selection_add_fake_link) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_add_fake_link");
 		}
@@ -136,19 +145,20 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         //  Instance variables
 
-        //  Set of Selected Modification Masses
-        this._modificationsSelected = new Set();  // call .clear() to reset the selected
+        //  Set of Selected Variable Modification Masses
+        this._variableModificationsSelected = new Set();  // call .clear() to reset the selected
 
-        //  From Protein Sequence Widget, selected protein sequence positions
-        this._selectedProteinSequencePositions = undefined; //  Provided in initialize(...) and update_selectedProteinSequencePositions(...)
+        //  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+        this._staticModificationsSelected = new Map();  // call .clear() to reset the selected
 
         this._proteinNameDescription = undefined; //  Provided in initialize(...)
     }
 
 	/**
-	 * @param selectedProteinSequencePositions - empty, null, or undefined if no positions selected
+	 * @param initial_variableModificationsSelected - Not currently used
+	 * @param initial_staticModificationsSelected - Not currently used
 	 */
-	initialize({ proteinNameDescription, selectedProteinSequencePositions, encodedStateData, initial_modificationsSelected }) {
+	initialize({ proteinNameDescription, encodedStateData, initial_variableModificationsSelected, initial_staticModificationsSelected }) {
 
         this._proteinNameDescription = proteinNameDescription;
 
@@ -156,37 +166,41 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 			this._updateWithEncodedStateData({ encodedStateData });
         }
         
-		if ( initial_modificationsSelected ) {
-            if ( ! ( initial_modificationsSelected instanceof Set ) ) {
-                console.log("initialize(...): Provided initial_modificationsSelected param must be type Set");
-                throw Error("Provided initial_modificationsSelected param must be type Set");
+		if ( initial_variableModificationsSelected ) {
+            if ( ! ( initial_variableModificationsSelected instanceof Set ) ) {
+                console.log("initialize(...): Provided initial_variableModificationsSelected param must be type Set");
+                throw Error("Provided initial_variableModificationsSelected param must be type Set");
             }
-            this._modificationsSelected = initial_modificationsSelected;
-            this._initialModificationsSelectedCleanup();
+            this._variableModificationsSelected = initial_variableModificationsSelected;
+            this._initialVariableModificationsSelectedCleanup();
 		} else if ( ! encodedStateData ) {
-			this._modificationsSelected.clear(); // Reset to None
-		}
-
-
-        this._selectedProteinSequencePositions = selectedProteinSequencePositions;
-
-        if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size === 0 ) {
-            this._selectedProteinSequencePositions = undefined;
+			this._variableModificationsSelected.clear(); // Reset to None
         }
         
+		if ( initial_staticModificationsSelected ) {
+            if ( ! ( initial_staticModificationsSelected instanceof Map ) ) {
+                console.log("initialize(...): Provided initial_staticModificationsSelected param must be type Map");
+                throw Error("Provided initial_staticModificationsSelected param must be type Map");
+            }
+            this._staticModificationsSelected = initial_staticModificationsSelected;
+            this._initialVariableModificationsSelectedCleanup();
+		} else if ( ! encodedStateData ) {
+			this._staticModificationsSelected.clear(); // Reset to None
+        }
+
         this._initializeCalled = true;
     }
 
 	/**
-	 * Clean up this._modificationsSelected due to not allowing unmodified to be selected when anything else is selected.
+	 * Clean up this._variableModificationsSelected due to not allowing unmodified to be selected when anything else is selected.
      * 
      * If any mass selected, the unmodified will be removed.
 	 */
-	_initialModificationsSelectedCleanup() {
+	_initialVariableModificationsSelectedCleanup() {
 
-        if ( this._modificationsSelected.size > 1 ) {
+        if ( this._variableModificationsSelected.size > 1 ) {
             //  If the set contains _UNMODIFIED_SELECTED and anything else, remove _UNMODIFIED_SELECTED
-            this._modificationsSelected.delete( _UNMODIFIED_SELECTED );
+            this._variableModificationsSelected.delete( _UNMODIFIED_SELECTED );
         }
     }
 
@@ -201,20 +215,20 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	 */
 	getEncodedStateData() {
 
-        //  This has to deal with the value for _UNMODIFIED_SELECTED (which is currently "U") in the array this._modificationsSelected
+        //  This has to deal with the value for _UNMODIFIED_SELECTED (which is currently "U") in the array this._variableModificationsSelected
         //        (which ends up in the array modificationsNonInteger)
         //     This results in the array modificationsNonInteger probably not being sorted properly, which isn't a big deal
 
 		const result = {}
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
-		if (this._modificationsSelected && this._modificationsSelected.size !== 0) {
+		if (this._variableModificationsSelected && this._variableModificationsSelected.size !== 0) {
 
             //  Split selected modifications into Integer and non-integer
             const modificationsInteger = [];
             const modificationsNonInteger = [];
 
-			for ( const modificationSelected of this._modificationsSelected ) {
+			for ( const modificationSelected of this._variableModificationsSelected ) {
                 if ( Number.isSafeInteger( modificationSelected ) ) {
                     modificationsInteger.push( modificationSelected );
                 } else {
@@ -253,7 +267,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
                     const modificationsDelimited = modificationsIntegerAsOffsetAndAltBase.join(_ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR);
 
-                    result[ _ENCODED_DATA__MOD_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] = modificationsDelimited;
+                    result[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] = modificationsDelimited;
                 }
             }
 
@@ -275,10 +289,41 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                         return 0;
                     });
 
-                    result[ _ENCODED_DATA__MOD_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] = modificationsNonInteger;
+                    result[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] = modificationsNonInteger;
                 }
             }
 		}
+
+        // this._staticModificationsSelected: Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+		if ( this._staticModificationsSelected && this._staticModificationsSelected.size !== 0 ) {
+
+            //  Convert to Javascript Object and Arrays for JSON encoding
+
+            const staticModificationsSelectedForEncoding = {};
+
+            for ( const mapEntry of this._staticModificationsSelected.entries() ) {
+
+                const mapKey = mapEntry[ 0 ];
+                const mapValue = mapEntry[ 1 ];
+
+                const staticModificationsSelectedArray = Array.from( mapValue );
+                staticModificationsSelectedArray.sort(function (a, b) {
+                    if (a < b) {
+                        return -1;
+                    }
+                    if (a > b) {
+                        return 1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                });
+
+                staticModificationsSelectedForEncoding[ mapKey ] = staticModificationsSelectedArray;
+            }
+
+            result[ _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME ] = staticModificationsSelectedForEncoding;
+
+        }
 
 		return result;
 	}
@@ -306,7 +351,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 		const newSet_selectedModificationMasses = new Set();
         
         { //  Get Integer modifications and decode
-            const modificationsAsOffsetAndAltBaseString = encodedStateData[ _ENCODED_DATA__MOD_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
+            const modificationsAsOffsetAndAltBaseString = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
 
             if ( modificationsAsOffsetAndAltBaseString ) {
                 //  Have positions (first is position, rest are offsets) so convert to Number and compute positions
@@ -335,7 +380,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         }
         { //  Get Non Integer modifications and add to set
             
-            const modificationsNonInteger = encodedStateData[ _ENCODED_DATA__MOD_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];
+            const modificationsNonInteger = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];
 
             if ( modificationsNonInteger && modificationsNonInteger.length !== 0 ) {
 
@@ -345,9 +390,30 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             }
         }
 
-        this._modificationsSelected = newSet_selectedModificationMasses;
+        this._variableModificationsSelected = newSet_selectedModificationMasses;
+
+
+        { //  Static Mods
+
+            // this._staticModificationsSelected: Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+
+            const staticModificationsSelectedEncoded = encodedStateData[ _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME ];
+
+            if ( staticModificationsSelectedEncoded ) { // local_staticModificationsSelected is Object of Arrays if populated
+
+                const local_staticModificationsSelected = new Map();
+
+                const objectKeys = Object.keys( staticModificationsSelectedEncoded );
+                for ( const objectKey of objectKeys ) {
+                    const staticModificationsSelectedMassesArray = staticModificationsSelectedEncoded[ objectKey ];
+                    const staticModificationsSelectedMassesSet = new Set( staticModificationsSelectedMassesArray );
+                    local_staticModificationsSelected.set( objectKey, staticModificationsSelectedMassesSet );
+                }
+                this._staticModificationsSelected = local_staticModificationsSelected;
+            }
+        }
         
-        this._initialModificationsSelectedCleanup();
+        this._initialVariableModificationsSelectedCleanup();
 	}
 
     //////////////////////////////////
@@ -355,78 +421,53 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	/**
 	 * 
 	 */
-    isAnyModificationSelected() {
-        return this._modificationsSelected.size !== 0;
+    isAnyVariableModificationSelected() {
+        return this._variableModificationsSelected.size !== 0;
     }
 
 	/**
 	 * Did the user select to show reported peptides with no modification masses
 	 */
-    isNoModificationSelected() {
-        return this._modificationsSelected.has( _UNMODIFIED_SELECTED );
+    isNoVariableModificationSelected() {
+        return this._variableModificationsSelected.has( _UNMODIFIED_SELECTED );
     }
 
 	/**
 	 * 
 	 */
-    isModificationSelected( modMass ) {
-        return this._modificationsSelected.has( modMass );
+    isVariableModificationSelected( modMass ) {
+        return this._variableModificationsSelected.has( modMass );
     }
 
 	/**
-	 * Return a Set of the currently selected modifications, excluding the "No Modification" selection option
+	 * @returns a Set of the currently selected Variable Modifications, excluding the "No Modification" selection option
 	 */
-    getModificationsSelected_ExcludingNoModificationOption() {
-        const selectionCopy = new Set( this._modificationsSelected );
+    getVariableModificationsSelected_ExcludingNoModificationOption() {
+        const selectionCopy = new Set( this._variableModificationsSelected );
         selectionCopy.delete( _UNMODIFIED_SELECTED );
+        
         return selectionCopy;
     }
 
 	/**
-	 * @param selectedProteinSequencePositions - empty, null, or undefined if no positions selected
-     * @param newSelection - true when is start of new selection of protein positions
+	 * @returns true if any Static Modifications currently selected
 	 */
-    update_selectedProteinSequencePositions({ selectedProteinSequencePositions, newSelection }) {
-        this._selectedProteinSequencePositions = selectedProteinSequencePositions;
-
-        if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size === 0 ) {
-            this._selectedProteinSequencePositions = undefined;
-        }
-
-        if ( newSelection ) {
-            this._modificationsSelected.clear();
-        } else {
-            this._updatedSelectedMods_For_SelectedProteinSequencePositions();
-        }
-
-        this._modListDisplay_Internal();
-
-        this._modSelectionsChanged();  //  Trigger changed callback
+    isAnyStaticModificationSelected() {
+        return this._staticModificationsSelected.size !== 0;
     }
 
-
 	/**
-	 * Remove selected Mods no longer in mod list given updated selectedProteinSequencePositions(
-	 * 
+	 * @returns a Map of the currently selected Static Modifications: 
+     *     Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
 	 */
-	_updatedSelectedMods_For_SelectedProteinSequencePositions() {
-
-        const modUniqueMassesSet = this._createModsSet();
-
-        const modificationsSelectedCopy = Array.from( this._modificationsSelected );
-
-        for ( const modSelectedCopy of modificationsSelectedCopy ) {
-            if ( ! modUniqueMassesSet.has( modSelectedCopy ) ) {
-                this._modificationsSelected.delete( modSelectedCopy );
-            }
-        }
+    getStaticModificationsSelected() {
+        return this._staticModificationsSelected;
     }
 
     /////////////////
 
 	/**
 	 * Display mods for whole protein or for selected protein positions
-	 * 
 	 */
 	modListDisplay() {
 
@@ -436,69 +477,298 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	/**
      * Internal function
 	 * Display mods for whole protein or for selected protein positions
-	 * 
 	 */
 	_modListDisplay_Internal() {
 
-        const modUniqueMassesSet = this._createModsSet();
+        const staticModificationsUniqueResidueLettersMassesMapSet = this._create_staticModificationsUniqueResidueLettersMassesMapSet();
 
-        let showModMasses = true;
-        let showSelectedOnly = false;
-        let showAddModificationsSelectionLink = false;
-        let showChangeModificationsSelectionLink = false;
-        let showSelectedPositionsMsg = false;
+        let showNoStaticModificationsMsg = false;
 
-        let showNoModificationsMsg = false;
-        let showNoModificationsForSelectedPositionsMsg = false;
+        if ( staticModificationsUniqueResidueLettersMassesMapSet.size === 0 ) {
 
-        if ( ( this._modificationsSelected.size === 0 ) && ( modUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
-            showModMasses = false;
+            showNoStaticModificationsMsg = true;
         }
-        if ( ( this._modificationsSelected.size !== 0 ) && ( modUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
-            showSelectedOnly = true;
+
+        const variableModificationsUniqueMassesSet = this._create_variableModificationsUniqueMassesSet();
+
+        let showVariableModificationMasses = true;
+        let showSelectedOnlyVariableModifications = false;
+        let showAddVariableModificationsSelectionLink = false;
+        let showChangeVariableModificationsSelectionLink = false;
+
+        let showNoVariableModificationsMsg = false;
+
+        if ( ( this._variableModificationsSelected.size === 0 ) && ( variableModificationsUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
+            showVariableModificationMasses = false;
         }
-        if ( ( modUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
-            if ( this._modificationsSelected.size === 0 || ( this._modificationsSelected.size === 1 && this._modificationsSelected.has( _UNMODIFIED_SELECTED ) ) ) {
-                showAddModificationsSelectionLink = true;
+        if ( ( this._variableModificationsSelected.size !== 0 ) && ( variableModificationsUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
+            showSelectedOnlyVariableModifications = true;
+        }
+        if ( ( variableModificationsUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
+            if ( this._variableModificationsSelected.size === 0 || ( this._variableModificationsSelected.size === 1 && this._variableModificationsSelected.has( _UNMODIFIED_SELECTED ) ) ) {
+                showAddVariableModificationsSelectionLink = true;
             } else {
-                showChangeModificationsSelectionLink = true;
+                showChangeVariableModificationsSelectionLink = true;
             }
         }
 
-        if ( modUniqueMassesSet.size === 0 ) {
+        if ( variableModificationsUniqueMassesSet.size === 0 ) {
 
-            if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0 ) {
-                showNoModificationsForSelectedPositionsMsg = true;
-            } else {
-                showNoModificationsMsg = true;
-            }
-        }
-
-        if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0 ) {
-            showSelectedPositionsMsg = true;
+            showNoVariableModificationsMsg = true;
         }
 
         //  Display mods on page and/or 'change mods selected' link
-        this._modListDisplayOnPage({ modUniqueMassesSet, showModMasses, showSelectedOnly, showAddModificationsSelectionLink, showChangeModificationsSelectionLink, showSelectedPositionsMsg, showNoModificationsMsg, showNoModificationsForSelectedPositionsMsg });
+        this._modificationListDisplayOnPage({ 
+            //  Variable Mods
+            variableModificationsUniqueMassesSet, 
+            showVariableModificationMasses, 
+            showSelectedOnlyVariableModifications, 
+            showAddVariableModificationsSelectionLink, 
+            showChangeVariableModificationsSelectionLink, 
+            showNoVariableModificationsMsg,
+            //  Static Mods
+            staticModificationsUniqueResidueLettersMassesMapSet,
+            showNoStaticModificationsMsg });
         
     }
 
 	/**
+	 * Display Variable Modifications for protein and Static Modifications for Search(es)
+     * 
+     * Display list on page
+	 * 
+	 */
+	_modificationListDisplayOnPage({ 
+        //  Variable Mods
+        variableModificationsUniqueMassesSet, 
+        showVariableModificationMasses, 
+        showSelectedOnlyVariableModifications, 
+        showAddVariableModificationsSelectionLink, 
+        showChangeVariableModificationsSelectionLink, 
+        showNoVariableModificationsMsg,
+        //  Static Mods
+        staticModificationsUniqueResidueLettersMassesMapSet,
+        showNoStaticModificationsMsg } ) {
+
+        const objectThis = this;
+
+
+        const $rootDisplayElement = $( this._rootDisplayJquerySelector );
+		if ( $rootDisplayElement.length === 0 ) {
+			throw Error("No DOM element found with selector '" + this._rootDisplayJquerySelector + "'.");
+        }
+        $rootDisplayElement.empty();
+        
+        const blockHTML = this._protein_mods_selection_block_Template({ showNoVariableModificationsMsg, showNoStaticModificationsMsg });
+        const $blockDOM = $( blockHTML );
+
+        $blockDOM.appendTo( $rootDisplayElement );
+
+
+        this._modificationListDisplayOnPage_VariableModfications({ 
+            //  Variable Mods
+            variableModificationsUniqueMassesSet, 
+            showVariableModificationMasses, 
+            showSelectedOnlyVariableModifications, 
+            showAddVariableModificationsSelectionLink, 
+            showChangeVariableModificationsSelectionLink, 
+            showNoVariableModificationsMsg,
+            $blockDOM } );
+
+        this._modificationListDisplayOnPage_StaticModifications({ 
+            //  Static Mods
+            staticModificationsUniqueResidueLettersMassesMapSet,
+            showNoStaticModificationsMsg,
+            $blockDOM } );
+        
+    }
+
+    /**
 	 * Display mods for whole protein or for selected protein positions
      * 
      * Display list on page
 	 * 
 	 */
-	_modListDisplayOnPage({ modUniqueMassesSet, showModMasses, showSelectedOnly, showAddModificationsSelectionLink, showChangeModificationsSelectionLink, showSelectedPositionsMsg, showNoModificationsMsg, showNoModificationsForSelectedPositionsMsg }) {
+	_modificationListDisplayOnPage_StaticModifications({ 
+        //  Static Mods
+        staticModificationsUniqueResidueLettersMassesMapSet,
+        showNoStaticModificationsMsg,
+        $blockDOM } ) {
 
         const objectThis = this;
 
-        let modUniqueMassesArray = undefined;
+        if ( showNoStaticModificationsMsg ) {
 
-        if ( showModMasses ) {
+            //  No Modifications so return here
+
+            return; // EARLY EXIT
+        }
+
+        let residueLetterMassArrayForDisplay = undefined;
+
+        if ( staticModificationsUniqueResidueLettersMassesMapSet ) {
+
+            //  Convert to array of objects for display
+
+            residueLetterMassArrayForDisplay = [];
 
             //  Masses as Array so can sort
-            modUniqueMassesArray = Array.from( modUniqueMassesSet );
+
+            for ( const mapEntry of staticModificationsUniqueResidueLettersMassesMapSet.entries() ) {
+
+                const residueLetter = mapEntry[ 0 ];
+                const masses = mapEntry[ 1 ];
+                for ( const mass of masses ) {
+                    const displayEntry = { residueLetter, mass };
+                    residueLetterMassArrayForDisplay.push( displayEntry );
+                }
+            }
+
+            //  Sort on mass, then residue letter
+            residueLetterMassArrayForDisplay.sort( function(a, b) {
+                if ( a.mass < b.mass ) {
+                    return -1;
+                }
+                if ( a.mass > b.mass ) {
+                    return 1;
+                }
+                if ( a.residueLetter < b.residueLetter ) {
+                    return -1;
+                }
+                if ( a.residueLetter > b.residueLetter ) {
+                    return 1;
+                }
+                return 0;
+            });
+
+        } else {
+            residueLetterMassArrayForDisplay = [];
+        }
+
+		const $selector_protein_static_modification_list = $blockDOM.find(".selector_protein_static_modification_list");
+		if ( $selector_protein_static_modification_list.length === 0 ) {
+			throw Error("No DOM element found with class 'selector_protein_static_modification_list'");
+        }
+
+        if ( residueLetterMassArrayForDisplay ) { // residueLetterMassArrayForDisplay only populated when have mod entries
+
+            let first = true;
+
+            for ( const modEntry of residueLetterMassArrayForDisplay ) {
+
+                if ( first ) {
+                    first = false;
+                } else {
+                    // $selector_protein_static_modification_list.append('<span style="" >&nbsp;&nbsp;</span>');
+                }
+
+                const modEntryContext = { modEntry };
+
+                // this._staticModificationsSelected:  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+                {
+                    const selectedMassesForResidueLetter = this._staticModificationsSelected.get( modEntry.residueLetter );
+                    if ( selectedMassesForResidueLetter && selectedMassesForResidueLetter.has( modEntry.mass ) ) {
+                        modEntryContext.isSelected = true;
+                    }
+                }
+                const modEntryHTML = this._protein_mods_static_selection_entry_Template(modEntryContext);
+                const $modEntryDOM = $( modEntryHTML );
+                $modEntryDOM.appendTo( $selector_protein_static_modification_list );
+
+                const $selector_mod_entry_checkbox = $modEntryDOM.find(".selector_mod_entry_checkbox");
+                if ( $selector_mod_entry_checkbox.length === 0 ) {
+                    throw Error("No DOM element found with class 'selector_mod_entry_checkbox'");
+                }
+                $selector_mod_entry_checkbox.change( function(eventObject) {
+                    try {
+                        eventObject.preventDefault();
+                        const clickThis = this;
+                        window.setTimeout( function() { //  Use setTimeout to run update later so checkbox shows or clears check immediately
+                            try {
+                                objectThis._staticModificationMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry });
+                            } catch( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                throw e;
+                            }
+                        }, 10);
+                        return false;
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });	
+            }
+        }
+    }
+
+	/**
+	 * Static Modification Mass displayed on page clicked
+	 */
+    _staticModificationMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry }) {
+
+        // check 'checked' property on DOM element checkbox
+        // if ( clickThis.checked ) {
+
+        const residueLetter = modEntry.residueLetter;
+        const modMass = modEntry.mass;
+
+        const $clickThis = $( clickThis );
+        if ( $clickThis.prop('checked') ) {
+
+        // this._staticModificationsSelected:  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+            let selectedMassesForResidueLetter = this._staticModificationsSelected.get( residueLetter );
+            if ( ! selectedMassesForResidueLetter  ) {
+                selectedMassesForResidueLetter = new Set();
+                this._staticModificationsSelected.set( residueLetter, selectedMassesForResidueLetter );
+            }
+            selectedMassesForResidueLetter.add( modMass );
+
+        } else {
+            let selectedMassesForResidueLetter = this._staticModificationsSelected.get( residueLetter );
+            if ( selectedMassesForResidueLetter  ) {
+                selectedMassesForResidueLetter.delete( modMass );
+                if ( selectedMassesForResidueLetter.size === 0 ) {
+                    this._staticModificationsSelected.delete( residueLetter );
+                }
+            }
+        }
+
+        this._modSelectionsChanged();
+    }
+
+
+    /**
+	 * Display Variable modifications for whole protein or for selected protein positions
+     * 
+     * Display list on page
+	 * 
+	 */
+	_modificationListDisplayOnPage_VariableModfications({ 
+        //  Variable Mods
+        variableModificationsUniqueMassesSet, 
+        showVariableModificationMasses, 
+        showSelectedOnlyVariableModifications, 
+        showAddVariableModificationsSelectionLink, 
+        showChangeVariableModificationsSelectionLink, 
+        showNoVariableModificationsMsg,
+        $blockDOM } ) {
+
+        const objectThis = this;
+        
+
+        if ( showNoVariableModificationsMsg ) {
+
+            //  No Modifications so return here
+
+            return; // EARLY EXIT
+        }
+
+        let modUniqueMassesArray = undefined;
+
+        if ( showVariableModificationMasses ) {
+
+            //  Masses as Array so can sort
+            modUniqueMassesArray = Array.from( variableModificationsUniqueMassesSet );
 
             //  Sort masses
             modUniqueMassesArray.sort( function(a, b) {
@@ -517,45 +787,25 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         }
 
         modUniqueMassesArray.unshift( _UNMODIFIED_SELECTED ); //  add to start of array
-            
-        const $rootDisplayElement = $( this._rootDisplayJquerySelector );
-		if ( $rootDisplayElement.length === 0 ) {
-			throw Error("No DOM element found with selector '" + this._rootDisplayJquerySelector + "'.");
+
+		const $selector_protein_variable_modification_list = $blockDOM.find(".selector_protein_variable_modification_list");
+		if ( $selector_protein_variable_modification_list.length === 0 ) {
+			throw Error("No DOM element found with class 'selector_protein_variable_modification_list'");
         }
-        $rootDisplayElement.empty();
-        
-        const blockHTML = this._protein_mods_selection_block_Template({ showNoModificationsMsg, showNoModificationsForSelectedPositionsMsg, showSelectedPositionsMsg });
-        const $blockDOM = $( blockHTML );
-
-        $blockDOM.appendTo( $rootDisplayElement );
-
-        if ( showNoModificationsMsg || showNoModificationsForSelectedPositionsMsg ) {
-
-            //  No Modifications so return here
-
-            return; // EARLY EXIT
+        const $selector_protein_variable_modification_change_selection_link_container = $blockDOM.find(".selector_protein_variable_modification_change_selection_link_container");
+		if ( $selector_protein_variable_modification_change_selection_link_container.length === 0 ) {
+			throw Error("No DOM element found with class 'selector_protein_variable_modification_change_selection_link_container'");
         }
 
-		const $selector_protein_mod_list = $blockDOM.find(".selector_protein_mod_list");
-		if ( $selector_protein_mod_list.length === 0 ) {
-			throw Error("No DOM element found with class 'selector_protein_mod_list'");
-        }
-        const $selector_protein_mod_change_selection_link_container = $blockDOM.find(".selector_protein_mod_change_selection_link_container");
-		if ( $selector_protein_mod_change_selection_link_container.length === 0 ) {
-			throw Error("No DOM element found with class 'selector_protein_mod_change_selection_link_container'");
-        }
-
-        let addedModMassesToPage = false;
-        
         if ( modUniqueMassesArray ) { // modUniqueMassesArray only populated when showing mod entries
 
             let first = true;
 
             for ( const modEntry of modUniqueMassesArray ) {
 
-                if ( showSelectedOnly ) {
+                if ( showSelectedOnlyVariableModifications ) {
 
-                    if ( ( ! this._modificationsSelected.has( modEntry ) ) && modEntry !== _UNMODIFIED_SELECTED ) {
+                    if ( ( ! this._variableModificationsSelected.has( modEntry ) ) && modEntry !== _UNMODIFIED_SELECTED ) {
                         //  Always display Unmodified checkbox
 
                         //  Skip to next modification
@@ -566,7 +816,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                 if ( first ) {
                     first = false;
                 } else {
-                    // $selector_protein_mod_list.append('<span style="" >&nbsp;&nbsp;</span>');
+                    // $selector_protein_variable_modification_list.append('<span style="" >&nbsp;&nbsp;</span>');
                 }
 
                 let unmodifiedEntry = false;
@@ -576,27 +826,12 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
                 const modEntryContext = { modMass : modEntry, unmodifiedEntry };
 
-                if ( this._modificationsSelected.has( modEntry ) ) {
+                if ( this._variableModificationsSelected.has( modEntry ) ) {
                     modEntryContext.isSelected = true;
                 }
                 const modEntryHTML = this._protein_mods_selection_entry_Template(modEntryContext);
                 const $modEntryDOM = $( modEntryHTML );
-                $modEntryDOM.appendTo( $selector_protein_mod_list );
-                addedModMassesToPage = true;
-
-                if ( modEntry !== _UNMODIFIED_SELECTED ) {
-                    const $selector_hide_modification_mass_choice = $modEntryDOM.find(".selector_hide_modification_mass_choice");
-                    $selector_hide_modification_mass_choice.qtip( {
-                        content: {
-                            text: "Modification mass will not be used since 'unmodified' was chosen."
-                        },
-                        position: {
-                            target: 'mouse',
-                            adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
-                            viewport: $(window)
-                        }
-                    });		
-                }
+                $modEntryDOM.appendTo( $selector_protein_variable_modification_list );
 
                 const $selector_mod_entry_checkbox = $modEntryDOM.find(".selector_mod_entry_checkbox");
                 if ( $selector_mod_entry_checkbox.length === 0 ) {
@@ -608,7 +843,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                         const clickThis = this;
                         window.setTimeout( function() { //  Use setTimeout to run update later so checkbox shows or clears check immediately
                             try {
-                                objectThis._modMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry, unmodifiedEntry });
+                                objectThis._variablemodificationMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry, unmodifiedEntry });
                             } catch( e ) {
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
@@ -624,12 +859,12 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         }
 
         
-        if ( showAddModificationsSelectionLink ) {
+        if ( showAddVariableModificationsSelectionLink ) {
 
             const addModsLinkHTML = this._protein_mods_selection_add_fake_link_Template();
             const $addModsLinkDOM = $( addModsLinkHTML );
 
-            $addModsLinkDOM.appendTo( $selector_protein_mod_list );
+            $addModsLinkDOM.appendTo( $selector_protein_variable_modification_list );
 
             let $selector_add_mods_fake_link = $addModsLinkDOM;
 
@@ -642,7 +877,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             $selector_add_mods_fake_link.click( function(eventObject) {
                 try {
                     eventObject.preventDefault();
-                    objectThis._showModMassSelectionDialog();
+                    objectThis._showVariableModificationMassSelectionDialog();
                     return false;
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -651,12 +886,12 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             });	
         }
 
-        if ( showChangeModificationsSelectionLink ) {
+        if ( showChangeVariableModificationsSelectionLink ) {
 
             const changeModsLinkHTML = this._protein_mods_selection_change_fake_link_Template();
             const $changeModsLinkDOM = $( changeModsLinkHTML );
 
-            $changeModsLinkDOM.appendTo( $selector_protein_mod_change_selection_link_container );
+            $changeModsLinkDOM.appendTo( $selector_protein_variable_modification_change_selection_link_container );
 
             let $selector_change_mods_fake_link = $changeModsLinkDOM;
 
@@ -669,7 +904,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             $selector_change_mods_fake_link.click( function(eventObject) {
                 try {
                     eventObject.preventDefault();
-                    objectThis._showModMassSelectionDialog();
+                    objectThis._showVariableModificationMassSelectionDialog();
                     return false;
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -680,9 +915,9 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
     }
     
 	/**
-	 * Mod Mass displayed on page clicked
+	 * Variable Modification Mass displayed on page clicked
 	 */
-    _modMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry, unmodifiedEntry }) {
+    _variablemodificationMassOnPageCheckboxChanged({ clickThis, eventObject, modEntry, unmodifiedEntry }) {
 
         // check 'checked' property on DOM element checkbox
         // if ( clickThis.checked ) {
@@ -693,7 +928,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             if ( unmodifiedEntry ) {
                 //  remove from Set and uncheck all not unmodified entries
 
-                this._modificationsSelected.clear();
+                this._variableModificationsSelected.clear();
                 const $selector_protein_mod_block = $clickThis.closest(".selector_protein_mod_block");
                 const $selector_not_unmodified_entryAll = $selector_protein_mod_block.find(".selector_not_unmodified_entry");
                 $selector_not_unmodified_entryAll.each( function( index, element ) {
@@ -705,17 +940,17 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             } else {
 
                 //  remove from Set and uncheck the unmodified entry
-                this._modificationsSelected.delete( _UNMODIFIED_SELECTED );
+                this._variableModificationsSelected.delete( _UNMODIFIED_SELECTED );
                 const $selector_protein_mod_block = $clickThis.closest(".selector_protein_mod_block");
                 const $selector_unmodified_entry = $selector_protein_mod_block.find(".selector_unmodified_entry");
                 const $selector_mod_entry_checkbox = $selector_unmodified_entry.find(".selector_mod_entry_checkbox");
                 $selector_mod_entry_checkbox.prop( 'checked', false );
             }
 
-            this._modificationsSelected.add( modEntry );
+            this._variableModificationsSelected.add( modEntry );
 
         } else {
-            this._modificationsSelected.delete( modEntry );
+            this._variableModificationsSelected.delete( modEntry );
         }
 
         this._modSelectionsChanged();
@@ -724,7 +959,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	/**
 	 * Display Dialog for "Change Mods"
 	 */
-    _showModMassSelectionDialog() {
+    _showVariableModificationMassSelectionDialog() {
 
         // Map<mass, {mass, psmCount}>
         const modUniqueMassesWithTheirPsmCountsMap = this._createModsAndPsmCountsMap();
@@ -853,26 +1088,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	 */
     _createModalOverlayContentDiv( {  } ) {
         
-        let selectedProteinSequencePositionsCommaDelim = undefined;
-
-        if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0 ) {
-            const selectedProteinSequencePositions = Array.from( this._selectedProteinSequencePositions ); // input is set
-
-            selectedProteinSequencePositions.sort(function (a, b) {
-                if (a < b) {
-                    return -1;
-                }
-                if (a > b) {
-                    return 1;
-                }
-                // a must be equal to b
-                return 0;
-            });
-
-            selectedProteinSequencePositionsCommaDelim = selectedProteinSequencePositions.join(", ");
-        }
-
-        const protein_mods_selection_dialog_root_Context = { proteinData : this._proteinNameDescription, selectedProteinSequencePositionsCommaDelim };
+        const protein_mods_selection_dialog_root_Context = { proteinData : this._proteinNameDescription };
     	let contentDivHTML = this._protein_mods_selection_dialog_root_Template( protein_mods_selection_dialog_root_Context );
     	let $contentDiv = $( contentDivHTML );
     	return $contentDiv;
@@ -976,13 +1192,13 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         const objectThis = this;
 
-        if ( this._modificationsSelected.size !== 0 ) {
+        if ( this._variableModificationsSelected.size !== 0 ) {
 
             const $selector_data_table_row_All = $tableContainerDiv.find(".selector_data_table_row");
             $selector_data_table_row_All.each( function(index, element) {
                 const $row = $( this );
                 const modMassNumber = objectThis._selectionDialog_ModRow_GetModMassNumber({ $row });
-                if ( objectThis._modificationsSelected.has( modMassNumber ) ) {
+                if ( objectThis._variableModificationsSelected.has( modMassNumber ) ) {
                     $row.addClass( _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS );
                 }
             });
@@ -1056,10 +1272,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         this._hide_remove_ModalOverlay();
 
 
-        if ( this._modificationsSelected.has( _UNMODIFIED_SELECTED ) ) {
+        if ( this._variableModificationsSelected.has( _UNMODIFIED_SELECTED ) ) {
 
             //  remove from Set and uncheck the unmodified entry
-            this._modificationsSelected.delete( _UNMODIFIED_SELECTED );
+            this._variableModificationsSelected.delete( _UNMODIFIED_SELECTED );
             const $selector_protein_mod_block = $clickThis.closest(".selector_protein_mod_block");
             const $selector_unmodified_entry = $selector_protein_mod_block.find(".selector_unmodified_entry");
             const $selector_mod_entry_checkbox = $selector_unmodified_entry.find(".selector_mod_entry_checkbox");
@@ -1067,11 +1283,11 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         }
 
         //  Clear main mod mass selections
-        this._modificationsSelected.clear();
+        this._variableModificationsSelected.clear();
 
         //  Add in newly selected mod masses
         for ( const modSelected of modificationsSelectedInDialog ) {
-            this._modificationsSelected.add( modSelected );
+            this._variableModificationsSelected.add( modSelected );
         }
 
         this._modListDisplay_Internal(); //  Re-display updated list on main page
@@ -1100,12 +1316,45 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
     ///////////////////////////////////////////////////////////
 
 	/**
-	 * Get Unique Mods Set for whole protein or for selected protein positions
+	 * Get Unique Static Mod  Map<Residue Letter, <Set<Mod Mass>> for the Searches
 	 */
-	_createModsSet() {
+	_create_staticModificationsUniqueResidueLettersMassesMapSet() {
 
-		//  Unique Mod masses for the protein or selected positions
-        const modUniqueMassesSet = new Set(); 
+		//  Unique Static Mod Residue Letter/ masses for the Searches:  Map<Residue Letter, <Set<Mod Mass>>
+        const staticModificationsUniqueResidueLettersMassesMapSet = new Map(); 
+
+        for ( const projectSearchId of this._projectSearchIds ) {
+
+            const loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+            if ( ! loadedDataPerProjectSearchIdHolder ) {
+                throw Error("No entry in this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
+            }
+
+            const staticModsForSearch = loadedDataPerProjectSearchIdHolder.get_staticMods();
+
+            if ( staticModsForSearch ) {
+                for ( const staticModEntry of staticModsForSearch ) { // mass: 57.021464, residue: "C"
+                    const residue = staticModEntry.residue;
+                    let massesSet = staticModificationsUniqueResidueLettersMassesMapSet.get( residue );
+                    if ( ! massesSet ) {
+                        massesSet = new Set();
+                        staticModificationsUniqueResidueLettersMassesMapSet.set( residue, massesSet );
+                    }
+                    massesSet.add( staticModEntry.mass );
+                }
+            }
+        }
+
+        return staticModificationsUniqueResidueLettersMassesMapSet;
+    }
+
+	/**
+	 * Get Unique Variable Mods Set for whole protein or for selected protein positions
+	 */
+	_create_variableModificationsUniqueMassesSet() {
+
+		//  Unique Variable Mod masses for the protein or selected positions
+        const variableModificationsUniqueMassesSet = new Set(); 
 
         for ( const projectSearchId of this._projectSearchIds ) {
 
@@ -1117,6 +1366,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
             let modificationsOnProtein_KeyProteinSequenceVersionId = undefined;
 
             if ( this._useCombinedModificationMasses ) {  //  Use combined Dynamic and Static Modification Masses
+
+                const msg = "useCombinedModificationMasses is not supported.";
+                console.log( msg );
+                throw Error( msg );
 
                 modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId();
             } else {
@@ -1135,22 +1388,17 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                         const mass = modificationOnProtein.mass;
                                 // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-                        if ( this._selectedProteinSequencePositions && ( ! this._selectedProteinSequencePositions.has( position ) ) ) {
-                            //  Not for selection position(s) so skip
-                            continue;
-                        }
-
-                        modUniqueMassesSet.add( mass );
+                        variableModificationsUniqueMassesSet.add( mass );
                     }
                 }
             }
         }
 
-        return modUniqueMassesSet;
+        return variableModificationsUniqueMassesSet;
     }
 
 	/**
-	 * Create Mods and PSM Counts Map for whole protein or for selected protein positions
+	 * Create Variable Mods and PSM Counts Map for whole protein or for selected protein positions
      * 
      * @returns Map<mass, {id, mass, psmCount}>   id === mass
 	 */
@@ -1189,11 +1437,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                         const position = modificationOnProtein.position;
                         const mass = modificationOnProtein.mass;
                         const reportedPeptideId = modificationOnProtein.reportedPeptideId;
-
-                        if ( this._selectedProteinSequencePositions && ( ! this._selectedProteinSequencePositions.has( position ) ) ) {
-                            //  Not for selection position(s) so skip
-                            continue;
-                        }
 
                         const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                         if ( ! numPsmsForReportedPeptideId ) {
