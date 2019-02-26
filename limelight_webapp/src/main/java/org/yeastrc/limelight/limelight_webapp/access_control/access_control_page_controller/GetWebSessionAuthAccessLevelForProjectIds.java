@@ -68,6 +68,8 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 		private boolean noSession;
 		private UserSession userSession;
 		
+		private boolean projectNotEnabledOrIsMarkedForDeletion;
+		
 		public WebSessionAuthAccessLevel getWebSessionAuthAccessLevel() {
 			return webSessionAuthAccessLevel;
 		}
@@ -85,6 +87,12 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 		}
 		public void setUserSession(UserSession userSession) {
 			this.userSession = userSession;
+		}
+		public boolean isProjectNotEnabledOrIsMarkedForDeletion() {
+			return projectNotEnabledOrIsMarkedForDeletion;
+		}
+		public void setProjectNotEnabledOrIsMarkedForDeletion(boolean projectNotEnabledOrIsMarkedForDeletion) {
+			this.projectNotEnabledOrIsMarkedForDeletion = projectNotEnabledOrIsMarkedForDeletion;
 		}
 	}
 
@@ -127,6 +135,7 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 			
 			GetWebSessionAuthAccessLevelForProjectIds_Result result = new GetWebSessionAuthAccessLevelForProjectIds_Result();
 			result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+			result.projectNotEnabledOrIsMarkedForDeletion = true;
 			
 			{
 				UserSession userSession =

@@ -31,6 +31,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -81,7 +82,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	}
 
 	/**
-	 * !!  Only populates title, abstract, project_locked, public_access_level
+	 * !!  Only populates title, abstract, project_locked, public_access_level, marked_for_deletion
 	 * 
 	 * @param id
 	 * @return
@@ -92,7 +93,8 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		
 		ProjectDTO result = null;
 		
-		final String querySQL = "SELECT title, abstract, project_locked, public_access_level FROM project_tbl WHERE id = ?";
+		final String querySQL = "SELECT title, abstract, project_locked, public_access_level FROM project_tbl WHERE id = ?"
+				+ " AND marked_for_deletion != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE;
 		
 		try ( Connection dbConnection = super.getDBConnection();
 			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {

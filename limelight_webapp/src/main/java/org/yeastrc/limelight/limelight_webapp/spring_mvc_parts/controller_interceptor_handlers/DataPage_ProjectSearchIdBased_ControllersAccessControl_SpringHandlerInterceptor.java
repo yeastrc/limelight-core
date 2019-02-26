@@ -36,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.WebErrorPageKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.db_dto.SearchDataLookupParametersLookupDTO;
@@ -276,6 +277,10 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     		GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
     				getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
 
+			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isProjectNotEnabledOrIsMarkedForDeletion() ) {
+				throw new LimelightErrorDataInWebRequestException("Project Not Enabled Or is Marked for Deletion.  Project Id: " + projectIds );
+			}
+
     		WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
 
 			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
@@ -292,7 +297,6 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 
     			return false; //  EARLY EXIT
     		}
-
 
     		UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
 
