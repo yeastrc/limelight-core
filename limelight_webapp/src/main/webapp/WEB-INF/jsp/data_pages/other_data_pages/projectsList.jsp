@@ -30,17 +30,33 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
 
-		<br>
-		<br>
-
+	<div class="top-level-label your-projects-title" >Your Projects</div>	
+	
+	
+		<%--  The list of projects will be put in this div by the Javascript --%>
+	<table border="0" width="100%"  id="project_list">
+		 <tr>
+		  <td valign="top" style=" padding-right: 10px; width: 1px; "> <%-- Width will expand to fully display the icon --%>
+		  		<%-- Same padding-right as <td> in single_project_template.handlebars  --%>
+		  
+			<img class="new_project_expand_jq tool_tip_attached_jq fake-link-image icon-large " id="new_project_expand_link"
+				title="New Project" data-tooltip="Add new project" src="static/images/icon-circle-plus.png">
+			<img class="new_project_cancel_jq tool_tip_attached_jq fake-link-image icon-large "  id="new_project_cancel_link"
+				title="Close New Project" style="display: none;" data-tooltip="Cancel adding new project" src="static/images/icon-circle-delete.png" >
+		  </td>
+		  <td>
+	
 			<div  id="new_project_collapsed" >
 			
 				<div class="new-project-text" >
-					<a href="javascript:" class="new-project-text-link new_project_expand_jq tool_tip_attached_jq" data-tooltip="Add new project">New Project</a>
+					<span class="fake-link new_project_expand_jq tool_tip_attached_jq" 
+						style="font-size: 20px;"
+						data-tooltip="Add new project"
+						>New Project</span>
 				</div>
 			</div>
 			
-			<div  id="new_project_expanded" style="display: none;position: relative;">
+			<div  id="new_project_expanded" style="display: none; position: relative;">
 						
 		  		<div id="error_message_project_title_required" class="error-message-container error_message_container_jq"
 		  			style="width: 400px;">
@@ -69,15 +85,18 @@
 			
 			</div> <%-- End of new project expanded --%>
 	
-	<h3>
-		Projects List:
-	</h3>
+		  </td>
+		 </tr>
+		 <tr>
+		  <td colspan="2">
+			<div class="new-project-container-bottom-border" ></div>
+		  </td>
+		 </tr>
+		
+		<%--  Project rows get appended to the end --%>
 	
-  <div id="project_list">
-  
-  
-  </div>
-  
+	</table>
+	
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>

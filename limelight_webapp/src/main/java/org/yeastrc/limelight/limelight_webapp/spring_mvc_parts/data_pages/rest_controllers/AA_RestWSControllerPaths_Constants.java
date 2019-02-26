@@ -70,6 +70,8 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PROJECT_CREATE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-create";
 
+	public static final String PROJECT_MARK_FOR_DELETION_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-mark-for-deletion";
+
 	public static final String PROJECT_LOCK_PROJECT_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-lock-project";
 	public static final String PROJECT_UNLOCK_PROJECT_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-unlock-project";
 

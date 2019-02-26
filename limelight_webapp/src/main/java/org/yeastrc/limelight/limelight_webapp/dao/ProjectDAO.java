@@ -326,6 +326,45 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	}
 
 	/**
+	 * @param markedForDeletion
+	 * @param projectId
+	 */
+	@Override
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	public void updateMarkedForDeletion( boolean markedForDeletion, int projectId ) {
+		
+		final String UPDATE_SQL = "UPDATE project_tbl SET marked_for_deletion = ? WHERE id = ?";
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		//  How to get the auto-increment primary key for the inserted record
+		
+		try {
+			int rowsUpdated = this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt =
+									connection.prepareStatement( UPDATE_SQL );
+							int counter = 0;
+							counter++;
+							pstmt.setBoolean( counter, markedForDeletion );
+							counter++;
+							pstmt.setInt( counter, projectId );
+
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "projectLocked: " + markedForDeletion + ", projectId: " + projectId + ", SQL: " + UPDATE_SQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+	/**
 	 * @param projectLocked
 	 * @param projectId
 	 */

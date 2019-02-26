@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.direct_user_session.UserIsAdminCheckIF;
+import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -104,7 +106,7 @@ public class ProjectsList_RestWebserviceController {
 			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
     		String webserviceSyncTracking,
     		
-    		@RequestBody ProjectListRequest projectListRequest,
+    		@RequestBody WebserviceRequest projectListRequest,
     		HttpServletRequest httpServletRequest,
     		HttpServletResponse httpServletResponse
     		) throws IOException, SQLException {
@@ -121,17 +123,47 @@ public class ProjectsList_RestWebserviceController {
     		
     		int userId = userSession.getUserId();
     		
-    		List<ProjectListItem> projectList = null;
+    		List<WebserviceResultListItem> projectList = null;
     		
     		if ( userIsAdminCheck.userIsAdmin( userSession ) ) {
 
-    			projectList = projectListAllSearcher.getProjectListAll();
+    			List<ProjectListItem> projectListFromDB = projectListAllSearcher.getProjectListAll();
+    			
+    			projectList = new ArrayList<>( projectListFromDB.size() );
+    			
+    			for ( ProjectListItem projectItemFromDB : projectListFromDB  ) {
+    				
+    				WebserviceResultListItem projectItem = new WebserviceResultListItem();
+    				
+    				projectItem.id = projectItemFromDB.getId();
+    				projectItem.title = projectItemFromDB.getTitle();
+    				projectItem.projectLocked = projectItemFromDB.isProjectLocked();
+    				if ( ! projectItemFromDB.isProjectLocked() ) {
+    					projectItem.canDelete = true;
+    				}
+    				projectList.add( projectItem );
+    			}
     		} else {
     			
-    			projectList = projectListForUserIdSearcher.getProjectListForUserId( userId );
+    			List<ProjectListItem> projectListFromDB = projectListForUserIdSearcher.getProjectListForUserId( userId );
+    			
+    			projectList = new ArrayList<>( projectListFromDB.size() );
+    			
+    			for ( ProjectListItem projectItemFromDB : projectListFromDB  ) {
+    				
+    				WebserviceResultListItem projectItem = new WebserviceResultListItem();
+    				
+    				projectItem.id = projectItemFromDB.getId();
+    				projectItem.title = projectItemFromDB.getTitle();
+    				projectItem.projectLocked = projectItemFromDB.isProjectLocked();
+    				if ( ! projectItemFromDB.isProjectLocked() && projectItemFromDB.getUserAccessLevel() <= AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER ) {
+    					projectItem.canDelete = true;
+    				}
+    				projectList.add( projectItem );
+    			}
     		}
 
-    		ProjectListResult projectListResult = new ProjectListResult();
+    		WebserviceResult projectListResult = new WebserviceResult();
     		projectListResult.projectList = projectList;
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( projectListResult );
@@ -151,22 +183,56 @@ public class ProjectsList_RestWebserviceController {
     }
     
 
-    public static class ProjectListRequest {
+    public static class WebserviceRequest {
     	//  No params
     }
     
-    public static class ProjectListResult {
-    	List<ProjectListItem> projectList;
+    public static class WebserviceResult {
+    	List<WebserviceResultListItem> projectList;
 
-		public List<ProjectListItem> getProjectList() {
+		public List<WebserviceResultListItem> getProjectList() {
 			return projectList;
 		}
-
-		public void setProjectList(List<ProjectListItem> projectList) {
+		public void setProjectList(List<WebserviceResultListItem> projectList) {
 			this.projectList = projectList;
 		}
     }
+
+	public static class WebserviceResultListItem {
+	
+		private int id;
+		private String title;
+		private boolean projectLocked;
+		private boolean canDelete;
+		
+		public int getId() {
+			return id;
+		}
+		public void setId(int id) {
+			this.id = id;
+		}
+		public String getTitle() {
+			return title;
+		}
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		public boolean isProjectLocked() {
+			return projectLocked;
+		}
+		public void setProjectLocked(boolean projectLocked) {
+			this.projectLocked = projectLocked;
+		}
+		public boolean isCanDelete() {
+			return canDelete;
+		}
+		public void setCanDelete(boolean canDelete) {
+			this.canDelete = canDelete;
+		}
+	}
+
     
+	
 
 	public ProjectDAO_IF getProjectDAO() {
 		return projectDAO;

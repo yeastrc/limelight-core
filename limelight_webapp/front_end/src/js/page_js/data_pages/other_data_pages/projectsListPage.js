@@ -22,8 +22,6 @@ var Handlebars = require('handlebars/runtime');
 var _project_list_template_bundle = 
 	require("../../../../../handlebars_templates_precompiled/project_list/project_list_template-bundle.js" );
 
-//  Required on Page Level JS
-Handlebars.templates = _project_list_template_bundle;
 
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
@@ -44,11 +42,17 @@ var ListProjectsPage = function() {
 	
 	var initializeCalled = false;
 
-	if ( ! Handlebars.templates.single_project_template ) {
-		throw Error("Nothing in Handlebars.templates.single_project_template");
+	if ( ! _project_list_template_bundle.single_project_template ) {
+		throw Error("Nothing in _project_list_template_bundle.single_project_template");
 	}
+	var _single_project_template = _project_list_template_bundle.single_project_template;
+
+	if ( ! _project_list_template_bundle.single_project_bottom_separator_template ) {
+		throw Error("Nothing in _project_list_template_bundle.single_project_bottom_separator_template");
+	}
+	var _single_project_bottom_separator_template = _project_list_template_bundle.single_project_bottom_separator_template;
+
 	
-	var _single_project_template = Handlebars.templates.single_project_template;
 
 	/**
 	 * 
@@ -100,6 +104,8 @@ var ListProjectsPage = function() {
 	 */
 	this.getProjectListResponse = function(requestData, responseData) {
 
+		const objectThis = this;
+
 		var projectList = responseData.projectList;
 
 		var $project_list = $("#project_list");
@@ -115,7 +121,29 @@ var ListProjectsPage = function() {
 
 		if (projectList && projectList.length > 0) {
 
-			projectList.forEach(function( projectItem, index, array ) {
+			for ( const projectItem of projectList ) {
+
+				projectItem.titleLowerCase = projectItem.title.toLocaleLowerCase();
+			}
+
+			//  Sort On Title Lower Case ascending then Id ascending
+			projectList.sort(function(a, b) {
+				if (a.titleLowerCase < b.titleLowerCase) {
+					return -1;
+				}
+				if (a.titleLowerCase > b.titleLowerCase) {
+					return 1;
+				}
+				if (a.id < b.id) {
+					return -1;
+				}
+				if (a.id > b.id) {
+					return 1;
+				}
+				return 0;
+			});
+
+			for ( const projectItem of projectList ) {
 
 				var context = projectItem;
 
@@ -123,29 +151,32 @@ var ListProjectsPage = function() {
 
 				var $project_entry = $(html).appendTo($project_list);
 
-//				if ( responseDataItem.canDelete ) {
+				var separatorHTML = _single_project_bottom_separator_template();
+				$(separatorHTML).appendTo($project_list);
 
-//				var $delete_project_link_jq = $project_entry.find(".delete_project_link_jq");
+				if ( ( ! projectItem.projectLocked ) && projectItem.canDelete ) {
 
-//				if ($delete_project_link_jq.length === 0) {
+					var $delete_project_link_jq = $project_entry.find(".delete_project_link_jq");
+					if ($delete_project_link_jq.length === 0) {
+						throw Error( "Unable to find '.delete_project_link_jq'" );
+					}
 
-//				throw Error( "Unable to find '.delete_project_link_jq'" );
-//				}
+					$delete_project_link_jq.click(function(eventObject) {
+						try {
+							var clickThis = this;
+							eventObject.preventDefault();
 
-//				$delete_project_link_jq.click(function(eventObject) {
+							objectThis.markProjectForDeletion({ projectItem, clickThis, eventObject });
 
-//				try {
-//				var clickThis = this;
+							return false;
+						} catch( e ) {
+							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+							throw e;
+						}
+					});
+				}
 
-//				markProjectForDeletion( clickThis, eventObject );
-//				} catch( e ) {
-//				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//				throw e;
-//				}
-//				});
-//				}
-
-			}, this );
+			}
 
 //			addToolTips();
 
@@ -157,6 +188,75 @@ var ListProjectsPage = function() {
 		}
 	};
 
+	//////////////////////
+
+	//    Mark Project For Deletion
+
+	/**
+	 * 
+	 */	
+	this.markProjectForDeletion = function({ projectItem, clickThis, eventObject }) {
+
+		const objectThis = this;
+
+		if ( ! confirm("Delete Project '" + projectItem.title + "'?" ) ) {
+			return; // EARLY EXIT
+		}
+		
+		var _URL = "d/rws/for-page/project-mark-for-deletion/" + getWebserviceSyncTrackingCode();
+
+		var requestObj = {
+			projectId : projectItem.id
+		};
+
+		var requestData = JSON.stringify( requestObj );
+
+		// var request =
+		$.ajax({
+			type : "POST",
+			url : _URL,
+			data : requestData,
+			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
+			dataType : "json",
+			success : function(data) {
+				try {
+					objectThis.markProjectForDeletionComplete(requestData, data);
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			},
+			failure: function(errMsg) {
+				handleAJAXFailure( errMsg );
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+
+
+//				var $element = $("#error_message_system_error");
+
+//				showErrorMsg( $element );
+
+				handleAJAXError(jqXHR, textStatus, errorThrown);
+
+				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
+				// textStatus: " + textStatus );
+			}
+		});
+	}
+	
+	/**
+	 * 
+	 */
+	this.markProjectForDeletionComplete = function( requestData, data ) {
+
+
+		this.getProjectList();
+	}
+
+	//////////////////////
+
+	//    Add Project
 
 	/**
 	 * 

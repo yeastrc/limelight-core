@@ -75,7 +75,12 @@ public interface ProjectDAO_IF {
 	 * @param projectId
 	 */
 	void updateAbstract( String projectAbstract, int projectId );
-	
+
+	/**
+	 * @param markedForDeletion
+	 * @param projectId
+	 */
+	void updateMarkedForDeletion( boolean markedForDeletion, int projectId );
 
 	/**
 	 * @param projectLocked

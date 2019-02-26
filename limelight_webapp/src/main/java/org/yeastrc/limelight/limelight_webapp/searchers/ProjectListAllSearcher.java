@@ -40,7 +40,7 @@ public class ProjectListAllSearcher extends Limelight_JDBC_Base implements Proje
 	private static final Logger log = LoggerFactory.getLogger( ProjectListAllSearcher.class );
 	
 	private static final String QUERY_SQL = 
-			"SELECT id, title FROM project_tbl "
+			"SELECT id, title, project_locked FROM project_tbl "
 			+ " WHERE enabled = 1 AND marked_for_deletion = 0 ";
 			
 	/* (non-Javadoc)
@@ -61,6 +61,7 @@ public class ProjectListAllSearcher extends Limelight_JDBC_Base implements Proje
 					ProjectListItem item = new ProjectListItem();
 					item.setId( rs.getInt( "id" ) );
 					item.setTitle( rs.getString( "title" ) );
+					item.setProjectLocked( rs.getBoolean( "project_locked" ) );
 					resultList.add( item );
 				}
 			}

@@ -85,8 +85,19 @@ input[type="checkbox"], .left-margin-same-as-checkbox {
   margin-left: 4px; //  Repeat from Browser default since add same to some text to left align with checkbox
 }
 
-img.icon-small { max-height: 16px; }
+// set the sizes of our icons
 
+img.icon-small { 
+  max-height: 16px;
+  max-width:12px;
+}
+
+img.icon-large {
+    max-width: 20px;
+    max-height: 20px;
+}
+  
+    
 //  Basic error text color
 .error-text { color: #A55353 }
 

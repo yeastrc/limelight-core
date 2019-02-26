@@ -25,6 +25,8 @@ public class ProjectListItem {
 
 	private int id;
 	private String title;
+	private boolean projectLocked;
+	private int userAccessLevel;
 	
 	public int getId() {
 		return id;
@@ -37,5 +39,17 @@ public class ProjectListItem {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public boolean isProjectLocked() {
+		return projectLocked;
+	}
+	public void setProjectLocked(boolean projectLocked) {
+		this.projectLocked = projectLocked;
+	}
+	public int getUserAccessLevel() {
+		return userAccessLevel;
+	}
+	public void setUserAccessLevel(int userAccessLevel) {
+		this.userAccessLevel = userAccessLevel;
 	}
 }

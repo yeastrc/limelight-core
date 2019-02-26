@@ -66,11 +66,11 @@ public class Z_Sample_Rest_Controller {
 
 	//  These 2 annotations work the same
 	
-	@PostMapping( path = AA_RestWSControllerPaths_Constants.PROJECT_LIST_REST_WEBSERVICE_CONTROLLER,
+	@PostMapping( path = AA_RestWSControllerPaths_Constants.XXXXXXXX_REST_WEBSERVICE_CONTROLLER,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
 //	@RequestMapping( 
-//			path = AA_RestWSControllerPaths_Constants.PROJECT_LIST_REST_WEBSERVICE_CONTROLLER,
+//			path = AA_RestWSControllerPaths_Constants.XXXXXXXXX_REST_WEBSERVICE_CONTROLLER,
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 

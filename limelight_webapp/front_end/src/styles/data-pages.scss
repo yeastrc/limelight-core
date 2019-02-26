@@ -116,17 +116,7 @@
         @include opacity(0.6);
     }
 
-    // set the sizes of our icons
-    .icon-small {
-        max-width:12px;
-    }
 
-    .icon-large {
-        max-width: 20px;
-        max-height: 20px;
-    }
-    
-    	
 	/* background colors for the searches.  
 	
 	This number of colors must match the calculation in /WebRoot/WEB-INF/jsp-includes/mergedSearch_SearchIndexToSearchColorCSSClassName.jsp

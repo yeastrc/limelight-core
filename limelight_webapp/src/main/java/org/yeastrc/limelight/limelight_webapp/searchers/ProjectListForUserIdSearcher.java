@@ -40,13 +40,13 @@ public class ProjectListForUserIdSearcher extends Limelight_JDBC_Base implements
 
 	private static final Logger log = LoggerFactory.getLogger( ProjectListForUserIdSearcher.class );
 	
-	private static final String QUERY_SQL = "SELECT project_tbl.id, project_tbl.title "
+	private static final String QUERY_SQL = "SELECT project_tbl.id, project_tbl.title, project_tbl.project_locked, project_user_tbl.access_level "
 			+ " FROM project_tbl "
 			+ " INNER JOIN project_user_tbl ON project_tbl.id = project_user_tbl.project_id "
 			+ " WHERE "
-			+ " enabled = 1 AND marked_for_deletion = 0 "
+			+ " project_tbl.enabled = 1 AND project_tbl.marked_for_deletion = 0 "
 			+ " AND project_user_tbl.user_id = ? "
-			+ " AND access_level <= " + AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER;
+			+ " AND project_user_tbl.access_level <= " + AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER;
 			
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.ProjectListForUserIdSearcherIF#getProjectListForUserId(int)
@@ -68,6 +68,8 @@ public class ProjectListForUserIdSearcher extends Limelight_JDBC_Base implements
 					ProjectListItem item = new ProjectListItem();
 					item.setId( rs.getInt( "id" ) );
 					item.setTitle( rs.getString( "title" ) );
+					item.setProjectLocked( rs.getBoolean( "project_locked" ) );
+					item.setUserAccessLevel( rs.getInt( "access_level" ) );
 					resultList.add( item );
 				}
 			}

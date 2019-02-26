@@ -1,5 +1,25 @@
+{{!-- 	single_project_template.handlebars 
 
-<div class=" project_root_container_jq " data-id="{{id}}" style="margin-top: 10px; margin-bottom: 10px; ">
-   
-	<a href="d/pg/project/{{id}}">{{title}}</a>
-</div>
+	Single Project
+--}}
+
+
+<tr class="project_root_container_jq" ">	
+
+	<td style="padding-right: 10px;"> {{!-- Same padding-right as <td> above element with id "new_project_expand_link" in JSP --}}
+	 <div style="text-align: center;" >
+		{{#if projectLocked }}
+			<img class=" tool_tip_attached_jq  fake-link-image icon-small " data-tooltip="Project is locked" src="static/images/icon-locked.png" >
+		{{else}}
+			{{!-- 	"x" icon should only appear if they're admins for that project/have permission to delete it and the project isn't locked --}}
+			{{#if canDelete }}
+				<img class=" delete_project_link_jq tool_tip_attached_jq  fake-link-image icon-small " title="Delete Project"
+						data-tooltip="Delete project" src="static/images/icon-circle-delete.png" >
+			{{/if}}			
+		{{/if}}
+	 </div>
+	</td>
+	<td>			
+		<a href="d/pg/project/{{ id }}">{{ title }}</a>
+	</td>
+</tr>
