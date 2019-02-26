@@ -309,6 +309,17 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	}
 
 	/**
+	 * Clear the Selected Protein Positions
+	 */
+	clear_selectedProteinSequencePositions() {
+
+		this._selectedProteinSequencePositions.clear();
+		this._selectionClearAllSequencePositionsSelection_In_DOM_Remove_CSS_Class();
+		
+		this._updateDisplay_positionStyling();
+	}
+
+	/**
 	 * 
 	 */
 	renderOnPage() {

@@ -98,6 +98,12 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		}
 		this._protein_page_single_protein_overlay_background_template_Template = _protein_table_template_bundle.protein_page_single_protein_overlay_background_template;
 
+		if (!_protein_table_template_bundle.protein_page_single_protein_user_filter_selection_template) {
+			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_user_filter_selection_template");
+		}
+		this._protein_page_single_protein_user_filter_selection_template_Template = _protein_table_template_bundle.protein_page_single_protein_user_filter_selection_template;
+
+
 		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer(
 			{
 				loadedDataPerProjectSearchIdHolder ,
@@ -382,6 +388,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			this._proteinSequenceFormattedDisplay_Main_displayWidget.renderOnPage();
 		}
 
+		this._updateUserModificationProteinPositionSelectionDisplay();
+
 		////
 
 		//  Load and Display data after initial overlay show.  Currently Reported Peptide List
@@ -640,13 +648,320 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		});	
 	}
 
+	////////////////////////////
+
+	//    Display of User Selected Modifications and Protein Positions
+
+	/**
+	 * 
+	 */
+	_updateUserModificationProteinPositionSelectionDisplay() {
+
+		const $contentDiv = $(this._contentDivHTMLElement);
+
+		const $selector_modifications_protein_positions_filtering_listing = $contentDiv.find(".selector_modifications_protein_positions_filtering_listing");
+		if ( $selector_modifications_protein_positions_filtering_listing.length === 0 ) {
+			throw Error("Failed to find DOM element with class 'selector_modifications_protein_positions_filtering_listing'");
+		}
+
+		$selector_modifications_protein_positions_filtering_listing.empty();
+
+		//  Selected Protein Positions:
+
+		const selectedProteinSequencePositionsDisplay = this._userSelectionDisplay_GetProteinPositionsFormatted();
+
+		const selectedModificationsMasses = this._userSelectionDisplay_GetModificationsFormatted();
+
+		if ( selectedProteinSequencePositionsDisplay || selectedModificationsMasses ) {
+			const context = {
+				selectedProteinSequencePositions : selectedProteinSequencePositionsDisplay,
+				selectedModificationsMasses : selectedModificationsMasses
+			};
+			const html = this._protein_page_single_protein_user_filter_selection_template_Template( context );
+			$selector_modifications_protein_positions_filtering_listing.append( html );
+
+			const $selector_clear_user_selection_modifications_protein_positions = $selector_modifications_protein_positions_filtering_listing.find(".selector_clear_user_selection_modifications_protein_positions");
+			if ( $selector_clear_user_selection_modifications_protein_positions.length === 0 ) {
+				throw Error("Failed to find DOM element with class 'selector_clear_user_selection_modifications_protein_positions'");
+			}
+
+			const objectThis = this;
+
+			$selector_clear_user_selection_modifications_protein_positions.click( function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._clearUserSelection_modificationAndProteinPositions();
+					return false;
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});	
+		}
+	}
+
+	/**
+	 * Get User Selected Protein Positions
+	 */
+	_userSelectionDisplay_GetProteinPositionsFormatted() {
+
+		const selectedProteinSequencePositions = this._proteinSequenceFormattedDisplay_Main_displayWidget.get_selectedProteinSequencePositions();
+
+		if ( ( ! selectedProteinSequencePositions ) || selectedProteinSequencePositions.size === 0 ) {
+			//  Noting selected
+			return undefined; // EARLY EXIT
+		}
+	
+		const selectedProteinSequencePositionsArray = Array.from( selectedProteinSequencePositions );
+
+		selectedProteinSequencePositionsArray.sort( function( a, b ) {
+			//  Sort Ascending
+			if ( a < b ) {
+				return -1;
+			}
+			if ( a > b ) {
+				return 1;
+			}
+			return 0;
+		});
+
+		//  Create position list using toString()
+		const selectedProteinSequencePositionsFormattedArray = [];
+		for ( const selectedProteinSequencePosition of selectedProteinSequencePositionsArray ) {
+			const selectedProteinSequencePositionFormatted = selectedProteinSequencePosition.toString();
+			selectedProteinSequencePositionsFormattedArray.push( selectedProteinSequencePositionFormatted );
+		}
+
+		return this._userSelectionDisplay_CombineArrayIntoFormattedString({ array : selectedProteinSequencePositionsFormattedArray });
+	}
+
+	/**
+	 * Get User Selected Modifications Formatted
+	 */
+	_userSelectionDisplay_GetModificationsFormatted() {
+
+		//  Variable and Static Modifications Selected
+
+		const noModificationSelected = this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isNoVariableModificationSelected();
+		let variableModificationMassesToFilterOn = this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.getVariableModificationsSelected_ExcludingNoModificationOption();
+		if ( variableModificationMassesToFilterOn && variableModificationMassesToFilterOn.size === 0 ) {
+			variableModificationMassesToFilterOn = undefined;
+		}
+		let staticModificationMassesToFilterOn = this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.getStaticModificationsSelected();
+		if ( staticModificationMassesToFilterOn && staticModificationMassesToFilterOn.size === 0 ) {
+			staticModificationMassesToFilterOn = undefined;
+		}
+
+		if ( ! noModificationSelected && ( ! variableModificationMassesToFilterOn ) && ( ! staticModificationMassesToFilterOn  ) ) {
+			//  Noting selected
+			return undefined; // EARLY EXIT
+		}
+
+		const result = {};
+
+		if ( noModificationSelected ) {
+			result.noModificationSelected = true;
+		}
+
+		const modsFilteringOnForDisplayArray = [];
+
+		if ( variableModificationMassesToFilterOn ) {
+			//  Have Variable Mod Mass selected so add to display array
+			this._userSelectionDisplay_Add_Variable_ModificationsFormatted({ variableModificationMassesToFilterOn, modsFilteringOnForDisplayArray });
+		}
+		if ( staticModificationMassesToFilterOn ) {
+			//  Have Static Mod Mass selected so add to display array
+			this._userSelectionDisplay_Add_Static_ModificationsFormatted({ staticModificationMassesToFilterOn, modsFilteringOnForDisplayArray });
+		}
+
+		if ( modsFilteringOnForDisplayArray.length !== 0 ) {
+			result.modificationMassesVariableStatic = this._userSelectionDisplay_CombineArrayIntoFormattedString({ array : modsFilteringOnForDisplayArray });
+		}
+
+		return result;
+	}
+
+	/**
+	 * Add User Selected Variable Modifications Formatted to array
+	 */
+	_userSelectionDisplay_Add_Variable_ModificationsFormatted({ variableModificationMassesToFilterOn, modsFilteringOnForDisplayArray }) {
+
+		const modificationsSelectedArray = Array.from( variableModificationMassesToFilterOn );
+
+		if ( modificationsSelectedArray.length === 1 ) {
+			//  Single selected modification so put in string
+			const modificationFormatted = modificationsSelectedArray[ 0 ].toString(); 
+			modsFilteringOnForDisplayArray.push( modificationFormatted );
+			return; // EARLY RETURN
+		}
+
+		// Multiple selected modifications so sort, and put in comma delim string with ' or ' before last entry
+
+		modificationsSelectedArray.sort( function( a, b ) {
+			//  Sort Ascending
+			if ( a < b ) {
+				return -1;
+			}
+			if ( a > b ) {
+				return 1;
+			}
+			return 0;
+		});
+
+		//  Add to list using toString()
+		for ( const modification of modificationsSelectedArray ) {
+			const modificationFormatted = modification.toString();
+			modsFilteringOnForDisplayArray.push( modificationFormatted );
+		}
+	}
+
+	/**
+	 * Add User Selected Static Modifications Formatted to array
+	 */
+	_userSelectionDisplay_Add_Static_ModificationsFormatted({ staticModificationMassesToFilterOn, modsFilteringOnForDisplayArray }) {
+
+		//  staticModificationMassesToFilterOn is Map<String (Residue), Set< Number ( Mod Mass ) >>
+
+		const modificationsSelectedEntriesArray = [];
+
+		for ( const entry of staticModificationMassesToFilterOn.entries() ) {
+
+			const residue = entry[ 0 ];
+			const modMasses = entry[ 1 ];
+
+			for ( const modMass of modMasses ) {
+				const modificationSelectedEntry = { residue : residue, modMass : modMass };
+				modificationsSelectedEntriesArray.push( modificationSelectedEntry );
+			} 
+		}
+
+		if ( modificationsSelectedEntriesArray.length === 1 ) {
+			//  Single selected modification so put in string
+			const modificationFormatted = modificationsSelectedEntriesArray[ 0 ].modMass.toString() + " (" + modificationsSelectedEntriesArray[ 0 ].residue + ")";
+			modsFilteringOnForDisplayArray.push( modificationFormatted );
+			return; // EARLY RETURN
+		}
+
+		// Multiple selected modifications so sort, and put in comma delim string with ' or ' before last entry
+
+		modificationsSelectedEntriesArray.sort( function( a, b ) {
+			//  Sort Ascending on Mod Mass then Residue
+			if ( a.modMass < b.modMass ) {
+				return -1;
+			}
+			if ( a.modMass > b.modMass ) {
+				return 1;
+			}
+			if ( a.residue < b.residue ) {
+				return -1;
+			}
+			if ( a.residue > b.residue ) {
+				return 1;
+			}
+			return 0;
+		});
+
+		//  Add to list using toString()
+		for ( const modification of modificationsSelectedEntriesArray ) {
+			const modificationFormatted = modification.modMass.toString() + " (" + modification.residue + ")";
+			modsFilteringOnForDisplayArray.push( modificationFormatted );
+		}
+	}
+
+	/**
+	 * put in comma delim string with ' or ' before last entry
+	 */
+	_userSelectionDisplay_CombineArrayIntoFormattedString({ array }) {
+
+		const numEntries = array.length;
+
+		if ( numEntries === 1 ) {
+			//  Single Element so return
+			return array[ 0 ]; // EARLY RETURN
+		}
+
+		//  > 1 entry so format with Comma Delim except before last entry.  Put ' or ' before last entry
+
+		const lastEntryIndex = numEntries - 1;
+		const allEntriesButLast = array.slice( 0, lastEntryIndex );
+
+		let allEntriesButLastCommaDelim = allEntriesButLast.join(", ");
+		
+		const result = allEntriesButLastCommaDelim + " or " + array[ lastEntryIndex ];
+		return result;
+	}
+
+	///////////////////////////////////////////
+
+	//  Handle Updates to User selection of Modifications and Protein Positions
+
+	//   Click Handler for Clear All selections
+
+	/**
+	 * 
+	 */
+	_clearUserSelection_modificationAndProteinPositions() {
+
+		this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.clear_selectedModifications();
+		this._proteinSequenceFormattedDisplay_Main_displayWidget.clear_selectedProteinSequencePositions();
+
+		this._handleSelectedModificationsChange();
+		this._handleSelectedProteinPositionsChange();
+		this._updatePageForSelectionModificationProteinPositionChangeChange();
+	}
+
+	//  Callbacks for Updates to User selection of Modifications and Protein Positions
+
 	/**
 	 * 
 	 */
 	_callbackMethodForSelectedModificationsChange() {
 
+		this._handleSelectedModificationsChange();
+		this._updatePageForSelectionModificationProteinPositionChangeChange();
+	}
+
+	/**
+	 * 
+	 */
+	_callbackMethodForSelectedProteinSequenceChange( params ) {
+
+		let newSelection = undefined;
+		if ( params ) {
+			newSelection = params.newSelection;
+		}
+
+		this._handleSelectedProteinPositionsChange();
+		this._updatePageForSelectionModificationProteinPositionChangeChange();
+	}
+
+	//  Handling Specific Changes by updating the URL
+
+
+	/**
+	 * 
+	 */
+	_handleSelectedModificationsChange() {
+
 		const modsSelectedEncodedStateData = this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.getEncodedStateData();
 		this._singleProtein_CentralStateManagerObject.setModsSelectedEncodedStateData( { modsSelectedEncodedStateData : modsSelectedEncodedStateData } );
+	}
+
+	/**
+	 * 
+	 */
+	_handleSelectedProteinPositionsChange() {
+
+		const widgetEncodedStateData = this._proteinSequenceFormattedDisplay_Main_displayWidget.getEncodedStateData();
+		this._singleProtein_CentralStateManagerObject.setProteinSequenceFormattedDisplayWidgetEncodedStateData( { proteinSequenceFormattedDisplayWidgetEncodedStateData : widgetEncodedStateData } );
+	}
+
+	//  Updating Page for Altered Selection Change: 
+
+	/**
+	 * 
+	 */
+	_updatePageForSelectionModificationProteinPositionChangeChange() {
 
 		{
 			let variableModificationSelectionUnmodifiedSelected = undefined;
@@ -681,42 +996,12 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			}
 		}
 
+		this._updateUserModificationProteinPositionSelectionDisplay();
+
 		this._createOrReplaceReportedPeptideList();
 	}
 
-	/**
-	 * 
-	 */
-	_callbackMethodForSelectedProteinSequenceChange( params ) {
-
-		let newSelection = undefined;
-		if ( params ) {
-			newSelection = params.newSelection;
-		}
-
-		const widgetEncodedStateData = this._proteinSequenceFormattedDisplay_Main_displayWidget.getEncodedStateData();
-		this._singleProtein_CentralStateManagerObject.setProteinSequenceFormattedDisplayWidgetEncodedStateData( { proteinSequenceFormattedDisplayWidgetEncodedStateData : widgetEncodedStateData } );
-
-		//  
-		{
-			let selectedProteinSequencePositions = this._proteinSequenceFormattedDisplay_Main_displayWidget.get_selectedProteinSequencePositions();
-			if ( selectedProteinSequencePositions && selectedProteinSequencePositions.size === 0 ) {
-				selectedProteinSequencePositions = undefined;
-			}
-			if ( this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyVariableModificationSelected() || 
-					this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyStaticModificationSelected() || 
-					selectedProteinSequencePositions ) { 
-				//  Update Sequence coverge for peptides for this protein applying Mod mass or Protein Position filters
-				const widget_SequenceCoverageParam = this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsAndProteinPositions();
-				this._proteinSequenceFormattedDisplay_Main_displayWidget.update_widget_SequenceCoverageParam_Selected_Peptides({ widget_SequenceCoverageParam_Selected_Peptides : widget_SequenceCoverageParam });
-			} else {
-				//  No selections so clear widget_SequenceCoverageParam_Selected_Peptides
-				this._proteinSequenceFormattedDisplay_Main_displayWidget.update_widget_SequenceCoverageParam_Selected_Peptides({ widget_SequenceCoverageParam_Selected_Peptides : undefined });
-			}
-		}
-		
-		this._createOrReplaceReportedPeptideList();
-	}
+	///////////////////////////////////////////
 
 	/**
 	 * 

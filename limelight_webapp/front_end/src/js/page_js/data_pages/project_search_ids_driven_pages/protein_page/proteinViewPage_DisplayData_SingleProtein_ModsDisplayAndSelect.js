@@ -192,6 +192,19 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
     }
 
 	/**
+	 * 
+     * 
+     * 
+	 */
+    clear_selectedModifications() {
+
+        this._variableModificationsSelected.clear(); // Reset to None
+        this._staticModificationsSelected.clear(); // Reset to None
+
+        this._modListDisplay_Internal();
+    }
+
+	/**
 	 * Clean up this._variableModificationsSelected due to not allowing unmodified to be selected when anything else is selected.
      * 
      * If any mass selected, the unmodified will be removed.

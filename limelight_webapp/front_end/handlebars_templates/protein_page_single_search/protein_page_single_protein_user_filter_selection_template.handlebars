@@ -1,0 +1,41 @@
+{{!-- protein_page_single_protein_user_filter_selection_template.handlebars 
+
+        User has selected Modifications or Protein Positions to filter on.
+        This is used to list those selections.
+--}}
+<div style="margin-top: 10px;">
+    <div>
+        <span  style=" font-size: 18px; font-weight: 700; ">
+            Current peptide filters:
+        </span>
+        <span style="font-size: 12px;" class="fake-link selector_clear_user_selection_modifications_protein_positions " >clear all</span>
+    </div>
+    <div style="margin-left: 80px;">
+        {{#if selectedProteinSequencePositions }}
+        <div >
+            Must cover protein position(s): {{ selectedProteinSequencePositions }} {{!-- 3, 6 or 987 --}}
+        </div>
+        {{/if}}
+        {{#if selectedModificationsMasses }} {{!-- Any Variable or Static mods selected or Variable 'unmodified' selected --}}
+            {{#if selectedModificationsMasses.noModificationSelected }} {{!-- 'unmodified' in Variable Mods selected.  --}}
+                {{#if selectedModificationsMasses.modificationMassesVariableStatic }} {{!-- Static Mods Selected --}}
+                    <div >
+                        Must contain no variable modifications
+                    </div>
+                    <div>
+                        Must contain static modifications: {{ selectedModificationsMasses.modificationMassesVariableStatic }}
+                    </div>
+                {{else}}
+                    <div>
+                        Must contain no variable modification mass(es)
+                    </div>
+                {{/if}}
+            {{else}}
+                {{!-- 'unmodified' not selected.  Combine Variable and Static modification selection --}}
+                <div >
+                    Must contain modification mass(es): {{ selectedModificationsMasses.modificationMassesVariableStatic }} {{!-- 57.9983, 23.3345 or 57.021464 (C) --}}
+                </div>
+            {{/if}}
+        {{/if}}
+    </div>
+</div>

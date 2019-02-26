@@ -564,7 +564,8 @@
             //  WARNING:  Create separate legend entries if split these CSS classes
             &.pos-covered-outside-filter-nomod,  // covered residue, not covered by filtered peptide list
             &.pos-covered-nofilters-nomod {  // not modded residue, no filters (mod or position)
-				font-weight: 900;
+                color: #000000;
+                font-weight: 900;
             }
 
             &.pos-covered-within-filter-nomod {  // covered residue, not modded, covered by filtered peptide list
@@ -587,12 +588,16 @@
 		}
     } // end .protein-sequence-formatted-sequence-data-block
 
-    	//  Protein Sequence Formatted - Only applied to the actual sequence, and surrounding numbers for positions
-	.protein-sequence-formatted-sequence-data-block-actual-sequence {
+    	//  Protein Sequence Font - Only applied to the actual sequence, and surrounding numbers for positions AND to Example Text in Legend
+	.protein-sequence-formatted-sequence-data-block-actual-sequence-font {
         font-family: $protein-sequence-primary-font;
-        font-size: 14px;
     }
 
+    //  Protein Sequence Text Formatted - Only applied to the actual sequence, and surrounding numbers for positions
+    .protein-sequence-formatted-sequence-data-block-actual-sequence-text-formatting {
+        font-size: 14px;
+    }
+    
     //  Modification Mass Selection - main page (or single protein)
 
     .modification-mass-selection-outer-block {
