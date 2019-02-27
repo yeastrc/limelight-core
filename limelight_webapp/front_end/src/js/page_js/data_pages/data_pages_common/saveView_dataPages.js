@@ -50,33 +50,50 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-	initialize({ projectSearchIds }) {
+	initialize({ projectSearchIds, container_DOM_Element, enableSetDefault }) {
 
         const objectThis = this;
 
         this._projectSearchIds = projectSearchIds;
 
+        if ( enableSetDefault !== false ) {
+            //  this._enableSetDefault - Present to user the "Set Default" Checkbox and pass to server the value
+            this._enableSetDefault = true;  // Default to true if method param is undefined (not set)
+        }
+
         //  Populate Button for Save View
 
-        const $selector_save_view_root_container = $(".selector_save_view_root_container");
-        if ( $selector_save_view_root_container.length === 0 ) {
-            console.log("Unable to initialize class SaveView_dataPages.  No DOM element with class 'selector_save_view_root_container'");
-            return;
-        }
-        
-        //  Get is user Project Owner
-        const $page_auth_access_level_project_owner_allowed = $("#page_auth_access_level_project_owner_allowed");
-        if ( $page_auth_access_level_project_owner_allowed.length !== 0 ) {
-            this._userIsProjectOwner = true;
+        let $saveViewButtonContainer = undefined;
+
+        if ( container_DOM_Element ) {
+            // Use Reference to DOM element if provided
+
+            $saveViewButtonContainer = $( container_DOM_Element );
+        } else {
+            $saveViewButtonContainer = $(".selector_save_view_root_container");
+            if ( $saveViewButtonContainer.length === 0 ) {
+                console.log("Unable to initialize class SaveView_dataPages.  No DOM element with class 'selector_save_view_root_container'");
+                return;
+            }
         }
 
-        this._canSetDefault = this._userIsProjectOwner && this._projectSearchIds.length === 1
-    	
+        if ( ! this._enableSetDefault ) {
+            this._canSetDefault = false; // Override to false if param enableSetDefault is set to false
+        } else {
+            
+            //  Get is user Project Owner
+            const $page_auth_access_level_project_owner_allowed = $("#page_auth_access_level_project_owner_allowed");
+            if ( $page_auth_access_level_project_owner_allowed.length !== 0 ) {
+                this._userIsProjectOwner = true;
+            }
+
+            this._canSetDefault = this._userIsProjectOwner && this._projectSearchIds.length === 1;
+        }
 
         const saveViewMainPageHTML = this._save_view__on_main_page_root_Template();
-        $selector_save_view_root_container.append( saveViewMainPageHTML );
+        $saveViewButtonContainer.append( saveViewMainPageHTML );
 
-        const $selector_save_view_button = $selector_save_view_root_container.find(".selector_save_view_button");
+        const $selector_save_view_button = $saveViewButtonContainer.find(".selector_save_view_button");
 
         $selector_save_view_button.click( function(eventObject) {
 			try {

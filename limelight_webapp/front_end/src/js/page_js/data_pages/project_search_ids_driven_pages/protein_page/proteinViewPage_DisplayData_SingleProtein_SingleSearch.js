@@ -64,6 +64,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer;
 
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
+
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 
@@ -103,6 +105,9 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		}
 		this._protein_page_single_protein_user_filter_selection_template_Template = _protein_table_template_bundle.protein_page_single_protein_user_filter_selection_template;
 
+		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
+			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
+		}
 
 		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer(
 			{
@@ -279,6 +284,20 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		this._contentDivHTMLElement = $contentDiv[0];
 
 		this._resize_OverlayHeight_BasedOnViewportHeight();
+
+		if ( this._saveView_dataPages ) {
+			//  Set up handle the "Save View" Button in this Single PRotein Overlay
+
+			const $selector_save_view_root_container__single_protein = $contentDiv.find(".selector_save_view_root_container__single_protein");
+			if ( $selector_save_view_root_container__single_protein.length === 0 ) {
+				throw Error("Fail find DOM element with class 'selector_save_view_root_container__single_protein'");
+			}
+			$selector_save_view_root_container__single_protein.show();
+			const selector_save_view_root_container__single_proteinDOMElement = $selector_save_view_root_container__single_protein[0];
+
+			this._saveView_dataPages.initialize({ projectSearchIds : [ this._projectSearchId ], container_DOM_Element : selector_save_view_root_container__single_proteinDOMElement, enableSetDefault : false });
+		}
+
 
 		this._searchDetailsAndFilterBlock_MainPage.populatePage();
 		
