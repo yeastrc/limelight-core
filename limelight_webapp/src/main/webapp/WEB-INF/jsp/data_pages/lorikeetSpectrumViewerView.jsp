@@ -42,12 +42,12 @@
 
 	<div id="lorikeet_holder">LOADING</div>
 	
-	<div id="psm_list_outer_container" style="display: none;">
-		<h3 style=" margin-top: 10px; text-align: center; font-size: 16px;">
+	<div id="psm_list_outer_container" style="padding-left: 20px; display: none;">
+		<h3 style=" margin-top: 10px; padding-left: 2px; font-size: 16px;"> <%-- padding-left: 2px; to match "View PSM" position --%> 
 			All PSMs in this Search for Scan Number <span id="scan_number"></span> and Scan Filename <span id="scan_filename"></span>:
 		</h3>
 	
-		<div id="psms_peptides_for_scan_number" style=" padding-left: 20px; padding-right: 20px; padding-bottom: 20px;"></div>
+		<div id="psms_peptides_for_scan_number" style=" padding-right: 20px; padding-bottom: 20px;"></div>
 	</div>
 <%-- 
  <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_closing_body_tag_include_data_pages.jsp" %>

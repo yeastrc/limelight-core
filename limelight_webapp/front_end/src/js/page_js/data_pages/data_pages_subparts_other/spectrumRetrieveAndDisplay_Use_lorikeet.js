@@ -57,13 +57,14 @@ const LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM = 700;
 //  add 700px to width to allow for max of 3 b and 3 y ion columns
 const LORIKEET_VIEWER_NEW_WINDOW_SIZE_WIDTH = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM + 700;
 
-//add 700px to height for display of PSM data and other PSMs for same scan number
+//  add 700px to height for display of PSM data and other PSMs for same scan number
 const LORIKEET_VIEWER_NEW_WINDOW_SIZE_HEIGHT = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM + 700;
 
+//  Following not currently used
 
 //  Size of lorikeet spectrum part of viewer
-const LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_WIDTH_PARAM = 500;
-const LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_HEIGHT_PARAM = 500;
+// const LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_WIDTH_PARAM = 500;
+// const LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_HEIGHT_PARAM = 500;
 
 
 
