@@ -87,12 +87,12 @@ input[type="checkbox"], .left-margin-same-as-checkbox {
 
 // set the sizes of our icons
 
-img.icon-small { 
+img.icon-small, input[type="image"].icon-small  { 
   max-height: 16px;
   max-width:12px;
 }
 
-img.icon-large {
+img.icon-large, input[type="image"].icon-large {
     max-width: 20px;
     max-height: 20px;
 }
