@@ -40,10 +40,6 @@
    <input type="button" value="Add Last passed in" id="add_last_passed_in">
 --%>
 
-	<h3 style=" margin-top: 10px; text-align: center; font-size: 24px;">
-		Spectrum Viewer:
-	</h3>
-	
 	<div id="lorikeet_holder">LOADING</div>
 	
 	<div id="psm_list_outer_container" style="display: none;">
