@@ -21,6 +21,8 @@ import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downlo
 
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
 
+import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
 
 import { ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam } from 'page_js/data_pages/display_widgets/protein_sequence_formatted_display__display_widget/proteinSequenceFormattedDisplay_widget_SequenceCoverageParam.js';
@@ -108,6 +110,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
 			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
 		}
+
+		this._sharePage_dataPages = new SharePage_dataPages();
 
 		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer(
 			{
@@ -296,6 +300,19 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			const selector_save_view_root_container__single_proteinDOMElement = $selector_save_view_root_container__single_protein[0];
 
 			this._saveView_dataPages.initialize({ projectSearchIds : [ this._projectSearchId ], container_DOM_Element : selector_save_view_root_container__single_proteinDOMElement, enableSetDefault : false });
+		}
+
+		if ( this._sharePage_dataPages ) {
+			//  Set up handle the "Save View" Button in this Single PRotein Overlay
+
+			const $selector_share_page_root_container__single_protein = $contentDiv.find(".selector_share_page_root_container__single_protein");
+			if ( $selector_share_page_root_container__single_protein.length === 0 ) {
+				throw Error("Fail find DOM element with class 'selector_share_page_root_container__single_protein'");
+			}
+			$selector_share_page_root_container__single_protein.show();
+			const selector_share_page_root_container__single_proteinDOMElement = $selector_share_page_root_container__single_protein[0];
+
+			this._sharePage_dataPages.initialize({ projectSearchIds : [ this._projectSearchId ], container_DOM_Element : selector_share_page_root_container__single_proteinDOMElement });
 		}
 
 

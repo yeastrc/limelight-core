@@ -47,9 +47,14 @@
 	<table class=" selector_filter_section " style="border-width:0px;" >
 	</table>
 
+	<!-- Outer Container for Save View Button and other buttons  -->
+	<div >
 		<!--  Save View Button -->
-	<div class=" selector_save_view_root_container" ></div>
-	
+		<div class=" selector_save_view_root_container save-view-root-container " ></div>
+		<!--  Share Page Button -->
+		<div class=" selector_share_page_root_container share-page-root-container " ></div>
+	</div>
+
 	<h3>
 		Reported Peptide Count: <span id="peptide_list_size"></span>
 	</h3>

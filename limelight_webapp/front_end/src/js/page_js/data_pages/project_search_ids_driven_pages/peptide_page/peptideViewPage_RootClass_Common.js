@@ -50,6 +50,8 @@ import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pag
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager.js';
 
+import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+
 //  From main_pages
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
 
@@ -120,6 +122,7 @@ export class PeptideViewPage_RootClass_Common {
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
 		
+		this._sharePage_dataPages = new SharePage_dataPages();
 	}
 	
 
@@ -185,7 +188,8 @@ export class PeptideViewPage_RootClass_Common {
 		if ( this._saveView_dataPages ) {
 			this._saveView_dataPages.initialize({ projectSearchIds });
 		}
-		
+
+		this._sharePage_dataPages.initialize({ projectSearchIds });
 						
 		this._loadCoreData_ProjectSearchIds_Based =
 			new LoadCoreData_ProjectSearchIds_Based( {

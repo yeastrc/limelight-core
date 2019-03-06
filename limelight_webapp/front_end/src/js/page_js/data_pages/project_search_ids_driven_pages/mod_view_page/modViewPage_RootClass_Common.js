@@ -50,6 +50,8 @@ import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pag
 
 import { CentralPageStateManager } from '../../central_page_state_manager/centralPageStateManager.js';
 
+import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+
 //  From main_pages
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
 
@@ -113,6 +115,7 @@ export class ModViewPage_RootClass_Common {
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
 		
+		this._sharePage_dataPages = new SharePage_dataPages();
 	}
 	
 
@@ -166,6 +169,8 @@ export class ModViewPage_RootClass_Common {
 			this._saveView_dataPages.initialize({ projectSearchIds });
 		}
 		
+		this._sharePage_dataPages.initialize({ projectSearchIds });
+
 		this._searchColors_CentralStateManagerObject.initialize();
 
 		// initialize the colors if they've never been set (ie, weren't in the central state manager)

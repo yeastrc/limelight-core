@@ -139,6 +139,27 @@
     .search-cutoffs-user-input-search-bounding-box { border-width: 1px; border-style: solid; border-color: $site-color-medium; }
     
     .search-cutoffs-user-input-search-separator { border-width: 0px; border-style: solid; border-color: $site-color-dark; }
+
+	/*  --------------------------------------------------  */
+	
+	//   Containers for Buttons "Save View" and "Share Page"
+
+    .save-view-root-container {
+        display: inline-block;
+        position: relative;
+    }
+    .save-view-container { // In Template for button
+        display: inline-block;
+        position: relative;
+    }
+    .share-page-root-container {
+        display: inline-block;
+        position: relative;
+    }
+    .share-page-container { // In Template for button
+        display: inline-block;
+        position: relative;
+    }
     
 	    
 	/*  --------------------------------------------------  */

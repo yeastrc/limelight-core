@@ -237,6 +237,13 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String DELETE_COMMENT_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/delete-comment";
+
+	//    Shared Page (Shortened URL for Current View of a Project Search Id based page [peptide,protein,...])
+	
+	//   Insert Shared Page
+
+	public static final String INSERT_SHARED_PAGE_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/insert-shared-page";
 	
 	
 	//    Save View (Save Current View of a Project Search Id based page [peptide,protein,...])

@@ -43,6 +43,13 @@ public class AA_PageControllerPaths_Constants {
 	 */
 	public static final String ROOT_CONTROLLER = "";
 
+	
+	/**
+	 * URL Shortener URL that will redirect to the URL that the short code maps to using the database
+	 */
+	public static final String URL_SHORTENER_REDIRECT_PAGE_CONTROLLER = "go";
+
+
 	//////////////////////////////////////////
 	
 	//  All Data Pages start with "/d/pg/" for data/page
@@ -164,6 +171,17 @@ public class AA_PageControllerPaths_Constants {
 	 * Only paths allowed for Save View
 	 */
 	public static final String[] PATHS_ALLOWED_FOR_SAVE_VIEW = {
+			PEPTIDE_VIEW_PAGE_CONTROLLER,
+			PROTEIN_VIEW_PAGE_CONTROLLER,
+			MOD_VIEW_PAGE_CONTROLLER
+	};
+
+	/////////////////////////////
+
+	/**
+	 * Only paths allowed for Share Page
+	 */
+	public static final String[] PATHS_ALLOWED_FOR_SHARE_PAGE = {
 			PEPTIDE_VIEW_PAGE_CONTROLLER,
 			PROTEIN_VIEW_PAGE_CONTROLLER,
 			MOD_VIEW_PAGE_CONTROLLER

@@ -92,6 +92,9 @@ task createHandlebarsOutputDirs {
   	  dirToCreate = rootDir + "save_view"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
+  	  dirToCreate = rootDir + "share_page"
+  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
+  	  
   	  dirToCreate = rootDir + "protein_sequence_formatted_display"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -227,6 +230,21 @@ task handlebarsPrecompile_save_view(type: NodeTask) {
   '--min',
   '-f', 'handlebars_templates_precompiled/save_view/save_view_template-bundle.js',
    'handlebars_templates/save_view'
+   ]
+}
+
+//  Handlebars Precompile for input handlebars_templates/share_page
+task handlebarsPrecompile_share_page(type: NodeTask) {
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/handlebars/bin/handlebars')
+  } else {
+    script = project.file('node_modules/.bin/handlebars')
+  }
+  args = [ '--amd' , // parameters must be before file list
+  '--min',
+  '-f', 'handlebars_templates_precompiled/share_page/share_page_template-bundle.js',
+   'handlebars_templates/share_page'
    ]
 }
 
@@ -575,6 +593,7 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_mod_view_page',
      'handlebarsPrecompile_common',
      'handlebarsPrecompile_save_view',
+     'handlebarsPrecompile_share_page',
      'handlebarsPrecompile_protein_sequence_formatted_display',
      'handlebarsPrecompile_search_detail_section_main_page',
      'handlebarsPrecompile_search_detail_section_main_page_logged_in_users',
