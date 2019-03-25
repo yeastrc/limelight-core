@@ -45,6 +45,13 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 	public static final String PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION =
 			"/{" + PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING + "}";
 	
+
+	///////////////
+	
+	/**
+	 * All paths for user webservices will start with this string
+	 */
+	public static final String USER_REST_WEBSERVICE_CONTROLLER_START = "user/rws/";
 	
 	
 	public static final String USER_LOGIN_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/login";

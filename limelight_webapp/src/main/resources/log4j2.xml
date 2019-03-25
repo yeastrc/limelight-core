@@ -17,7 +17,7 @@
     <RollingFile name="RollingFile">
     	<!-- Compared to log4j, the system variable requires 'sys:' before it -->
       <FileName>${sys:catalina.base}/logs/limelight.log</FileName>
-      <FilePattern>${sys:catalina.base}/logs/limelight-%d{yyyy-MM-dd}.log.zip</FilePattern>
+      <FilePattern>${sys:catalina.base}/logs/limelight-%d{yyyy-MM-dd}.log.gz</FilePattern>
       <PatternLayout>
         <Pattern>%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Pattern>
       </PatternLayout>
@@ -30,6 +30,12 @@
   </Appenders>
   <Loggers>
     <Logger name="org.apache.log4j.xml" level="debug"/>
+    
+     <!-- Log Access from Browser Internet Explorer if this is set to debug. -->
+    <!-- 
+    <Logger name="org.yeastrc.limelight.limelight_webapp.services.BrowserIs_InternetExplorer_Detection_Service" level="debug"/>
+    -->
+    
 	<!-- 
     <Logger name="org.springframework.transaction.interceptor" level="TRACE"/>
     -->

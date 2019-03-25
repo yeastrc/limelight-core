@@ -4,13 +4,14 @@ head_section_include_every_page.jsp
 
 --%>
 
+<%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.error_pages_controllers.AA_ErrorPageControllerPaths_Constants"%>
 <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
 
  	<%--  Make all relative URLs start after the context path request.getContextPath() --%>
 	<base href="<%= request.getContextPath() %>/">  <%-- The trailing '/' in the href is required --%>
 	
 	<script id="internet_explorer_not_supported_page_url" 
-		type="text/text" ><%= request.getContextPath() %>/internet-explorer-not-supported</script>
+		type="text/text" ><%= request.getContextPath() %>/<%= AA_ErrorPageControllerPaths_Constants.INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER %></script>
 	
     <link rel="icon" href="static/images/favicon.ico" />
     

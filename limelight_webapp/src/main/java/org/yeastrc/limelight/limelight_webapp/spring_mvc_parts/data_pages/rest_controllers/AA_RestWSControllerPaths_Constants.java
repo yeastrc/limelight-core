@@ -50,6 +50,14 @@ public class AA_RestWSControllerPaths_Constants {
 			"/{" + PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING + "}";
 	
 
+	///////////////
+	
+	/**
+	 * All paths for data page webservices will start with this string
+	 */
+	public static final String DATA_PAGE_REST_WEBSERVICE_CONTROLLER_START = "d/rws/";
+	
+	
 	////////////
 	
 	//   General

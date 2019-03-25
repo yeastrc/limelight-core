@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.AllControllers_SpringHandlerInterceptor;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.All_Page_Controllers_SpringHandlerInterceptor;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.Temp_AllControllersAccessControl_SpringHandlerInterceptor;
 
@@ -37,6 +38,9 @@ public class LimelightWebAppConfig implements WebMvcConfigurer {
 	private AllControllers_SpringHandlerInterceptor allControllers_SpringHandlerInterceptor;
 	
 	@Autowired
+	private All_Page_Controllers_SpringHandlerInterceptor all_Page_Controllers_SpringHandlerInterceptor;
+	
+	@Autowired
 	private DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor dataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor;
 	
 //	@Autowired
@@ -49,6 +53,11 @@ public class LimelightWebAppConfig implements WebMvcConfigurer {
 			registry.addInterceptor( allControllers_SpringHandlerInterceptor )
 			.addPathPatterns("/**")
 			.excludePathPatterns( AllControllers_SpringHandlerInterceptor.excludeInterceptorPaths );
+		}
+		{
+			registry.addInterceptor( all_Page_Controllers_SpringHandlerInterceptor )
+			.addPathPatterns("/**")
+			.excludePathPatterns( All_Page_Controllers_SpringHandlerInterceptor.excludeInterceptorPaths );
 		}
 
 		{
