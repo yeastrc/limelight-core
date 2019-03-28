@@ -31,12 +31,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		//  Dynamic/Variable Modifications Per Reported Peptide Id.   position is int, mass is double
 		this._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = undefined; // Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, position, mass }]>>
 
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per Reported Peptide Id.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,[Object,...] <reportedPeptideId,[{position, mass, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }]>
-		this._modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId = undefined;
-
 		//  Reported Peptide Level Filterable Annotation Data Per Reported Peptide Id
 		this._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = undefined; // Map <integer,<integer,Object>> <reportedPeptideId,<<annTypeId,{ valueDouble, valueString }>>
 
@@ -80,12 +74,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		//  Static Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. 
 		this._staticModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer, Map<integer, Object> <proteinSequenceVersionId, Map < position 1 based (integer) : { Object: residue  (string), masses: [ mass (number) ] } >>
 
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,Map<integer,Object> <ProteinSequenceVersionId,[{position, mass, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }]>
-		this._modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId = undefined;
-
 		//  Protein Sequence Coverage Per proteinSequenceVersionId - Each entry is an object of a Class has data per Reported Peptide Id
 		this._proteinCoverage_KeyProteinSequenceVersionId = undefined; // Map <integer,[Object]> <proteinSequenceVersionId, class ProteinSequenceCoverageData_For_ProteinSequenceVersionId>
 	}
@@ -111,12 +99,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 		//  Modifications Per Reported Peptide Id.   position is int, mass is double
 		this._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = undefined; // Map <integer,Object> <reportedPeptideId,<{ reportedPeptideId, position, mass }>>
-
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per Reported Peptide Id.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,[Object,...] <reportedPeptideId,[{position, mass, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }]>
-		this._modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId = undefined;
 
 
 		//  Reported Peptide Level Filterable Annotation Data Per Reported Peptide Id
@@ -162,12 +144,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		//  Static Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. 
 		this._staticModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer, Map<integer, Object> <proteinSequenceVersionId, Map < position 1 based (integer) : { Object: residue  (string), masses: [ mass (number) ] } >>
 
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,Map<integer,Object> <ProteinSequenceVersionId,[{position, mass, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }]>
-		this._modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId = undefined;
-
 		//  Protein Sequence Coverage Per proteinSequenceVersionId - Each entry is an object of a Class has data per Reported Peptide Id
 		this._proteinCoverage_KeyProteinSequenceVersionId = undefined; // Map <integer,[Object]> <proteinSequenceVersionId, class ProteinSequenceCoverageData_For_ProteinSequenceVersionId>
 	}
@@ -188,12 +164,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 		//  Modifications Per ProteinSequenceersion Id.   position is int, mass is double
 		this._dynamicModificationsOnProtein_KeyProteinSequenceVersionId = undefined; // Map <integer,Object> <proteinSequenceVersionId,<{ reportedPeptideId, position, mass }>>
-
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,Map<integer,Object> <ProteinSequenceVersionId,[{position, mass, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }]>
-		this._modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId = undefined;
 
 		this._proteinCoverage_KeyProteinSequenceVersionId = undefined; // Map <integer,[Object]> <proteinSequenceVersionId, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
 	}
@@ -289,18 +259,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
 
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per Reported Peptide Id.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,Map<integer,Object> <reportedPeptideId,Map<position, {position, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }>>
-	get_modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId() {
-		return this._modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId;
-	}
-	set_modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId(modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId) {
-		this._modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId = modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId;
-	}
-
-
 	get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() {
 		return this._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
@@ -350,15 +308,4 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._staticModificationsOnProtein_KeyProteinSequenceVersionId = staticModificationsOnProtein_KeyProteinSequenceVersionId;
 	}
 	
-		//  !!!  Only populated for Multiple Search display.  Populated after loading Peptide Sequences
-		//  Modifications Combined and Rounded Per ProteinSequenceVersion.   position is int, mass is double
-		//             The Mass is all the Dynamic and Static Modifications for the position added together and then rounded for dipslay (rounded using modification_dynamic_static_combined_DisplayUtilities.js)
-		// Map <integer,Map<integer,Object> <ProteinSequenceVersionId,[{position, mass, totalDynamicStaticMass, totalDynamicStaticMassRounded, totalDynamicStaticMassRoundedString} }]>
-	get_modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId() {
-		return this._modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId;
-	}
-	set_modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId( modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId ) {
-		this._modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId = modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId;
-	}
-
 }

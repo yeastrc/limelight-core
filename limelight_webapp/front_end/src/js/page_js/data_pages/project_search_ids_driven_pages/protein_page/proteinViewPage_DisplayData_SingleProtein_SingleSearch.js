@@ -1059,11 +1059,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		const reportedPeptideIdsForDisplay = this._getReportedPeptideIdsForDisplay();
 
-		const filteredOn_selectedProteinSequencePositions = this._is_filteredOn_selectedProteinSequencePositions({ proteinSequenceFormattedDisplay_Main_displayWidget : this._proteinSequenceFormattedDisplay_Main_displayWidget });
-
 		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.createOrUpdateReportedPeptideDisplayData({
 				reportedPeptideIdsForDisplay,
-				filteredOn_selectedProteinSequencePositions, 
 				proteinSequenceVersionId : this._proteinSequenceVersionId,
 				projectSearchId : this._projectSearchId,
 				$reported_peptides_outer_container });
@@ -1071,26 +1068,6 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		this._showDownloadsBlock_attachClickHandlersIfNeeded( { $contentDiv } );
 	}
 
-	/**
-	 * Is filtering on Protein Sequence Positions
-	 * 
-	 * @param proteinSequenceFormattedDisplay_Main_displayWidget 
-	 */
-	_is_filteredOn_selectedProteinSequencePositions({ proteinSequenceFormattedDisplay_Main_displayWidget }) {
-
-		if ( proteinSequenceFormattedDisplay_Main_displayWidget ) {
-			
-			//  Only filter if proteinSequenceFormattedDisplay_Main_displayWidget is passed in
-			
-			const selectedProteinSequencePositionsLocal = proteinSequenceFormattedDisplay_Main_displayWidget.get_selectedProteinSequencePositions();
-
-			if ( selectedProteinSequencePositionsLocal && selectedProteinSequencePositionsLocal.size !== 0 ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	/**
 	 * 
 	 */

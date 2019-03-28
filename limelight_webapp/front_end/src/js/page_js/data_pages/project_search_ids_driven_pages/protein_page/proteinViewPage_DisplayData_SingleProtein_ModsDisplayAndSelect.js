@@ -80,7 +80,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	 * 
 	 */
 	constructor({ 
-        useCombinedModificationMasses,
+        modificationMassTransformer,  //  Used in multiple searches to round the modification mass
         rootDisplayJquerySelector, 
         projectSearchIds, 
         proteinSequenceVersionId, 
@@ -90,7 +90,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         this._initializeCalled = false;
 
-        this._useCombinedModificationMasses = useCombinedModificationMasses;
+        this._modificationMassTransformer = modificationMassTransformer;
         this._rootDisplayJquerySelector = rootDisplayJquerySelector;
         this._projectSearchIds = projectSearchIds;
         this._proteinSequenceVersionId = proteinSequenceVersionId;
@@ -1353,7 +1353,16 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                         massesSet = new Set();
                         staticModificationsUniqueResidueLettersMassesMapSet.set( residue, massesSet );
                     }
-                    massesSet.add( staticModEntry.mass );
+
+                    let mass = staticModEntry.mass;
+
+                    if ( this._modificationMassTransformer ) {  //  Transform Modification masses before using
+        
+                        //  Used in multiple searches to round the modification mass
+                        mass = this._modificationMassTransformer.transformMass_ReturnNumber({ mass });
+                    }
+
+                    massesSet.add( mass );
                 }
             }
         }
@@ -1376,19 +1385,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                 throw Error("No entry in this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
             }
 
-            let modificationsOnProtein_KeyProteinSequenceVersionId = undefined;
-
-            if ( this._useCombinedModificationMasses ) {  //  Use combined Dynamic and Static Modification Masses
-
-                const msg = "useCombinedModificationMasses is not supported.";
-                console.log( msg );
-                throw Error( msg );
-
-                modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId();
-            } else {
-
-                modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
-            }
+            const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
 
             if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
 
@@ -1398,8 +1395,14 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                     for ( const modificationOnProtein of modificationsOnProtein) {
                         //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
                         const position = modificationOnProtein.position;
-                        const mass = modificationOnProtein.mass;
-                                // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+                        let mass = modificationOnProtein.mass;
+                        // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
+                        if ( this._modificationMassTransformer ) {  //  Transform Modification masses before using
+        
+                            //  Used in multiple searches to round the modification mass
+                            mass = this._modificationMassTransformer.transformMass_ReturnNumber({ mass });
+                        }
 
                         variableModificationsUniqueMassesSet.add( mass );
                     }
@@ -1430,15 +1433,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
             const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
-            let modificationsOnProtein_KeyProteinSequenceVersionId = undefined;
-
-            if ( this._useCombinedModificationMasses ) {  //  Use combined Dynamic and Static Modification Masses
-
-                modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_modificationsCombinedAndRoundedOnProtein_KeyProteinSequenceVersionId();
-            } else {
-
-                modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
-            }
+            let modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
 
             if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
 
@@ -1448,7 +1443,14 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                     for ( const modificationOnProtein of modificationsOnProtein) {
                         //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
                         const position = modificationOnProtein.position;
-                        const mass = modificationOnProtein.mass;
+                        let mass = modificationOnProtein.mass;
+
+                        if ( this._modificationMassTransformer ) {  //  Transform Modification masses before using
+            
+                            //  Used in multiple searches to round the modification mass
+                            mass = this._modificationMassTransformer.transformMass_ReturnNumber({ mass });
+                        }
+
                         const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
                         const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );

@@ -94,11 +94,9 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 	 */
 	createOrUpdateReportedPeptideDisplayData( { 
 		reportedPeptideIdsForDisplay, 
-		filteredOn_selectedProteinSequencePositions, 
 		proteinSequenceVersionId, projectSearchId, $reported_peptides_outer_container } ) {
 
 		const reportedPeptideDisplayData = this._createReportedPeptideDisplayData( { reportedPeptideIdsForDisplay, proteinSequenceVersionId, projectSearchId } );
-		reportedPeptideDisplayData.filteredOn_selectedProteinSequencePositions = filteredOn_selectedProteinSequencePositions;
 
 		this._createAndPopulate_ReportedPeptidesDataTable( { $reported_peptides_outer_container, reportedPeptideDisplayData, projectSearchId } );
 	}
@@ -330,7 +328,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 			numberOfPsmsForReportedPeptides += peptideItem.numPsms;
 		}
 		
-		//  Add property filteredOn_selectedProteinSequencePositions in calling function
 		return { peptideList : peptideListResult, numberOfReportedPeptides, numberOfPsmsForReportedPeptides, annotationTypeRecords_DisplayOrder };
 	}
 
@@ -499,7 +496,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 			//  Update display of data outside of actual table
 			const numberOfReportedPeptides = reportedPeptideDisplayData.numberOfReportedPeptides;
 			const numberOfPsmsForReportedPeptides = reportedPeptideDisplayData.numberOfPsmsForReportedPeptides;
-			const filteredOn_selectedProteinSequencePositions = reportedPeptideDisplayData.filteredOn_selectedProteinSequencePositions;
 
 			const numberOfReportedPeptidesFormatted = numberOfReportedPeptides.toLocaleString();
 			const numberOfPsmsForReportedPeptidesFormatted = numberOfPsmsForReportedPeptides.toLocaleString();
@@ -509,13 +505,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 
 			$selector_number_of_reported_peptides_shown.text( numberOfReportedPeptidesFormatted );
 			$selector_number_of_psms_for_reported_peptides_shown.text( numberOfPsmsForReportedPeptidesFormatted );
-
-			const $selector_reported_peptides_filtered_on_protein_sequence_positions = $reported_peptides_outer_container.find(".selector_reported_peptides_filtered_on_protein_sequence_positions");
-			if ( filteredOn_selectedProteinSequencePositions ) {
-				$selector_reported_peptides_filtered_on_protein_sequence_positions.show();
-			} else {
-				$selector_reported_peptides_filtered_on_protein_sequence_positions.hide();
-			}
 		}
 
 		//  Container element

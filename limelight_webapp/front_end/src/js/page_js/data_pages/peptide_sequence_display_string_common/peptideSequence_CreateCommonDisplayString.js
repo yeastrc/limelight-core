@@ -9,67 +9,22 @@
  *      Dynamic Mods
  */
 
-import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_dynamic_static_combined_display_utils/modification_dynamic_static_combined_DisplayUtilities.js';
+import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding.js';
 
 /**
  * @param peptideSequence
- * @param modificationEntries - Array of mods 
- *               from one of following: 
- *                   ProteinViewPage_LoadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId() 
- *                   ProteinViewPage_LoadedDataPerProjectSearchIdHolder.get_modificationsCombinedAndRoundedOnReportedPeptide_KeyReportedPeptideId();
- * 
- *               Each element is object {reportedPeptideId, position, mass}
+ * @param variableModificationsRoundedArray_KeyPosition - Map<(position), Array of variable modifications strings)>
  * 
  */
-const peptideSequence_CreateCommonDisplayString = function({ peptideSequence, modificationEntries }) {
+const peptideSequence_CreateCommonDisplayString = function({ peptideSequence, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition }) {
 
     if ( peptideSequence === undefined ) {
         throw Error("peptideSequence === undefined");
     }
-    if ( ( ! modificationEntries ) || modificationEntries.length === 0 ) {
+    if ( ( ( ! variableModificationsRoundedArray_KeyPosition ) || variableModificationsRoundedArray_KeyPosition.size === 0 ) &&
+        ( ( ! staticModificationsRounded_KeyPosition ) || staticModificationsRounded_KeyPosition.size === 0 ) ) {
         // No mods so just return the peptide sequence
         return peptideSequence; // EARLY RETURN
-    }
-
-    //  Create Map and Array of mods rounded with key position.
-
-    const modsByPosition = new Map();
-
-    for ( const entry of modificationEntries ) {
-
-        if (  entry.is_N_Terminal !== undefined || entry.is_C_Terminal !== undefined ) {
-
-            const msg = "peptideSequence_CreateCommonDisplayString: ERROR: entry.is_N_Terminal or entry.is_C_Terminal exists.  This code does not handle those properties being true.";
-            console.log( msg );
-            throw Error( msg );
-        }
-
-        let mapEntry = modsByPosition.get( entry.position );
-        if ( ! mapEntry ) {
-            mapEntry = [];
-            modsByPosition.set( entry.position, mapEntry );
-        }
-        const massRounded = modificationMass_CommonRounding_ReturnNumber( entry.mass );
-        mapEntry.push( massRounded );
-    }
-
-    //  Sort Array of masses for each position
-
-    for ( const mapEntry of modsByPosition.entries() ) {
-
-        const masses = mapEntry[ 1 ];
-        masses.sort( function( a, b ) {
-
-			//  mass, Ascending
-			if ( a < b ) {
-				return -1;
-			}
-			if ( a > b ) {
-				return 1;
-			}
-			return 0;
-
-		});
     }
 
     //  Create result sequence
@@ -90,14 +45,24 @@ const peptideSequence_CreateCommonDisplayString = function({ peptideSequence, mo
         const peptideSequenceAtIndex = peptideSequence_AsArray[ peptideSequenceIndex ];
         outputPeptideString_AsArray.push( peptideSequenceAtIndex );
 
-        const modsAtPosition = modsByPosition.get( peptideSequencePosition );
-        if ( modsAtPosition ) {
+        if ( variableModificationsRoundedArray_KeyPosition ) {
+            const variableModificationsRoundedStringsArrayAtPosition = variableModificationsRoundedArray_KeyPosition.get( peptideSequencePosition );
+            if ( variableModificationsRoundedStringsArrayAtPosition ) {
 
-            for ( const modAtPosition of modsAtPosition ) {
-                const modRoundedString = modificationMass_CommonRounding_ReturnString( modAtPosition );  //  round to String to ensure only specified # decimal places
-                outputPeptideString_AsArray.push( "[" );
-                outputPeptideString_AsArray.push( modRoundedString );
-                outputPeptideString_AsArray.push( "]" );
+                for ( const variableModificationRoundedStringAtPosition of variableModificationsRoundedStringsArrayAtPosition ) {
+                    outputPeptideString_AsArray.push( "[" );
+                    outputPeptideString_AsArray.push( variableModificationRoundedStringAtPosition );
+                    outputPeptideString_AsArray.push( "]" );
+                }
+            }
+        }
+
+        if ( staticModificationsRounded_KeyPosition ) {
+            const staticModificationRoundedString = staticModificationsRounded_KeyPosition.get( peptideSequencePosition );
+            if ( staticModificationRoundedString ) {
+                outputPeptideString_AsArray.push( "(" );
+                outputPeptideString_AsArray.push( staticModificationRoundedString );
+                outputPeptideString_AsArray.push( ")" );
             }
         }
     }
