@@ -40,7 +40,7 @@
 	  		  	is not supported. 
 	  		  </div>
 	  		  <div style="margin-top: 20px;">
-	  		  	Please use a current browser like Edge, Chrome, or Firefox.
+	  		  	Please use a different browser like Edge, Chrome, or Firefox.
 	  		  </div>
 	  		</div>
 	  	  </div>
