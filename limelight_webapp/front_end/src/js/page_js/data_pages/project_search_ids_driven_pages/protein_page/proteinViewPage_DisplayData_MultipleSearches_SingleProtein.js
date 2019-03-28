@@ -21,6 +21,8 @@ import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downlo
 
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
 
+import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+
 import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding.js';
 
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
@@ -68,6 +70,8 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		
 		this._proteinViewPage_Display_MultipleSearch = proteinViewPage_Display_MultipleSearch; // reference to creating class object
 
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
+
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 
@@ -109,6 +113,12 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		}
 		this._protein_page_single_protein_user_filter_selection_template_Template = _protein_table_template_bundle.protein_page_single_protein_user_filter_selection_template;
 
+
+		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
+			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
+		}
+
+		this._sharePage_dataPages = new SharePage_dataPages();
 
 
 		this._proteinViewPage_DisplayData_SingleProtein_ReportedPeptideList = new ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList(
@@ -367,20 +377,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		const objectThis = this;
 
-		//  No Longer Combining Modifications.  Will be rounding modifications but can do that on the fly
-
-		// for ( const projectSearchId of this._projectSearchIds ) {
-
-		// 	const loadedDataPerProjectSearchIdHolder = this._proteinViewPage_Display_MultipleSearch._get_loadedDataPerProjectSearchIdHolder_for_projectSearchId( projectSearchId );
-
-		// 			//  Call imported function
-		// 	getTotalModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId({ 
-		// 		loadedDataPerProjectSearchIdHolder, 
-		// 		loadedDataCommonHolder : this._loadedDataCommonHolder, 
-		// 		proteinSequenceVersionId : this._proteinSequenceVersionId, 
-		// 		projectSearchId });
-		// }
-
 		const proteinSequenceData = this._loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId({ proteinSequenceVersionId : this._proteinSequenceVersionId });
 		if (proteinSequenceData === undefined) {
 			throw Error("No Protein sequence Data in this._loadedDataCommonHolder for proteinSequenceVersionId: " + this._proteinSequenceVersionId + ", projectSearchIds: " + this._projectSearchIds.join(",") );
@@ -405,6 +401,32 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		this._contentDivHTMLElement = $contentDiv[0];
 
 		this._resize_OverlayHeight_BasedOnViewportHeight();
+
+		if ( this._saveView_dataPages ) {
+			//  Set up handle the "Save View" Button in this Single PRotein Overlay
+
+			const $selector_save_view_root_container__single_protein = $contentDiv.find(".selector_save_view_root_container__single_protein");
+			if ( $selector_save_view_root_container__single_protein.length === 0 ) {
+				throw Error("Fail find DOM element with class 'selector_save_view_root_container__single_protein'");
+			}
+			$selector_save_view_root_container__single_protein.show();
+			const selector_save_view_root_container__single_proteinDOMElement = $selector_save_view_root_container__single_protein[0];
+
+			this._saveView_dataPages.initialize({ projectSearchIds : this._projectSearchIds, container_DOM_Element : selector_save_view_root_container__single_proteinDOMElement, enableSetDefault : false });
+		}
+
+		if ( this._sharePage_dataPages ) {
+			//  Set up handle the "Save View" Button in this Single PRotein Overlay
+
+			const $selector_share_page_root_container__single_protein = $contentDiv.find(".selector_share_page_root_container__single_protein");
+			if ( $selector_share_page_root_container__single_protein.length === 0 ) {
+				throw Error("Fail find DOM element with class 'selector_share_page_root_container__single_protein'");
+			}
+			$selector_share_page_root_container__single_protein.show();
+			const selector_share_page_root_container__single_proteinDOMElement = $selector_share_page_root_container__single_protein[0];
+
+			this._sharePage_dataPages.initialize({ projectSearchIds : this._projectSearchIds, container_DOM_Element : selector_share_page_root_container__single_proteinDOMElement });
+		}
 
 		this._resizeWindow_Handler_Attach();
 

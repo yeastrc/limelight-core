@@ -109,7 +109,7 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
-    public @ResponseBody ResponseEntity<byte[]>  projectView(
+    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
 
 			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
     		String webserviceSyncTracking,
@@ -147,6 +147,12 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
     			log.warn( "No Project Search Ids" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+    		for ( Integer projectSearchId : projectSearchIds ) {
+    			if ( projectSearchId == null  ) {
+	    			log.warn( "Project Search Id in projectSearchIds is null" );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
     		}
 
         	if ( StringUtils.isEmpty( viewLabelFromWebserviceRequest ) ) {

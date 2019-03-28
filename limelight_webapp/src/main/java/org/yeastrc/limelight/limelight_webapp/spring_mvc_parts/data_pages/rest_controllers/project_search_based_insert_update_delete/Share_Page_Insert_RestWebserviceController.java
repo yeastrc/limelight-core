@@ -154,6 +154,12 @@ public class Share_Page_Insert_RestWebserviceController {
     			log.warn( "No Project Search Ids" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		for ( Integer projectSearchId : projectSearchIds ) {
+    			if ( projectSearchId == null  ) {
+	    			log.warn( "Project Search Id in projectSearchIds is null" );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    		}
 
         	if ( StringUtils.isEmpty( pageControllerPathFromWebserviceRequest ) ) {
     			log.warn( "No pageControllerPath" );

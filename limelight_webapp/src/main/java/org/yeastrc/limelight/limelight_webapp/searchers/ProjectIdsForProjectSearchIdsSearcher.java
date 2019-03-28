@@ -115,6 +115,12 @@ public class ProjectIdsForProjectSearchIdsSearcher extends Limelight_JDBC_Base i
 		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
 			throw new IllegalArgumentException( "( projectSearchIds == null || projectSearchIds.isEmpty() )" );
 		}
+
+		for ( Integer projectSearchId : projectSearchIds ) {
+			if ( projectSearchId == null ) {
+				throw new IllegalArgumentException( "Entry in projectSearchIds is null: ( projectSearchId == null )" );
+			}
+		}
 		
 		Map<Integer,Integer> resultMap = new HashMap<>();
 		
