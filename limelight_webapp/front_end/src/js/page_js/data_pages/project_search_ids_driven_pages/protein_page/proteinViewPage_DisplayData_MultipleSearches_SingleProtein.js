@@ -2574,9 +2574,11 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 					const mass = modificationOnProtein.mass;
 					const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
+					const massRounded = this._roundModificationMass_ReturnNumber_LocalFunction({ mass : mass});
+
 					positionContains_Any_ModificationMasses.add( position );
 					
-					if ( variableModificationsSelected_ExcludingNoModificationOption.has( mass ) ) {
+					if ( variableModificationsSelected_ExcludingNoModificationOption.has( massRounded ) ) {
 
 						reportedPeptideIdsFor_Selected_VariableModificationMasses.add( reportedPeptideId );
 
