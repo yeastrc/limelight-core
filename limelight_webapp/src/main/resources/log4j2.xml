@@ -16,12 +16,18 @@
     <!-- Rolling File Appender -->
     <RollingFile name="RollingFile">
     	<!-- Compared to log4j, the system variable requires 'sys:' before it -->
-      <FileName>${sys:catalina.base}/logs/limelight.log</FileName>
+    			<!-- append '.current' to the filename so that Ubuntu does not compress the file (compresses files that end in .log).
+			Log4j2 will compress the file when it rolls over the file since '.gz' is at end of  -->
+		<!-- Filename used when create "current" file to log to  -->
+      <FileName>${sys:catalina.base}/logs/limelight.log.current</FileName>
+      		<!-- Filename used when roll "current" file to and then create new "current" file.
+      					Log4j2 will compress the file when it rolls over the file since '.gz' is at end of  -->
       <FilePattern>${sys:catalina.base}/logs/limelight-%d{yyyy-MM-dd}.log.gz</FilePattern>
       <PatternLayout>
         <Pattern>%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Pattern>
       </PatternLayout>
       <Policies>
+      		<!-- Roll over the log file based on time  -->
         <TimeBasedTriggeringPolicy/>
       </Policies>
       <DefaultRolloverStrategy max="20" />
