@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.web_utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.constants.HeaderStringLengthLimitsConstants;
 
@@ -37,9 +36,9 @@ public class TruncateProjectTitleForDisplay implements TruncateProjectTitleForDi
 	@Override
 	public String truncateProjectTitleForHeader( String projectTitle ) {
 		
-		if ( StringUtils.isEmpty( projectTitle ) ) {
+		if ( projectTitle == null ) {
 			
-			throw new IllegalArgumentException( "projectTitle cannot be null or empty" );
+			throw new IllegalArgumentException( "projectTitle cannot be null" );
 		}
 		
 		if ( projectTitle.length() > HeaderStringLengthLimitsConstants.TITLE_MAX_DISPLAY_LENGTH ) {
@@ -60,9 +59,9 @@ public class TruncateProjectTitleForDisplay implements TruncateProjectTitleForDi
 	@Override
 	public String truncateProjectTitleForHeaderNonUser( String projectTitle ) {
 		
-		if ( StringUtils.isEmpty( projectTitle ) ) {
+		if ( projectTitle == null  ) {
 			
-			throw new IllegalArgumentException( "projectTitle cannot be null or empty" );
+			throw new IllegalArgumentException( "projectTitle cannot be null" );
 		}
 		
 		if ( projectTitle.length() > HeaderStringLengthLimitsConstants.TITLE_MAX_DISPLAY_NON_USER_LENGTH ) {

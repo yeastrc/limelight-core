@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -133,6 +134,11 @@ public class UpdateTitleOnProjectRecord_RestWebserviceController {
 
     		if ( projectId == null ) {
     			log.warn( "No Project Id" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+
+    		if ( StringUtils.isEmpty( webserviceRequest.getProjectTitle() ) ) {
+    			log.warn( "Project title is null or empty string" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
