@@ -20,8 +20,8 @@ let Handlebars = require('handlebars/runtime');
 let _search_detail_section_bundle = 
 	require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
@@ -50,54 +50,31 @@ export class SearchDetails_GetCoreDataFromServer {
 	 */
     getSearchDetails_CoreDataFromServer({ projectSearchIds }) {
 
-        const objectThis = this;
-
+		const objectThis = this;
+		
         return new Promise((resolve,reject) => {
-
-			const _URL = "d/rws/for-page/psb/get-search-details-core/" + getWebserviceSyncTrackingCode();
 
 			const requestObj = { projectSearchIds : projectSearchIds };
 
-			const requestData = JSON.stringify( requestObj );
+			const url = "d/rws/for-page/psb/get-search-details-core";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						const promiseResponse = objectThis._getHTMLFromAJAXResponse( { responseData, projectSearchIds } );
-						
-						resolve( { coreSearchDetails : promiseResponse } );
-						
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						
-						reject();
-						
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					const promiseResponse = objectThis._getHTMLFromAJAXResponse( { responseData, projectSearchIds } );
+					
+					resolve( { coreSearchDetails : promiseResponse } );
+					
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					
+					throw e;
 				}
 			});
-
-        })
+        });
     }
 
 	/**

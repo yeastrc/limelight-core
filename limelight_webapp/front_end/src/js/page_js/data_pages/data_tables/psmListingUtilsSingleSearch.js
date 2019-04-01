@@ -11,10 +11,10 @@ let Handlebars = require('handlebars/runtime');
 let _common_template_bundle = 
 	require("../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
     
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils.js';
 import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
@@ -350,40 +350,31 @@ export class PSMListingUtilsSingleSearch {
 		let objectThis = this;
                 
 		return new Promise( function( resolve, reject ) {
-
+          try {
             let requestObject = objectThis.__createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId } );
 
-            let _URL = "d/rws/for-page/psb/psm-list/" + getWebserviceSyncTrackingCode();
-            let requestData = JSON.stringify( requestObject );            
+			const url = "d/rws/for-page/psb/psm-list";
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(data) {
-                    try {
-                        loadedData.psmList = data.resultList;
-                        loadedData.searchHasScanData = data.searchHasScanData;
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-                        resolve();
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.psmList = responseData.resultList;
+                    loadedData.searchHasScanData = responseData.searchHasScanData;
 
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
+                    resolve();
 
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
     }
 }

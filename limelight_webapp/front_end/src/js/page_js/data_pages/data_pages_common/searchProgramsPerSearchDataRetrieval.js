@@ -17,9 +17,9 @@
 
 //module import 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
@@ -92,57 +92,38 @@ export class SearchProgramsPerSearchDataRetrieval {
 		let objectThis = this;
 
 		let retrieval = function( resolve, reject ) {
-
-			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
-
-			let _URL = "d/rws/for-page/psb/search-programs-per-search-list-from-psi/" + getWebserviceSyncTrackingCode();
-
+		  try {
 			let requestObj = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
 
-			let requestData = JSON.stringify( requestObj );
+			const url = "d/rws/for-page/psb/search-programs-per-search-list-from-psi";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						objectThis._retrieveSearchProgramsPerSearchDataFromAJAXResponse( {
-								requestData, responseData, 
-								dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-								dataPageStateManager_DataFrom_Server, 
-								projectSearchIds_dataNotLoadedArray 
-						} );
-						
-						resolve( { sucess : true } );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			promise_webserviceCallStandardPost.catch( () => { reject( { fail : true } ) }  );
 
-						reject( { fail : true } );
-
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					objectThis._retrieveSearchProgramsPerSearchDataFromAJAXResponse( {
+							responseData, 
+							dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+							dataPageStateManager_DataFrom_Server, 
+							projectSearchIds_dataNotLoadedArray 
+					} );
 					
-					handleAJAXFailure( errMsg );
+					resolve( { sucess : true } );
 
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-
-					handleAJAXError(jqXHR, textStatus, errorThrown);
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 
 					reject( { fail : true } );
 
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+					throw e;
 				}
 			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
 		}
 
 		return new Promise( retrieval );
@@ -152,8 +133,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 	 * 
 	 */
 	_retrieveSearchProgramsPerSearchDataFromAJAXResponse( {
-			requestData, responseData, 
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+			responseData, 
 			dataPageStateManager_DataFrom_Server, 
 			projectSearchIds_dataNotLoadedArray } ) {
 		

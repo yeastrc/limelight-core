@@ -22,10 +22,10 @@ let _project_page__project_info_section_logged_in_users_interaction = require(".
 //  Note Template for adding new note to page
 let _project_page__project_info_section_all_users_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page__project_info_section_all_users_interaction/project_page__project_info_section_all_users_interaction_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
 
@@ -327,49 +327,32 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
-
-			const _URL = "d/rws/for-page/project-note-add/" + getWebserviceSyncTrackingCode();
-
+          try {
 			const requestObj = { noteText, projectIdentifier : this._projectIdentifierFromURL };
 
-			const requestData = JSON.stringify( requestObj );
+			const url = "d/rws/for-page/project-note-add";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						resolve( { addNote_SaveToServer_AjaxResponse : responseData } );
-						
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						
-						reject();
-						
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
-				}
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( { addNote_SaveToServer_AjaxResponse : responseData } );
+                    
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    
+                    reject();
+                    
+                    throw e;
+                }
 			});
-
-        })
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
+        });
     }
     
     //////////////////////////////
@@ -548,49 +531,31 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
-
-			const _URL = "d/rws/for-page/project-note-update-text/" + getWebserviceSyncTrackingCode();
-
+          try {
 			const requestObj = { id, noteText };
 
-			const requestData = JSON.stringify( requestObj );
+			const url = "d/rws/for-page/project-note-update-text";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						resolve( { editNote_SaveToServer_AjaxResponse : responseData } );
-						
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						
-						reject();
-						
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
-				}
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( { editNote_SaveToServer_AjaxResponse : responseData } );
+                    
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    
+                    reject();
+                    throw e;
+                }
 			});
-
-        })
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
+        });
     }
 
     //////////////////////////////
@@ -629,48 +594,31 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
-
-			const _URL = "d/rws/for-page/project-note-delete/" + getWebserviceSyncTrackingCode();
-
+          try {
 			const requestObj = { id };
 
-			const requestData = JSON.stringify( requestObj );
+			const url = "d/rws/for-page/project-note-delete";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						resolve( { deleteNote_DeleteFromServer_AjaxResponse : responseData } );
-						
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						
-						reject();
-						
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
-				}
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( { deleteNote_DeleteFromServer_AjaxResponse : responseData } );
+                    
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    
+                    reject();
+                    
+                    throw e;
+                }
 			});
-
-        })
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
+        });
     }
 };

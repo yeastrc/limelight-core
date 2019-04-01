@@ -15,10 +15,9 @@
 
 //module imports
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 /**
  * 
@@ -230,35 +229,23 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		let requestData = { trackingId : tracking_id, statusId : status_id };
 
-		let requestDataJSON = JSON.stringify(requestData);
+		const url = "d/rws/for-page/project-upload-data-remove-queued-import";
 
-		let _URL = "d/rws/for-page/project-upload-data-remove-queued-import/" + getWebserviceSyncTrackingCode();
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
-		$.ajax({
-			type: "POST",
-			url: _URL,
-			data : requestDataJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType: "json",
-			success: function( responseData )	{
-				try {
-					let responseParams = {
-							responseData : responseData,
-							clickThis : clickThis,
-							tracking_id : tracking_id
-					};
-					objectThis.cancelQueuedItemClickedProcessAjaxResponse( responseParams );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error: function(jqXHR, textStatus, errorThrown) {	
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError( jqXHR, textStatus, errorThrown );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				let responseParams = {
+						responseData : responseData,
+						clickThis : clickThis,
+						tracking_id : tracking_id
+				};
+				objectThis.cancelQueuedItemClickedProcessAjaxResponse( responseParams );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -338,35 +325,23 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		let requestData = { trackingId : tracking_id };
 
-		let requestDataJSON = JSON.stringify(requestData);
+		const url = "d/rws/for-page/project-upload-data-remove-failed-import";
 
-		let _URL = "d/rws/for-page/project-upload-data-remove-failed-import/" + getWebserviceSyncTrackingCode();
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
-		$.ajax({
-			type: "POST",
-			url: _URL,
-			data : requestDataJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType: "json",
-			success: function( responseData )	{
-				try {
-					let responseParams = {
-							responseData : responseData,
-							clickThis : clickThis,
-							tracking_id : tracking_id
-					};
-					objectThis.removeFailedItemClickedProcessAjaxResponse( responseParams );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error: function(jqXHR, textStatus, errorThrown) {	
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError( jqXHR, textStatus, errorThrown );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				let responseParams = {
+						responseData : responseData,
+						clickThis : clickThis,
+						tracking_id : tracking_id
+				};
+				objectThis.removeFailedItemClickedProcessAjaxResponse( responseParams );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -455,35 +430,23 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		let requestData = { trackingId : tracking_id };
 
-		let requestDataJSON = JSON.stringify(requestData);
+		const url = "d/rws/for-page/project-upload-data-remove-success-import";
 
-		let _URL = "d/rws/for-page/project-upload-data-remove-success-import/" + getWebserviceSyncTrackingCode();
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
-		$.ajax({
-			type: "POST",
-			url: _URL,
-			data : requestDataJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType: "json",
-			success: function( responseData )	{
-				try {
-					let responseParams = {
-							responseData : responseData,
-							clickThis : clickThis,
-							tracking_id : tracking_id
-					};
-					objectThis.removeCompletedItemClickedProcessAjaxResponse( responseParams );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error: function(jqXHR, textStatus, errorThrown) {	
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError( jqXHR, textStatus, errorThrown );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				let responseParams = {
+						responseData : responseData,
+						clickThis : clickThis,
+						tracking_id : tracking_id
+				};
+				objectThis.removeCompletedItemClickedProcessAjaxResponse( responseParams );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};

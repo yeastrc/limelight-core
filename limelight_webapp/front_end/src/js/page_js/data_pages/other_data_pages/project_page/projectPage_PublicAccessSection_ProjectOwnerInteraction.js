@@ -16,19 +16,14 @@
 
 //  Import Handlebars templates
 
-let _project_page__share_data_section_loggedin_users_template = require("../../../../../../handlebars_templates_precompiled/project_page__share_data_section_loggedin_users/project_page__share_data_section_loggedin_users_template-bundle.js");
+const _project_page__share_data_section_loggedin_users_template = require("../../../../../../handlebars_templates_precompiled/project_page__share_data_section_loggedin_users/project_page__share_data_section_loggedin_users_template-bundle.js");
 
 
 //  module import 
 
-/**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
- */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
-
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
 
@@ -322,44 +317,31 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 		const objectThis = this;
 		
         return new Promise(function(resolve, reject) {
-
-            let _URL = "d/rws/for-page/project-label-get/" + getWebserviceSyncTrackingCode();
-
+		  try {
             let requestObj = {
                 projectIdentifier : objectThis._projectIdentifierFromURL
             };
 
-            let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/project-label-get";
 
-            //	const request =
-            $.ajax({
-                type: "POST",
-                url: _URL,
-                data: requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType: "json",
-                success: function (data) {
-                    try {
-                        resolve( data );
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                        throw e;
-                    }
-                },
-                failure: function (errMsg) {
-                    handleAJAXFailure(errMsg);
-                    reject(errMsg);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-                    reject(textStatus);
-                    //			alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    //			textStatus: " + textStatus );
-                }
-            });
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					resolve( responseData );
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+					throw e;
+				}
+			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
         });
     };
-	
 
 	/**
 	 * 
@@ -664,42 +646,30 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 		const objectThis = this;
 		
         return new Promise(function(resolve, reject) {
-
-            let _URL = "d/rws/for-page/project-label-add-change/" + getWebserviceSyncTrackingCode();
-
+		  try {
             let requestObj = {
                 labelText,
                 projectIdentifier : objectThis._projectIdentifierFromURL
             };
 
-            let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/project-label-add-change";
 
-            //	const request =
-            $.ajax({
-                type: "POST",
-                url: _URL,
-                data: requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType: "json",
-                success: function (data) {
-                    try {
-                        resolve( data );
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                        throw e;
-                    }
-                },
-                failure: function (errMsg) {
-                    handleAJAXFailure(errMsg);
-                    reject(errMsg);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-                    reject(textStatus);
-                    //			alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    //			textStatus: " + textStatus );
-                }
-            });
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					resolve( responseData );
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+					throw e;
+				}
+			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
         });
     };
 	
@@ -737,37 +707,21 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	_enablePublicAcessClicked( { clickThis } ) {
 
 		let objectThis = this;
-		
-		let _URL = "d/rws/for-page/project-enable-public-access/" + getWebserviceSyncTrackingCode();
 
 		let requestObj = { projectIdentifier : this._projectIdentifierFromURL };
 
-		let requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-enable-public-access";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._enablePublicAcessProcessResponse( { requestObj, responseData, clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._enablePublicAcessProcessResponse( { requestObj, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}
@@ -792,40 +746,21 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	_disablePublicAcessClicked( { clickThis } ) {
 
 		let objectThis = this;
-		
-		let _URL = "d/rws/for-page/project-disable-public-access/" + getWebserviceSyncTrackingCode();
 
 		let requestObj = { projectIdentifier : this._projectIdentifierFromURL };
 
-		let requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-disable-public-access";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => {  }  );
 
-					objectThis._disablePublicAcessProcessResponse( { requestObj, responseData, clickThis } );
-
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._disablePublicAcessProcessResponse( { requestObj, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}

@@ -20,10 +20,10 @@
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 
 const UPDATE_WEBSERVICE_URL = "user/rws/for-page/user-change-account-info";
@@ -226,35 +226,18 @@ class UserAccountManagementPage {
 		
 		var requestData = {};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = "user/rws/for-page/user-submit-import-key-get" + "/" + getWebserviceSyncTrackingCode();
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._getExistingSubmitImportProgramKey_AJAX_Complete( { requestData: requestData, responseData: data } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const url = "user/rws/for-page/user-submit-import-key-get";
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._getExistingSubmitImportProgramKey_AJAX_Complete( { requestData: requestData, responseData: responseData } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 		
@@ -318,39 +301,20 @@ class UserAccountManagementPage {
 				createKey : true
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._getExistingSubmitImportProgramKey( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._getExistingSubmitImportProgramKey( { requestData: requestData, responseData, clickThis: clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
-		
-		
 	}
 
 	/**
@@ -375,38 +339,20 @@ class UserAccountManagementPage {
 				existingKey : submit_import_program_key_current_key
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._getExistingSubmitImportProgramKey( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._getExistingSubmitImportProgramKey( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
-		
 	}
 
 	/**
@@ -431,38 +377,20 @@ class UserAccountManagementPage {
 				existingKey : submit_import_program_key_current_key
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._getExistingSubmitImportProgramKey( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._getExistingSubmitImportProgramKey( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
-		
 	}
 	
 	/**
@@ -486,35 +414,18 @@ class UserAccountManagementPage {
 				firstName : firstName
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = UPDATE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.updateFirstNameComplete( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const url = UPDATE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.updateFirstNameComplete( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -564,35 +475,18 @@ class UserAccountManagementPage {
 				lastName : lastName
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = UPDATE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.updateLastNameComplete( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		const url = UPDATE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.updateLastNameComplete( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -642,35 +536,18 @@ class UserAccountManagementPage {
 				organization : organization
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = UPDATE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.updateOrganizationComplete( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		const url = UPDATE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.updateOrganizationComplete( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -719,35 +596,18 @@ class UserAccountManagementPage {
 				email : email
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = UPDATE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.updateEmailComplete( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		const url = UPDATE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.updateEmailComplete( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -802,35 +662,18 @@ class UserAccountManagementPage {
 				username : username
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = UPDATE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.updateUsernameComplete( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		const url = UPDATE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.updateUsernameComplete( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -912,35 +755,18 @@ class UserAccountManagementPage {
 				oldPassword : oldPassword
 		};
 
-		let requestDataJSON = JSON.stringify( requestData );
-		
-		var _URL = UPDATE_WEBSERVICE_URL + "/" + getWebserviceSyncTrackingCode();
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.updatePasswordComplete( { requestData: requestData, responseData: data, clickThis: clickThis } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				var $element = $("#error_message_system_error");
-//				showErrorMsg( $element );
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		const url = UPDATE_WEBSERVICE_URL;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.updatePasswordComplete( { requestData, responseData, clickThis } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};

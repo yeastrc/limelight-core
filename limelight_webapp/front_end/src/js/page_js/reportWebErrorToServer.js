@@ -54,6 +54,8 @@ var reportWebErrorToServer = {
 
 				var _URL = "d/rws/for-page/log-browser-javascript-error";
 
+				//   Not calling webserviceCallStandardPost since webservice does not support URL in format "/" + webserviceSyncTrackingCode
+
 //				var request =
 				$.ajax({
 					type : "POST",

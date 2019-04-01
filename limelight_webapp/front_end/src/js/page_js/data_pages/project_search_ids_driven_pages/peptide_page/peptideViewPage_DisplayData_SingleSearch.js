@@ -15,9 +15,9 @@ let Handlebars = require('handlebars/runtime');
 let _peptide_table_template_bundle = 
 	require("../../../../../../handlebars_templates_precompiled/peptide_page/peptide_page_single_search_template-bundle.js" );
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
@@ -94,8 +94,6 @@ export class PeptideViewPage_Display_SingleSearch {
 		
 		let objectThis = this;
 		
-		let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
-		
 		let $peptide_table_loading_text = $("#peptide_table_loading_text");
 		if ( $peptide_table_loading_text.length === 0 ) {
 			throw Error("No element found with id 'peptide_table_loading_text'");
@@ -127,52 +125,34 @@ export class PeptideViewPage_Display_SingleSearch {
 				reportedPeptideAnnotationTypeIdsForSorting : reportedPeptideAnnotationTypeIdsForSorting
 		};
 		
-		let _URL = "d/rws/for-page/psb/peptide-view-page-peptide-list-single-project-search-id/" + getWebserviceSyncTrackingCode();
-		
-		let requestData = JSON.stringify( requestObject );
-		
 		console.log("AJAX Call to get Peptide List START, Now: " + new Date() );
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					console.log("AJAX Call to get Peptide List END, Now: " + new Date() );
-					
-					objectThis._getPeptideList_ProcessAJAXResponse( {
-						projectSearchId : projectSearchId,
-						requestObject : requestObject, 
-						responseData : data
-					});
+		const url = "d/rws/for-page/psb/peptide-view-page-peptide-list-single-project-search-id";
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				console.log("AJAX Call to get Peptide List END, Now: " + new Date() );
+				
+				objectThis._getPeptideList_ProcessAJAXResponse( {
+					projectSearchId : projectSearchId,
+					responseData : responseData
+				});
+
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
-
 	};
 
 	/**
 	 * 
 	 */
-	_getPeptideList_ProcessAJAXResponse( { projectSearchId, requestObject, responseData } ) {
+	_getPeptideList_ProcessAJAXResponse( { projectSearchId, responseData } ) {
 
 		let peptideList = responseData.peptideList;
 		

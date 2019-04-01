@@ -11,7 +11,7 @@
 
 //module import 
 
-var _user_account_login_forgot_password_template_bundle = 
+const _user_account_login_forgot_password_template_bundle = 
 require("../../../../../handlebars_templates_precompiled/user_account_login_forgot_password/user_account_login_forgot_password_template-bundle.js" );
 
 ///////////////////////////////////////////
@@ -22,10 +22,10 @@ require("../../../../../handlebars_templates_precompiled/user_account_login_forg
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 /**
  * 
@@ -125,41 +125,25 @@ export class UserLogin_Subpart {
 			return;  //  !!!  EARLY EXIT
 		}
 
-		var _URL = "user/rws/for-page/login/" + getWebserviceSyncTrackingCode();
-
 		var requestObj = { username : login_username, password : login_password };
 
 		if ( this.inviteTrackingCode ) {
 			requestObj.inviteTrackingCode = this.inviteTrackingCode;
 		}
-		
-		var requestData = JSON.stringify( requestObj );
 
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.loginPersonResponse(requestData, data);
+		const url = "user/rws/for-page/login";
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
+		promise_webserviceCallStandardPost.catch( () => {  }  );
 
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.loginPersonResponse(responseData);
+
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 
@@ -168,7 +152,7 @@ export class UserLogin_Subpart {
 	/**
 	 * 
 	 */
-	loginPersonResponse(requestData, responseData) {
+	loginPersonResponse(responseData) {
 
 		if ( responseData.success ) {
 			let currentPageHref = window.location.href;

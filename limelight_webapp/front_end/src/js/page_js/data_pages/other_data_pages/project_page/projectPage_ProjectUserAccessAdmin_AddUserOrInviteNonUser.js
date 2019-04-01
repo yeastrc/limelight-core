@@ -23,10 +23,10 @@ let _project_user_list_current_user_template_bundle =
 //Required on Page Level JS
 Handlebars.templates = _project_user_list_current_user_template_bundle;
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 /**
  * 
@@ -203,44 +203,33 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 					throw Error( "No value for 'projectIdentifierFromURL' " );
 				}
 
-				let _URL = "d/rws/for-page/project-users-not-in-project-list/" + getWebserviceSyncTrackingCode();
-
 				let requestObj = {
 					lastNamePrefix : request.term,
 					projectIdentifier : objectThis._projectIdentifierFromURL
 				};
 
-				let requestData = JSON.stringify(requestObj);
+				const url = "d/rws/for-page/project-users-not-in-project-list";
 
-				$.ajax({
-					type : "POST",
-					url : _URL,
-					data : requestData,
-					contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-					dataType : "json",
-					success : function(data) {
-						try {
-							// Call "response" passed into the function defined at "source".
-							//         Use jQuery .map(...)
-							response( $.map( data.userList, function( item ) {
-								return {
-									label : item.lastName + ", " + item.firstName,
-									value : item.lastName,
-									id : item.userId
-								};
-							}));
-						} catch( e ) {
-							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-							throw e;
-						}
-					},
-					failure: function(errMsg) {
-						handleAJAXFailure( errMsg );
-					},
-					error : function(jqXHR, textStatus, errorThrown) {
-						handleAJAXError(jqXHR, textStatus, errorThrown);
+				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+	
+				promise_webserviceCallStandardPost.catch( () => {}  );
+	
+				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+					try {
+						// Call "response" passed into the function defined at "source".
+						//         Use jQuery .map(...)
+						response( $.map( responseData.userList, function( item ) {
+							return {
+								label : item.lastName + ", " + item.firstName,
+								value : item.lastName,
+								id : item.userId
+							};
+						}));
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
 					}
-				});
+				})
 			},
 			select : function(event, ui) {
 				// var $this = $(this);
@@ -332,35 +321,22 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 		}
 		requestData.ajaxParams = ajaxParams;
 		
-		var _URL = "d/rws/for-page/project-invite-user-to-project-new-or-existing-user/" + getWebserviceSyncTrackingCode();;
+		const url = "d/rws/for-page/project-invite-user-to-project-new-or-existing-user";
 
-		let ajaxParamsJSON = JSON.stringify( ajaxParams );
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : ajaxParams, url }) ;
 
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : ajaxParamsJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._inviteUserToProjectResponse({
-						responseData : data,
-						requestData : requestData,
-						clickThis : clickThis
-					});
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._inviteUserToProjectResponse({
+					responseData : responseData,
+					requestData : requestData,
+					clickThis : clickThis
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};

@@ -14,11 +14,11 @@
 
 //  Import Handlebars templates
 
-let _project_page__saved_views_section_loggedin_users_template = require("../../../../../../handlebars_templates_precompiled/project_page__saved_views_section_loggedin_users/project_page__saved_views_section_loggedin_users_template-bundle.js");
+const _project_page__saved_views_section_loggedin_users_template = require("../../../../../../handlebars_templates_precompiled/project_page__saved_views_section_loggedin_users/project_page__saved_views_section_loggedin_users_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
 
@@ -248,42 +248,30 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
     _changeLabel_SavedView_OnServer( { labelText, id } ) {
     
         return new Promise(function(resolve, reject) {
-
-            let _URL = "d/rws/for-page/saved-view-change-label/" + getWebserviceSyncTrackingCode();
-
+          try {
             let requestObj = {
                 labelText,
                 id
             };
 
-            let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/saved-view-change-label";
 
-            //	const request =
-            $.ajax({
-                type: "POST",
-                url: _URL,
-                data: requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType: "json",
-                success: function (data) {
-                    try {
-                        resolve( data );
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                        throw e;
-                    }
-                },
-                failure: function (errMsg) {
-                    handleAJAXFailure(errMsg);
-                    reject(errMsg);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-                    reject(textStatus);
-                    //			alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    //			textStatus: " + textStatus );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( responseData );
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
     };
     
@@ -354,41 +342,29 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
     _deleteSavedView_OnServer( { id } ) {
     
         return new Promise(function(resolve, reject) {
-
-            let _URL = "d/rws/for-page/delete-saved-view/" + getWebserviceSyncTrackingCode();
-
+          try {
             let requestObj = {
                 id
             };
 
-            let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/delete-saved-view";
 
-            //	const request =
-            $.ajax({
-                type: "POST",
-                url: _URL,
-                data: requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType: "json",
-                success: function (data) {
-                    try {
-                        resolve( data );
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                        throw e;
-                    }
-                },
-                failure: function (errMsg) {
-                    handleAJAXFailure(errMsg);
-                    reject(errMsg);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-                    reject(textStatus);
-                    //			alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    //			textStatus: " + textStatus );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( responseData );
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
     };
     

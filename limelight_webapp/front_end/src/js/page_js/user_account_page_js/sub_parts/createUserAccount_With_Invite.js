@@ -29,10 +29,11 @@ require("../../../../../handlebars_templates_precompiled/user_invite_processing/
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+
 
 /**
  * 
@@ -253,35 +254,21 @@ export class UserCreateAccount_With_Invite_Subpart {
 			requestObj.inviteTrackingCode = this.inviteTrackingCode;
 		}
 		
-		var requestData = JSON.stringify( requestObj );
+		const url = "user/rws/for-page/create-account-from-invite";
 
-		var _URL = "user/rws/for-page/create-account-from-invite/" + getWebserviceSyncTrackingCode();
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.createAccountComplete( { requestData: requestData, responseData: data } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				alert(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-//				handleAJAXError(jqXHR, textStatus, errorThrown);
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { 
+			var $element = $("#error_message_system_error");
+			showErrorMsg( $element );
+		 }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.createAccountComplete( { responseData: responseData } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -289,7 +276,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 	/**
 	 * 
 	 */
-	createAccountComplete( { requestData, responseData } ) {
+	createAccountComplete( { responseData } ) {
 
 //		$("#terms_of_service_modal_dialog_overlay_background").hide();
 //		$("#terms_of_service_overlay_div").hide();

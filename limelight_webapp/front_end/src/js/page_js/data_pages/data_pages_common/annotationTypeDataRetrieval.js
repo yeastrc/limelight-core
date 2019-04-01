@@ -15,12 +15,9 @@
 ///////////////////////////////////////////
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants.js';
-
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
@@ -87,61 +84,26 @@ export class AnnotationTypeDataRetrieval {
 		let objectThis = this;
 
 		let retrieval = function( resolve, reject ) {
+
+			const url = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
+
+			const requestData = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+
+				objectThis._retrieveSearchAnnotationTypeDataFromAJAXResponse( {
+					requestData, responseData, 
+					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+					dataPageStateManager_DataFrom_Server, 
+					projectSearchIds_dataNotLoadedArray } );
 			
-			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
-
-			let webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
-
-			let _URL = "d/rws/for-page/psb/search-annotation-type-list-from-psi/" + webserviceSyncTrackingCode;
-
-			let requestObj = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
-
-			let requestData = JSON.stringify( requestObj );
-
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						objectThis._retrieveSearchAnnotationTypeDataFromAJAXResponse( {
-								requestData, responseData, 
-								dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-								dataPageStateManager_DataFrom_Server, 
-								projectSearchIds_dataNotLoadedArray } );
-						
-						resolve();
-						
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						
-						reject();
-						
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					objectThis._projectSearchIds_RetrievingDataFor = {};
-					handleAJAXFailure( errMsg );
-
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-
-					objectThis._projectSearchIds_RetrievingDataFor = {};
-
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
-				}
-			});
-		}
+				resolve();
+			} );
+		};
 
 		return new Promise( retrieval );
 	};

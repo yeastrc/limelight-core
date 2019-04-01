@@ -21,9 +21,9 @@
  */
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
 
@@ -224,39 +224,26 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		let $change_project_title_input = $("#change_project_title_input");
 		let newProjectTitle = $change_project_title_input.val();
 
-		let _URL = "d/rws/for-page/project-update-title/" + getWebserviceSyncTrackingCode();
+		if ( newProjectTitle === "" ){
+			window.alert("Project Title cannot be empty");
+			return;
+		}
 
 		let requestObj = { projectId : this._projectIdentifierFromURL, projectTitle : newProjectTitle };
 
-		let requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-update-title";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => {});
 
-					objectThis._saveProjectTitleResponse( { requestObj, responseData, clickThis } );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._saveProjectTitleResponse( { requestObj, responseData, clickThis } );
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}
@@ -322,39 +309,21 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		let $change_project_abstract_input = $("#change_project_abstract_input");
 		let newProjectAbstract = $change_project_abstract_input.val();
 
-		let _URL = "d/rws/for-page/project-update-abstract/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = { projectId : this._projectIdentifierFromURL, projectAbstract : newProjectAbstract };
 
-		let requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-update-abstract";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis._saveProjectAbstractResponse( { requestObj, responseData, clickThis } );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._saveProjectAbstractResponse( { requestObj, responseData, clickThis } );
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}
@@ -408,39 +377,21 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		let objectThis = this;
 		
-		let _URL = "d/rws/for-page/project-lock-project/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = { projectIdentifier : this._projectIdentifierFromURL };
 
-		let requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-lock-project";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis._lockProjectProcessResponse( { requestObj, responseData, clickThis } );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._lockProjectProcessResponse( { requestObj, responseData, clickThis } );
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}
@@ -464,39 +415,21 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		let objectThis = this;
 		
-		let _URL = "d/rws/for-page/project-unlock-project/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = { projectIdentifier : this._projectIdentifierFromURL };
 
-		let requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-unlock-project";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis._unlockProjectProcessResponse( { requestObj, responseData, clickThis } );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._unlockProjectProcessResponse( { requestObj, responseData, clickThis } );
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}

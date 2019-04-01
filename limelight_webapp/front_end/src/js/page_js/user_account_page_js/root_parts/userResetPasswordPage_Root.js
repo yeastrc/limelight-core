@@ -17,10 +17,11 @@
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+
 
 /**
  * 
@@ -118,43 +119,22 @@ class UserResetPasswordPage {
 				resetPasswordTrackingCode : resetPasswordTrackingCode
 		};
 
-		var _URL = "user/rws/for-page/reset-password-change-password/" + getWebserviceSyncTrackingCode();
+		const url = "user/rws/for-page/reset-password-change-password";
 
-		var requestData = JSON.stringify( requestObj );
-		
-//		var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._resetPasswordComplete(requestData, data);
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url, url, doNotHandleErrorResponse : true }) ;
 
-				showErrorMsg( $element );
+		promise_webserviceCallStandardPost.catch( () => { 
+			var $element = $("#error_message_system_error");
 
-//				alert(errMsg);
+			showErrorMsg( $element );
+		 }  );
 
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				var $element = $("#error_message_system_error");
-
-				showErrorMsg( $element );
-
-//				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-//				alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._resetPasswordComplete(responseData);
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -163,7 +143,7 @@ class UserResetPasswordPage {
 	/**
 	 * 
 	 */
-	_resetPasswordComplete(requestData, responseData) {
+	_resetPasswordComplete(responseData) {
 
 		if ( ! responseData.status ) {
 

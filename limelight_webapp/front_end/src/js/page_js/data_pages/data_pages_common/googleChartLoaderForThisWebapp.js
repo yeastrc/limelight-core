@@ -9,6 +9,8 @@
  * until the previous call completes and
  * the function in google.charts.setOnLoadCallback(...) is called. 
  * 
+ * Uses jQuery $.ajax to load Javascript
+ * 
  */
 
 

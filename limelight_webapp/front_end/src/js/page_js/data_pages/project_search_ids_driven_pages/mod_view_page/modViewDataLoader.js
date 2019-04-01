@@ -2,9 +2,10 @@
  * Load initial data required for mod page.
  */
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
 import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
@@ -37,44 +38,31 @@ export class ModViewPage_DataLoader {
         let objectThis = this;
 
 		return new Promise( function( resolve, reject ) {
-            
+          try {
             let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
             let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
             
-            let _URL = "d/rws/for-page/psb/protein-mod-info-searchcriteria-list/" + getWebserviceSyncTrackingCode();
+			const url = "d/rws/for-page/psb/protein-mod-info-searchcriteria-list";
 
-            let requestData = JSON.stringify( requestObject );            
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(responseData) {
-                    try {
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                        loadedData.modData = responseData;
-                        resolve();
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.modData = responseData;
+                    resolve();
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
-
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-
-                    // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    // textStatus: " + textStatus );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
 	};
 
@@ -87,45 +75,31 @@ export class ModViewPage_DataLoader {
         let objectThis = this;
 
 		return new Promise( function( resolve, reject ) {
-            
+          try {
             let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
             let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
-            
-            let _URL = "d/rws/for-page/psb/psm-count-searchcriteria/" + getWebserviceSyncTrackingCode();
 
-            let requestData = JSON.stringify( requestObject );            
+			const url = "d/rws/for-page/psb/psm-count-searchcriteria";
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(responseData) {
-                    try {
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-                        loadedData.totalPSMCount = responseData;
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                        resolve();
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.totalPSMCount = responseData;
+                    resolve();
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
-
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-
-                    // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    // textStatus: " + textStatus );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
 	};
 
@@ -162,42 +136,31 @@ export class ModViewPage_DataLoader {
 		
 		let objectThis = this;
         
-        
 		return new Promise( function( resolve, reject ) {
-
+          try {
             let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForProteinDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay } );
             let requestObject = createRequestData_For_getProteinInfoList_Result.requestObject;
-            let _URL = "d/rws/for-page/psb/protein-info-searchcriteria-list/" + getWebserviceSyncTrackingCode();
-            let requestData = JSON.stringify( requestObject );            
+ 
+			const url = "d/rws/for-page/psb/protein-info-searchcriteria-list";
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(data) {
-                    try {
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-                        loadedData.proteinData = data;                        
-                        resolve();
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.proteinData = responseData;                        
+                    resolve();
 
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
-        
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
 
     };
@@ -225,41 +188,30 @@ export class ModViewPage_DataLoader {
         
         
 		return new Promise( function( resolve, reject ) {
-
+          try {
             let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForProteinPositionResidues( { projectSearchId, proteinsAndPositions } );
             let requestObject = createRequestData_For_getProteinInfoList_Result.requestObject;
-            let _URL = "d/rws/for-page/psb/protein-residues-for-prot-seq-ver-ids-positions/" + getWebserviceSyncTrackingCode();
-            let requestData = JSON.stringify( requestObject );            
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(data) {
-                    try {
+			const url = "d/rws/for-page/psb/protein-residues-for-prot-seq-ver-ids-positions";
 
-                        loadedData.proteinPositionResidues = data.proteinSeqVId_Position_Residue;                        ;
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-                        resolve();
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.proteinPositionResidues = responseData.proteinSeqVId_Position_Residue;                        ;
+                    resolve();
 
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
-        
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
 
     };
@@ -288,41 +240,30 @@ export class ModViewPage_DataLoader {
 		let objectThis = this;
                 
 		return new Promise( function( resolve, reject ) {
-
+          try {
             let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForAminoAcidModStatsForSearch( { projectSearchId, searchDetailsBlockDataMgmtProcessing, residueArray } );
             let requestObject = createRequestData_For_getProteinInfoList_Result.requestObject;
-            let _URL = "d/rws/for-page/psb/psm-count-for-residues-searchcriteria/" + getWebserviceSyncTrackingCode();
-            let requestData = JSON.stringify( requestObject );            
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(data) {
-                    try {
+			const url = "d/rws/for-page/psb/psm-count-for-residues-searchcriteria";
 
-                        loadedData.aminoAcidModStats = data;                        ;
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-                        resolve();
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.aminoAcidModStats = responseData;                        ;
+                    resolve();
 
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
-        
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
 
     };
@@ -353,38 +294,29 @@ export class ModViewPage_DataLoader {
 		let objectThis = this;
                 
 		return new Promise( function( resolve, reject ) {
-
+          try {
             let requestObject = objectThis.__createRequestForReportedPeptideInfoForReportedPeptideIdList( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideIds } );
-            
-            let _URL = "d/rws/for-page/psb/peptide-list-reported-peptide-ids-single-project-search-id/" + getWebserviceSyncTrackingCode();
-            let requestData = JSON.stringify( requestObject );            
 
-            // let request =
-            $.ajax({
-                type : "POST",
-                url : _URL,
-                data : requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
-                success : function(data) {
-                    try {
-                        loadedData.peptideList = data.peptideList;
-                        resolve();
+			const url = "d/rws/for-page/psb/peptide-list-reported-peptide-ids-single-project-search-id";
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                },
-                failure: function(errMsg) {
-                    handleAJAXFailure( errMsg );
-                },
-                error : function(jqXHR, textStatus, errorThrown) {
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    loadedData.peptideList = responseData.peptideList;
+                    resolve();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
     }
 

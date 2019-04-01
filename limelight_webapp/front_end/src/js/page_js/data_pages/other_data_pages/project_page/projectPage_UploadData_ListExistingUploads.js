@@ -17,12 +17,12 @@
 
 //  Import Handlebars templates
 
-let _project_page_upload_data_section_project_owner_user_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js");
+const _project_page_upload_data_section_project_owner_user_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js");
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { ProjectPage_UploadData_UpdateExistingUploads } from './projectPage_UploadData_UpdateExistingUploads.js';
 
@@ -349,52 +349,27 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		let objectThis = this;
 
-		let _URL = "d/rws/for-page/project-upload-data-pending-count/" + getWebserviceSyncTrackingCode();
-
 		let requestData = {
 				projectIdentifier : this._projectIdentifierFromURL
 		};
 
-		let requestDataJSON = JSON.stringify(requestData);
+		const url = "d/rws/for-page/project-upload-data-pending-count";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis.populatePendingCountCountProcessAJAXResponse({
-						responseData : data,
-						requestData : requestData
-					});
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-
-				if (!fromAutoRefresh) {
-
-					handleAJAXFailure(errMsg);
-				}
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				if (!fromAutoRefresh) {
-
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-				}
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.populatePendingCountCountProcessAJAXResponse({
+					responseData : responseData,
+					requestData : requestData
+				});
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 	};
@@ -427,47 +402,27 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			fromAutoRefresh = params.fromAutoRefresh;
 		}
 
-		let _URL = "d/rws/for-page/project-upload-data-list-submitted-items/" + getWebserviceSyncTrackingCode();
-
 		let requestData = {
 				projectIdentifier : this._projectIdentifierFromURL
 		};
 
-		let requestDataJSON = JSON.stringify(requestData);
+		const url = "d/rws/for-page/project-upload-data-list-submitted-items";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.populateDataBlockAndPendingCountProcessResponse({
-						responseData : data,
-						requestData : requestData
-					});
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
-				if ( ! fromAutoRefresh ) {
-					handleAJAXFailure(errMsg);
-				}
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				if ( ! fromAutoRefresh ) {
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-				}
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.populateDataBlockAndPendingCountProcessResponse({
+					responseData : responseData,
+					requestData : requestData
+				});
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 	};

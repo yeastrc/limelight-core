@@ -17,9 +17,9 @@
 
 //  module import 
 
-var Handlebars = require('handlebars/runtime');
+const Handlebars = require('handlebars/runtime');
 
-var _project_list_template_bundle = 
+const _project_list_template_bundle = 
 	require("../../../../../handlebars_templates_precompiled/project_list/project_list_template-bundle.js" );
 
 
@@ -28,10 +28,10 @@ var _project_list_template_bundle =
  */
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
 
@@ -61,48 +61,28 @@ var ListProjectsPage = function() {
 
 		var objectThis = this;
 		
-		var _URL = "d/rws/for-page/project-list/" + getWebserviceSyncTrackingCode();
-
 		var requestObj = {};
 
-		var requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-list";
 
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => {  }  );
 
-					objectThis.getProjectListResponse(requestData, data);
-
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.getProjectListResponse(responseData);
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
-
 	};
 
 	/**
 	 * 
 	 */
-	this.getProjectListResponse = function(requestData, responseData) {
+	this.getProjectListResponse = function(responseData) {
 
 		const objectThis = this;
 
@@ -203,44 +183,23 @@ var ListProjectsPage = function() {
 			return; // EARLY EXIT
 		}
 		
-		var _URL = "d/rws/for-page/project-mark-for-deletion/" + getWebserviceSyncTrackingCode();
-
 		var requestObj = {
 			projectId : projectItem.id
 		};
 
-		var requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-mark-for-deletion";
 
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.markProjectForDeletionComplete(requestData, data);
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.markProjectForDeletionComplete(responseData);
 
-//				var $element = $("#error_message_system_error");
-
-//				showErrorMsg( $element );
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	}
@@ -248,7 +207,7 @@ var ListProjectsPage = function() {
 	/**
 	 * 
 	 */
-	this.markProjectForDeletionComplete = function( requestData, data ) {
+	this.markProjectForDeletionComplete = function( responseData ) {
 
 
 		this.getProjectList();
@@ -307,56 +266,32 @@ var ListProjectsPage = function() {
 //			return;  //  !!!  EARLY EXIT
 		}
 
-		var _URL = "d/rws/for-page/project-create/" + getWebserviceSyncTrackingCode();
-
 		var requestObj = {
 				projectTitle : new_project_title,
 				projectAbstract : new_project_abstract
 		};
 
-		var requestData = JSON.stringify( requestObj );
+		const url = "d/rws/for-page/project-create";
 
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
-					objectThis.addProjectComplete(requestData, data);
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.addProjectComplete(responseData);
 
-
-//				var $element = $("#error_message_system_error");
-
-//				showErrorMsg( $element );
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
 
-
-
 	/**
 	 * 
 	 */
-	this.addProjectComplete = function(requestData, responseData) {
+	this.addProjectComplete = function(responseData) {
 
 		if ( ! responseData.status ) {
 
@@ -372,10 +307,7 @@ var ListProjectsPage = function() {
 		this.closeAndClearAddProject();
 
 		this.getProjectList();
-
-
 	};
-
 
 ///////////
 

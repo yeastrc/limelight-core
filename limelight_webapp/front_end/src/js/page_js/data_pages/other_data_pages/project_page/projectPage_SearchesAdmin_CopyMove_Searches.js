@@ -21,9 +21,9 @@
 const _project_page_searches_section_researcher_user_interaction_template = 
 require("../../../../../../handlebars_templates_precompiled/project_page_searches_section_researcher_user_interaction/project_page_searches_section_researcher_user_interaction_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
 
@@ -280,42 +280,30 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
     _getOtherProjectsCanCopyMoveProjectSearchIdsTo( { projectIdentifier, projectSearchIdsSelected } ) {
     
         return new Promise(function(resolve, reject) {
-
-            let _URL = "d/rws/for-page/list-other-projects-excluding-project-search-ids/" + getWebserviceSyncTrackingCode();
-
+          try {
             let requestObj = {
                 projectIdentifier,
                 projectSearchIdsBeingCopied: projectSearchIdsSelected
             };
 
-            let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/list-other-projects-excluding-project-search-ids";
 
-            //	const request =
-            $.ajax({
-                type: "POST",
-                url: _URL,
-                data: requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType: "json",
-                success: function (data) {
-                    try {
-                        resolve( data );
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                        throw e;
-                    }
-                },
-                failure: function (errMsg) {
-                    handleAJAXFailure(errMsg);
-                    reject(errMsg);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-                    reject(textStatus);
-                    //			alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    //			textStatus: " + textStatus );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( responseData );
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
     };
     
@@ -407,46 +395,30 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
     _getProjectSearchIdsWhereAssocSearchIdsAlreadyInProject({ projectId, projectSearchids }) {
 
         return new Promise(function(resolve, reject) {
-
-            let _URL = "d/rws/for-page/list-project-search-ids-where-assoc-search-ids-already-in-project/" + getWebserviceSyncTrackingCode();
-
+          try {
             let requestObj = {
                 projectId,
                 projectSearchids
             };
 
-            let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/list-project-search-ids-where-assoc-search-ids-already-in-project";
 
-            //	const request =
-            $.ajax({
-                type: "POST",
-                url: _URL,
-                data: requestData,
-                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType: "json",
-                traditional: true,  //  Force traditional serialization of the data sent
-                //   One thing this means is that arrays are sent as the object property instead of object property followed by "[]".
-                //   So proteinIdsToGetSequence array is passed as "proteinIdsToGetSequence=<value>" which is what Jersey expects
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-                success: function (data) {
-                    try {
-                        resolve( data )
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                        throw e;
-                    }
-                },
-                failure: function (errMsg) {
-                    handleAJAXFailure(errMsg);
-                    reject( errMsg );
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);
-                    reject( textStatus );
-                    // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                    // textStatus: " + textStatus );
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve( responseData )
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                    throw e;
                 }
             });
+          } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+          }
         });
     };
 
@@ -504,8 +476,6 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
         const objectThis = this;
 
-        let _URL = "d/rws/for-page/copy-or-move-project-search-ids-to-new-project/" + getWebserviceSyncTrackingCode();
-
         let requestObj = {
             projectIdentifier: this._projectIdentifierFromURL,  // current project
             copyOrMoveToProjectId: chosenProjectId, // Project Id to copy or move to
@@ -514,30 +484,18 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
             moveToOtherProject: doMove  // true if move
         };
 
-        let requestData = JSON.stringify(requestObj);
+        const url = "d/rws/for-page/copy-or-move-project-search-ids-to-new-project";
 
-        //	const request =
-        $.ajax({
-            type: "POST",
-            url: _URL,
-            data: requestData,
-            contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-            dataType: "json",
-            success: function (responseData) {
-                try {
-                    objectThis._executeCopySearchesComplete( { responseData, chosenProjectId, chosenProjectTitle, doCopy, doMove, $contentDiv } );
-                } catch (e) {
-                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-                    throw e;
-                }
-            },
-            failure: function (errMsg) {
-                handleAJAXFailure(errMsg);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                handleAJAXError(jqXHR, textStatus, errorThrown);
-                // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                // textStatus: " + textStatus );
+        const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+        promise_webserviceCallStandardPost.catch( () => { }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            try {
+                objectThis._executeCopySearchesComplete( { responseData, chosenProjectId, chosenProjectTitle, doCopy, doMove, $contentDiv } );
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
             }
         });
     };

@@ -13,9 +13,9 @@
 
 ///////////////////////////////////////////
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
@@ -130,52 +130,33 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 			throw Error("No value for searchDataLookupParamsRoot")
 		}
 		
-		let _URL = "d/rws/for-page/psb/get-search-data-lookup-params-code/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 				searchDataLookupParamsRoot : searchDataLookupParamsRoot,
 				sjklwuiowerzUIryhnIOWzq : true
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/psb/get-search-data-lookup-params-code";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					let searchDataLookupParamsCode = responseData.searchDataLookupParamsCode;
-					if (!searchDataLookupParamsCode) {
-						reject("No value for responseData.searchDataLookupParamsCode");
-					}
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					resolve( { searchDataLookupParamsCode } );
+		promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				let searchDataLookupParamsCode = responseData.searchDataLookupParamsCode;
+				if (!searchDataLookupParamsCode) {
+					reject("No value for responseData.searchDataLookupParamsCode");
 				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-				reject("Fail call to " + _URL + " - errMsg: " + errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				reject("Fail call to " + _URL + " - textStatus: " + textStatus );
+				resolve( { searchDataLookupParamsCode } );
 
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-
 	};
 
 }

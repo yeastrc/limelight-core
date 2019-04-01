@@ -17,9 +17,9 @@
 
 //module import 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
@@ -90,57 +90,34 @@ export class SearchNameRetrieval {
 		let objectThis = this;
 
 		let retrieval = function( resolve, reject ) {
-
-			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
-
-			projectSearchIds_dataNotLoadedArray;
-
-			let _URL = "d/rws/for-page/psb/search-name-list-from-psi/" + getWebserviceSyncTrackingCode();
-
+		  try {
 			let requestObj = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
 
-			let requestData = JSON.stringify(requestObj);
+			const url = "d/rws/for-page/psb/search-name-list-from-psi";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						objectThis._retrieveSearchNamesResponse( {
-								requestData, responseData, 
-								dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-								dataPageStateManager_DataFrom_Server, 
-								projectSearchIds_dataNotLoadedArray } );
-						
-						resolve();
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-					} catch (e) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-						reject();
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					objectThis._retrieveSearchNamesResponse( {
+							responseData, 
+							dataPageStateManager_DataFrom_Server, 
+							projectSearchIds_dataNotLoadedArray } );
+					
+					resolve();
 
-						throw e;
-					}
-				},
-				failure : function(errMsg) {
-					handleAJAXFailure(errMsg);
-
-					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
+
 			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
 		}
 
 		return new Promise( retrieval );
@@ -150,8 +127,8 @@ export class SearchNameRetrieval {
 	 * 
 	 */
 	_retrieveSearchNamesResponse( {
-			requestData, responseData, 
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, dataPageStateManager_DataFrom_Server, 
+			responseData, 
+			dataPageStateManager_DataFrom_Server, 
 			projectSearchIds_dataNotLoadedArray } ) {
 
 		let searchList = responseData.searchList;

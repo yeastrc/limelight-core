@@ -12,9 +12,9 @@ let Handlebars = require('handlebars/runtime');
 
 let _share_page_template_bundle = require("../../../../../handlebars_templates_precompiled/share_page/share_page_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { dataPageStateManager_Keys } from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
@@ -135,7 +135,7 @@ export class SharePage_dataPages {
 	_sharePageToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds } ) {
 
 		let promise = new Promise( function( resolve, reject ) {
-
+		  try {
 			let requestObject = {
                     projectSearchIds,
                     pageControllerPath,
@@ -143,40 +143,25 @@ export class SharePage_dataPages {
                     searchDataLookupParametersCode
 			};
 
-			let _URL = "d/rws/for-page/psb/insert-shared-page/" + getWebserviceSyncTrackingCode();
+			const url = "d/rws/for-page/psb/insert-shared-page";
 
-			let requestData = JSON.stringify( requestObject );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						resolve({ ajaxResult : responseData });
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
-					reject( errMsg );
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					resolve({ ajaxResult : responseData });
 
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject( textStatus );
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
 			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
 		});
 		
 		return promise;

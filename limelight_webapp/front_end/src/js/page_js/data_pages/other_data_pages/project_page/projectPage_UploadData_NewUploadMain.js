@@ -18,11 +18,14 @@
 //  module imports
 
 //  Import Handlebars templates
-let _project_page_upload_data_section_project_owner_user_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js");
+const _project_page_upload_data_section_project_owner_user_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+//  For AJAX call (non jQuery)
+import { getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local Imports:
 
@@ -701,36 +704,22 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let objectThis = this;
 //		let $clickThis = $(clickThis);
 
-		let _URL = "d/rws/for-page/project-upload-data-upload-initialize/" + getWebserviceSyncTrackingCode();
-
 		let requestData = {
 				projectIdentifier : this._projectIdentifierFromURL
 		};
 
-		let requestDataJSON = JSON.stringify(requestData);
+		const url = "d/rws/for-page/project-upload-data-upload-initialize";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestDataJSON,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis.openOverlayProcessServerResponse( { requestData : requestData, responseData : data } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => {  }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.openOverlayProcessServerResponse( { requestData : requestData, responseData : responseData } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -1181,40 +1170,27 @@ export class ProjectPage_UploadData_NewUploadMain {
 		}
 		this.showSubmitInProgress();
 		
-		let _URL = "d/rws/for-page/project-upload-data-upload-submit/" + getWebserviceSyncTrackingCode();
-
 //		All properties put in requestObj must be accepted by the web service
 		let requestObj = { 
 				projectIdentifier : this._projectIdentifierFromURL,
 				uploadKey : uploadKey,
 				searchName : searchName,
 				fileItems : fileItems };
-		let requestData = JSON.stringify( requestObj );
 		
 		this.uploadKey = undefined; // Clear since about to make AJAX call
 		
-//		let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",  //  data type returned
-			success : function(data) {
-				try {
-					objectThis.submitClickedProcessServerResponse( { requestObj : requestObj, responseData : data } );
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const url = "d/rws/for-page/project-upload-data-upload-submit";
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => {  }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis.submitClickedProcessServerResponse( { requestObj : requestObj, responseData : responseData } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -1341,29 +1317,16 @@ export class ProjectPage_UploadData_NewUploadMain {
 		}
 		let uploadKey = this.uploadKey;
 
-		let _URL = "d/rws/for-page/project-upload-data-upload-remove-abandoned/" + getWebserviceSyncTrackingCode();
-
 //		All properties put in requestObj must be accepted by the web service
 		let requestObj = { projectIdentifier : this._projectIdentifierFromURL, uploadKey : uploadKey };
-		let requestData = JSON.stringify( requestObj );
 		
-//		let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",  //  data type returned
-			success : function(data) {
-			},
-			failure: function(errMsg) {
-//				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-//				handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
-			}
-		});
+		const url = "d/rws/for-page/project-upload-data-upload-remove-abandoned";
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => 
+		{ });
 	};
 }

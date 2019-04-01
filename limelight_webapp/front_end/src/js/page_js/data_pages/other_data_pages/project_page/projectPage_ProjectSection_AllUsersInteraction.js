@@ -19,9 +19,9 @@
 
 let _project_page__project_info_section_all_users_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page__project_info_section_all_users_interaction/project_page__project_info_section_all_users_interaction_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
 
@@ -106,49 +106,32 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
-
-			const _URL = "d/rws/for-page/project-notes-list/" + getWebserviceSyncTrackingCode();
-
+		  try {
 			const requestObj = { projectIdentifier : this._projectIdentifierFromURL };
 
-			const requestData = JSON.stringify( requestObj );
+			const url = "d/rws/for-page/project-notes-list";
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						resolve( { projectNotesAjaxresponse : responseData } );
-						
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						
-						reject();
-						
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					resolve( { projectNotesAjaxresponse : responseData } );
+					
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					
 					reject();
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject();
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+					
+					throw e;
 				}
 			});
-
-        })
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
+        });
 	}
 
 	/**

@@ -22,10 +22,10 @@ let Handlebars = require('handlebars/runtime');
 let _project_page_searches_section_researcher_user_interaction_template_bundle = 
 	require("../../../../../../handlebars_templates_precompiled/project_page_searches_section_researcher_user_interaction/project_page_searches_section_researcher_user_interaction_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 
 /**
@@ -67,44 +67,24 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		let objectThis = this;
 
-		let _URL = "d/rws/for-page/project-view-page-user-invite-list/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 			projectIdentifier : this._projectIdentifierFromURL
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-view-page-user-invite-list";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._displayInvitedPeopleForProject_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._displayInvitedPeopleForProject_ProcessAJAXResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 	};
@@ -112,7 +92,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_displayInvitedPeopleForProject_ProcessAJAXResponse( { requestData, responseData } ) {
+	_displayInvitedPeopleForProject_ProcessAJAXResponse( { responseData } ) {
 
 		let objectThis = this;
 		
@@ -251,53 +231,32 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		let objectThis = this;
 
-		let _URL = "d/rws/for-page/project-invite-revoke/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 				inviteTrackingId : inviteTrackingId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-invite-revoke";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._revokeProjectInvite_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._revokeProjectInvite_ProcessAJAXResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-		
 	}
 
 	/**
 	 * 
 	 */
-	_revokeProjectInvite_ProcessAJAXResponse({requestData, responseData}) {
+	_revokeProjectInvite_ProcessAJAXResponse({responseData}) {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();
@@ -310,53 +269,32 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 		
 		let objectThis = this;
 
-		let _URL = "d/rws/for-page/project-invite-resend-invite-email/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 				inviteId : inviteTrackingId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-invite-resend-invite-email";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._resendProjectInviteEmail_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._resendProjectInviteEmail_ProcessAJAXResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-		
 	}
 
 	/**
 	 * 
 	 */
-	_resendProjectInviteEmail_ProcessAJAXResponse({requestData, responseData}) {
+	_resendProjectInviteEmail_ProcessAJAXResponse({responseData}) {
 
 		if (responseData.status) {
 
@@ -382,54 +320,33 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	_changeUserInviteToProjectOwner( { clickedThis, inviteTrackingId } ) {
 
 		let objectThis = this;
-		
-		let _URL = "d/rws/for-page/project-invite-change-user-access-to-project-owner/" + getWebserviceSyncTrackingCode();
 
 		let requestObj = {
 				inviteTrackingId : inviteTrackingId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-invite-change-user-access-to-project-owner";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._changeUserInviteToProjectOwner_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._changeUserInviteToProjectOwner_ProcessAJAXResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-		
 	}
 
 	/**
 	 * 
 	 */
-	_changeUserInviteToProjectOwner_ProcessAJAXResponse({requestData, responseData}) {
+	_changeUserInviteToProjectOwner_ProcessAJAXResponse({responseData}) {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();
@@ -441,54 +358,33 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	_changeUserInviteToAssistantProjectOwner( { clickedThis, inviteTrackingId } ) {
 
 		let objectThis = this;
-		
-		let _URL = "d/rws/for-page/project-invite-change-user-access-to-assist-project-owner/" + getWebserviceSyncTrackingCode();
 
 		let requestObj = {
 				inviteTrackingId : inviteTrackingId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-invite-change-user-access-to-assist-project-owner";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-		
 	}
 
 	/**
 	 * 
 	 */
-	_changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({requestData, responseData}) {
+	_changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({responseData}) {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();

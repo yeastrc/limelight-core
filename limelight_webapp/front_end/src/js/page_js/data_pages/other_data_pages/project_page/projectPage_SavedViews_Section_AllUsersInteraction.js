@@ -18,11 +18,11 @@
 
 //  Import Handlebars templates
 
-let _project_page__saved_views_section_template = require("../../../../../../handlebars_templates_precompiled/project_page__saved_views_section/project_page__saved_views_section_template-bundle.js");
+const _project_page__saved_views_section_template = require("../../../../../../handlebars_templates_precompiled/project_page__saved_views_section/project_page__saved_views_section_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
 
@@ -76,54 +76,34 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 
 		let objectThis = this;
 
-		let _URL = "d/rws/for-page/project-view-page-saved-views-list/" + getWebserviceSyncTrackingCode();
-
 		let projectIdentifier = this._projectIdentifierFromURL;
 
 		let requestObj = {
 			projectIdentifier : projectIdentifier
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-view-page-saved-views-list";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis._getSavedViewsDataResponse(requestData, data);
-
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._getSavedViewsDataResponse(responseData);
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-
 	};
 
 	/**
 	 * 
 	 */
-	_getSavedViewsDataResponse(requestData, responseData) {
+	_getSavedViewsDataResponse(responseData) {
 
 		if (!this._initializeCalled) {
 			throw Error("initialize method not called");

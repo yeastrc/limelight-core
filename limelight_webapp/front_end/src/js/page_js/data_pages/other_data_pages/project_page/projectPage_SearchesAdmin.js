@@ -16,9 +16,9 @@
 
 //  module import 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
 
@@ -210,49 +210,30 @@ export class ProjectPage_SearchesAdmin {
 		let $change_search_name_input_jq = $selector_single_search_main_root_container.find(".change_search_name_input_jq");
 		let newSearchName = $change_search_name_input_jq.val();
 
-
-		let _URL = "d/rws/for-page/update-search-name/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 			projectSearchId : projectSearchId,
 			searchName : newSearchName
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/update-search-name";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis._saveSearchNameResponse({
-						requestObj ,
-						responseData ,
-						clickThis
-					});
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._saveSearchNameResponse({
+					requestObj ,
+					responseData ,
+					clickThis
+				});
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 	}
@@ -306,50 +287,28 @@ export class ProjectPage_SearchesAdmin {
 
 		const objectThis = this;
 
-		if (!window.confirm("Delete Search Id: " + searchId)) {
+		if ( ! window.confirm("Delete Search Id: " + searchId ) ) {
 			return;
 		}
-
-		let _URL = "d/rws/for-page/delete-project-search/" + getWebserviceSyncTrackingCode();
 
 		let requestObj = {
 			projectSearchId : projectSearchId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/delete-project-search";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				try {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-					objectThis._deleteSearchResponse({
-						requestData ,
-						responseData
-					});
-
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._deleteSearchResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 	}
@@ -357,7 +316,7 @@ export class ProjectPage_SearchesAdmin {
 	/**
 	 * Delete this Project Search Id
 	 */
-	_deleteSearchResponse({requestData, responseData}) {
+	_deleteSearchResponse({responseData}) {
 
 		this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
     }

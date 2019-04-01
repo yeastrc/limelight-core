@@ -15,10 +15,9 @@
 ///////////////////////////////////////////
 
 //  Relative import - works
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+// import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
+// import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 /**
  * 
@@ -48,24 +47,18 @@ export class MainPagesPopulateHeader {
 //	getUserInfo() {
 //
 //		var objectThis = this;
-//		
-//		var contentType = _AJAX_POST_JSON_CONTENT_TYPE;
 //
-//		var _URL = "user/rws/for-page/userInfo/" + getWebserviceSyncTrackingCode();
-//		
 //		var requestObj = { };
 //
-//		var requestData = JSON.stringify( requestObj );
-//
-//		// var request =
-//		$.ajax({
-//			type : "POST",
-//			url : _URL,
-//			data : requestData,
-//			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-//			dataType : "json",
-//			success : function(data) {
-//
+//  Untested change:
+
+		// const url = "user/rws/for-page/userInfo";
+
+		// const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		// promise_webserviceCallStandardPost.catch( () => { }  );
+
+		// promise_webserviceCallStandardPost.then( ({ responseData }) => {
 //				try {
 //
 //					objectThis.getUserInfoResponse(requestData, data);
@@ -74,17 +67,6 @@ export class MainPagesPopulateHeader {
 //					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 //					throw e;
 //				}
-//			},
-//			failure: function(errMsg) {
-//				handleAJAXFailure( errMsg );
-//			},
-//			error : function(jqXHR, textStatus, errorThrown) {
-//
-//				handleAJAXError(jqXHR, textStatus, errorThrown);
-//
-//				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-//				// textStatus: " + textStatus );
-//			}
 //		});
 //
 //	};

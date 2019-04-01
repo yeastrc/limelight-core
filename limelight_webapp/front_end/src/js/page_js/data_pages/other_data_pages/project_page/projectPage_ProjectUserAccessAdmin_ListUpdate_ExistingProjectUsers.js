@@ -22,9 +22,9 @@ let Handlebars = require('handlebars/runtime');
 let _project_page_searches_section_researcher_user_interaction_template_bundle = 
 	require("../../../../../../handlebars_templates_precompiled/project_page_searches_section_researcher_user_interaction/project_page_searches_section_researcher_user_interaction_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 
 /**
@@ -66,44 +66,27 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		let objectThis = this;
 
-		let _URL = "d/rws/for-page/project-view-page-user-list/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 			projectIdentifier : this._projectIdentifierFromURL
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-view-page-user-list";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._displayExistingUsersForProject_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._displayExistingUsersForProject_ProcessAJAXResponse({
+					responseData
+				});
 
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 	};
@@ -111,7 +94,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_displayExistingUsersForProject_ProcessAJAXResponse( { requestData, responseData } ) {
+	_displayExistingUsersForProject_ProcessAJAXResponse( { responseData } ) {
 
 		let objectThis = this;
 		
@@ -228,45 +211,28 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 			return;
 		}
 
-		let _URL = "d/rws/for-page/project-remove-user-access-to-project/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 			projectIdentifier : this._projectIdentifierFromURL,
 			userId : userId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-remove-user-access-to-project";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._removeUserFromProject_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._removeUserFromProject_ProcessAJAXResponse({
+					responseData
+				});
 
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 		
@@ -275,7 +241,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_removeUserFromProject_ProcessAJAXResponse({requestData, responseData}) {
+	_removeUserFromProject_ProcessAJAXResponse({responseData}) {
 
 		//  refresh display
 		this.displayExistingUsersForProject();
@@ -288,54 +254,35 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		let objectThis = this;
 		
-		let _URL = "d/rws/for-page/project-change-user-access-to-project-owner/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 			projectIdentifier : this._projectIdentifierFromURL,
 			userId : userId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-change-user-access-to-project-owner";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._changeUserToProjectOwner_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._changeUserToProjectOwner_ProcessAJAXResponse({
+					responseData
+				});
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
-		
 	}
 
 	/**
 	 * 
 	 */
-	_changeUserToProjectOwner_ProcessAJAXResponse({requestData, responseData}) {
+	_changeUserToProjectOwner_ProcessAJAXResponse({responseData}) {
 
 		//  refresh display
 		this.displayExistingUsersForProject();
@@ -348,45 +295,27 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		let objectThis = this;
 		
-		let _URL = "d/rws/for-page/project-change-user-access-to-assist-project-owner/" + getWebserviceSyncTrackingCode();
-
 		let requestObj = {
 			projectIdentifier : this._projectIdentifierFromURL,
 			userId : userId
 		};
 
-		let requestData = JSON.stringify(requestObj);
+		const url = "d/rws/for-page/project-change-user-access-to-assist-project-owner";
 
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType : _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					objectThis._changeUserToAssistantProjectOwner_ProcessAJAXResponse({
-						requestData ,
-						responseData
-					});
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				handleAJAXFailure(errMsg);
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
-
-			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-			// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._changeUserToAssistantProjectOwner_ProcessAJAXResponse({
+					responseData
+				});
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
 			}
 		});
 		
@@ -395,7 +324,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_changeUserToAssistantProjectOwner_ProcessAJAXResponse({requestData, responseData}) {
+	_changeUserToAssistantProjectOwner_ProcessAJAXResponse({responseData}) {
 
 		//  refresh display
 		this.displayExistingUsersForProject();

@@ -25,9 +25,9 @@ let _lorikeet_overlay_template_bundle =
 
 //  module import 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 
@@ -186,72 +186,52 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		//  Maybe need visual indication that retrieving the data??
 
 		return new Promise( function( resolve, reject ) {
+		  try {
+			console.log("AJAX Call to get Spectrum Data START, Now: " + new Date() );
 
 			let requestObject = {
 					psmId : psmId,
 					projectSearchId : projectSearchId
 			};
 
-			let _URL = "d/rws/for-page/psb/spectrum-for-psm-id/" + getWebserviceSyncTrackingCode();
+			const url = "d/rws/for-page/psb/spectrum-for-psm-id";
 
-			let requestData = JSON.stringify( requestObject );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			console.log("AJAX Call to get Spectrum Data START, Now: " + new Date() );
-
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function(responseData) {
-					try {
-						console.log("AJAX Call to get Spectrum Data END, Now: " + new Date() );
-
-						if ( loadedDataFromServer ) {
-							loadedDataFromServer.primaryLorikeetData = responseData;
-						}
-						
-						resolve( { primaryLorikeetData : responseData } );
-
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
+			promise_webserviceCallStandardPost.catch( () => { 
+				try {
+					if ( newWindow ) {
+						newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
 					}
-				},
-				failure: function(errMsg) {
-					try {
-						if ( newWindow ) {
-							newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
-						}
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-					
-					handleAJAXFailure( errMsg );
-					
-					reject( errMsg );
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-					try {
-						if ( newWindow ) {
-							newWindow.close(); // close here before call handleAJAXError(...) since that may reload the page
-						}
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-					
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-					
-					reject( textStatus );
 
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+					reject();
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
+			} );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					console.log("AJAX Call to get Spectrum Data END, Now: " + new Date() );
+
+					if ( loadedDataFromServer ) {
+						loadedDataFromServer.primaryLorikeetData = responseData;
+					}
+					
+					resolve( { primaryLorikeetData : responseData } );
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+
 			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
 		}); 
 	}
 	
@@ -275,65 +255,44 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
         };
 		
 		return new Promise( function( resolve, reject ) {
+		  try {
+			console.log("AJAX Call to get PSM data for Spectrum Viewer window START, Now: " + new Date() );
 
-			let _URL = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer/" + getWebserviceSyncTrackingCode();
+			const url = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
 
-			let requestData = JSON.stringify( requestObject );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			console.log("AJAX Call to get Spectrum Data START, Now: " + new Date() );
-
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function(responseData) {
-					try {
-						console.log("AJAX Call to get Spectrum Data END, Now: " + new Date() );
-
-						loadedDataFromServer.psmPeptideData = responseData;
-						
-						resolve( { psmPeptideData : responseData } );
-
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
+			promise_webserviceCallStandardPost.catch( () => { 
+				try {
+					if ( newWindow ) {
+						newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
 					}
-				},
-				failure: function(errMsg) {
-					try {
-						if ( newWindow ) {
-							newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
-						}
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-					
-					handleAJAXFailure( errMsg );
-					
-					reject( errMsg );
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-					try {
-						if ( newWindow ) {
-							newWindow.close(); // close here before call handleAJAXError(...) since that may reload the page
-						}
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-					
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-					
-					reject( textStatus );
+								
+					reject();
 
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
 			});
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					console.log("AJAX Call to get PSM data for Spectrum Viewer window END, Now: " + new Date() );
+
+					loadedDataFromServer.psmPeptideData = responseData;
+					
+					resolve( { psmPeptideData : responseData } );
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
 		}); 
 	}
 	

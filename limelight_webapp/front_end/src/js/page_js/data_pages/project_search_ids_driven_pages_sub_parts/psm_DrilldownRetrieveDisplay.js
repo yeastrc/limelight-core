@@ -21,9 +21,9 @@ let _psm_list_template_bundle =
 
 //  module import 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
@@ -125,39 +125,23 @@ export class Psm_DrilldownRetrieveDisplay {
 				psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting
 		};
 
-		let _URL = "d/rws/for-page/psb/psm-list/" + getWebserviceSyncTrackingCode();
-
-		let requestData = JSON.stringify( requestObject );
-		
 		console.log("AJAX Call to get PSM List START, Now: " + new Date() );
 		
-		// let request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(responseData) {
-				try {
-					console.log("AJAX Call to get PSM List END, Now: " + new Date() );
-					
-					objectThis._loadPSMsFromServerResponse( { projectSearchId, requestObject, responseData, container } );
+		const url = "d/rws/for-page/psb/psm-list";
 
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure: function(errMsg) {
-				handleAJAXFailure( errMsg );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-				handleAJAXError(jqXHR, textStatus, errorThrown);
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				console.log("AJAX Call to get PSM List END, Now: " + new Date() );
+				
+				objectThis._loadPSMsFromServerResponse( { projectSearchId, requestObject, responseData, container } );
+
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 

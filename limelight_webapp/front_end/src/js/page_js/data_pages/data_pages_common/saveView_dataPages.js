@@ -10,12 +10,9 @@ let Handlebars = require('handlebars/runtime');
 
 let _save_view_template_bundle = require("../../../../../handlebars_templates_precompiled/save_view/save_view_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
-import { dataPageStateManager_Keys } from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
@@ -270,9 +267,14 @@ export class SaveView_dataPages {
 		const pageStateString = pageStatePartsFromURL.pageStateString;
 		const referrer = pageStatePartsFromURL.referrer;
 
-        this._saveViewToServer({ viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds : this._projectSearchIds })
+        const promise__saveViewToServer = this._saveViewToServer({ viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds : this._projectSearchIds })
 
-        this._hide_remove_ModalOverlay();
+        promise__saveViewToServer.catch( () => {  });
+
+        promise__saveViewToServer.then( (  ) => {
+
+            this._hide_remove_ModalOverlay();
+        });
     }
 
 	/**
@@ -281,8 +283,6 @@ export class SaveView_dataPages {
 	_saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds } ) {
 
 		let promise = new Promise( function( resolve, reject ) {
-
-			let contentType = _AJAX_POST_JSON_CONTENT_TYPE;
 
 			let requestObject = {
                     projectSearchIds,
@@ -293,43 +293,20 @@ export class SaveView_dataPages {
                     setDefault
 			};
 
-			let _URL = "d/rws/for-page/psb/insert-saved-view/" + getWebserviceSyncTrackingCode();
+			const url = "d/rws/for-page/psb/insert-saved-view";
 
-			let requestData = JSON.stringify( requestObject );
+			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			console.log("AJAX Call to get Peptide List START, Now: " + new Date() );
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			// let request =
-			$.ajax({
-				type : "POST",
-				url : _URL,
-				data : requestData,
-				contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-				dataType : "json",
-				success : function( responseData ) {
-					try {
-						console.log("AJAX Call to get Peptide List END, Now: " + new Date() );
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve();
 
-						resolve( responseData.reportedPeptideList );
-
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				},
-				failure: function(errMsg) {
-					handleAJAXFailure( errMsg );
-					reject( errMsg );
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-
-					handleAJAXError(jqXHR, textStatus, errorThrown);
-
-					reject( textStatus );
-
-					// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-					// textStatus: " + textStatus );
-				}
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
 			});
 		});
 		

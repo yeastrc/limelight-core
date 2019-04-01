@@ -22,10 +22,10 @@ var _user_account_login_forgot_password_template_bundle =
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 /**
  * 
@@ -132,37 +132,22 @@ export class UserResetPassword_Subpart {
 				email : email
 		};
 
-		var _URL = "user/rws/for-page/reset-password-gen-email/" + getWebserviceSyncTrackingCode();
+		const url = "user/rws/for-page/reset-password-gen-email";
 
-		var requestData = JSON.stringify( requestObj );
-		
-		// var request =
-		$.ajax({
-			type : "POST",
-			url : _URL,
-			data : requestData,
-			contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-			dataType : "json",
-			success : function(data) {
-				try {
-					objectThis._resetPasswordComplete(requestData, data);
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			},
-			failure : function(errMsg) {
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				
-				var $element = $("#error_message_system_error");
-				showErrorMsg( $element );
-				
-				// handleAJAXError(jqXHR, textStatus, errorThrown);
-				// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-				// textStatus: " + textStatus );
+		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
+
+		promise_webserviceCallStandardPost.catch( () => { 
+
+			var $element = $("#error_message_system_error");
+			showErrorMsg( $element );
+		}  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			try {
+				objectThis._resetPasswordComplete( requestObj, responseData );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
 		});
 	};
@@ -170,7 +155,7 @@ export class UserResetPassword_Subpart {
 	/**
 	 * 
 	 */
-	_resetPasswordComplete(requestData, responseData) {
+	_resetPasswordComplete(requestObj, responseData) {
 
 		if ( ! responseData.status ) {
 
@@ -180,7 +165,7 @@ export class UserResetPassword_Subpart {
 			if ( responseData.invalidUsernameOrEmail ) {
 
 				var id = null;
-				if ( requestData.username !== ""  ) {
+				if ( requestObj.username !== ""  ) {
 
 					id = "error_message_username_invalid";
 				} else {
