@@ -222,7 +222,8 @@ public class UserChangeAccountInfo_RestWebserviceController {
 				updateMainAcctData = true;
 			}
 			if ( webserviceRequest.organization != null ) {
-				userMgmtManageAccountRequest.setOrganization(webserviceRequest.organization );
+				userMgmtManageAccountRequest.setOrganization( webserviceRequest.organization );
+				userSessionBuilderNewSession.setOrganization( webserviceRequest.organization );
 				updateMainAcctData = true;
 			}
 			if ( updateMainAcctData ) {
@@ -392,6 +393,12 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		}
 		public void setOldPassword(String oldPassword) {
 			this.oldPassword = oldPassword;
+		}
+		public String getOrganization() {
+			return organization;
+		}
+		public void setOrganization(String organization) {
+			this.organization = organization;
 		}
 
 	}

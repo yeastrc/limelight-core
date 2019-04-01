@@ -23,11 +23,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
-import org.yeastrc.limelight.limelight_webapp.dao.FileImportSubmitImportProgramKeyPerUserDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.User_IsAny_ProjectOwner_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.PopulatePageHeaderDataIF;
@@ -49,9 +47,6 @@ public class User_AccountManagement_Controller {
 	
 	@Autowired
 	private User_IsAny_ProjectOwner_SearcherIF user_IsAny_ProjectOwner_Searcher;
-	
-	@Autowired
-	private FileImportSubmitImportProgramKeyPerUserDAO_IF fileImportSubmitImportProgramKeyPerUserDAO;
 	
     /**
 	 * 
