@@ -47,58 +47,71 @@ import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallS
 var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorResponse }) {
 
     const webserviceCallFunction = function( resolve, reject ) {
-        
-        const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
+        try {
+            const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
 
-        const _URL = url + "/" + webserviceSyncTrackingCode;
+            const _URL = url + "/" + webserviceSyncTrackingCode;
 
-        const requestData = JSON.stringify( dataToSend );
+            const requestData = JSON.stringify( dataToSend );
 
-        // let request =
-        $.ajax({
-            type : "POST",
-            url : _URL,
-            data : requestData,
-            contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-            dataType : "json",
-            success : function( responseData ) {
-                try {
-                    resolve({ responseData });
-                    
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    
-                    throw e;
+            // let request =
+            $.ajax({
+                type : "POST",
+                url : _URL,
+                data : requestData,
+                contentType: _AJAX_POST_JSON_CONTENT_TYPE,
+                dataType : "json",
+                success : function( responseData ) {
+                    try {
+                        resolve({ responseData });
+                        
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                },
+                failure: function(errMsg) {
+                    try {
+                        if ( ! doNotHandleErrorResponse ) {
+                            handleAJAXFailure( errMsg );  //  Sometimes throws exception so rest of processing won't always happen
+                        }
+
+                        const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                        //  Need to set properties on object rejectReasonObject
+
+                        reject({ rejectReasonObject });
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+
+                },
+                error : function(jqXHR, textStatus, errorThrown) {
+                    try {
+                        if ( ! doNotHandleErrorResponse ) {
+                            handleAJAXError(jqXHR, textStatus, errorThrown);  //  Sometimes throws exception so rest of processing won't always happen
+                        }
+
+                        const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                        //  Need to set properties on object rejectReasonObject
+
+                        reject({ rejectReasonObject });
+
+                        // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
+                        // textStatus: " + textStatus );
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
                 }
-            },
-            failure: function(errMsg) {
-
-                if ( ! doNotHandleErrorResponse ) {
-                    handleAJAXFailure( errMsg );  //  Sometimes throws exception so rest of processing won't always happen
-                }
-
-                const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
-
-                //  Need to set properties on object rejectReasonObject
-
-                reject({ rejectReasonObject });
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-
-                if ( ! doNotHandleErrorResponse ) {
-                    handleAJAXError(jqXHR, textStatus, errorThrown);  //  Sometimes throws exception so rest of processing won't always happen
-                }
-
-                const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
-
-                //  Need to set properties on object rejectReasonObject
-
-                reject({ rejectReasonObject });
-
-                // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                // textStatus: " + textStatus );
-            }
-        });
+                
+            });
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 
     return new Promise( webserviceCallFunction );

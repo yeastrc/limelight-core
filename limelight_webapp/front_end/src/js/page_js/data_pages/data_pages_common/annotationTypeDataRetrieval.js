@@ -15,6 +15,8 @@
 ///////////////////////////////////////////
 
 
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants.js';
@@ -84,25 +86,33 @@ export class AnnotationTypeDataRetrieval {
 		let objectThis = this;
 
 		let retrieval = function( resolve, reject ) {
+			try {
+				const url = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
 
-			const url = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
+				const requestData = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
 
-			const requestData = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
+				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+				promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
-
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-
-				objectThis._retrieveSearchAnnotationTypeDataFromAJAXResponse( {
-					requestData, responseData, 
-					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-					dataPageStateManager_DataFrom_Server, 
-					projectSearchIds_dataNotLoadedArray } );
-			
-				resolve();
-			} );
+				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+					try {
+						objectThis._retrieveSearchAnnotationTypeDataFromAJAXResponse( {
+							requestData, responseData, 
+							dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+							dataPageStateManager_DataFrom_Server, 
+							projectSearchIds_dataNotLoadedArray } );
+					
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				} );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		};
 
 		return new Promise( retrieval );

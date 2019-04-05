@@ -99,7 +99,15 @@ export class SearchProgramsPerSearchDataRetrieval {
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject( { fail : true } ) }  );
+			promise_webserviceCallStandardPost.catch( () => {
+				try { 
+					reject( { fail : true } );
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					reject( { fail : true } );
+					throw e;
+				}
+			});
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
 				try {
@@ -114,9 +122,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-
 					reject( { fail : true } );
-
 					throw e;
 				}
 			});

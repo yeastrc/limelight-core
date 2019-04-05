@@ -8,6 +8,7 @@
  * 
  * 
  */
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { SearchNameRetrieval }  from './searchNameRetrieval.js';
 import { SearchProgramsPerSearchDataRetrieval }  from './searchProgramsPerSearchDataRetrieval.js';
@@ -55,69 +56,86 @@ export class LoadCoreData_ProjectSearchIds_Based{
 	}
 	
 	_processRequestAsPromise( resolve, reject ) {
-		
-		let objectThis = this;
-		
-		let promisesToWaitFor = []; //  'sub' promises
-
-		{
-			//  Retrieval of search names from server for project search ids
-			let retrieveSearchNames_Promise =
-				this._searchNameRetrieval.retrieveSearchNames( {
-					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
-				} );
-
-			if ( retrieveSearchNames_Promise ) {
-				promisesToWaitFor.push( retrieveSearchNames_Promise );
-			}
-		}
-
-		{
-			let retrieveAnnotationType_Promise =
-				this._annotationTypeDataRetrieval.retrieveSearchAnnotationTypeData( {
-					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
-				} );
-
-			if ( retrieveAnnotationType_Promise ) {
-				promisesToWaitFor.push( retrieveAnnotationType_Promise );
-			}
-		}
-
-		{
-			let searchProgramsPerSearchDataRetrieval_Promise =
-				this._searchProgramsPerSearchDataRetrieval.retrieveSearchProgramsPerSearchData( 
-						this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, this._dataPageStateManager_DataFrom_Server, 
-						this._loadCoreDataFor_ProjectSearchIds_BoundThis );
-
-			if ( searchProgramsPerSearchDataRetrieval_Promise ) {
-				promisesToWaitFor.push( searchProgramsPerSearchDataRetrieval_Promise );
-			}
-		}
-		
-		if ( promisesToWaitFor.length === 0 ) {
+		try {
+			let objectThis = this;
 			
-			window.setTimeout(function() {
-				resolve();
-			}, 10 );
-			
-		} else {
-			
-			Promise.all( promisesToWaitFor ).then( // onFulfilled
-					function( resolvedPromisesArray ) { 
+			let promisesToWaitFor = []; //  'sub' promises
 
-						//  All loads complete
+			{
+				//  Retrieval of search names from server for project search ids
+				let retrieveSearchNames_Promise =
+					this._searchNameRetrieval.retrieveSearchNames( {
+						dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+						dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
+					} );
+
+				if ( retrieveSearchNames_Promise ) {
+					promisesToWaitFor.push( retrieveSearchNames_Promise );
+				}
+			}
+
+			{
+				let retrieveAnnotationType_Promise =
+					this._annotationTypeDataRetrieval.retrieveSearchAnnotationTypeData( {
+						dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+						dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
+					} );
+
+				if ( retrieveAnnotationType_Promise ) {
+					promisesToWaitFor.push( retrieveAnnotationType_Promise );
+				}
+			}
+
+			{
+				let searchProgramsPerSearchDataRetrieval_Promise =
+					this._searchProgramsPerSearchDataRetrieval.retrieveSearchProgramsPerSearchData( 
+							this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, this._dataPageStateManager_DataFrom_Server, 
+							this._loadCoreDataFor_ProjectSearchIds_BoundThis );
+
+				if ( searchProgramsPerSearchDataRetrieval_Promise ) {
+					promisesToWaitFor.push( searchProgramsPerSearchDataRetrieval_Promise );
+				}
+			}
+			
+			if ( promisesToWaitFor.length === 0 ) {
+				
+				window.setTimeout(function() {
+					try {
 						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}, 10 );
+				
+			} else {
+				
+				Promise.all( promisesToWaitFor ).then( // onFulfilled
+						function( resolvedPromisesArray ) { 
+							try {
+								//  All loads complete
+								resolve();
 
-//						console.log("onFulfilled Promise.all")
+								// console.log("onFulfilled Promise.all")
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
 
-					}),( function( rejectionReason) { // onRejected
-						
-						reject();
-					
-//						console.log("onRejected Promise.all")
-					});
+						}),( function( rejectionReason) { // onRejected
+							try {
+								reject();
+							
+								// console.log("onRejected Promise.all")
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						});
+			}
+		} catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
 		}
 	};
 	

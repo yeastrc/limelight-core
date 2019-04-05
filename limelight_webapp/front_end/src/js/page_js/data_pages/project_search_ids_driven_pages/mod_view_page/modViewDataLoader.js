@@ -38,18 +38,18 @@ export class ModViewPage_DataLoader {
         let objectThis = this;
 
 		return new Promise( function( resolve, reject ) {
-          try {
+        try {
             let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
             let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
-            
-			const url = "d/rws/for-page/psb/protein-mod-info-searchcriteria-list";
+                  
+            const url = "d/rws/for-page/psb/protein-mod-info-searchcriteria-list";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+            const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+            promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     loadedData.modData = responseData;
                     resolve();

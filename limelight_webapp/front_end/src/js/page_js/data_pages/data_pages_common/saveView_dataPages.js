@@ -272,8 +272,12 @@ export class SaveView_dataPages {
         promise__saveViewToServer.catch( () => {  });
 
         promise__saveViewToServer.then( (  ) => {
-
-            this._hide_remove_ModalOverlay();
+            try {
+                this._hide_remove_ModalOverlay();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
@@ -283,31 +287,35 @@ export class SaveView_dataPages {
 	_saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds } ) {
 
 		let promise = new Promise( function( resolve, reject ) {
+            try {
+                let requestObject = {
+                        projectSearchIds,
+                        label : viewLabel,
+                        pageControllerPath,
+                        pageCurrentURL_StartAtPageController,
+                        searchDataLookupParametersCode,
+                        setDefault
+                };
 
-			let requestObject = {
-                    projectSearchIds,
-                    label : viewLabel,
-                    pageControllerPath,
-                    pageCurrentURL_StartAtPageController,
-                    searchDataLookupParametersCode,
-                    setDefault
-			};
+                const url = "d/rws/for-page/psb/insert-saved-view";
 
-			const url = "d/rws/for-page/psb/insert-saved-view";
+                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve();
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    resolve();
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-			});
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
 		});
 		
 		return promise;

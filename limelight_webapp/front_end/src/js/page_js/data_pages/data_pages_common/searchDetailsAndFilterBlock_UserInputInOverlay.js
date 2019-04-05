@@ -829,15 +829,23 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 			updatePageState_URL_With_NewFilterCutoffs_FromUser( { searchDetails_Filters_AnnTypeDisplay_Root } );
 		
 		updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise.then( function( value ) { // onFullfilled: resolve called
-
-			objectThis._searchDetailsAndFilterBlock_MainPage.reRenderForUserChangeFilterCutoffs( { projectSearchIdsForCutoffsChanged } );
-			
-			objectThis._modalOverlay.hide();
-			objectThis._modalOverlay.remove();
-			objectThis._modalOverlay = undefined;
-			
+			try {
+				objectThis._searchDetailsAndFilterBlock_MainPage.reRenderForUserChangeFilterCutoffs( { projectSearchIdsForCutoffsChanged } );
+				
+				objectThis._modalOverlay.hide();
+				objectThis._modalOverlay.remove();
+				objectThis._modalOverlay = undefined;
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		}, function( reason ) { // // onRejected: reject called
-			throw Error("updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise Fail: Reason: " + reason );
+			try {
+				throw Error("updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise Fail: Reason: " + reason );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 		
 		updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise.catch( function( reason ) { // onRejected

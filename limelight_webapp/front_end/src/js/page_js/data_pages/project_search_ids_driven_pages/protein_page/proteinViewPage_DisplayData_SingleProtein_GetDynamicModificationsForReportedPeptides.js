@@ -9,6 +9,7 @@
  */
 
 
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { ProteinViewDataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewDataLoader.js';
 
 
@@ -71,18 +72,31 @@ const getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVer
 const _get_DynamicModificationsForReportedPeptideids = function( { loadedDataPerProjectSearchIdHolder, projectSearchId, reportedPeptideIds } ) {
 
     return new Promise(function(resolve, reject) {
-
-        ProteinViewDataLoader.getDynamicModificationsForReportedPeptideids( 
-                { projectSearchId, 
-                    reportedPeptideIds : reportedPeptideIds } )
-                    .then(function( dynamicModificationData_KeyReportedPeptideIdFromServer ) {
-                        _populateLoadedData_With_DynamicModificationsForReportedPeptideidsFromServer( { loadedDataPerProjectSearchIdHolder, dynamicModificationData_KeyReportedPeptideIdFromServer } );
-                        resolve();
-
-                    }).catch( function(reason) {
-                        // Catches the reject from any promise in the chain
-                        reject( reason );
-                    })
+        try {
+            ProteinViewDataLoader.getDynamicModificationsForReportedPeptideids( 
+                    { projectSearchId, 
+                        reportedPeptideIds : reportedPeptideIds } )
+                        .then(function( dynamicModificationData_KeyReportedPeptideIdFromServer ) {
+                            try {
+                                _populateLoadedData_With_DynamicModificationsForReportedPeptideidsFromServer( { loadedDataPerProjectSearchIdHolder, dynamicModificationData_KeyReportedPeptideIdFromServer } );
+                                resolve();
+                            } catch( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                throw e;
+                            }
+                        }).catch( function(reason) {
+                            try {
+                                // Catches the reject from any promise in the chain
+                                reject( reason );
+                            } catch( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                throw e;
+                            }
+                        })
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     });
 }
     

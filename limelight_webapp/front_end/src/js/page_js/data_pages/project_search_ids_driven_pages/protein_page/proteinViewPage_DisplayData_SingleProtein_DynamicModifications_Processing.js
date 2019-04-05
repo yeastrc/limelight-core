@@ -12,6 +12,7 @@
  * 
  */
 
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides.js';
 
 /**
@@ -61,16 +62,24 @@ const _getDynamicModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = funct
     }
 
     return new Promise(function(resolve, reject) {
+        try {
+            promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId.catch((reason) => {
+                reject(reason);
+            })
 
-        promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId.catch((reason) => {
-            reject(reason);
-        })
-
-        promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId.then((result) => {
-            
-            _combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId({ loadedDataPerProjectSearchIdHolder, proteinSequenceVersionId });
-            resolve();
-        })
+            promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId.then((result) => {
+                try {
+                    _combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId({ loadedDataPerProjectSearchIdHolder, proteinSequenceVersionId });
+                    resolve();
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     });
 }
 

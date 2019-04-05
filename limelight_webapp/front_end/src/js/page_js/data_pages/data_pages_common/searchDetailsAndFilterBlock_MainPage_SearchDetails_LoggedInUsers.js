@@ -307,54 +307,63 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
     */  
    _changeSearchFilenameSaveClicked({ projectSearchId, clickedThis }) {
 
-       const objectThis = this;
+        const objectThis = this;
 
-       const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
-       if ( $selector_display_search_filename_outer_container.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_display_search_filename_outer_container'. _changeSearchFilenameOpenClicked(...) projectSearchId: " + projectSearchId );
-       }
+        const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
+        if ( $selector_display_search_filename_outer_container.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_display_search_filename_outer_container'. _changeSearchFilenameOpenClicked(...) projectSearchId: " + projectSearchId );
+        }
 
-       const $selector_edit_search_filename_input_field = $selector_display_search_filename_outer_container.find(".selector_edit_search_filename_input_field");
-       if ( $selector_edit_search_filename_input_field.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_edit_search_filename_input_field'. _changeSearchFilenameOpenClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const searchFilename = $selector_edit_search_filename_input_field.val();
+        const $selector_edit_search_filename_input_field = $selector_display_search_filename_outer_container.find(".selector_edit_search_filename_input_field");
+        if ( $selector_edit_search_filename_input_field.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_edit_search_filename_input_field'. _changeSearchFilenameOpenClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const searchFilename = $selector_edit_search_filename_input_field.val();
 
-       if ( searchFilename === "" ) {
-           // Cannot be empty string
-           return; // EARLY EXIT
-       }
+        if ( searchFilename === "" ) {
+            // Cannot be empty string
+            return; // EARLY EXIT
+        }
 
-       const search_file_project_search_idString = $selector_display_search_filename_outer_container.attr("search_file_project_search_id");
-       if ( search_file_project_search_idString === undefined || search_file_project_search_idString ===  null || search_file_project_search_idString === "" ) {
-           throw Error("Attr 'search_file_project_search_id' not exist or is empty. _downloadSearchFileClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const searchFileProjectSearchId = Number.parseInt( search_file_project_search_idString );
-       if ( Number.isNaN( searchFileProjectSearchId ) ) {
-           throw Error("Attr 'search_file_project_search_id' is not a number. _downloadSearchFileClicked(...). search_file_project_search_id: "
-               + search_file_project_search_idString
-               + ", projectSearchId: " + projectSearchId );
-       }
+        const search_file_project_search_idString = $selector_display_search_filename_outer_container.attr("search_file_project_search_id");
+        if ( search_file_project_search_idString === undefined || search_file_project_search_idString ===  null || search_file_project_search_idString === "" ) {
+            throw Error("Attr 'search_file_project_search_id' not exist or is empty. _downloadSearchFileClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const searchFileProjectSearchId = Number.parseInt( search_file_project_search_idString );
+        if ( Number.isNaN( searchFileProjectSearchId ) ) {
+            throw Error("Attr 'search_file_project_search_id' is not a number. _downloadSearchFileClicked(...). search_file_project_search_id: "
+                + search_file_project_search_idString
+                + ", projectSearchId: " + projectSearchId );
+        }
 
-       const promise_saveChangedSearchFilenameToServer = this._saveChangedSearchFilenameToServer({ projectSearchId, searchFileProjectSearchId, searchFilename });
+        const promise_saveChangedSearchFilenameToServer = this._saveChangedSearchFilenameToServer({ projectSearchId, searchFileProjectSearchId, searchFilename });
 
-       promise_saveChangedSearchFilenameToServer.catch((reason) => {
+        promise_saveChangedSearchFilenameToServer.catch((reason) => {
+            try {
 
-       })
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        })
 
-       promise_saveChangedSearchFilenameToServer.then((result) => {
+        promise_saveChangedSearchFilenameToServer.then((result) => {
+            try {
+                //  Assume result status is true
 
-           //  Assume result status is true
+                //  Change displayed filename
+                const $selector_search_filename = $selector_display_search_filename_outer_container.find(".selector_search_filename");
+                if ( $selector_search_filename.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_search_filename'. _changeSearchFilenameSaveClicked(...) projectSearchId: " + projectSearchId );
+                }
+                $selector_search_filename.text( searchFilename );
 
-           //  Change displayed filename
-           const $selector_search_filename = $selector_display_search_filename_outer_container.find(".selector_search_filename");
-           if ( $selector_search_filename.length === 0 ) {
-               throw Error("Failed to find DOM element with class 'selector_search_filename'. _changeSearchFilenameSaveClicked(...) projectSearchId: " + projectSearchId );
-           }
-           $selector_search_filename.text( searchFilename );
-
-           objectThis._changeSearchFilenameClose({ projectSearchId, clickedThis });
-       });
+                objectThis._changeSearchFilenameClose({ projectSearchId, clickedThis });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
    }
 
    /**
@@ -365,28 +374,36 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
        const objectThis = this;
 
        return new Promise((resolve,reject) => {
-         try {
-           const requestObj = { projectSearchId, searchFileProjectSearchId, filename : searchFilename };
+            try {
+            const requestObj = { projectSearchId, searchFileProjectSearchId, filename : searchFilename };
 
-           const url = "d/rws/for-page/update-search-filename";
-           
-           const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const url = "d/rws/for-page/update-search-filename";
+            
+            const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-           promise_webserviceCallStandardPost.catch( () => { reject() }  );
-
-           promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.catch( () => { 
                 try {
-                    resolve( responseData );
-                    
+                    reject()
+              
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
-           });
-         } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-         }
+            }  );
+
+            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve( responseData );
+                        
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+            });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
        });
 
    }    
@@ -520,78 +537,88 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
     */      
    _weblinks_AddWeblinkClicked({ projectSearchId, clickedThis }) {
 
-       const $selector_weblinks_outer_container = $( clickedThis ).closest( ".selector_weblinks_outer_container" );
-       if ( $selector_weblinks_outer_container.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_weblinks_outer_container'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const $selector_weblinks_add_link_open_container = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_open_container");
-       if ( $selector_weblinks_add_link_open_container.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_open_container'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const $selector_weblinks_add_link_container = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_container");
-       if ( $selector_weblinks_add_link_open_container.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_open_container'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
-       }
+        const $selector_weblinks_outer_container = $( clickedThis ).closest( ".selector_weblinks_outer_container" );
+        if ( $selector_weblinks_outer_container.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_weblinks_outer_container'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const $selector_weblinks_add_link_open_container = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_open_container");
+        if ( $selector_weblinks_add_link_open_container.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_open_container'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const $selector_weblinks_add_link_container = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_container");
+        if ( $selector_weblinks_add_link_open_container.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_open_container'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
+        }
 
-       const $selector_weblinks_add_link_input_url = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_input_url");
-       if ( $selector_weblinks_add_link_input_url.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_input_url'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const weblinkURL = $selector_weblinks_add_link_input_url.val();
-       const $selector_weblinks_add_link_input_label = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_input_label");
-       if ( $selector_weblinks_add_link_input_label.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_input_label'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const weblinkLabel = $selector_weblinks_add_link_input_label.val();
-       
-       if ( weblinkURL === "" ) {
-           //  No value in input for URL
-           return; //  EARLY EXIT
-       }
-       if ( weblinkLabel === "" ) {
-           //  No value in input for Label
-           return; //  EARLY EXIT
-       }
+        const $selector_weblinks_add_link_input_url = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_input_url");
+        if ( $selector_weblinks_add_link_input_url.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_input_url'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const weblinkURL = $selector_weblinks_add_link_input_url.val();
+        const $selector_weblinks_add_link_input_label = $selector_weblinks_outer_container.find(".selector_weblinks_add_link_input_label");
+        if ( $selector_weblinks_add_link_input_label.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_weblinks_add_link_input_label'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const weblinkLabel = $selector_weblinks_add_link_input_label.val();
+        
+        if ( weblinkURL === "" ) {
+            //  No value in input for URL
+            return; //  EARLY EXIT
+        }
+        if ( weblinkLabel === "" ) {
+            //  No value in input for Label
+            return; //  EARLY EXIT
+        }
 
-       if ( this._weblinks_validateURL( weblinkURL )  ) {
-       } else {
-   //		alert("url not valid");
+        if ( this._weblinks_validateURL( weblinkURL )  ) {
+        } else {
+    //		alert("url not valid");
 
-           const $selector_error_message_web_link_url_invalid = $selector_weblinks_outer_container.find(".selector_error_message_web_link_url_invalid");
-           if ( $selector_weblinks_add_link_input_label.length === 0 ) {
-               throw Error("Failed to find DOM element with class 'selector_error_message_web_link_url_invalid'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
-           }
+            const $selector_error_message_web_link_url_invalid = $selector_weblinks_outer_container.find(".selector_error_message_web_link_url_invalid");
+            if ( $selector_weblinks_add_link_input_label.length === 0 ) {
+                throw Error("Failed to find DOM element with class 'selector_error_message_web_link_url_invalid'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
+            }
 
-           showErrorMsg( $selector_error_message_web_link_url_invalid );
+            showErrorMsg( $selector_error_message_web_link_url_invalid );
 
-           $selector_weblinks_add_link_input_url.focus();
+            $selector_weblinks_add_link_input_url.focus();
 
-           return;  //  !!!  EARLY EXIT
-       }
+            return;  //  !!!  EARLY EXIT
+        }
 
-       const promise__weblinks_AddWeblinkCallServer = this._weblinks_AddWeblinkCallServer({ projectSearchId, weblinkURL, weblinkLabel });
+        const promise__weblinks_AddWeblinkCallServer = this._weblinks_AddWeblinkCallServer({ projectSearchId, weblinkURL, weblinkLabel });
 
-       promise__weblinks_AddWeblinkCallServer.catch((reason) => {
-       })
+        promise__weblinks_AddWeblinkCallServer.catch((reason) => {
+            try {
 
-       promise__weblinks_AddWeblinkCallServer.then((response) => {
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        })
 
-           //  Add to list on page
-           const insertedId = response.insertedId; 
-           const webLink = {
-               canDelete : true, // assume can delete since can create
-               id : insertedId,
-               linkURL : weblinkURL,
-               linkLabel : weblinkLabel
-           }
-           const $selector_weblinks_list_container = $selector_weblinks_outer_container.find(".selector_weblinks_list_container");
-           this._searchDetails_AllUsers.searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container });
+        promise__weblinks_AddWeblinkCallServer.then((response) => {
+            try {
+                //  Add to list on page
+                const insertedId = response.insertedId; 
+                const webLink = {
+                    canDelete : true, // assume can delete since can create
+                    id : insertedId,
+                    linkURL : weblinkURL,
+                    linkLabel : weblinkLabel
+                }
+                const $selector_weblinks_list_container = $selector_weblinks_outer_container.find(".selector_weblinks_list_container");
+                this._searchDetails_AllUsers.searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container });
 
-           //  Remove Dialog
-           $selector_weblinks_add_link_container.remove();
-           //  Show Add weblink link
-           $selector_weblinks_add_link_open_container.show();
-       });
+                //  Remove Dialog
+                $selector_weblinks_add_link_container.remove();
+                //  Show Add weblink link
+                $selector_weblinks_add_link_open_container.show();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
    }
 
    /**
@@ -610,28 +637,35 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    _weblinks_AddWeblinkCallServer({ projectSearchId, weblinkURL, weblinkLabel }) {
 
        return new Promise((resolve,reject) => {
-         try {
-           const requestObj = { projectSearchId, weblinkURL, weblinkLabel };
+            try {
+                const requestObj = { projectSearchId, weblinkURL, weblinkLabel };
 
-           const url = "d/rws/for-page/insert-web-link";
+                const url = "d/rws/for-page/insert-web-link";
 
-           const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-           promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( () => { 
+                    try {
+                        reject();
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
 
-           promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    resolve( responseData );
-                    
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-           });
-         } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-         }
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve( responseData );
+                        
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
        });
    }
 
@@ -640,26 +674,36 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
     */    
    _deleteWeblinkClicked({ projectSearchId, weblinkId, clickedThis }) {
        
-       if ( ! window.confirm("Delete Link?") ) {
-           return;
-       }
+        if ( ! window.confirm("Delete Link?") ) {
+            return;
+        }
 
-       const promise__weblinks_DeleteWeblinkCallServer = this._weblinks_DeleteWeblinkCallServer({ projectSearchId, weblinkId });
+        const promise__weblinks_DeleteWeblinkCallServer = this._weblinks_DeleteWeblinkCallServer({ projectSearchId, weblinkId });
 
-       promise__weblinks_DeleteWeblinkCallServer.catch((reason) => {
-       })
+        promise__weblinks_DeleteWeblinkCallServer.catch((reason) => {
+            try {
 
-       promise__weblinks_DeleteWeblinkCallServer.then((response) => {
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        })
 
-           //  Remove from list on page
-           const $selector_weblink_entry = $( clickedThis ).closest(".selector_weblink_entry");
-           if ( $selector_weblink_entry.length === 0 ) {
-               throw Error("Failed to find DOM element with class 'selector_weblink_entry'. _deleteWeblinkClicked(...) projectSearchId: " + projectSearchId );
-           }
+        promise__weblinks_DeleteWeblinkCallServer.then((response) => {
+            try {
+                //  Remove from list on page
+                const $selector_weblink_entry = $( clickedThis ).closest(".selector_weblink_entry");
+                if ( $selector_weblink_entry.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_weblink_entry'. _deleteWeblinkClicked(...) projectSearchId: " + projectSearchId );
+                }
 
-           //  Remove Entry
-           $selector_weblink_entry.remove();
-       });
+                //  Remove Entry
+                $selector_weblink_entry.remove();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
    }
 
    /**
@@ -675,7 +719,14 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
            const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-           promise_webserviceCallStandardPost.catch( () => { reject() }  );
+           promise_webserviceCallStandardPost.catch( () => {
+                try {
+                    reject() 
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
 
            promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
@@ -826,10 +877,15 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
        const promise__comments_AddCommentCallServer = this._comments_AddCommentCallServer({ projectSearchId, commentText });
 
        promise__comments_AddCommentCallServer.catch((reason) => {
+        try {
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
        })
 
        promise__comments_AddCommentCallServer.then((response) => {
-
+        try {
            //  Add to list on page
            const insertedId = response.insertedId; 
            const comment = {
@@ -845,6 +901,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
            $selector_comments_add_comment_container.remove();
            //  Show Add comment link
            $selector_comments_add_comment_open_container.show();
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
        });
    }
 
@@ -854,29 +914,35 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    _comments_AddCommentCallServer({ projectSearchId, commentText }) {
 
        return new Promise((resolve,reject) => {
-         try {
-           const requestObj = { projectSearchId, commentText };
+            try {
+                const requestObj = { projectSearchId, commentText };
 
-           const url = "d/rws/for-page/insert-comment";
+                const url = "d/rws/for-page/insert-comment";
 
-           const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-           promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( () => {
+                    try {
+                        reject();
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
 
-           promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    resolve( responseData );
-                    
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-
-           });
-         } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-         }
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve( responseData );
+                        
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
        });
    }
 
@@ -959,43 +1025,52 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
     */  
    _changeCommentSaveClicked({ projectSearchId, commentId, clickedThis }) {
 
-       const objectThis = this;
+        const objectThis = this;
 
-       const $selector_comment_root_entry = $( clickedThis ).closest(".selector_comment_root_entry");
-       if ( $selector_comment_root_entry.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_comment_root_entry'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
-       }
+        const $selector_comment_root_entry = $( clickedThis ).closest(".selector_comment_root_entry");
+        if ( $selector_comment_root_entry.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_comment_root_entry'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
+        }
 
-       const $selector_comments_update_comment_input = $selector_comment_root_entry.find(".selector_comments_update_comment_input");
-       if ( $selector_comments_update_comment_input.length === 0 ) {
-           throw Error("Failed to find DOM element with class 'selector_comments_update_comment_input'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
-       }
-       const commentText = $selector_comments_update_comment_input.val();
+        const $selector_comments_update_comment_input = $selector_comment_root_entry.find(".selector_comments_update_comment_input");
+        if ( $selector_comments_update_comment_input.length === 0 ) {
+            throw Error("Failed to find DOM element with class 'selector_comments_update_comment_input'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
+        }
+        const commentText = $selector_comments_update_comment_input.val();
 
-       if ( commentText === "" ) {
-           // Cannot be empty string
-           return; // EARLY EXIT
-       }
+        if ( commentText === "" ) {
+            // Cannot be empty string
+            return; // EARLY EXIT
+        }
 
-       const promise_saveChangedCommentToServer = this._saveChangedCommentToServer({ projectSearchId, commentId, commentText });
+        const promise_saveChangedCommentToServer = this._saveChangedCommentToServer({ projectSearchId, commentId, commentText });
 
-       promise_saveChangedCommentToServer.catch((reason) => {
+        promise_saveChangedCommentToServer.catch((reason) => {
+            try {
 
-       })
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
 
-       promise_saveChangedCommentToServer.then((result) => {
+        promise_saveChangedCommentToServer.then((result) => {
+            try {
+                //  Assume result status is true
 
-           //  Assume result status is true
+                //  Change displayed comment
+                const $selector_search_comment_string = $selector_comment_root_entry.find(".selector_search_comment_string");
+                if ( $selector_search_comment_string.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_search_comment_string'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
+                }
+                $selector_search_comment_string.text( commentText );
 
-           //  Change displayed comment
-           const $selector_search_comment_string = $selector_comment_root_entry.find(".selector_search_comment_string");
-           if ( $selector_search_comment_string.length === 0 ) {
-               throw Error("Failed to find DOM element with class 'selector_search_comment_string'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
-           }
-           $selector_search_comment_string.text( commentText );
-
-           objectThis._changeCommentClose({ projectSearchId, clickedThis });
-       });
+                objectThis._changeCommentClose({ projectSearchId, clickedThis });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
    }
 
    /**
@@ -1013,7 +1088,15 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
            const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-           promise_webserviceCallStandardPost.catch( () => { reject() }  );
+           promise_webserviceCallStandardPost.catch( () => { 
+            try {
+                reject(); 
+               
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+           });
 
            promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
@@ -1074,10 +1157,16 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
        const promise__comments_DeleteCommentCallServer = this._comments_DeleteCommentCallServer({ projectSearchId, commentId });
 
        promise__comments_DeleteCommentCallServer.catch((reason) => {
+        try {
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
        })
 
        promise__comments_DeleteCommentCallServer.then((response) => {
-
+        try {
            //  Remove from list on page
            const $selector_comment_root_entry = $( clickedThis ).closest(".selector_comment_root_entry");
            if ( $selector_comment_root_entry.length === 0 ) {
@@ -1086,6 +1175,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
            //  Remove Entry
            $selector_comment_root_entry.remove();
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
        });
    }
 
@@ -1102,7 +1195,14 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
            const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-           promise_webserviceCallStandardPost.catch( () => { reject() }  );
+           promise_webserviceCallStandardPost.catch( () => {
+                try {
+                    reject();
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                } 
+            });
 
            promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {

@@ -347,17 +347,21 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         })
 
         promise_saveChangedSearchFilenameToServer.then((result) => {
+            try {
+                //  Assume result status is true
 
-            //  Assume result status is true
+                //  Change displayed filename
+                const $selector_search_filename = $selector_display_search_filename_outer_container.find(".selector_search_filename");
+                if ( $selector_search_filename.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_search_filename'. _changeSearchFilenameSaveClicked(...) projectSearchId: " + projectSearchId );
+                }
+                $selector_search_filename.text( searchFilename );
 
-            //  Change displayed filename
-            const $selector_search_filename = $selector_display_search_filename_outer_container.find(".selector_search_filename");
-            if ( $selector_search_filename.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_search_filename'. _changeSearchFilenameSaveClicked(...) projectSearchId: " + projectSearchId );
+                objectThis._changeSearchFilenameClose({ projectSearchId, clickedThis });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-            $selector_search_filename.text( searchFilename );
-
-            objectThis._changeSearchFilenameClose({ projectSearchId, clickedThis });
         });
     }
 
@@ -578,22 +582,26 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         })
 
         promise__weblinks_AddWeblinkCallServer.then((response) => {
+            try {
+                //  Add to list on page
+                const insertedId = response.insertedId; 
+                const webLink = {
+                    canDelete : true, // assume can delete since can create
+                    id : insertedId,
+                    linkURL : weblinkURL,
+                    linkLabel : weblinkLabel
+                }
+                const $selector_weblinks_list_container = $selector_weblinks_outer_container.find(".selector_weblinks_list_container");
+                this._projectPage_SearchDetails_AllUsers.searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container });
 
-            //  Add to list on page
-            const insertedId = response.insertedId; 
-            const webLink = {
-                canDelete : true, // assume can delete since can create
-                id : insertedId,
-                linkURL : weblinkURL,
-                linkLabel : weblinkLabel
+                //  Remove Dialog
+                $selector_weblinks_add_link_container.remove();
+                //  Show Add weblink link
+                $selector_weblinks_add_link_open_container.show();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-            const $selector_weblinks_list_container = $selector_weblinks_outer_container.find(".selector_weblinks_list_container");
-            this._projectPage_SearchDetails_AllUsers.searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container });
-
-            //  Remove Dialog
-            $selector_weblinks_add_link_container.remove();
-            //  Show Add weblink link
-            $selector_weblinks_add_link_open_container.show();
         });
     }
 
@@ -653,15 +661,19 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         })
 
         promise__weblinks_DeleteWeblinkCallServer.then((response) => {
+            try {
+                //  Remove from list on page
+                const $selector_weblink_entry = $( clickedThis ).closest(".selector_weblink_entry");
+                if ( $selector_weblink_entry.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_weblink_entry'. _deleteWeblinkClicked(...) projectSearchId: " + projectSearchId );
+                }
 
-            //  Remove from list on page
-            const $selector_weblink_entry = $( clickedThis ).closest(".selector_weblink_entry");
-            if ( $selector_weblink_entry.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_weblink_entry'. _deleteWeblinkClicked(...) projectSearchId: " + projectSearchId );
+                //  Remove Entry
+                $selector_weblink_entry.remove();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-
-            //  Remove Entry
-            $selector_weblink_entry.remove();
         });
     }
 
@@ -830,22 +842,26 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         })
 
         promise__comments_AddCommentCallServer.then((response) => {
+            try {
+                //  Add to list on page
+                const insertedId = response.insertedId; 
+                const comment = {
+                    canEdit : true, // assume can edit since can create
+                    canDelete : true, // assume can delete since can create
+                    id : insertedId,
+                    commentText : commentText
+                }
+                const $selector_comments_list_container = $selector_comments_outer_container.find(".selector_comments_list_container");
+                this._projectPage_SearchDetails_AllUsers.searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container });
 
-            //  Add to list on page
-            const insertedId = response.insertedId; 
-            const comment = {
-                canEdit : true, // assume can edit since can create
-                canDelete : true, // assume can delete since can create
-                id : insertedId,
-                commentText : commentText
+                //  Remove Dialog
+                $selector_comments_add_comment_container.remove();
+                //  Show Add comment link
+                $selector_comments_add_comment_open_container.show();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-            const $selector_comments_list_container = $selector_comments_outer_container.find(".selector_comments_list_container");
-            this._projectPage_SearchDetails_AllUsers.searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container });
-
-            //  Remove Dialog
-            $selector_comments_add_comment_container.remove();
-            //  Show Add comment link
-            $selector_comments_add_comment_open_container.show();
         });
     }
 
@@ -984,17 +1000,21 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         })
 
         promise_saveChangedCommentToServer.then((result) => {
+            try {
+                //  Assume result status is true
 
-            //  Assume result status is true
+                //  Change displayed comment
+                const $selector_search_comment_string = $selector_comment_root_entry.find(".selector_search_comment_string");
+                if ( $selector_search_comment_string.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_search_comment_string'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
+                }
+                $selector_search_comment_string.text( commentText );
 
-            //  Change displayed comment
-            const $selector_search_comment_string = $selector_comment_root_entry.find(".selector_search_comment_string");
-            if ( $selector_search_comment_string.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_search_comment_string'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
+                objectThis._changeCommentClose({ projectSearchId, clickedThis });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-            $selector_search_comment_string.text( commentText );
-
-            objectThis._changeCommentClose({ projectSearchId, clickedThis });
         });
     }
 
@@ -1078,15 +1098,19 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         })
 
         promise__comments_DeleteCommentCallServer.then((response) => {
+            try {
+                //  Remove from list on page
+                const $selector_comment_root_entry = $( clickedThis ).closest(".selector_comment_root_entry");
+                if ( $selector_comment_root_entry.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_comment_root_entry'. _deleteCommentClicked(...) projectSearchId: " + projectSearchId );
+                }
 
-            //  Remove from list on page
-            const $selector_comment_root_entry = $( clickedThis ).closest(".selector_comment_root_entry");
-            if ( $selector_comment_root_entry.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_comment_root_entry'. _deleteCommentClicked(...) projectSearchId: " + projectSearchId );
+                //  Remove Entry
+                $selector_comment_root_entry.remove();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-
-            //  Remove Entry
-            $selector_comment_root_entry.remove();
         });
     }
 

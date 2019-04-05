@@ -206,9 +206,12 @@ export class ProteinViewPage_Display_SingleSearch {
 		
 
 		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId } ).then(function(value) {
-			
-			objectThis._displayProteinListOnPage( { projectSearchId } );
-			
+			try {
+				objectThis._displayProteinListOnPage( { projectSearchId } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}		
 		}, function(reason) {
 			
 		})

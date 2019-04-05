@@ -191,12 +191,16 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			proteinSequenceVersionId ,
 			projectSearchId
 		}).then(function(value) {
-
-			// On to displaying the data
-			objectThis._openOverlayAfterLoadData({
-				proteinNameDescription,
-				proteinSummaryStatistics
-			});
+			try {
+				// On to displaying the data
+				objectThis._openOverlayAfterLoadData({
+					proteinNameDescription,
+					proteinSummaryStatistics
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		}, function(reason) {});
 	}
 
@@ -208,50 +212,57 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		const objectThis = this;
 
 		return new Promise(function(resolve, reject) {
-
-			const promises_LoadData_Array = [];
-
-			const promise_loadDataForInitialOverlayShow = objectThis._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
-				.loadDataForInitialOverlayShow({
-					proteinSequenceVersionId ,
-					projectSearchId
-				});
-			if (promise_loadDataForInitialOverlayShow) {
-				promises_LoadData_Array.push(promise_loadDataForInitialOverlayShow);
-			}
-
 			try {
-				const promise_getDynamicModificationsForProteinSequenceVersionId = getDynamicModificationsForProteinSequenceVersionId({ //  Imported function
-					loadedDataPerProjectSearchIdHolder : objectThis._loadedDataPerProjectSearchIdHolder, 
-					proteinSequenceVersionId, 
-					projectSearchId });
+				const promises_LoadData_Array = [];
 
-				if (promise_getDynamicModificationsForProteinSequenceVersionId) {
-					promises_LoadData_Array.push(promise_getDynamicModificationsForProteinSequenceVersionId);
+				const promise_loadDataForInitialOverlayShow = objectThis._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
+					.loadDataForInitialOverlayShow({
+						proteinSequenceVersionId ,
+						projectSearchId
+					});
+				if (promise_loadDataForInitialOverlayShow) {
+					promises_LoadData_Array.push(promise_loadDataForInitialOverlayShow);
+				}
+
+				try {
+					const promise_getDynamicModificationsForProteinSequenceVersionId = getDynamicModificationsForProteinSequenceVersionId({ //  Imported function
+						loadedDataPerProjectSearchIdHolder : objectThis._loadedDataPerProjectSearchIdHolder, 
+						proteinSequenceVersionId, 
+						projectSearchId });
+
+					if (promise_getDynamicModificationsForProteinSequenceVersionId) {
+						promises_LoadData_Array.push(promise_getDynamicModificationsForProteinSequenceVersionId);
+					}
+				} catch( e ) {
+					console.log("Exception caught calling getDynamicModificationsForProteinSequenceVersionId:");
+					console.log( e );
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+
+				if (promises_LoadData_Array.length !== 0) {
+
+					const promisesAll = Promise.all(promises_LoadData_Array);
+
+					promisesAll.catch(function(reason) {
+						reject(reason);
+					})
+					promisesAll.then(function(value) {
+						try {
+							resolve(value);
+						} catch( e ) {
+							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+							throw e;
+						}
+					})
+				} else {
+
+					resolve();
 				}
 			} catch( e ) {
-				console.log("Exception caught calling getDynamicModificationsForProteinSequenceVersionId:");
-				console.log( e );
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
 			}
-
-			if (promises_LoadData_Array.length !== 0) {
-
-				const promisesAll = Promise.all(promises_LoadData_Array);
-
-				promisesAll.catch(function(reason) {
-					reject(reason);
-				})
-				promisesAll.then(function(value) {
-
-					resolve(value);
-				})
-			} else {
-
-				resolve();
-			}
-
 		});
 	}
 
@@ -438,8 +449,12 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		promise_loadDataAfterInitialOverlayShow.catch(function(reason) {});
 
 		promise_loadDataAfterInitialOverlayShow.then(function(value) {
-
-			objectThis._createOrReplaceReportedPeptideList();
+			try {
+				objectThis._createOrReplaceReportedPeptideList();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 

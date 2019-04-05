@@ -217,8 +217,12 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
         promise_changeLabel_SavedView_OnServer.catch((reason) => {});
 
         promise_changeLabel_SavedView_OnServer.then((result) => {
-
-            objectThis._saveLabelChange_UpdatePageAfterUpdateServer({ clickThis, labelText, id });
+            try {
+                objectThis._saveLabelChange_UpdatePageAfterUpdateServer({ clickThis, labelText, id });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         })
     }
 
@@ -327,12 +331,16 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
         promise_deleteSavedView_OnServer.catch((reason) => {});
 
         promise_deleteSavedView_OnServer.then((result) => {
-
-            const $selector_saved_view_item_root_container = $( clickThis ).closest(".selector_saved_view_item_root_container");
-            if ( $selector_saved_view_item_root_container.length === 0 ) {
-                throw Error("No DOM element with class 'selector_saved_view_item_root_container'");
+            try {
+                const $selector_saved_view_item_root_container = $( clickThis ).closest(".selector_saved_view_item_root_container");
+                if ( $selector_saved_view_item_root_container.length === 0 ) {
+                    throw Error("No DOM element with class 'selector_saved_view_item_root_container'");
+                }
+                $selector_saved_view_item_root_container.remove();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-            $selector_saved_view_item_root_container.remove();
         })
     }
 

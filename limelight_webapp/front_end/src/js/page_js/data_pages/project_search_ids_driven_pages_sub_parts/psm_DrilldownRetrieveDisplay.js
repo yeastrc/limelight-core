@@ -510,13 +510,21 @@ export class Psm_DrilldownRetrieveDisplay {
 
 		if ( ! loadGoogleChart_CoreChartResult.isLoaded ) {
 			loadGoogleChart_CoreChartResult.loadingPromise.then(function(value) { // On Fulfilled
-
-				console.log( "loadGoogleChart_CoreChartResult.loadingPromise.then ( On Fulfilled ) called" );
-				
-				objectThis._addPsmChartsActual( { psmList, container } );
-
+				try {
+					console.log( "loadGoogleChart_CoreChartResult.loadingPromise.then ( On Fulfilled ) called" );
+					
+					objectThis._addPsmChartsActual( { psmList, container } );
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
 			}).catch(function(reason) {
-				console.log( "loadGoogleChart_CoreChartResult.loadingPromise.catch(reason) called" );
+				try {
+					console.log( "loadGoogleChart_CoreChartResult.loadingPromise.catch(reason) called" );
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
 			});
 		} else {
 			this._addPsmChartsActual( { psmList, container } );

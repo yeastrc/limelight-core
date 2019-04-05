@@ -150,8 +150,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 		const promise_getSearchDetails = this._getSearchDetails({ projectSearchIds : [ projectSearchId ] });
 
 		promise_getSearchDetails.then((searchDetailsResultsCombined) => {
-
-			objectThis._displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId, searchDetailsResultsCombined });
+			try {
+				objectThis._displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId, searchDetailsResultsCombined });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		})
 	}
 
@@ -163,34 +167,40 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 		const objectThis = this;
 
 		return new Promise((resolve, reject) => {
-
-			for ( const projectSearchId of projectSearchIds ) {
-				this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds.add( projectSearchId );
-			}
-
-			const promise_searchDetailsCoreDataHTML = objectThis._searchDetails_GetCoreDataFromServer.getSearchDetails_CoreDataFromServer({ projectSearchIds });
-
-			const promise_searchDetailsProjectPageDataHTML = objectThis._get_SearchDetailsProjectPageDataHTML({ projectSearchIds });
-
-			Promise.all( [ promise_searchDetailsCoreDataHTML, promise_searchDetailsProjectPageDataHTML ] ).then((promiseResults) => {
-
-				//  Combine promise results, each promise result has a different property
-
-				const searchDetailsResultsCombined = {};
-
-				for ( const promiseResult of promiseResults ) {
-					if (promiseResult.coreSearchDetails) {
-						searchDetailsResultsCombined.coreSearchDetails = promiseResult.coreSearchDetails;
-					}
-					if (promiseResult.projectPageSearchDetails) {
-						searchDetailsResultsCombined.projectPageSearchDetails = promiseResult.projectPageSearchDetails;
-					}
+			try {
+				for ( const projectSearchId of projectSearchIds ) {
+					this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds.add( projectSearchId );
 				}
 
-				resolve( searchDetailsResultsCombined );
+				const promise_searchDetailsCoreDataHTML = objectThis._searchDetails_GetCoreDataFromServer.getSearchDetails_CoreDataFromServer({ projectSearchIds });
 
-			});
+				const promise_searchDetailsProjectPageDataHTML = objectThis._get_SearchDetailsProjectPageDataHTML({ projectSearchIds });
 
+				Promise.all( [ promise_searchDetailsCoreDataHTML, promise_searchDetailsProjectPageDataHTML ] ).then((promiseResults) => {
+					try {
+						//  Combine promise results, each promise result has a different property
+
+						const searchDetailsResultsCombined = {};
+
+						for ( const promiseResult of promiseResults ) {
+							if (promiseResult.coreSearchDetails) {
+								searchDetailsResultsCombined.coreSearchDetails = promiseResult.coreSearchDetails;
+							}
+							if (promiseResult.projectPageSearchDetails) {
+								searchDetailsResultsCombined.projectPageSearchDetails = promiseResult.projectPageSearchDetails;
+							}
+						}
+
+						resolve( searchDetailsResultsCombined );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 
 		});
 	}
@@ -203,27 +213,31 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
+			try {
+				const requestObj = { projectSearchIds : projectSearchIds };
 
-			const requestObj = { projectSearchIds : projectSearchIds };
+				const url = "d/rws/for-page/psb/get-search-details-project-page";
 
-			const url = "d/rws/for-page/psb/get-search-details-project-page";
+				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
-
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-				try {
-					const promiseResponse = objectThis._getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData, projectSearchIds } );
-					
-					resolve( { projectPageSearchDetails : promiseResponse } );
-					
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					
-					throw e;
-				}
-			});
+				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+					try {
+						const promiseResponse = objectThis._getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData, projectSearchIds } );
+						
+						resolve( { projectPageSearchDetails : promiseResponse } );
+						
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
         });
 	}
 
@@ -515,18 +529,22 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 		const promise_getSearchDetails = this._getSearchDetails({ projectSearchIds : projectSearchIdsGetFromServer });
 
 		promise_getSearchDetails.then((searchDetailsResultsCombined) => {
+			try {
+				for ( const projectSearchId of projectSearchIdsGetFromServer ) {
 
-			for ( const projectSearchId of projectSearchIdsGetFromServer ) {
+					objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined });
+				}
 
-				objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined });
+				//  Then expand all
+
+				for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
+					objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId });
+				}
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
-
-			//  Then expand all
-
-			for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-				objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId });
-			}
-
+		
 		})
 	}
 

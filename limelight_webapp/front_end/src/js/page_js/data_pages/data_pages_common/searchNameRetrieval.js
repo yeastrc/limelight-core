@@ -97,7 +97,14 @@ export class SearchNameRetrieval {
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+			promise_webserviceCallStandardPost.catch( () => {
+				try { 
+					reject();
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				} 
+			});
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
 				try {

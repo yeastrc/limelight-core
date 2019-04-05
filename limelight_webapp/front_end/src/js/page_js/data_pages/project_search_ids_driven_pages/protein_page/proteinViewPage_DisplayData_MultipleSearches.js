@@ -249,7 +249,12 @@ export class ProteinViewPage_Display_MultipleSearches {
 		promise_getDataFromServer_AllPromises.catch((reason) => {});
 
 		promise_getDataFromServer_AllPromises.then((value) => {
-			objectThis._displayProteinListOnPage( { projectSearchIds } );
+			try {
+				objectThis._displayProteinListOnPage( { projectSearchIds } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+		  }
 		})
 	}
 

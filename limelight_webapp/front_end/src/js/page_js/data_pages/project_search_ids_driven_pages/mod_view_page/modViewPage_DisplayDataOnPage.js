@@ -15,6 +15,8 @@ let _mod_table_template_bundle =
 let _common_template_bundle = 
 	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
 import { ModViewPage_DataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
@@ -119,7 +121,12 @@ export class ModViewPage_DisplayDataOnPage {
 		}
 
 		Promise.all( projectSearchIdPromisesArray ).then( function( resolvedPromisesArray ) {
-			objectThis.renderModDataPage( { projectSearchIds, loadedData, searchDetailsBlockDataMgmtProcessing } );		
+			try {
+				objectThis.renderModDataPage( { projectSearchIds, loadedData, searchDetailsBlockDataMgmtProcessing } );		
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 
 	}
@@ -135,46 +142,62 @@ export class ModViewPage_DisplayDataOnPage {
 		let dataLoader = new ModViewPage_DataLoader();
 
 		return new Promise( function( resolve, reject ) {
-	
-			// Get all mod data: modded proteins, positions in those proteins, list of reported peptide and psm ids for those locations
-			let modDataPromise = dataLoader.getModDataForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-	
-			// A chain of promises, each dependant on successful completion of the previous one
-			let modDataPromiseChainFinalPromise = modDataPromise.then( function( result ) {
-	
-				/*
-				 * Now that we have loaded the mod data, get all amino acid residues at modded locations
-				 */
-				let proteinsAndPositions = ModViewDataUtilities.getProteinsAndPositionsFromModData( { modData: loadedData.modData } );
-				let proteinPositionResiduesPromise = dataLoader.getProteinPositionResidues( { projectSearchId, proteinsAndPositions, loadedData } );
-				return proteinPositionResiduesPromise;
-	
-			}).then( function( result ) {
-	
-				/*
-				 * Now that we have all amino acid residues at modded locations,
-				 * let's get modification stats associated with those residues
-				 * in this search at these cutoffs.
-				 */
-				let proteinPositionResidues = loadedData.proteinPositionResidues;
-				let distinctResidues = ModViewDataUtilities.getDistinctResiduesFromProteinPositionResidues( { proteinPositionResidues } );
-				let aminoAcidModStatsPromise = dataLoader.getAminoAcidModStatsForSearch( { projectSearchId, searchDetailsBlockDataMgmtProcessing, loadedData, residueArray : distinctResidues } );
-	
-				return aminoAcidModStatsPromise;
-			});
-	
-			// load the protein annotations (names and descriptions) for proteins in this experiment
-			let proteinDataPromise = dataLoader.getProteinAnnotationDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, loadedData } );
-	
-			// get the total number of PSMs for this experiment that meet the cutoffs
-			let totalPSMCountPromise = dataLoader.getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-	
-			// after we get all the data, move on to rendering the page.
-			Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise, totalPSMCountPromise ] ).then( function( resolvedPromisesArray ) {
-				resolve();
-			});
-
+			try {
+				// Get all mod data: modded proteins, positions in those proteins, list of reported peptide and psm ids for those locations
+				let modDataPromise = dataLoader.getModDataForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
+		
+				// A chain of promises, each dependant on successful completion of the previous one
+				let modDataPromiseChainFinalPromise = modDataPromise.then( function( result ) {
+					try {
+						/*
+						* Now that we have loaded the mod data, get all amino acid residues at modded locations
+						*/
+						let proteinsAndPositions = ModViewDataUtilities.getProteinsAndPositionsFromModData( { modData: loadedData.modData } );
+						let proteinPositionResiduesPromise = dataLoader.getProteinPositionResidues( { projectSearchId, proteinsAndPositions, loadedData } );
+						return proteinPositionResiduesPromise;
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}).then( function( result ) {
+					try {
+						/*
+						* Now that we have all amino acid residues at modded locations,
+						* let's get modification stats associated with those residues
+						* in this search at these cutoffs.
+						*/
+						let proteinPositionResidues = loadedData.proteinPositionResidues;
+						let distinctResidues = ModViewDataUtilities.getDistinctResiduesFromProteinPositionResidues( { proteinPositionResidues } );
+						let aminoAcidModStatsPromise = dataLoader.getAminoAcidModStatsForSearch( { projectSearchId, searchDetailsBlockDataMgmtProcessing, loadedData, residueArray : distinctResidues } );
+			
+						return aminoAcidModStatsPromise;
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+		
+				// load the protein annotations (names and descriptions) for proteins in this experiment
+				let proteinDataPromise = dataLoader.getProteinAnnotationDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing,
+					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, loadedData } );
+		
+				// get the total number of PSMs for this experiment that meet the cutoffs
+				let totalPSMCountPromise = dataLoader.getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
+		
+				// after we get all the data, move on to rendering the page.
+				Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise, totalPSMCountPromise ] ).then( function( resolvedPromisesArray ) {
+					try {
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+			
 		});
 
 	}

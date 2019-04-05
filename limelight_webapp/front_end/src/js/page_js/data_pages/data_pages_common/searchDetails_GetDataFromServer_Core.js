@@ -53,27 +53,31 @@ export class SearchDetails_GetCoreDataFromServer {
 		const objectThis = this;
 		
         return new Promise((resolve,reject) => {
+			try {
+				const requestObj = { projectSearchIds : projectSearchIds };
 
-			const requestObj = { projectSearchIds : projectSearchIds };
+				const url = "d/rws/for-page/psb/get-search-details-core";
 
-			const url = "d/rws/for-page/psb/get-search-details-core";
+				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
-
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-				try {
-					const promiseResponse = objectThis._getHTMLFromAJAXResponse( { responseData, projectSearchIds } );
-					
-					resolve( { coreSearchDetails : promiseResponse } );
-					
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					
-					throw e;
-				}
-			});
+				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+					try {
+						const promiseResponse = objectThis._getHTMLFromAJAXResponse( { responseData, projectSearchIds } );
+						
+						resolve( { coreSearchDetails : promiseResponse } );
+						
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
         });
     }
 

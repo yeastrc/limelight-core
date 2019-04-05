@@ -274,48 +274,52 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         })
 
         promise_addNote_SaveToServer.then((result) => {
-            
-            if ( ! result ) {
-                return;  //  No Result
+            try {
+                if ( ! result ) {
+                    return;  //  No Result
+                }
+
+                const addNote_SaveToServer_AjaxResponse = result.addNote_SaveToServer_AjaxResponse;
+
+                //  Add Note to Notes
+
+                const $notes_list_container_div = $("#notes_list_container_div");
+                if ( $notes_list_container_div.length === 0 ) {
+                    throw Error("Failed to find DOM element with id 'notes_list_container_div'");
+                }
+
+                const note = {
+                    id : addNote_SaveToServer_AjaxResponse.insertedId,
+                    noteText,
+                    canEdit : true,
+                    canDelete : true
+                };
+
+                const noteHTML = this._project_notes_entry( note );
+                const $noteDOM = $( noteHTML );
+                $noteDOM.appendTo( $notes_list_container_div );
+
+                this.addExistingNoteLoggedInUserAdditions({
+                            id : note.id, canEdit : note.canEdit, canDelete : note.canDelete, $noteDOM });
+
+                //  Remove Add Note and show Add Note link
+
+                const $selector_add_note_container = $selector_add_note_inner_root_container.find(".selector_add_note_container")
+                if ( $selector_add_note_container.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_add_note_container'");
+                }
+                $selector_add_note_container.remove();  //  Remove entry
+
+                const $selector_add_note_button_container_div = $selector_add_note_inner_root_container.find(".selector_add_note_button_container_div");
+                if ( $selector_add_note_button_container_div.length === 0 ) {
+                    throw Error("Failed to find DOM element with class 'selector_add_note_button_container_div'");
+                }
+                $selector_add_note_button_container_div.show();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-
-            const addNote_SaveToServer_AjaxResponse = result.addNote_SaveToServer_AjaxResponse;
-
-            //  Add Note to Notes
-
-            const $notes_list_container_div = $("#notes_list_container_div");
-            if ( $notes_list_container_div.length === 0 ) {
-                throw Error("Failed to find DOM element with id 'notes_list_container_div'");
-            }
-
-            const note = {
-                id : addNote_SaveToServer_AjaxResponse.insertedId,
-                noteText,
-                canEdit : true,
-                canDelete : true
-            };
-
-            const noteHTML = this._project_notes_entry( note );
-            const $noteDOM = $( noteHTML );
-            $noteDOM.appendTo( $notes_list_container_div );
-
-            this.addExistingNoteLoggedInUserAdditions({
-                        id : note.id, canEdit : note.canEdit, canDelete : note.canDelete, $noteDOM });
-
-            //  Remove Add Note and show Add Note link
-
-            const $selector_add_note_container = $selector_add_note_inner_root_container.find(".selector_add_note_container")
-            if ( $selector_add_note_container.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_add_note_container'");
-            }
-            $selector_add_note_container.remove();  //  Remove entry
-
-            const $selector_add_note_button_container_div = $selector_add_note_inner_root_container.find(".selector_add_note_button_container_div");
-            if ( $selector_add_note_button_container_div.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_add_note_button_container_div'");
-            }
-            $selector_add_note_button_container_div.show();
-        })
+        });
 
     }
 
@@ -327,31 +331,38 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
-          try {
-			const requestObj = { noteText, projectIdentifier : this._projectIdentifierFromURL };
+            try {
+                const requestObj = { noteText, projectIdentifier : this._projectIdentifierFromURL };
 
-			const url = "d/rws/for-page/project-note-add";
+                const url = "d/rws/for-page/project-note-add";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( () => { 
+                    try {
+                        reject(); 
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    resolve( { addNote_SaveToServer_AjaxResponse : responseData } );
-                    
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    
-                    reject();
-                    
-                    throw e;
-                }
-			});
-          } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-          }
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve( { addNote_SaveToServer_AjaxResponse : responseData } );
+                        
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        
+                        reject();
+                        
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
     
@@ -500,26 +511,35 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const promise_editNote_SaveToServer = this._editNote_SaveToServer({ id, noteText });
 
         promise_editNote_SaveToServer.catch((reason) => {
+            try {
 
-        })
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
 
         promise_editNote_SaveToServer.then((result) => {
+            try {
+                //  assume success if get here
+                //  Update note text in DOM
 
-            //  assume success if get here
-            //  Update note text in DOM
+                const $selector_note_root_container_div = $( clickThis ).closest(".selector_note_root_container_div");
+                if ( $selector_note_root_container_div.length === 0 ) {
+                    throw Error("No DOM element found with class 'selector_note_root_container_div'");
+                }
 
-            const $selector_note_root_container_div = $( clickThis ).closest(".selector_note_root_container_div");
-            if ( $selector_note_root_container_div.length === 0 ) {
-                throw Error("No DOM element found with class 'selector_note_root_container_div'");
+                const $notes_text_jq = $selector_note_root_container_div.find(".notes_text_jq");
+                if ( $notes_text_jq.length === 0 ) {
+                    throw Error("No DOM element found with class 'notes_text_jq'");
+                }
+                $notes_text_jq.text( noteText );
+
+                this._editNote_RemoveEditInputAndShowNote( { $selector_note_root_container_div } );
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
-
-            const $notes_text_jq = $selector_note_root_container_div.find(".notes_text_jq");
-            if ( $notes_text_jq.length === 0 ) {
-                throw Error("No DOM element found with class 'notes_text_jq'");
-            }
-            $notes_text_jq.text( noteText );
-
-            this._editNote_RemoveEditInputAndShowNote( { $selector_note_root_container_div } );
         })
     }
 
@@ -538,7 +558,14 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+			promise_webserviceCallStandardPost.catch( () => { 
+                try { 
+                    reject();
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                } 
+            });
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
@@ -578,11 +605,15 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         })
 
         promise_deleteNote_DeleteFromServer.then((result) => {
-
-            //  assume success if get here
-            //  Remove note from DOM
-            const $selector_note_root_container_div = $( clickThis ).closest( ".selector_note_root_container_div" );
-            $selector_note_root_container_div.remove();
+            try {
+                //  assume success if get here
+                //  Remove note from DOM
+                const $selector_note_root_container_div = $( clickThis ).closest( ".selector_note_root_container_div" );
+                $selector_note_root_container_div.remove();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         })
     }
 

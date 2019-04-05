@@ -69,86 +69,108 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		//  Outer Promise for getting data from server for projectSearchId
 
 		return new Promise( function(resolve, reject) {
-			
-			let searchDataLookupParams_For_Single_ProjectSearchId = 
-				objectThis._searchDetailsBlockDataMgmtProcessing.
-				getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId } );
+			try {
+				let searchDataLookupParams_For_Single_ProjectSearchId = 
+					objectThis._searchDetailsBlockDataMgmtProcessing.
+					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId } );
 
-			//  First get Reported Peptide Ids for current cutoffs/filters
-			
-			const promise_getReportedPeptideIdList = ProteinViewDataLoader.getReportedPeptideIdList( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } )
-			
-			promise_getReportedPeptideIdList.catch(function(reason) {
-				reject(reason);
-			});
-			
-			//  Get all the data based on the getReportedPeptideIdList(...) result
-			
-			const promise_get_Data_From_ReportedPeptideIdList = promise_getReportedPeptideIdList.then( function( reportedPeptideCoreDataArray ) {
-
-				const promiseAllArray = [];
-
-				//  Static Mods - Arbitrarily put here
-				if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_staticMods() ) {
-					//  No static mods so load them
-					const promise = objectThis._getAndProcessStaticMods_forProjectSearchId( { projectSearchId } );
-					promiseAllArray.push( promise );
-				}
+				//  First get Reported Peptide Ids for current cutoffs/filters
 				
-				objectThis._processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
+				const promise_getReportedPeptideIdList = ProteinViewDataLoader.getReportedPeptideIdList( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } )
 				
-				if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() ) {
+				promise_getReportedPeptideIdList.catch(function(reason) {
+					try {
+						reject(reason);
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+				
+				//  Get all the data based on the getReportedPeptideIdList(...) result
+				
+				const promise_get_Data_From_ReportedPeptideIdList = promise_getReportedPeptideIdList.then( function( reportedPeptideCoreDataArray ) {
+					try {
+						const promiseAllArray = [];
 
-					// Get number of PSMs per Reported Peptide Id
-					
-					const promise__get_numPsmsForReportedPeptideIds =
-						objectThis._get_numPsmsForReportedPeptideIds( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } );
+						//  Static Mods - Arbitrarily put here
+						if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_staticMods() ) {
+							//  No static mods so load them
+							const promise = objectThis._getAndProcessStaticMods_forProjectSearchId( { projectSearchId } );
+							promiseAllArray.push( promise );
+						}
 						
-					promiseAllArray.push( promise__get_numPsmsForReportedPeptideIds );
-				}
-				
-				//  This first loads ProteinSequenceVersionIds for Reported Peptide Ids and then loads data based on those ProteinSequenceVersionIds
-				const promise_get_ProteinData_Including_ProteinSequenceVersionIds =
-					objectThis._get_ProteinData_Including_ProteinSequenceVersionIds( { projectSearchId } );
-				
-				promiseAllArray.push( promise_get_ProteinData_Including_ProteinSequenceVersionIds );
+						objectThis._processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
+						
+						if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() ) {
 
-				const promise_get_ProteinCoverage_FromReportedPeptideIds =
-					objectThis._get_ProteinCoverage_FromReportedPeptideIds( { projectSearchId } );
+							// Get number of PSMs per Reported Peptide Id
+							
+							const promise__get_numPsmsForReportedPeptideIds =
+								objectThis._get_numPsmsForReportedPeptideIds( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } );
+								
+							promiseAllArray.push( promise__get_numPsmsForReportedPeptideIds );
+						}
+						
+						//  This first loads ProteinSequenceVersionIds for Reported Peptide Ids and then loads data based on those ProteinSequenceVersionIds
+						const promise_get_ProteinData_Including_ProteinSequenceVersionIds =
+							objectThis._get_ProteinData_Including_ProteinSequenceVersionIds( { projectSearchId } );
+						
+						promiseAllArray.push( promise_get_ProteinData_Including_ProteinSequenceVersionIds );
 
-				promiseAllArray.push( promise_get_ProteinCoverage_FromReportedPeptideIds );
-				
-				const promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter =
-					objectThis._get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId } );
-					
-				promiseAllArray.push( promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter );
-				
-				const promise_get_BestPsmFilterableAnnTypeDataForCurrentFilter =
-					objectThis._get_BestPsmFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId } );
-				
-				promiseAllArray.push( promise_get_BestPsmFilterableAnnTypeDataForCurrentFilter );
+						const promise_get_ProteinCoverage_FromReportedPeptideIds =
+							objectThis._get_ProteinCoverage_FromReportedPeptideIds( { projectSearchId } );
 
-				return Promise.all( promiseAllArray );
-			});
+						promiseAllArray.push( promise_get_ProteinCoverage_FromReportedPeptideIds );
+						
+						const promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter =
+							objectThis._get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId } );
+							
+						promiseAllArray.push( promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter );
+						
+						const promise_get_BestPsmFilterableAnnTypeDataForCurrentFilter =
+							objectThis._get_BestPsmFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId } );
+						
+						promiseAllArray.push( promise_get_BestPsmFilterableAnnTypeDataForCurrentFilter );
 
-			promise_get_Data_From_ReportedPeptideIdList.catch(function(reason) {
-				reject(reason);
-			});
-			
-			promise_get_Data_From_ReportedPeptideIdList.then(function(value) {
-				
-				//  'value' from Promise.all is an array of the promise values from the individual resolve() calls
-				//    Since all calls to resolve() don't pass a value, in this case it is an array of elements each containing undefined 
+						return Promise.all( promiseAllArray );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
 
-				//  Processing that requires all data to be loaded
+				promise_get_Data_From_ReportedPeptideIdList.catch(function(reason) {
+					try {
+						reject(reason);
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
 				
-				//  Take proteinSequenceCoverage Per Reported Peptide Ids and create proteinSequenceCoverage Per proteinSequenceVersionId
-				objectThis._proteinSequenceCoverage_MapPer_proteinSequenceVersionId();
-				
-				//  All Data is loaded and all post load processing of loaded data is complete
-				
-				resolve(); // Resolve outer promise in this containing function
-			})
+				promise_get_Data_From_ReportedPeptideIdList.then(function(value) {
+					try {
+						//  'value' from Promise.all is an array of the promise values from the individual resolve() calls
+						//    Since all calls to resolve() don't pass a value, in this case it is an array of elements each containing undefined 
+
+						//  Processing that requires all data to be loaded
+						
+						//  Take proteinSequenceCoverage Per Reported Peptide Ids and create proteinSequenceCoverage Per proteinSequenceVersionId
+						objectThis._proteinSequenceCoverage_MapPer_proteinSequenceVersionId();
+						
+						//  All Data is loaded and all post load processing of loaded data is complete
+						
+						resolve(); // Resolve outer promise in this containing function
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 
@@ -167,13 +189,17 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 				promise_getData.catch((reason) => { reject(reason)});
 
 				promise_getData.then((staticModsList) => {
+					try {
+						// DB Results: staticModsList: result list item { String residue, BigDecimal mass }
+						// Store: Array [{ String residue, BigDecimal mass }] : [Static Mods]
 
-					// DB Results: staticModsList: result list item { String residue, BigDecimal mass }
-					// Store: Array [{ String residue, BigDecimal mass }] : [Static Mods]
+						objectThis._loadedDataPerProjectSearchIdHolder.set_staticMods(staticModsList)
 
-					objectThis._loadedDataPerProjectSearchIdHolder.set_staticMods(staticModsList)
-
-					resolve();
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
 				});
 			} catch( e ) {
 				console.log("Exception caught in New Promise in _getAndProcessStaticMods_forProjectSearchId(...)");
@@ -194,21 +220,33 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 		
 		return new Promise(function(resolve, reject) {
+			try {
+				ProteinViewDataLoader.getNumPsmsForReportedPeptideIdsCutoffs( 
+						{ projectSearchId, 
+							reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(), 
+							searchDataLookupParams_For_Single_ProjectSearchId
 
-			ProteinViewDataLoader.getNumPsmsForReportedPeptideIdsCutoffs( 
-					{ projectSearchId, 
-						reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(), 
-						searchDataLookupParams_For_Single_ProjectSearchId
-
-					}).then(function(numPsms_KeyReportedPeptideId) {
-
-						objectThis._processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData( { numPsms_KeyReportedPeptideId } );
-						resolve();
-
-					}).catch( function(reason) {
-						// Catches the reject from any promise in the chain
-						reject( reason );
-					});
+						}).then(function(numPsms_KeyReportedPeptideId) {
+							try {
+								objectThis._processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData( { numPsms_KeyReportedPeptideId } );
+								resolve();
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						}).catch( function(reason) {
+							try {
+								// Catches the reject from any promise in the chain
+								reject( reason );
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 
@@ -223,46 +261,59 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 		
 		return new Promise(function(resolve, reject) {
+			try {
+				if ( ( ! filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) ||
+						( filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters.length === 0 ) ) {
+					
+					//  No reportedPeptideFilters to get data for
+					
+					// console.log("No reported Peptide Cutoffs");
+					
+					resolve();  // EARLY resolve()
+					return;     // EARLY EXIT
+				}
 
-			if ( ( ! filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) ||
-					( filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters.length === 0 ) ) {
+				if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() ||
+						objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length === 0 ) {
+					
+					//  No Reported Peptide Ids
+
+					// console.log("No Reported Peptide Ids");
+					
+					resolve();  // EARLY resolve()
+					return;     // EARLY EXIT
+				}
 				
-				//  No reportedPeptideFilters to get data for
-				
-				// console.log("No reported Peptide Cutoffs");
-				
-				resolve();  // EARLY resolve()
-				return;     // EARLY EXIT
+				const annTypeIds = [];
+				for ( const filterEntry of filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) {
+					annTypeIds.push( filterEntry.annTypeId );
+				}
+
+				ProteinViewDataLoader.getReportedPeptideFilterableAnnData_From_ReportedPeptideIds_AnnTypeIds( 
+						{ projectSearchId, 
+							reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
+							annTypeIds : annTypeIds } )
+							.then(function( annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer ) {
+								try {
+									objectThis._processReportedPeptideFilterableAnnDataFromServer_Populate_loadedData( { annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer } );
+									resolve();
+								} catch( e ) {
+									reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+									throw e;
+								}
+							}).catch( function(reason) {
+								try {
+									// Catches the reject from any promise in the chain
+									reject( reason );
+								} catch( e ) {
+									reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+									throw e;
+								}
+							})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
-
-			if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() ||
-					objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length === 0 ) {
-				
-				//  No Reported Peptide Ids
-
-				// console.log("No Reported Peptide Ids");
-				
-				resolve();  // EARLY resolve()
-				return;     // EARLY EXIT
-			}
-			
-			const annTypeIds = [];
-			for ( const filterEntry of filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) {
-				annTypeIds.push( filterEntry.annTypeId );
-			}
-
-			ProteinViewDataLoader.getReportedPeptideFilterableAnnData_From_ReportedPeptideIds_AnnTypeIds( 
-					{ projectSearchId, 
-						reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
-						annTypeIds : annTypeIds } )
-						.then(function( annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer ) {
-							objectThis._processReportedPeptideFilterableAnnDataFromServer_Populate_loadedData( { annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer } );
-							resolve();
-
-						}).catch( function(reason) {
-							// Catches the reject from any promise in the chain
-							reject( reason );
-						})
 		});
 	}
 
@@ -277,7 +328,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 		
 		return new Promise(function(resolve, reject) {
-
+			try {
 			if ( ( ! filtersAnnTypeDisplay_For_ProjectSearchId.psmFilters ) ||
 					( filtersAnnTypeDisplay_For_ProjectSearchId.psmFilters.length === 0 ) ) {
 				
@@ -310,13 +361,26 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 						reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
 						annTypeIds : annTypeIds } )
 						.then(function( annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer ) {
-							objectThis._processPsmBestFilterableAnnDataFromServer_Populate_loadedData( { annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer } );
-							resolve();
-
+							try {
+								objectThis._processPsmBestFilterableAnnDataFromServer_Populate_loadedData( { annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer } );
+								resolve();
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
 						}).catch( function(reason) {
-							// Catches the reject from any promise in the chain
-							reject( reason );
+							try {
+								// Catches the reject from any promise in the chain
+								reject( reason );
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
 						})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 	
@@ -328,28 +392,45 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 		
 		return new Promise(function(resolve, reject) {
+			try {
+				ProteinViewDataLoader.getProteinSequenceVersionIds( { projectSearchId, reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() } )
+				.then(function( proteinSequenceVersionIdsPerReportedPeptideIdMap ) {
+					try {
+						objectThis._processReportedPeptideIdProteinSequenceVersionIdsFromServer_Populate_loadedData( { proteinSequenceVersionIdsPerReportedPeptideIdMap } );
+						
+						const promiseAllArray = [];
 
-			ProteinViewDataLoader.getProteinSequenceVersionIds( { projectSearchId, reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() } )
-			.then(function( proteinSequenceVersionIdsPerReportedPeptideIdMap ) {
-				objectThis._processReportedPeptideIdProteinSequenceVersionIdsFromServer_Populate_loadedData( { proteinSequenceVersionIdsPerReportedPeptideIdMap } );
-				
-				const promiseAllArray = [];
+						const promise__get_ProteinInfo_From_proteinSequenceVersionIds =
+							objectThis._get_ProteinInfo_From_proteinSequenceVersionIds( { projectSearchId } );
 
-				const promise__get_ProteinInfo_From_proteinSequenceVersionIds =
-					objectThis._get_ProteinInfo_From_proteinSequenceVersionIds( { projectSearchId } );
-
-				promiseAllArray.push( promise__get_ProteinInfo_From_proteinSequenceVersionIds );
-				
-				return Promise.all( promiseAllArray );
-				
-			}).then(function( proteinInfoMapKeyProteinSequenceVersionId ) {
-				
-				resolve();
-				
-			}).catch( function(reason) {
-				// Catches the reject from any promise in the chain
-				reject( reason );
-			})
+						promiseAllArray.push( promise__get_ProteinInfo_From_proteinSequenceVersionIds );
+						
+						return Promise.all( promiseAllArray );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}).then(function( proteinInfoMapKeyProteinSequenceVersionId ) {
+					try {
+					
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}).catch( function(reason) {
+					try {
+						// Catches the reject from any promise in the chain
+						reject( reason );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 
@@ -361,17 +442,30 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 		
 		return new Promise(function(resolve, reject) {
-
-			let proteinSequenceVersionIds = objectThis._loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsArray();
-			ProteinViewDataLoader.getProteinInfoFromProteinSequenceVersionIds( { projectSearchId, proteinSequenceVersionIds } )
-			.then(function( proteinInfoMapKeyProteinSequenceVersionId ) {
-				objectThis._processProteinInfoFromServer_Populate_loadedData( { proteinInfoMapKeyProteinSequenceVersionIdFromServer : proteinInfoMapKeyProteinSequenceVersionId } );
-				resolve();
-				
-			}).catch( function(reason) {
-				// Catches the reject from any promise in the chain
-				reject( reason );
-			})
+			try {
+				let proteinSequenceVersionIds = objectThis._loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsArray();
+				ProteinViewDataLoader.getProteinInfoFromProteinSequenceVersionIds( { projectSearchId, proteinSequenceVersionIds } )
+				.then(function( proteinInfoMapKeyProteinSequenceVersionId ) {
+					try {
+						objectThis._processProteinInfoFromServer_Populate_loadedData( { proteinInfoMapKeyProteinSequenceVersionIdFromServer : proteinInfoMapKeyProteinSequenceVersionId } );
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}).catch( function(reason) {
+					try {
+						// Catches the reject from any promise in the chain
+						reject( reason );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 	
@@ -383,16 +477,29 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 		
 		return new Promise(function(resolve, reject) {
-
-			ProteinViewDataLoader.getProteinCoverageData_From_ReportedPeptideIds( { projectSearchId, reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() } )
-			.then(function( proteinCoverage_KeyReportedPeptideIdFromServer ) {
-				objectThis._processProteinCoverageFromServer_Populate_loadedData( { proteinCoverage_KeyReportedPeptideIdFromServer } );
-				resolve();
-				
-			}).catch( function(reason) {
-				// Catches the reject from any promise in the chain
-				reject( reason );
-			})
+			try {
+				ProteinViewDataLoader.getProteinCoverageData_From_ReportedPeptideIds( { projectSearchId, reportedPeptideIds : objectThis._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() } )
+				.then(function( proteinCoverage_KeyReportedPeptideIdFromServer ) {
+					try {
+						objectThis._processProteinCoverageFromServer_Populate_loadedData( { proteinCoverage_KeyReportedPeptideIdFromServer } );
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}).catch( function(reason) {
+					try {
+						// Catches the reject from any promise in the chain
+						reject( reason );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 

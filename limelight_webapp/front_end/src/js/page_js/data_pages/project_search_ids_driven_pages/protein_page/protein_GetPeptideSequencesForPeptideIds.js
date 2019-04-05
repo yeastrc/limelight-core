@@ -129,14 +129,19 @@ export class Protein_GetPeptideSequencesForPeptideIds {
 				promise_getPeptideSequenceStringsFromReportedPeptideIds.catch((reason) => {});
 
 				promise_getPeptideSequenceStringsFromReportedPeptideIds.then(({ peptideSequenceString_PeptideId_MappingList, foundAllReportedPeptideIdsForProjectSearchId }) => {
-					if ( ! foundAllReportedPeptideIdsForProjectSearchId ) {
-						throw Error("In _getPeptideSequencesAndProcess: foundAllReportedPeptideIdsForProjectSearchId is false");
-						reject();
+					try {
+						if ( ! foundAllReportedPeptideIdsForProjectSearchId ) {
+							throw Error("In _getPeptideSequencesAndProcess: foundAllReportedPeptideIdsForProjectSearchId is false");
+							reject();
+						}
+
+						objectThis._process_getPeptideSequenceResult( { peptideSequenceString_PeptideId_MappingList, loadedDataCommonHolder } );
+
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
 					}
-
-					objectThis._process_getPeptideSequenceResult( { peptideSequenceString_PeptideId_MappingList, loadedDataCommonHolder } );
-
-					resolve();
 				})
 			} catch( e ) {
 				console.log("Exception caught in New Promise in _getPeptideSequencesAndProcess(...)");

@@ -269,8 +269,12 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
         getOtherProjectsCanCopyMoveProjectSearchIdsTo_Promise.catch((reason) => {});
 
         getOtherProjectsCanCopyMoveProjectSearchIdsTo_Promise.then((responseData) => {
-
-            objectThis._populateOtherProjectsForCopySearchesOverlay( { projectSearchIdsSelected, responseData, doCopy, doMove } );
+            try {
+                objectThis._populateOtherProjectsForCopySearchesOverlay( { projectSearchIdsSelected, responseData, doCopy, doMove } );
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
@@ -382,10 +386,14 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
         getSearchIdsPromise.catch((reason) => {});
 
         getSearchIdsPromise.then((responseData) => {
-
-            objectThis._createDisplayConfirmDialogCopyMoveDialog(
-                { projectSearchIdsWhereAssocSearchIdsAlreadyInProject_ResponseData : responseData, chosenProjectId, chosenProjectTitle, projectSearchIdsSelected, 
-                    doCopy, doMove, $contentDiv });
+            try {
+                objectThis._createDisplayConfirmDialogCopyMoveDialog(
+                    { projectSearchIdsWhereAssocSearchIdsAlreadyInProject_ResponseData : responseData, chosenProjectId, chosenProjectTitle, projectSearchIdsSelected, 
+                        doCopy, doMove, $contentDiv });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 

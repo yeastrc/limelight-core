@@ -118,15 +118,26 @@ export class SharePage_dataPages {
         const promise_sharePageToServer =
             this._sharePageToServer({ pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds : this._projectSearchIds })
 
-        promise_sharePageToServer.catch(() => {} );
+        promise_sharePageToServer.catch(() => {
+            try {
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
 
         promise_sharePageToServer.then(( ajaxResult ) => {
-                
-            const urlShortcutString = ajaxResult.ajaxResult.shortenedUrl;
-        
-            this._modalOverlay = this._createModalOverlay( { urlShortcutString } );
-            this._modalOverlay.show();
-        })
+            try {
+                const urlShortcutString = ajaxResult.ajaxResult.shortenedUrl;
+            
+                this._modalOverlay = this._createModalOverlay( { urlShortcutString } );
+                this._modalOverlay.show();
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
     }
 
 	/**

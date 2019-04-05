@@ -382,9 +382,12 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 			} else {
 				promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch.then(function() {
-
-					objectThis._showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder });
-
+					try {
+						objectThis._showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder });
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
 				})
 			}
 			

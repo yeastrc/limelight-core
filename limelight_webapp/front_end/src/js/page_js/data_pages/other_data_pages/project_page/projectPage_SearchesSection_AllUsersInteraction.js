@@ -214,9 +214,13 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		promise_getSearchDataLookupParamsCode_ForMerge.catch((reason) => { });
 
 		promise_getSearchDataLookupParamsCode_ForMerge.then((result) => { 
-
-			const url = this._url_path__peptide + result.searchDataLookupParamsCode;
-			objectThis._goToURL_MergeDataPage({ url, newWindow });
+			try {
+				const url = this._url_path__peptide + result.searchDataLookupParamsCode;
+				objectThis._goToURL_MergeDataPage({ url, newWindow });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	};
 
@@ -263,9 +267,13 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		promise_getSearchDataLookupParamsCode_ForMerge.catch((reason) => { });
 
 		promise_getSearchDataLookupParamsCode_ForMerge.then((result) => { 
-
-			const url = this._url_path__protein + result.searchDataLookupParamsCode;
-			objectThis._goToURL_MergeDataPage({ url, newWindow });
+			try {
+				const url = this._url_path__protein + result.searchDataLookupParamsCode;
+				objectThis._goToURL_MergeDataPage({ url, newWindow });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	};
 
@@ -312,9 +320,13 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		promise_getSearchDataLookupParamsCode_ForMerge.catch((reason) => { });
 
 		promise_getSearchDataLookupParamsCode_ForMerge.then((result) => { 
-
-			const url = this._url_path__mod_view + result.searchDataLookupParamsCode;
-			objectThis._goToURL_MergeDataPage({ url, newWindow });
+			try {
+				const url = this._url_path__mod_view + result.searchDataLookupParamsCode;
+				objectThis._goToURL_MergeDataPage({ url, newWindow });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	};
 
@@ -357,39 +369,37 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		}
 
         return new Promise((resolve,reject) => {
-		  try {
-			let requestObj = {
-				projectSearchIds_CreateDefault : projectSearchIds,
-				sjklwuiowerzUIryhnIOWzq : true
-			};
+						try {
+								let requestObj = {
+									projectSearchIds_CreateDefault : projectSearchIds,
+									sjklwuiowerzUIryhnIOWzq : true
+								};
 
-			const url = "d/rws/for-page/psb/get-search-data-lookup-params-code";
+								const url = "d/rws/for-page/psb/get-search-data-lookup-params-code";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+								const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+								promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-				try {
-					const searchDataLookupParamsCode = responseData.searchDataLookupParamsCode;
-					if (!searchDataLookupParamsCode) {
-						throw Error("No value for responseData.searchDataLookupParamsCode");
-					}
-					resolve({ searchDataLookupParamsCode })
+								promise_webserviceCallStandardPost.then( ({ responseData }) => {
+										try {
+												const searchDataLookupParamsCode = responseData.searchDataLookupParamsCode;
+												if (!searchDataLookupParamsCode) {
+													throw Error("No value for responseData.searchDataLookupParamsCode");
+												}
+												resolve({ searchDataLookupParamsCode })
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					reject(e);
-					throw e;
-				}
+										} catch (e) {
+												reportWebErrorToServer.reportErrorObjectToServer({errorException : e});
+												reject(e);
+												throw e;
+										}
+								});
+						} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+						}
 			});
-		  } catch( e ) {
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		  }
-		});
 	};
 
 	/**

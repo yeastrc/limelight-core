@@ -61,9 +61,14 @@ let googleChartCoreCharts_DeferredToResolveOnLoad = [];
 class Deferred_Local_GoogleChartLoader {
 	constructor() {
 		this.promise = new Promise((resolve, reject)=> {
-			this.reject = reject
-			this.resolve = resolve
-		})
+			try {
+				this.reject = reject;
+				this.resolve = resolve;
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
 	}
 	
 	containedPromise() {
@@ -103,35 +108,39 @@ let _loadGoogleChartLoader = function() {
 	googleChartLoader_Loaded = GOOGLE_CHART_LOADER_LOADING_IN_PROGRESS;
 	
 	return new Promise( function( resolve, reject ) {
+		try {
+			jQuery.ajax({
+				url: GOOGLE_CHART_LOADER_URL,
+				dataType: "script",
+				cache: true
+			}).done( function( data, textStatus, jqXHR ) {
+				try {
+					googleChartLoader_Loaded = GOOGLE_CHART_LOADER_LOADED_YES;
 
-		jQuery.ajax({
-			url: GOOGLE_CHART_LOADER_URL,
-			dataType: "script",
-			cache: true
-		}).done( function( data, textStatus, jqXHR ) {
-			try {
-				googleChartLoader_Loaded = GOOGLE_CHART_LOADER_LOADED_YES;
-
-				let googleChartLoader_DeferredToResolveOnLoad_Local = googleChartLoader_DeferredToResolveOnLoad;
-				
-				googleChartLoader_DeferredToResolveOnLoad = []; // reset
-				
-				if ( googleChartLoader_DeferredToResolveOnLoad_Local.length > 0 ) {
-					googleChartLoader_DeferredToResolveOnLoad_Local.forEach(function( googleChartLoader_DeferredToResolveOnLoadItem, i, array) {
-//						console.log("Processsing entry in googleChartLoader_DeferredToResolveOnLoad_Local, index: " + i );
-						googleChartLoader_DeferredToResolveOnLoadItem.resolvePromise();
-					}, this)
+					let googleChartLoader_DeferredToResolveOnLoad_Local = googleChartLoader_DeferredToResolveOnLoad;
+					
+					googleChartLoader_DeferredToResolveOnLoad = []; // reset
+					
+					if ( googleChartLoader_DeferredToResolveOnLoad_Local.length > 0 ) {
+						googleChartLoader_DeferredToResolveOnLoad_Local.forEach(function( googleChartLoader_DeferredToResolveOnLoadItem, i, array) {
+	//						console.log("Processsing entry in googleChartLoader_DeferredToResolveOnLoad_Local, index: " + i );
+							googleChartLoader_DeferredToResolveOnLoadItem.resolvePromise();
+						}, this)
+					}
+					
+					resolve();
+					
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
-				
-				resolve();
-				
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		}).fail( function( jqXHR, textStatus, errorThrown ) {
-			handleRawAJAXError( jqXHR, textStatus, errorThrown );
-		});
+			}).fail( function( jqXHR, textStatus, errorThrown ) {
+				handleRawAJAXError( jqXHR, textStatus, errorThrown );
+			});
+		} catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		}
 	} );
 };
 
@@ -141,15 +150,20 @@ let _loadGoogleChartLoader = function() {
 let _loadGoogleChartPackages = function( { chartPackagesToLoad } ) {	
 
 	return new Promise( function( resolve, reject ) {
-	
-		google.charts.load( "current", {packages: chartPackagesToLoad } );
-		
-		let googleOnLoadCallbackFunction = function() {
-			resolve();
-		};
+		try {
+			google.charts.load( "current", {packages: chartPackagesToLoad } );
+			
+			let googleOnLoadCallbackFunction = function() {
+				resolve();
+			};
 
-		//  Set a callback for when the charts are loaded
-		google.charts.setOnLoadCallback( googleOnLoadCallbackFunction );
+			//  Set a callback for when the charts are loaded
+			google.charts.setOnLoadCallback( googleOnLoadCallbackFunction );
+
+		} catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		}
 	} );
 }
 	
@@ -179,37 +193,55 @@ let loadGoogleChart_CoreChart = function() {
 	let chartPackagesToLoad = ["corechart"];
 
 	return { loadingPromise : new Promise( function( resolve, reject ) {
+	  	try {
+			let loadGoogleChart_Loader_Promise = _loadGoogleChartLoader()
+			loadGoogleChart_Loader_Promise.then(function(value) { // On Fulfilled
+				try {
+					let loadGoogleChart__Promise = _loadGoogleChartPackages( { chartPackagesToLoad } );
+					loadGoogleChart__Promise.then(function(value) { // On Fulfilled
+						try {
+							googleChartCoreCharts_Loaded = GOOGLE_CHART_LOADER_LOADED_YES;
 
-		let loadGoogleChart_Loader_Promise = _loadGoogleChartLoader()
-		loadGoogleChart_Loader_Promise.then(function(value) { // On Fulfilled
-			
-			let loadGoogleChart__Promise = _loadGoogleChartPackages( { chartPackagesToLoad } );
-			loadGoogleChart__Promise.then(function(value) { // On Fulfilled
-				
-				googleChartCoreCharts_Loaded = GOOGLE_CHART_LOADER_LOADED_YES;
-
-				let googleChartCoreCharts_DeferredToResolveOnLoad_Local = googleChartCoreCharts_DeferredToResolveOnLoad;
-				
-				googleChartCoreCharts_DeferredToResolveOnLoad = []; // reset
-				
-				if ( googleChartCoreCharts_DeferredToResolveOnLoad_Local.length > 0 ) {
-					googleChartCoreCharts_DeferredToResolveOnLoad_Local.forEach(function( googleChartCoreCharts_DeferredToResolveOnLoadItem, i, array) {
-//						console.log("Processsing entry in googleChartCoreCharts_DeferredToResolveOnLoad_Local, index: " + i );
-						googleChartCoreCharts_DeferredToResolveOnLoadItem.resolvePromise();
-					}, this)
+							let googleChartCoreCharts_DeferredToResolveOnLoad_Local = googleChartCoreCharts_DeferredToResolveOnLoad;
+							
+							googleChartCoreCharts_DeferredToResolveOnLoad = []; // reset
+							
+							if ( googleChartCoreCharts_DeferredToResolveOnLoad_Local.length > 0 ) {
+								googleChartCoreCharts_DeferredToResolveOnLoad_Local.forEach(function( googleChartCoreCharts_DeferredToResolveOnLoadItem, i, array) {
+			//						console.log("Processsing entry in googleChartCoreCharts_DeferredToResolveOnLoad_Local, index: " + i );
+									googleChartCoreCharts_DeferredToResolveOnLoadItem.resolvePromise();
+								}, this)
+							}
+							
+							resolve();
+						} catch( e ) {
+							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+							throw e;
+						}
+					}).catch(function(reason) {
+						try {
+							throw Error( "Loading Google Chart Package Failed" );
+						} catch( e ) {
+							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+							throw e;
+						}
+					});
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
-				
-				
-				resolve();
 			}).catch(function(reason) {
-				
-				throw Error( "Loading Google Chart Package Failed" );
+				try {
+					throw Error( "Loading Google Chart Package Loader" );
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
 			});
-
-		}).catch(function(reason) {
-			throw Error( "Loading Google Chart Package Loader" );
-		});
-
+		} catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		}
 	} ) };
 	
 };

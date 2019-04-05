@@ -49,7 +49,12 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 		let objectThis = this;
 		
 		let call_updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal = function(resolve, reject) {
-			objectThis._updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal( { searchDetails_Filters_AnnTypeDisplay_Root, resolve ,reject } );
+			try {
+				objectThis._updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal( { searchDetails_Filters_AnnTypeDisplay_Root, resolve ,reject } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		}
 		let updatePromise = new Promise( call_updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal );
 		return updatePromise;
@@ -69,26 +74,40 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 		let searchDataLookupParamsRoot = searchDetails_Filters_AnnTypeDisplay_Root;
 
 		let call_getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs = function(resolve, reject) {
-			objectThis._getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs( { searchDataLookupParamsRoot, resolve, reject } );
+			try {
+				objectThis._getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs( { searchDataLookupParamsRoot, resolve, reject } );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		}
 		
 		new Promise( call_getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs ).then(function( params ) {
-			
-			let searchDataLookupParamsCode = undefined;
-			if ( params ) {
-				searchDataLookupParamsCode = params.searchDataLookupParamsCode;
+			try {
+				let searchDataLookupParamsCode = undefined;
+				if ( params ) {
+					searchDataLookupParamsCode = params.searchDataLookupParamsCode;
+				}
+				if ( ! searchDataLookupParamsCode ) {
+					console.log("searchDataLookupParamsCode not populated");
+					reject("searchDataLookupParamsCode not populated");
+				}
+				
+				objectThis._updateURL_withNew_searchDataLookupParamsCode( { searchDataLookupParamsCode_New : searchDataLookupParamsCode } );
+				
+				resolve();
+				
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
-			if ( ! searchDataLookupParamsCode ) {
-				console.log("searchDataLookupParamsCode not populated");
-				reject("searchDataLookupParamsCode not populated");
-			}
-			
-			objectThis._updateURL_withNew_searchDataLookupParamsCode( { searchDataLookupParamsCode_New : searchDataLookupParamsCode } );
-			
-			resolve();
-			
 		}, function(reason) {
-			reject(reason)
+			try {
+				reject(reason);
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		})
 	}
 	
@@ -139,7 +158,14 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-		promise_webserviceCallStandardPost.catch( () => { reject() }  );
+		promise_webserviceCallStandardPost.catch( () => {
+			try { 
+				reject();
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException : e });
+				throw e;
+			}
+ 		});
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {
@@ -151,9 +177,7 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 				resolve( { searchDataLookupParamsCode } );
 
 			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException : e });
 				throw e;
 			}
 		});

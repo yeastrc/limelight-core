@@ -202,8 +202,13 @@ export class PeptideViewPage_RootClass_Common {
 
 		loadCoreData_ProjectSearchIds_Based_Promise.then(  // onFulfilled
 				function( value ) {
-					//  Continue processing
-					objectThis._createFilterData_In_dataPageStateManager_ForInitialLoad ({});
+					try {
+						//  Continue processing
+						objectThis._createFilterData_In_dataPageStateManager_ForInitialLoad ({});
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
 				}, function(reason) { // onRejected
 
 				});

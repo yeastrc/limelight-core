@@ -7,6 +7,8 @@
 
 let Handlebars = require('handlebars/runtime');
 
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+
 import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
 import { ModViewPage_DataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
 import { PeptideListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/peptideListingUtilsSingleSearch.js';
@@ -29,9 +31,12 @@ export class PeptideDataListingManager {
         let peptideDataObjectArray = [ ];
 
         PeptideDataListingManager.getPeptideDataObjectArrayForProteinAndModMass({ peptideDataObjectArray, searchDetailsBlockDataMgmtProcessing, proteinId, position, projectSearchId, reportedPeptideModData, modMass, dataPageStateManager_DataFrom_Server, proteinPositionFilterStateManager }).then( function( result ) {
-
-            PeptideListingUtilsSingleSearch.createAndAddTable( { $containerDiv, peptideDataObjectArray, dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, proteinPositionFilterStateManager } );
-
+            try {
+                PeptideListingUtilsSingleSearch.createAndAddTable( { $containerDiv, peptideDataObjectArray, dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, proteinPositionFilterStateManager } );
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     };
     
@@ -43,15 +48,23 @@ export class PeptideDataListingManager {
         let loadedData = { };
 
         return new Promise(function (resolve, reject) {
+            try {
+                // make ajax call to load the peptides, then load peptide object
+                dataLoader.getReportedPeptideInfoForReportedPeptideIdList( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideIds : Array.from( reportedPeptideIds ), loadedData } ).then( function( result ) {
+                    try {
+                        PeptideListingUtilsSingleSearch.populateDataObjectArrayFromWebServiceResponse( { peptideDataObjectArray, loadedData } );
 
-            // make ajax call to load the peptides, then load peptide object
-            dataLoader.getReportedPeptideInfoForReportedPeptideIdList( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideIds : Array.from( reportedPeptideIds ), loadedData } ).then( function( result ) {
-
-                PeptideListingUtilsSingleSearch.populateDataObjectArrayFromWebServiceResponse( { peptideDataObjectArray, loadedData } );
-
-                resolve();
-            });
-
+                        resolve();
+                        
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 

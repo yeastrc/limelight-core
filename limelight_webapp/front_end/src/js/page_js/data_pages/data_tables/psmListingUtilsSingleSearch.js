@@ -75,9 +75,12 @@ export class PSMListingUtilsSingleSearch {
         let dataObjectArray = [ ];
 
         PSMListingUtilsSingleSearch.getPSMDataObjectArrayForReportedPeptideId({ dataObjectArray, searchDetailsBlockDataMgmtProcessing, reportedPeptideId, projectSearchId, dataPageStateManager_DataFrom_Server }).then( function( result ) {
-
-            PSMListingUtilsSingleSearch.createAndAddTableSingleSearch( { $containerDiv, dataObjectArray, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
-
+            try {
+                PSMListingUtilsSingleSearch.createAndAddTableSingleSearch( { $containerDiv, dataObjectArray, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
@@ -305,15 +308,22 @@ export class PSMListingUtilsSingleSearch {
         let loadedData = { };
 
         return new Promise(function (resolve, reject) {
+            try {
+                // make ajax call to load the peptides, then load peptide object
+                PSMListingUtilsSingleSearch.getPSMInfoForReportedPeptideFromWebService( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId, loadedData } ).then( function( result ) {
+                    try {
+                        PSMListingUtilsSingleSearch.populateDataObjectArrayFromWebServiceResponse( { dataObjectArray, loadedData } )
 
-            // make ajax call to load the peptides, then load peptide object
-            PSMListingUtilsSingleSearch.getPSMInfoForReportedPeptideFromWebService( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId, loadedData } ).then( function( result ) {
-
-                PSMListingUtilsSingleSearch.populateDataObjectArrayFromWebServiceResponse( { dataObjectArray, loadedData } )
-
-                resolve();
-            });
-
+                        resolve();
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
@@ -350,31 +360,38 @@ export class PSMListingUtilsSingleSearch {
 		let objectThis = this;
                 
 		return new Promise( function( resolve, reject ) {
-          try {
-            let requestObject = objectThis.__createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId } );
+            try {
+                let requestObject = objectThis.__createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId } );
 
-			const url = "d/rws/for-page/psb/psm-list";
+                const url = "d/rws/for-page/psb/psm-list";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( () => { 
+                    try { 
+                        reject(); 
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    loadedData.psmList = responseData.resultList;
-                    loadedData.searchHasScanData = responseData.searchHasScanData;
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        loadedData.psmList = responseData.resultList;
+                        loadedData.searchHasScanData = responseData.searchHasScanData;
 
-                    resolve();
+                        resolve();
 
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-          } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-          }
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 }

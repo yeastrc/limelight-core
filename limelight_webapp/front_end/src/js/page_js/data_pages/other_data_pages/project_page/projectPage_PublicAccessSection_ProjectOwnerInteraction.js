@@ -237,10 +237,13 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
         promise_getLabel_ProjectLabel_OnServer.catch((reason) => {});
 
         promise_getLabel_ProjectLabel_OnServer.then((result) => {
-
-            objectThis._updateProjectLabelBlock_ProjectOwner_ProjectYesLocked_Or_Researcher_AfterGetFromServer({ labelTextFromServer : result.labelText });
-        })
-
+			try {
+				objectThis._updateProjectLabelBlock_ProjectOwner_ProjectYesLocked_Or_Researcher_AfterGetFromServer({ labelTextFromServer : result.labelText });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+        });
 	}
 
 	/**
@@ -303,10 +306,13 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
         promise_getLabel_ProjectLabel_OnServer.catch((reason) => {});
 
         promise_getLabel_ProjectLabel_OnServer.then((result) => {
-
-            objectThis._updateProjectLabelBlock_ProjectOwner_ProjectNotLocked_AfterGetFromServer({ labelTextFromServer : result.labelText });
-        })
-
+			try {
+				objectThis._updateProjectLabelBlock_ProjectOwner_ProjectNotLocked_AfterGetFromServer({ labelTextFromServer : result.labelText });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+        });
 	}
 
 	/**
@@ -579,29 +585,33 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
         promise_changeLabel_ProjectLabel_OnServer.catch((reason) => {});
 
         promise_changeLabel_ProjectLabel_OnServer.then((result) => {
+			try {
 
+				const $share_data_label_input_value_duplicate = $("#share_data_label_input_value_duplicate");
+				if ( $share_data_label_input_value_duplicate.length === 0 ) {
+					console.log("WARN: No DOM element found with id 'share_data_label_input_value_duplicate'");
+				}
+				
+				if ( result.duplicateLabelEncountered ) {
 
-			const $share_data_label_input_value_duplicate = $("#share_data_label_input_value_duplicate");
-			if ( $share_data_label_input_value_duplicate.length === 0 ) {
-				console.log("WARN: No DOM element found with id 'share_data_label_input_value_duplicate'");
+					$share_data_label_input_value_duplicate.show();
+					//  Value Duplicate so exit
+					return; // EARLY EXIT
+				}
+
+				if ( ! result.status ) {
+
+					throw Error("result.status is false")
+				}
+
+				$share_data_label_input_value_duplicate.hide();
+
+				objectThis._updateProjectLabelBlock_ProjectOwner_ProjectNotLocked();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
 			}
-			
-			if ( result.duplicateLabelEncountered ) {
-
-				$share_data_label_input_value_duplicate.show();
-				//  Value Duplicate so exit
-				return; // EARLY EXIT
-			}
-
-			if ( ! result.status ) {
-
-				throw Error("result.status is false")
-			}
-
-			$share_data_label_input_value_duplicate.hide();
-
-            objectThis._updateProjectLabelBlock_ProjectOwner_ProjectNotLocked();
-        })
+        });
 	}
 
 	/**
@@ -633,9 +643,13 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
         promise_changeLabel_ProjectLabel_OnServer.catch((reason) => {});
 
         promise_changeLabel_ProjectLabel_OnServer.then((result) => {
-
-            objectThis._updateProjectLabelBlock_ProjectOwner_ProjectNotLocked();
-        })
+			try {
+				objectThis._updateProjectLabelBlock_ProjectOwner_ProjectNotLocked();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+        });
 	}
 
 	/**

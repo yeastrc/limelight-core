@@ -231,20 +231,29 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 				promise_promises_Load_First_Set_Data_PerProjectSearchId_Array.catch(function(reason) { reject() });
 
 				promise_promises_Load_First_Set_Data_PerProjectSearchId_Array.then(function(value) {
+					try {
+						const promise_getPeptideSequencesForPeptideIds = objectThis._getPeptideSequencesForPeptideIds( {} );
 
-					const promise_getPeptideSequencesForPeptideIds = objectThis._getPeptideSequencesForPeptideIds( {} );
+						if ( ! promise_getPeptideSequencesForPeptideIds ) {
+							//  No peptide sequences to load so just call next function
+							resolve();
+							return;
+						}
 
-					if ( ! promise_getPeptideSequencesForPeptideIds ) {
-						//  No peptide sequences to load so just call next function
-						resolve();
-						return;
+						promise_getPeptideSequencesForPeptideIds.catch(function(reason) {});
+
+						promise_getPeptideSequencesForPeptideIds.then(function(value) {
+							try {
+								resolve();
+							} catch( e ) {
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						});
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
 					}
-
-					promise_getPeptideSequencesForPeptideIds.catch(function(reason) {});
-
-					promise_getPeptideSequencesForPeptideIds.then(function(value) {
-						resolve();
-					});
 				});
 			} catch( e ) {
 				console.log("Exception caught in New Promise in _loadDataForInitialOverlay(...)");
@@ -351,8 +360,12 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 						reject(reason);
 					})
 					promisesAll.then( (value) => {
-
-						resolve(value);
+						try {
+							resolve(value);
+						} catch( e ) {
+							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+							throw e;
+						}
 					})
 				} else {
 
@@ -716,14 +729,20 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 				promise_getPeptideSequenceStringsFromReportedPeptideIds.catch((reason) => {});
 
 				promise_getPeptideSequenceStringsFromReportedPeptideIds.then(({ peptideSequenceString_PeptideId_MappingList, foundAllReportedPeptideIdsForProjectSearchId }) => {
-					if ( ! foundAllReportedPeptideIdsForProjectSearchId ) {
-						throw Error("In _getPeptideSequencesAndProcess: foundAllReportedPeptideIdsForProjectSearchId is false");
-						reject();
+					try {
+						if ( ! foundAllReportedPeptideIdsForProjectSearchId ) {
+							throw Error("In _getPeptideSequencesAndProcess: foundAllReportedPeptideIdsForProjectSearchId is false");
+							reject();
+						}
+
+						objectThis._process_getPeptideSequenceResult( { peptideSequenceString_PeptideId_MappingList, projectSearchId } );
+
+						resolve();
+						
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
 					}
-
-					objectThis._process_getPeptideSequenceResult( { peptideSequenceString_PeptideId_MappingList, projectSearchId } );
-
-					resolve();
 				})
 			} catch( e ) {
 				console.log("Exception caught in New Promise in _getPeptideSequencesAndProcess(...)");

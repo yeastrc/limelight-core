@@ -89,12 +89,21 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 		const promise_notes_getData = this._notes_getData();
 
 		promise_notes_getData.catch((reason) => {
+			try {
 
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		})
 
 		promise_notes_getData.then(({ projectNotesAjaxresponse }) => {
-
-			objectThis._notes_displayNotes_Main({ projectNotesAjaxresponse });
+			try {
+				objectThis._notes_displayNotes_Main({ projectNotesAjaxresponse });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		})
 	}
 
@@ -106,31 +115,38 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
         const objectThis = this;
 
         return new Promise((resolve,reject) => {
-		  try {
-			const requestObj = { projectIdentifier : this._projectIdentifierFromURL };
+						try {
+								const requestObj = { projectIdentifier : this._projectIdentifierFromURL };
 
-			const url = "d/rws/for-page/project-notes-list";
+								const url = "d/rws/for-page/project-notes-list";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+								const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+								promise_webserviceCallStandardPost.catch( () => { 
+									try { 
+										reject(); 
+									} catch( e ) {
+										reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+										throw e;
+									}
+								});
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-				try {
-					resolve( { projectNotesAjaxresponse : responseData } );
-					
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					
-					reject();
-					
-					throw e;
-				}
-			});
-		  } catch( e ) {
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		  }
+								promise_webserviceCallStandardPost.then( ({ responseData }) => {
+										try {
+												resolve( { projectNotesAjaxresponse : responseData } );
+											
+										} catch( e ) {
+												reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+												
+												reject();
+												
+												throw e;
+										}
+								});
+						} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+						}
         });
 	}
 
