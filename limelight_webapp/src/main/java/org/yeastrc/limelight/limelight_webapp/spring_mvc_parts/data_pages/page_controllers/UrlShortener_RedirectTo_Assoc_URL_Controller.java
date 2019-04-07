@@ -93,7 +93,7 @@ public class UrlShortener_RedirectTo_Assoc_URL_Controller {
 			
 			httpServletResponse.setStatus( 404 );
 			
-			return new ModelAndView( "data_pages/error_pages/project_ShortName_NotFound_Page.jsp" );
+			return new ModelAndView( "data_pages/error_pages/sharePage_Code_NotFound_Page.jsp" );
 
 		} catch ( Exception e ) {
 			

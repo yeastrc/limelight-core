@@ -21,7 +21,7 @@
 const _project_page_upload_data_section_project_owner_user_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js");
 
 //  For AJAX call (non jQuery)
-import { getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from 'page_js/EveryPageCommon.js';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
@@ -1023,14 +1023,18 @@ export class ProjectPage_UploadData_NewUploadMain {
 				throw e;
 			}
 		}, false);
+
+		const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
 		
-		let postURL = "d/rws/for-page/project-upload-data-upload-file/" + getWebserviceSyncTrackingCode();
+		let postURL = "d/rws/for-page/project-upload-data-upload-file";
 		
 		xmlHttpRequest.open('POST', postURL);
 		
 		xmlHttpRequest.setRequestHeader( "Content-Type", "application/octet-stream" );
 		
 		//  Send values in Request Header
+
+		xmlHttpRequest.setRequestHeader( LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, webserviceSyncTrackingCode );
 		
 		//	   parameters added to the Request Header are available when the request is first received at the server.
 		

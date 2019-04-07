@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -137,14 +136,10 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.PROJECT__UPLOAD_DATA_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER
-					+ AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_JSON(
-
-			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-			String webserviceSyncTracking,
 
 			//  No @RequestBody since the POST body will be read in this method and copied to a local file
 			//  @RequestBody byte[] postBody,
@@ -157,7 +152,7 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 
 			//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
 			//    to return specific error to web app JS code if webserviceSyncTracking is not current value
-			validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( webserviceSyncTracking );
+			validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
 
 
 			//    			String requestURL = httpServletRequest.getRequestURL().toString();

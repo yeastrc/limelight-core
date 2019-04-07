@@ -36,20 +36,6 @@ public class AA_RestWSControllerPaths_Constants {
 	 */
 	public static final String PATH_START_ALL = "/";
 
-	/**
-	 * Path Parameter Label  
-	 */
-	public static final String PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING = "webserviceSyncTracking";
-	
-	/**
-	 * !!!  Place at end of all Webservice Paths
-	 * 
-	 * Spring MVC format for path parameter
-	 */
-	public static final String PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION =
-			"/{" + PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING + "}";
-	
-
 	///////////////
 	
 	/**

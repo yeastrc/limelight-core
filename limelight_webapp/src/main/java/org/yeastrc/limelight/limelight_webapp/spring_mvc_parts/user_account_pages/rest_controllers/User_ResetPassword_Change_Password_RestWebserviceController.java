@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -88,7 +87,6 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 			path = { 
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ PATH_OF_CURRENT_CONTROLLER
-					+ AA_UserAccount_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -98,9 +96,6 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 	//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
-
-			@PathVariable(value = AA_UserAccount_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-			String webserviceSyncTracking,
 
 			@RequestBody byte[] postBody,
 			HttpServletRequest httpServletRequest,

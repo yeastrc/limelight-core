@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,7 +40,6 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParam
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
-import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -107,7 +105,6 @@ public class ProjectView_SearchList_RestWebserviceController {
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER
-					+ AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -118,9 +115,6 @@ public class ProjectView_SearchList_RestWebserviceController {
 
     public @ResponseBody ResponseEntity<byte[]>  projectView(
 
-			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-    		String webserviceSyncTracking,
-    		
     		@RequestBody byte[] postBody,
     		HttpServletRequest httpServletRequest,
     		HttpServletResponse httpServletResponse
@@ -131,8 +125,8 @@ public class ProjectView_SearchList_RestWebserviceController {
 
     		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
     		//    to return specific error to web app JS code if webserviceSyncTracking is not current value
-    		validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( webserviceSyncTracking );
-
+    		validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
+    		
     		//  Always accept POST body as byte[] and parse to JSON here so have POST body for caching or other needs
 
     		if ( postBody == null ) {

@@ -27,6 +27,7 @@ import javax.servlet.annotation.WebListener;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GetJsCssCacheBustString;
+import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_Code;
 import org.slf4j.Logger;
 
 
@@ -93,7 +94,11 @@ public class WebappServletContextListener implements ServletContextListener {
 		}
 		context.setAttribute( WebConstants.APP_CONTEXT_JS_CSS_CACHE_BUST, jsCssCacheBustString );
 		
-		context.setAttribute( WebConstants.APP_CONTEXT_WEBSERVICE_SYNC_TRACKING, jsCssCacheBustString );
+		String webserviceSyncTracking_Code_OnServer = jsCssCacheBustString; // Currently re-use jsCssCacheBustString;
+		
+		context.setAttribute( WebConstants.APP_CONTEXT_WEBSERVICE_SYNC_TRACKING, webserviceSyncTracking_Code_OnServer );
+		
+		Validate_WebserviceSyncTracking_Code.setWebserviceSyncTracking_Code_OnServer( webserviceSyncTracking_Code_OnServer );
 		
 		
 //		context.setAttribute( WebConstants.CONFIG_SYSTEM_VALUES_HTML_KEY, appContextConfigSystemValuesRetrieval );

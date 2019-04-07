@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -150,7 +149,6 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.SPECTRUM_FOR_PSM_ID_REST_WEBSERVICE_CONTROLLER
-					+ AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -160,9 +158,6 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 //			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
     public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
-
-			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-    		String webserviceSyncTracking,
     		
     		@RequestBody byte[] postBody,
     		HttpServletRequest httpServletRequest,
@@ -174,7 +169,7 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 
     		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
     		//    to return specific error to web app JS code if webserviceSyncTracking is not current value
-    		validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( webserviceSyncTracking );
+    		validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
 
     		//  Always accept POST body as byte[] and parse to JSON here so have POST body for caching or other needs
     		

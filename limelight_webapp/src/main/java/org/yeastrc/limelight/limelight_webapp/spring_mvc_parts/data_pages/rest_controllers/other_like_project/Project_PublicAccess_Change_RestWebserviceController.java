@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -98,7 +97,6 @@ public class Project_PublicAccess_Change_RestWebserviceController {
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.PROJECT_ENABLE_PUBLIC_ACCESS_REST_WEBSERVICE_CONTROLLER
-					+ AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -109,15 +107,12 @@ public class Project_PublicAccess_Change_RestWebserviceController {
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_EnablePublicAccessOnProject(
 
-			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-			String webserviceSyncTracking,
-
 			@RequestBody byte[] postBody,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse
 			) throws Exception {
 
-		return updatePublicAccessEnabled( true /* projectPublicAccessEnabledDBField */, webserviceSyncTracking, postBody, httpServletRequest, httpServletResponse );
+		return updatePublicAccessEnabled( true /* projectPublicAccessEnabledDBField */, postBody, httpServletRequest, httpServletResponse );
 	}
 
 	/////////////////////////////////////////////////////
@@ -137,7 +132,6 @@ public class Project_PublicAccess_Change_RestWebserviceController {
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.PROJECT_DISABLE_PUBLIC_ACCESS_REST_WEBSERVICE_CONTROLLER
-					+ AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -148,15 +142,12 @@ public class Project_PublicAccess_Change_RestWebserviceController {
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_DisablePublicAccessOnProject(
 
-			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-			String webserviceSyncTracking,
-
 			@RequestBody byte[] postBody,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse
 			) throws Exception {
 
-		return updatePublicAccessEnabled( false /* projectPublicAccessEnabledDBField */, webserviceSyncTracking, postBody, httpServletRequest, httpServletResponse );
+		return updatePublicAccessEnabled( false /* projectPublicAccessEnabledDBField */, postBody, httpServletRequest, httpServletResponse );
 	}
 
 	/**
@@ -171,8 +162,6 @@ public class Project_PublicAccess_Change_RestWebserviceController {
 
 			boolean projectPublicAccessEnabledDBField, //  From calling method
 
-			String webserviceSyncTracking,
-
 			byte[] postBody,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse
@@ -183,7 +172,7 @@ public class Project_PublicAccess_Change_RestWebserviceController {
 
 			//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
 			//    to return specific error to web app JS code if webserviceSyncTracking is not current value
-			validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( webserviceSyncTracking );
+			validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
 
 			//  Always accept POST body as byte[] and parse to JSON here so have POST body for caching or other needs
 

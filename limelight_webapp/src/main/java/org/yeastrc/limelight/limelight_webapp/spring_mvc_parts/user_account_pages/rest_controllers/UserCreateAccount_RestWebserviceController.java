@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -102,7 +101,6 @@ public class UserCreateAccount_RestWebserviceController {
 			path = { 
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_FROM_INVITE_REST_WEBSERVICE_CONTROLLER
-					+ AA_UserAccount_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING_PATH_ADDITION
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -112,9 +110,6 @@ public class UserCreateAccount_RestWebserviceController {
 	//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_With_Invite(
-
-			@PathVariable(value = AA_UserAccount_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-			String webserviceSyncTracking,
 
 			@RequestBody byte[] postBody,
 			HttpServletRequest httpServletRequest,

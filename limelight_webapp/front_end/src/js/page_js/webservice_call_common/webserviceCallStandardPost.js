@@ -25,7 +25,7 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+import { _AJAX_POST_JSON_CONTENT_TYPE, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
@@ -48,9 +48,10 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
 
     const webserviceCallFunction = function( resolve, reject ) {
         try {
+            const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
             const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
 
-            const _URL = url + "/" + webserviceSyncTrackingCode;
+            const _URL = url;
 
             const requestData = JSON.stringify( dataToSend );
 
@@ -61,6 +62,11 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                 data : requestData,
                 contentType: _AJAX_POST_JSON_CONTENT_TYPE,
                 dataType : "json",
+                beforeSend : function( jqXHR, settings ) { // ( jqXHR jqXHR, PlainObject settings )
+                    // A pre-request callback function that can be used to modify the jqXHR (in jQuery 1.4.x, XMLHTTPRequest) object before it is sent. Use this to set custom headers, etc. The jqXHR and settings objects are passed as arguments. This is an Ajax Event. Returning false in the beforeSend function will cancel the request. As of jQuery 1.5, the beforeSend option will be called regardless of the type of request.
+
+                    jqXHR.setRequestHeader( webserviceSyncTrackingCodeHeaderParam, webserviceSyncTrackingCode );
+                },
                 success : function( responseData ) {
                     try {
                         resolve({ responseData });

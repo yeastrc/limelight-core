@@ -506,7 +506,7 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-		promise_webserviceCallStandardPost.catch( () => { reject() }  );
+		promise_webserviceCallStandardPost.catch( () => {  }  );
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {

@@ -17,6 +17,8 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
+const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT = "webservice_sync_tracking_code_mismatch_text";
+const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE = 400;
 
 var AJAX_RESPONSE_NO_SESSION_TEXT = "no_session";
 var AJAX_RESPONSE_NO_SESSION_STATUS_CODE = 401;
@@ -51,13 +53,21 @@ function handleAJAXFailure( errMsg ) {
 
 function handleRawAJAXError( xhr ) {
 
-	var status = xhr.status;
-	var response = xhr.response;
+	var jqXHR_statusCode = xhr.status;
+	var jqXHR_responseText_String = xhr.response;
 	
+	
+	if ( jqXHR_statusCode === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE &&
+		jqXHR_responseText_String === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT ) { 
 
-	
-	if ( status === AJAX_RESPONSE_NO_SESSION_STATUS_CODE &&
-			response === AJAX_RESPONSE_NO_SESSION_TEXT ) { 
+		//  reload current URL, pick up new tacking code and new Javascript code
+
+		window.location.reload(true);
+
+		return true;
+
+	} else if ( jqXHR_statusCode === AJAX_RESPONSE_NO_SESSION_STATUS_CODE &&
+			jqXHR_responseText_String === AJAX_RESPONSE_NO_SESSION_TEXT ) { 
 		
 
 		//  reload current URL
@@ -67,8 +77,8 @@ function handleRawAJAXError( xhr ) {
 		return true;
 
 
-	} else if ( status === AJAX_RESPONSE_FORBIDDEN_STATUS_CODE &&
-			response === AJAX_RESPONSE_FORBIDDEN_TEXT ) { 
+	} else if ( jqXHR_statusCode === AJAX_RESPONSE_FORBIDDEN_STATUS_CODE &&
+			jqXHR_responseText_String === AJAX_RESPONSE_FORBIDDEN_TEXT ) { 
 
 
 		//  reload current URL
@@ -92,8 +102,7 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 	
 	var jqXHR_statusCode = jqXHR.status;
 	var jqXHR_responseText_JSON_String = jqXHR.responseText; //  Actually JSON 
-	
-	
+
 	var jqXHR_responseText_JSON = undefined;
 	
 	try {
@@ -112,7 +121,16 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 	}
 
 	
-	if ( jqXHR_statusCode === AJAX_RESPONSE_NO_SESSION_STATUS_CODE &&
+	if ( jqXHR_statusCode === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE &&
+		jqXHR_responseText === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT ) { 
+
+		//  reload current URL, pick up new tacking code and new Javascript code
+
+		window.location.reload(true);
+
+		return true;
+
+	} else if ( jqXHR_statusCode === AJAX_RESPONSE_NO_SESSION_STATUS_CODE &&
 			jqXHR_responseText === AJAX_RESPONSE_NO_SESSION_TEXT ) { 
 		
 

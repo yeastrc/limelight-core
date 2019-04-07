@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author danj
  *
@@ -24,8 +26,13 @@ package org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking;
 public interface Validate_WebserviceSyncTracking_CodeIF {
 
 	/**
-	 * @param webserviceSyncTracking_Code
+	 * Validate the webserviceSyncTracking code in web service calls
+	 * 
+	 * If mismatch, throws exception Limelight_WS_BadRequest_WebserviceSyncTrackingCodeMismatch_Exception
+	 *   so Javascript code reloads the page to get the latest tracking code and the latest web page and latest Javscript code.
+	 *   
+	 * @param httpServletRequest
 	 */
-	void validate_webserviceSyncTracking_Code(String webserviceSyncTracking_Code);
+	void validate_webserviceSyncTracking_Code(HttpServletRequest httpServletRequest);
 
 }
