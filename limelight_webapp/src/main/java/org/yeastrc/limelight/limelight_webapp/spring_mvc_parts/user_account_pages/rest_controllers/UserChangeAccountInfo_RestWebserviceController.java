@@ -214,6 +214,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 			}
 			if ( webserviceRequest.email != null ) {
 				userMgmtManageAccountRequest.setEmail( webserviceRequest.email );
+				userSessionBuilderNewSession.setEmail( webserviceRequest.email );
 				updateMainAcctData = true;
 			}
 			if ( webserviceRequest.organization != null ) {
