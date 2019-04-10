@@ -40,6 +40,11 @@ public class AA_ErrorPageControllerPaths_Constants {
 	 * Display main error page. This JSP is also used by other controllers
 	 */
 	public static final String MAIN_ERROR_PAGE_CONTROLLER = "error_display_page";
+	
+	/**
+	 * Display error page for user not allowed to access project associated with requested data (Protein page, etc)
+	 */
+	public static final String ASSOCIATED_PROJECT_ACCESS_NOT_ALLOWED_ERROR_PAGE = "associatedProjectAccessNotAllowed_ErrorPage_Controller";
 
 	/**
 	 * Display Internet Explorer Not Supported Error Message.

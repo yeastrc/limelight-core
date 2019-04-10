@@ -36,7 +36,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
-import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.WebErrorPageKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.db_dto.SearchDataLookupParametersLookupDTO;
@@ -282,6 +281,55 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 			}
 
     		WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+
+			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
+					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
+				
+    			//  No User session and not public project so forward to Login page
+
+    			RequestDispatcher requestDispatcher = 
+    					httpServletRequest.getServletContext().getRequestDispatcher( 
+    							AA_UserAccount_PageControllerPaths_Constants.PATH_START_ALL
+    							+ AA_UserAccount_PageControllerPaths_Constants.LOGIN_PAGE_CONTROLLER );
+
+    			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+    			return false; //  EARLY EXIT
+    		}
+			
+			if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
+
+    			final int statusCode401 = 401; // 
+
+				httpServletResponse.setStatus( statusCode401 ); 
+	
+				final String controllerURL =
+						AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
+						+ AA_ErrorPageControllerPaths_Constants.ASSOCIATED_PROJECT_ACCESS_NOT_ALLOWED_ERROR_PAGE;
+	
+				RequestDispatcher requestDispatcher = 
+						httpServletRequest.getServletContext().getRequestDispatcher( controllerURL );
+	
+				log.warn( "User not allowed to access project. "
+						+ "setting HTTP status code to: " + statusCode401
+						+ ".  Forwarding to '"
+						+ controllerURL
+						+ "'. requestURI: " + requestURI );
+	
+				requestDispatcher.forward( httpServletRequest, httpServletResponse );
+	
+				return false; //  EARLY EXIT
+	
+				//        	// forward to error page
+				//        	String forwardPath = "forward:" + AA_UserAccount_PageControllerPaths_Constants.LOGIN_PAGE_CONTROLLER; 
+				//            ModelAndView mav = new ModelAndView( forwardPath );
+				//            throw new ModelAndViewDefiningException(mav);
+				//        	
+				// Above code will send a 401 with no response body.
+				// If you need a 401 view, do a redirect instead of
+				// returning false.
+				// response.sendRedirect("/401"); // assuming you have a handler mapping for 401
+			}
 
 			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
 					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {

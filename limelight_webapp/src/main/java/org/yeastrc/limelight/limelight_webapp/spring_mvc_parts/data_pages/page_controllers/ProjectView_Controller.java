@@ -123,12 +123,13 @@ public class ProjectView_Controller {
 				return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER;
 			}
 
-//			if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
-//				
-//				String msg = "No Access Allowed to Project for this User or for Public User"; //  TODO  Fix to forward to error page
-//				log.error( msg );
-//				throw new LimelightErrorDataInWebRequestException(msg);
-//			}
+			if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
+				
+				//  Not at least public project so show error page
+				
+				return "data_pages/error_pages/project_AccessNotAllowed_Page.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+			}
+			
 			
 			httpServletRequest.setAttribute( WebConstants.REQUEST_WEB_SESSION_AUTH_ACCESS_LEVEL, webSessionAuthAccessLevel );
 
