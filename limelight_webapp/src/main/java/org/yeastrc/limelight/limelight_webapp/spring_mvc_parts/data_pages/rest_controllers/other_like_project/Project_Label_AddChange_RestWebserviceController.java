@@ -186,7 +186,7 @@ public class Project_Label_AddChange_RestWebserviceController {
 				userId = userSession.getUserId();
 			}
 
-			if ( ! webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed() ) {
+			if ( ! webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 				
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
 			}
