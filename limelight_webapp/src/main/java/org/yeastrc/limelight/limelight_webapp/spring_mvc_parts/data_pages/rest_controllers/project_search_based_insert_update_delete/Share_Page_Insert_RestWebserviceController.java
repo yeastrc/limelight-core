@@ -316,8 +316,14 @@ public class Share_Page_Insert_RestWebserviceController {
 	 * @return
 	 */
 	private String getShortenedKey() {
+
 		StringBuilder randomStringSB = new StringBuilder( 16 );
-		for ( int j = 0; j < 2; j++ ) {
+
+		final int RETURN_LENGTH = 10;
+		
+		int insertedCharacterCount = 0;
+		
+		for ( int j = 0; j < 200; j++ ) { // for loop just provides an upper bound
 			double tosKeyMultiplier = Math.random();
 			if ( tosKeyMultiplier < 0.5 ) {
 				tosKeyMultiplier += 0.5;
@@ -327,12 +333,30 @@ public class Share_Page_Insert_RestWebserviceController {
 			String encodedLong = BaseEncoding.base64().encode( Longs.toByteArray(tosKeyLong) );
 			// Drop first 6 characters and last character
 			String encodedLongExtract = encodedLong.substring( 6, encodedLong.length() - 1 );
-			randomStringSB.append( encodedLongExtract );
+			
+			char[] encodedLongArray = encodedLongExtract.toCharArray();
+			
+			for ( char entry : encodedLongArray ) {
+				if ( ( entry >= 'a' && entry <= 'z' )
+						|| ( entry >= 'A' && entry <= 'Z' )
+						|| ( entry >= '0' && entry <= '9' ) ) {
+					//  Only take a-z, A-Z, 0-9.
+					randomStringSB.append( entry );
+					insertedCharacterCount++;
+					if ( insertedCharacterCount >= RETURN_LENGTH ) {
+						break;
+					}
+				}
+			}
+			if ( insertedCharacterCount >= RETURN_LENGTH ) {
+				break;
+			}
+		}
+		if ( insertedCharacterCount < RETURN_LENGTH ) {
+			throw new LimelightInternalErrorException("Not find enough letters and numbers for randomString. insertedCharacterCount: " + insertedCharacterCount );
 		}
 		String randomString = randomStringSB.toString();
-		randomString = randomString.replace( '/', 'z' ); // Replace all '/' since is a URL path separator
-	    randomString = randomString.replace( '\\', 'x' ); // Replace all '\' Browser replaces it with '/' which is a URL path separator
-	    randomString = randomString.replace( '%', 'w' ); // Replace all '%' since is the start of '%' encoded characters
+
 		return randomString;
 	}
     
