@@ -39,7 +39,7 @@ import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallS
  * @param url - without trailing '/' or getWebserviceSyncTrackingCode() 
  * @param doNotHandleErrorResponse - Do not process non-200 response code or AJAX Parse failures, Caller is responsible.
  * 
- * @return Promise. call resolve({ responseData }) or reject({ rejectReasonObject })
+ * @return { promise, api }. On promise, call resolve({ responseData }) or reject({ rejectReasonObject }).  On api, call abort()
  * 
  * content type of post is assumed _AJAX_POST_JSON_CONTENT_TYPE
  * 

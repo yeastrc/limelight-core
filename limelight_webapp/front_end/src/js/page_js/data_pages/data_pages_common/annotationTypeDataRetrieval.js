@@ -91,7 +91,9 @@ export class AnnotationTypeDataRetrieval {
 
 				const requestData = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
 
-				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+				const webserviceCallStandardPostResult = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+				const promise_webserviceCallStandardPost = webserviceCallStandardPostResult.promise; 
 
 				promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
