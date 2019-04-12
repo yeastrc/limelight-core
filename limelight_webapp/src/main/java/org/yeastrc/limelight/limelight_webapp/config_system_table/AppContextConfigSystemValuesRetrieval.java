@@ -1,4 +1,4 @@
-package org.yeastrc.limelight.limelight_webapp.access_control.config_system_table;
+package org.yeastrc.limelight.limelight_webapp.config_system_table;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;

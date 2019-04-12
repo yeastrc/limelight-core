@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.yeastrc.limelight.limelight_webapp.access_control.config_system_table.AppContextConfigSystemValuesRetrieval;
+import org.yeastrc.limelight.limelight_webapp.config_system_table.AppContextConfigSystemValuesRetrieval;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 
 /**
