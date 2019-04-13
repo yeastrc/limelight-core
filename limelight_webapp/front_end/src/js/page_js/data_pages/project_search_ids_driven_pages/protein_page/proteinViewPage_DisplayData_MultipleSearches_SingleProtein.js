@@ -783,26 +783,32 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 				const loadedDataPerProjectSearchIdHolder = this._proteinViewPage_Display_MultipleSearch._get_loadedDataPerProjectSearchIdHolder_for_projectSearchId( projectSearchId );
 
 				const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+				if ( ! dynamicModificationsOnProtein_KeyProteinSequenceVersionId ) {
+					//  No data for projectSearchId so skip to next
+					continue; // EARLY CONTINUE
+				}
+
 				const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
-		
-				if ( dynamicModificationsOnProtein ) {
+				if ( ! dynamicModificationsOnProtein ) {
+					// No Data for _proteinSequenceVersionId so skip to next
+					continue; // EARLY CONTINUE
+				}
 
-					for ( const modificationOnProtein of dynamicModificationsOnProtein) {
-						//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+				for ( const modificationOnProtein of dynamicModificationsOnProtein) {
+					//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
 
-						//  modificationOnProtein { mass: 9945.99, position: 23, reportedPeptideId: 26043 }
+					//  modificationOnProtein { mass: 9945.99, position: 23, reportedPeptideId: 26043 }
 
-						const position = modificationOnProtein.position;
-						const mass = modificationOnProtein.mass;
-						let massesAtPosition = modsOnProteinByPosition_Sets.get( position );
-						if ( ! massesAtPosition ) {
-							massesAtPosition = new Set();
-							modsOnProteinByPosition_Sets.set( position, massesAtPosition );
-						}
-						//  Round mass since Multiple Search
-						const roundedMass = this._roundModificationMass_ReturnNumber_LocalFunction({ mass });
-						massesAtPosition.add( roundedMass );
+					const position = modificationOnProtein.position;
+					const mass = modificationOnProtein.mass;
+					let massesAtPosition = modsOnProteinByPosition_Sets.get( position );
+					if ( ! massesAtPosition ) {
+						massesAtPosition = new Set();
+						modsOnProteinByPosition_Sets.set( position, massesAtPosition );
 					}
+					//  Round mass since Multiple Search
+					const roundedMass = this._roundModificationMass_ReturnNumber_LocalFunction({ mass });
+					massesAtPosition.add( roundedMass );
 				}
 			}
 
