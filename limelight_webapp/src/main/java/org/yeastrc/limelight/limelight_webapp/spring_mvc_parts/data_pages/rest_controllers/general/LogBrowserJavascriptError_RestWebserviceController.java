@@ -95,10 +95,16 @@ public class LogBrowserJavascriptError_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
+    		String usernameForLogMsg = "\n No User Session or No Username in Session";
+    		
     		String userIdForLogMsg = "\n No User Session or No User Id in Session";
     		
     		UserSession userSession = userSessionManager.getUserSession( httpServletRequest );
     		if ( userSession != null ) {
+    			String username = userSession.getUsername();
+    			if ( username != null ) {
+    				userIdForLogMsg = "\n username in session: " + username;
+    			}
     			Integer userId = userSession.getUserId();
     			if ( userId != null ) {
     				userIdForLogMsg = "\n userId in session: " + userId;
@@ -110,6 +116,7 @@ public class LogBrowserJavascriptError_RestWebserviceController {
     				+ "\n userAgent: " + webserviceRequest.userAgent
     				+ "\n browserURL: " + webserviceRequest.browserURL
     				+ "\n Remote IP: " + httpServletRequest.getRemoteAddr()
+    				+ usernameForLogMsg
     				+ userIdForLogMsg );
     		
     		LogBrowserJavascriptErrorResult webserviceResult = new LogBrowserJavascriptErrorResult();
