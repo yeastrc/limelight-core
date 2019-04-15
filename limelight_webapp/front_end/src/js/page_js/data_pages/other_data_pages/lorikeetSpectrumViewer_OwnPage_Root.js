@@ -112,13 +112,13 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 
 		//  Required to pass JSON only for MS Edge, when pass JS objects like Array, could not use 'for of' on them.
 
-		console.log("Entered addLorikeetToPage(...) params_JSON: " + params_JSON );
+		// console.log("Entered addLorikeetToPage(...) params_JSON: " + params_JSON );
 
 		
 		const params = JSON.parse( params_JSON );
 		
-		console.log("addLorikeetToPage(...) params: " );
-		console.log( params );
+		// console.log("addLorikeetToPage(...) params: " );
+		// console.log( params );
 
 		const lorikeetOptions = params.lorikeetOptions;
 		const loadedDataFromServer = params.loadedDataFromServer; 
