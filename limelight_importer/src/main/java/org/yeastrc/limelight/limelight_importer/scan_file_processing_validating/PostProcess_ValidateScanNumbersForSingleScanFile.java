@@ -54,7 +54,10 @@ public class PostProcess_ValidateScanNumbersForSingleScanFile {
 
 		for ( Integer scanNumbersFromPSM : scanNumbersFromPSMs ) {
 			if ( ! allScanNumbersForScanFileSet.contains( scanNumbersFromPSM ) ) {
-				String msg = "Scan Number on PSM not found in scan file.  Scan Filename: " + scanFilename;
+				String msg = "Scan Number on PSM not found in scan file.  Scan Filename: " 
+						+ scanFilename
+						+ " scanNumberFromPSM: "
+						+ scanNumbersFromPSM;
 				log.error( msg );
 				throw new LimelightImporterDataException( msg );
 			}
