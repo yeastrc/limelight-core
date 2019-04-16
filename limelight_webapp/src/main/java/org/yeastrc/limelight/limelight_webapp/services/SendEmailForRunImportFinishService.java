@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
@@ -109,7 +110,8 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         			fileImportTrackingDTO, 
         			fileImportTrackingRunDTO,
         			userMgmtGetUserDataResponse.getEmail(), // toEmailAddressParam
-        			null // userEmailAddressParam
+        			null, // userEmailAddressParam
+        			null // importerBaseDir
         			);
 			
         	if ( sendEmailItem != null ) {
@@ -120,6 +122,19 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         				.getConfigValueForConfigKey( ConfigSystemsKeysConstants.RUN_IMPORT_EXTRA_EMAILS_TO_SEND_TO_KEY );
         		
         		if ( StringUtils.isNotEmpty( extraEmailAddressesToSendTo_CommaDelim ) ) {
+
+            		String importerBaseDir = null;
+            		
+            		try {
+            			//  Get File Import base dir
+            			importerBaseDir = 
+            					configSystemDAO
+            					.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY );
+        			} catch ( Throwable t ) {
+        				// Log and eat exception
+        				
+        			}
+            		
         			String[] extraEmailAddressesToSendTo_Array = extraEmailAddressesToSendTo_CommaDelim.split( "," );
         			for ( String extraEmailAddressesToSendTo : extraEmailAddressesToSendTo_Array ) {
         				
@@ -128,7 +143,8 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         	        			fileImportTrackingDTO, 
         	        			fileImportTrackingRunDTO,
         	        			extraEmailAddressesToSendTo, // toEmailAddressParam
-        	        			userMgmtGetUserDataResponse.getEmail() // userEmailAddressParam
+        	        			userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
+        	        			importerBaseDir // from config
         	        			);
         				
         				sendEmailItem.setToEmailAddress( extraEmailAddressesToSendTo );
@@ -154,7 +170,8 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 			FileImportTrackingDTO fileImportTrackingDTO,
 			FileImportTrackingRunDTO fileImportTrackingRunDTO,
 			String toEmailAddressParam,
-			String userEmailAddressParam ) throws Exception {
+			String userEmailAddressParam,
+			String importerBaseDir ) throws Exception {
 
 		String fromEmailAddress = 
 				configSystemDAO
@@ -212,6 +229,25 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 				+ failedMessage
 				+ "\n\n"
 				+ "Thank you\n\nlimelight";
+
+		if ( email_Contents_Control == Email_Contents_Control.FOR_OTHER ) {
+			
+			String importTrackingLine = "";
+			if ( fileImportTrackingDTO != null ) {
+				importTrackingLine = "\nImportTrackId: " + fileImportTrackingDTO.getId();
+			}
+			
+			String importerBaseDirLine = "";
+			if ( StringUtils.isNotEmpty( importerBaseDir ) ) {
+				importerBaseDirLine = "\n Importer Base dir: " + importerBaseDir;
+			}
+			
+			
+			text += "\n\nThe above text was sent to email address: " + userEmailAddressParam + "\n"
+					+ "Project Id: " + fileImportTrackingDTO.getProjectId()
+					+ importTrackingLine
+					+ importerBaseDirLine;
+		}
 		
 		if ( email_Contents_Control == Email_Contents_Control.FOR_OTHER ) {
 			
