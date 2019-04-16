@@ -19,7 +19,6 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.page_controllers
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -71,9 +70,6 @@ public class Z_Sample_Controller {
 		String queryString = httpServletRequest.getQueryString();
 		
 		ServletContext servletContext = httpServletRequest.getServletContext();
-		
-		
-		HttpSession httpSession = httpServletRequest.getSession( false ); // Return null if no session
 		
 		httpServletRequest.setAttribute( "mm", "uuuuu");
 		

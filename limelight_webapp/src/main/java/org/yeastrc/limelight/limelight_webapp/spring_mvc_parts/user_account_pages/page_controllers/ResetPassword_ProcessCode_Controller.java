@@ -18,8 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_Service.User_Validate_ResetPassword_Code_Service_Result;
+import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 
 @Controller
 //@RequestMapping("/")
@@ -66,7 +66,10 @@ public class ResetPassword_ProcessCode_Controller {
 			"user_account_pages_and_parts/pages/resetPasswordErrorPage.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 
 	
-	
+
+	@Autowired
+	private UserSessionManager userSessionManager;
+
 	@Autowired
 	private User_Validate_ResetPassword_Code_ServiceIF user_Validate_ResetPassword_Code_Service;
 	
@@ -92,19 +95,16 @@ public class ResetPassword_ProcessCode_Controller {
 			@PathVariable( value = PATH_PARAMETER_LABEL_RESET_PASSWORD_TRACKING_CODE ) 
 			String resetPasswordTrackingCode,
 			RedirectAttributes attributes,
-			HttpServletRequest httpServletRequest ) {
+			HttpServletRequest httpServletRequest,
+    		HttpServletResponse httpServletResponse ) {
 		
 //		log.warn( "controllerMethod(...) called" );
 		
 		log.info( "controllerMethod(...) called" );
 
 		try {
-			HttpSession httpSession = httpServletRequest.getSession( false );
-
-			if ( httpSession != null ) {
-				httpSession.invalidate();
-			}
-
+			userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+					
 			User_Validate_ResetPassword_Code_Service_Result user_Validate_ResetPassword_Code_Service_Result =
 					user_Validate_ResetPassword_Code_Service.user_Validate_ResetPassword_Code_Service( resetPasswordTrackingCode );
 

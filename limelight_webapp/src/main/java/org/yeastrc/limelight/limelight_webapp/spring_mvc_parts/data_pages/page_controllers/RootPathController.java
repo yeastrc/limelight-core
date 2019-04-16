@@ -51,8 +51,6 @@ public class RootPathController {
 		
 //        model.addAttribute("name", name);
 		
-//		HttpSession httpSession = httpServletRequest.getSession( false ); // Return null if no session
-		
 		//  Currently forward to List Projects Controller
 		
 		return new ModelAndView( "forward:" + AA_PageControllerPaths_Constants.PROJECTS_LIST_PAGE_CONTROLLER, model );

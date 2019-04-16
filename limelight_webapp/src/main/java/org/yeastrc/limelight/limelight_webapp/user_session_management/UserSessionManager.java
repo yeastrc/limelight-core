@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.user_session_management;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,21 @@ public class UserSessionManager {
 	public void setUserSession( UserSession userSession, HttpServletRequest httpServletRequest ) {
 		HttpSession httpSession = httpServletRequest.getSession( true /* create if not exist */ );
 		httpSession.setAttribute( USER_SESSION__SESSION_ATTRIBUTE, userSession );
+	}
+	
+
+	/**
+	 * Invalidate the active user session
+	 * @param httpServletRequest
+	 */
+	public void invalidateUserSession( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) {
+		
+		//  first invalidate existing session
+		HttpSession httpSessionOLD = httpServletRequest.getSession( false /* do not create if not exist */ );
+		if ( httpSessionOLD != null ) {
+			httpSessionOLD.removeAttribute( USER_SESSION__SESSION_ATTRIBUTE );
+			httpSessionOLD.invalidate();
+		}
 	}
 	
 	
