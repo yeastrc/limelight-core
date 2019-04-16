@@ -2149,7 +2149,9 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		//  reportedPeptideIds for this proteinSequenceVersionId
 		const reportedPeptideIds_All = reportedPeptideIdsKeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 		if ( ! reportedPeptideIds_All ) {
-			throw Error("_getReportedPeptideIdsForDisplay: No reportedPeptideIds for proteinSequenceVersionId: " + this._proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
+			//  No reported Peptides for this proteinSequenceVersionId for this project search id
+			//  Return empty array
+			return [];    // EARLY RETURN
 		}
 
 
@@ -2258,7 +2260,12 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 		if ( ! proteinCoverageObject ) {
-			throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+			//  No proteinCoverageObject for this proteinSequenceVersionId for this project search id
+			//  There will then be no reportedPeptideIdAtPosition
+			//  Return empty array
+			return []; // EARLY EXIT
+
+			// throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
 		}
 
 		//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
@@ -2395,34 +2402,40 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
-		if ( ! proteinCoverageObject ) {
-			throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
-		}
+		// if ( ! proteinCoverageObject ) {
+		// 	throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+		// }
 
-		//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
-		for ( const selectedProteinSequencePosition of selectedProteinSequencePositions ) {
-			const reportedPeptideIdsAtPosition =  proteinCoverageObject.getReportedPeptidesForProteinCoverageAtPosition( { position : selectedProteinSequencePosition } );
-				
-			for ( const reportedPeptideIdAtPosition of reportedPeptideIdsAtPosition ) {
+		//  If No proteinCoverageObject for this proteinSequenceVersionId for this project search id
+		//  There will then be no reportedPeptideIdAtPosition
 
-				reportedPeptideIdsSelection.add( reportedPeptideIdAtPosition );
+		if ( proteinCoverageObject ) {
+
+			//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
+			for ( const selectedProteinSequencePosition of selectedProteinSequencePositions ) {
+				const reportedPeptideIdsAtPosition =  proteinCoverageObject.getReportedPeptidesForProteinCoverageAtPosition( { position : selectedProteinSequencePosition } );
+					
+				for ( const reportedPeptideIdAtPosition of reportedPeptideIdsAtPosition ) {
+
+					reportedPeptideIdsSelection.add( reportedPeptideIdAtPosition );
+				}
 			}
-		}
 
-		const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
-		const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
+			const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+			const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 
-		//  Remove from reportedPeptideIdsSelection any reported peptide ids with modifications (since 'unmodified' chosen)
-		if ( dynamicModificationsOnProtein ) {
-			//  Have modifications for this protein so process them
-			for ( const modificationOnProtein of dynamicModificationsOnProtein) {
-				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-				// const position = modificationOnProtein.position;
-				// const mass = modificationOnProtein.mass;
-				const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+			//  Remove from reportedPeptideIdsSelection any reported peptide ids with modifications (since 'unmodified' chosen)
+			if ( dynamicModificationsOnProtein ) {
+				//  Have modifications for this protein so process them
+				for ( const modificationOnProtein of dynamicModificationsOnProtein) {
+					//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+					// const position = modificationOnProtein.position;
+					// const mass = modificationOnProtein.mass;
+					const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-				//  Remove from reportedPeptideIdsSelection any reported peptide ids with modifications (since 'unmodified' chosen)
-				reportedPeptideIdsSelection.delete( reportedPeptideId );
+					//  Remove from reportedPeptideIdsSelection any reported peptide ids with modifications (since 'unmodified' chosen)
+					reportedPeptideIdsSelection.delete( reportedPeptideId );
+				}
 			}
 		}
 
@@ -2481,26 +2494,32 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
-		if ( ! proteinCoverageObject ) {
-			throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
-		}
+		// if ( ! proteinCoverageObject ) {
+		// 	throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+		// }
 
-		//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions, filtering on selected Modifications
-		for ( const selectedProteinSequencePosition of selectedProteinSequencePositions ) {
-			
-			//  Select reported peptide id with coverage at this location 
-			//      and has No Variable Modifications or Any selected Static Modification mass at any position
+		//  If No proteinCoverageObject for this proteinSequenceVersionId for this project search id
+		//  There will then be no reportedPeptideIdAtPosition
 
-			//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
-			const reportedPeptideIdsAtPosition = proteinCoverageObject.getReportedPeptidesForProteinCoverageAtPosition( { position : selectedProteinSequencePosition } );
+		if ( proteinCoverageObject ) {
+
+			//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions, filtering on selected Modifications
+			for ( const selectedProteinSequencePosition of selectedProteinSequencePositions ) {
 				
-			if ( reportedPeptideIdsAtPosition ) {
-				for ( const reportedPeptideIdAtPosition of reportedPeptideIdsAtPosition ) {
+				//  Select reported peptide id with coverage at this location 
+				//      and has No Variable Modifications or Any selected Static Modification mass at any position
 
-					if ( reportedPeptideIdsSelectionWithNoVariableModifications.has( reportedPeptideIdAtPosition ) ||
-							reportedPeptideIdsFor_Selected_StaticModificationMasses.has( reportedPeptideIdAtPosition ) ) {
+				//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
+				const reportedPeptideIdsAtPosition = proteinCoverageObject.getReportedPeptidesForProteinCoverageAtPosition( { position : selectedProteinSequencePosition } );
+					
+				if ( reportedPeptideIdsAtPosition ) {
+					for ( const reportedPeptideIdAtPosition of reportedPeptideIdsAtPosition ) {
 
-						reportedPeptideIdsSelection.add( reportedPeptideIdAtPosition );
+						if ( reportedPeptideIdsSelectionWithNoVariableModifications.has( reportedPeptideIdAtPosition ) ||
+								reportedPeptideIdsFor_Selected_StaticModificationMasses.has( reportedPeptideIdAtPosition ) ) {
+
+							reportedPeptideIdsSelection.add( reportedPeptideIdAtPosition );
+						}
 					}
 				}
 			}
@@ -2531,22 +2550,24 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		//  Dynamic Modifications ARE same as Variable Modifications
 		const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
-		const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
+		if ( dynamicModificationsOnProtein_KeyProteinSequenceVersionId ) {
+			const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 
-		//  Add to reportedPeptideIdsSelection any reported peptide ids with modification masses that are selected
-		if ( dynamicModificationsOnProtein ) {
-			//  Have modifications for this protein so process them
-			for ( const modificationOnProtein of dynamicModificationsOnProtein) {
-				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-				// const position = modificationOnProtein.position;
-				const mass = modificationOnProtein.mass;
-				const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+			//  Add to reportedPeptideIdsSelection any reported peptide ids with modification masses that are selected
+			if ( dynamicModificationsOnProtein ) {
+				//  Have modifications for this protein so process them
+				for ( const modificationOnProtein of dynamicModificationsOnProtein) {
+					//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+					// const position = modificationOnProtein.position;
+					const mass = modificationOnProtein.mass;
+					const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-				const massRounded = this._roundModificationMass_ReturnNumber_LocalFunction({ mass : mass});
+					const massRounded = this._roundModificationMass_ReturnNumber_LocalFunction({ mass : mass});
 
-				if ( variableModificationsSelected_ExcludingNoModificationOption.has( massRounded ) ) {
+					if ( variableModificationsSelected_ExcludingNoModificationOption.has( massRounded ) ) {
 
-					reportedPeptideIdsSelection.add( reportedPeptideId );
+						reportedPeptideIdsSelection.add( reportedPeptideId );
+					}
 				}
 			}
 		}
@@ -2588,31 +2609,33 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		{  //  Dynamic Modifications ARE Same as Variable Modifications
 			const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
-			const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
+			if ( dynamicModificationsOnProtein_KeyProteinSequenceVersionId ) {
+				const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 
-			//  Add to reportedPeptideIdsSelection any reported peptide ids with modification masses that are selected
-			if ( dynamicModificationsOnProtein ) {
-				//  Have modifications for this protein so process them
-				for ( const modificationOnProtein of dynamicModificationsOnProtein) {
-					//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-					const position = modificationOnProtein.position;
-					const mass = modificationOnProtein.mass;
-					const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+				//  Add to reportedPeptideIdsSelection any reported peptide ids with modification masses that are selected
+				if ( dynamicModificationsOnProtein ) {
+					//  Have modifications for this protein so process them
+					for ( const modificationOnProtein of dynamicModificationsOnProtein) {
+						//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+						const position = modificationOnProtein.position;
+						const mass = modificationOnProtein.mass;
+						const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-					const massRounded = this._roundModificationMass_ReturnNumber_LocalFunction({ mass : mass});
+						const massRounded = this._roundModificationMass_ReturnNumber_LocalFunction({ mass : mass});
 
-					positionContains_Any_ModificationMasses.add( position );
-					
-					if ( variableModificationsSelected_ExcludingNoModificationOption.has( massRounded ) ) {
+						positionContains_Any_ModificationMasses.add( position );
+						
+						if ( variableModificationsSelected_ExcludingNoModificationOption.has( massRounded ) ) {
 
-						reportedPeptideIdsFor_Selected_VariableModificationMasses.add( reportedPeptideId );
+							reportedPeptideIdsFor_Selected_VariableModificationMasses.add( reportedPeptideId );
 
-						let reportedPeptideIds_For_Selected_ModificationMasses_MapEntry = reportedPeptideIds_at_position_For_Selected_VariableModificationMasses.get( position );
-						if ( ! reportedPeptideIds_For_Selected_ModificationMasses_MapEntry ) {
-							reportedPeptideIds_For_Selected_ModificationMasses_MapEntry = new Set();
-							reportedPeptideIds_at_position_For_Selected_VariableModificationMasses.set( position, reportedPeptideIds_For_Selected_ModificationMasses_MapEntry );
+							let reportedPeptideIds_For_Selected_ModificationMasses_MapEntry = reportedPeptideIds_at_position_For_Selected_VariableModificationMasses.get( position );
+							if ( ! reportedPeptideIds_For_Selected_ModificationMasses_MapEntry ) {
+								reportedPeptideIds_For_Selected_ModificationMasses_MapEntry = new Set();
+								reportedPeptideIds_at_position_For_Selected_VariableModificationMasses.set( position, reportedPeptideIds_For_Selected_ModificationMasses_MapEntry );
+							}
+							reportedPeptideIds_For_Selected_ModificationMasses_MapEntry.add( reportedPeptideId );
 						}
-						reportedPeptideIds_For_Selected_ModificationMasses_MapEntry.add( reportedPeptideId );
 					}
 				}
 			}
@@ -2650,25 +2673,28 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
-		if ( ! proteinCoverageObject ) {
-			throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
-		}
+		// if ( ! proteinCoverageObject ) {
+		// 	throw Error("_getReportedPeptideIdsForDisplay(...): No proteinCoverageObject for proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+		// }
 
-		//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
-		for ( const selectedProteinSequencePosition of selectedProteinSequencePositions ) {
-				
-			//  Select reported peptide id with coverage at this location 
-			//      and has any selected Variable or Static Modification mass at any position
+		if ( proteinCoverageObject ) {
 
 			//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
-			const reportedPeptideIdsAtPosition =  proteinCoverageObject.getReportedPeptidesForProteinCoverageAtPosition( { position : selectedProteinSequencePosition } );
-				
-			for ( const reportedPeptideIdAtPosition of reportedPeptideIdsAtPosition ) {
+			for ( const selectedProteinSequencePosition of selectedProteinSequencePositions ) {
+					
+				//  Select reported peptide id with coverage at this location 
+				//      and has any selected Variable or Static Modification mass at any position
 
-				if ( reportedPeptideIdsFor_Selected_VariableModificationMasses.has( reportedPeptideIdAtPosition ) ||
-						reportedPeptideIdsFor_Selected_StaticModificationMasses.has( reportedPeptideIdAtPosition ) ) {
+				//  Add to reportedPeptideIdsSelection the reportedPeptideIds At the User Selected Positions
+				const reportedPeptideIdsAtPosition =  proteinCoverageObject.getReportedPeptidesForProteinCoverageAtPosition( { position : selectedProteinSequencePosition } );
+					
+				for ( const reportedPeptideIdAtPosition of reportedPeptideIdsAtPosition ) {
 
-					reportedPeptideIdsSelection.add( reportedPeptideIdAtPosition );
+					if ( reportedPeptideIdsFor_Selected_VariableModificationMasses.has( reportedPeptideIdAtPosition ) ||
+							reportedPeptideIdsFor_Selected_StaticModificationMasses.has( reportedPeptideIdAtPosition ) ) {
+
+						reportedPeptideIdsSelection.add( reportedPeptideIdAtPosition );
+					}
 				}
 			}
 		}
@@ -2694,22 +2720,25 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
-		if ( ! proteinCoverageObject ) {
-			//  No proteinCoverageObject for this proteinSequenceVersionId for this loadedDataPerProjectSearchIdHolder (projectSearchId)
-			return proteinCoverageArrayOfBoolean; // EARLY RETURN
-		}
+		// if ( ! proteinCoverageObject ) {
+		// 	//  No proteinCoverageObject for this proteinSequenceVersionId for this loadedDataPerProjectSearchIdHolder (projectSearchId)
+		// 	return proteinCoverageArrayOfBoolean; // EARLY RETURN
+		// }
 
-		const proteinCoverageEntries_PerReportedPeptideId_Array = proteinCoverageObject.get_proteinCoverageEntries_PerReportedPeptideId_Array();
+		if ( proteinCoverageObject ) {
 
-		for ( const proteinCoverageEntries_PerReportedPeptideId_entry of proteinCoverageEntries_PerReportedPeptideId_Array ) {
+			const proteinCoverageEntries_PerReportedPeptideId_Array = proteinCoverageObject.get_proteinCoverageEntries_PerReportedPeptideId_Array();
 
-			for ( const reportedPeptideId of reportedPeptideIds ) {
-				if ( proteinCoverageEntries_PerReportedPeptideId_entry.reportedPeptideId === reportedPeptideId ) {
+			for ( const proteinCoverageEntries_PerReportedPeptideId_entry of proteinCoverageEntries_PerReportedPeptideId_Array ) {
 
-					for ( let position = proteinCoverageEntries_PerReportedPeptideId_entry.proteinStartPosition ; position <= proteinCoverageEntries_PerReportedPeptideId_entry.proteinEndPosition ; position++  ) {
-						proteinCoverageArrayOfBoolean[ position ] = true;
+				for ( const reportedPeptideId of reportedPeptideIds ) {
+					if ( proteinCoverageEntries_PerReportedPeptideId_entry.reportedPeptideId === reportedPeptideId ) {
+
+						for ( let position = proteinCoverageEntries_PerReportedPeptideId_entry.proteinStartPosition ; position <= proteinCoverageEntries_PerReportedPeptideId_entry.proteinEndPosition ; position++  ) {
+							proteinCoverageArrayOfBoolean[ position ] = true;
+						}
+						break;
 					}
-					break;
 				}
 			}
 		}
