@@ -38,6 +38,8 @@ public class ImporterRunnerConfigData {
 	private static String importerJarWithPath;
 	private static String importerDbConfigWithPath;
 	
+	private static String importerPidFileWithPath;
+	
 	private static String limelightWebAppBaseURL;
 	
 	private static String commandToRunOnSuccessfulImport;
@@ -137,6 +139,12 @@ public class ImporterRunnerConfigData {
 	public static void setWaitTimeForNextCheckForImportToProcess_InSeconds(
 			Integer waitTimeForNextCheckForImportToProcess_InSeconds) {
 		ImporterRunnerConfigData.waitTimeForNextCheckForImportToProcess_InSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
+	}
+	public static String getImporterPidFileWithPath() {
+		return importerPidFileWithPath;
+	}
+	public static void setImporterPidFileWithPath(String importerPidFileWithPath) {
+		ImporterRunnerConfigData.importerPidFileWithPath = importerPidFileWithPath;
 	}
 
 }	

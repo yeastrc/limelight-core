@@ -53,6 +53,8 @@ public class ProcessImporterRunnerConfigFile {
 	
 	private static final String PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH = "importer.db.config.file.with.path";
 	
+	public static final String PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH = "importer.pid.file.with.path";
+	
 	private static final String PROPERTY_NAME__LIMELIGHT_WEB_APP_BASE_URL = "limelight.web.app.base.url";
 	
 	private static final String PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT = "command.run.successful.import";
@@ -152,6 +154,8 @@ public class ProcessImporterRunnerConfigFile {
 			String importerJarWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_JAR_WITH_PATH );
 			String importerDbConfigWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH );
 			
+			String importerPidFileWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH );
+			
 			String limelightWebAppBaseURL = configProps.getProperty( PROPERTY_NAME__LIMELIGHT_WEB_APP_BASE_URL );
 			
 			String commandToRunOnSuccessfulImport = configProps.getProperty( PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT );
@@ -208,6 +212,17 @@ public class ProcessImporterRunnerConfigFile {
 			
 			if ( StringUtils.isNotEmpty( importerDbConfigWithPath ) ) {
 				ImporterRunnerConfigData.setImporterDbConfigWithPath( importerDbConfigWithPath );
+			}
+
+			if ( StringUtils.isNotEmpty( importerPidFileWithPath ) ) {
+				
+				//  If not set, assumes that there is no pid file 
+				
+				ImporterRunnerConfigData.setImporterPidFileWithPath( importerPidFileWithPath );
+
+				String msg = "INFO::  PID file: parameter '" + PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
+						+ "' is provided so deleting it when shut down using run control file.  value:  " + importerPidFileWithPath;
+				log.warn( msg );
 			}
 			
 			ImporterRunnerConfigData.setLimelightWebAppBaseURL( limelightWebAppBaseURL );

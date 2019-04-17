@@ -17,11 +17,16 @@
 */
 package org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
+import org.yeastrc.limelight.limelight_run_importer.constants.GetImportStatus_FileConstants;
 import org.yeastrc.limelight.limelight_run_importer.database_update_with_transaction_services.GetNextTrackingToProcessDBTransaction;
 import org.yeastrc.limelight.limelight_run_importer.process_submitted_import.ProcessSubmittedImport;
 
@@ -85,6 +90,39 @@ public class GetImportAndProcessThread extends Thread {
 			notify();
 		}
 	}
+
+	/**
+	 * Called on a different thread.
+	 * The ManagerThread instance has detected that the user has requested that the Run Importer client stop after current import.
+	 */
+	public void stopRunningAfterProcessingImport() {
+
+		log.warn("INFO: stopRunningAfterProcessingJob() called:  GetImportAndProcessThread.getId() = " + this.getId() + ", GetImportAndProcessThread.getName() = " + this.getName() );
+		synchronized (this) {
+			this.keepRunning = false;
+		}
+		this.awaken();
+	}
+
+	/**
+	 * Called on a separate thread when a shutdown request comes from the operating system.
+	 * If this is not heeded, the process may be killed by the operating system after some time has passed ( controlled by the operating system )
+	 */
+	public void shutdown() {
+		log.warn( "shutdown() called, setting keepRunning = false, calling awaken() " );
+		keepRunning = false;
+		try {
+			if ( processSubmittedImport != null ) {
+				processSubmittedImport.shutdown();
+			}
+		} catch ( NullPointerException e ) {
+			//  Eat the NullPointerException since that meant that nothing had to be done.
+		}
+		awaken();
+		log.warn( "Exiting shutdown()" );
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -93,15 +131,23 @@ public class GetImportAndProcessThread extends Thread {
 	public void run() {
 		log.info( "run() entered" );
 		while ( keepRunning ) {
+			TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair = null;
 			try {
-				TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair =
-						GetNextTrackingToProcessDBTransaction.getInstance().getNextTrackingToProcess( maxTrackingRecordPriorityToRetrieve );
+				try {
+					trackingDTOTrackingRunDTOPair =
+							GetNextTrackingToProcessDBTransaction.getInstance().getNextTrackingToProcess( maxTrackingRecordPriorityToRetrieve );
+				} catch ( Throwable t ) {
+					updateGetImportStatus_File_ERROR_GettingImportToProcess( t );
+					throw t;
+				}
 				if ( trackingDTOTrackingRunDTOPair != null ) {
+					updateGetImportStatus_File_YES_ImportToProcess( trackingDTOTrackingRunDTOPair );
 					synchronized (this) {
 						processSubmittedImport = ProcessSubmittedImport.getInstance();
 					}
 					processSubmittedImport.processSubmittedImport( trackingDTOTrackingRunDTOPair );
 				} else {
+					updateGetImportStatus_File_NO_ImportToProcess();
 					int waitTimeInSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
 					synchronized (this) {
 						try {
@@ -112,6 +158,10 @@ public class GetImportAndProcessThread extends Thread {
 					}
 				}
 			} catch ( Throwable t ) {
+				
+				if ( trackingDTOTrackingRunDTOPair != null ) {
+					updateGetImportStatus_File_ERROR_ProcessingImportToProcess( t, trackingDTOTrackingRunDTOPair );
+				}
 				
 				if ( keepRunning ) {
 					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -168,24 +218,100 @@ public class GetImportAndProcessThread extends Thread {
 		}
 		log.info( "Exiting run()" );
 	}
-	
+
 	/**
-	 * Called on a separate thread when a shutdown request comes from the operating system.
-	 * If this is not heeded, the process may be killed by the operating system after some time has passed ( controlled by the operating system )
+	 * @param trackingDTOTrackingRunDTOPair
+	 * @throws IOException
 	 */
-	public void shutdown() {
-		log.warn( "shutdown() called, setting keepRunning = false, calling awaken() " );
-		keepRunning = false;
+	private void updateGetImportStatus_File_YES_ImportToProcess( TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair ) {
+	
 		try {
-			if ( processSubmittedImport != null ) {
-				processSubmittedImport.shutdown();
+			int id = trackingDTOTrackingRunDTOPair.getFileImportTrackingDTO().getId();
+	
+			try ( BufferedWriter writer = new BufferedWriter( new FileWriter( GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME ) ) ) {
+				
+				writer.write( GetImportStatus_FileConstants.GET_IMPORT_STATUS_YES_FOUND_REQUEST_TO_PROCESS_TEXT );
+				writer.write( String.valueOf( id ) );
+				writer.newLine();
 			}
-		} catch ( NullPointerException e ) {
-			//  Eat the NullPointerException since that meant that nothing had to be done.
+		} catch ( Throwable t ) {
+			
+			log.error( "Failed to update file " + GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME );
+			//  Eat Exception
 		}
-		awaken();
-		log.warn( "Exiting shutdown()" );
 	}
+
+	/**
+	 * @throws IOException
+	 */
+	private void updateGetImportStatus_File_NO_ImportToProcess( ) {
+
+		try {
+			try ( BufferedWriter writer = new BufferedWriter( new FileWriter( GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME ) ) ) {
+				
+				writer.write( GetImportStatus_FileConstants.GET_IMPORT_STATUS_NONE_FOUND_REQUEST_TO_PROCESS_TEXT );
+				writer.newLine();
+			}
+	} catch ( Throwable t ) {
+			
+			log.error( "Failed to update file " + GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME );
+			//  Eat Exception
+		}
+	}
+
+	/**
+	 * @param throwable
+	 */
+	private void updateGetImportStatus_File_ERROR_GettingImportToProcess( Throwable throwable ) {
+		try {
+			try ( PrintWriter writer = new PrintWriter( new FileWriter( GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME ) ) ) {
+				
+				writer.write( GetImportStatus_FileConstants.GET_IMPORT_STATUS_YES_ERROR_CHECKING_FOR_REQUEST_TEXT );
+				writer.write( "\n" );
+				throwable.printStackTrace( writer );
+				writer.write( "\n" );
+			}
+		} catch ( Throwable t ) {
+			
+			log.error( "Failed to update file " + GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME );
+			//  Eat Exception
+		}
+	}
+
+	/**
+	 * @param throwable
+	 * @param trackingDTOTrackingRunDTOPair
+	 */
+	private void updateGetImportStatus_File_ERROR_ProcessingImportToProcess( Throwable throwable, TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair ) {
+
+		String trackingId = null;
+		try {
+			if ( trackingDTOTrackingRunDTOPair != null ) {
+				trackingId = ": Import Tracking Id: " + trackingDTOTrackingRunDTOPair.getFileImportTrackingDTO().getId();
+			}
+		} catch ( Throwable t ) {
+			
+		}
+		
+		try {
+			try ( PrintWriter writer = new PrintWriter( new FileWriter( GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME ) ) ) {
+				
+				writer.write( GetImportStatus_FileConstants.GET_IMPORT_STATUS_YES_ERROR_PROCESSING_REQUEST_TEXT );
+				if ( trackingId != null ) {
+					writer.write( trackingId );					
+				}
+				writer.write( "\n" );
+				throwable.printStackTrace( writer );
+				writer.write( "\n" );
+			}
+		} catch ( Throwable t ) {
+			
+			log.error( "Failed to update file " + GetImportStatus_FileConstants.GET_IMPORT_STATUS_FILENAME );
+			//  Eat Exception
+		}
+	}
+
+
 	
 	public int getMaxTrackingRecordPriorityToRetrieve() {
 		return maxTrackingRecordPriorityToRetrieve;
