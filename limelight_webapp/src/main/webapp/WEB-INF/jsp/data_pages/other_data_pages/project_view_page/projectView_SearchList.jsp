@@ -32,7 +32,7 @@
 	  		Need 2 or more searches selected to merge.
 		</div>
 	  --%>
-	  	<div >
+	  	<div style="margin-bottom: 10px;">
 		  <%--  Not implemented on Peptide Page yet 
 			<input type="button" value="Merge Peptide View" id="merge_peptide_view_button" class=" merge_searches_button_jq ">
 		  --%>
