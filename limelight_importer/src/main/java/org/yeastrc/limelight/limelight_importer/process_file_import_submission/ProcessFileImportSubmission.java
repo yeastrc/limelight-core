@@ -188,6 +188,9 @@ public class ProcessFileImportSubmission {
 			
 			for ( FileImportTrackingSingleFileDTO scanFileDBRecord : scanFilesDBRecords ) {
 				if ( StringUtils.isNotEmpty( scanFileDBRecord.getFilenameOnDiskWithPathSubSameMachine() ) ) {
+
+					//  Special code for when the filename with path is passed to the webapp from the submitter
+					
 					String scanFileString = scanFileDBRecord.getFilenameOnDiskWithPathSubSameMachine();
 					File scanFile = new File( scanFileString );
 					String scanFilename = scanFile.getName();
@@ -215,15 +218,20 @@ public class ProcessFileImportSubmission {
 					scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
 					scanFileFileContainer_KeyFilename.put( scanFile.getName(), scanFileFileContainer );
 				} else {
-					String inputScanFileString = scanFileDBRecord.getFilenameOnDisk();
-					String errorStringScanSuffixValidation = ValidateScanFileSuffix.getInstance().validateScanFileSuffix( inputScanFileString );
+					
+					//  Standard processing to handle scan file has been copied to the server via the web app
+					
+					String scanFilenameOnDisk_String = scanFileDBRecord.getFilenameOnDisk();
+					String scanFilenameInUpload = scanFileDBRecord.getFilenameInUpload();
+
+					String errorStringScanSuffixValidation = ValidateScanFileSuffix.getInstance().validateScanFileSuffix( scanFilenameOnDisk_String );
 					if ( errorStringScanSuffixValidation != null ) {
 						System.err.println( errorStringScanSuffixValidation );
 						System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
 						System.err.println( "" );
 						throw new LimelightImporterErrorProcessingRunIdException();
 					}
-					File scanFile = new File( inputScanFileString );
+					File scanFile = new File( scanFilenameOnDisk_String );
 					if( ! scanFile.exists() ) {
 						System.err.println( "Could not find scan file: " + scanFile.getAbsolutePath() );
 						System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
@@ -233,7 +241,7 @@ public class ProcessFileImportSubmission {
 					ScanFileFileContainer scanFileFileContainer = new ScanFileFileContainer();
 					scanFileFileContainer.setScanFile( scanFile );
 					scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
-					scanFileFileContainer_KeyFilename.put( scanFile.getName(), scanFileFileContainer );
+					scanFileFileContainer_KeyFilename.put( scanFilenameInUpload, scanFileFileContainer );
 				}
 			}					
 			scanFileList = new ArrayList<>( scanFileFileContainer_KeyFilename.size() );

@@ -98,9 +98,11 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 								} else {
 									if ( scanFileFileContainer_KeyFilename != null && ( ! scanFileFileContainer_KeyFilename.isEmpty() ) ) {
 										if ( ! scanFileFileContainer_KeyFilename.containsKey( scanFileNameLimelightXMLInput ) ) {
-											String msg = "Scan Filename on PSM is not in Scan File List on Command Line."
-													+ "  Scan Filename on PSM: " + scanFileNameLimelightXMLInput;
-											log.error(msg);
+											String msg = "Scan Filename on PSM is not in list of Scan Files to be imported."
+													+ "  Scan Filename on PSM: " + scanFileNameLimelightXMLInput
+													+ ".  List of Scan Filenames to be imported: " 
+													+ StringUtils.join( scanFileFileContainer_KeyFilename.keySet(), ", " );
+											log.error( msg );
 											throw new LimelightImporterDataException(msg);
 										}
 									}									
