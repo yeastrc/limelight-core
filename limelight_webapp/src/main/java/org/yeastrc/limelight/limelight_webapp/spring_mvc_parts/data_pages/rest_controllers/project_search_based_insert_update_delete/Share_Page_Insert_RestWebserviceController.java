@@ -17,7 +17,9 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.project_search_based_insert_update_delete;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,9 +52,6 @@ import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessio
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
-
-import com.google.common.io.BaseEncoding;
-import com.google.common.primitives.Longs;
 
 /**
  * Insert a Shared Page (Shortened URL is returned)
@@ -329,8 +328,10 @@ public class Share_Page_Insert_RestWebserviceController {
 				tosKeyMultiplier += 0.5;
 			}
 			long tosKeyLong = (long) ( System.currentTimeMillis() * tosKeyMultiplier );
-			// Google Guava classes BaseEncoding and Longs
-			String encodedLong = BaseEncoding.base64().encode( Longs.toByteArray(tosKeyLong) );
+			ByteBuffer tosKeyBuffer = ByteBuffer.allocate(Long.BYTES);
+			tosKeyBuffer.putLong( tosKeyLong );
+			
+			String encodedLong = Base64.getEncoder().encodeToString( tosKeyBuffer.array() );
 			// Drop first 6 characters and last character
 			String encodedLongExtract = encodedLong.substring( 6, encodedLong.length() - 1 );
 			
