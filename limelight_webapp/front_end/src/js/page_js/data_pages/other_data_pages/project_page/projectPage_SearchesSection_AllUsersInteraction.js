@@ -546,6 +546,13 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		if ( (!searchList) || searchList.length === 0 ) {
 			//  No searchList for identifier
 
+			//  Hide buttons above and below search list since no search list
+
+			const $search_list_above_block = $("#search_list_above_block");
+			$search_list_above_block.hide();
+			const $search_list_below_block = $("#search_list_below_block");
+			$search_list_below_block.hide();
+
 			if ( this._projectPage_SearchesSection_LoggedInUsersInteraction ) {
 				//  have _projectPage_SearchesSection_LoggedInUsersInteraction object so call method on it
 				this._projectPage_SearchesSection_LoggedInUsersInteraction.searchListPopulated();
@@ -565,6 +572,13 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 
 		if (searchList && searchList.length > 0) {
+
+			//  Show buttons above and below search list since yes search list
+
+			const $search_list_above_block = $("#search_list_above_block");
+			$search_list_above_block.show();
+			const $search_list_below_block = $("#search_list_below_block");
+			$search_list_below_block.show();
 
 			//  Add inner search list container
 

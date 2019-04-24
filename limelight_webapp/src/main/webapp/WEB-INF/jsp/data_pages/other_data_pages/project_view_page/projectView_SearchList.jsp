@@ -21,7 +21,7 @@
 		<%-- Left align search text with 'Title' in Project Info so 40(pos of Title) - 16(width of cell for icon) --%>
 	<div class="  selector_collapsable_item" style="margin-left: 26px;">
 		
-		<div id="search_list_above_block" style="margin-bottom: 10px;">
+		<div id="search_list_above_block" style="margin-bottom: 10px; display: none;">
 		</div>
 	
 		<div id="search_list" style="margin-bottom: 10px;">
@@ -32,7 +32,8 @@
 	  		Need 2 or more searches selected to merge.
 		</div>
 	  --%>
-	  	<div style="margin-bottom: 10px;">
+	  	<div id="search_list_below_block" style="margin-bottom: 10px; display: none;">
+	  	
 		  <%--  Not implemented on Peptide Page yet 
 			<input type="button" value="Merge Peptide View" id="merge_peptide_view_button" class=" merge_searches_button_jq ">
 		  --%>
