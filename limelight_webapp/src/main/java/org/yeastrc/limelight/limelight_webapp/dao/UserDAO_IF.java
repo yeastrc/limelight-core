@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.dao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 
@@ -33,6 +34,12 @@ public interface UserDAO_IF {
 	 * @throws SQLException
 	 */
 	UserDTO getForId(int id) throws SQLException;
+	
+	/**
+	 * @return
+	 * @throws SQLException
+	 */
+	List<UserDTO> getAll() throws SQLException;
 	
 	/**
 	 * @param id

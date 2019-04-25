@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.AddNewUserUsingDBTransactionServiceIF;
@@ -39,6 +40,7 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserInviteTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ZzUserDataMirrorDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -67,6 +69,12 @@ public class UserCreateAccount_RestWebserviceController {
 
 	private static enum CreateAccountUsingAdminUserAccount { YES, NO }
 
+	/**
+	 * Used when create account Performed By Admin User
+	 */
+	@Autowired
+	private GetUserSessionActualUserLoggedIn_ForRestControllerIF getUserSessionActualUserLoggedIn_ForRestController;
+
 	@Autowired
 	private UserSessionManager userSessionManager;
 	
@@ -93,21 +101,24 @@ public class UserCreateAccount_RestWebserviceController {
 		//		log.warn( "constructor no params called" );
 	}
 
-	//  Convert JSON to byte[] so can cache it
 
-	//  These 2 annotations work the same
-
+	/**
+	 * Create Account - WITH Invite
+	 * 
+	 * 
+	 * 
+	 * @param postBody
+	 * @param httpServletRequest
+	 * @param httpServletResponse
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping( 
 			path = { 
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_FROM_INVITE_REST_WEBSERVICE_CONTROLLER
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
-
-	//	@RequestMapping( 
-	//			path = AA_RestWSControllerPaths_Constants.,
-	//			method = RequestMethod.POST,
-	//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_With_Invite(
 
@@ -147,11 +158,18 @@ public class UserCreateAccount_RestWebserviceController {
 	private CreateAccountResult createAccount_With_Invite_Internal( 
 			CreateAccountRequest createAccountRequest, String remoteIP, HttpServletRequest httpServletRequest ) throws Exception {
 
-		if ( StringUtils.isEmpty( createAccountRequest.getInviteTrackingCode() ) ) {
-			log.warn( "AccountMaintService:  inviteTrackingCode empty" );
+		if ( StringUtils.isEmpty( createAccountRequest.inviteTrackingCode ) ) {
+			log.warn( "Create Account from Invite:  inviteTrackingCode empty" );
 
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
+
+		if ( StringUtils.isNotEmpty( createAccountRequest.accessLevel ) ) {
+			log.warn( "Create Account from Invite:  accessLevel not empty which is not allowed" );
+
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		}
+		
 		
 		return createAccountCommonInternal( 
 				createAccountRequest, 
@@ -160,6 +178,102 @@ public class UserCreateAccount_RestWebserviceController {
 				CreateAccountUsingAdminUserAccount.NO,
 				httpServletRequest );
 	}
+	
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+	
+	
+	
+
+	/**
+	 * Create Account - Performed By - ADMIN User
+	 * 
+	 * 
+	 * 
+	 * @param postBody
+	 * @param httpServletRequest
+	 * @param httpServletResponse
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping( 
+			path = { 
+					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
+					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_PERFROMED_BY_ADMIN_USER_REST_WEBSERVICE_CONTROLLER
+			},
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+
+	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_PerformedBy_AdminUser(
+
+			@RequestBody byte[] postBody,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse
+			) throws Exception {
+
+		try {
+			UserSession userSession =
+					getUserSessionActualUserLoggedIn_ForRestController.userSessionOfActualUserLoggedIn( httpServletRequest );
+
+			if ( userSession.isGlobalAdminUser() || 
+					( userSession.getUserAccessLevel() != null 
+							&& userSession.getUserAccessLevel() <= AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN ) ) {
+				
+			} else {
+				//  Only admin user authorized to access this page
+				
+				throw new Limelight_WS_AuthError_Forbidden_Exception();
+			}
+			
+			final String remoteIP = httpServletRequest.getRemoteAddr();
+
+			CreateAccountRequest createAccountRequest = unmarshalJSON_ToObject.getObjectFromJSONByteArray( postBody, CreateAccountRequest.class );
+
+			if ( StringUtils.isNotEmpty( createAccountRequest.inviteTrackingCode ) ) {
+				log.warn( "Create Account Performed By Admin User:  inviteTrackingCode not empty which is not allowed" );
+
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			if ( StringUtils.isEmpty( createAccountRequest.accessLevel ) ) {
+				log.warn( "Create Account Performed By Admin User:  accessLevel empty which is not allowed" );
+
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			Integer accessLevel = null;
+			try {
+				accessLevel = Integer.parseInt( createAccountRequest.accessLevel );
+			} catch ( Exception e ) {
+				log.warn( "Create Account Performed By Admin User:  accessLevel not an integer: " + createAccountRequest.accessLevel );
+
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}			
+
+			CreateAccountResult createAccountResult = 
+					createAccountCommonInternal( 
+							createAccountRequest, 
+							accessLevel, 
+							null /* recaptchaValue */, 
+							CreateAccountUsingAdminUserAccount.YES,
+							httpServletRequest );
+			
+			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( createAccountResult );
+
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
+
+		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
+			throw e;
+
+		} catch ( Exception e ) {
+			String msg = "Failed in controller: ";
+			log.error( msg, e );
+			throw e;
+		}
+	}
+	
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
+	//////////////////////////////////////////////
 	
 	/**
 	 * Common create account code
@@ -448,7 +562,7 @@ public class UserCreateAccount_RestWebserviceController {
 				userSessionManager.setUserSession( userSession, httpServletRequest );
 			}
 
-			log.info( "Creating User Account SUCCESSFUL!!! username: " + createAccountRequest.getUsername() );
+			log.info( "Creating User Account SUCCESSFUL!!! username: " + createAccountRequest.username );
 
 			createAccountResult.setStatus(true);
 			return createAccountResult;
@@ -473,52 +587,33 @@ public class UserCreateAccount_RestWebserviceController {
 		private String email;
 		private String username;
 		private String password;
-		private String inviteTrackingCode;
+		private String inviteTrackingCode; // Required on request from Invite
+		private String accessLevel; // Only Allowed on request performed by Admin Acct
 		
-		public String getFirstName() {
-			return firstName;
-		}
 		public void setFirstName(String firstName) {
 			this.firstName = firstName;
-		}
-		public String getLastName() {
-			return lastName;
 		}
 		public void setLastName(String lastName) {
 			this.lastName = lastName;
 		}
-		public String getOrganization() {
-			return organization;
-		}
 		public void setOrganization(String organization) {
 			this.organization = organization;
-		}
-		public String getEmail() {
-			return email;
 		}
 		public void setEmail(String email) {
 			this.email = email;
 		}
-		public String getUsername() {
-			return username;
-		}
 		public void setUsername(String username) {
 			this.username = username;
-		}
-		public String getPassword() {
-			return password;
 		}
 		public void setPassword(String password) {
 			this.password = password;
 		}
-		public String getInviteTrackingCode() {
-			return inviteTrackingCode;
-		}
 		public void setInviteTrackingCode(String inviteTrackingCode) {
 			this.inviteTrackingCode = inviteTrackingCode;
 		}
-
-
+		public void setAccessLevel(String accessLevel) {
+			this.accessLevel = accessLevel;
+		}
 	}
 
 	public static class CreateAccountResult {

@@ -149,6 +149,9 @@ task createHandlebarsOutputDirs {
   	  dirToCreate = rootDir + "user_invite_processing"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
+  	  dirToCreate = rootDir + "admin_user_management"
+  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
+
   	  dirToCreate = rootDir + "dummy_template"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -539,6 +542,22 @@ task handlebarsPrecompile_user_invite_processing(type: NodeTask) {
    ]
 }
 
+//  Handlebars Precompile for input handlebars_templates/admin_user_management
+
+task handlebarsPrecompile_admin_user_management(type: NodeTask) {
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/handlebars/bin/handlebars')
+  } else {
+    script = project.file('node_modules/.bin/handlebars')
+  }
+  args = [ '--amd' , // parameters must be before file list
+  '--min',
+  '-f', 'handlebars_templates_precompiled/admin_user_management/admin_user_management_template-bundle.js',
+   'handlebars_templates/admin_user_management'
+   ]
+}
+
 //  Handlebars Precompile for input handlebars_templates/dummy_template
 
 task handlebarsPrecompile_dummy_template(type: NodeTask) {
@@ -612,6 +631,7 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_user_account_create_account',
      'handlebarsPrecompile_user_account_login_forgot_password',
      'handlebarsPrecompile_user_invite_processing',
+     'handlebarsPrecompile_admin_user_management',
      'handlebarsPrecompile_dummy_template',
      
      'webpack', // Run webpack

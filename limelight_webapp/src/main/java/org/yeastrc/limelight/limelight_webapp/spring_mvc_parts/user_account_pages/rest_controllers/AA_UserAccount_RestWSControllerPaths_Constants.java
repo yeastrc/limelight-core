@@ -51,6 +51,10 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 
 	
 	public static final String USER_CREATE_ACCOUNT_FROM_INVITE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/create-account-from-invite";
+
+	public static final String USER_CREATE_ACCOUNT_PERFROMED_BY_ADMIN_USER_REST_WEBSERVICE_CONTROLLER = 
+			"user/rws/for-page/create-account-performed-by-admin-user";
+	
 	
 	public static final String USER_RESET_PASSWORD_GEN_EMAIL_WEBSERVICE_CONTROLLER = "user/rws/for-page/reset-password-gen-email";
 

@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -53,7 +55,7 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 		
 		UserDTO result = null;
 
-		final String querySQL = "SELECT user_mgmt_user_id, user_access_level, enabled_app_specific FROM user_tbl WHERE id = ?";
+		final String querySQL = "SELECT id, user_mgmt_user_id, user_access_level, enabled_app_specific FROM user_tbl WHERE id = ?";
 		
 		try ( Connection dbConnection = super.getDBConnection();
 			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
@@ -62,19 +64,7 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				if ( rs.next() ) {
-					result = new UserDTO();
-					result.setId( id );
-					result.setUserMgmtUserId( rs.getInt( "user_mgmt_user_id" ) );
-					int userAccessLevel = rs.getInt( "user_access_level" );
-					if ( ! rs.wasNull() ) {
-						result.setUserAccessLevel( userAccessLevel );
-					}
-					int enabledInt = rs.getInt( "enabled_app_specific" );
-					if ( enabledInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.setEnabledAppSpecific( true );
-					} else {
-						result.setEnabledAppSpecific( false );
-					}
+					result = populateFromResultSet( rs );
 				}
 			}
 		} catch ( RuntimeException e ) {
@@ -87,6 +77,58 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 			throw e;
 		}
 		
+		return result;
+	}
+
+	@Override
+	public List<UserDTO> getAll() throws SQLException {
+		
+		List<UserDTO> resultList = new ArrayList<>();
+
+		final String querySQL = "SELECT id, user_mgmt_user_id, user_access_level, enabled_app_specific FROM user_tbl ";
+		
+		try ( Connection dbConnection = super.getDBConnection();
+			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
+			
+			try ( ResultSet rs = preparedStatement.executeQuery() ) {
+				while ( rs.next() ) {
+					UserDTO result = populateFromResultSet( rs );
+					resultList.add( result );
+				}
+			}
+		} catch ( RuntimeException e ) {
+			String msg = "SQL: " + querySQL;
+			log.error( msg, e );
+			throw e;
+		} catch ( SQLException e ) {
+			String msg = "SQL: " + querySQL;
+			log.error( msg, e );
+			throw e;
+		}
+		
+		return resultList;
+	}
+
+	/**
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	private UserDTO populateFromResultSet( ResultSet rs ) throws SQLException {
+		UserDTO result;
+		result = new UserDTO();
+		result.setId( rs.getInt( "id" ) );
+		result.setUserMgmtUserId( rs.getInt( "user_mgmt_user_id" ) );
+		int userAccessLevel = rs.getInt( "user_access_level" );
+		if ( ! rs.wasNull() ) {
+			result.setUserAccessLevel( userAccessLevel );
+		}
+		int enabledInt = rs.getInt( "enabled_app_specific" );
+		if ( enabledInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+			result.setEnabledAppSpecific( true );
+		} else {
+			result.setEnabledAppSpecific( false );
+		}
 		return result;
 	}
 

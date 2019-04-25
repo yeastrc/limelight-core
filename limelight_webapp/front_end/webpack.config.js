@@ -84,6 +84,13 @@ const mainConfig = {
 		'user_pages/userResetPasswordPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userResetPasswordPage_Root.js',
 		'user_pages/userAccountManagementPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userAccountManagementPage_Root.js',
 
+		//  Webapp Configure Page
+		'webapp_admin/configurePage_Root' : './src/js/page_js/webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Root.js',
+
+		//  Webapp Manage Users Page
+		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.js',
+
+
 		// SASS files
 		'styles' : './src/styles/global.scss',
 
