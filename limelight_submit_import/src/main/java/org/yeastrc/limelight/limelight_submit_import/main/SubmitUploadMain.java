@@ -379,6 +379,11 @@ public class SubmitUploadMain {
 					callSubmitImportWebservice.call_SubmitImport_Init_Webservice( submitImport_Init_Request );
 
 			if ( ! submitImport_Init_Response.isStatusSuccess() ) {
+				
+				System.err.println( "" );
+				System.err.println( "********************************************************" );
+				System.err.println( "" );
+				System.err.println( "Submit import Failed." );
 
 				if ( submitImport_Init_Response.isProjectIdNotFound() ) {
 					
@@ -666,7 +671,11 @@ public class SubmitUploadMain {
 ////			System.out.println( "Submitted Upload");
 //			
 //			
-			System.out.println( "Submission complete");
+			System.out.println( "");
+			System.out.println( "******************************************");
+			System.out.println( "");
+			System.out.println( "Submission Successful");
+			System.out.println( "");
 //
 //			
 //		} catch ( LimelightSubImportUsernamePasswordFileException e ) {
