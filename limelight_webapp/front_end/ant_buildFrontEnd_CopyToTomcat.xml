@@ -10,6 +10,13 @@
 	<echo>env:${env}</echo>
 	<echo>env.GRADLE_HOME:${env.GRADLE_HOME}</echo>
 	-->
+
+	<!--  Runs Gradle (gradlew or gradlew.bat) -->
+
+	 <!-- Set program to run for Windows, else Non-Windows (Linux/Mac) -->
+	    <condition property="executableToRun_Build_FrontEnd_CopyToComcat" value="./gradlew.bat" else="./gradlew">
+	        <os family="windows"/>
+	    </condition>
 	
 	<property name="config_file" value="ant_buildFrontEnd_CopyToTomcat.settings.properties" />
 	
@@ -29,8 +36,6 @@
 	<!-- This does not fail if the file is not found -->
 	<property file="${config_file_with_path}" />
 	
-	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
-	
 	<echo>tomcat.webapps.root: ${tomcat.webapps.root}</echo>
 	<echo>limelight.context: ${limelight.context}</echo>
 
@@ -41,12 +46,21 @@
 	<property name="tomcat.jsp" value="${tomcat.limelight.webapp.root}${file.separator}WEB-INF${file.separator}jsp" />
 	
 	<target name="built-copy-front-end" description="">
+
+		<echo>Executing gradle using executable: ${executableToRun_Build_FrontEnd_CopyToComcat}</echo>
 		
-		<echo>Executing gradle using executable: ${gradle.wrapper.executable}</echo>
-		
-		<exec executable="${gradle.wrapper.executable}" dir="." failonerror="true" >
+		<exec executable="${executableToRun_Build_FrontEnd_CopyToComcat}" dir="." failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
 			<!--   <arg value="XXXX" /> -->
 		</exec>
+		
 		
 	      <delete dir="${tomcat.static}"/>
 	      <mkdir  dir="${tomcat.static}"/>

@@ -5,16 +5,6 @@
 
 #  Configuration for ant__build_all_limelight.xml
 
-#  Path to gradle executable
-
-gradle.wrapper.executable=
-
-# possible Linux path (depending on version)
-# gradle.wrapper.executable=/opt/gradle/gradle-4.5/bin/gradle
-
-# possible Windows path (depending on version)
-# gradle.wrapper.executable=C:\\gradle\\gradle-4.6\\bin\\gradle.bat
-
 #  Path to npm executable
 
 npm.executable=

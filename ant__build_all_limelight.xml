@@ -13,6 +13,13 @@
 
 	  -->
 
+	<!--  Not Currently Used:  Runs Gradle (gradlew or gradlew.bat) -->
+
+	 <!-- Set program to run for Windows, else Non-Windows (Linux/Mac) -->
+	    <condition property="gradleExecutableToRun_Root" value="./gradlew.bat" else="./gradlew">
+	        <os family="windows"/>
+	    </condition>
+	
 
 	<property name="config_file" value="aa_ant__build_all_limelight_config.properties" />
 	
@@ -35,16 +42,10 @@
 	<property file="${config_file_with_path}" />
 	
 	<echo>Properties after read config file:</echo>
-	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
 	<echo>npm.executable: ${npm.executable}</echo>
 		
 
 	<!-- Set Properties if not set in config -->
-	<condition property="gradle.wrapper.executable" value="gradle">
-	   <not>  
-	      <isset property="gradle.wrapper.executable"/>
-	   </not>
-	</condition>
 	<condition property="npm.executable" value="npm">
 	   <not>  
 	      <isset property="npm.executable"/>
@@ -53,7 +54,6 @@
 
 	<echo>Properties after read config file and then set defaults:</echo>
 	
-	<echo>gradle.wrapper.executable: ${gradle.wrapper.executable}</echo>
 	<echo>npm.executable: ${npm.executable}</echo>
 		
 
@@ -79,6 +79,14 @@
 			<arg value="install" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
+
+		<!--  The Gradle task 'npm_install' in "proxl_web_app/front_end/build.gradle" does not work in Windows so execute npm directly here -->
+		<!--
+		<exec executable="${gradleExecutableToRun_Root}" dir="proxl_web_app/front_end" failonerror="true" 
+		    resolveexecutable="true" >
+			<arg value="npm_install" />
+		</exec>
+		-->		
 	</target>
 	
 	<!--
@@ -90,35 +98,16 @@
 		<!--  Build submodules and create runnable jars -->
 
 		<!--  web app  -->		
-		<exec executable="${gradle.wrapper.executable}" dir="limelight_webapp" failonerror="true" >
-			<arg value="build" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-
+		<ant antfile="ant_create_war.xml"  dir="limelight_webapp" />
+				
 		<!--  importer  -->		
-		<exec executable="${gradle.wrapper.executable}" dir="limelight_importer" failonerror="true" >
-			<arg value="build" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		<!--  importer executable jar -->		
-		<ant dir="limelight_importer/build_runnable_jar" antfile="ant__create_runnable_jar_importer.xml" />
+		<ant antfile="ant__create_runnable_jar_importer.xml"  dir="limelight_importer" />
 
 		<!-- run importer  -->		
-		<exec executable="${gradle.wrapper.executable}" dir="limelight_run_importer" failonerror="true" >
-			<arg value="build" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		<!-- run importer executable jar -->		
-		<ant dir="limelight_run_importer/build_runnable_jar" antfile="ant__create_runnable_jar_run_importer.xml" />
+		<ant antfile="ant__create_runnable_jar_run_importer.xml"  dir="limelight_run_importer" />
 		
 		<!-- submit import  -->		
-		<exec executable="${gradle.wrapper.executable}" dir="limelight_submit_import" failonerror="true" >
-			<arg value="build" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		<!-- submit import executable jar -->		
-		<ant dir="limelight_submit_import/build_runnable_jar" antfile="ant__create_runnable_jar_submit_import.xml" />
-		
+		<ant antfile="ant__create_runnable_jar_submit_import.xml"  dir="limelight_submit_import" />
 		
 	</target>
 	
@@ -130,9 +119,9 @@
 
 		<!-- copy files from subdir 'deploy' to deploy -->
 		<copy file="limelight_webapp/build/libs/limelight.war" todir="deploy" />
-		<copy file="limelight_importer/build_runnable_jar/deploy/limelightImporter_XMLFile_ScanFiles.jar" todir="deploy" />
-		<copy file="limelight_run_importer/build_runnable_jar/deploy/limelightRunImporter.jar" todir="deploy" />
-		<copy file="limelight_submit_import/build_runnable_jar/deploy/limelightSubmitImport.jar" todir="deploy" />
+		<copy file="limelight_importer/build/libs/limelightImporter_XMLFile_ScanFiles.jar" todir="deploy" />
+		<copy file="limelight_run_importer/build/libs/limelightRunImporter.jar" todir="deploy" />
+		<copy file="limelight_submit_import/build/libs/limelightSubmitImport.jar" todir="deploy" />
 		
 	</target>
 	
