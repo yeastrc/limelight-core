@@ -32,7 +32,9 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
+import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
+import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
@@ -51,9 +53,18 @@ public class ProjectView_Controller {
 			AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER;
 
 	private static final String PATH_PARAMETER_LABEL_PROJECT_ID = "projectId";
+	
+	//  For No Project found page
+	private static final String REQUEST_PROJECT_ID_FROM_VIEW_PROJECT_CONTROLLER = "projectId_FromViewProjectController";
+	//  For No Project found page
+	private static final String REQUEST_ADMIN_EMAIL_ADDRESS = "adminEmailAddress";
+	
 
 	@Autowired
 	private ProjectDAO_IF projectDAO;
+
+	@Autowired
+	private ConfigSystemDAO_IF configSystemDAO;
 	
 	@Autowired
 	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
@@ -94,6 +105,8 @@ public class ProjectView_Controller {
     		HttpServletRequest httpServletRequest ) {
 		
 		log.info( "controllerMethod(...) called. projectIdentifier: " + projectIdentifier );
+
+		httpServletRequest.setAttribute( REQUEST_PROJECT_ID_FROM_VIEW_PROJECT_CONTROLLER, projectIdentifier );
 		
 		try {
 
@@ -103,8 +116,25 @@ public class ProjectView_Controller {
 				projectId = Integer.parseInt( projectIdentifier ) ;
 
 			} catch ( RuntimeException e ) {
-
-				throw e;
+				log.warn( "Failed to parse project id: " + projectIdentifier );
+				this.getDataForProjectNotFoundPage( httpServletRequest );
+				return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+			}
+			{	
+				//  Confirm projectId is in database and is not marked for deletion and is enabled
+				// !!!  Only populates properties projectLocked, publicAccessLevel, public_access_locked, enabled, markedForDeletion,
+				ProjectDTO projectDTO_Partial = projectDAO.getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( projectId );
+				if ( projectDTO_Partial == null ) {
+					log.warn( "project id not found in database: " + projectId );
+					this.getDataForProjectNotFoundPage( httpServletRequest );
+					return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+				}
+				if ( ( ! projectDTO_Partial.isEnabled() ) || projectDTO_Partial.isMarkedForDeletion() ) {
+					String msg = "Project is not enabled or is marked for deletion for id: " + projectId;
+					log.warn( msg );
+					this.getDataForProjectNotFoundPage( httpServletRequest );
+					return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+				}
 			}
 
 			List<Integer> projectIds = new ArrayList<>( 1 );
@@ -139,7 +169,9 @@ public class ProjectView_Controller {
 			ProjectDTO projectDTO = projectDAO.getPartialForProjectPageForId( projectId );
 
 			if ( projectDTO == null ) {
-				throw new LimelightErrorDataInWebRequestException( "project id not found" );
+				log.warn( "project id not found in database: " + projectId );
+				this.getDataForProjectNotFoundPage( httpServletRequest );
+				return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 			}
 
 			// Main Project Page Display
@@ -179,7 +211,19 @@ public class ProjectView_Controller {
 			throw new RuntimeException( e ); //  TODO forward to error page
 		}
     }
-	
+
+	/**
+	 * Set up request attributes for projectNotFound.jsp
+	 * @param httpServletRequest
+	 * @throws Exception 
+	 */
+	private void getDataForProjectNotFoundPage(HttpServletRequest httpServletRequest) throws Exception {
+		
+		String adminEmailAddress =
+				configSystemDAO
+				.getConfigValueForConfigKey( ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY );
+		httpServletRequest.setAttribute( REQUEST_ADMIN_EMAIL_ADDRESS, adminEmailAddress );
+	}
 
     /**
      * 
