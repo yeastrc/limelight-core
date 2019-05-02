@@ -24,7 +24,7 @@
 	<%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_inset_pages.jsp" %>
 				">
 	<div class="page-content-outer-container" >	
-	 <div class="page-content-container" >	
+	 <div class="page-content-container" style="width: 600px;">	
 	  <div class="page-content" >	
 		
 	
@@ -35,12 +35,10 @@
 		<div style="margin-top: 20px; margin-bottom: 10px; ">
 	  	
 	  	  <div style="text-align: center; ">
-	  		<div style="font-size: 24px; font-weight: bold; text-align: left; margin-top: 24px; width: 300px; margin-left: auto; margin-right: auto;">
+	  	  		<%-- text-align: left; width: 550px;  margin-left: auto; margin-right: auto; --%>
+	  		<div style="font-size: 24px; font-weight: bold;  margin-top: 24px; ">
 	  		  <div >
-	  		  	There was a problem
-	  		  </div>
-	  		  <div >
-	  			 processing your request.
+	  		  	There was a problem processing your request.
 	  		  </div>
 	  		  
 	  		  <c:if test="${ urlFormatInvalid }">

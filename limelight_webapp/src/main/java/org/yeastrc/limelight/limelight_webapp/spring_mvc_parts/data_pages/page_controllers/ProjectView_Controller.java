@@ -118,7 +118,7 @@ public class ProjectView_Controller {
 			} catch ( RuntimeException e ) {
 				log.warn( "Failed to parse project id: " + projectIdentifier );
 				this.getDataForProjectNotFoundPage( httpServletRequest );
-				return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+				return "data_pages/error_pages/projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 			}
 			{	
 				//  Confirm projectId is in database and is not marked for deletion and is enabled
@@ -127,13 +127,13 @@ public class ProjectView_Controller {
 				if ( projectDTO_Partial == null ) {
 					log.warn( "project id not found in database: " + projectId );
 					this.getDataForProjectNotFoundPage( httpServletRequest );
-					return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+					return "data_pages/error_pages/projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 				}
 				if ( ( ! projectDTO_Partial.isEnabled() ) || projectDTO_Partial.isMarkedForDeletion() ) {
 					String msg = "Project is not enabled or is marked for deletion for id: " + projectId;
 					log.warn( msg );
 					this.getDataForProjectNotFoundPage( httpServletRequest );
-					return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+					return "data_pages/error_pages/projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 				}
 			}
 
@@ -171,7 +171,7 @@ public class ProjectView_Controller {
 			if ( projectDTO == null ) {
 				log.warn( "project id not found in database: " + projectId );
 				this.getDataForProjectNotFoundPage( httpServletRequest );
-				return "projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+				return "data_pages/error_pages/projectNotFound.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 			}
 
 			// Main Project Page Display
@@ -219,10 +219,17 @@ public class ProjectView_Controller {
 	 */
 	private void getDataForProjectNotFoundPage(HttpServletRequest httpServletRequest) throws Exception {
 		
-		String adminEmailAddress =
-				configSystemDAO
-				.getConfigValueForConfigKey( ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY );
-		httpServletRequest.setAttribute( REQUEST_ADMIN_EMAIL_ADDRESS, adminEmailAddress );
+		try {
+			String adminEmailAddress =
+					configSystemDAO
+					.getConfigValueForConfigKey( ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY );
+			httpServletRequest.setAttribute( REQUEST_ADMIN_EMAIL_ADDRESS, adminEmailAddress );
+		} catch ( Exception e ) {
+			log.error( "Failed to get config entry for adminEmailAddress for config key: '"
+					+ ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY
+					+ "'.  Not returning error to user.");
+			//  Do NOT re-throw Exception
+		}
 	}
 
     /**

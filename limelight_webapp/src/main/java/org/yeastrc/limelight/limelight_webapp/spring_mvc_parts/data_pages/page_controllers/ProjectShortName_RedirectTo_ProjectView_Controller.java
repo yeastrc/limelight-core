@@ -27,6 +27,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
+import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
+import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectIdForProjectShortNameSearcherIF;
 
 @Controller
@@ -40,9 +42,17 @@ public class ProjectShortName_RedirectTo_ProjectView_Controller {
 
 	private static final String PATH_PARAMETER_LABEL_PROJECT_SHORT_NAME = "projectShortName";
 
+	//  For No Project found page
+	private static final String REQUEST_PROJECT_ID_FROM_VIEW_PROJECT_CONTROLLER = "projectId_FromViewProjectController";
+	//  For No Project found page
+	private static final String REQUEST_ADMIN_EMAIL_ADDRESS = "adminEmailAddress";
+	
 	@Autowired
 	private ProjectIdForProjectShortNameSearcherIF projectIdForProjectShortNameSearcher;
 	
+
+	@Autowired
+	private ConfigSystemDAO_IF configSystemDAO;
 	
     /**
 	 * 
@@ -92,8 +102,21 @@ public class ProjectShortName_RedirectTo_ProjectView_Controller {
 			}
 			
 			httpServletResponse.setStatus( 404 );
+
+			httpServletRequest.setAttribute( REQUEST_PROJECT_ID_FROM_VIEW_PROJECT_CONTROLLER, projectShortName );
 			
-			return new ModelAndView( "data_pages/error_pages/project_ShortName_NotFound_Page.jsp" );
+			try {
+				String adminEmailAddress =
+						configSystemDAO
+						.getConfigValueForConfigKey( ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY );
+				httpServletRequest.setAttribute( REQUEST_ADMIN_EMAIL_ADDRESS, adminEmailAddress );
+			} catch ( Exception e ) {
+				log.error( "Failed to get config entry for adminEmailAddress for config key: '"
+						+ ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY
+						+ "'.  Not returning error to user.");
+				//  Do NOT re-throw Exception
+			}
+			return new ModelAndView( "data_pages/error_pages/projectNotFound.jsp" );
 
 		} catch ( Exception e ) {
 			
