@@ -145,8 +145,35 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		let objectThis = this;
 		
 		//  Maybe need visual indication that retrieving the data??
+
+		let lorikeetNewWindowWidth = LORIKEET_VIEWER_NEW_WINDOW_SIZE_WIDTH;
+		let lorikeetNewWindowHeight = LORIKEET_VIEWER_NEW_WINDOW_SIZE_HEIGHT;
+
+		//  If computer screen is smaller than chosen width or height, reduce to computer screen size
+
+		// https://developer.mozilla.org/en-US/docs/Web/API/Screen
+		// The Screen interface represents a screen, usually the one on which the current window is being rendered, 
+		//    and is obtained using window.screen.
+		// Note that browsers determine which screen to report as current by detecting which screen has the center of the browser window.
+
+		if ( window.screen ) {
+
+			const availWidth = window.screen.availWidth - 20;
+			const availHeight = window.screen.availHeight - 80; // Subtract 80 pixels since on Windows the reported height appears to be wrong
+
+			if ( availWidth && availWidth < lorikeetNewWindowWidth ) {
+				//  Reduce lorikeetNewWindowWidth to availWidth
+				lorikeetNewWindowWidth = availWidth;
+			}
+			if ( availHeight && availHeight < lorikeetNewWindowWidth ) {
+				//  Reduce lorikeetNewWindowHeight to availHeight
+				lorikeetNewWindowHeight = availHeight;
+			}
+		}
+
+
 		
-		const windowWidthHeight = "width=" + LORIKEET_VIEWER_NEW_WINDOW_SIZE_WIDTH + ", height=" + LORIKEET_VIEWER_NEW_WINDOW_SIZE_HEIGHT;
+		const windowWidthHeight = "width=" + lorikeetNewWindowWidth + ", height=" + lorikeetNewWindowHeight;
 		
 		const strWindowFeatures = 
 			"toolbar=no,status=no,menubar=no,resizable=yes,scrollbars=yes," + windowWidthHeight;
