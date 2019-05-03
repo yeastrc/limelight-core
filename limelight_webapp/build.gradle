@@ -10,8 +10,8 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
-	id "org.springframework.boot" version "2.0.1.RELEASE"
-	id "io.spring.dependency-management" version "1.0.5.RELEASE"
+	id "org.springframework.boot" version "2.1.4.RELEASE"
+	id "io.spring.dependency-management" version "1.0.7.RELEASE"
 	id 'org.ajoberstar.grgit' version '3.1.1'
 }
 
