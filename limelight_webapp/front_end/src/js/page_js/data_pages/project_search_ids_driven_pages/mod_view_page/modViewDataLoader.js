@@ -45,7 +45,9 @@ export class ModViewPage_DataLoader {
                   
             const url = "d/rws/for-page/psb/protein-mod-info-searchcriteria-list";
 
-            const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -82,7 +84,9 @@ export class ModViewPage_DataLoader {
 
 			const url = "d/rws/for-page/psb/psm-count-searchcriteria";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -143,7 +147,9 @@ export class ModViewPage_DataLoader {
  
 			const url = "d/rws/for-page/psb/protein-info-searchcriteria-list";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -194,7 +200,9 @@ export class ModViewPage_DataLoader {
 
 			const url = "d/rws/for-page/psb/protein-residues-for-prot-seq-ver-ids-positions";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -246,7 +254,9 @@ export class ModViewPage_DataLoader {
 
 			const url = "d/rws/for-page/psb/psm-count-for-residues-searchcriteria";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -299,7 +309,9 @@ export class ModViewPage_DataLoader {
 
 			const url = "d/rws/for-page/psb/peptide-list-reported-peptide-ids-single-project-search-id";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 

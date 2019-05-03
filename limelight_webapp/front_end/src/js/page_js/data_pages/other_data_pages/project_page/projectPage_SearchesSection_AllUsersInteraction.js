@@ -377,8 +377,10 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 								const url = "d/rws/for-page/psb/get-search-data-lookup-params-code";
 
-								const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
+								const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				
+								const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+				
 								promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
 								promise_webserviceCallStandardPost.then( ({ responseData }) => {
@@ -504,7 +506,9 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 		const url = "d/rws/for-page/project-view-page-search-list";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => {  }  );
 

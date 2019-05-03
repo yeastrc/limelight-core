@@ -365,7 +365,9 @@ export class PSMListingUtilsSingleSearch {
 
                 const url = "d/rws/for-page/psb/psm-list";
 
-                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { 
                     try { 

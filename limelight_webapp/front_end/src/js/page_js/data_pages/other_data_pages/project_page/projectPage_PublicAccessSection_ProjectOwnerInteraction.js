@@ -330,7 +330,9 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 			const url = "d/rws/for-page/project-label-get";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -668,7 +670,9 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 			const url = "d/rws/for-page/project-label-add-change";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -726,7 +730,9 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 		const url = "d/rws/for-page/project-enable-public-access";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -765,7 +771,9 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 		const url = "d/rws/for-page/project-disable-public-access";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => {  }  );
 

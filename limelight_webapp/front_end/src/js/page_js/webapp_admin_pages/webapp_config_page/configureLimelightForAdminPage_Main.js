@@ -23,7 +23,9 @@ const getListConfiguration = function() {
 	const requestData = {};
 	const url = "admin/rws/for-page/config-get-current";
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -180,7 +182,9 @@ const saveListConfiguration = function() {
 
 	const url = "admin/rws/for-page/config-save";
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => { reject() }  );
 

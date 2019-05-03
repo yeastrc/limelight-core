@@ -133,7 +133,9 @@ export class UserLogin_Subpart {
 
 		const url = "user/rws/for-page/login";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => {  }  );
 

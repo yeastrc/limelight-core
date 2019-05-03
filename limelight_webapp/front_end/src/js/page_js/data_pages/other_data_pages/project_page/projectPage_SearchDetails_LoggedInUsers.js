@@ -378,7 +378,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
 			const url = "d/rws/for-page/update-search-filename";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -626,7 +628,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
 			const url = "d/rws/for-page/insert-web-link";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -688,7 +692,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
 			const url = "d/rws/for-page/delete-web-link";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -876,7 +882,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
 			const url = "d/rws/for-page/insert-comment";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -1031,7 +1039,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
 			const url = "d/rws/for-page/update-comment";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -1125,7 +1135,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
 			const url = "d/rws/for-page/delete-comment";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 

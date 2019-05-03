@@ -120,8 +120,10 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
 								const url = "d/rws/for-page/project-notes-list";
 
-								const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
+								const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				
+								const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+				
 								promise_webserviceCallStandardPost.catch( () => { 
 									try { 
 										reject(); 

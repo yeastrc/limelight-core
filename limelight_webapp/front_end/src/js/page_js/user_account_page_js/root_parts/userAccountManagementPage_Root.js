@@ -228,8 +228,10 @@ class UserAccountManagementPage {
 
 		const url = "user/rws/for-page/user-submit-import-key-get";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
 
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+				
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
@@ -303,7 +305,9 @@ class UserAccountManagementPage {
 
 		const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -341,7 +345,9 @@ class UserAccountManagementPage {
 
 		const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -379,7 +385,9 @@ class UserAccountManagementPage {
 
 		const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -416,7 +424,9 @@ class UserAccountManagementPage {
 
 		const url = UPDATE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -477,7 +487,9 @@ class UserAccountManagementPage {
 
 		const url = UPDATE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -538,7 +550,9 @@ class UserAccountManagementPage {
 
 		const url = UPDATE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -598,7 +612,9 @@ class UserAccountManagementPage {
 
 		const url = UPDATE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -664,7 +680,9 @@ class UserAccountManagementPage {
 
 		const url = UPDATE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -757,7 +775,9 @@ class UserAccountManagementPage {
 
 		const url = UPDATE_WEBSERVICE_URL;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

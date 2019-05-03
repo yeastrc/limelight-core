@@ -336,7 +336,9 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
                 const url = "d/rws/for-page/project-note-add";
 
-                const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { 
                     try {
@@ -556,7 +558,9 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
 			const url = "d/rws/for-page/project-note-update-text";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { 
                 try { 
@@ -630,7 +634,9 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
 			const url = "d/rws/for-page/project-note-delete";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 

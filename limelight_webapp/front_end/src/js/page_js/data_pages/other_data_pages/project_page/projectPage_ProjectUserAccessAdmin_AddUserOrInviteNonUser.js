@@ -210,8 +210,10 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 
 				const url = "d/rws/for-page/project-users-not-in-project-list";
 
-				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-	
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
 				promise_webserviceCallStandardPost.catch( () => {}  );
 	
 				promise_webserviceCallStandardPost.then( ({ responseData }) => {
@@ -323,7 +325,9 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 		
 		const url = "d/rws/for-page/project-invite-user-to-project-new-or-existing-user";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : ajaxParams, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : ajaxParams, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

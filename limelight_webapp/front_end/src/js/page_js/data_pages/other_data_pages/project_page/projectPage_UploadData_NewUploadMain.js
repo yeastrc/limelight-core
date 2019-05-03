@@ -710,7 +710,9 @@ export class ProjectPage_UploadData_NewUploadMain {
 
 		const url = "d/rws/for-page/project-upload-data-upload-initialize";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => {  }  );
 
@@ -1185,7 +1187,9 @@ export class ProjectPage_UploadData_NewUploadMain {
 		
 		const url = "d/rws/for-page/project-upload-data-upload-submit";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => {  }  );
 
@@ -1326,7 +1330,9 @@ export class ProjectPage_UploadData_NewUploadMain {
 		
 		const url = "d/rws/for-page/project-upload-data-upload-remove-abandoned";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

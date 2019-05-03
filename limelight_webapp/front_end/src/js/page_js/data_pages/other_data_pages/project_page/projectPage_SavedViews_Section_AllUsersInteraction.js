@@ -84,7 +84,9 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 
 		const url = "d/rws/for-page/project-view-page-saved-views-list";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

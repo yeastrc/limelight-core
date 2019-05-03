@@ -95,7 +95,9 @@ export class SearchNameRetrieval {
 
 			const url = "d/rws/for-page/psb/search-name-list-from-psi";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => {
 				try { 

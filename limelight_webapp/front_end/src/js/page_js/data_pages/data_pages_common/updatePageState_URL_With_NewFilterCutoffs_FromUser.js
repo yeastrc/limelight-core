@@ -156,7 +156,9 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 
 		const url = "d/rws/for-page/psb/get-search-data-lookup-params-code";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => {
 			try { 

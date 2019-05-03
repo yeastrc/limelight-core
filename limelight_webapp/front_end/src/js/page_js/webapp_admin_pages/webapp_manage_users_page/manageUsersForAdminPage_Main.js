@@ -48,7 +48,9 @@ window.getInvitedPeople = function() {
     
     const url = 'admin/rws/for-page/manage-users-list-invited';
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -250,10 +252,10 @@ window.updateInvitedPersonAccessLevel = function(params) {
 
 	const url = "services/user/updateInviteAccessLevel";
 
-	const webserviceCallStandardPostResult = webserviceCallStandardPost({ dataToSend : ajaxRequestData, url }); //  External Function
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : ajaxRequestData, url }); //  External Function
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPostResult.promise; 
-	//  activeAjax = webserviceCallStandardPostResult.api;
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise; 
+	//  activeAjax = webserviceCallStandardPostResponse.api;
 
 	promise_webserviceCallStandardPost.catch( ( ) => { } );
 
@@ -365,7 +367,9 @@ window.getCurrentUserAccess = function() {
     
     const url = 'admin/rws/for-page/manage-users-list-users';
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -551,7 +555,9 @@ window.updateUserAccessLevel = function(params) {
     };
 	const url = "admin/rws/for-page/manage-users-user-global-access-level";
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => {  }  );
 
@@ -603,7 +609,9 @@ window.enableDisableUser = function(params) {
     };
 	const url = "admin/rws/for-page/manage-users-user-enable";
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => {  }  );
 
@@ -794,7 +802,9 @@ window.createAccountFormSubmit = function() {
   
 	const url = "user/rws/for-page/create-account-performed-by-admin-user";
 
-	const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+	const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 	promise_webserviceCallStandardPost.catch( () => {  }  );
 

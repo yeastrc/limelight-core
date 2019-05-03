@@ -58,7 +58,9 @@ export class SearchDetails_GetCoreDataFromServer {
 
 				const url = "d/rws/for-page/psb/get-search-details-core";
 
-				const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 				promise_webserviceCallStandardPost.catch( () => { reject() }  );
 

@@ -355,7 +355,9 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		const url = "d/rws/for-page/project-upload-data-pending-count";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -408,7 +410,9 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		const url = "d/rws/for-page/project-upload-data-list-submitted-items";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

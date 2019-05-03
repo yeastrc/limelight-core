@@ -231,7 +231,9 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		const url = "d/rws/for-page/project-upload-data-remove-queued-import";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -327,7 +329,9 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		const url = "d/rws/for-page/project-upload-data-remove-failed-import";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -432,7 +436,9 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		const url = "d/rws/for-page/project-upload-data-remove-success-import";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

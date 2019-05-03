@@ -46,6 +46,9 @@ import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallS
  */
 var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorResponse }) {
 
+    let request = undefined;
+    let abortCalled = false;
+
     const webserviceCallFunction = function( resolve, reject ) {
         try {
             const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
@@ -55,7 +58,7 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
 
             const requestData = JSON.stringify( dataToSend );
 
-            // let request =
+            request =
             $.ajax({
                 type : "POST",
                 url : _URL,
@@ -68,6 +71,9 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                     jqXHR.setRequestHeader( webserviceSyncTrackingCodeHeaderParam, webserviceSyncTrackingCode );
                 },
                 success : function( responseData ) {
+
+                    request = undefined;
+
                     try {
                         resolve({ responseData });
                         
@@ -77,6 +83,9 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                     }
                 },
                 failure: function(errMsg) {
+
+                    request = undefined;
+
                     try {
                         if ( ! doNotHandleErrorResponse ) {
                             handleAJAXFailure( errMsg );  //  Sometimes throws exception so rest of processing won't always happen
@@ -94,22 +103,28 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
 
                 },
                 error : function(jqXHR, textStatus, errorThrown) {
-                    try {
-                        if ( ! doNotHandleErrorResponse ) {
-                            handleAJAXError(jqXHR, textStatus, errorThrown);  //  Sometimes throws exception so rest of processing won't always happen
+
+                    request = undefined;
+
+                    if ( ! abortCalled ) {
+                        //  Abort not called so report error
+                        try {
+                            if ( ! doNotHandleErrorResponse ) {
+                                handleAJAXError(jqXHR, textStatus, errorThrown);  //  Sometimes throws exception so rest of processing won't always happen
+                            }
+
+                            const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                            //  Need to set properties on object rejectReasonObject
+
+                            reject({ rejectReasonObject });
+
+                            // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
+                            // textStatus: " + textStatus );
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
                         }
-
-                        const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
-
-                        //  Need to set properties on object rejectReasonObject
-
-                        reject({ rejectReasonObject });
-
-                        // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
-                        // textStatus: " + textStatus );
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
                     }
                 }
                 
@@ -120,7 +135,19 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
         }
     }
 
-    return new Promise( webserviceCallFunction );
+    const api = {
+        abort : function() {
+            if ( request ) {
+                abortCalled = true;
+                request.abort();
+                request = undefined;
+            }
+        }
+    }
+
+    const promise = new Promise( webserviceCallFunction );
+
+    return { promise, api };
 };
 
 export { webserviceCallStandardPost }

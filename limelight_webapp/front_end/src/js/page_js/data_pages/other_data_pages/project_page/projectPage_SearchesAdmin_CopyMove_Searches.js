@@ -292,7 +292,9 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
 			const url = "d/rws/for-page/list-other-projects-excluding-project-search-ids";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -411,7 +413,9 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
 			const url = "d/rws/for-page/list-project-search-ids-where-assoc-search-ids-already-in-project";
 
-			const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -494,7 +498,9 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
         const url = "d/rws/for-page/copy-or-move-project-search-ids-to-new-project";
 
-        const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
         promise_webserviceCallStandardPost.catch( () => { }  );
 

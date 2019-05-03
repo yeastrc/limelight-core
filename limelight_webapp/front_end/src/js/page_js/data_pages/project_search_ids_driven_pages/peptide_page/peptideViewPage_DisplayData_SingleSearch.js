@@ -129,7 +129,9 @@ export class PeptideViewPage_Display_SingleSearch {
 
 		const url = "d/rws/for-page/psb/peptide-view-page-peptide-list-single-project-search-id";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

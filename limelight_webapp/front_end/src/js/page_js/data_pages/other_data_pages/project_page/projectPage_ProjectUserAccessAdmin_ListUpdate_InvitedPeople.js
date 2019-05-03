@@ -73,7 +73,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		const url = "d/rws/for-page/project-view-page-user-invite-list";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -237,7 +239,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		const url = "d/rws/for-page/project-invite-revoke";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -275,7 +279,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		const url = "d/rws/for-page/project-invite-resend-invite-email";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -327,7 +333,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		const url = "d/rws/for-page/project-invite-change-user-access-to-project-owner";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -365,7 +373,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		const url = "d/rws/for-page/project-invite-change-user-access-to-assist-project-owner";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 

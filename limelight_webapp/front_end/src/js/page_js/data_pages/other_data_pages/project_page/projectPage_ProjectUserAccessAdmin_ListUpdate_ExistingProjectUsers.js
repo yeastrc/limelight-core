@@ -72,7 +72,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		const url = "d/rws/for-page/project-view-page-user-list";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -218,7 +220,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		const url = "d/rws/for-page/project-remove-user-access-to-project";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
@@ -261,7 +265,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		const url = "d/rws/for-page/project-change-user-access-to-project-owner";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -302,7 +308,9 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		const url = "d/rws/for-page/project-change-user-access-to-assist-project-owner";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { reject() }  );
 

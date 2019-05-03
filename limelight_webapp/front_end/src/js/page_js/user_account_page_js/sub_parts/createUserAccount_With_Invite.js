@@ -256,7 +256,9 @@ export class UserCreateAccount_With_Invite_Subpart {
 		
 		const url = "user/rws/for-page/create-account-from-invite";
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { 
 			var $element = $("#error_message_system_error");

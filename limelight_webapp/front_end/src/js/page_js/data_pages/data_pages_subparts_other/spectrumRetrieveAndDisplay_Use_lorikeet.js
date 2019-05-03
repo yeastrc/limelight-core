@@ -231,8 +231,10 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 
 						const url = "d/rws/for-page/psb/spectrum-for-psm-id";
 
-						const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
-
+						const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+		
+						const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+		
 						promise_webserviceCallStandardPost.catch( () => { 
 							try {
 								if ( newWindow ) {
@@ -295,8 +297,10 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 
 						const url = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
 
-						const promise_webserviceCallStandardPost = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
-
+						const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+		
+						const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+		
 						promise_webserviceCallStandardPost.catch( () => { 
 							try {
 								if ( newWindow ) {
