@@ -45,53 +45,63 @@ public class BrowserIs_InternetExplorer_Detection_Service implements BrowserIs_I
 	public boolean browserIs_InternetExplorer_Detection_Service( HttpServletRequest httpServletRequest ) {
 		
 
-		String userAgentString = httpServletRequest.getHeader("User-Agent");
+		try {
+			String userAgentString = httpServletRequest.getHeader("User-Agent");
 
-		//  Works up to IE 10
-		boolean isIE = userAgentString.contains("MSIE");
-		
-		//For IE 11
-		boolean isIE11 = userAgentString.contains("rv:11.0");
-		
-		
-		if ( isIE || isIE11 ) {
-			
+			if ( userAgentString != null ) {
 
-			if ( log.isDebugEnabled() ) {
+				//  Works up to IE 10
+				boolean isIE = userAgentString.contains("MSIE");
 
-				try {
+				//For IE 11
+				boolean isIE11 = userAgentString.contains("rv:11.0");
 
-					String requestURL = httpServletRequest.getRequestURL().toString();
 
-					String userSessionUsername = "";
+				if ( isIE || isIE11 ) {
 
-					String username = null;
 
-					try {
-						username = getUsername( httpServletRequest );
-					} catch ( Exception e ) {
-						log.error( "Error getting username" );
+					if ( log.isDebugEnabled() ) {
+
+						try {
+
+							String requestURL = httpServletRequest.getRequestURL().toString();
+
+							String userSessionUsername = "";
+
+							String username = null;
+
+							try {
+								username = getUsername( httpServletRequest );
+							} catch ( Exception e ) {
+								log.error( "Error getting username" );
+							}
+
+							if ( username != null ) {
+								userSessionUsername = "\t, session username: \t" + username;
+							}
+
+							log.debug( "Browser is Internet Explorer.  "
+									+ "UserAgent: \t" + userAgentString
+									+ "\t, requested URL: \t" + requestURL
+									+ "\t, remote IP: \t" + httpServletRequest.getRemoteAddr()
+									+ userSessionUsername );
+
+						} catch ( Throwable t ) {
+							log.error( "Failed logging browser/user information when is Browser is Internet Explorer", t );
+							//  Swallow any exceptions getting username
+						}
 					}
 
-					if ( username != null ) {
-						userSessionUsername = "\t, session username: \t" + username;
-					}
-
-					log.debug( "Browser is Internet Explorer.  "
-							+ "UserAgent: \t" + userAgentString
-							+ "\t, requested URL: \t" + requestURL
-							+ "\t, remote IP: \t" + httpServletRequest.getRemoteAddr()
-							+ userSessionUsername );
-					
-				} catch ( Throwable t ) {
-					log.error( "Failed logging browser/user information when is Browser is Interet Explorer", t );
+					return true;
 				}
 			}
-			
-			return true;
+
+			return false;
+
+		} catch (Exception e) {
+			log.error( "Error determining if Browser is Internet Explorer", e );
+			throw e;
 		}
-		
-		return false;
 	}
 
 	/**
