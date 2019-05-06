@@ -5,6 +5,23 @@
  *
   	Task for building the war: 'build'
  */
+ 
+ 	
+	//  http://ajoberstar.org/grgit/grgit-gradle.html
+	// Grgit: Generally, you should only apply the plugin to the root project of your build.
+	//  Plugin adds grgit property to your build, which is an instance of Grgit.
+	//     Plugin looks for .git directory in build directory and it's parents
+ 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
+  }
+}
 
 plugins {
 	id 'java'
@@ -12,8 +29,11 @@ plugins {
 	id 'eclipse'
 	id "org.springframework.boot" version "2.1.4.RELEASE"
 	id "io.spring.dependency-management" version "1.0.7.RELEASE"
-	id 'org.ajoberstar.grgit' version '3.1.1'
+	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
 }
+
+apply plugin: "org.ajoberstar.grgit"
+ 
 
 repositories {
 	jcenter()
@@ -149,6 +169,13 @@ dependencies {
 */
 processResources.dependsOn 'front_end:frontEndBuild'
 
+/*
+	Before the Gradle WAR processing creates the war, it runs task ':front_end:frontEndBuild'
+	to build the front end.
+*/
+processResources.dependsOn 'front_end:frontEndBuild'
+
+
 
 
 /*
@@ -162,27 +189,45 @@ processResources.dependsOn 'deleteExistingBuiltWar'
  */
 
 task deleteExistingBuiltWar(type: GradleBuild) {
-  	
-  	println("Webapp Gradle build deleteExistingBuiltWar called - Before WAR created. Deletes the output .war file to ensure it is always re-created")
-  	
+  	doLast {
+	  	println("Webapp Gradle build deleteExistingBuiltWar called - Before WAR created. Deletes the output .war file to ensure it is always re-created")
 	  	
-	//  from file settings.gradle
-	
-	//  Generated war name
-	//  rootProject.name = 'limelight' // value may be different, see file settings.gradle
-	  	
-  	println("project.name: ${project.name}")
-  	println("rootProject.name: ${rootProject.name}")
-  	
-  	String warFilename = "${rootProject.name}.war"
-  	
-  	String warFileInBuildLibs = "build/libs/" + warFilename
-  	
-  	println("Deleting the output .war file " + warFileInBuildLibs )
-  	  
-	delete warFileInBuildLibs
+		delete "build/libs/"
+	}
 }
 
+/*
+ * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
+ */
+processResources.dependsOn 'limelight_submit_import:shadowJar'
+
+/*
+ * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
+ */
+processResources.dependsOn 'copy_limelight_submit_import_ToWebapp'
+
+/*
+ * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
+ */
+// processResources.dependsOn 'build_copy_limelight_submit_import_ToWebapp'
+
+
+task build_copy_limelight_submit_import_ToWebapp(type: GradleBuild) {
+
+	dependsOn 'limelight_submit_import:shadowJar'
+   tasks = [ 
+     'copy_limelight_submit_import_ToWebapp', 
+        ]
+}
+     
+/*
+ * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
+*/
+task copy_limelight_submit_import_ToWebapp(type: Sync) {
+    from "../limelight_submit_import/build/libs/limelightSubmitImport.jar"
+    // 'into' Must be a subdir of '/static/' that contains nothing else.  The directory contents will be deleted.
+    into "src/main/webapp/static/limelightSubmitImport/" 
+}
 
 
 /*
@@ -190,7 +235,7 @@ task deleteExistingBuiltWar(type: GradleBuild) {
  */
 processResources.dependsOn 'createFileGitHash'
 
-import org.ajoberstar.grgit.Grgit
+// import org.ajoberstar.grgit.Grgit
 
 /*
  * Before the Gradle WAR processing creates the war, it deletes the output .war file to ensure it is always re-created 
@@ -200,12 +245,16 @@ task createFileGitHash(type: GradleBuild) {
   	doLast {
 	  	println("Webapp Gradle build createFileGitHash doLast called - Before WAR created. Create file under WEB-INF with GIT Hash ")
 		  	
-			  	
-		def gitRepo = Grgit.open({
-		  dir = ".."  //  Use parent directory since that is root of GIT repo
+		
+		//  Assign to grgit, created by plugin
+		def gitRepo = grgit
+		
+		
+		// def gitRepo = Grgit.open({
+		//  dir = ".."  //  Use parent directory since that is root of GIT repo
 		//  currentDir = <path>
 		//  credentials = <credentals>
-		})
+		// })
 		
 		def gitHeadId = gitRepo.head().id
 		def gitCommit = gitRepo.head().getAbbreviatedId(8)

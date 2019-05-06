@@ -1,8 +1,21 @@
 Submit Import Help:
 
---user-submit-import-key=
-
+--limelight-web-app-url=<URL to Limelight web app, including the "/limelight" > 
+         (may be different from "/limelight" 
+          if the deployed war file was changed from "limelight.war")
+OR
 -c (--config=) <configuration file> 
+
+    If --limelight-web-app-url= is provided, 
+    the config file is ignored and no value is allowed for -c (--config=) 
+    
+    If a script is provided to run this program,
+    it may pass '-c' with a value.
+    Try running the script without 
+    --limelight-web-app-url= or -c 
+    first and see if it is successful.
+
+--user-submit-import-key=
 
 -p (--project-id=) <project id>
 

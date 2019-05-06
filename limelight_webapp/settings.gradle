@@ -33,6 +33,14 @@ project(":limelight_shared_code").projectDir = new File( settingsDir, "../limeli
  include "limelight_submit_import_client_connector"
 project(":limelight_submit_import_client_connector").projectDir = new File( settingsDir, "../limelight_submit_import_client_connector")
  
+/*
+ *  Specify dependency on limelight_submit_import to get built Submit Import Program Jar
+ */
+ 
+ include "limelight_submit_import"
+project(":limelight_submit_import").projectDir = new File( settingsDir, "../limelight_submit_import")
+ 
+ 
   
 /*
  *  Specify dependency on subdirectory "front_end"

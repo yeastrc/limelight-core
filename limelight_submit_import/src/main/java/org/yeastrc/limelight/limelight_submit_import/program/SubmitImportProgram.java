@@ -96,6 +96,8 @@ public class SubmitImportProgram {
 		try {
 			CmdLineParser cmdLineParser = new CmdLineParser();
 
+			CmdLineParser.Option limelightWebappURLFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "limelight-web-app-url" );
+
 			CmdLineParser.Option configFileFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'c', "config" );
 
 			CmdLineParser.Option projectIdFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'p', "project-id" );
@@ -145,8 +147,20 @@ public class SubmitImportProgram {
 				System.err.println( FOR_HELP_STRING );
 				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
 			}
+
+			String limelightWebappURL_CommandLineString = (String)cmdLineParser.getOptionValue( limelightWebappURLFromCommandLineCommandLineOpt );
 			
 			String configFile = (String)cmdLineParser.getOptionValue( configFileFromCommandLineCommandLineOpt );
+
+			if ( StringUtils.isNotEmpty( limelightWebappURL_CommandLineString ) ) {
+				// Have value for limelightWebappURL_CommandLineString so no value allowed for config file
+				
+				System.err.println( "paramter --limelight-web-app-url= has a value so no value is allowed for parameter '-c' (--config=)");
+				System.err.println( "" );
+				System.err.println( FOR_HELP_STRING );
+				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
+			}
+			
 
 			projectIdString = (String)cmdLineParser.getOptionValue( projectIdFromCommandLineCommandLineOpt );
 			
@@ -228,47 +242,56 @@ public class SubmitImportProgram {
 
 			Boolean noSearchNameCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noSearchNameCommandLineOpt, Boolean.FALSE);
 			Boolean sendSearchPathCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( sendSearchPathCommandLineOpt, Boolean.FALSE);
-			
-			ConfigParams configParams = ConfigParams.getInstance();
-			
-			if ( StringUtils.isNotEmpty( configFile ) ) {
-				
-				File configFileCommandLine = new File( configFile );
-				
-				if ( ! configFileCommandLine.exists() ) {
-					
-					System.err.println( "config file specified on command line does not exist: " + configFileCommandLine.getAbsolutePath() );
-					
-					System.err.println( "" );
-					System.err.println( FOR_HELP_STRING );
 
-					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
-				}
-				
-				configParams.setConfigFileCommandLine( configFileCommandLine );
-			}
-			
-			configParams.readConfigParams();
-			
-			String baseURL = configParams.getLimelightWebAppUrl();
-			
-			boolean submitterSameMachine = configParams.isSubmitterSameMachine();
-			String uploadBaseDirString = configParams.getLimelightUploadBaseDir();
-			
+			String baseURL = null;
+			boolean submitterSameMachine = false;
 			File uploadBaseDir = null;
+			
+			if ( StringUtils.isNotEmpty( limelightWebappURL_CommandLineString ) ) {
+				// Have value for limelightWebappURL_CommandLineString so use it and not config file
+				baseURL = limelightWebappURL_CommandLineString;
+				
+			} else {
+				
+				ConfigParams configParams = ConfigParams.getInstance();
 
-			if ( StringUtils.isNotEmpty( uploadBaseDirString ) ) {
+				if ( StringUtils.isNotEmpty( configFile ) ) {
 
-				uploadBaseDir = new File( uploadBaseDirString );
+					File configFileCommandLine = new File( configFile );
 
-				if ( ! uploadBaseDir.exists() ) {
+					if ( ! configFileCommandLine.exists() ) {
 
-					System.err.println( "Upload Base Directory in configuration does not exist: " + uploadBaseDir.getCanonicalPath() );
+						System.err.println( "config file specified on command line does not exist: " + configFileCommandLine.getAbsolutePath() );
 
-					System.err.println( "" );
-					System.err.println( FOR_HELP_STRING );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
 
-					System.exit( PROGRAM_EXIT_CODE_INVALID_CONFIGURATION );  //  EARLY EXIT
+						System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+					}
+
+					configParams.setConfigFileCommandLine( configFileCommandLine );
+				}
+
+				configParams.readConfigParams();
+
+				baseURL = configParams.getLimelightWebAppUrl();
+
+				submitterSameMachine = configParams.isSubmitterSameMachine();
+				String uploadBaseDirString = configParams.getLimelightUploadBaseDir();
+
+				if ( StringUtils.isNotEmpty( uploadBaseDirString ) ) {
+
+					uploadBaseDir = new File( uploadBaseDirString );
+
+					if ( ! uploadBaseDir.exists() ) {
+
+						System.err.println( "Upload Base Directory in configuration does not exist: " + uploadBaseDir.getCanonicalPath() );
+
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit( PROGRAM_EXIT_CODE_INVALID_CONFIGURATION );  //  EARLY EXIT
+					}
 				}
 			}
 			

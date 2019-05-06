@@ -19,6 +19,8 @@ import { ProjectPage_UploadData_ListExistingUploads } from './projectPage_Upload
 
 import { ProjectPage_UploadData_NewUploadMain } from './projectPage_UploadData_NewUploadMain.js';
 
+import { ProjectPage_UploadData_SubmitImportProgramInfo } from './projectPage_UploadData_SubmitImportProgramInfo.js';
+
 /**
  * 
  */
@@ -32,6 +34,8 @@ export class ProjectPage_UploadData {
 		this._initializeCalled = false;
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
+
+		this._userIsProjectOwner = userIsProjectOwner;
 		
 	}
 
@@ -58,5 +62,11 @@ export class ProjectPage_UploadData {
 				projectIdentifierFromURL : this._projectIdentifierFromURL, 
 				projectPage_UploadData_ListExistingUploads : this._projectPage_UploadData_ListExistingUploads } );
 		this._projectPage_UploadData_NewUploadMain.initialize();
+
+		if ( this._userIsProjectOwner ) {
+			this._projectPage_UploadData_SubmitImportProgramInfo =
+					new ProjectPage_UploadData_SubmitImportProgramInfo({ projectIdentifierFromURL : this._projectIdentifierFromURL });
+			this._projectPage_UploadData_SubmitImportProgramInfo.initialize();
+		}
 	}
 }

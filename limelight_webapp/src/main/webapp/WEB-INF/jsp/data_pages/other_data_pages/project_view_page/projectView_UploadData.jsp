@@ -44,6 +44,11 @@
 				id="upload_data_refresh_data"
 				class="  tool_tip_attached_jq "
 				data-tooltip="Refresh this list" >
+				
+			<span style="padding-left: 20px;">
+				<input type="button" value="Command Line Import Info"
+					 id="upload_data_submit_import_program_info"  >
+			</span>
 		</div>
 
 

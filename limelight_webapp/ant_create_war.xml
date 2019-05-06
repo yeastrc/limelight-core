@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_war" name="Proxl Create War">
+<project default="create_war" name="Limelight Create War">
 
 	<!--  Runs Gradle (gradlew or gradlew.bat 
 		 with correct task 'shadowJar' to create runnable jar -->

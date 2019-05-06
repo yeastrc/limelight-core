@@ -103,7 +103,7 @@ public class LogBrowserJavascriptError_RestWebserviceController {
     		if ( userSession != null ) {
     			String username = userSession.getUsername();
     			if ( username != null ) {
-    				userIdForLogMsg = "\n username in session: " + username;
+    				usernameForLogMsg = "\n username in session: " + username;
     			}
     			Integer userId = userSession.getUserId();
     			if ( userId != null ) {

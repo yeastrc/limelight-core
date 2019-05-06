@@ -203,7 +203,7 @@
   	  </div>
   		
   	  <div  id="submit_import_program_key_add_key__block" style="display: none; margin-top: 10px;">
-  	  	<input type="button" value="Add Key" id="submit_import_program_key_add_key__control">
+  	  	<input type="button" value="Create Key" id="submit_import_program_key_add_key__control">
   	  </div>
 
   	  <div id="submit_import_program_key_change_remove_key__block" style="display: none;">
