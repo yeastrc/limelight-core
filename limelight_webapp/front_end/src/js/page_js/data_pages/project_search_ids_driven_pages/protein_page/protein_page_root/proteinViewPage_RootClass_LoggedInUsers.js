@@ -18,7 +18,7 @@ import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/
 
 //  From local dir
 import { ProteinViewPage_RootClass_Common }  
-	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_RootClass_Common.js';
+	from './proteinViewPage_RootClass_Common.js';
 
 /**
  * 

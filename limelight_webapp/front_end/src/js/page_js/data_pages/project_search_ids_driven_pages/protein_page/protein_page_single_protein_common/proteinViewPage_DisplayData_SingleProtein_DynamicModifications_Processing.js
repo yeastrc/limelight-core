@@ -13,7 +13,7 @@
  */
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides.js';
+import { getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId } from './proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides.js';
 
 /**
  * Dynamic Modifications

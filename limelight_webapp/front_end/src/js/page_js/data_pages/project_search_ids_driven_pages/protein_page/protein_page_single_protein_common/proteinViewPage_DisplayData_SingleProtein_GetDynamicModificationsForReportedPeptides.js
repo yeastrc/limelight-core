@@ -10,7 +10,7 @@
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { ProteinViewDataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewDataLoader.js';
+import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
 
 
 /**

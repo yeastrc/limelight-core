@@ -21,7 +21,7 @@
  */
 var Handlebars = require('handlebars/runtime');
 var _dummy_template_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 Handlebars.templates = _dummy_template_template_bundle;
 
 
@@ -57,10 +57,10 @@ import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHea
 
 //  From local dir
 import { ProteinViewPage_DisplayDataOnPage }  
-	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayDataOnPage.js';
+	from './proteinViewPage_DisplayDataOnPage.js';
 
 import { SingleProtein_CentralStateManagerObjectClass }
-	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/singleProtein_CentralStateManagerObjectClass.js';
+	from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
 
 import { SearchColorManager }
 	from 'page_js/data_pages/color_manager/searchColorManager.js';

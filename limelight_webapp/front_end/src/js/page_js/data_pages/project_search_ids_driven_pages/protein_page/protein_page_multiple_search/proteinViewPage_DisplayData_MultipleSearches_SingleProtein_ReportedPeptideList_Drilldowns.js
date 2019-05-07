@@ -15,10 +15,10 @@ const Handlebars = require('handlebars/runtime');
 
 //  for DataTable
 const _common_template_bundle =
-	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 const _protein_table_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
@@ -26,17 +26,11 @@ import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplay
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
-import { PSMListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/psmListingUtilsSingleSearch.js';
+import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
 
-import { ProteinViewDataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewDataLoader.js';
+import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.js';
 
-import { ReportedPeptideStringData_For_ReportedPeptideId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/reportedPeptideStringData_For_ReportedPeptideId.js';
-
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
-
-import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.js';
-
-import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.js';
+import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.js';
 
 
 

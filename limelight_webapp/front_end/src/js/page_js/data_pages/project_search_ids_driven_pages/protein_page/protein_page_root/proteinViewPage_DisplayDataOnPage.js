@@ -21,9 +21,9 @@ import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_p
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
 
 //  From local dir
-import { ProteinViewPage_Display_SingleSearch } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleSearch.js';
+import { ProteinViewPage_Display_SingleSearch } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch.js';
 
-import { ProteinViewPage_Display_MultipleSearches } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_MultipleSearches.js';
+import { ProteinViewPage_Display_MultipleSearches } from '../protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches.js';
 
 /**
  * 

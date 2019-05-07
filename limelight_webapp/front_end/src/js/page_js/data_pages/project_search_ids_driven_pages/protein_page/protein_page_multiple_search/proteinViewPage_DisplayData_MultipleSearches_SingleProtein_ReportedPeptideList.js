@@ -13,10 +13,10 @@ const Handlebars = require('handlebars/runtime');
 
 //  for DataTable
 const _common_template_bundle =
-	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 const _protein_table_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
@@ -30,7 +30,7 @@ import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRo
 
 // import { PSMListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/psmListingUtilsSingleSearch.js';
 
-import { ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns.js';
+import { ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns.js';
 
 const _NUM_PSMS_JS_OBJECT_PROPERTY_NAME_PREFIX = 'numPsms_';
 

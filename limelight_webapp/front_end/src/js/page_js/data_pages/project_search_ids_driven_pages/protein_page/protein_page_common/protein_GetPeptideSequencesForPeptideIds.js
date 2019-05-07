@@ -10,7 +10,7 @@ import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'pag
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
-import { ProteinViewDataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewDataLoader.js';
+import { ProteinViewDataLoader } from './proteinViewDataLoader.js';
 
 /**
  * 

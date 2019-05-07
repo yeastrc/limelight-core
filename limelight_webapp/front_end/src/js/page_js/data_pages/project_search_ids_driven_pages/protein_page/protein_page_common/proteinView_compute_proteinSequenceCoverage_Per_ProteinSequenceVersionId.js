@@ -11,7 +11,7 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinSequenceCoverageData_For_ProteinSequenceVersionId.js';
+import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from './proteinSequenceCoverageData_For_ProteinSequenceVersionId.js';
 
 /**
  * 

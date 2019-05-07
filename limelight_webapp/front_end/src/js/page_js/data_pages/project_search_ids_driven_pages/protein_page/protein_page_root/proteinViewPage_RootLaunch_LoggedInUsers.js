@@ -14,7 +14,7 @@
 
 //  From local dir
 import { ProteinViewPage_RootClass_LoggedInUsers }  
-	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_RootClass_LoggedInUsers.js';
+	from './proteinViewPage_RootClass_LoggedInUsers.js';
 
 ///////////////
 

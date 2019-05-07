@@ -14,10 +14,10 @@ let Handlebars = require('handlebars/runtime');
 
 //  for DataTable
 const _common_template_bundle =
-	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 let _protein_table_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
@@ -32,17 +32,17 @@ import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 
-import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinView_LoadedDataCommonHolder.js';
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinView_LoadedDataPerProjectSearchIdHolder.js';
+import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder.js';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder.js';
 
-import { ProteinViewDataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewDataLoader.js';
+import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
 
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
+import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
 
-import { ProteinViewPage_Display_MultipleSearches_SingleProtein } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewPage_DisplayData_MultipleSearches_SingleProtein.js';
+import { ProteinViewPage_Display_MultipleSearches_SingleProtein } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein.js';
 
 import { SingleProtein_CentralStateManagerObjectClass }
-	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/singleProtein_CentralStateManagerObjectClass.js';
+	from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
 
 	
 	//  Applied to the element containing the protein name so it can be selected

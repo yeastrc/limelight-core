@@ -16,11 +16,11 @@ import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXEr
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
-import { ProteinSequenceData_For_ProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinSequenceData_For_ProteinSequenceVersionId.js';
+import { ProteinSequenceData_For_ProteinSequenceVersionId } from '../protein_page_common/proteinSequenceData_For_ProteinSequenceVersionId.js';
 
-import { ReportedPeptideStringData_For_ReportedPeptideId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/reportedPeptideStringData_For_ReportedPeptideId.js';
+import { ReportedPeptideStringData_For_ReportedPeptideId } from '../protein_page_common/reportedPeptideStringData_For_ReportedPeptideId.js';
 
-import { ProteinViewDataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/proteinViewDataLoader.js';
+import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
 
 /**
  * 
