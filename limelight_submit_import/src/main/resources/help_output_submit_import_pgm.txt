@@ -3,17 +3,7 @@ Submit Import Help:
 --limelight-web-app-url=<URL to Limelight web app, including the "/limelight" > 
          (may be different from "/limelight" 
           if the deployed war file was changed from "limelight.war")
-OR
--c (--config=) <configuration file> 
-
-    If --limelight-web-app-url= is provided, 
-    the config file is ignored and no value is allowed for -c (--config=) 
-    
-    If a script is provided to run this program,
-    it may pass '-c' with a value.
-    Try running the script without 
-    --limelight-web-app-url= or -c 
-    first and see if it is successful.
+    **  See information at end of help about configuration file
 
 --user-submit-import-key=
 
@@ -32,3 +22,18 @@ OR
 
 --send-search-path
 
+-----------------------------------
+
+Configuration File:
+
+    run the program with --help-configuration-file for more information
+
+A configuration file may be specified as a parameter 
+(or included in a script used to run the executable)
+or embedded in the executable jar file.
+
+    If a script is provided to run this program,
+    it may pass '-c' (or '--config=') with a value.
+    Try running the script without 
+    --limelight-web-app-url= 
+    first and see if it is successful.

@@ -111,13 +111,15 @@ public class SubmitImportProgram {
 			CmdLineParser.Option searchNameFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "search-description" );
 			CmdLineParser.Option noSearchNameCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-search-description" );
 			CmdLineParser.Option sendSearchPathCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "send-search-path" );
-		
+			
 			//  User Submit Import Program Key - Generated in Web app
 			CmdLineParser.Option userSubmitImportProgramKeyCommandLineOpt = 
 					cmdLineParser.addStringOption( 'Z', USER_SUBMIT_IMPORT_KEY_PARAM_STRING );
 		
 			CmdLineParser.Option helpOpt = cmdLineParser.addBooleanOption('h', "help"); 
 
+			CmdLineParser.Option helpConfigurationFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "help-configuration-file" );
+		
 			// parse command line options
 			try { cmdLineParser.parse(args); }
 			catch (IllegalOptionValueException e) {
@@ -133,11 +135,21 @@ public class SubmitImportProgram {
 				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
 			}
 
-			Boolean help = (Boolean) cmdLineParser.getOptionValue(helpOpt, Boolean.FALSE);
-			if(help) {
-				printHelp();
-				System.exit( PROGRAM_EXIT_CODE_HELP );
+			{
+				Boolean help = (Boolean) cmdLineParser.getOptionValue(helpOpt, Boolean.FALSE);
+				if(help) {
+					printHelp();
+					System.exit( PROGRAM_EXIT_CODE_HELP );
+				}
 			}
+			{
+				Boolean helpConfigurationFile = (Boolean) cmdLineParser.getOptionValue(helpConfigurationFileCommandLineOpt, Boolean.FALSE);
+				if(helpConfigurationFile) {
+					printHelpConfigurationFile();
+					System.exit( PROGRAM_EXIT_CODE_HELP );
+				}
+			}
+			
 			
 			userSubmitImportProgramKeyFromCommandLine = (String)cmdLineParser.getOptionValue( userSubmitImportProgramKeyCommandLineOpt );
 			
@@ -155,10 +167,12 @@ public class SubmitImportProgram {
 			if ( StringUtils.isNotEmpty( limelightWebappURL_CommandLineString ) ) {
 				// Have value for limelightWebappURL_CommandLineString so no value allowed for config file
 				
-				System.err.println( "paramter --limelight-web-app-url= has a value so no value is allowed for parameter '-c' (--config=)");
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
+				if ( StringUtils.isNotEmpty( configFile ) || ConfigParams.getSingletonInstance().isConfigFileOnClassPath() ) {
+					System.err.println( "paramter --limelight-web-app-url= is not allowed since a configuration file has been provided using parameter '-c' (--config=) or embedded in the executable");
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
+				}
 			}
 			
 
@@ -253,7 +267,7 @@ public class SubmitImportProgram {
 				
 			} else {
 				
-				ConfigParams configParams = ConfigParams.getInstance();
+				ConfigParams configParams = ConfigParams.getSingletonInstance();
 
 				if ( StringUtils.isNotEmpty( configFile ) ) {
 
@@ -411,10 +425,26 @@ public class SubmitImportProgram {
 		} catch ( Exception e ) {
 			System.out.println( "Error printing help." );
 		}
-
-
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	private static void printHelpConfigurationFile() throws Exception {
 
+		try( BufferedReader br = 
+				new BufferedReader(
+						new InputStreamReader( 
+								SubmitImportProgram.class
+								.getResourceAsStream( "/help_configuration_file.txt" ) ) ) ) {
+
+			String line = null;
+			while ( ( line = br.readLine() ) != null )
+				System.out.println( line );				
+
+		} catch ( Exception e ) {
+			System.out.println( "Error printing help for configuration file." );
+		}
+	}
 
 }

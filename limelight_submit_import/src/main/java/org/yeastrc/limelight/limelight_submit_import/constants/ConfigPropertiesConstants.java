@@ -8,5 +8,4 @@ public class ConfigPropertiesConstants {
 
 	public static final String CONFIG_PARAM_LIMELIGHT_UPLOAD_BASE_DIR = "limelight.upload.base.dir";
 	
-	public static final String CONFIG_PARAM_WRITE_LIMELIGHT_UPLOAD_DIR_FILENAME = "write.limelight.upload.dir.filename";
 }
