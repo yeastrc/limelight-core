@@ -609,21 +609,22 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 		
 		//  Copy InputStream containing POST body into file on disk
 		{
-			InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream();
-
 			long totalBytesCopied = 0;
 			boolean fileTooLarge = false;
 
-			try ( FileOutputStream fos = new FileOutputStream( uploadedFileOnDisk )) {
-				byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
-				int len;
-				while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
-					fos.write(buf, 0, len);
-					totalBytesCopied += len;
-					if ( totalBytesCopied > webserviceMethod_Internal_Params.maxFileSize ) {
+			try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
 
-						fileTooLarge = true;
-						break;
+				try ( FileOutputStream fos = new FileOutputStream( uploadedFileOnDisk )) {
+					byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
+					int len;
+					while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
+						fos.write(buf, 0, len);
+						totalBytesCopied += len;
+						if ( totalBytesCopied > webserviceMethod_Internal_Params.maxFileSize ) {
+	
+							fileTooLarge = true;
+							break;
+						}
 					}
 				}
 			}

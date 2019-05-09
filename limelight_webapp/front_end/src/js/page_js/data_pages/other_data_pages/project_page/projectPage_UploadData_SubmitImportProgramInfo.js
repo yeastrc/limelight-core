@@ -112,7 +112,7 @@ export class ProjectPage_UploadData_SubmitImportProgramInfo {
     	
 		const objectThis = this;
 		const containerWidth = 700;
-		const containerHeight = 800;
+		const containerHeight = 400;
 
 		const $window = $( window );
 		const windowWidth = $window.width();

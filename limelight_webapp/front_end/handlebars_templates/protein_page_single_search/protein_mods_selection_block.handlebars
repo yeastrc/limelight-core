@@ -1,7 +1,6 @@
 {{!--  protein_mods_selection_block.handlebars --}}
 
-<div >
-    <div style="margin-bottom: 15px;" class=" selector_protein_mod_block  modification-mass-selection-outer-block ">
+    <div class=" selector_protein_mod_block  modification-mass-selection-outer-block ">
 
         {{!--  Variable Modifications --}}
         <div style="font-size: 18px; font-weight: bold; float: left; ">Filter On Variable Modifications:</div>
@@ -21,6 +20,8 @@
         <div style="clear: left;"></div>
 
         {{!--  Static Modifications --}}
+        {{#if showNoStaticModificationsMsg }}
+        {{else}}
         <div style="font-size: 18px; font-weight: bold; float: left; ">Filter On Static Modifications:</div>
         <div class="modification-mass-selection-block" >
           <div style="margin-top: 2px;">
@@ -33,8 +34,7 @@
             {{/if}}
           </div>          
         </div> 
-
+        
         <div style="clear: left;"></div>
-
+        {{/if}}
     </div>
-</div>

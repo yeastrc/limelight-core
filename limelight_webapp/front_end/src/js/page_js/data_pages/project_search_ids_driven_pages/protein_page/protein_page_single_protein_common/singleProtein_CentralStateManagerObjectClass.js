@@ -32,6 +32,7 @@ const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 const _PROTEIN_SEQENCE_VERSION_ID_ENCODING_PROPERTY_NAME = 'b';
 const _PROTEIN_SEQUENCE_FORMATTED_DISPLAY_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'c';
 const _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'd';
+const _PEPTIDE_SEQUENCE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'e';
 
 /**
  * 
@@ -69,7 +70,8 @@ export class SingleProtein_CentralStateManagerObjectClass {
             this._value = {
 				proteinSequenceVersionId : encodedStateData[ _PROTEIN_SEQENCE_VERSION_ID_ENCODING_PROPERTY_NAME ],
 				proteinSequenceFormattedDisplayWidgetEncodedStateData : encodedStateData[ _PROTEIN_SEQUENCE_FORMATTED_DISPLAY_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				modsSelectedEncodedStateData : encodedStateData[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+				modsSelectedEncodedStateData : encodedStateData[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				peptideSequenceFilterSelectedEncodedStateData : encodedStateData[ _PEPTIDE_SEQUENCE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
             };
 		}
 	}
@@ -122,6 +124,19 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		return this._value.modsSelectedEncodedStateData;
 	}
 
+	setPeptideSequenceFilterSelectedEncodedStateData( { peptideSequenceFilterSelectedEncodedStateData } ) {
+		this._value.peptideSequenceFilterSelectedEncodedStateData = peptideSequenceFilterSelectedEncodedStateData;
+
+		if ( ! this._centralPageStateManager ) {
+			throw Error( "this._centralPageStateManager not set" );
+		}
+		this._centralPageStateManager.setState( { component : this } );
+	}
+
+	getPeptideSequenceFilterSelectedEncodedStateData() {
+		return this._value.peptideSequenceFilterSelectedEncodedStateData;
+	}
+
     /**
      * Called by Central State Manager and maybe other code
 	 */
@@ -145,7 +160,9 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		if ( this._value.modsSelectedEncodedStateData !== undefined ) {
 			dataForEncoding[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.modsSelectedEncodedStateData;
 		}
-
+		if ( this._value.peptideSequenceFilterSelectedEncodedStateData !== undefined ) {
+			dataForEncoding[ _PEPTIDE_SEQUENCE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.peptideSequenceFilterSelectedEncodedStateData;
+		}
 		return dataForEncoding;
 	}
 }

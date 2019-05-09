@@ -53,6 +53,9 @@ const _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTE
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD = "pos-covered-nofilters-mod";  // modded residue, no filters (mod or position)
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_NO_MOD = "pos-covered-nofilters-nomod";  // not modded residue, no filters (mod or position)
 
+
+const _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING = "pos-match-user-peptide-filter-search-string";  
+
 ////////////////////
 
 ///  Constants for encoding/decoding state for storage on URL
@@ -198,6 +201,8 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 		this._selectedProteinSequencePositions = new Set();
 
 		this._sequencePositions_Applied_Labels_CssClassNames = [];  // Use sequence position (1 based) as index into this array
+
+		this._sequencePositions_Secondary_Applied_Labels_CssClassNames = [];  // Use sequence position (1 based) as index into this array
 	}
 
 	/**
@@ -301,6 +306,21 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	}
 
 	/**
+	 * @param initial_widget_proteinPositions_CoveredBy_PeptideSearchStrings : Array of boolean at protein positions - May be undefined
+	 */
+	set_initial_widget_proteinPositions_CoveredBy_PeptideSearchStrings({ initial_widget_proteinPositions_CoveredBy_PeptideSearchStrings }) {
+	
+		if ( this._initializeCalled ) {
+			const msg = "Cannot call set_initial_widget_proteinPositions_CoveredBy_PeptideSearchStrings(...) after initialize() has been called.";
+			console.log( msg );
+			throw Error( msg );
+		}
+		this._widget_proteinPositions_CoveredBy_PeptideSearchStrings = initial_widget_proteinPositions_CoveredBy_PeptideSearchStrings; 
+	}
+
+	
+
+	/**
 	 * 
 	 */
 	initialize() {
@@ -389,6 +409,16 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	update_widget_SequenceCoverageParam_Selected_Peptides({ widget_SequenceCoverageParam_Selected_Peptides }) {
 	
 		this._widget_SequenceCoverageParam_Selected_Peptides = widget_SequenceCoverageParam_Selected_Peptides; 
+
+		this._updateDisplay_positionStyling();
+	}
+
+	/**
+	 * @param widget_proteinPositions_CoveredBy_PeptideSearchStrings : Array of boolean at protein positions - May be undefined
+	 */
+	update_widget_proteinPositions_CoveredBy_PeptideSearchStrings({ widget_proteinPositions_CoveredBy_PeptideSearchStrings }) {
+	
+		this._widget_proteinPositions_CoveredBy_PeptideSearchStrings = widget_proteinPositions_CoveredBy_PeptideSearchStrings; 
 
 		this._updateDisplay_positionStyling();
 	}
@@ -774,6 +804,19 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 				const className_ForStyling_ForProteinSequencePosition = this._get_className_ForStyling_ForProteinSequencePosition({ proteinSequencePosition });
 				cssClassNamesArr.push( className_ForStyling_ForProteinSequencePosition );
 				this._sequencePositions_Applied_Labels_CssClassNames[ proteinSequencePosition ] = className_ForStyling_ForProteinSequencePosition;
+
+				//  Secondary highlighting of user enters peptide search string
+				if ( this._widget_proteinPositions_CoveredBy_PeptideSearchStrings && 
+					this._widget_proteinPositions_CoveredBy_PeptideSearchStrings[ proteinSequencePosition ] &&
+					className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_MOD &&
+					className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_NO_FILTER &&
+					className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER &&
+					className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTER &&
+					className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD 
+					 ) {
+					this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ] = _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING;
+					cssClassNamesArr.push( _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING );
+				}
 			}
 
 			if ( this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.has( proteinSequencePosition ) ) {
@@ -1302,20 +1345,66 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 			const new_className_ForStyling_ForProteinSequencePosition = this._get_className_ForStyling_ForProteinSequencePosition({ proteinSequencePosition });
 
-			if ( old_className_ForStyling_ForProteinSequencePosition === new_className_ForStyling_ForProteinSequencePosition ) {
-				//  No change so skip to next position
-				continue; //  EARLY CONTINUE
+			let $target = undefined;
+
+			if ( old_className_ForStyling_ForProteinSequencePosition !== new_className_ForStyling_ForProteinSequencePosition ) {
+				//  Yes change so update
+				
+				//  update saved CSS Class name
+				this._sequencePositions_Applied_Labels_CssClassNames[ proteinSequencePosition ] = new_className_ForStyling_ForProteinSequencePosition;
+
+				//  Remove old class name from DOM element and Add new class name to DOM element
+
+				$target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
+				$target.removeClass( old_className_ForStyling_ForProteinSequencePosition );
+				$target.addClass( new_className_ForStyling_ForProteinSequencePosition );
 			}
-			
-			//  update saved CSS Class name
-			this._sequencePositions_Applied_Labels_CssClassNames[ proteinSequencePosition ] = new_className_ForStyling_ForProteinSequencePosition;
 
-			//  Remove old class name from DOM element and Add new class name to DOM element
+			//  Secondary CSS class to highlight User entered Peptide Sequence Search String.
+			//    (Only applied if position does not have a background color)
 
-			const $target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
-			$target.removeClass( old_className_ForStyling_ForProteinSequencePosition );
-			$target.addClass( new_className_ForStyling_ForProteinSequencePosition );
+			if ( this._widget_proteinPositions_CoveredBy_PeptideSearchStrings && 
+				this._widget_proteinPositions_CoveredBy_PeptideSearchStrings.length !== 0 &&
+				new_className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_OUTSIDE_FILTER_MOD &&
+				new_className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_NO_FILTER &&
+				new_className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_WITHIN_FILTER &&
+				new_className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_COVERED_WITHIN_FILTER_MOD_OUTSIDE_FILTER &&
+				new_className_ForStyling_ForProteinSequencePosition !== _CSS_CLASS_NAME__SEQUENCE_POSITION_NO_FILTERS_MOD 
+				 ) {
+
+				if ( this._widget_proteinPositions_CoveredBy_PeptideSearchStrings[ proteinSequencePosition ] ) {
+					if ( this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ] === _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING ) {
+						//  No change
+					} else {
+						if ( ! $target ) {
+							$target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
+						}
+						$target.addClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING );
+						this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ] = _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING;
+					}
+				} else {
+					if ( this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ] === _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING ) {
+						if ( ! $target ) {
+							$target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
+						}
+						$target.removeClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING );
+						delete this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ]
+					}
+				}
+
+			} else {
+				// Now no entry so remove if found
+	
+				if ( this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ] === _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING ) {
+					if ( ! $target ) {
+						$target = this._getProteinSequence_SingleResidue_single_DOM_element({ proteinSequencePosition,  $selector_sequence_data });
+					}
+					$target.removeClass( _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING );
+					delete this._sequencePositions_Secondary_Applied_Labels_CssClassNames[ proteinSequencePosition ]
+				}
+			}
 		}
+
 	}
 
 	/**

@@ -165,7 +165,28 @@
 			{{/if}}
 		</div>
 		
-		<div class=" selector_protein_mod_list_block ">
+		<div class=" selector_protein_filters_selection_block "  style="margin-bottom: 10px;" >
+
+			<div class=" selector_protein_mod_list_block ">
+			</div>
+
+			<div class=" selector_protein_peptide_sequence_selection_block peptide-sequence-selection-outer-block " >
+
+				<div class="   ">
+
+					<div style=" font-size: 18px; font-weight: bold; float: left; ">Filter On Peptide:</div>
+					<div class=" peptide-sequence-selection-block " >
+					<div style=" margin-top: 2px;">
+						<div class=" left-margin-same-as-checkbox "> {{!--  left-margin-same-as-checkbox; to align with checkbox in Variable and Static Mods --}}
+							<input type="text" 
+								maxlength="400" style=" width: 180px; " class=" selector_protein_peptide_sequence_selection_input " >
+							<span id="protein_peptide_sequence_selection_not_found" style=" font-size: 10px; color: red; display:  none;" 
+								>*not found in protein</span>
+						</div>
+					</div>
+					</div> 
+				</div>
+			</div>
 		</div>
 		
 		<div >

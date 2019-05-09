@@ -595,6 +595,10 @@
 				background-color: $font-background-color-gray; 
             }
 
+            
+            &.pos-match-user-peptide-filter-search-string {  //  User has entered a Peptide String.  This is used to highlight positions that do NOT have a background color
+                background-color: yellow;
+            }
 
 		}
     } // end .protein-sequence-formatted-sequence-data-block
@@ -608,6 +612,10 @@
     .protein-sequence-formatted-sequence-data-block-actual-sequence-text-formatting {
         font-size: 14px;
     }
+
+    //  Declare variable for margin-left to format Fitler Modification and Fitler Peptide the same
+
+    $single-protein-filter-margin-left: 290px;
     
     //  Modification Mass Selection - main page (or single protein)
 
@@ -616,7 +624,7 @@
         .modification-mass-selection-block {
 
             width: 480px; 
-            margin-left: 290px; 
+            margin-left: $single-protein-filter-margin-left; 
             padding-top: 1px; 
             position: relative;
         }
@@ -672,7 +680,20 @@
             }
         }
 
-    } // end .modification-selection-block
+    } // end .mod-mass-select-dialog-mass-list-block
+
+    //  Peptide Sequence String Selection
+    .peptide-sequence-selection-outer-block {
+
+        .peptide-sequence-selection-block {
+
+            width: 480px; 
+            margin-left: $single-protein-filter-margin-left; 
+            padding-top: 1px; 
+            position: relative;
+        }
+    }
+    
 
 	//  Single Protein Overlay boxes on right
 	

@@ -5,9 +5,6 @@
  * 
  * Companion file to proteinViewPage_DisplayData_SingleProtein_SingleSearch.js and proteinViewPage_DisplayData_MultipleSearches_SingleProtein.js
  * 
- * For Single Search, it is currently the dynamic mods
- * 
- * For Multiple Searches, it will be the summed dynamic and static mods at a position
  */
 
 let Handlebars = require('handlebars/runtime');
