@@ -491,10 +491,56 @@
         font-size:12px;
     }
 
-    $protein-sequence-primary-font: Courier, monospace; //  Used for all but legend text that is not an example residue string
-        
 	//  Protein Sequence Formatted
 	.protein-sequence-formatted-sequence-data-block {
+
+        //  Variables for space around a single character in the sequence coverage
+
+        $protein-sequence-formatted-sequence-data-block--single-character--padding-left : 1px;
+        $protein-sequence-formatted-sequence-data-block--single-character--padding-right : 1px;
+
+        $protein-sequence-formatted-sequence-data-block--single-character--margin-left : 0px;
+        $protein-sequence-formatted-sequence-data-block--single-character--margin-right : 1px;
+
+        $protein-sequence-formatted-sequence-data-block--single-character--width: 8px;
+            
+        div.tick-number-length-1 { // For Tick Mark number above that is length of 1 and also for '|'.  Same as .pos except different bottom margin
+            display: inline-block;
+
+			padding-left: $protein-sequence-formatted-sequence-data-block--single-character--padding-left; 
+			padding-right: $protein-sequence-formatted-sequence-data-block--single-character--padding-right;
+			padding-top: 0px; 
+			padding-bottom: 0px;
+
+			margin-left: $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
+			margin-right: $protein-sequence-formatted-sequence-data-block--single-character--margin-right;
+			margin-top: 0px;
+            margin-bottom: 1px;
+
+            width: $protein-sequence-formatted-sequence-data-block--single-character--width;
+            
+			position:relative;
+			
+        }
+
+        div.tick-number-length-2 { // For Tick Mark number above that is length of 2
+            display: inline-block;
+
+			padding-left: $protein-sequence-formatted-sequence-data-block--single-character--padding-left; 
+			padding-right: $protein-sequence-formatted-sequence-data-block--single-character--padding-right * 2 + $protein-sequence-formatted-sequence-data-block--single-character--padding-left;
+			padding-top: 0px; 
+			padding-bottom: 0px;
+
+			margin-left: $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
+			margin-right: $protein-sequence-formatted-sequence-data-block--single-character--margin-right * 2 + $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
+			margin-top: 0px;
+            margin-bottom: 1px;
+
+            width: $protein-sequence-formatted-sequence-data-block--single-character--width * 2;
+            
+			position:relative;
+			
+        }
 
 		span.header-pos-spacer-tick-number { // number for tick mark
             margin-left: 1px;  // Same width as div.pos
@@ -524,21 +570,18 @@
 			cursor: pointer;
 			display: inline-block;
 
-			padding-left: 1px;    //  Update span.header-pos-spacer and span.header-pos-spacer-after-tick-number
-			padding-right: 1px;   //  if change padding or margin left or right
+			padding-left: $protein-sequence-formatted-sequence-data-block--single-character--padding-left; 
+			padding-right: $protein-sequence-formatted-sequence-data-block--single-character--padding-right;
 			padding-top: 0px; 
 			padding-bottom: 0px;
 
-			margin-left: 0px;
-			margin-right: 1px;
+			margin-left: $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
+			margin-right: $protein-sequence-formatted-sequence-data-block--single-character--margin-right;
 			margin-top: 0px;
-            margin-bottom: 2px;
-            
-            width: 8px;
             margin-bottom: 3px;
-            font-family: "Lucida Console", Monaco, monospace;
-            font-size: 14px;
-			
+
+            width: $protein-sequence-formatted-sequence-data-block--single-character--width;
+            
 			position:relative;
 			
 			&:hover {
@@ -610,7 +653,7 @@
 
     	//  Protein Sequence Font - Only applied to the actual sequence, and surrounding numbers for positions AND to Example Text in Legend
 	.protein-sequence-formatted-sequence-data-block-actual-sequence-font {
-        font-family: $protein-sequence-primary-font;
+        font-family: Lucida Console,Monaco,monospace;
     }
 
     //  Protein Sequence Text Formatted - Only applied to the actual sequence, and surrounding numbers for positions

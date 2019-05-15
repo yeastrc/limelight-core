@@ -608,22 +608,19 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 				for ( let counter = 0; counter < numberOfTicks; counter++ ) {
 
 					const tickInt = ( counter * positionGroupSize ) + 1;
-					const tickString = tickInt.toString();
-					const tickStringLength = tickString.length;
-					const tickStringInSpan = '<span class="header-pos-spacer-tick-number">' + tickString + '</span>';
+					const tickNumberAsString = tickInt.toString();
+					const tickNumberAsStringLength = tickNumberAsString.length;
+					let elementClass = "tick-number-length-1";
+					if ( tickNumberAsStringLength === 2 ) {
+						elementClass = "tick-number-length-2";
+					}
+					const tickStringInSpan = '<div class="' + elementClass + '">' + tickNumberAsString + '</div>';
 					$headerLine.append( $( tickStringInSpan ) );
 					
-					//  Add padding for tickStringLength for right side of tick mark number for each digit of number, CSS class has width = right padding of sequence position
+					//  Add padding for width of positionGroupSize - tickNumberAsStringLength
 					{
-						const paddingLength = tickStringLength - 1;
-						const padding = '<span class="header-pos-spacer-after-tick-number">&nbsp;</span>'.repeat( paddingLength );
-						$headerLine.append( padding );
-					}
-
-					//  Add padding for width of positionGroupSize - tickStringLength
-					{
-						const paddingLength = positionGroupSize - tickStringLength - ( tickStringLength - 1 );
-						const padding = '<span class="header-pos-spacer">&nbsp;</span>'.repeat( paddingLength );
+						const paddingLength = positionGroupSize - tickNumberAsStringLength;
+						const padding = '<div class="tick-number-length-1">&nbsp;</div>'.repeat( paddingLength );
 						$headerLine.append( padding );
 					}
 
@@ -649,12 +646,12 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 				for ( let counter = 0; counter < numberOfTicks; counter++ ) {
 
 					//  Add vertical line ('|') character
-					$headerLine.append( $( '<span class="header-pos-spacer">|</span>' ) );
+					$headerLine.append( $( '<div class="tick-number-length-1">|</div>' ) );
 
 					//  Add padding for width of positionGroupSize - 1 ( - 1 for width of line '|' character )
 					{
 						const paddingLength = positionGroupSize - 1;
-						const padding = '<span class="header-pos-spacer">&nbsp;</span>'.repeat( paddingLength );
+						const padding = '<div class="tick-number-length-1">&nbsp;</div>'.repeat( paddingLength );
 						$headerLine.append( padding );
 					}
 
