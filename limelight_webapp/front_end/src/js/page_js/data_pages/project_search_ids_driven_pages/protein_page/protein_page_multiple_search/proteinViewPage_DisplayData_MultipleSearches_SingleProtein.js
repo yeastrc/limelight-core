@@ -848,15 +848,14 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 			if ( ! reportedPeptideIdsKeyProteinSequenceVersionId ) {
 				// No data for this projectSearchId
-				throw Error("No No data for this projectSearchId: " + projectSearchId );
+				continue; // early continue
 			}
 			//  reportedPeptideIds for this proteinSequenceVersionId
 			const reportedPeptideIds = reportedPeptideIdsKeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 			
 			if ( ! reportedPeptideIds ) {
 				// No data for this projectSearchId and this _proteinSequenceVersionId
-				throw Error("No No data for this projectSearchId: " + projectSearchId 
-					+ ", and this _proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+				continue; // early continue
 			}
 
 			for ( const reportedPeptideId of reportedPeptideIds ) {
