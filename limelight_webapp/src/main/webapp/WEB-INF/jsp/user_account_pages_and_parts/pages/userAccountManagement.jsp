@@ -60,7 +60,8 @@
 			<div class="value-label value_label_jq">First Name: </div>
 			<div  class="current-value-container current_value_container_jq">
 				<span class="current_value_span_jq"><c:out value="${ loggedInUser.firstName }"></c:out></span> 
-				<a href="javascript:" class="edit_value_jq" ><img src="static/images/icon-edit.png" title="Change First Name"></a>
+				<a href="javascript:" class="edit_value_jq" 
+					><img src="static/images/icon-edit.png" title="Change First Name" class=" icon-small "></a>
 			</div>
 			<div  class="edit-value-container edit_value_container_jq">
 				<input type="text" value="" class="edit-value-input-field  edit_value_input_field_jq" id="first-name-change-field"  maxlength="40" >
@@ -74,7 +75,8 @@
 			<div class="value-label value_label_jq">Last Name: </div>
 			<div  class="current-value-container current_value_container_jq">
 				<span class="current_value_span_jq"><c:out value="${ loggedInUser.lastName }"></c:out></span> 
-				<a href="javascript:" class="edit_value_jq" ><img src="static/images/icon-edit.png" title="Change Last Name"></a>
+				<a href="javascript:" class="edit_value_jq" 
+					><img src="static/images/icon-edit.png" title="Change Last Name" class=" icon-small "></a>
 			</div>
 			<div  class="edit-value-container edit_value_container_jq">
 				<input type="text" value="" class="edit-value-input-field  edit_value_input_field_jq"  id="last-name-change-field"  maxlength="60" >
@@ -97,7 +99,8 @@
 			</div>
 			<div  class="current-value-container current_value_container_jq">
 				<span class="current_value_span_jq"><c:out value="${ loggedInUser.email }"></c:out></span> 
-				<a href="javascript:" class="edit_value_jq" ><img src="static/images/icon-edit.png" title="Change Email"></a>
+				<a href="javascript:" class="edit_value_jq" 
+					><img src="static/images/icon-edit.png" title="Change Email" class=" icon-small "></a>
 			</div>
 			<div  class="edit-value-container edit_value_container_jq">
 				<input type="text" value="" class="edit-value-input-field  edit_value_input_field_jq" id="email-change-field" maxlength="255">
@@ -111,7 +114,8 @@
 			<div class="value-label value_label_jq">Organization: </div>
 			<div  class="current-value-container current_value_container_jq">
 				<span class="current_value_span_jq"><c:out value="${ loggedInUser.organization }"></c:out></span> 
-				<a href="javascript:" class="edit_value_jq" ><img src="static/images/icon-edit.png" title="Change Organization"></a>
+				<a href="javascript:" class="edit_value_jq" 
+					><img src="static/images/icon-edit.png" title="Change Organization" class=" icon-small "></a>
 			</div>
 			<div  class="edit-value-container edit_value_container_jq">
 				<input type="text" value="" class="edit-value-input-field  edit_value_input_field_jq" id="organization-change-field"  maxlength="2000">
@@ -135,7 +139,8 @@
 			
 			<div  class="current-value-container current_value_container_jq">
 				<span class="current_value_span_jq"><c:out value="${ loggedInUser.username }"></c:out></span> 
-				<a href="javascript:" class="edit_value_jq" ><img src="static/images/icon-edit.png" title="Change Username"></a>
+				<a href="javascript:" class="edit_value_jq" 
+					><img src="static/images/icon-edit.png" title="Change Username" class=" icon-small "></a>
 			</div>
 			<div  class="edit-value-container edit_value_container_jq">
 				<input type="text" value="" class="edit-value-input-field  edit_value_input_field_jq" id="username-change-field"  maxlength="40">
