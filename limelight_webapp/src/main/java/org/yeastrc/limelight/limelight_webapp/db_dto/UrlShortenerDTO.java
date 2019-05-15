@@ -15,6 +15,7 @@ public class UrlShortenerDTO {
 	private String urlStartAtPageControllerPath;
 	private String pageControllerPath;
 	private String searchDataLookupParamsString;
+	private String remoteUserIPAddress;
 	
 	public int getId() {
 		return id;
@@ -51,6 +52,12 @@ public class UrlShortenerDTO {
 	}
 	public void setSearchDataLookupParamsString(String searchDataLookupParamsString) {
 		this.searchDataLookupParamsString = searchDataLookupParamsString;
+	}
+	public String getRemoteUserIPAddress() {
+		return remoteUserIPAddress;
+	}
+	public void setRemoteUserIPAddress(String remoteUserIPAddress) {
+		this.remoteUserIPAddress = remoteUserIPAddress;
 	}
 
 	

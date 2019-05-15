@@ -165,9 +165,10 @@ public class UrlShortenerDAO extends Limelight_JDBC_Base implements UrlShortener
 			+ " user_id,"
 			+ " url_start_at_page_controller_path,"
 			+ " page_controller_path,"
-			+ " srch_data_lkp_params_string"
+			+ " srch_data_lkp_params_string,"
+			+ " remote_user_ip_address"
 			+ " )"
-			+ " VALUES ( ?, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -205,6 +206,8 @@ public class UrlShortenerDAO extends Limelight_JDBC_Base implements UrlShortener
 							pstmt.setString( counter, item.getPageControllerPath() );
 							counter++;
 							pstmt.setString( counter, item.getSearchDataLookupParamsString() );
+							counter++;
+							pstmt.setString( counter, item.getRemoteUserIPAddress() );
 
 							return pstmt;
 						}

@@ -248,9 +248,13 @@ public class Share_Page_Insert_RestWebserviceController {
 	 * @param shortenedUrlKey
 	 * @return
 	 */
-	private String createDBRecordsAndSave(HttpServletRequest httpServletRequest, List<Integer> projectSearchIds,
-			final String pageCurrentURL_StartAtPageController, final String searchDataLookupParametersCode,
-			String pageControllerPathInURL, String shortenedUrlKey) {
+	private String createDBRecordsAndSave(
+			HttpServletRequest httpServletRequest, 
+			List<Integer> projectSearchIds,
+			final String pageCurrentURL_StartAtPageController, 
+			final String searchDataLookupParametersCode,
+			String pageControllerPathInURL, 
+			String shortenedUrlKey) {
 		
 		UserSession userSession = userSessionManager.getUserSession( httpServletRequest );
 
@@ -260,6 +264,8 @@ public class Share_Page_Insert_RestWebserviceController {
 			userId = userSession.getUserId();
 		}
 		
+		String remoteAddr = httpServletRequest.getRemoteAddr();
+		
 		UrlShortenerDTO item = new UrlShortenerDTO();
 		
 		item.setPageControllerPath( pageControllerPathInURL );
@@ -267,7 +273,7 @@ public class Share_Page_Insert_RestWebserviceController {
 		item.setUserId(userId);
 		item.setUrlStartAtPageControllerPath( pageCurrentURL_StartAtPageController );
 		item.setSearchDataLookupParamsString( searchDataLookupParametersCode );
-		
+		item.setRemoteUserIPAddress( remoteAddr );
 		
 		boolean saveSuccessful = false;
 		int saveAttemptCounter = 0;

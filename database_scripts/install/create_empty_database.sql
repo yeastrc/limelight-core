@@ -1344,14 +1344,17 @@ CREATE TABLE  url_shortener_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   shortened_url_key VARCHAR(12) NOT NULL,
   user_id INT UNSIGNED NULL,
-  date_record_created DATETIME NOT NULL,
-  url VARCHAR(6000) NOT NULL,
+  url_start_at_page_controller_path VARCHAR(6000) NOT NULL,
+  page_controller_path VARCHAR(80) NOT NULL,
+  srch_data_lkp_params_string VARCHAR(300) NULL,
+  remote_user_ip_address VARCHAR(45) NULL,
+  date_record_created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id, shortened_url_key))
 ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX shortened_url_key_unique ON url_shortener_tbl (shortened_url_key ASC);
 
-CREATE INDEX url ON url_shortener_tbl (url(500) ASC);
+CREATE INDEX url ON url_shortener_tbl (url_start_at_page_controller_path(500) ASC);
 
 
 -- -----------------------------------------------------
