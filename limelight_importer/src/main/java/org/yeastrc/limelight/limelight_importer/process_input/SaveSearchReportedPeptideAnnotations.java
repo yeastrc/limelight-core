@@ -259,7 +259,13 @@ public class SaveSearchReportedPeptideAnnotations {
 			String annotationName, 
 			FilterableDescriptiveAnnotationType filterableDescriptiveAnnotationType,
 			Map<String, SearchProgramEntry> searchProgramEntryMap ) throws LimelightImporterDataException {
-		
+
+		if ( filterableDescriptiveAnnotationType == null ) {
+			String msg = "Processing error in  getReportedPeptideAnnotationTypeId(...).  filterableDescriptiveAnnotationType == null";
+			log.error(msg);
+			throw new IllegalArgumentException(msg);
+		}
+
 		SearchProgramEntry searchProgramEntry =
 				searchProgramEntryMap.get( searchProgram );
 		if ( searchProgramEntry == null ) {
@@ -275,16 +281,19 @@ public class SaveSearchReportedPeptideAnnotations {
 		AnnotationTypeDTO reportedPeptideAnnotationTypeDTO = 
 				reportedPeptideAnnotationTypeDTOMap.get( annotationName );
 		if ( reportedPeptideAnnotationTypeDTO == null ) {
-			String msg = "Processing filterableReportedPeptideAnnotations: "
+			String msg = "Processing " + getPartOfErrorMsg_FOR_getReportedPeptideAnnotationTypeId( filterableDescriptiveAnnotationType ) + ": "
 					+ " annotation name String |"
 					+ annotationName 
-					+ "| on Reported Peptide not found under <filterable_peptide_annotation_types> under <search_programs> for search program: " + searchProgram;
+					+ "| on Reported Peptide not found under " 
+					+ getPartOfErrorMsg_FOR_getReportedPeptideAnnotationTypeId( filterableDescriptiveAnnotationType ) 
+					+ " under <search_programs> for search program: " + searchProgram;
 			log.error( msg );
 			throw new LimelightImporterDataException(msg);
 		}
 		if ( filterableDescriptiveAnnotationType != reportedPeptideAnnotationTypeDTO.getFilterableDescriptiveAnnotationType() ) {
-			String msg = "Processing Reported PeptideAnnotations: "
-					+ "filterableDescriptiveAnnotationType for annotation name not same between types under <search_programs>"
+			String msg = "Processing Reported PeptideAnnotations "
+					+ getPartOfErrorMsg_FOR_getReportedPeptideAnnotationTypeId( filterableDescriptiveAnnotationType ) + ": "
+					+ " annotation name not under same 'filterable' or 'descriptive' types under <search_programs>"
 					+ " and data under Reported Peptide."
 					+ " annotation name String |"
 					+ annotationName 
@@ -294,5 +303,30 @@ public class SaveSearchReportedPeptideAnnotations {
 		}
 		int id = reportedPeptideAnnotationTypeDTO.getId();
 		return id;
+	}
+	
+	/**
+	 * Get part of error msg for use in method getReportedPeptideAnnotationTypeId(...)
+	 * @param filterableDescriptiveAnnotationType
+	 * @return
+	 */
+	private String getPartOfErrorMsg_FOR_getReportedPeptideAnnotationTypeId( FilterableDescriptiveAnnotationType filterableDescriptiveAnnotationType ) {
+
+		if ( filterableDescriptiveAnnotationType == null ) {
+			String msg = "Processing error in  getPartOfErrorMsg_FOR_getReportedPeptideAnnotationTypeId(...).  filterableDescriptiveAnnotationType == null";
+			log.error(msg);
+			throw new IllegalArgumentException(msg);
+		}
+
+		if ( filterableDescriptiveAnnotationType == FilterableDescriptiveAnnotationType.FILTERABLE ) {
+			return "<filterable_reported_peptide_annotations>";
+		} else if ( filterableDescriptiveAnnotationType == FilterableDescriptiveAnnotationType.DESCRIPTIVE ) {
+			return "<descriptive_reported_peptide_annotations>";
+		} else {
+			String msg = "Processing error in  getPartOfErrorMsg_FOR_getReportedPeptideAnnotationTypeId(...).  filterableDescriptiveAnnotationType == not expected value of 'FILTERABLE' or 'DESCRIPTIVE'";
+			log.error(msg);
+			throw new IllegalArgumentException(msg);
+		}
+		
 	}
 }
