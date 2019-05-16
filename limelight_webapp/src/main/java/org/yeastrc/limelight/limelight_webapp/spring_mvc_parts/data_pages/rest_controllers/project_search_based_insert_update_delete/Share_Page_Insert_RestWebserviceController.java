@@ -17,6 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.project_search_based_insert_update_delete;
 
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -122,7 +123,9 @@ public class Share_Page_Insert_RestWebserviceController {
     		HttpServletRequest httpServletRequest,
     		HttpServletResponse httpServletResponse
     		) throws Exception {
-    	
+
+		String referrerURLString = null;
+		
     	try {
     		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
     		//    to return specific error to web app JS code if webserviceSyncTracking is not current value
@@ -134,6 +137,41 @@ public class Share_Page_Insert_RestWebserviceController {
     			log.warn( "No Post Body" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		
+    		
+			// ensure referrer was on the same server as this Action to prevent abuse
+    		
+			referrerURLString = httpServletRequest.getHeader("referer");
+			if( StringUtils.isEmpty( referrerURLString ) ) {
+				log.error( "referrer host is empty string or null.  Returning Invalid Parameters" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+    		URL referrerURL = null;
+			try {
+				referrerURL = new URL( referrerURLString );
+			} catch (Exception e ) {
+				log.error( "Exception converting referrerURLString to URL object.  Returning Invalid Parameters."
+						+ "  referrerURLString: " + referrerURLString, e );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			String thisURLString = httpServletRequest.getRequestURL().toString();
+			
+			URL thisURL = null;
+			try {
+				thisURL = new URL( thisURLString );
+			} catch (Exception e ) {
+				log.error( "Exception converting thisURLString to URL object.  Returning Invalid Parameters."
+						+ "  thisURLString: " + thisURLString, e );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			if( !referrerURL.getHost().equals( thisURL.getHost() ) ) {
+				log.error( "This host and referrer host do not match.  Returning Invalid Parameters."
+						+ "  referrer: " + referrerURLString + ", thisURL: " + thisURLString );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
 
     		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
