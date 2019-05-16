@@ -37,7 +37,7 @@ import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideL
 const _TABLE_EXPANSION_OUTER_CONTAINER_HTML = '<div style="padding: 15px; background-color: white;"></div>';
 
 const _REPORTED_PEPTIDE_TABLE_EXPANSION_OUTER_CONTAINER_HTML = 
-	'<div style="padding: 15px; background-color: white;"><div class="selector_reported_peptides_data_table_container">Loading Peptides...</div></div>';
+	'<div style="padding: 15px; background-color: white;"><div class="selector_reported_peptides_data_table_container_in_multisearch_list">Loading Peptides...</div></div>';
 
 //  Constants set in constructor
 
@@ -185,27 +185,6 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 
 		tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
-		
-		// {
-		// 	//  Adjust overlay width to fit reported peptide list
-			
-		// 	let $selector_data_table_container = $tableContainerDiv;
-		// 	if ( ! $selector_data_table_container.hasClass( "selector_data_table_container" ) ) {
-
-		// 		let $selector_data_table_container = $tableContainerDiv.find(".selector_data_table_container");
-		// 	}
-		// 	if ( $selector_data_table_container.length === 0 ) {
-		// 		throw Error( '$tableContainerDiv not have class "selector_data_table_container" and $tableContainerDiv.find(".selector_data_table_container") found no elements' );
-		// 	}
-			
-		// 	const data_table_container_Width = $selector_data_table_container.outerWidth();
-			
-		// 	this._containing_ProteinViewPage_Display_MultipleSearches_SingleProtein
-		// 	.resize_OverlayWidth_BasedOnReportedPeptidesWidth( { reportedPeptidesWidth : data_table_container_Width });
-        // }
-
-		// return $tableContainerDiv;
-
 		
 		const $outerContainer = $( _TABLE_EXPANSION_OUTER_CONTAINER_HTML );
 		$outerContainer.append( $tableContainerDiv );
@@ -416,32 +395,5 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			$reported_peptides_outer_container : $outerContainer,
 			reportedPeptideIdsForDisplay : reportedPeptideIds, 
 			projectSearchId });
-
-		this._widenOverlayWidthIfNeeded({ $outerContainer });
-	}
-
-	/**
-     * Widen the Overlay width if needed due to new Reported Peptide table
-     * 
-	 */
-	_widenOverlayWidthIfNeeded({ $outerContainer })  {
-
-		const $selector_data_table_row_Search = $outerContainer.closest(".selector_data_table_row");
-
-		//  Need .parent() since .closest() starts with the element itself
-		const $selector_data_table_row_CombinedPeptide = $selector_data_table_row_Search.parent().closest(".selector_data_table_row");
-
-		//  Sanity check:  const data_id = $selector_data_table_row_CombinedPeptide.attr("data-id");
-
-		//  Adjust overlay width to fit reported peptide list
-		
-		if ( $selector_data_table_row_CombinedPeptide.length === 0 ) {
-			throw Error( '$selector_data_table_row_CombinedPeptide contains no elements' );
-		}
-		
-		const data_table_container_Width = $selector_data_table_row_CombinedPeptide.outerWidth();
-		
-		this._containing_ProteinViewPage_Display_MultipleSearches_SingleProtein
-		.resize_OverlayWidth_BasedOnReportedPeptidesWidth( { reportedPeptidesWidth : data_table_container_Width });
 	}
 }

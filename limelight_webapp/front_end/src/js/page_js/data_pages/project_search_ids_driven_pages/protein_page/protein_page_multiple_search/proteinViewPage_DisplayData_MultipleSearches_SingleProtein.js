@@ -1926,6 +1926,8 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 				throw e;
 			}
 		});	
+
+		this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded({ $view_single_protein_overlay_body });
 	}
 
 	/**
@@ -2243,31 +2245,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	/**
 	 * called by contained object of class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList
 	 */
-	resize_OverlayWidth_BasedOnReportedPeptidesWidth({reportedPeptidesWidth}) {
-
-		if (!this._contentDivHTMLElement) {
-			// Exit if no overlay
-			return;
-		}
-
-		const $view_single_protein_inner_overlay_div = $("#view_single_protein_inner_overlay_div");
-		if ( $view_single_protein_inner_overlay_div.length === 0 ) {
-			throw Error("No DOM element found with id 'view_single_protein_inner_overlay_div'");
-		}
-
-		let overlayWidth = reportedPeptidesWidth + 60;
-		if (overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH) {
-			overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
-		}
-
-		$view_single_protein_inner_overlay_div.css('width', overlayWidth + 'px');
-		
-		this._update_Overlay_OnWindowResize();
-	}
-
-	/**
-	 * called by contained object of class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList
-	 */
 	_update_Overlay_OnWindowResize( params ) {
 
 		let $view_single_protein_overlay_div = undefined;
@@ -2315,6 +2292,126 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 	}
 
+
+	//////////////
+	
+	/**
+	 * called by this._createSingleProteinModalOverlay
+	 */
+	_add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded({ $view_single_protein_overlay_body }) {
+
+		{
+			//  Remove _domMutationObserver_reported_peptides_outer_container if set
+			// stop observing
+			try {
+				if ( this._domMutationObserver_reported_peptides_outer_container ) {
+					this._domMutationObserver_reported_peptides_outer_container.disconnect();
+				}
+			} catch ( e ) {
+			}
+			this._domMutationObserver_reported_peptides_outer_container = undefined;
+		}
+
+		//  Add MutationObserver to DOM element .selector_reported_peptides_outer_container
+	
+		const $selector_reported_peptides_outer_container = $view_single_protein_overlay_body.find(".selector_reported_peptides_outer_container");
+		if ( $selector_reported_peptides_outer_container.length === 0 ) {
+			throw Error("Failed find DOM element with class 'selector_reported_peptides_outer_container'");
+		}
+		if ( $selector_reported_peptides_outer_container.length > 1 ) {
+			throw Error("Found > 1 DOM element with class 'selector_reported_peptides_outer_container'");
+		}
+		const DOMElement = $selector_reported_peptides_outer_container[ 0 ];
+
+		// Options for the observer (which mutations to observe)
+		// const config = { attributes: true, childList: true, subtree: true };
+		const config = { childList: true, subtree: true };
+
+		let timeoutId = null;
+
+		// Callback function to execute when mutations are observed
+		const domMutationCallback = ( mutationsList, observer ) => {
+
+			let foundChildListMutation = false;
+
+			for ( const mutation of mutationsList ) {
+				if  ( mutation.type == 'childList' ) {
+					foundChildListMutation = true;
+				}
+				// else if ( mutation.type == 'attributes' ) {
+				// 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
+				// }
+			}
+			if ( foundChildListMutation ) {
+				if ( timeoutId ) {
+					window.clearTimeout( timeoutId );
+				}
+				timeoutId = window.setTimeout( () => {
+					timeoutId = null;
+					// console.log('At least 1 child node has been added or removed.');
+					this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
+				}, 200 );
+			}
+
+		};
+		// Create an observer instance linked to the callback function
+		this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
+
+		// Start observing the target node for configured mutations
+		this._domMutationObserver_reported_peptides_outer_container.observe(DOMElement, config);
+
+		// stop observing
+		// this._domMutationObserver_reported_peptides_outer_container.disconnect();
+	}
+
+
+	/**
+	 * Adjust overlay width to fit reported peptide 
+	 * 
+	 * called internally from this class
+	 */
+	_resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() {
+
+		if (!this._contentDivHTMLElement) {
+			// Exit if no overlay
+			return;
+		}
+
+		//  Adjust overlay width to fit reported peptide list
+
+		const $contentDivHTMLElement = $( this._contentDivHTMLElement );
+		
+		let $selector_reported_peptides_data_table_container = $contentDivHTMLElement.find(".selector_reported_peptides_data_table_container");
+		if ( $selector_reported_peptides_data_table_container.length === 0 ) {
+			throw Error( '$contentDivHTMLElement.find(".selector_reported_peptides_data_table_container") found no elements' );
+		}
+		if ( $selector_reported_peptides_data_table_container.length > 1 ) {
+			throw Error( '$contentDivHTMLElement.find(".selector_reported_peptides_data_table_container") found > 1 elements' );
+		}
+		const $selector_data_table_container_TopLevelTable = $selector_reported_peptides_data_table_container.children(".selector_data_table_container");
+		if ( $selector_reported_peptides_data_table_container.length === 0 ) {
+			throw Error( '$selector_reported_peptides_data_table_container.children(".selector_data_table_container") found no elements' );
+		}
+		if ( $selector_reported_peptides_data_table_container.length > 1 ) {
+			throw Error( '$selector_reported_peptides_data_table_container.children(".selector_data_table_container") found > 1 elements' );
+		}
+		
+		const reported_peptides_data_table_container_Width = $selector_data_table_container_TopLevelTable.outerWidth();
+			
+		const $view_single_protein_inner_overlay_div = $("#view_single_protein_inner_overlay_div");
+		if ( $view_single_protein_inner_overlay_div.length === 0 ) {
+			throw Error("No DOM element found with id 'view_single_protein_inner_overlay_div'");
+		}
+
+		let overlayWidth = reported_peptides_data_table_container_Width + 60;
+		if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
+			overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
+		}
+
+		$view_single_protein_inner_overlay_div.css('width', overlayWidth + 'px');
+		
+		this._update_Overlay_OnWindowResize();
+	}
 
 	///////////////////////////////////////////
 	///////////////////////////////////////////

@@ -836,6 +836,12 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		//  Container element
 		let $selector_reported_peptides_data_table_container = $reported_peptides_outer_container.find(".selector_reported_peptides_data_table_container");
+		if ( $selector_reported_peptides_data_table_container.length === 0 ) {
+			throw Error('$reported_peptides_outer_container.find(".selector_reported_peptides_data_table_container") found no DOM elements')
+		}
+		if ( $selector_reported_peptides_data_table_container.length > 1 ) {
+			throw Error('$reported_peptides_outer_container.find(".selector_reported_peptides_data_table_container") found > 1 DOM elements')
+		}
 		$selector_reported_peptides_data_table_container.empty();
 		
 		//   Peptide List of objects with properties for Data Table
@@ -910,24 +916,6 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 
 		tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
-		
-		{
-			//  Adjust overlay width to fit reported peptide list
-			
-			let $selector_data_table_container = $tableContainerDiv;
-			if ( ! $selector_data_table_container.hasClass( "selector_data_table_container" ) ) {
-
-				let $selector_data_table_container = $tableContainerDiv.find(".selector_data_table_container");
-			}
-			if ( $selector_data_table_container.length === 0 ) {
-				throw Error( '$tableContainerDiv not have class "selector_data_table_container" and $tableContainerDiv.find(".selector_data_table_container") found no elements' );
-			}
-			
-			const data_table_container_Width = $selector_data_table_container.outerWidth();
-			
-			this._containing_ProteinViewPage_Display_MultipleSearches_SingleProtein
-			.resize_OverlayWidth_BasedOnReportedPeptidesWidth( { reportedPeptidesWidth : data_table_container_Width });
-		}
 	}
 
 	/**
