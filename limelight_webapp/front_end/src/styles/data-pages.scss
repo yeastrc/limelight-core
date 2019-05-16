@@ -524,19 +524,25 @@
         }
 
         div.tick-number-length-2 { // For Tick Mark number above that is length of 2
+
+            //  Add to margin-right and padding-right the margin-left and padding-left that would have been on the second character
+            //    so that the total width of this DOM element is the same total width of 2 DOM elements with class 'div.tick-number-length-1'
+
+            $tick-number-length-2-length : 2; //  Update to 3 if create a div.tick-number-length-3
+
             display: inline-block;
 
 			padding-left: $protein-sequence-formatted-sequence-data-block--single-character--padding-left; 
-			padding-right: $protein-sequence-formatted-sequence-data-block--single-character--padding-right * 2 + $protein-sequence-formatted-sequence-data-block--single-character--padding-left;
+			padding-right: $protein-sequence-formatted-sequence-data-block--single-character--padding-right * $tick-number-length-2-length + $protein-sequence-formatted-sequence-data-block--single-character--padding-left;
 			padding-top: 0px; 
 			padding-bottom: 0px;
 
 			margin-left: $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
-			margin-right: $protein-sequence-formatted-sequence-data-block--single-character--margin-right * 2 + $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
+			margin-right: $protein-sequence-formatted-sequence-data-block--single-character--margin-right * $tick-number-length-2-length + $protein-sequence-formatted-sequence-data-block--single-character--margin-left;
 			margin-top: 0px;
             margin-bottom: 1px;
 
-            width: $protein-sequence-formatted-sequence-data-block--single-character--width * 2;
+            width: $protein-sequence-formatted-sequence-data-block--single-character--width * $tick-number-length-2-length;
             
 			position:relative;
 			

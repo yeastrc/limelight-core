@@ -610,9 +610,13 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 					const tickInt = ( counter * positionGroupSize ) + 1;
 					const tickNumberAsString = tickInt.toString();
 					const tickNumberAsStringLength = tickNumberAsString.length;
-					let elementClass = "tick-number-length-1";
-					if ( tickNumberAsStringLength === 2 ) {
+					let elementClass = undefined;
+					if ( tickNumberAsStringLength === 1 ) {
+						elementClass = "tick-number-length-1";
+					} else if ( tickNumberAsStringLength === 2 ) {
 						elementClass = "tick-number-length-2";
+					} else {
+						throw Error("tickNumberAsStringLength only 1 or 2 supported since only have CSS classes for 1 and 2. tickNumberAsStringLength: " + tickNumberAsStringLength );
 					}
 					const tickStringInSpan = '<div class="' + elementClass + '">' + tickNumberAsString + '</div>';
 					$headerLine.append( $( tickStringInSpan ) );
