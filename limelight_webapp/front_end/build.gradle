@@ -137,6 +137,9 @@ task createHandlebarsOutputDirs {
   	  dirToCreate = rootDir + "lorikeet_overlay"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
+  	  dirToCreate = rootDir + "lorikeet_page"
+  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
+  	  
   	  dirToCreate = rootDir + "project_page__project_info_section_all_users_interaction"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -468,6 +471,31 @@ task handlebarsPrecompile_lorikeet_overlay(type: NodeTask) {
    precompile_Input_Directory
    ]
 }
+
+//  Handlebars Precompile for input handlebars_templates/lorikeet_page
+
+task handlebarsPrecompile_lorikeet_page(type: NodeTask) {
+
+  def precompile_Input_Directory = "handlebars_templates/lorikeet_page"
+  def precompile_Output_File = "handlebars_templates_precompiled/lorikeet_page/lorikeet_page_template-bundle.js"
+  
+  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
+  inputs.dir( precompile_Input_Directory )
+  outputs.file( precompile_Output_File )
+
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/handlebars/bin/handlebars')
+  } else {
+    script = project.file('node_modules/.bin/handlebars')
+  }
+  args = [ '--amd' , // parameters must be before file list
+  '--min',
+  '-f', precompile_Output_File,
+   precompile_Input_Directory
+   ]
+}
+
 
 //  Handlebars Precompile for input handlebars_templates/project_page__project_info_section_all_users_interaction
 
@@ -851,6 +879,7 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_search_detail_section_user_input_section',
      'handlebarsPrecompile_psm_list',
      'handlebarsPrecompile_lorikeet_overlay',
+     'handlebarsPrecompile_lorikeet_page',
      'handlebarsPrecompile_project_page__project_info_section_all_users_interaction',
      'handlebarsPrecompile_project_page__project_info_section_logged_in_users_interaction',
      'handlebarsPrecompile_project_page_searches_section_all_users_interaction',

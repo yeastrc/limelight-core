@@ -185,13 +185,6 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
     		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
-
-    		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = webserviceRequest.getSearchDataLookupParams_For_Single_ProjectSearchId();
-    		if ( searchDataLookupParams_For_Single_ProjectSearchId == null ) {
-    			String msg = "searchDataLookupParams_For_Single_ProjectSearchId is empty.";
-    			log.warn(msg);
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
     		
     		List<Integer> psmAnnotationTypeIdsForSorting = webserviceRequest.getPsmAnnotationTypeIdsForSorting();
     				
@@ -274,7 +267,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 			
 			Set<Integer> annTypeIdsToRetrieve = new HashSet<>();
 			
-			annTypeIdsToRetrieve.addAll( searchDataLookupParams_For_Single_ProjectSearchId.getPsmAnnTypeDisplay() );
+			annTypeIdsToRetrieve.addAll( webserviceRequest.getPsmAnnTypeDisplay() );
 			if ( psmAnnotationTypeIdsForSorting != null ) {
 				annTypeIdsToRetrieve.addAll( psmAnnotationTypeIdsForSorting );
 			}
@@ -475,7 +468,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     	private Long psmId;
 
     	private Integer projectSearchId;
-    	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
+    	List<Integer> psmAnnTypeDisplay;
     	private List<Integer> psmAnnotationTypeIdsForSorting;
     	
 		public Long getPsmId() {
@@ -490,18 +483,17 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
 		}
-		public SearchDataLookupParams_For_Single_ProjectSearchId getSearchDataLookupParams_For_Single_ProjectSearchId() {
-			return searchDataLookupParams_For_Single_ProjectSearchId;
-		}
-		public void setSearchDataLookupParams_For_Single_ProjectSearchId(
-				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
-			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
-		}
 		public List<Integer> getPsmAnnotationTypeIdsForSorting() {
 			return psmAnnotationTypeIdsForSorting;
 		}
 		public void setPsmAnnotationTypeIdsForSorting(List<Integer> psmAnnotationTypeIdsForSorting) {
 			this.psmAnnotationTypeIdsForSorting = psmAnnotationTypeIdsForSorting;
+		}
+		public List<Integer> getPsmAnnTypeDisplay() {
+			return psmAnnTypeDisplay;
+		}
+		public void setPsmAnnTypeDisplay(List<Integer> psmAnnTypeDisplay) {
+			this.psmAnnTypeDisplay = psmAnnTypeDisplay;
 		}
     }
     

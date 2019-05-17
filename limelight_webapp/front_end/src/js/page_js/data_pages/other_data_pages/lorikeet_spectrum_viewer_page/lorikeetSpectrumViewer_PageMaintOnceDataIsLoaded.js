@@ -1,11 +1,11 @@
 /**
- * lorikeetSpectrumViewer_OwnPage_Root.js
+ * lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.js
  * 
  * Javascript for  page lorikeetSpectrumViewerView.jsp 
  * 
  * Lorikeet Spectrum Viewer on it's own page
  * 
- * page variable: lorikeetSpectrumViewer_OwnPage_Root
+ * Place the data onto the page and update the page and browser URL for user interaction
  * 
  */
 
@@ -21,7 +21,7 @@ const Handlebars = require('handlebars/runtime');
 
 //  for DataTable
 const _common_template_bundle =
-	require("../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 
 //  module import 
@@ -33,28 +33,37 @@ import { addFlotSelectionToJquery } from 'libs/Lorikeet/jquery.flot.selection.js
 
 import { addLorikeetToJquery } from 'libs/Lorikeet/specview.js';
 
+
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+
+
+import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
+
+
+
+//  Size of lorikeet spectrum part of viewer
+const LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM = 700;
+const LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM = 700;
+
 
 //  Variables visible in this file/module  
 let itemsAddedTo_jQuery = false;
 
 
-let lorikeetOptions_LastCall = undefined;
-
-let loadedDataFromServer_LastCall = undefined;
-let psmPeptideTable_HeadersAndData_LastCall = undefined;
-
 /**
  * 
  */
-class LorikeetSpectrumViewer_OwnPage_Root {
+export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
 	/**
 	 * 
 	 */
-	constructor() {
+	constructor({ projectSearchId, psmId }) {
 
-		console.log( "LorikeetSpectrumViewer_OwnPage_Root: contructor called")
+		this._projectSearchId = projectSearchId;
+		this._psmId_Displayed = psmId;
+
+		console.log( "LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded: contructor called")
 		
 		if ( ! itemsAddedTo_jQuery ) {
 			
@@ -87,48 +96,20 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 	 */
 	initialize() {
 
-		console.log( "LorikeetSpectrumViewer_OwnPage_Root: initialize called");
-		
-		const objectThis = this;
-		
-		//  Strictly for Debugging
-		
-		const $add_last_passed_in = $("#add_last_passed_in");
-		if ( $add_last_passed_in.length !== 0 ) {
-			$add_last_passed_in.click(function(){
-
-				objectThis.addLorikeetToPage( { lorikeetOptions : lorikeetOptions_LastCall,
-					loadedDataFromServer : loadedDataFromServer_LastCall, 
-					psmPeptideTable_HeadersAndData : psmPeptideTable_HeadersAndData_LastCall } );
-			})
-		}
+		console.log( "LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded: initialize called");
 		
 	}
 	
 	/**
 	 * Single parameter, JSON string
 	 */
-	addLorikeetToPage( params_JSON ) {
-
-		//  Required to pass JSON only for MS Edge, when pass JS objects like Array, could not use 'for of' on them.
-
-		// console.log("Entered addLorikeetToPage(...) params_JSON: " + params_JSON );
-
-		
-		const params = JSON.parse( params_JSON );
-		
-		// console.log("addLorikeetToPage(...) params: " );
-		// console.log( params );
-
-		const lorikeetOptions = params.lorikeetOptions;
-		const loadedDataFromServer = params.loadedDataFromServer; 
-		const psmPeptideTable_HeadersAndData = params.psmPeptideTable_HeadersAndData;
-				
+	addLorikeetToPage({ lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData } ) {
 		try {
-			lorikeetOptions_LastCall = lorikeetOptions;
+			const lorikeetOptions = loadedDataFromServer.primaryLorikeetData.data;
 
-			loadedDataFromServer_LastCall = loadedDataFromServer;
-			psmPeptideTable_HeadersAndData_LastCall = psmPeptideTable_HeadersAndData;
+			//  Add these items to the lorikeetOptions variable
+			lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM;
+			lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM;
 
 			this._addLorikeetToPageInternal( { lorikeetOptions } );
 
@@ -261,25 +242,25 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 		// add in the click and over handlers for the rows
 		tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
 
-        tableDisplayHandler.addNoExpansionHandlerToRows( { $tableContainerDiv } );
-        
-        const initialPsmId = psmPeptideTable_HeadersAndData.initialPsmId;
-        
-        const $selector_table_rows_container = $tableContainerDiv.find(".selector_table_rows_container");
-        
-        this._markPsmRowSelected( { psmId : initialPsmId, $selector_table_rows_container } );
-        
+				tableDisplayHandler.addNoExpansionHandlerToRows( { $tableContainerDiv } );
+				
+				const initialPsmId = psmPeptideTable_HeadersAndData.initialPsmId;
+				
+				const $selector_table_rows_container = $tableContainerDiv.find(".selector_table_rows_container");
+				
+				this._markPsmRowSelected( { psmId : initialPsmId, $selector_table_rows_container } );
+				
 
-        $tableContainerDiv.find( 'div.div-table-data-row' ).children('div.column-viewPsm').click( function(clickEvent) {
-        	try {
-	        	clickEvent.preventDefault();
-	        	objectThis._handlePsmLinkClick( { $clickedElement : $(this), clickEvent } );
-	            return false;
-    		} catch( e ) {
-    			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    			throw e;
-    		}
-        });
+				$tableContainerDiv.find( 'div.div-table-data-row' ).children('div.column-viewPsm').click( function(clickEvent) {
+					try {
+						clickEvent.preventDefault();
+						objectThis._handlePsmLinkClick( { $clickedElement : $(this), clickEvent } );
+							return false;
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+				});
 	}
 
 	/**
@@ -288,7 +269,17 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 	_handlePsmLinkClick( { $clickedElement, clickEvent } ) {
 	
 		const psmIdOfClicked = $clickedElement.parent().data( 'id' );
-		
+
+		//  TODO  - Optimize to check if psm id is one already being displayed and if yes, do nothing
+		//    First implement code to update browser URL for chosen psm id
+
+		this._psmId_Displayed = psmIdOfClicked;
+
+
+		//  Update URL in browser
+		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed });
+		window.history.replaceState( null, null, lorikeetSpectrumViewer_newWindowURL );
+
 		const $selector_table_rows_container = $clickedElement.closest(".selector_table_rows_container");
 		
 		this._markPsmRowSelected( { $clickedElement, $selector_table_rows_container } );
@@ -372,26 +363,4 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 		//		psmId, reportedPeptideId, reportedPeptideString, scanNumber
 	}
 }
-
-///////////////
-
-$(document).ready(function() {
-	
-	console.log("called $(document).ready(function() {")
-	
-	try {
-		const lorikeetSpectrumViewer_OwnPage_Root = new LorikeetSpectrumViewer_OwnPage_Root()
-		
-		lorikeetSpectrumViewer_OwnPage_Root.initialize();
-
-		window.lorikeetSpectrumViewer_OwnPage_Root = lorikeetSpectrumViewer_OwnPage_Root;
-		
-	} catch( e ) {
-		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-		throw e;
-	}
-
-});
-
-
 

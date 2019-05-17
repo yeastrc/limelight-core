@@ -46,6 +46,10 @@ public class AA_ErrorPageControllerPaths_Constants {
 	 */
 	public static final String ASSOCIATED_PROJECT_ACCESS_NOT_ALLOWED_ERROR_PAGE = "associatedProjectAccessNotAllowed_ErrorPage_Controller";
 
+	
+	public static final String FORWARD_TO_ASSOCIATED_PROJECT_ACCESS_NOT_ALLOWED_ERROR_PAGE = 
+			"forward:" + PATH_START_ALL + ASSOCIATED_PROJECT_ACCESS_NOT_ALLOWED_ERROR_PAGE;
+	
 	/**
 	 * Display Internet Explorer Not Supported Error Message.
 	 */

@@ -3,10 +3,7 @@
  * 
  * Javascript for retrieving Spectrum data for a PSM Id and display on the page using Lorikeet
  * 
- * 2 options:
- * 
- *   1)  Display in Overlay    - function: viewSpectrum_InOverlay
- *   2)  Display in new window - function: viewSpectrum_NewWindow
+ *   Display in new window 
  */
 
 
@@ -16,11 +13,12 @@
 
 ///////////////////////////////////////////
 
+//  Not Used:  _lorikeet_overlay_template_bundle
 
-let Handlebars = require('handlebars/runtime');
+// let Handlebars = require('handlebars/runtime');
 
-let _lorikeet_overlay_template_bundle = 
-	require("../../../../../handlebars_templates_precompiled/lorikeet_overlay/lorikeet_overlay_template-bundle.js" );
+// let _lorikeet_overlay_template_bundle = 
+// 	require("../../../../../handlebars_templates_precompiled/lorikeet_overlay/lorikeet_overlay_template-bundle.js" );
 
 
 //  module import 
@@ -34,12 +32,8 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data
 import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils.js';
 import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
 
+import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
 
-
-// import { addFlotToJquery } from 'libs/Lorikeet/jquery.flot.js';
-// import { addFlotSelectionToJquery } from 'libs/Lorikeet/jquery.flot.selection.js';
-
-// import { addLorikeetToJquery } from 'libs/Lorikeet/specview.js';
 
 //   !!!  Constants visible in this file/module
 
@@ -62,11 +56,6 @@ const LORIKEET_VIEWER_NEW_WINDOW_SIZE_HEIGHT = LORIKEET_VIEWER_SIZE_PARAM_FOR_NE
 
 //  Following not currently used
 
-//  Size of lorikeet spectrum part of viewer
-// const LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_WIDTH_PARAM = 500;
-// const LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_HEIGHT_PARAM = 500;
-
-
 
 //  Variables visible in this file/module  
 let itemsAddedTo_jQuery = false;
@@ -82,69 +71,18 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	 */
 	constructor( params ) {
 
-//		console.log( "Handlebars: " + Handlebars );
-//		console.log( "_psm_list_template_bundle: " + _psm_list_template_bundle );
-
-		// if ( ! _lorikeet_overlay_template_bundle.lorikeet_overlay_background_template ) {
-		// 	throw Error("Nothing in _lorikeet_overlay_template_bundle.lorikeet_overlay_background_template");
-		// }
-		// if ( ! _lorikeet_overlay_template_bundle.lorikeet_overlay_main_template ) {
-		// 	throw Error("Nothing in _lorikeet_overlay_template_bundle.lorikeet_overlay_main_template");
-		// }
-
-		// this._lorikeet_overlay_background_template_Template = 
-		// 	_lorikeet_overlay_template_bundle.lorikeet_overlay_background_template;
-
-		// this._lorikeet_overlay_main_template_Template = 
-		// 	_lorikeet_overlay_template_bundle.lorikeet_overlay_main_template;
-		
-		// if ( ! itemsAddedTo_jQuery ) {
-			
-		// 	let jquery = window.jQuery;
-			
-		// 	addFlotToJquery( jquery );
-		// 	addFlotSelectionToJquery( jquery );
-		// 	addLorikeetToJquery( jquery );
-			
-		// 	itemsAddedTo_jQuery = true;
-		// }
 	}
 	
-	// /**
-	//  * 
-	//  */
-	// viewSpectrum_InOverlay( { psmId, projectSearchId } ) {
-
-	// 	let objectThis = this;
-		
-	// 	//  Maybe need visual indication that retrieving the data??
-
-	// 	const loadSpectrumDataPromise = this._loadSpectrumData( { psmId, projectSearchId } );
-		
-	// 	loadSpectrumDataPromise.catch(function(reason) {
-			
-	// 	})
-		
-	// 	loadSpectrumDataPromise.then( function( loadSpectrumDataResponse ) {
-		// try {
-	// 		const primaryLorikeetData = loadSpectrumDataResponse.primaryLorikeetData;
-			
-	// 		objectThis._createLorikeetViewerInOverlay( { psmId, projectSearchId, primaryLorikeetData } );
-		// } catch( e ) {
-		// 	reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-		// 	throw e;
-		// }
-	// 	})
-	// }
-
 	/**
 	 * 
 	 */
 	viewSpectrum_NewWindow( { psmId, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
 
 		let objectThis = this;
+
+
+		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId, psmId });
 		
-		//  Maybe need visual indication that retrieving the data??
 
 		let lorikeetNewWindowWidth = LORIKEET_VIEWER_NEW_WINDOW_SIZE_WIDTH;
 		let lorikeetNewWindowHeight = LORIKEET_VIEWER_NEW_WINDOW_SIZE_HEIGHT;
@@ -177,8 +115,10 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		
 		const strWindowFeatures = 
 			"toolbar=no,status=no,menubar=no,resizable=yes,scrollbars=yes," + windowWidthHeight;
+		
+		// const newWindowURL = "d/pg/spectrum-viewer";
 
-		const newWindowURL = "d/pg/spectrum-viewer";
+		const newWindowURL = lorikeetSpectrumViewer_newWindowURL;
 		
 		 // MUST open window before make AJAX Call.  This is a Browser Security requirement
 		//  window.open(...): Must run in code directly triggered by click event
@@ -186,6 +126,8 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		const newWindow = window.open( newWindowURL,
 				"_blank",
 				strWindowFeatures );
+
+		return;
 		
 		const loadedDataFromServer = {};
 
@@ -766,155 +708,5 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		}
 	}
 
-
-
-	///////////////////////////////////////////////
-
-	/////    !!!!!!!!     WARNING
-
-	////////     This following function _createLorikeetViewerInOverlay is like out of date.  Update it if use it.
-
-	/**
-	 * 
-	 */
-// 	_createLorikeetViewerInOverlay( { psmId, primaryLorikeetData } ) {
-		
-// 		let objectThis = this;
-		
-// 		//  Attach Lorikeet Overlay and it's background to the body
-		
-// 		let $body = $("body");
-		
-// 		let backgroundHTML = this._lorikeet_overlay_background_template_Template( {} );
-// 		let $background = $( backgroundHTML ).appendTo( $body );
-
-// 		let overlayHTML = this._lorikeet_overlay_main_template_Template( {} );
-// 		let $overlayRoot = $( overlayHTML ).appendTo( $body );
-		
-// 		let $view_spectra_overlay_X_for_exit_overlay = $("#view_spectra_overlay_X_for_exit_overlay");
-		
-// 		//  Add Close Click handlers
-		
-// 		$background.click( function(eventObject) {
-// 			try {
-// 				eventObject.preventDefault();
-// 				objectThis._removeLorikeetSpectrumOverlay();
-// 			} catch( e ) {
-// 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-// 				throw e;
-// 			}
-// 		});
-		
-// 		$view_spectra_overlay_X_for_exit_overlay.click( function(eventObject) {
-// 			try {
-// 				eventObject.preventDefault();
-// 				objectThis._removeLorikeetSpectrumOverlay();
-// 			} catch( e ) {
-// 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-// 				throw e;
-// 			}
-// 		});
-
-// 		var lorikeetOptions = primaryLorikeetData.data;
-
-// 		if ( lorikeetOptions === undefined || lorikeetOptions === null ) {
-
-// 			var msg = "Error retrieving data.  lorikeetOptions === undefined || lorikeetOptions === null";
-
-// //			handleGeneralServerError( { msg: msg  });
-			
-// 			alert( msg );
-// 		}
-		
-// 		//  Set Lorikeet options
-		
-// 		lorikeetOptions.peakDetect = false;
-		
-		
-// 		//  Need to at least set lorikeetOptions.ms1scanLabel to something to get the "MS1 Scan:" to show up on the MS1 scan
-// //		lorikeetOptions.ms1scanLabel = "ms1scanLabel";  //  TODO  set this to something else
-// 		lorikeetOptions.ms1scanLabel = " ";  //  TODO  set this to something else
-
-// 		//  Add these items to the lorikeetOptions variable
-// 		lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_HEIGHT_PARAM;
-// 		lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_OVERLAY_WIDTH_PARAM;
-
-
-// 		//  Adjust the overlay positon to be within the viewport
-// 		var scrollTopWindow = $(window).scrollTop();
-// 		if ( scrollTopWindow > 0 ) {
-// 			//  User has scrolled down
-// 			var overlayTop = scrollTopWindow + 10;
-// 			$overlayRoot.css( { top: overlayTop + "px" } );
-// 		} else {
-
-// 			$overlayRoot.css( { top: "10px" } );
-// 		}
-
-// 		lorikeetOptions.sizeChangeCallbackFunction = function() {
-// 			objectThis._resizeLorikeetOverlayBackgroundToLorikeetSize();
-// 		};
-
-// 		var overlayZIndex = $overlayRoot.css("z-index");
-
-// 		//  overlayZIndex is a string so this is the equivalent to ( overlayZIndex * 10 ) + 2
-// 		//   which achieves the desired affect of lorikeetOptions.tooltipZIndex > overlayZIndex
-
-// 		lorikeetOptions.tooltipZIndex = overlayZIndex + 2; // set higher than overlay z index so the tooltip will display
-
-// 		let $lorikeet_holder_div = $("#lorikeet_holder_div");
-
-// 		$lorikeet_holder_div.specview( lorikeetOptions );
-
-// 		this._resizeLorikeetOverlayBackgroundToLorikeetSize();
-// 	}
-	
-	/**
-	 * 
-	 */
-// 	_resizeLorikeetOverlayBackgroundToLorikeetSize() {
-		
-// 		//  Adjust width of overlay as necessary
-
-// 		var $lorikeetOuterTable = $("#lorikeet_holder_div table.lorikeet-outer-table");
-
-// 		if ( $lorikeetOuterTable.length === 0 ) {
-// 			//  did not find the element on the page
-// 			return;  ///  EXIT Function
-// 		}
-
-// 		var lorikeetOuterTableOuterWidth = $lorikeetOuterTable.outerWidth();
-		
-// 		//  Fix the width of the overlay to match the width of the lorikeet viewer
-
-// 		var $view_spectra_overlay_div = $("#view_spectra_overlay_div");
-
-// 		//  The width of the overall overlay
-// //		var view_spectra_overlay_div_outerWidth = $view_spectra_overlay_div.outerWidth();
-
-// 		var $view_spectra_overlay_body = $("#view_spectra_overlay_body");
-
-// 		var paddingLeft = parseInt( $view_spectra_overlay_body.css("padding-left"), 10);
-// 		var paddingRight = parseInt( $view_spectra_overlay_body.css("padding-right"), 10);
-
-// 		var newOverlayDivWidth = lorikeetOuterTableOuterWidth + paddingLeft + paddingRight + 10;
-
-// 		$view_spectra_overlay_div.width( newOverlayDivWidth );
-
-// //		var readOverlayDivWidth = $view_spectra_overlay_div.width( );
-
-// 	};
-
-	/**
-	 * 
-	 */
-// 	_removeLorikeetSpectrumOverlay() {
-		
-// 		let $view_spectra_overlay_div = $("#view_spectra_overlay_div");
-// 		let $lorikeet_modal_dialog_overlay_background = $("#lorikeet_modal_dialog_overlay_background");
-		
-// 		$view_spectra_overlay_div.remove();
-// 		$lorikeet_modal_dialog_overlay_background.remove();
-// 	}
 
 }

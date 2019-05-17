@@ -2,6 +2,8 @@
 
 <%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
 
+<%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
+
 <%--
 	lorikeetSpectrumViewerView.jsp - Child Page for displaying Lorikeet
 
@@ -13,6 +15,12 @@
 				%> Spectrum Viewer</title>
 	
 	<script id="controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER %></script>
+	
+	<script id="initial_url_project_search_id" type="text/text"><c:out value="${ projectSearchId }" ></c:out></script>
+	<script id="initial_url_psm_id" type="text/text"><c:out value="${ psmId }" ></c:out></script>
+	
+	<script id="project_id" type="text/text"><c:out value="${ projectId }" ></c:out></script>
+	
 	
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_data_pages.jsp" %> 
 
@@ -39,6 +47,14 @@
 	Strictly for Debugging:
    <input type="button" value="Add Last passed in" id="add_last_passed_in">
 --%>
+
+	<script id="project_view_controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER %></script>
+		
+	<div id="project_search_outer_container" style="margin-left: 10px; margin-top: 5px;">
+		<div id="project_link_container"></div>
+		
+		<div id="search_name_container" style=""></div>
+	</div>
 
 	<div id="lorikeet_holder">LOADING</div>
 	
