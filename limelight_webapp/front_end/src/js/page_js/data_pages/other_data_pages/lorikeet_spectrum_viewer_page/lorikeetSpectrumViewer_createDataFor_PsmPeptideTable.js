@@ -77,20 +77,6 @@ export class CreatePsmPeptideTable_HeadersAndData {
     	
         let columns = [ ];
         
-        {
-            let column = {
-				id :           'viewPsm',
-				width :        '70px',
-                displayName :  '',
-                hideColumnHeader : true,
-                dataProperty : 'viewPsmLink',
-                sort : false,
-                style_override : 'font-size:12px;',
-                css_class : 'fake-link selector_view_psm_item',
-			};
-
-			columns.push( column );
-        }
 //
 //		{
 //			let column = {
@@ -199,8 +185,7 @@ export class CreatePsmPeptideTable_HeadersAndData {
             dataObject.reportedPeptideString = psmObject.reportedPeptideString;
             
             dataObject.scanNumber = primaryLorikeetData.scanNum;
-            dataObject.viewPsmLink = 'View PSM';
-			
+            
             dataObject.charge = psmObject.charge;
             if ( primaryLorikeetData.precursorMz !== undefined && primaryLorikeetData.precursorMz !== null ) {
             	dataObject.precursor_M_Over_Z_Display = primaryLorikeetData.precursorMz.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );

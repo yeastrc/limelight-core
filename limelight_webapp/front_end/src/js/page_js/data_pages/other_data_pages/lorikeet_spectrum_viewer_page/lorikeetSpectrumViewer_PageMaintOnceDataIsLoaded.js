@@ -242,33 +242,41 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		// add in the click and over handlers for the rows
 		tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
 
-				tableDisplayHandler.addNoExpansionHandlerToRows( { $tableContainerDiv } );
-				
-				const initialPsmId = psmPeptideTable_HeadersAndData.initialPsmId;
-				
-				const $selector_table_rows_container = $tableContainerDiv.find(".selector_table_rows_container");
-				
-				this._markPsmRowSelected( { psmId : initialPsmId, $selector_table_rows_container } );
-				
-
-				$tableContainerDiv.find( 'div.div-table-data-row' ).children('div.column-viewPsm').click( function(clickEvent) {
-					try {
-						clickEvent.preventDefault();
-						objectThis._handlePsmLinkClick( { $clickedElement : $(this), clickEvent } );
-							return false;
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-				});
+		tableDisplayHandler.addNoExpansionHandlerToRows( { $tableContainerDiv } );
+		
+		const initialPsmId = psmPeptideTable_HeadersAndData.initialPsmId;
+		
+		const $selector_table_rows_container = $tableContainerDiv.find(".selector_table_rows_container");
+		
+		this._markPsmRowSelected( { psmId : initialPsmId, $selector_table_rows_container } );
+		
+		const $selector_data_table_row_All = $tableContainerDiv.find(".selector_data_table_row");
+		$selector_data_table_row_All.addClass("clickable");
+        $selector_data_table_row_All.click( function(eventObject) {
+            try {
+                eventObject.preventDefault();
+                const clickThis = this;
+                objectThis._handlePsmLinkClick({ clickThis, eventObject });
+                return false;
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });	
 	}
 
 	/**
 	 * Create Data Table and insert on page
 	 */
-	_handlePsmLinkClick( { $clickedElement, clickEvent } ) {
+	_handlePsmLinkClick( { clickThis, eventObject } ) {
 	
-		const psmIdOfClicked = $clickedElement.parent().data( 'id' );
+		const $clickedElement = $(clickThis);
+
+		const psmIdOfClicked = $clickedElement.data( 'id' );
+
+		if ( ! psmIdOfClicked ) {
+			throw Error("psmIdOfClicked is null or undefined");
+		}
 
 		//  TODO  - Optimize to check if psm id is one already being displayed and if yes, do nothing
 		//    First implement code to update browser URL for chosen psm id
