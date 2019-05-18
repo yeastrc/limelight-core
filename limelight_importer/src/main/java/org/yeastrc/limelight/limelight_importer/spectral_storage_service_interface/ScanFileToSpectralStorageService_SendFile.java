@@ -183,7 +183,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 				response = callSpectralStorageAcceptImportWebservice.call_UploadScanFile_Init_Webservice( webserviceRequest );
 
 				if ( ! response.isStatusSuccess() ) {
-					String msg = "Failed to send scan file to Spectral Storage  UploadScanFileTempKey: " 
+					String msg = "Send Scan File to Spectral Storage Service:  Call to call_UploadScanFile_Init_Webservice(...) response StatusSuccess is false.  UploadScanFileTempKey: " 
 							 + response.getUploadScanFileTempKey()
 							 + ", Scan File: " + scanFileWithPath.getAbsolutePath();
 					log.error( msg );
@@ -200,7 +200,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 						scanProcessStatusKeyResponsePart = " UploadScanFileTempKey: " + response.getUploadScanFileTempKey();
 					}
 					
-					String msg = "Send Scan File to Spectral Storage Service send threw exception and failed for retryCount == SEND_FILE_RETRY_COUNT. " + scanProcessStatusKeyResponsePart
+					String msg = "Send Scan File to Spectral Storage Service:  Call to call_UploadScanFile_Init_Webservice(...) hrew exception and failed for retryCount == SEND_FILE_RETRY_COUNT. " + scanProcessStatusKeyResponsePart
 						+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
 					log.error( msg, e );
 					throw new LimelightImporterSpectralStorageServiceErrorException( msg, e );
@@ -235,7 +235,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 			retryCount++;
 
 			if ( retryCount > SEND_FILE_RETRY_COUNT_MAX ) {
-				String msg = "Send Scan File to Spectral Storage Service failed for retryCount > SEND_FILE_RETRY_COUNT.  StatusSuccess: " + response.isStatusSuccess()
+				String msg = "Send Scan File to Spectral Storage Service. Actually send the file. In sendScanFileToSpectralStorageService():  failed for retryCount > SEND_FILE_RETRY_COUNT.  StatusSuccess: " + response.isStatusSuccess()
 					+ ", UploadScanFileTempKey: " + uploadScanFile_Init_Response.getUploadScanFileTempKey()
 					+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
 				log.error( msg );
@@ -257,7 +257,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 				response = callSpectralStorageAcceptImportWebservice.call_UploadScanFile_UploadScanFile_Service( uploadScanFile_UploadScanFile_Request );
 
 				if ( ! response.isStatusSuccess() ) {
-					String msg = "Failed to Submit scan file to Spectral Storage  UploadScanFileTempKey: " 
+					String msg = "Send Scan File to Spectral Storage Service. Actually send the file. In sendScanFileToSpectralStorageService(): call_UploadScanFile_UploadScanFile_Service return StatusSuccess false.  UploadScanFileTempKey: " 
 							 + uploadScanFile_Init_Response.getUploadScanFileTempKey()
 							 + ", Scan File: " + scanFileWithPath.getAbsolutePath();
 					log.error( msg );
@@ -275,7 +275,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 							+ ", UploadScanFileTempKey: " + uploadScanFile_Init_Response.getUploadScanFileTempKey();
 					}
 					
-					String msg = "Send Scan File to Spectral Storage Service send threw exception and failed for retryCount == SEND_FILE_RETRY_COUNT. " + scanProcessStatusKeyResponsePart
+					String msg = "Send Scan File to Spectral Storage Service. Actually send the file. In sendScanFileToSpectralStorageService(): call_UploadScanFile_UploadScanFile_Service threw exception and failed for retryCount == SEND_FILE_RETRY_COUNT. " + scanProcessStatusKeyResponsePart
 						+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
 					log.error( msg, e );
 					throw new LimelightImporterSpectralStorageServiceErrorException( msg, e );
@@ -318,7 +318,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 			retryCount++;
 
 			if ( retryCount > SEND_FILE_RETRY_COUNT_MAX ) {
-				String msg = "Send Scan File to Spectral Storage Service failed for retryCount > SEND_FILE_RETRY_COUNT.  StatusSuccess: " + response.isStatusSuccess()
+				String msg = "Send Scan File to Spectral Storage Service. Submit (commit) Upload. In sendScanFileToSpectralStorageService():  failed for retryCount > SEND_FILE_RETRY_COUNT.  StatusSuccess: " + response.isStatusSuccess()
 					+ ", UploadScanFileTempKey: " + uploadScanFile_Init_Response.getUploadScanFileTempKey()
 					+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
 				log.error( msg );
@@ -326,7 +326,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 			}
 
 			if ( retryCount > 1 ) {
-				log.warn( "In submitScanFileToSpectralStorageService(...) retryCount: " + retryCount + ", scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
+				log.warn( "Send Scan File to Spectral Storage Service. Submit (commit) Upload. In sendScanFileToSpectralStorageService():  retryCount: " + retryCount + ", scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
 				
 			}
 			
@@ -338,7 +338,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 				response = callSpectralStorageAcceptImportWebservice.call_UploadScanFile_Submit_Webservice( uploadScanFile_Submit_Request );
 
 				if ( ! response.isStatusSuccess() ) {
-					String msg = "Failed to send scan file to Spectral Storage";
+					String msg = "Send Scan File to Spectral Storage Service. Submit (commit) Upload. In sendScanFileToSpectralStorageService(): call call_UploadScanFile_Submit_Webservice returned StatusSuccess false.";
 					log.error( msg );
 					throw new LimelightImporterSpectralStorageServiceErrorException(msg);
 				}
@@ -353,7 +353,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 						scanProcessStatusKeyResponsePart = " ScanProcessStatusKey: " + response.getScanProcessStatusKey();
 					}
 					
-					String msg = "Send Scan File to Spectral Storage Service send threw exception and failed for retryCount == SEND_FILE_RETRY_COUNT. " + scanProcessStatusKeyResponsePart
+					String msg = "Send Scan File to Spectral Storage Service. Submit (commit) Upload. In sendScanFileToSpectralStorageService(): call call_UploadScanFile_Submit_Webservice threw exception and failed for retryCount == SEND_FILE_RETRY_COUNT. " + scanProcessStatusKeyResponsePart
 						+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
 					log.error( msg, e );
 					throw new LimelightImporterSpectralStorageServiceErrorException( msg, e );
