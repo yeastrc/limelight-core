@@ -47,6 +47,11 @@ public class ScanFileToSpectralStorageService_SendFile {
 	private ScanFileToSpectralStorageService_SendFile() { }
 	public static ScanFileToSpectralStorageService_SendFile getInstance() { return new ScanFileToSpectralStorageService_SendFile(); }
 
+	//  Overall Send Scan File to Spectral Storage Service Retry Max and Delay
+	
+	private static final int OVERALL_SEND_FILE_RETRY_COUNT_MAX = 10;
+	private static final int OVERALL_SEND_FILE_RETRY_DELAY = 2 * 1000; // 2 second
+
 	//  Send Scan File to Spectral Storage Service Retry Max and Delay
 	
 	private static final int SEND_FILE_RETRY_COUNT_MAX = 10;
@@ -72,39 +77,71 @@ public class ScanFileToSpectralStorageService_SendFile {
 			throw new LimelightImporterConfigurationException( msg );
 		}
 		
-		try {
-			CallSpectralStorageAcceptImportWebserviceInitParameters initParams = new CallSpectralStorageAcceptImportWebserviceInitParameters();
+		//  retry this whole loop until successful or retries exceeded
 
-			initParams.setSpectralStorageServerBaseURL( spectralStorageServiceBaseURL );
+		int retryCount = 0;
 
-			CallSpectralStorageAcceptImportWebservice callSpectralStorageAcceptImportWebservice = CallSpectralStorageAcceptImportWebservice.getInstance();
+		while( true ) {  // use 'return;' inside loop to exit
 
-			callSpectralStorageAcceptImportWebservice.init( initParams );
+			retryCount++;
 			
-			log.warn( "Calling spectralStorageService_InitUploadScanFileProcess(...) scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
+			if ( retryCount > 1 ) {
+				log.warn( "Retrying overall Send to Spectral Storage Service.  Start over at InitUpload.  In sendScanFileToSpectralStorageService(...) retryCount: " + retryCount + ", scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
+			}
 			
-			UploadScanFile_Init_Response uploadScanFile_Init_Response =
-					spectralStorageService_InitUploadScanFileProcess( scanFileWithPath, callSpectralStorageAcceptImportWebservice );
-			
-			log.warn( "Calling sendScanFileToSpectralStorageService(...) scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
-			
-			UploadScanFile_UploadScanFile_Response uploadScanFile_UploadScanFile_Response = 
-					sendScanFileToSpectralStorageService( uploadScanFile_Init_Response, scanFileWithPath, callSpectralStorageAcceptImportWebservice );
-			
-			log.warn( "Calling submitScanFileToSpectralStorageService(...) scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
-			
-			UploadScanFile_Submit_Response uploadScanFile_Submit_Response =
-					submitScanFileToSpectralStorageService( 
-							uploadScanFile_Init_Response,
-							scanFileWithPath, 
-							callSpectralStorageAcceptImportWebservice );
-			
-			return uploadScanFile_Submit_Response.getScanProcessStatusKey();
-			
-		} catch ( Exception e ) {
-			String msg = "Failed to send scan file to Spectral Storage";
-			log.error( msg, e );
-			throw e;
+			try {
+				CallSpectralStorageAcceptImportWebserviceInitParameters initParams = new CallSpectralStorageAcceptImportWebserviceInitParameters();
+	
+				initParams.setSpectralStorageServerBaseURL( spectralStorageServiceBaseURL );
+	
+				CallSpectralStorageAcceptImportWebservice callSpectralStorageAcceptImportWebservice = CallSpectralStorageAcceptImportWebservice.getInstance();
+	
+				callSpectralStorageAcceptImportWebservice.init( initParams );
+				
+				log.warn( "INFO: Calling spectralStorageService_InitUploadScanFileProcess(...) scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
+				
+				UploadScanFile_Init_Response uploadScanFile_Init_Response =
+						spectralStorageService_InitUploadScanFileProcess( scanFileWithPath, callSpectralStorageAcceptImportWebservice );
+	
+				log.warn( "INFO: spectralStorageService_InitUploadScanFileProcess(...) uploadScanFile_Init_Response.UploadScanFileTempKey: " 
+						+ uploadScanFile_Init_Response.getUploadScanFileTempKey() );
+				
+				Thread.sleep( 2000 ); // 2 second sleep
+				
+				log.warn( "INFO: Calling sendScanFileToSpectralStorageService(...) scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
+				
+				UploadScanFile_UploadScanFile_Response uploadScanFile_UploadScanFile_Response = 
+						sendScanFileToSpectralStorageService( uploadScanFile_Init_Response, scanFileWithPath, callSpectralStorageAcceptImportWebservice );
+				
+				Thread.sleep( 3000 ); // 3 second sleep
+				
+				log.warn( "INFO: Calling submitScanFileToSpectralStorageService(...) scanFileWithPath: " + scanFileWithPath.getAbsolutePath() );
+				
+				UploadScanFile_Submit_Response uploadScanFile_Submit_Response =
+						submitScanFileToSpectralStorageService( 
+								uploadScanFile_Init_Response,
+								scanFileWithPath, 
+								callSpectralStorageAcceptImportWebservice );
+				
+				Thread.sleep( 3000 ); // 3 second sleep
+				
+				return uploadScanFile_Submit_Response.getScanProcessStatusKey();
+				
+			} catch ( Exception e ) {
+
+				if ( retryCount < OVERALL_SEND_FILE_RETRY_COUNT_MAX ) {
+					
+					String msg = "Will Retry: Overall Send failed: Failed to send scan file to Spectral Storage";
+					log.warn(msg);
+					
+				} else {
+					String msg = "Overall Send: Failed to send scan file to Spectral Storage";
+					log.error( msg, e );
+					throw e;
+				}
+			}
+
+			Thread.sleep( OVERALL_SEND_FILE_RETRY_DELAY ); // Sleep wait for retry
 		}
 	}
 
