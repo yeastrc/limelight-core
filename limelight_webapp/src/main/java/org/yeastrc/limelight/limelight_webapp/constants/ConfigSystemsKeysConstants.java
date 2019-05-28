@@ -62,7 +62,11 @@ public class ConfigSystemsKeysConstants {
 
 	/////////   Run Importer Status Emails Config
 	
+	//  Any status
 	public static final String RUN_IMPORT_EXTRA_EMAILS_TO_SEND_TO_KEY = "run_import_extra_emails_to_send_to";
+
+	//  Failed status only
+	public static final String RUN_IMPORT_FAILED_STATUS_EXTRA_EMAILS_TO_SEND_TO_KEY = "run_import_failed_status_extra_emails_to_send_to";
 	
 	
 	///   Page Content Config

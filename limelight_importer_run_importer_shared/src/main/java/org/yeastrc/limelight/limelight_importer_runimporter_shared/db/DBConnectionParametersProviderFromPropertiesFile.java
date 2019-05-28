@@ -24,7 +24,9 @@ public class DBConnectionParametersProviderFromPropertiesFile implements IDBConn
 
 	private static final String NO_PROPERTIES_FILE_ERROR_MESSAGE = "No DB Connection Properties file found.";
 
-	private static final String DB_CONFIG_FILENAME = "db_config_file.properties";
+	//  Remove embedded config file option
+	
+//	private static final String DB_CONFIG_FILENAME = "db_config_file.properties";
 
 
 	private static final String PROPERTY_NAME__USERNAME = "username";
@@ -97,50 +99,57 @@ public class DBConnectionParametersProviderFromPropertiesFile implements IDBConn
 
 			} else {
 
-				//  Get config file from class path
-
-				propertiesFilenameMaybeWithPath = DB_CONFIG_FILENAME;
-
-				ClassLoader thisClassLoader = this.getClass().getClassLoader();
-
-				URL configFileUrlObjUrlLocal = thisClassLoader.getResource( DB_CONFIG_FILENAME );
-
-				if ( configFileUrlObjUrlLocal == null ) {
-
-					System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
-
-					String msg = "Properties file '" + DB_CONFIG_FILENAME + "' not found in class path.";
-					//					log.error( msg );
-
-					throw new DBConnectionParametersProviderPropertiesFileErrorException( msg );
-
-				} else {
-
-					if ( log.isInfoEnabled() ) {
-
-						log.info( "Properties file '" + DB_CONFIG_FILENAME + "' found, load path = " + configFileUrlObjUrlLocal.getFile() );
-					}
-				}
-
-
-				propertiesFilenameMaybeWithPath = configFileUrlObjUrlLocal.getFile();
-
-
-				propertiesFileAsStream = configFileUrlObjUrlLocal.openStream();
-
-
-				if ( propertiesFileAsStream == null ) {
-
-					System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
-
-					String msg = "Properties file '" + DB_CONFIG_FILENAME + "' not found in class path.";
-
-					//					log.error( msg );
-
-					throw new DBConnectionParametersProviderPropertiesFileErrorException( msg );
-				}
+				//  Remove embedded config file option
+				
+//				//  Get config file from class path
+//
+//				propertiesFilenameMaybeWithPath = DB_CONFIG_FILENAME;
+//
+//				ClassLoader thisClassLoader = this.getClass().getClassLoader();
+//
+//				URL configFileUrlObjUrlLocal = thisClassLoader.getResource( DB_CONFIG_FILENAME );
+//
+//				if ( configFileUrlObjUrlLocal == null ) {
+//
+//					System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
+//
+//					String msg = "Properties file '" + DB_CONFIG_FILENAME + "' not found in class path.";
+//					//					log.error( msg );
+//
+//					throw new DBConnectionParametersProviderPropertiesFileErrorException( msg );
+//
+//				} else {
+//
+//					if ( log.isInfoEnabled() ) {
+//
+//						log.info( "Properties file '" + DB_CONFIG_FILENAME + "' found, load path = " + configFileUrlObjUrlLocal.getFile() );
+//					}
+//				}
+//
+//
+//				propertiesFilenameMaybeWithPath = configFileUrlObjUrlLocal.getFile();
+//
+//
+//				propertiesFileAsStream = configFileUrlObjUrlLocal.openStream();
+//
+//
+//				if ( propertiesFileAsStream == null ) {
+//
+//					System.err.println( NO_PROPERTIES_FILE_ERROR_MESSAGE );
+//
+//					String msg = "Properties file '" + DB_CONFIG_FILENAME + "' not found in class path.";
+//
+//					//					log.error( msg );
+//
+//					throw new DBConnectionParametersProviderPropertiesFileErrorException( msg );
+//				}
 			}
 
+			if ( configFile == null ) {
+				String msg = "No config file provided";
+				log.error( msg );
+				throw new DBConnectionParametersProviderPropertiesFileErrorException( msg );
+			}
 
 			configProps = new Properties();
 

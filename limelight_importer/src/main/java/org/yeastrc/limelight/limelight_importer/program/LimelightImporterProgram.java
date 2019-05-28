@@ -32,11 +32,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
+import org.yeastrc.limelight.limelight_importer.config.Process_ConfigFileData_OtherThanDBConfig;
 import org.yeastrc.limelight.limelight_importer.constants.ImporterProgramExitCodes;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterLimelightXMLDeserializeFailException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
-import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
@@ -259,25 +259,36 @@ public class LimelightImporterProgram {
 			File mainXMLFileToImport = null;
 			List<File> scanFileList = null;
 
-			File dbConfigFile = null;
+			File configFile = null;
 			
 			Boolean skipPopulatingPathOnSearchLineOptChosen = null;
 
 			//  values from command line
 			
-			String dbConfigFileName = (String)cmdLineParser.getOptionValue( dbConfigFileNameCommandLineOpt );
+			String configFileName = (String)cmdLineParser.getOptionValue( dbConfigFileNameCommandLineOpt );
+			
+			if ( StringUtils.isEmpty( configFileName ) ) {
+				System.err.println( "No value for Config file.");
+				System.err.println( "" );
+				System.err.println( FOR_HELP_STRING );
+				importResults.setImportSuccessStatus( false) ;
+				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+				return importResults;  //  EARLY EXIT
+			}
 
-			if ( StringUtils.isNotEmpty( dbConfigFileName ) ) {
-				dbConfigFile = new File( dbConfigFileName );
-				if( ! dbConfigFile.exists() ) {
-					System.err.println( "Could not find DB Config File: " + dbConfigFile.getAbsolutePath() );
-					System.err.println( "" );
-					System.err.println( FOR_HELP_STRING );
-					importResults.setImportSuccessStatus( false) ;
-					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-					return importResults;  //  EARLY EXIT
-				}
-			}			
+//			if ( StringUtils.isNotEmpty( configFileName ) ) {
+			configFile = new File( configFileName );
+			if( ! configFile.exists() ) {
+				System.err.println( "Could not find Config File: " + configFile.getAbsolutePath() );
+				System.err.println( "" );
+				System.err.println( FOR_HELP_STRING );
+				importResults.setImportSuccessStatus( false) ;
+				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+				return importResults;  //  EARLY EXIT
+			}
+//			}
+				
+			Process_ConfigFileData_OtherThanDBConfig.getInstance().processConfigFile( configFile );
 
 			
 			//  Specific value from "Run Importer" Program
@@ -432,14 +443,14 @@ public class LimelightImporterProgram {
 
 			if ( createDatabaseConnectionFactory ) {
 				DBConnectionParametersProviderFromPropertiesFile dbConnectionParametersProvider = new DBConnectionParametersProviderFromPropertiesFile();
-				if ( dbConfigFile != null ) {
-					dbConnectionParametersProvider.setConfigFile( dbConfigFile );
+				if ( configFile != null ) {
+					dbConnectionParametersProvider.setConfigFile( configFile );
 				}
 				try {
 					dbConnectionParametersProvider.init();
 				} catch ( DBConnectionParametersProviderPropertiesFileErrorException e ) {
 					importResults.setImportSuccessStatus( false) ;
-					if ( dbConfigFile != null ) {
+					if ( configFile != null ) {
 						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
 					} else {
 						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_CONFIGURATION_PARAMETER_VALUES );
@@ -676,6 +687,7 @@ public class LimelightImporterProgram {
 		/*
 		 * method that will run when kill signal is received
 		 */
+		@Override
 		public void run() {
 			Thread thisThread = Thread.currentThread();
 			thisThread.setName( "Thread-Process-Shutdown-Request" );

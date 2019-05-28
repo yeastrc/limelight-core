@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportRunSubStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
@@ -117,39 +118,84 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         	if ( sendEmailItem != null ) {
         		sendEmail.sendEmail( sendEmailItem );
         		
-        		String extraEmailAddressesToSendTo_CommaDelim =
-        				configSystemDAO
-        				.getConfigValueForConfigKey( ConfigSystemsKeysConstants.RUN_IMPORT_EXTRA_EMAILS_TO_SEND_TO_KEY );
-        		
-        		if ( StringUtils.isNotEmpty( extraEmailAddressesToSendTo_CommaDelim ) ) {
+        		{  //  Send to extra "to" emails specified in config table, ANY status
+        			String extraEmailAddressesToSendTo_CommaDelim =
+        					configSystemDAO
+        					.getConfigValueForConfigKey( ConfigSystemsKeysConstants.RUN_IMPORT_EXTRA_EMAILS_TO_SEND_TO_KEY );
 
-            		String importerBaseDir = null;
-            		
-            		try {
-            			//  Get File Import base dir
-            			importerBaseDir = 
-            					configSystemDAO
-            					.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY );
-        			} catch ( Throwable t ) {
-        				// Log and eat exception
-        				
+        			if ( StringUtils.isNotEmpty( extraEmailAddressesToSendTo_CommaDelim ) ) {
+
+        				String importerBaseDir = null;
+
+        				try {
+        					//  Get File Import base dir
+        					importerBaseDir = 
+        							configSystemDAO
+        							.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY );
+        				} catch ( Throwable t ) {
+        					// Log and eat exception
+
+        				}
+
+        				String[] extraEmailAddressesToSendTo_Array = extraEmailAddressesToSendTo_CommaDelim.split( "," );
+        				for ( String extraEmailAddressesToSendTo : extraEmailAddressesToSendTo_Array ) {
+
+        					sendEmailItem = createMailMessageToSend(
+        							Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
+        							fileImportTrackingDTO, 
+        							fileImportTrackingRunDTO,
+        							extraEmailAddressesToSendTo, // toEmailAddressParam
+        							userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
+        							importerBaseDir // from config
+        							);
+
+        					sendEmailItem.setToEmailAddress( extraEmailAddressesToSendTo );
+        					sendEmail.sendEmail( sendEmailItem );
+        				}
         			}
-            		
-        			String[] extraEmailAddressesToSendTo_Array = extraEmailAddressesToSendTo_CommaDelim.split( "," );
-        			for ( String extraEmailAddressesToSendTo : extraEmailAddressesToSendTo_Array ) {
+        		}
+
+        		{ //  Send to extra "to" emails specified in config table, FAILED status
+        			
+        			FileImportStatus status = fileImportTrackingDTO.getStatus();
+        			if ( status == FileImportStatus.FAILED ) {
         				
-        				sendEmailItem = createMailMessageToSend(
-        						Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
-        	        			fileImportTrackingDTO, 
-        	        			fileImportTrackingRunDTO,
-        	        			extraEmailAddressesToSendTo, // toEmailAddressParam
-        	        			userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
-        	        			importerBaseDir // from config
-        	        			);
-        				
-        				sendEmailItem.setToEmailAddress( extraEmailAddressesToSendTo );
-        				sendEmail.sendEmail( sendEmailItem );
+        				String extraEmailAddressesToSendTo_CommaDelim =
+    					configSystemDAO
+    					.getConfigValueForConfigKey( ConfigSystemsKeysConstants.RUN_IMPORT_FAILED_STATUS_EXTRA_EMAILS_TO_SEND_TO_KEY );
+
+        				if ( StringUtils.isNotEmpty( extraEmailAddressesToSendTo_CommaDelim ) ) {
+
+        					String importerBaseDir = null;
+
+        					try {
+        						//  Get File Import base dir
+        						importerBaseDir = 
+        								configSystemDAO
+        								.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY );
+        					} catch ( Throwable t ) {
+        						// Log and eat exception
+
+        					}
+
+        					String[] extraEmailAddressesToSendTo_Array = extraEmailAddressesToSendTo_CommaDelim.split( "," );
+        					for ( String extraEmailAddressesToSendTo : extraEmailAddressesToSendTo_Array ) {
+
+        						sendEmailItem = createMailMessageToSend(
+        								Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
+        								fileImportTrackingDTO, 
+        								fileImportTrackingRunDTO,
+        								extraEmailAddressesToSendTo, // toEmailAddressParam
+        								userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
+        								importerBaseDir // from config
+        								);
+
+        						sendEmailItem.setToEmailAddress( extraEmailAddressesToSendTo );
+        						sendEmail.sendEmail( sendEmailItem );
+        					}
+        				}
         			}
+        			
         		}
         	}
 		}
@@ -193,6 +239,16 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 					+ "  tracking status : " + status.toString() );
 			return null;  // EARLY RETURN
 		}
+		
+		if ( email_Contents_Control == Email_Contents_Control.FOR_OTHER
+				&& status == FileImportStatus.FAILED ) {
+			FileImportRunSubStatus fileImportRunSubStatus = fileImportTrackingRunDTO.getRunSubStatus();
+			if ( fileImportRunSubStatus == FileImportRunSubStatus.SYSTEM_ERROR ) {
+				statusText = "failed with System Error";
+			}
+		}
+		
+		
 		String searchPathWithLabel = "";
 		if ( StringUtils.isNotEmpty( fileImportTrackingDTO.getSearchPath() ) ) {
 			searchPathWithLabel = "\n\n"
