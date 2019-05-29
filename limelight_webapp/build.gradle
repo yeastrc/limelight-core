@@ -121,10 +121,10 @@ dependencies {
 	//  Old StringUtils
 	// https://mvnrepository.com/artifact/commons-lang/commons-lang
 	compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
-	
+
 	//  New StringUtils
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
