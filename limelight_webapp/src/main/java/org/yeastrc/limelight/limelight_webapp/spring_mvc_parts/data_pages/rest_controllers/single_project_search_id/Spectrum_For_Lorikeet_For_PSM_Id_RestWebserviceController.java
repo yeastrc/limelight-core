@@ -528,6 +528,8 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 			//  ms1 scan number not found in returned list
 			String msg = "No ms1 scan found in spectral storage service for scan number: " 
 					+ ms1_ScanNumber
+					+ ", ms2ScanNumber: "
+					+ ms2ScanNumber
 					+ ", API Key: " + scanFileAPIKey
 					+ ", scan file id: " + scanFileId;
 			log.error( msg );
