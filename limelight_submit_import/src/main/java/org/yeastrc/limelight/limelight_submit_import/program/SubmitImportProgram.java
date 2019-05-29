@@ -187,7 +187,10 @@ public class SubmitImportProgram {
 			
 			Boolean noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
 
-			if ( StringUtils.isNotEmpty( projectIdString ) ) {
+			if ( StringUtils.isEmpty( projectIdString ) ) {
+				System.err.println( "Project id must be specified." );
+				System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+			} else {
 				try {
 					projectId = Integer.parseInt( projectIdString );
 
