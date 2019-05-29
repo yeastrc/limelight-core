@@ -525,15 +525,16 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 		}
 
 		if ( scanDataFromSpectralStorageService_MS_2_1.ms_1_scanDataFromSpectralStorageService == null ) {
-			//  ms1 scan number not found in returned list
-			String msg = "No ms1 scan found in spectral storage service for scan number: " 
-					+ ms1_ScanNumber
-					+ ", ms2ScanNumber: "
-					+ ms2ScanNumber
-					+ ", API Key: " + scanFileAPIKey
-					+ ", scan file id: " + scanFileId;
-			log.error( msg );
-//			throw new LimelightWebappDataException(msg);
+			//  ms1 scan number not found in returned list.  This is valid, not all data will have ms1
+			if ( log.isInfoEnabled() ) {
+				String msg = "No ms1 scan found in spectral storage service for scan number: " 
+						+ ms1_ScanNumber
+						+ ", ms2ScanNumber: "
+						+ ms2ScanNumber
+						+ ", API Key: " + scanFileAPIKey
+						+ ", scan file id: " + scanFileId;
+				log.info( msg );
+			}
 		}
 		
 		return scanDataFromSpectralStorageService_MS_2_1;
