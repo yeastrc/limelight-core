@@ -27,7 +27,7 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
-	id "org.springframework.boot" version "2.1.4.RELEASE"
+	id "org.springframework.boot" version "2.1.5.RELEASE"
 	id "io.spring.dependency-management" version "1.0.7.RELEASE"
 	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
 }
@@ -152,8 +152,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
 	
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
-	compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.0.0.RELEASE'
-    
+	compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.1.5.RELEASE'
+	
 	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
 	compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.4.RELEASE'
     
