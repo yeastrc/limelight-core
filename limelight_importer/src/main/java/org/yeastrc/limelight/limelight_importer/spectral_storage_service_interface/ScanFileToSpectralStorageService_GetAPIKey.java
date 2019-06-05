@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterConfigurationException;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterSpectralStorageServiceErrorException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterSpectralStorageServiceRetryExceededException;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
@@ -163,8 +164,23 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 			}
 
 			if ( get_UploadedScanFileInfo_Response.getStatus() == WebserviceSpectralStorageAcceptImport_ProcessStatusEnum.FAIL ) {
-				String msg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " + spectralStorage_Process_Key;
-				log.error( msg );
+				
+				String scanFileParse_Data_ErrorMsg = null; // If Data Error
+				
+				String scanFileParseErrorMsg = null;  // If other Failure
+				
+				if ( StringUtils.isNotEmpty( get_UploadedScanFileInfo_Response.getDataErrorFailMessage() ) )  {
+
+					String msg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " + spectralStorage_Process_Key;
+					log.error( msg );
+					
+					//  Return Data Error Fail Message returned from Spectral Storage Service
+					scanFileParse_Data_ErrorMsg = get_UploadedScanFileInfo_Response.getDataErrorFailMessage();
+
+				} else {
+					scanFileParseErrorMsg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " + spectralStorage_Process_Key;
+					log.error( scanFileParseErrorMsg );
+				}
 				
 				try {
 
@@ -183,7 +199,11 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 					log.error( msg2, e );
 				}
 				
-				throw new LimelightImporterSpectralStorageServiceErrorException(msg);
+				if ( scanFileParse_Data_ErrorMsg != null ) {
+					throw new LimelightImporterDataException( scanFileParse_Data_ErrorMsg );
+				}
+				
+				throw new LimelightImporterSpectralStorageServiceErrorException(scanFileParseErrorMsg);
 			}
 
 			{
