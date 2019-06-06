@@ -293,10 +293,12 @@ public class CallSubmitImportWebservice {
 				}
 			}
 			//  Confirm that the generated XML can be parsed.
-//			ByteArrayInputStream bais = new ByteArrayInputStream( byteArrayOutputStream_ToSend.toByteArray() );
+//			ByteArrayInputStream bais = new ByteArrayInputStream( byteArrayOutputStream_Result.toByteArray() );
 //			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+//			XMLInputFactory xmlInputFactory = xmlInputFactory_XXE_Safe_Creator();
+//			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( bais ) );
 //			@SuppressWarnings("unused")
-//			Object unmarshalledObject = unmarshaller.unmarshal( bais );
+//			Object unmarshalledObject = unmarshaller.unmarshal( xmlStreamReader );
 
 		} catch ( Exception e ) {
 			String msg = "Error. Fail to encode request to send to server: "

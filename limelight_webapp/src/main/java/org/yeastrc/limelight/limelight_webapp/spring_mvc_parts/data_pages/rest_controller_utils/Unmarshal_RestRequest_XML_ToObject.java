@@ -21,13 +21,16 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Request;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
@@ -79,8 +82,10 @@ public class Unmarshal_RestRequest_XML_ToObject implements InitializingBean {
 		ByteArrayInputStream bais_bytesXML = new ByteArrayInputStream( bytesXML );
 		try {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			webserviceRequestAsObject = unmarshaller.unmarshal( bais_bytesXML );
-		} catch ( JAXBException e ) {
+			XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
+			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( bais_bytesXML ) );
+			webserviceRequestAsObject = unmarshaller.unmarshal( xmlStreamReader );
+		} catch ( Exception e ) {
 			String xmlAsString = "Unable to convert XML to String";
 			try {
 				xmlAsString = new String(bytesXML, StandardCharsets.UTF_8 );
@@ -117,8 +122,10 @@ public class Unmarshal_RestRequest_XML_ToObject implements InitializingBean {
 		ByteArrayInputStream bais_bytesXML = new ByteArrayInputStream( XML_String.getBytes( StandardCharsets.UTF_8 ) );
 		try {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			webserviceRequestAsObject = unmarshaller.unmarshal( bais_bytesXML );
-		} catch ( JAXBException e ) {
+			XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
+			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( bais_bytesXML ) );
+			webserviceRequestAsObject = unmarshaller.unmarshal( xmlStreamReader );
+		} catch ( Exception e ) {
 			log.warn( "Failed to unmarshal XML: " + XML_String, e );
 			
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
