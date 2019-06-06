@@ -287,9 +287,10 @@ public class SubmitImportProgram {
 					}
 
 					configParams.setConfigFileCommandLine( configFileCommandLine );
+
+					configParams.readConfigParams();
 				}
 
-				configParams.readConfigParams();
 
 				baseURL = configParams.getLimelightWebAppUrl();
 

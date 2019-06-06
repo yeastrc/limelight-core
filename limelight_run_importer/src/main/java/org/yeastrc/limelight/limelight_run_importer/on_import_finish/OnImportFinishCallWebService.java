@@ -35,12 +35,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightCallWebserviceOnImportFinishException;
+import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Request;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Response;
 
@@ -205,9 +209,11 @@ public class OnImportFinishCallWebService {
 			}
 			//  Confirm that the generated XML can be parsed.
 //			ByteArrayInputStream bais = new ByteArrayInputStream( byteArrayOutputStream_ToSend.toByteArray() );
+//			XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
+//			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( bais ) );
 //			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 //			@SuppressWarnings("unused")
-//			Object unmarshalledObject = unmarshaller.unmarshal( bais );
+//			Object unmarshalledObject = unmarshaller.unmarshal( xmlStreamReader );
 
 		} catch ( Exception e ) {
 			String msg = "Error. Fail to encode request to send to server: "
@@ -279,7 +285,9 @@ public class OnImportFinishCallWebService {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 //			final String inputStreamBufferOfServerResponse_String =
 //					new String( serverResponseByteArray, StandardCharsets.UTF_8 );
-			webserviceResponseAsObject = unmarshaller.unmarshal( inputStreamBufferOfServerResponse );
+			XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
+			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( inputStreamBufferOfServerResponse ) );
+			webserviceResponseAsObject = unmarshaller.unmarshal( xmlStreamReader );
 		} catch ( JAXBException e ) {
 			LimelightCallWebserviceOnImportFinishException wcee = 
 					new LimelightCallWebserviceOnImportFinishException( "JAXBException unmarshalling XML received from server at URL: " + webserviceURL, e );

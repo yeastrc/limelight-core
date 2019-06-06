@@ -38,6 +38,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.exceptions.LimelightSubmitImportWebserviceCallErrorException;
@@ -359,7 +362,9 @@ public class CallSubmitImportWebservice {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 //			final String inputStreamBufferOfServerResponse_String =
 //					new String( serverResponseByteArray, StandardCharsets.UTF_8 );
-			webserviceResponseAsObject = unmarshaller.unmarshal( inputStreamBufferOfServerResponse );
+			XMLInputFactory xmlInputFactory = xmlInputFactory_XXE_Safe_Creator();
+			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( inputStreamBufferOfServerResponse ) );
+			webserviceResponseAsObject = unmarshaller.unmarshal( xmlStreamReader );
 		} catch ( JAXBException e ) {
 			LimelightSubmitImportWebserviceCallErrorException wcee = 
 					new LimelightSubmitImportWebserviceCallErrorException( "JAXBException unmarshalling XML received from server at URL: " + webserviceURL, e );
@@ -655,4 +660,15 @@ public class CallSubmitImportWebservice {
 		return baos.toByteArray();
 	}
 
+	/**
+	 * @return
+	 */
+	private XMLInputFactory xmlInputFactory_XXE_Safe_Creator() {
+		
+		XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+		xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+		xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+		
+		return xmlInputFactory;
+	}
 }

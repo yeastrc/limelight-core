@@ -26,6 +26,9 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -52,6 +55,7 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModific
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightInput;
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
+import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 
@@ -156,7 +160,9 @@ public class ImporterCoreEntryPoint {
 		LimelightInput limelightInputForImport = null;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( LimelightInput.class );
+			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			
 			if ( Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_VALIDATION_ENABLED ) {
 				URL xmlSchemaURL = null;
 				try {
@@ -177,7 +183,10 @@ public class ImporterCoreEntryPoint {
 			}
 			Object unmarshalledObject = null;
 			try {
-				unmarshalledObject = unmarshaller.unmarshal( inputStream );
+
+				XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
+				XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( inputStream ) );
+				unmarshalledObject = unmarshaller.unmarshal( xmlStreamReader );
 			} catch ( Exception e ) {
 				System.out.println( "Exception in deserializing the primary input XML file" );
 				System.err.println( "Exception in deserializing the primary input XML file" );
