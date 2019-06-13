@@ -555,7 +555,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 			//  here since used in call next to this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsAndProteinPositions()
 
 			this._protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId = new Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId({
-				forSingleSearch : true,
+				forMultipleSearch : true,
 				proteinSequenceVersionId : this._proteinSequenceVersionId,
 				loadedDataCommonHolder : this._loadedDataCommonHolder,
 				proteinSequenceFormattedDisplay_Main_displayWidget : this._proteinSequenceFormattedDisplay_Main_displayWidget, 
