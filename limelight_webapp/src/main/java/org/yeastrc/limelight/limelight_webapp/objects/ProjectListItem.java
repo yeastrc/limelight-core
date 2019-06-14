@@ -28,6 +28,12 @@ public class ProjectListItem {
 	private boolean projectLocked;
 	private int userAccessLevel;
 	
+	@Override
+	public String toString() {
+		return "ProjectListItem [id=" + id + ", title=" + title + ", projectLocked=" + projectLocked
+				+ ", userAccessLevel=" + userAccessLevel + "]";
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -52,4 +58,5 @@ public class ProjectListItem {
 	public void setUserAccessLevel(int userAccessLevel) {
 		this.userAccessLevel = userAccessLevel;
 	}
+
 }

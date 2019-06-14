@@ -60,6 +60,11 @@ public class AA_PageControllerPaths_Constants {
 	 * List the projects
 	 */
 	public static final String PROJECTS_LIST_PAGE_CONTROLLER = "d/pg/project-list";
+
+	/**
+	 * List the projects.  For each project list the searches and users
+	 */
+	public static final String PROJECT_SEARCH_LIST_PAGE_CONTROLLER = "d/pg/project-search-list";
 	
 	/**
 	 * View a Project

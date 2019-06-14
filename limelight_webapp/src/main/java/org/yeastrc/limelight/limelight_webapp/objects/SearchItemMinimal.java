@@ -29,6 +29,12 @@ public class SearchItemMinimal {
 	private String name;
 	private String path;
 	
+	@Override
+	public String toString() {
+		return "SearchItemMinimal [projectSearchId=" + projectSearchId + ", searchId=" + searchId + ", projectId="
+				+ projectId + ", name=" + name + ", path=" + path + "]";
+	}
+	
 	public int getProjectSearchId() {
 		return projectSearchId;
 	}
@@ -59,6 +65,7 @@ public class SearchItemMinimal {
 	public void setProjectId(int projectId) {
 		this.projectId = projectId;
 	}
+
 	
 	
 }
