@@ -14,7 +14,7 @@ export class StringDownloadUtils {
     
     static downloadStringAsFile( { stringToDownload, filename } ) {
 
-        var blob = new Blob([ stringToDownload ], {type: "text/plain;charset=utf-8"});
+        var blob = new Blob([ stringToDownload ], {type: "text/plain;charset=ISO-8859-1"});
 		saveAs(blob, filename);
 
     }
