@@ -22,6 +22,7 @@ import java.sql.SQLException;
 
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportRunSubStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 
 /**
@@ -66,9 +67,18 @@ public class FileImportTrackingRun_PopulateDTO {
 		
 		returnItem.setRunStatus( FileImportStatus.fromValue( rs.getInt( "status_id" ) ) );
 		
-		int insertedSearchId = rs.getInt( "inserted_search_id" );
-		if ( ! rs.wasNull() ) {
-			returnItem.setInsertedSearchId( insertedSearchId );
+		{
+			int importer_sub_status_id = rs.getInt( "importer_sub_status_id" );
+			if ( ! rs.wasNull() ) {
+				returnItem.setRunSubStatus( FileImportRunSubStatus.fromValue( importer_sub_status_id ) );
+			}
+		}
+		
+		{
+			int insertedSearchId = rs.getInt( "inserted_search_id" );
+			if ( ! rs.wasNull() ) {
+				returnItem.setInsertedSearchId( insertedSearchId );
+			}
 		}
 		
 		//  importer_sub_status_id
