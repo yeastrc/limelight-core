@@ -89,6 +89,8 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 				ImporterConfigFileData_OtherThanDBConfig.setSpectralStorageService_sendScanFileLocation_IfPathStartsWith( propertyValue );
 			}
 
+			ImporterConfigFileData_OtherThanDBConfig.setConfigured(true);
+
 			if ( ImporterConfigFileData_OtherThanDBConfig.isSpectralStorageService_sendScanFileLocation()
 					&& ImporterConfigFileData_OtherThanDBConfig.getSpectralStorageService_sendScanFileLocation_IfPathStartsWith() != null ) {
 
@@ -106,8 +108,6 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 						);
 			}
 			
-			ImporterConfigFileData_OtherThanDBConfig.setConfigured(true);
-
 		} catch ( RuntimeException e ) {
 
 			log.error( "In processConfigFile(),   Properties file '" + configFileFromCommandLine.getAbsolutePath() + "', exception: " + e.toString(), e );
