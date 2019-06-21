@@ -88,6 +88,23 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 			if ( StringUtils.isNotEmpty( propertyValue ) ) {
 				ImporterConfigFileData_OtherThanDBConfig.setSpectralStorageService_sendScanFileLocation_IfPathStartsWith( propertyValue );
 			}
+
+			if ( ImporterConfigFileData_OtherThanDBConfig.isSpectralStorageService_sendScanFileLocation()
+					&& ImporterConfigFileData_OtherThanDBConfig.getSpectralStorageService_sendScanFileLocation_IfPathStartsWith() != null ) {
+
+				log.warn( "INFO: Config file property '" 
+						+ PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION
+						+ "' is set to '" 
+						+ SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE
+						+ "'.  "
+						+ " and config file property '" 
+						+ PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION_IF_STARTS_WITH
+						+ "' is set to '" 
+						+ SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE
+						+ "'."
+						+ "  So will be sending Scan file location to Spectral Storage Service.  If the location is not accepted, the scan file contents will be sent."
+						);
+			}
 			
 			ImporterConfigFileData_OtherThanDBConfig.setConfigured(true);
 
