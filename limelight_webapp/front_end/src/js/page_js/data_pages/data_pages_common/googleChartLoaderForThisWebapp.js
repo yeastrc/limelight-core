@@ -25,7 +25,6 @@
  */
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
 
 /**

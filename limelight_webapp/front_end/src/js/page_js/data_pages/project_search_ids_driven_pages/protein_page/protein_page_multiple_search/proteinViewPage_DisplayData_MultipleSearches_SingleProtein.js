@@ -8,12 +8,7 @@ let Handlebars = require('handlebars/runtime');
 
 let _protein_table_template_bundle = require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js");
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
-
-import { dataPageStateManager_Keys } from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 

@@ -20,9 +20,7 @@
 let _project_page_upload_data_section_project_owner_user_interaction_template = require("../../../../../../handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js");
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
 
 

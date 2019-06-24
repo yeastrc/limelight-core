@@ -10,9 +10,7 @@
  */
 
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
 import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
 import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId } from '../protein_page_common/proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId.js';

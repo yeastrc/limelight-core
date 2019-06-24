@@ -9,9 +9,6 @@
 
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
-
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
 /**
