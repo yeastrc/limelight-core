@@ -102,43 +102,6 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 		this._getPathsToDataPagesFromDOM();
 
-		const $merge_peptide_view_button = $("#merge_peptide_view_button");
-		$merge_peptide_view_button.click(function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._mergePeptideViewButtonClicked({ clickedThis : this, eventObject });
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-		});
-		const $merge_protein_view_button = $("#merge_protein_view_button");
-		$merge_protein_view_button.click(function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._mergeProteinViewButtonClicked({ clickedThis : this, eventObject });
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-		});
-		const $merge_mod_view_button = $("#merge_mod_view_button");
-		$merge_mod_view_button.click(function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._mergeModViewButtonClicked({ clickedThis : this, eventObject });
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-		});
-
 		this._initializeCalled = true;
 	};
 
@@ -544,6 +507,49 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		const explore_data_section__contents_blockHTML = _project_page_searches_section_all_users_interaction_template.searchSection_OuterContainer();
 
 		$explore_data_section__contents_block.append( explore_data_section__contents_blockHTML );
+
+		//  Merge buttons added from this template
+
+		{
+			const objectThis = this;
+			
+			const $merge_peptide_view_button = $("#merge_peptide_view_button");
+			$merge_peptide_view_button.click(function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._mergePeptideViewButtonClicked({ clickedThis : this, eventObject });
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
+			});
+			const $merge_protein_view_button = $("#merge_protein_view_button");
+			$merge_protein_view_button.click(function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._mergeProteinViewButtonClicked({ clickedThis : this, eventObject });
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
+			});
+			const $merge_mod_view_button = $("#merge_mod_view_button");
+			$merge_mod_view_button.click(function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._mergeModViewButtonClicked({ clickedThis : this, eventObject });
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
+			});
+		}
 
 		let $search_list = $("#search_list");
 
