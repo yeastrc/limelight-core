@@ -24,6 +24,8 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
+import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collapsableSection_StandardProcessing.js';
+
 //  Local imports
 
 import { ProjectPage_SearchDetails_AllUsers } from 'page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_AllUsers.js';
@@ -69,26 +71,26 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 			projectPage_SearchDetails_LoggedInUsers.initialize({ projectPage_SearchDetails_AllUsers : this._projectPage_SearchDetails_AllUsers });
 		}
 
+		if (!_project_page_searches_section_all_users_interaction_template.searchSection_OuterContainer) {
+			throw Error("Nothing in _project_page_searches_section_all_users_interaction_template.searchSection_OuterContainer");
+		}
 		if (!_project_page_searches_section_all_users_interaction_template.searches_container_template) {
 			throw Error("Nothing in _project_page_searches_section_all_users_interaction_template.searches_container_template");
 		}
-		this._searches_container_template = _project_page_searches_section_all_users_interaction_template.searches_container_template;
-		
 		if (!_project_page_searches_section_all_users_interaction_template.single_search_main_template) {
 			throw Error("Nothing in _project_page_searches_section_all_users_interaction_template.single_search_main_template");
 		}
-		this._single_search_main_template = _project_page_searches_section_all_users_interaction_template.single_search_main_template;
-
 		if (!_project_page_searches_section_all_users_interaction_template.single_search_expansion_icon_template) {
 			throw Error("Nothing in _project_page_searches_section_all_users_interaction_template.single_search_expansion_icon_template");
 		}
-		this._single_search_expansion_icon_template = _project_page_searches_section_all_users_interaction_template.single_search_expansion_icon_template;
-
 		if (!_project_page_searches_section_all_users_interaction_template.single_search_checkbox_template) {
 			throw Error("Nothing in _project_page_searches_section_all_users_interaction_template.single_search_checkbox_template");
 		}
-		this._single_search_checkbox_template = _project_page_searches_section_all_users_interaction_template.single_search_checkbox_template;
+		if (!_project_page_searches_section_all_users_interaction_template.single_folder_main_template) {
+			throw Error("Nothing in _project_page_searches_section_all_users_interaction_template.single_folder_main_template");
+		}
 
+		//  Set of all Project Search Ids of Searches Loaded
 		this._searchDataLoaded_ProjectSearchIds = new Set();
 	}
 
@@ -162,13 +164,6 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 			throw Error("No DOM element for id 'url_path__mod_view'");
 		}
 		this._url_path__mod_view = url_path__mod_viewElement.innerHTML;
-
-		let url_path__test_mike_webservicesElement = document.getElementById("url_path__test_mike_webservices");
-		if (!url_path__test_mike_webservicesElement) {
-			throw Error("No DOM element for id 'url_path__test_mike_webservices'");
-		}
-		this._url_path__test_mike_webservices = url_path__test_mike_webservicesElement.innerHTML;
-
 	};
 
 	/**
@@ -533,7 +528,22 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 			throw Error("initialize method not called");
 		}
 
-		let searchList = responseData.searchList;
+		const folderList = responseData.folderList;
+    	const  searchesNotInFolders = responseData.searchesNotInFolders;
+    	const  noSearchesFound = responseData.noSearchesFound;
+
+		//  Insert the outer block first
+
+		const $explore_data_section__contents_block = $("#explore_data_section__contents_block");
+		if ( $explore_data_section__contents_block.length === 0 ) {
+			throw Error("No DOM element with id 'explore_data_section__contents_block'");
+		}
+
+		$explore_data_section__contents_block.empty();
+
+		const explore_data_section__contents_blockHTML = _project_page_searches_section_all_users_interaction_template.searchSection_OuterContainer();
+
+		$explore_data_section__contents_block.append( explore_data_section__contents_blockHTML );
 
 		let $search_list = $("#search_list");
 
@@ -547,7 +557,7 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		//
 		//		let $search_separator_row_jq_List = $search_list.find(".search_separator_row_jq");
 
-		if ( (!searchList) || searchList.length === 0 ) {
+		if ( noSearchesFound ) {
 			//  No searchList for identifier
 
 			//  Hide buttons above and below search list since no search list
@@ -570,111 +580,82 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 			return; // EARY EXIT
 		}
 
+		//  DO have Searches to display so continue
+
 		//		$selector_single_search_main_root_container_List.remove();
 		//
 		//		$search_separator_row_jq_List.remove();
 
 
-		if (searchList && searchList.length > 0) {
+		//  Show buttons above and below search list since yes search list
 
-			//  Show buttons above and below search list since yes search list
+		const $search_list_above_block = $("#search_list_above_block");
+		$search_list_above_block.show();
+		const $search_list_below_block = $("#search_list_below_block");
+		$search_list_below_block.show();
 
-			const $search_list_above_block = $("#search_list_above_block");
-			$search_list_above_block.show();
-			const $search_list_below_block = $("#search_list_below_block");
-			$search_list_below_block.show();
+		//  Add inner search list container
 
-			//  Add inner search list container
+		const canSelectSearches = true;
 
-			const canSelectSearches = true;
-
-			// let canSelectSearches = false;
+		// let canSelectSearches = false;
 
 			// //  For now, only select searches when Searches Admin Object provided
 			// if ( this._projectPage_SearchesAdmin ) {
 			// 	canSelectSearches = true;
 			// }
 
+		//  Assigned above
+		// const folderList = responseData.folderList;
+    	// const  searchesNotInFolders = responseData.searchesNotInFolders;
+
+		//  Add Folders and their containing Searches
+
+		if ( folderList && folderList.length !== 0 ) {
+			for ( const folderItem of folderList ) {
+
+				const folderHTML = _project_page_searches_section_all_users_interaction_template.single_folder_main_template({ folder : folderItem });
+				const $folderItem = $( folderHTML );
+				$folderItem.appendTo( $search_list );
+
+				
+				//  Collapse/Expand for Folder
+				const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
+				collapsableSection_StandardProcessing.initializeWithRootElement({ $searchRoot : $folderItem });
+
+
+				const searchesInFolder = folderItem.searchesInFolder;
+
+				if ( searchesInFolder && searchesInFolder.length !== 0 ) {
+
+					const $folder_contents_block_jq = $folderItem.find(".folder_contents_block_jq");
+
+					const searchesContainerContext = { canSelectSearches };
+
+					const searches_containerHTML = _project_page_searches_section_all_users_interaction_template.searches_container_template(searchesContainerContext);
+					const $searches_container = $( searches_containerHTML );
+					$searches_container.appendTo( $folder_contents_block_jq );
+			
+					this._addSearchesUnderAFolderOrNotInAnyFolder({ searchList : searchesInFolder, showBorderLastSearch : false, canSelectSearches, $searches_container });
+				}
+			}
+		}
+
+		//  Add Seaches Not In Any Folder
+		if ( searchesNotInFolders && searchesNotInFolders.length !== 0 ) {
+
 			const searchesContainerContext = { canSelectSearches };
 
-			const searches_containerHTML = this._searches_container_template(searchesContainerContext);
+			const searches_containerHTML = _project_page_searches_section_all_users_interaction_template.searches_container_template(searchesContainerContext);
 			const $searches_container = $( searches_containerHTML );
 			$searches_container.appendTo( $search_list );
 
-			//  Sort on search id in reverse order
-			searchList.sort(function(a, b) {
-				if (a.searchId < b.searchId) {
-					return 1;
-				}
-				if (a.searchId > b.searchId) {
-					return -1;
-				}
-				return 0;
-			})
-
-			for ( const searchItem of searchList ) {
-
-				this._searchDataLoaded_ProjectSearchIds.add( searchItem.projectSearchId );
-
-				{
-					const rootDOM_Element_Id = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_CHECKBOX_ID_PREFIX + searchItem.projectSearchId
-					
-					const checkbox_HTML = this._single_search_checkbox_template({ searchItem : searchItem, rootElementId : rootDOM_Element_Id });
-
-					const $checkbox_entry = $(checkbox_HTML);
-					$checkbox_entry.appendTo( $searches_container );
-
-					if ( canSelectSearches && this._projectPage_SearchesAdmin ) {
-
-						this._projectPage_SearchesAdmin.addChangeHandlersSelectSearch({
-						projectSearchId : searchItem.projectSearchId,
-						searchId : searchItem.searchId,
-						$search_entry : $checkbox_entry });
-					}
-				}
-
-				{
-					const rootDOM_Element_Id = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX + searchItem.projectSearchId
-					
-					const expansion_HTML = this._single_search_expansion_icon_template({ searchItem : searchItem, rootElementId : rootDOM_Element_Id });
-
-					const $expansion_entry = $(expansion_HTML);
-					$expansion_entry.appendTo( $searches_container );
-
-					this._addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, searchItem });
-				}
-
-				const rootDOM_Element_Id = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX + searchItem.projectSearchId
-
-				let context = {
-					searchItem : searchItem,
-					url_path__peptide : this._url_path__peptide,
-					url_path__protein : this._url_path__protein,
-					url_path__mod_view : this._url_path__mod_view,
-					url_path__test_mike_webservices : this._url_path__test_mike_webservices,
-
-					rootElementId : rootDOM_Element_Id
-				};
-
-				const searchEntry_HTML = this._single_search_main_template(context);
-
-				const $search_entry = $(searchEntry_HTML);
-
-				$search_entry.appendTo( $searches_container );
-
-				this._addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem });
-
-			}
-
-			//			addToolTips();
-
-		} else {
-
-			//			let noDataMsg = $("#project_entry_no_data_template_div").html();
-
-			//			$search_list.html(noDataMsg);
+			this._addSearchesUnderAFolderOrNotInAnyFolder({ searchList : searchesNotInFolders, showBorderLastSearch : true, canSelectSearches, $searches_container });
 		}
-		
+
+		//			addToolTips();
+
+	
 		if ( this._projectPage_SearchesSection_LoggedInUsersInteraction ) {
 			//  have _projectPage_SearchesSection_LoggedInUsersInteraction object so call method on it
 			this._projectPage_SearchesSection_LoggedInUsersInteraction.searchListPopulated();
@@ -686,6 +667,78 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		}
 
 	};
+
+	/**
+	 * 
+	 */
+	_addSearchesUnderAFolderOrNotInAnyFolder({ searchList, canSelectSearches, showBorderLastSearch, $searches_container }) {
+
+		let searchItemCounter = 0;
+		for ( const searchItem of searchList ) {
+
+			searchItemCounter++; // 1 based
+
+
+			let showBorderBelowSearch = true;
+			
+			if ( ( ! showBorderLastSearch ) && searchItemCounter === searchList.length ) {
+				// Last search and showBorderLastSearch is false so set false 
+				showBorderBelowSearch = false;
+			}
+
+			this._searchDataLoaded_ProjectSearchIds.add( searchItem.projectSearchId );
+
+			{
+				const rootDOM_Element_Id = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_CHECKBOX_ID_PREFIX + searchItem.projectSearchId
+				
+				const checkbox_HTML = _project_page_searches_section_all_users_interaction_template.single_search_checkbox_template({ searchItem : searchItem, rootElementId : rootDOM_Element_Id });
+
+				const $checkbox_entry = $(checkbox_HTML);
+				$checkbox_entry.appendTo( $searches_container );
+
+				if ( canSelectSearches && this._projectPage_SearchesAdmin ) {
+
+					this._projectPage_SearchesAdmin.addChangeHandlersSelectSearch({
+					projectSearchId : searchItem.projectSearchId,
+					searchId : searchItem.searchId,
+					$search_entry : $checkbox_entry });
+				}
+			}
+
+			{
+				const rootDOM_Element_Id = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX + searchItem.projectSearchId
+				
+				const expansion_HTML = _project_page_searches_section_all_users_interaction_template.single_search_expansion_icon_template({
+					searchItem : searchItem, rootElementId : rootDOM_Element_Id });
+
+				const $expansion_entry = $(expansion_HTML);
+				$expansion_entry.appendTo( $searches_container );
+
+				this._addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, searchItem });
+			}
+
+			const rootDOM_Element_Id = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX + searchItem.projectSearchId
+
+			let context = {
+				searchItem : searchItem,
+				url_path__peptide : this._url_path__peptide,
+				url_path__protein : this._url_path__protein,
+				url_path__mod_view : this._url_path__mod_view,
+
+				rootElementId : rootDOM_Element_Id,
+				showBorderBelowSearch
+			};
+
+			const searchEntry_HTML = _project_page_searches_section_all_users_interaction_template.single_search_main_template(context);
+
+			const $search_entry = $(searchEntry_HTML);
+
+			$search_entry.appendTo( $searches_container );
+
+			this._addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem });
+
+		}
+	}
 
 	/**
 	 * for HTML in single_search_expansion_icon_template.handlebars

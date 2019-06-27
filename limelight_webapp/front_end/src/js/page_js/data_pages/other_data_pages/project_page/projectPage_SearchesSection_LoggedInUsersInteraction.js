@@ -39,8 +39,6 @@ export class ProjectPage_SearchesSection_LoggedInUsersInteraction {
 
         this._projectIdentifierFromURL = projectIdentifierFromURL;
 
-        this._expandCollapseButtonsAdded = false;
-        
         if ( ! _project_page_upload_data_section_project_owner_user_interaction_template.project_searches_user_buttons_template ) {
             throw Error("_project_page_upload_data_section_project_owner_user_interaction_template.project_searches_user_buttons_template")
         }
@@ -61,14 +59,12 @@ export class ProjectPage_SearchesSection_LoggedInUsersInteraction {
     }
 
 	/**
-	 * 
+	 * Called each time the search list is populated, which means that also the buttons above and below were removed
 	 */    
     searchListPopulated() {
 
-        if ( ! this._expandCollapseButtonsAdded ) {
-            this._add_ExpandAllCollapseAll_Buttons();
-        }
-
+        
+        this._add_ExpandAllCollapseAll_Buttons();
     }
 
 	/**
@@ -115,8 +111,6 @@ export class ProjectPage_SearchesSection_LoggedInUsersInteraction {
                 throw e;
             }
         });
-
-        this._expandCollapseButtonsAdded = true;
     }
 
 	/**

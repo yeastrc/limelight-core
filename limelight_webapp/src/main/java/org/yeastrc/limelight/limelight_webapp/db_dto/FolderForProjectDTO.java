@@ -1,7 +1,7 @@
 /*
 * Original author: Daniel Jaschob <djaschob .at. uw.edu>
 *                  
-* Copyright 2018 University of Washington - Seattle, WA
+* Copyright 2019 University of Washington - Seattle, WA
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,43 +15,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_webapp.objects;
+package org.yeastrc.limelight.limelight_webapp.db_dto;
 
 /**
- * Single Search Minimal - only name, search id, projectSearchId
+ * table folder_for_project_tbl
  *
  */
-public class SearchItemMinimal {
+public class FolderForProjectDTO {
 
-	private int projectSearchId;
-	private int searchId;
+	private int id;
 	private int projectId;
-	private int displayOrder;
 	private String name;
+	private int displayOrder;
 	
-	@Override
-	public String toString() {
-		return "SearchItemMinimal [projectSearchId=" + projectSearchId + ", searchId=" + searchId + ", projectId="
-				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + "]";
+	public int getId() {
+		return id;
 	}
-
-	public int getProjectSearchId() {
-		return projectSearchId;
-	}
-	public void setProjectSearchId(int projectSearchId) {
-		this.projectSearchId = projectSearchId;
-	}
-	public int getSearchId() {
-		return searchId;
-	}
-	public void setSearchId(int searchId) {
-		this.searchId = searchId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+	public void setId(int id) {
+		this.id = id;
 	}
 	public int getProjectId() {
 		return projectId;
@@ -59,7 +40,12 @@ public class SearchItemMinimal {
 	public void setProjectId(int projectId) {
 		this.projectId = projectId;
 	}
-
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public int getDisplayOrder() {
 		return displayOrder;
 	}
@@ -67,5 +53,5 @@ public class SearchItemMinimal {
 		this.displayOrder = displayOrder;
 	}
 
-	
+		
 }

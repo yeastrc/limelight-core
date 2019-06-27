@@ -41,7 +41,8 @@ public class SearchListForProjectIdSearcher extends Limelight_JDBC_Base implemen
 	private static final Logger log = LoggerFactory.getLogger( SearchListForProjectIdSearcher.class );
 		
 	private static final String QUERY_SQL = 
-			"SELECT project_search_tbl.search_name, project_search_tbl.id AS project_search_id, search_tbl.id AS search_id, search_tbl.path "
+			"SELECT project_search_tbl.search_name, project_search_tbl.id AS project_search_id, search_tbl.id AS search_id,"
+			+ " project_search_tbl.search_display_order "
 			+ " FROM "
 			+ " project_search_tbl INNER JOIN search_tbl ON project_search_tbl.search_id = search_tbl.id "
 			+ " WHERE project_search_tbl.project_id = ? AND project_search_tbl.status_id = " + SearchRecordStatus.IMPORT_COMPLETE_VIEW.value();
@@ -65,8 +66,8 @@ public class SearchListForProjectIdSearcher extends Limelight_JDBC_Base implemen
 					SearchItemMinimal item = new SearchItemMinimal();
 					item.setProjectSearchId( rs.getInt( "project_search_id" ) );
 					item.setSearchId( rs.getInt( "search_id" ) );
+					item.setDisplayOrder( rs.getInt( "search_display_order" ) );
 					item.setName( rs.getString( "search_name" ) );
-					item.setPath( rs.getString( "path" ) );
 					resultList.add( item );
 				}
 			}

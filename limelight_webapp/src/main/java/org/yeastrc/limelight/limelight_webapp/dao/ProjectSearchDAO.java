@@ -228,6 +228,42 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 			throw e;
 		}
 	}
+
+	/**
+	 * 
+	 */
+	@Override
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	public void updateDisplayOrderForProjectSearch( int projectSearchId, int newDisplayOrder ) {
+		
+		final String UPDATE_SQL = "UPDATE project_search_tbl SET search_display_order = ? WHERE id = ?";
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+//			int rowsUpdated = 
+			this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt = connection.prepareStatement( UPDATE_SQL );
+							int counter = 0;
+							counter++;
+							pstmt.setInt( counter, newDisplayOrder );
+							counter++;
+							pstmt.setInt( counter, projectSearchId );
+
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "newDisplayOrder: " + newDisplayOrder + ", projectSearchId: " + projectSearchId + ", SQL: " + UPDATE_SQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
 	
 	/**
 	 * Only call from Transaction service

@@ -46,8 +46,6 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
         this._projectPage_SearchesSection_AllUsersInteraction = undefined;  //  Set in initialize(...) method
         
-        this._copyMoveButtonsAdded = false;
-
         if ( ! _project_page_searches_section_researcher_user_interaction_template.project_searches_admin_buttons_template ) {
             throw Error("Nothing in _project_page_searches_section_researcher_user_interaction_template.project_searches_admin_buttons_template");
         }
@@ -88,16 +86,11 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
     }
 
 	/**
-	 * Called each time the search list is populated
+	 * Called each time the search list is populated, which means that also the buttons above and below were removed
 	 */
 	searchListPopulated() {
 
         const objectThis = this;
-
-        if ( this._copyMoveButtonsAdded ) {
-            this._enableDisable_CopyMove_Buttons();
-            return;
-        }
 
         //  Add Copy Move Buttons
 
@@ -129,8 +122,6 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
                 throw e;
             }
         });
-
-        this._copyMoveButtonsAdded = true;
     }
 
 	/**

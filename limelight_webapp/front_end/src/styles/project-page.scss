@@ -244,6 +244,16 @@ body.project-page {
 		
 		
 		
+		//  Folders for searches
+
+		.folder-container { padding-top: 3px; padding-bottom: 3px; clear: left; } //  Use padding-left: from left-margin-same-as-checkbox
+		.folder-collapsable-link-container { float: left; padding-top: 0px; padding-right: 3px; }
+		// .folder-collapsable-link {  }
+
+		.folder-name-display { font-size: 18px; font-weight: bold; }
+
+		.searches-under-folder-block { margin-left: 20px; margin-top: 6px; }
+
 		
 		/////////////////////////////////////////
 		
@@ -272,7 +282,7 @@ body.project-page {
             background-color: #ffffff;
         }
 
-        div.searches-block-item-bottom-border {
+        div.searches-block-item-bottom-border, .search-entry-bottom-border {
 			clear: left;
 			margin-top: 10px; margin-bottom: 10px;
 			width: 100%; 
@@ -282,6 +292,39 @@ body.project-page {
     }
 
 
+
+
+	/* Organize Searches - Put Searches in Folders and Order Searches and Folders */
+	
+	#organize_searches_folder_searches_table { min-width: 1000px; width: 100%; table-layout: fixed; border-collapse: collapse; }
+	#organize_searches_folder_searches_table,
+	#organize_searches_folder_searches_table tr,
+	#organize_searches_folder_searches_table td { border: 1px solid $site-color-dark;  }
+	#organize_searches_folder_searches_table td { padding: 10px; width: 50%; max-width: 50%; min-width: 50%; vertical-align: top;  }
+		
+		/* Folder cell */
+	/*
+	#organize_searches_folder_total_block_container { min-width: 400px; max-width: 400px; padding-right: 60px; vertical-align: top; }
+	*/
+	#organize_searches_folder_total_block_container { vertical-align: top; }
+	/* If change min-width, max-width, or padding: Update max-width on:  #organize_searches_main_data_block .item-display-name */
+	
+	/* Draggable item (folder or search) */
+	#organize_searches_main_data_block .sort-handle-and-text {  white-space: nowrap;  cursor: move; }
+	#organize_searches_main_data_block .sort-handle-and-text:hover { color: $font-color-dark; background-color:  $site-color-light }
+	#organize_searches_main_data_block .sort-handle-float { float: left; padding-left: 2px; padding-right: 2px; padding-top: 4px; }
+	/* max-width: value 330px = <td> width 400 - padding-right 60 - 10 */
+	#organize_searches_main_data_block .item-display-name { max-width: 90%; float: left; padding: 3px; overflow: hidden; text-overflow: ellipsis; }
+	#organize_searches_main_data_block .edit-delete-icons {padding-top: 3px; padding-right: 3px; } 
+	#organize_searches_main_data_block .outer-item-container { position: relative; }
+	#organize_searches_main_data_block .outer-item-container .selected-item { color: $color-white; background-color: $site-color-dark; } 
+	#organize_searches_main_data_block .outer-item-container .selected-item:hover { color: $color-white; background-color: $site-color-dark; }
+	#organize_searches_main_data_block .outer-item-container .selected-item  .folder-row-icon { background-color: $color-white; }
+	#organize_searches_main_data_block .highlighted-item { color: $font-color-dark; background-color: $site-color-light; } 
+	
+	#organize_searches_folder_searches_not_in_any_folder:hover {  background-color: $site-color-light; }
+	
+	
 
 
 }

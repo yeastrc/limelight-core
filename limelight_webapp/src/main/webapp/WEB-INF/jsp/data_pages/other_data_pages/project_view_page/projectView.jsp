@@ -31,8 +31,6 @@
 
   <script id="url_path__mod_view" type="text/text"><%= AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER %></script>
   
-  <script id="url_path__test_mike_webservices" type="text/text"><%= AA_PageControllerPaths_Constants.TEST_MIKE_WEBSERVICES_PAGE_CONTROLLER %></script>
-  
 </head>
 <body class=" <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_standard_header_pages.jsp" 
 		  		%><%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_data_pages.jsp" 

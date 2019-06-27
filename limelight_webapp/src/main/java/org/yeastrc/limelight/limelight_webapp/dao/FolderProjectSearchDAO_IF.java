@@ -1,7 +1,7 @@
 /*
 * Original author: Daniel Jaschob <djaschob .at. uw.edu>
 *                  
-* Copyright 2018 University of Washington - Seattle, WA
+* Copyright 2019 University of Washington - Seattle, WA
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,45 +17,35 @@
 */
 package org.yeastrc.limelight.limelight_webapp.dao;
 
-import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectSearchDTO;
+import java.util.List;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.yeastrc.limelight.limelight_webapp.db_dto.FolderProjectSearchDTO;
 
 /**
  * @author danj
  *
  */
-public interface ProjectSearchDAO_IF {
+public interface FolderProjectSearchDAO_IF {
 
 	/**
-	 * @param id
-	 * @return
+	 * @param projectId
+	 * @return 
 	 * @throws Exception
 	 */
-	ProjectSearchDTO getFromId( int id ) throws Exception; 
-	
+	List<FolderProjectSearchDTO> getFolderProjectSearchDTO_ForProjectId(int projectId) throws Exception;
+
 	/**
 	 * @param item
 	 */
-	void save( ProjectSearchDTO item );
-	
+
+	void saveOrUpdate(FolderProjectSearchDTO item, int createUserId);
+
 	/**
-	 * 
+	 * @param id
+	 * @throws Exception
 	 */
-	void updateSearchName(String searchName, int projectSearchId);
-	
-	/**
-	 * @param projectSearchId
-	 * @param newProjectId
-	 */
-	public void updateProjectIdForProjectSearch( int projectSearchId, int newProjectId );
-	
-	/**
-	 * @param projectSearchId
-	 * @param newDisplayOrder
-	 */
-	public void updateDisplayOrderForProjectSearch( int projectSearchId, int newDisplayOrder );
-	
-	/**
-	 * @param projectSearchId
-	 */
-	public void delete( int projectSearchId );
+	void delete(int id);
+
 }

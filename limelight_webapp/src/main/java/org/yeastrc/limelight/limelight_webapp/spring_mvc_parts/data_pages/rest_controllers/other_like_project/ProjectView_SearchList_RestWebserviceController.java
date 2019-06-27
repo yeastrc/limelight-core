@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,15 +46,17 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.objects.ProjectPageSingleFolder;
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInListIF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchListForProjectIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
+import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFoldersIF;
+import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFolders.ProjectPageFoldersSearches;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 @RestController
@@ -64,9 +67,12 @@ public class ProjectView_SearchList_RestWebserviceController {
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
-	@Autowired
-	private SearchListForProjectIdSearcherIF searchListForProjectIdSearcher;
+//	@Autowired
+//	private SearchListForProjectIdSearcherIF searchListForProjectIdSearcher;
 
+	@Autowired
+	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
+	
 	@Autowired
 	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
 
@@ -122,6 +128,8 @@ public class ProjectView_SearchList_RestWebserviceController {
     	
     	try {
     		//		log.warn( "projectView(...) called" );
+    		
+    		final String requestingIPAddress = httpServletRequest.getRemoteAddr();
 
     		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
     		//    to return specific error to web app JS code if webserviceSyncTracking is not current value
@@ -134,11 +142,11 @@ public class ProjectView_SearchList_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
-    		ProjectViewSearchListRequest projectViewSearchListRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, ProjectViewSearchListRequest.class );
+    		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		String projectIdentifier = projectViewSearchListRequest.getProjectIdentifier();
+    		String projectIdentifier = webserviceRequest.getProjectIdentifier();
     		
     		if ( StringUtils.isEmpty( projectIdentifier ) ) {
     			log.warn( "projectIdentifier is empty or not assigned" );
@@ -169,7 +177,15 @@ public class ProjectView_SearchList_RestWebserviceController {
 				//  No User session and not public project
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
 			}
-
+			
+			//  Set userCanEditAndDeleteFolders on each folder
+			
+			boolean userCanEditAndDeleteFolders = false;
+			
+			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+				userCanEditAndDeleteFolders = true;
+			}
+			
 			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
 
 			boolean requestFromActualUser = false;
@@ -178,73 +194,79 @@ public class ProjectView_SearchList_RestWebserviceController {
 				requestFromActualUser = true;
 			}
 
-    		List<SearchItemMinimal> searchListDB = searchListForProjectIdSearcher.getSearchListForProjectId( projectId );
+//    		List<SearchItemMinimal> searchListDB = searchListForProjectIdSearcher.getSearchListForProjectId( projectId );
+
+			//  Get the searches and put them in folders
+			ProjectPageFoldersSearches projectPageFoldersSearches = 
+					viewProjectSearchesInFolders.getProjectPageFoldersSearches( projectId );
+			
+			boolean noSearchesFound = projectPageFoldersSearches.isNoSearchesFound();
+			
+
+    		WebserviceResult webserviceResult = new WebserviceResult();
     		
-    		List<ProjectViewSearchListResultItem> searchList = null;
-    		
-    		if ( ! searchListDB.isEmpty() ) {
-
-    			List<Integer> projectSearchIds = new ArrayList<>( searchListDB.size() );
-    			for ( SearchItemMinimal searchItemMinimal : searchListDB ) {
-    				projectSearchIds.add( searchItemMinimal.getProjectSearchId() );
-    			}
-
-    			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo = new SearchDataLookupParams_CreatedByInfo();
-
-    			if ( requestFromActualUser ) {
-    				searchDataLookupParams_CreatedByInfo.setCreatedByUserId( userSession.getUserId() );
-    				searchDataLookupParams_CreatedByInfo.setCreatedByUserType(
-    						SearchDataLookupParametersLookup_CreatedByUserType.WEB_USER );
-    				
-    			} else {
-    				searchDataLookupParams_CreatedByInfo.setCreatedByUserType(
-    						SearchDataLookupParametersLookup_CreatedByUserType.WEB_NON_USER );
-    			}
+    		webserviceResult.noSearchesFound = noSearchesFound;
+			
+    		if ( ! noSearchesFound ) {
     			
-    			searchDataLookupParams_CreatedByInfo.setCreatedByRemoteIP( httpServletRequest.getRemoteAddr() );
+    			//  Searches were found so convert to webservice response
+    			{    		
+    				List<SearchItemMinimal> searchesNotInFolders_FromDB = projectPageFoldersSearches.getSearchesNotInFolders();
 
-    			//  Return Map<[Project Search Id], [SearchDataLookupParamsCode]>
-    			Map<Integer, String> searchDataLookupParamsCodesForProjectSearchIds = 
-    					searchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList
-    					.getSearchDataLookupParamsCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList( 
-    							projectSearchIds, 
-    							searchDataLookupParams_CreatedByInfo );
+    				if ( searchesNotInFolders_FromDB != null && ( ! searchesNotInFolders_FromDB.isEmpty() ) ) {
 
-    			searchList = new ArrayList<>( searchListDB.size() );
-    			for ( SearchItemMinimal searchListDBItem : searchListDB ) {
+    					// Process Searches Not In Folders  
 
-    				String searchDataLookupParamsCode = 
-    						searchDataLookupParamsCodesForProjectSearchIds.get( searchListDBItem.getProjectSearchId() );
-    				if ( searchDataLookupParamsCode == null ) {
-    					String msg = "searchDataLookupParamsCode not found for ProjectSearchId: " + searchListDBItem.getProjectSearchId();
-    					log.error( msg );
-    					throw new LimelightInternalErrorException(msg);
+    					List<WebserviceResult_SingleSearch> searchesNotInFolders = convertSearchesFromDBToWebserviceResponse(
+    							searchesNotInFolders_FromDB,
+    							requestingIPAddress, 
+    							webSessionAuthAccessLevel, 
+    							userSession, 
+    							requestFromActualUser );
+
+    					webserviceResult.searchesNotInFolders = searchesNotInFolders;
     				}
-    				ProjectViewSearchListResultItem resultItem = new ProjectViewSearchListResultItem();
-    				resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
-    				resultItem.searchId = searchListDBItem.getSearchId();
-    				resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( 
-    						searchListDBItem.getName(), searchListDBItem.getSearchId() );
-    				resultItem.searchDataLookupParamsCode = searchDataLookupParamsCode;
-    				if ( requestFromActualUser ) {
-    					//  copy path if actual user
-    					resultItem.path = searchListDBItem.getPath();
-    				}
-    				if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
-    					resultItem.setCanChangeSearchName(true);
-    					resultItem.setCanDelete(true);
-    				}
-    				searchList.add( resultItem );
     			}
-    		} else {
-    			//  No Searches
-    			searchList = new ArrayList<>();
+    			{
+    				List<ProjectPageSingleFolder> folders_FromDB = projectPageFoldersSearches.getFolders();
+
+    				if ( ! folders_FromDB.isEmpty() ) {
+
+    					//  Process Folders
+
+    					List<WebserviceResult_SingleFolder> folderList = new ArrayList<>( folders_FromDB.size() );
+    					webserviceResult.folderList = folderList;
+
+    					for ( ProjectPageSingleFolder folder_FromDB : folders_FromDB ) {
+
+    						//  Process Searches in this folder
+
+							WebserviceResult_SingleFolder singleFolder = new WebserviceResult_SingleFolder();
+							folderList.add( singleFolder );
+							singleFolder.id = folder_FromDB.getId();
+							singleFolder.folderName = folder_FromDB.getFolderName();
+							singleFolder.canEdit = userCanEditAndDeleteFolders;
+							singleFolder.canDelete = userCanEditAndDeleteFolders;
+
+    						List<SearchItemMinimal> searchesInFolders_FromDB = folder_FromDB.getSearches();
+
+    						if ( searchesInFolders_FromDB != null && ( ! searchesInFolders_FromDB.isEmpty() ) ) {
+    						
+    							List<WebserviceResult_SingleSearch> searchesInFolders = convertSearchesFromDBToWebserviceResponse(
+    									searchesInFolders_FromDB,
+    									requestingIPAddress, 
+    									webSessionAuthAccessLevel, 
+    									userSession, 
+    									requestFromActualUser );
+
+    							singleFolder.searchesInFolder = searchesInFolders;
+    						}
+    					}
+    				}
+	    		}
     		}
     		
-    		ProjectViewSearchListResult projectViewSearchListResult = new ProjectViewSearchListResult();
-    		projectViewSearchListResult.searchList = searchList;
-
-    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( projectViewSearchListResult );
+    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
 
@@ -259,38 +281,182 @@ public class ProjectView_SearchList_RestWebserviceController {
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
     }
-    
 
-    public static class ProjectViewSearchListRequest {
+	/**
+	 * @param searchesFromDB_List
+	 * @param requestingIPAddress
+	 * @param webSessionAuthAccessLevel
+	 * @param userSession
+	 * @param requestFromActualUser
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<WebserviceResult_SingleSearch> convertSearchesFromDBToWebserviceResponse( 
+			List<SearchItemMinimal> searchesFromDB_List,
+			String requestingIPAddress,
+			WebSessionAuthAccessLevel webSessionAuthAccessLevel, 
+			UserSession userSession, 
+			boolean requestFromActualUser
+			 ) throws SQLException {
+		
+		List<WebserviceResult_SingleSearch> searchList;
+		List<Integer> projectSearchIds = new ArrayList<>( searchesFromDB_List.size() );
+		for ( SearchItemMinimal searchItemMinimal : searchesFromDB_List ) {
+			projectSearchIds.add( searchItemMinimal.getProjectSearchId() );
+		}
+
+		SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo = new SearchDataLookupParams_CreatedByInfo();
+
+		if ( requestFromActualUser ) {
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserId( userSession.getUserId() );
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(
+					SearchDataLookupParametersLookup_CreatedByUserType.WEB_USER );
+			
+		} else {
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(
+					SearchDataLookupParametersLookup_CreatedByUserType.WEB_NON_USER );
+		}
+		
+		searchDataLookupParams_CreatedByInfo.setCreatedByRemoteIP( requestingIPAddress );
+
+		//  Return Map<[Project Search Id], [SearchDataLookupParamsCode]>
+		Map<Integer, String> searchDataLookupParamsCodesForProjectSearchIds = 
+				searchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList
+				.getSearchDataLookupParamsCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList( 
+						projectSearchIds, 
+						searchDataLookupParams_CreatedByInfo );
+
+		searchList = new ArrayList<>( searchesFromDB_List.size() );
+		for ( SearchItemMinimal searchListDBItem : searchesFromDB_List ) {
+
+			String searchDataLookupParamsCode = 
+					searchDataLookupParamsCodesForProjectSearchIds.get( searchListDBItem.getProjectSearchId() );
+			if ( searchDataLookupParamsCode == null ) {
+				String msg = "searchDataLookupParamsCode not found for ProjectSearchId: " + searchListDBItem.getProjectSearchId();
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+			WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
+			resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
+			resultItem.searchId = searchListDBItem.getSearchId();
+			resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( 
+					searchListDBItem.getName(), searchListDBItem.getSearchId() );
+			resultItem.searchDataLookupParamsCode = searchDataLookupParamsCode;
+			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+				resultItem.setCanChangeSearchName(true);
+				resultItem.setCanDelete(true);
+			}
+			searchList.add( resultItem );
+		}
+		
+		return searchList;
+	}
+    
+    ///////////////////////////
+    
+    //  Webservice Request Result objects
+
+    /**
+     * Webservice request
+     *
+     */
+    public static class WebserviceRequest {
+    	
     	private String projectIdentifier;
 
+    	public void setProjectIdentifier(String projectIdentifier) {
+			this.projectIdentifier = projectIdentifier;
+		}
 		public String getProjectIdentifier() {
 			return projectIdentifier;
 		}
-
-		public void setProjectIdentifier(String projectIdentifier) {
-			this.projectIdentifier = projectIdentifier;
-		}
     }
     
-    public static class ProjectViewSearchListResult {
-    	List<ProjectViewSearchListResultItem> searchList;
+    /**
+     * Webservice Result
+     *
+     */
+    public static class WebserviceResult {
 
-		public List<ProjectViewSearchListResultItem> getSearchList() {
-			return searchList;
+    	private List<WebserviceResult_SingleFolder> folderList;
+    	private List<WebserviceResult_SingleSearch> searchesNotInFolders;
+    	private boolean noSearchesFound;
+    	
+		public List<WebserviceResult_SingleFolder> getFolderList() {
+			return folderList;
 		}
-
-		public void setSearchList(List<ProjectViewSearchListResultItem> searchList) {
-			this.searchList = searchList;
+		public void setFolderList(List<WebserviceResult_SingleFolder> folderList) {
+			this.folderList = folderList;
+		}
+		public List<WebserviceResult_SingleSearch> getSearchesNotInFolders() {
+			return searchesNotInFolders;
+		}
+		public void setSearchesNotInFolders(List<WebserviceResult_SingleSearch> searchesNotInFolders) {
+			this.searchesNotInFolders = searchesNotInFolders;
+		}
+		public boolean isNoSearchesFound() {
+			return noSearchesFound;
+		}
+		public void setNoSearchesFound(boolean noSearchesFound) {
+			this.noSearchesFound = noSearchesFound;
 		}
     }
+
+    /**
+     * Webservice Result - Single Search
+     *
+     */
+    public static class WebserviceResult_SingleFolder {
+    	
+    	private int id;
+    	private String folderName;
+    	List<WebserviceResult_SingleSearch> searchesInFolder;
+    	private boolean canEdit;
+    	private boolean canDelete;
+    	
+		public int getId() {
+			return id;
+		}
+		public void setId(int id) {
+			this.id = id;
+		}
+		public String getFolderName() {
+			return folderName;
+		}
+		public void setFolderName(String folderName) {
+			this.folderName = folderName;
+		}
+		public List<WebserviceResult_SingleSearch> getSearchesInFolder() {
+			return searchesInFolder;
+		}
+		public void setSearchesInFolder(List<WebserviceResult_SingleSearch> searchesInFolder) {
+			this.searchesInFolder = searchesInFolder;
+		}
+		public boolean isCanDelete() {
+			return canDelete;
+		}
+		public void setCanDelete(boolean canDelete) {
+			this.canDelete = canDelete;
+		}
+		public boolean isCanEdit() {
+			return canEdit;
+		}
+		public void setCanEdit(boolean canEdit) {
+			this.canEdit = canEdit;
+		}
+    	
     
-    public static class ProjectViewSearchListResultItem {
+    }
+    
+    /**
+     * Webservice Result - Single Search
+     *
+     */
+    public static class WebserviceResult_SingleSearch {
     	
     	private int projectSearchId;
     	private int searchId;
     	private String name;
-    	private String path;
     	private String searchDataLookupParamsCode;
     	private boolean canChangeSearchName;
     	private boolean canDelete;
@@ -318,12 +484,6 @@ public class ProjectView_SearchList_RestWebserviceController {
 		}
 		public void setSearchDataLookupParamsCode(String searchDataLookupParamsCode) {
 			this.searchDataLookupParamsCode = searchDataLookupParamsCode;
-		}
-		public String getPath() {
-			return path;
-		}
-		public void setPath(String path) {
-			this.path = path;
 		}
 		public boolean isCanChangeSearchName() {
 			return canChangeSearchName;

@@ -192,6 +192,24 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-search-list";
 
+	//   Organize Searches for Project
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_GET_DATA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-get-data";
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_ADD_FOLDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-add-folder";
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_SET_SEARCHES_ORDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-searches-order";
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_SET_FOLDERS_ORDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-folders-order";
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_SET_SEARCH_FOLDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-search-folder";
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_FOLDER_RENAME_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-folder-rename";
+
+	public static final String PROJECT_ORGANIZE_SEARCHES_FOLDER_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-folder-delete";
+
+	
+	
 	//   Project Search Id, Copy/Move to New Project
 
 	public static final String LIST_OTHER_PROJECTS_EXCLUDING_PROJ_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = 

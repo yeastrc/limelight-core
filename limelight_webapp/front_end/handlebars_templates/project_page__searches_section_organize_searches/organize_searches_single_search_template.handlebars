@@ -1,0 +1,28 @@
+{{!-- A comment: organize_searches_single_search_template.handlebars
+ 
+        Organize Searches 
+
+            Display order of folders and searches
+
+            Single Search entry
+ --}}
+
+
+<div class="outer-item-container  search_display_order_item_jq" 
+		  	 data-project_search_id="{{id}}">
+
+  <div class=" sort-handle-and-text " > 
+	 <div class="sort-handle-float">
+		<span class=" sort_handle_jq  tool_tip_attached_jq" 
+			data-tooltip='<div>Drag to re-order</div>'
+			style=""
+		  ><img src="static/images/icon-draggable.png" class=" icon-small "
+		  ></span>
+	 </div >
+     <div class="item-display-name search_display_name_jq " 
+	  	>{{name}} ({{ searchId }})</div>
+     <div style="clear: both;"></div>
+  </div>
+  <div class="search-entry-bottom-border"></div>
+</div>   		  
+

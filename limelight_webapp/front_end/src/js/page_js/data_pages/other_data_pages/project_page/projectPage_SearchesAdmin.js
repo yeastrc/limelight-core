@@ -20,11 +20,11 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
-import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
-
 //  Local imports
 
 import { ProjectPage_SearchesAdmin_CopyMove_Searches } from "./projectPage_SearchesAdmin_CopyMove_Searches.js";
+
+import { ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders } from "./projectPage_SearchesAdmin_OrganizeSearchesAndFolders.js";
 
 /**
  * 
@@ -40,7 +40,9 @@ export class ProjectPage_SearchesAdmin {
 
         this._projectIdentifierFromURL = projectIdentifierFromURL;
 
-        this._projectPage_SearchesAdmin_CopyMove_Searches = new ProjectPage_SearchesAdmin_CopyMove_Searches({ projectIdentifierFromURL });
+		this._projectPage_SearchesAdmin_CopyMove_Searches = new ProjectPage_SearchesAdmin_CopyMove_Searches({ projectIdentifierFromURL });
+		
+		this._projectPage_SearchesAdmin_OrganizeSearchesAndFolders = new ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders({ projectIdentifierFromURL });
     }
 
 	/**
@@ -50,17 +52,21 @@ export class ProjectPage_SearchesAdmin {
 
         this._projectPage_SearchesSection_AllUsersInteraction = projectPage_SearchesSection_AllUsersInteraction;
 
-        this._projectPage_SearchesAdmin_CopyMove_Searches.initialize( { projectPage_SearchesSection_AllUsersInteraction });
+		this._projectPage_SearchesAdmin_CopyMove_Searches.initialize( { projectPage_SearchesSection_AllUsersInteraction });
+		
+		this._projectPage_SearchesAdmin_OrganizeSearchesAndFolders.initialize( { projectPage_SearchesSection_AllUsersInteraction });
 
         this._initializeCalled = true;
     }
 
 	/**
-	 * Called each time the search list is populated
+	 * Called each time the search list is populated, which means that also the buttons above and below were removed
 	 */
 	searchListPopulated() {
 
-        this._projectPage_SearchesAdmin_CopyMove_Searches.searchListPopulated();
+		this._projectPage_SearchesAdmin_CopyMove_Searches.searchListPopulated();
+		
+		this._projectPage_SearchesAdmin_OrganizeSearchesAndFolders.searchListPopulated();
     }
 
 	/**

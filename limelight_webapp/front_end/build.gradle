@@ -152,6 +152,9 @@ task createHandlebarsOutputDirs {
   	  dirToCreate = rootDir + "project_page_searches_section_researcher_user_interaction"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
+  	  dirToCreate = rootDir + "project_page__searches_section_organize_searches"
+  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
+  	  
   	  dirToCreate = rootDir + "project_page_upload_data_section_project_owner_user_interaction"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -593,6 +596,30 @@ task handlebarsPrecompile_project_page_searches_section_researcher_user_interact
    ]
 }
 
+//  Handlebars Precompile for input handlebars_templates/project_page__searches_section_organize_searches
+
+task handlebarsPrecompile_project_page__searches_section_organize_searches(type: NodeTask) {
+
+  def precompile_Input_Directory = "handlebars_templates/project_page__searches_section_organize_searches"
+  def precompile_Output_File = "handlebars_templates_precompiled/project_page__searches_section_organize_searches/project_page__searches_section_organize_searches_template-bundle.js"
+  
+  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
+  inputs.dir( precompile_Input_Directory )
+  outputs.file( precompile_Output_File )
+
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/handlebars/bin/handlebars')
+  } else {
+    script = project.file('node_modules/.bin/handlebars')
+  }
+  args = [ '--amd' , // parameters must be before file list
+  '--min',
+  '-f', precompile_Output_File,
+   precompile_Input_Directory
+   ]
+}
+
 //  Handlebars Precompile for input handlebars_templates/project_page_upload_data_section_project_owner_user_interaction
 
 task handlebarsPrecompile_project_page_upload_data_section_project_owner_user_interaction(type: NodeTask) {
@@ -884,6 +911,7 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_project_page__project_info_section_logged_in_users_interaction',
      'handlebarsPrecompile_project_page_searches_section_all_users_interaction',
      'handlebarsPrecompile_project_page_searches_section_researcher_user_interaction',
+     'handlebarsPrecompile_project_page__searches_section_organize_searches',
 	 'handlebarsPrecompile_project_page_upload_data_section_project_owner_user_interaction',
 	 'handlebarsPrecompile_project_page__saved_views_section',
 	 'handlebarsPrecompile_project_page__saved_views_section_loggedin_users',

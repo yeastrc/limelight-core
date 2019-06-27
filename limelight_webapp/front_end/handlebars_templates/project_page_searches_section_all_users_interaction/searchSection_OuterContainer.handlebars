@@ -1,0 +1,30 @@
+{{!-- searchSection_OuterContainer.handlebars 
+
+        The Outer container inserted into Project Page under "Explore Data" for the search list and the buttons above and below the search list
+--}}
+
+<div >
+    <div id="search_list_above_block" style="margin-bottom: 10px; display: none;">
+    </div>
+
+    <div id="search_list" style="margin-bottom: 10px;">
+    </div>
+
+    {{!--  Uncomment when uncomment any of the Merge Buttons just below this
+    <div id="need_2_or_more_searches_selected_to_merge_msg" style="display: none;">
+        Need 2 or more searches selected to merge.
+    </div>
+    --}}
+    <div id="search_list_below_block" style="margin-bottom: 10px; display: none;">
+
+        {{!--  Not implemented on Peptide Page yet 
+        <input type="button" value="Merge Peptide View" id="merge_peptide_view_button" class=" merge_searches_button_jq ">
+        --}}
+        {{!--  Not implemented on Protein Page yet --}} 
+        <input type="button" value="Merge Protein View" id="merge_protein_view_button" class=" merge_searches_button_jq ">
+        
+        {{!--  Not implemented on Mod Page yet 		 
+                    <input type="button" value="Merge Mod View" id="merge_mod_view_button" class=" merge_searches_button_jq ">
+        --}}
+    </div>
+</div>
