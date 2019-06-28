@@ -62,11 +62,12 @@ public class PopulatePageHeaderData implements PopulatePageHeaderDataIF {
 				ProjectTitleHeaderDisplay project = new ProjectTitleHeaderDisplay();
 				project.setProjectId( projectDTO.getId() );
 				project.setProjectLocked( projectDTO.isProjectLocked() );
-				project.setTitleFull( projectDTO.getTitle() );
-				String titleHeaderDisplay = truncateProjectTitleForDisplay.truncateProjectTitleForHeader( projectDTO.getTitle() );
-				project.setTitleHeaderDisplay( titleHeaderDisplay );
-				String titleHeaderDisplayNonUser = truncateProjectTitleForDisplay.truncateProjectTitleForHeaderNonUser( projectDTO.getTitle() );
-				project.setTitleHeaderDisplayNonUser( titleHeaderDisplayNonUser );
+				project.setProjectTitle( projectDTO.getTitle() );
+//				project.setTitleFull( projectDTO.getTitle() );
+//				String titleHeaderDisplay = truncateProjectTitleForDisplay.truncateProjectTitleForHeader( projectDTO.getTitle() );
+//				project.setTitleHeaderDisplay( titleHeaderDisplay );
+//				String titleHeaderDisplayNonUser = truncateProjectTitleForDisplay.truncateProjectTitleForHeaderNonUser( projectDTO.getTitle() );
+//				project.setTitleHeaderDisplayNonUser( titleHeaderDisplayNonUser );
 				httpServletRequest.setAttribute( WebConstants.REQUEST_WEB_SESSION_HEADER_PROJECT_INFO, project );
 			}
 		}

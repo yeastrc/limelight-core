@@ -19,32 +19,11 @@
         position:fixed;
         top:0px;
         margin:auto;
-        min-width:1000px;
         width:100%;
         z-index:500;
-
-
-        div.header-right-edge-container, div.header-right-icons, div.header-user-name-container {
-            float: right;
-        }
-
-        div.header-right-edge-container {
-            margin-top:4px;
-            margin-right:4px;
-        }
-
-        div.header-user-name-container {
-            padding-right: 7px;
-            padding-top: 3px;
-        }
-
-        .header-user-name {
-            font-size: 12px;
-            @include opacity(0.9);
-        }
+        //  min-width set at bottom of file since also set other class(es) to same value in same assignment
 
         div.header-logo {
-            float: left;
             margin-left:4px;
         }
 
@@ -53,13 +32,11 @@
         }
 
         div.header-pointer-right {
-            float: left;
             padding-left: 5px;
             padding-right: 5px;
         }
 
         div.header-projects-label-div {
-            float: left;
             padding-left: 5px;
             padding-right: 5px;
         }
@@ -86,6 +63,22 @@
             z-index: 2;
         }
         
+        div.header-user-name-container {
+            padding-left:  17px;
+            padding-right: 7px;
+            padding-top:   4px;
+        }
+
+        .header-user-name {
+            font-size: 12px;
+            @include opacity(0.9);
+        }
+
+        div.header-right-icons-container {
+            margin-top:2px;
+            margin-right:4px;
+        }
+
     }
 
     .overall-enclosing-block {
@@ -95,7 +88,8 @@
         padding-bottom: 31px;
     }
  
-    .header-outer-container, .footer-outer-container {
+    // div.header-outer-container,
+     .footer-outer-container {
         min-width: 1000px;
     }
  

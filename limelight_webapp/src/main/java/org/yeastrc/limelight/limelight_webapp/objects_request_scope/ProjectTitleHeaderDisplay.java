@@ -26,40 +26,26 @@ package org.yeastrc.limelight.limelight_webapp.objects_request_scope;
 public class ProjectTitleHeaderDisplay {
 	
 	private int projectId;
-
-	private String titleFull;
 	
-	/**
-	 * Truncated as needed
-	 */
-	private String titleHeaderDisplay;
-
-	/**
-	 * Truncated as needed, for when no user.  Will be truncated Longer
-	 */
-	private String titleHeaderDisplayNonUser;
+	private String projectTitle;
+	
+//
+//	private String titleFull;
+//	
+//	/**
+//	 * Truncated as needed
+//	 */
+//	private String titleHeaderDisplay;
+//
+//	/**
+//	 * Truncated as needed, for when no user.  Will be truncated Longer
+//	 */
+//	private String titleHeaderDisplayNonUser;
 	
 	private boolean projectLocked;
 	
 	
 	
-
-	public String getTitleHeaderDisplay() {
-		return titleHeaderDisplay;
-	}
-
-	public void setTitleHeaderDisplay(String titleHeaderDisplay) {
-		this.titleHeaderDisplay = titleHeaderDisplay;
-	}
-
-	public String getTitleHeaderDisplayNonUser() {
-		return titleHeaderDisplayNonUser;
-	}
-
-	public void setTitleHeaderDisplayNonUser(String titleHeaderDisplayNonUser) {
-		this.titleHeaderDisplayNonUser = titleHeaderDisplayNonUser;
-	}
-
 	public int getProjectId() {
 		return projectId;
 	}
@@ -76,11 +62,11 @@ public class ProjectTitleHeaderDisplay {
 		this.projectLocked = projectLocked;
 	}
 
-	public String getTitleFull() {
-		return titleFull;
+	public String getProjectTitle() {
+		return projectTitle;
 	}
 
-	public void setTitleFull(String titleFull) {
-		this.titleFull = titleFull;
+	public void setProjectTitle(String projectTitle) {
+		this.projectTitle = projectTitle;
 	}
 }
