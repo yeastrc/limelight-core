@@ -194,6 +194,8 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 				$organize_searches_folder_new_folder_block.hide();
 				const $organize_searches_folder_add_new_folder_block = $("#organize_searches_folder_add_new_folder_block");
 				$organize_searches_folder_add_new_folder_block.show();
+				const $organize_searches_folder_new_folder_name = $("#organize_searches_folder_new_folder_name")
+				$organize_searches_folder_new_folder_name.focus();
 				eventObject.stopPropagation();
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
