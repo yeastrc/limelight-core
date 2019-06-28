@@ -208,7 +208,20 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
 			}
-        });
+		});
+		{
+			//  Make whole "Folder List" draggable vertically, handle is on "Folder List" div
+			const $folderDragHandle = $("#organize_searches_folder_total_block_drag_handle");
+			const folderDragHandleElement = $folderDragHandle[ 0 ]; 
+			const $organize_searches_folder_total_block = $("#organize_searches_folder_total_block");
+			$organize_searches_folder_total_block.draggable({
+				axis: "y",
+				handle: folderDragHandleElement,
+				containment: "parent"
+				
+			});
+			const handle = $organize_searches_folder_total_block.draggable( "option", "handle" );
+		}
         
         const promise_loadDataFromServer = this._loadDataFromServer();
 
