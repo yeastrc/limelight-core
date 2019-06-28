@@ -30,13 +30,13 @@ var addToolTips = function ( $element ) {
 			//console.log( "Adding handler to:" );
 			//console.log( $this );
 		
-			addSingleGenericProxlToolTip( $this );
+			addSingleGenericAppSpecificToolTip( $this );
 
 		});
 	};
 	
 
-var addSingleGenericProxlToolTip = function ( $element ) {
+var addSingleGenericAppSpecificToolTip = function ( $element ) {
 		
 		var tooltipText = $element.attr("data-tooltip");			
 		
@@ -53,4 +53,4 @@ var addSingleGenericProxlToolTip = function ( $element ) {
 		
 	};
 	
-export { addToolTips, addSingleGenericProxlToolTip }
+export { addToolTips, addSingleGenericAppSpecificToolTip }

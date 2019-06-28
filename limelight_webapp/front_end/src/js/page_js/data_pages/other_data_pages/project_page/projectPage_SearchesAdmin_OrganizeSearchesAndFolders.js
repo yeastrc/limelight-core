@@ -23,7 +23,7 @@ require("../../../../../../handlebars_templates_precompiled/project_page__search
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { addToolTips, addSingleGenericProxlToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
@@ -426,8 +426,11 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		            text: tooltipHTML
 		        },
 				position: {
-					target: 'mouse',
-					adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
+					//  Position tooltip above display item (search name) locked to left edge of display item.
+					my : 'bottom left',
+					at : 'top left',
+					// target: 'mouse',
+					// adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
 		            viewport: $(window)
 		         }
 		    });	
