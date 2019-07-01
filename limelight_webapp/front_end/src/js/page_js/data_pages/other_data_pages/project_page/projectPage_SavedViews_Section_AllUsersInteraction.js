@@ -24,6 +24,8 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 //  Local imports
 
 /**
@@ -152,17 +154,6 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 		const $_projpg_saved_view_list_container = $( _projpg_saved_view_list_containerHTML );
 		$_projpg_saved_view_list_container.appendTo( $saved_views_list );
 
-		// //  Sort on search id in reverse order
-		// savedViewList.sort(function(a, b) {
-		// 	if (a.searchId < b.searchId) {
-		// 		return 1;
-		// 	}
-		// 	if (a.searchId > b.searchId) {
-		// 		return -1;
-		// 	}
-		// 	return 0;
-		// })
-
 		for ( const savedViewItem of savedViewList ) {
 
 			let canEdit = savedViewItem.canEdit;
@@ -185,22 +176,11 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 
 			$saved_view_entry.appendTo( $_projpg_saved_view_list_container );
 
+			addToolTips( $saved_view_entry );  // External Function
+
 			this._addSavedViewItem_ClickHandlers({ $saved_view_entry, savedViewItem });
 
 		}
-
-		//			addToolTips();
-
-		// if ( this._projectPage_SearchesSection_LoggedInUsersInteraction ) {
-		// 	//  have _projectPage_SearchesSection_LoggedInUsersInteraction object so call method on it
-		// 	this._projectPage_SearchesSection_LoggedInUsersInteraction.savedViewListPopulated();
-		// }
-
-		// if ( this._projectPage_SearchesAdmin ) {
-		// 	// only when Searches Admin Object provided
-		// 	this._projectPage_SearchesAdmin.savedViewListPopulated();
-		// }
-
 	};
 
 	/**

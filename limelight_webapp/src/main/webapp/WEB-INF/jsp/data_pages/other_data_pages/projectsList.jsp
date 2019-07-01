@@ -39,9 +39,9 @@
 		  <td valign="top" style=" padding-right: 10px; width: 1px; "> <%-- Width will expand to fully display the icon --%>
 		  		<%-- Same padding-right as <td> in single_project_template.handlebars  --%>
 		  
-			<img class="new_project_expand_jq tool_tip_attached_jq fake-link-image icon-large " id="new_project_expand_link"
+			<img class="new_project_expand_jq selector_tool_tip_attached fake-link-image icon-large " id="new_project_expand_link"
 				title="New Project" data-tooltip="Add new project" src="static/images/icon-circle-plus.png">
-			<img class="new_project_cancel_jq tool_tip_attached_jq fake-link-image icon-large "  id="new_project_cancel_link"
+			<img class="new_project_cancel_jq selector_tool_tip_attached fake-link-image icon-large "  id="new_project_cancel_link"
 				title="Close New Project" style="display: none;" data-tooltip="Cancel adding new project" src="static/images/icon-circle-delete.png" >
 		  </td>
 		  <td>
@@ -49,7 +49,7 @@
 			<div  id="new_project_collapsed" >
 			
 				<div class="new-project-text" >
-					<span class="fake-link new_project_expand_jq tool_tip_attached_jq" 
+					<span class="fake-link new_project_expand_jq selector_tool_tip_attached" 
 						style="font-size: 20px;"
 						data-tooltip="Add new project"
 						>New Project</span>

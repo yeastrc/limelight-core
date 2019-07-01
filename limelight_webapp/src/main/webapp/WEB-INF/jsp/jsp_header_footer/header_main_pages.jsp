@@ -15,30 +15,41 @@
 	<%-- Left Side contents --%>
 	
 	<div class="header-logo">
+	
+	<c:set var="logoImageHTML"> <img src="static/images/header-footer-logo.png" > </c:set>
 	 
 	 <c:choose>
 	  <c:when test="${ not empty headerUserInfo }">
-	   <a href="" >
+	  	<%--  Have User: so clicking this Limelight icon will show project list page --%>
+	   <a href="" 
+	   		class=" selector_tool_tip_attached "
+ 			title='View Project List'
+			data-tooltip='<div style="white-space: nowrap;">View Project List</div>'
+	   >
+	   <%--  HTML to show logo, set in <c:set immediately above --%>
+	   ${ logoImageHTML }
+	   </a>
 	  </c:when>
 	  <c:when test="${ not empty headerProjectInfo }">
-	   <a href="<%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER %>/<c:out value="${ headerProjectInfo.projectId }" ></c:out>">
+	  	<%--  NO User, Have Project:  so clicking this Limelight icon will show current project page --%>
+	   <a href="<%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER %>/<c:out value="${ headerProjectInfo.projectId }" ></c:out>"
+	   		class=" selector_tool_tip_attached "
+ 			title='View Project'
+			data-tooltip='<div style="white-space: nowrap;">View Project</div>'
+	   	>
+	    <%--  HTML to show logo, set in <c:set immediately above --%>
+	   	${ logoImageHTML }
+	   	</a>
 	  </c:when>
 	  <c:otherwise>
-	  	
+	  	<%--  No User, No Project:  So no Link on Image --%>
+
+	    <%--  HTML to show logo, set in <c:set immediately above --%>
+	  	${ logoImageHTML }
 	  </c:otherwise>
 	 </c:choose>
 	
-		<img src="static/images/header-footer-logo.png" >
-
-	 <c:choose>
-	  <c:when test="${ not empty headerUserInfo }">
-	   </a>
-	  </c:when>
-	  <c:when test="${ not empty headerProjectInfo }">
-	   </a>
-	  </c:when>
-	 </c:choose>
-	 
+		
 	</div>
 
 			<%-- Project Title:  Keep all on one line, Hide overflow, show ... when have overflow --%>
@@ -49,8 +60,8 @@
 	 <c:if test="${ not empty headerProjectInfo }">  <%--  Also used in generalError.jsp --%>
 	  
 		<a href="d/pg/project/<c:out value="${ headerProjectInfo.projectId }" ></c:out>"  
-				class="header-project-title"  id="header_project_title_link" 
-				title="<c:out value="${ headerProjectInfo.projectTitle }"></c:out>"
+				class=" header-project-title  selector_tool_tip_attached "  id="header_project_title_link" 
+				data-tooltip="<c:out value="${ headerProjectInfo.projectTitle }"></c:out>"
 				>
 								
 				<%--  Show only for locked projects and not for public access --%>
@@ -74,6 +85,8 @@
   	   <div class="header-right-icons-container" style="position: relative;">
 		
 	  		<a href="user/login?useDefaultURL=yes"  id="signin_header_link" 
+	  			class=" selector_tool_tip_attached "
+	  			title="Signin"
 	  			><img src="static/images/icon-login.png" class=" icon-small "
 	  		></a>
 	   </div>  	  
@@ -82,7 +95,10 @@
   	  <c:otherwise>
   	  
   	   <div  class="header-user-name-container" style="white-space: nowrap;"> 
-		<a href="user/account-management" class="overide-text-color-to-base-color"
+		<a href="user/account-management" class=" overide-text-color-to-base-color selector_tool_tip_attached "
+			id="user_mgmt_header_link"
+			title='Click to manage user account'
+			data-tooltip='<div style="white-space: nowrap;">Click to manage user account</div>'
 	  		><span class="header-user-name">
 	  			<span id="header-user-first-name"><c:out value="${ headerUserInfo.user_displayFirstName }"></c:out></span> 
 	  			<span id="header-user-last-name"><c:out value="${ headerUserInfo.user_displayLastName }"></c:out></span> 
@@ -94,6 +110,8 @@
   	   <div class=" header-right-icons-container " style="position: relative;">
 
 	  		<a href="user/logout" id="sign_out_header_link" 
+	  			class=" selector_tool_tip_attached "
+	  			title="Sign Out"
 	  			><img src="static/images/icon-logout.png" class="header-logout-image" 
 	  		></a>
 	  		

@@ -37,6 +37,8 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 
 //  Local Imports
 
+import { ProjectPage_CommonOverall } from './projectPage_CommonOverall.js';
+
 import { ProjectPage_SearchesSection_LoggedInUsersInteraction } from './projectPage_SearchesSection_LoggedInUsersInteraction.js';
 import { ProjectPage_SearchDetails_LoggedInUsers } from './projectPage_SearchDetails_LoggedInUsers.js';
 import { ProjectPage_SearchesAdmin } from './projectPage_SearchesAdmin.js';
@@ -76,6 +78,9 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 
 		initShowHideErrorMessage();
 
+		const projectPage_CommonOverall = new ProjectPage_CommonOverall();
+		projectPage_CommonOverall.initialize();
+		
 		//  Collapse/Expand for Project Info and Searches
 		const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
 		collapsableSection_StandardProcessing.initialize();

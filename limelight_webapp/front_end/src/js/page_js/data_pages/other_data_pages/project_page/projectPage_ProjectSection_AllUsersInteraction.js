@@ -23,6 +23,8 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 //  Local imports
 
 
@@ -208,6 +210,8 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 			const noteHTML = this._project_notes_entry( note );
 			const $noteDOM = $( noteHTML );
 			$noteDOM.appendTo( $notes_list_container_div );
+
+			addToolTips( $noteDOM );  // External Function
 
 			if ( ( note.canEdit || note.canDelete ) && this._projectPage_ProjectSection_LoggedInUsersInteraction ) {
 				this._projectPage_ProjectSection_LoggedInUsersInteraction.addExistingNoteLoggedInUserAdditions({

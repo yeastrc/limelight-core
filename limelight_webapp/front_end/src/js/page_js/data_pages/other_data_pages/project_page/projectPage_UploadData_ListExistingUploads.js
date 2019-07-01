@@ -24,6 +24,8 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 import { ProjectPage_UploadData_UpdateExistingUploads } from './projectPage_UploadData_UpdateExistingUploads.js';
 
 const CONSTANTS = {
@@ -652,6 +654,8 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		let html = this._file_import_item_template(context);
 
 		let $upload_data_item = $(html).appendTo($containerTable);
+
+		addToolTips( $upload_data_item );  // External Function
 
 		let numCols = $upload_data_item.children("td").length;
 

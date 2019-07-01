@@ -20,13 +20,17 @@
 		  	<c:when test="${ webSessionAuthAccessLevel.projectOwnerAllowed and ( not project.projectLocked ) }">
 			
 					<%--  Project Owner and Project NOT Locked.  Display in JS when add tooltip. --%>
-					<img id="project_unlocked_icon" src="static/images/icon-unlocked.png" class="icon-large fake-link-image" style="display: none;">
+					<img id="project_unlocked_icon" src="static/images/icon-unlocked.png" 
+						class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
+						data-tooltip="Project is unlocked, click to lock. <br>While locked, no data may be changed, added to, or deleted from the project.">
 		  	</c:when>
 	
 		  	<c:when test="${ webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed and ( project.projectLocked ) }">
 		  	
 					<%--  Project Owner and Project Locked.  Display in JS when add tooltip. --%>
-					<img  id="project_locked_icon" src="static/images/icon-locked.png" class="icon-large fake-link-image" style="display: none;">
+					<img  id="project_locked_icon" src="static/images/icon-locked.png" 
+						class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
+						data-tooltip="Project is locked, click to unlock. <br>While locked, no data may be changed, added to, or deleted from the project." >
 		  	</c:when>	  	
 	
 		  	<c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed and ( project.projectLocked ) }">
@@ -72,7 +76,7 @@
 		  <span id="project_title_display" style="<c:out value="${title_style_addition}" ></c:out>"><c:out value="${ project.title }" ></c:out></span>
 	      <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
 				<input id="change_project_title_button" type="image" src="static/images/icon-edit.png"  value="Update"
-					 class="tool_tip_attached_jq  icon-small " data-tooltip="Edit project title" >	    
+					 class="selector_tool_tip_attached  icon-small " data-tooltip="Edit project title" >	    
 		  </c:if>
 		</div>
 		  <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
@@ -109,7 +113,7 @@
 				<%-- 
 				--%>
 					<input id="change_project_abstract_button" type="image" src="static/images/icon-edit.png"  value="Update"
-						 class="tool_tip_attached_jq  icon-small " data-tooltip="Edit project abstract" >
+						 class="selector_tool_tip_attached  icon-small " data-tooltip="Edit project abstract" >
 				</c:if>
 			  </div>
 				<%--  Edit Abstract block --%>

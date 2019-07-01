@@ -14,6 +14,9 @@
 
 ///////////////////////////////////////////
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
+
 //  Relative import - works
 // import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
@@ -36,10 +39,62 @@ export class MainPagesPopulateHeader {
 	 */
 	initialize(  ) {
 
+		//  Add tooltips
+        const $header_outer_container_div = $("#header_outer_container_div");
+        
+		addToolTips( $header_outer_container_div );  // External Function
+
+		//  Add these tooltips directly since use different positioning
+
+		//  Some of these DOM elements may not be on the page so skip any that are not on the page.
+
+		// {
+		// 	const $user_mgmt_header_link = $("#user_mgmt_header_link");
+		// 	if ( $user_mgmt_header_link.length !== 0 ) {
+		// 		this._addTooltipBelowRightAligned({ $element : $user_mgmt_header_link, adjustY : 10 });
+		// 	}
+		// }
+		// {
+		// 	const $sign_out_header_link = $("#sign_out_header_link");
+		// 	if ( $sign_out_header_link.length !== 0 ) {
+		// 		this._addTooltipBelowRightAligned({ $element : $sign_out_header_link, adjustY : 0 });
+		// 	}
+		// }
+		// {
+		// 	const $signin_header_link = $("#signin_header_link");
+		// 	if ( $signin_header_link.length !== 0 ) {
+		// 		this._addTooltipBelowRightAligned({ $element : $signin_header_link, adjustY : 0 });
+		// 	}
+		// }
+		
 //		this.getUserInfo();
 		
 		this._initializeCalled = true;
 	};
+
+	/**
+	 * Add Tooltip Locked to show below and to right edge of display item
+	 */
+	// _addTooltipBelowRightAligned({ $element, adjustY }) {
+
+	// 	const tooltipHTML = $element.attr("data-tooltip");		
+
+	// 	$element.qtip( {
+	// 		content: {
+	// 			text: tooltipHTML
+	// 		},
+	// 		position: {
+	// 			//  Position tooltip below display item (User Name) locked to right edge of display item.
+	// 			my : 'top right',
+	// 			at : 'bottom right',
+	// 			adjust: { x: 0, y: adjustY },
+	// 			// target: 'mouse',
+	// 			// adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
+	// 			viewport: $(window)
+	// 		 }
+	// 	});		
+	// }
+
 
 //	/**
 //	 * 

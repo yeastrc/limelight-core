@@ -12,7 +12,7 @@
 <div id="data_pages_nav_links_outer_container" style="display: none;">
 
   <span class=" selector_nav_link_outer_container">
-	[<a class=" selector_nav_link  tool_tip_attached_jq" data-tooltip="View peptides"
+	[<a class=" selector_nav_link  selector_tool_tip_attached" data-tooltip="View peptides"
 		data-nav_link_base_url="<%= AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER %>" 
 <%-- uncomment when multiple Project Search Ids supported
 		data-supports_multiple_project_search_ids="true"
@@ -21,7 +21,7 @@
 		>Peptide View</a>]</span>
 
   <span class=" selector_nav_link_outer_container">
-	[<a class=" selector_nav_link  tool_tip_attached_jq" data-tooltip="View proteins"
+	[<a class=" selector_nav_link  selector_tool_tip_attached" data-tooltip="View proteins"
 		data-nav_link_base_url="<%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %>" 
 <%-- uncomment when multiple Project Search Ids supported
 		data-supports_multiple_project_search_ids="true"
@@ -30,7 +30,7 @@
 		>Proteins View</a>]</span>
 
   <span class=" selector_nav_link_outer_container">
-	[<a class=" selector_nav_link  tool_tip_attached_jq" data-tooltip="View modifications"
+	[<a class=" selector_nav_link  selector_tool_tip_attached" data-tooltip="View modifications"
 		data-nav_link_base_url="<%= AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER %>" 
 <%-- uncomment when multiple Project Search Ids supported
 		data-supports_multiple_project_search_ids="true"

@@ -8,10 +8,12 @@
         <a href="{{ savedViewItem.url }}"
             ><span class=" selector_saved_view_item_label">{{ savedViewItem.label }}</span></a>
         {{#if canEdit }}
-            <img class="icon-small clickable  selector_edit_saved_view_label " src="static/images/icon-edit.png">
+            <img class="icon-small clickable  selector_edit_saved_view_label selector_tool_tip_attached " src="static/images/icon-edit.png"
+                title="Edit name of Saved View">
         {{/if}}
         {{#if canDelete }}
-            <img class="icon-small clickable  selector_delete_saved_view " src="static/images/icon-circle-delete.png">
+            <img class="icon-small clickable  selector_delete_saved_view selector_tool_tip_attached " src="static/images/icon-circle-delete.png"
+                title="Delete Saved View">
         {{/if}}
         {{!--
         {{#if savedViewItem.defaultView }}

@@ -492,12 +492,12 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
     					qtipApi.hide(true);
     				}
 
-	    			const $tool_tip_attached_jq_All = $searchItem.find(".tool_tip_attached_jq");
+	    			const $selector_tool_tip_attached_All = $searchItem.find(".selector_tool_tip_attached");
 
-	    			$tool_tip_attached_jq_All.each( function( index ) {
-	    				const $tool_tip_attached_jq_One = $( this );
-	    				// Grab the first element in the $tool_tip_attached_jq_One array and access its qTip API
-	    				const qtipApi = $tool_tip_attached_jq_One.qtip('api');
+	    			$selector_tool_tip_attached_All.each( function( index ) {
+	    				const $selector_tool_tip_attached_One = $( this );
+	    				// Grab the first element in the $selector_tool_tip_attached_One array and access its qTip API
+	    				const qtipApi = $selector_tool_tip_attached_One.qtip('api');
 	    				if ( qtipApi ) {
 	    					qtipApi.hide(true);
 	    				}
@@ -742,12 +742,12 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			qtipApi_OnSearchItem.destroy(true);
 		}
 		
-		const $tool_tip_attached_jq_All = $searchItem.find(".tool_tip_attached_jq");
+		const $selector_tool_tip_attached_All = $searchItem.find(".selector_tool_tip_attached");
 
-		$tool_tip_attached_jq_All.each( function( index ) {
-			const $tool_tip_attached_jq_One = $( this );
+		$selector_tool_tip_attached_All.each( function( index ) {
+			const $selector_tool_tip_attached_One = $( this );
 			// Grab the first element in the $folder_root_jq_One array and access its qTip API
-			const qtipApi = $tool_tip_attached_jq_One.qtip('api');
+			const qtipApi = $selector_tool_tip_attached_One.qtip('api');
 			if ( qtipApi ) {
 				qtipApi.destroy(true);
 			}

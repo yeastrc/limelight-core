@@ -5,7 +5,7 @@
 	<td nowrap  style="padding-right: 5px;">
 	  {{#if userInviteItem.canRemoveEntry }}
 	 	<input type="image" src="static/images/icon-circle-delete.png" data-tooltip="Remove from project" 
-	 		class="tool_tip_attached_jq revoke_project_invite_control_jq  icon-small "  
+	 		class="selector_tool_tip_attached revoke_project_invite_control_jq  icon-small "  
 	 		title="Revoke Invite" />
 	  {{/if}}
 	</td>
@@ -21,12 +21,12 @@
 	<td nowrap style="padding-left: 5px; padding-right: 5px;">
 	  {{#if userInviteItem.canDemoteEntry }}
 		<input type="image" src="static/images/icon-down-arrow.png" 
-			class="tool_tip_attached_jq change_to_assistant_owner_control_jq  icon-small " data-tooltip="Demote to researcher"
+			class="selector_tool_tip_attached change_to_assistant_owner_control_jq  icon-small " data-tooltip="Demote to researcher"
 			title="Demote to researcher" />
 	  {{/if}}  
 	  {{#if userInviteItem.canPromoteEntry }}
 		<input type="image" src="static/images/icon-up-arrow.png" 
-			class="tool_tip_attached_jq change_to_owner_control_jq  icon-small " data-tooltip="Promote to owner"
+			class="selector_tool_tip_attached change_to_owner_control_jq  icon-small " data-tooltip="Promote to owner"
 			title="Promote to owner" />
 	  {{/if}}  
 	</td>
@@ -49,7 +49,7 @@
 	<td  >
 		{{#if userInviteItem.canResendInviteEmail }}
 		  <div style="padding-left: 20px;">
-			<input type="button" value="Resend Email" class=" submit-button tool_tip_attached_jq resend_invite_email_button_jq " 
+			<input type="button" value="Resend Email" class=" submit-button selector_tool_tip_attached resend_invite_email_button_jq " 
 				data-tooltip="Resend Invite Email" >
 		  </div>
 		{{/if}}

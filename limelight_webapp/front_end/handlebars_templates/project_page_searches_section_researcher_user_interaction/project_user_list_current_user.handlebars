@@ -1,11 +1,12 @@
- {{!-- A comment: --}}
+ {{!-- A comment: project_user_list_current_user.handlebars  --}}
+
 <tr class=" existing_user_entry_jq ">
 	
   {{#if canRemoveAnyOfEntries }}
 	<td nowrap  style="padding-right: 5px;">
 	  {{#if userItem.canRemoveEntry }}
-	 	<input type="image" src="static/images/icon-circle-delete.png" data-tooltip="Remove from project" 
-	 		class="tool_tip_attached_jq remove_from_project_control_jq  icon-small "  
+	 	<input type="image" src="static/images/icon-circle-delete.png" 
+	 		class="selector_tool_tip_attached remove_from_project_control_jq  icon-small "  
 	 		title="Remove from project" />
 	  {{/if}}
 	</td>
@@ -21,12 +22,12 @@
 	<td nowrap style="padding-left: 5px; padding-right: 5px;">
 	  {{#if userItem.canDemoteEntry }}
 		<input type="image" src="static/images/icon-down-arrow.png" 
-			class="tool_tip_attached_jq change_to_assistant_owner_control_jq  icon-small " data-tooltip="Demote to researcher"
+			class="selector_tool_tip_attached change_to_assistant_owner_control_jq  icon-small " 
 			title="Demote to researcher" />
 	  {{/if}}  
 	  {{#if userItem.canPromoteEntry }}
 		<input type="image" src="static/images/icon-up-arrow.png" 
-			class="tool_tip_attached_jq change_to_owner_control_jq  icon-small " data-tooltip="Promote to owner"
+			class="selector_tool_tip_attached change_to_owner_control_jq  icon-small "
 			title="Promote to owner" />
 	  {{/if}}  
 	</td>

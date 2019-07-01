@@ -49,7 +49,7 @@
 		<div id="limelight_xml_file_upload_submit_in_progress" >
 			<%--  grey out under spinner --%>
 			<div style="position:absolute;left:0;right:0;top:0;bottom:0;background-color:grey;opacity:0.5;" 
-					class="tool_tip_attached_jq "
+					class="selector_tool_tip_attached "
 					data-tooltip="Submit in progress" >
 					
 			</div>
@@ -131,7 +131,7 @@
 			<input type="image" src="static/images/icon-circle-delete.png" 
 				data-tooltip="Remove File" 
 				id="import_limelight_xml_remove_limelight_xml_file_button"
-				class="tool_tip_attached_jq "/>
+				class="selector_tool_tip_attached "/>
 		  </td>
 		  <td class="column-2 column-filename">	
 			  <div class="limelight-xml-file-upload-filename-containing-div">
@@ -148,7 +148,7 @@
 			     </div>
 						<%-- overlay div to provide progress percentage text --%>
 				 <div 	style="position:absolute;left:0;right:0;top:0;bottom:0; text-align: center;" 
-						class=" progress_bar_text_jq tool_tip_attached_jq " 
+						class=" progress_bar_text_jq selector_tool_tip_attached " 
 						data-tooltip="Upload Progress"
 						></div>
 			     
@@ -224,7 +224,7 @@
 							<%-- overlay div to provide tooltip for button --%>
 					<div id="import_limelight_xml_file_submit_button_disabled_overlay"
 							style="position:absolute;left:0;right:0;top:0;bottom:0;" 
-							class="tool_tip_attached_jq "
+							class="selector_tool_tip_attached "
 							data-tooltip="<c:out value="${ submitDisabledTooltip }"></c:out>" ></div>
 			</div>
 				

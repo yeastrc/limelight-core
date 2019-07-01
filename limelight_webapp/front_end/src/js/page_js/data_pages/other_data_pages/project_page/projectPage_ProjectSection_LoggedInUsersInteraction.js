@@ -25,6 +25,8 @@ let _project_page__project_info_section_all_users_interaction_template = require
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 //  Local imports
@@ -92,6 +94,8 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const addNoteContainerHTML = this._project_notes_add_note_container_and_link({});
         const $addNoteContainer = $( addNoteContainerHTML );
         $addNoteContainer.appendTo( $notesOuterContainer );
+
+		addToolTips( $addNoteContainer );  // External Function
 
         const $selector_add_note_init_input = $addNoteContainer.find(".selector_add_note_init_input");
         if ( $selector_add_note_init_input.length === 0 ) {
@@ -173,6 +177,10 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const add_note_inputHTML = this._project_notes_add_note_add_note_input({});
         const $add_note_input = $( add_note_inputHTML );
         $add_note_input.appendTo( $selector_add_note_inner_root_container );
+
+        throw Error("A")
+        
+        addToolTips( $noteDOM );  // External Function
 
         const $selector_add_note_save_button = $add_note_input.find(".selector_add_note_save_button");
         if ( $selector_add_note_save_button.length === 0 ) {
@@ -298,6 +306,10 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                 const noteHTML = this._project_notes_entry( note );
                 const $noteDOM = $( noteHTML );
                 $noteDOM.appendTo( $notes_list_container_div );
+
+                throw Error("A")
+
+        		addToolTips( $noteDOM );  // External Function
 
                 this.addExistingNoteLoggedInUserAdditions({
                             id : note.id, canEdit : note.canEdit, canDelete : note.canDelete, $noteDOM });

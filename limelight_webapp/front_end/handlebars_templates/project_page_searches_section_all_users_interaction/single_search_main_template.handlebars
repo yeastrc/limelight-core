@@ -15,7 +15,8 @@
 		<a href="{{ url_path__mod_view }}{{ searchItem.searchDataLookupParamsCode }}/r" >[Modifications]</a>
 		
 		{{#if searchItem.canDelete }} 
-			<img class="icon-small clickable  delete_search_jq " src="static/images/icon-circle-delete.png" >
+			<img class="icon-small clickable  delete_search_jq selector_tool_tip_attached " src="static/images/icon-circle-delete.png" 
+				title="Delete search">
 		{{/if}}
 	</div>
 
@@ -26,7 +27,8 @@
 				><span class=" search_name_jq " >{{ searchItem.name }}</span> ({{ searchItem.searchId }})</span>
 			
 			{{#if searchItem.canChangeSearchName }} 
-				<img class="icon-small clickable  edit_search_name_jq " src="static/images/icon-edit.png" >
+				<img class="icon-small clickable  edit_search_name_jq selector_tool_tip_attached " src="static/images/icon-edit.png" 
+					title="Edit name of search">
 			{{/if}}
 		</div>
 		{{#if searchItem.canChangeSearchName }} 

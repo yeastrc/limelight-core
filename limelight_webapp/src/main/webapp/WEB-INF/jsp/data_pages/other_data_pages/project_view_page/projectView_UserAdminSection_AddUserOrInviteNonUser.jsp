@@ -29,13 +29,13 @@
 		 
 		 <div class="invite-user-expand-icon-container" >
 		  <a href="javascript:" data-tooltip="Invite new or existing user to project" 
-		  		class="tool_tip_attached_jq second-level-label overide-text-color-to-base-color invite_user_expand_link_jq">
+		  		class="selector_tool_tip_attached second-level-label overide-text-color-to-base-color invite_user_expand_link_jq">
 			<img src="static/images/icon-add-user.png" class=" icon-small ">
 		  </a>
 		 </div>
 		 <div >
 		  <a href="javascript:" data-tooltip="Invite new or existing user to project" 
-		  		class="tool_tip_attached_jq second-level-label overide-text-color-to-base-color invite_user_expand_link_jq">
+		  		class="selector_tool_tip_attached second-level-label overide-text-color-to-base-color invite_user_expand_link_jq">
 			Invite User
 		  </a>
 		 </div>

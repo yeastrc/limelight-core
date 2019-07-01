@@ -13,15 +13,15 @@
 
 //  module imports
 
-let Handlebars = require('handlebars/runtime');
+// let Handlebars = require('handlebars/runtime');
 
-//  Import Handlebars templates
+// //  Import Handlebars templates
 
-let _project_user_list_current_user_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/project_page_searches_section_researcher_user_interaction/project_page_searches_section_researcher_user_interaction_template-bundle.js");
+// let _project_user_list_current_user_template_bundle = 
+// 	require("../../../../../../handlebars_templates_precompiled/project_page_searches_section_researcher_user_interaction/project_page_searches_section_researcher_user_interaction_template-bundle.js");
 
-//Required on Page Level JS
-Handlebars.templates = _project_user_list_current_user_template_bundle;
+// //Required on Page Level JS
+// Handlebars.templates = _project_user_list_current_user_template_bundle;
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';

@@ -34,6 +34,8 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core.js';
 
 
@@ -378,6 +380,8 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 			this._searchDetailsDataLoaded_ProjectSearchIds.add( projectSearchId );
 		}
 
+		addToolTips( $selector_search_details_container );  // External Function
+
 		$selector_search_details_container.show();
 
 		//  Hide Pointer Right Show Pointer Down 
@@ -455,6 +459,8 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 		const html = this._searchDetails_WeblinksEntry( webLink );
 		const $weblinkEntry = $( html );
+
+		addToolTips( $weblinkEntry );  // External Function
 
 		$selector_weblinks_list_container.append( $weblinkEntry );
 

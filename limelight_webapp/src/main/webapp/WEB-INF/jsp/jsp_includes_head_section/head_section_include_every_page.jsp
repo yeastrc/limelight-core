@@ -87,6 +87,9 @@ head_section_include_every_page.jsp
 
 
 	<script type="text/javascript" src="static/js/libs/jquery-3.3.1.min.js"></script>
+
+	<script type="text/javascript" src="static/js/libs/jquery-migrate-3.1.0.min.js"></script>
+	
 	<script type="text/javascript" src="static/js/libs/jquery-ui.min.js"></script>
 
 <%-- 

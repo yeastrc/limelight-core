@@ -38,6 +38,8 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 
 //  Local Imports
 
+import { ProjectPage_CommonOverall } from './projectPage_CommonOverall.js';
+
 import { ProjectPage_SearchesSection_LoggedInUsersInteraction } from './projectPage_SearchesSection_LoggedInUsersInteraction.js';
 import { ProjectPage_SearchDetails_LoggedInUsers } from './projectPage_SearchDetails_LoggedInUsers.js';
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './projectPage_SavedViews_Section_LoggedInUsersInteraction';
@@ -78,6 +80,9 @@ class ProjectViewPage_Root_ResearcherUser {
 		const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
 		collapsableSection_StandardProcessing.initialize();
 
+		const projectPage_CommonOverall = new ProjectPage_CommonOverall();
+		projectPage_CommonOverall.initialize();
+		
 		const userIsProjectOwner = false;
 		const projectLocked = false;
 		

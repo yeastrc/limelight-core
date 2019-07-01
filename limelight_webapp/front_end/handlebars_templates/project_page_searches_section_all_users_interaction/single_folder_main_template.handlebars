@@ -11,11 +11,11 @@
 	<div  class="collapsable-link-container folder-collapsable-link-container selector_collapsable_link_container " style="">
 
 		<img  src="static/images/icon-folder-open.png" 
-			class=" clickable icon-large  folder_hide_contents_link_jq selector_collapsable_collapse_link tool_tip_attached_jq "
+			class=" clickable icon-large  folder_hide_contents_link_jq selector_collapsable_collapse_link selector_tool_tip_attached "
 			style="display: none;"
 			data-tooltip="Close folder" >
 		<img  src="static/images/icon-folder-closed.png"
-			class=" clickable icon-large  folder_show_contents_link_jq selector_collapsable_expand_link tool_tip_attached_jq "
+			class=" clickable icon-large  folder_show_contents_link_jq selector_collapsable_expand_link selector_tool_tip_attached "
 			data-tooltip="Open folder"
 			>
 
@@ -27,12 +27,12 @@
 			
 		{{#if folder.canEdit }} 
 			<img  src="static/images/icon-edit.png" 
-				class=" clickable icon-small folder_rename_button_jq tool_tip_attached_jq"
+				class=" clickable icon-small folder_rename_button_jq selector_tool_tip_attached"
 				data-tooltip="Edit name of folder">
 		{{/if}}
 		{{#if folder.canDelete }} 
 			<img  src="static/images/icon-circle-delete.png"
-				class=" clickable icon-small folder_delete_button_jq tool_tip_attached_jq" 
+				class=" clickable icon-small folder_delete_button_jq selector_tool_tip_attached" 
 				data-tooltip="Delete folder.  Searches in it become 'Unfiled'.">
 		{{/if}}
 	</div>

@@ -37,12 +37,12 @@
 
 		<div style="margin-bottom: 10px;">
 			<input type="button" value="Import Limelight XML File" 
-				class=" open_limelight_file_upload_overlay_jq tool_tip_attached_jq "
+				class=" open_limelight_file_upload_overlay_jq selector_tool_tip_attached "
 				data-tooltip="Upload a Limelight XML file to this project" >
 				
 			<input type="button" value="Refresh" 
 				id="upload_data_refresh_data"
-				class="  tool_tip_attached_jq "
+				class="  selector_tool_tip_attached "
 				data-tooltip="Refresh this list" >
 				
 			<span style="padding-left: 20px;">
@@ -72,14 +72,14 @@
 			  <span  style="font-size: 18px;">
 				<img src="static/images/pointer-right.png"
 						id="upload_data_pending_items_show_link"
-						class=" fake-link-image icon-small tool_tip_attached_jq " 
+						class=" fake-link-image icon-small selector_tool_tip_attached " 
 						data-tooltip="Show pending" 
 						style="display: none;" 
 					>
 
 				<img src="static/images/pointer-down.png"
 						id="upload_data_pending_items_hide_link"
-						class=" fake-link-image icon-small tool_tip_attached_jq " 
+						class=" fake-link-image icon-small selector_tool_tip_attached " 
 						data-tooltip="Hide pending" 
 						style="" 
 					>
@@ -102,7 +102,7 @@
 			  <div  id="upload_data_pending_items_outer_container">
 			   
 			   <div style="margin-bottom: 5px;"  >
-			  	 <span id="upload_data_pending_items_show_all_details_link" class=" fake-link tool_tip_attached_jq "  
+			  	 <span id="upload_data_pending_items_show_all_details_link" class=" fake-link selector_tool_tip_attached "  
 			  		data-tooltip="Show details for all items" 
 			  		data-container_id="upload_data_pending_items_container" 
 			  		>[Expand All]</span>
@@ -123,14 +123,14 @@
 			<div >
 			  <span  style="font-size: 18px;">
 				<a  id="upload_data_history_items_show_link"
-					class="tool_tip_attached_jq " 
+					class="selector_tool_tip_attached " 
 					data-tooltip="Show history" 
 					><img src="static/images/pointer-right.png"
 						style="cursor: pointer;" class=" icon-small "
 					></a>
 
 				<a id="upload_data_history_items_hide_link"
-					class="tool_tip_attached_jq " 
+					class="selector_tool_tip_attached " 
 					data-tooltip="Hide history" 
 					style="display: none;" 
 					><img src="static/images/pointer-down.png"
@@ -150,7 +150,7 @@
 			  <div  id="upload_data_history_items_table_outer_container" style="padding-left: 17px;">
 			   
 			   <div style="margin-bottom: 5px;" id="upload_data_history_items_show_all_details_container" >
-			  	 <span id="upload_data_history_items_show_all_details_link" class=" fake-link tool_tip_attached_jq "  
+			  	 <span id="upload_data_history_items_show_all_details_link" class=" fake-link selector_tool_tip_attached "  
 			  		data-tooltip="Show details for all items" 
 			  		data-container_id="upload_data_history_items_container" 
 			  		>[Expand All]</span>

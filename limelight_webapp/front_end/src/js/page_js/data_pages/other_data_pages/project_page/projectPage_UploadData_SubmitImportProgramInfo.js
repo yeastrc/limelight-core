@@ -117,9 +117,10 @@ export class ProjectPage_UploadData_SubmitImportProgramInfo {
 		const $window = $( window );
 		const windowWidth = $window.width();
 		const windowHeight = $window.height();
+		const windowScrollTop = $window.scrollTop();
 
 		let containerLeft = ( windowWidth - containerWidth ) / 2;
-		let containerTop = ( windowHeight - containerHeight ) / 2;
+		let containerTop = ( ( windowHeight - containerHeight ) / 2 ) + windowScrollTop;
 
 		if ( containerLeft < 10 ) {
 			containerLeft = 10;

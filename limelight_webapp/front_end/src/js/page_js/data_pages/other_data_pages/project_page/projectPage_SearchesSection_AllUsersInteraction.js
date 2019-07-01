@@ -26,6 +26,8 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collapsableSection_StandardProcessing.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 //  Local imports
 
 import { ProjectPage_SearchDetails_AllUsers } from 'page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_AllUsers.js';
@@ -624,6 +626,7 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 				const $folderItem = $( folderHTML );
 				$folderItem.appendTo( $search_list );
 
+				addToolTips( $folderItem );  // External Function
 				
 				//  Collapse/Expand for Folder
 				const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
@@ -658,9 +661,6 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 			this._addSearchesUnderAFolderOrNotInAnyFolder({ searchList : searchesNotInFolders, showBorderLastSearch : true, canSelectSearches, $searches_container });
 		}
-
-		//			addToolTips();
-
 	
 		if ( this._projectPage_SearchesSection_LoggedInUsersInteraction ) {
 			//  have _projectPage_SearchesSection_LoggedInUsersInteraction object so call method on it
@@ -740,6 +740,8 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 			const $search_entry = $(searchEntry_HTML);
 
 			$search_entry.appendTo( $searches_container );
+
+			addToolTips( $search_entry );  // External Function
 
 			this._addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem });
 

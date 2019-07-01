@@ -26,6 +26,8 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+
 
 /**
  * 
@@ -142,6 +144,8 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 				let $search_entry = $( search_entry_HTML );
 				
 				$search_entry.appendTo( $project_users );
+
+				addToolTips( $search_entry );  // External Function
 				
 				let item_bottom_separator = this._project_user_list_current_user_bottom_separator_template( {} );
 				

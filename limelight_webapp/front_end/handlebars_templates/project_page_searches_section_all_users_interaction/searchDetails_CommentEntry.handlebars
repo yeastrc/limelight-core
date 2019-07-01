@@ -3,13 +3,13 @@
 <div class=" selector_comment_root_entry ">
     <div class=" selector_comment_text_entry ">
         {{#if canDelete }} 
-            <img class="icon-small clickable tool_tip_attached_jq selector_comment_delete " 
+            <img class="icon-small clickable selector_tool_tip_attached selector_comment_delete " 
                 data-tooltip="Delete Comment"
                 src="static/images/icon-circle-delete.png">
         {{/if}}
         <span class=" selector_search_comment_string ">{{ commentText }}</span>
         {{#if canEdit }} 
-            <img class=" icon-small clickable selector_comment_update tool_tip_attached_jq" data-tooltip="Edit Comment" src="static/images/icon-edit.png">
+            <img class=" icon-small clickable selector_comment_update selector_tool_tip_attached" data-tooltip="Edit Comment" src="static/images/icon-edit.png">
         {{/if}}
         {{#if commentDate }} 
             ({{ commentDate }})
