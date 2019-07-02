@@ -25,6 +25,9 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
 
+import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder.js';
+
+
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
@@ -231,6 +234,8 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
         promise_loadDataFromServer.then( ({ responseData }) => {
 
+			this._sortSearches_ServerResult({ responseData });
+
             this._putFoldersAndSearchesOnPage({ responseData });
         });
     }
@@ -427,10 +432,10 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		        },
 				position: {
 					//  Position tooltip above display item (search name) locked to left edge of display item.
-					my : 'bottom left',
-					at : 'top left',
-					// target: 'mouse',
-					// adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
+					// my : 'bottom left',
+					// at : 'top left',
+					target: 'mouse',
+					adjust: { x: 5, y: 5 }, // Offset it slightly from under the mouse
 		            viewport: $(window)
 		         }
 		    });	
@@ -646,6 +651,8 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
         promise_loadDataFromServer.catch( () => {});
 
         promise_loadDataFromServer.then( ({ responseData }) => {
+
+			this._sortSearches_ServerResult({ responseData });
 
             this._processLoadDataResultsForSpecificFolder({ responseData, selectedFolderData : { folderId: folder_id } });
         });
@@ -893,8 +900,17 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		return false; //  Search being dragged is NOT in folder		
 	};
 
-	
+    //////////////////////////////////
 
+	/**
+	 * 
+	 */
+	_sortSearches_ServerResult({ responseData }) {
+
+		//  Sort Server results.
+		sortSearchesOnDisplayOrder_OrDefaultOrder({ folderList : responseData.folderDataList, searchesNotInFolders : responseData.searchesNotInFoldersList }); // External Function
+	}
+	
     //////////////////////////////////
 
 	/**
@@ -918,6 +934,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
+
                         resolve({ responseData });
                     } catch (e) {
                         reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });

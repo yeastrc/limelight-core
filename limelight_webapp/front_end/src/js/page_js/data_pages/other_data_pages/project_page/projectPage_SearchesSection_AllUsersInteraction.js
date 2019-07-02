@@ -28,6 +28,8 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
 
+import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder.js';
+
 //  Local imports
 
 import { ProjectPage_SearchDetails_AllUsers } from 'page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_AllUsers.js';
@@ -487,15 +489,17 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 	/**
 	 * 
 	 */
-	_getSearchListResponse(responseData) {
+	_getSearchListResponse( responseData ) {
 
 		if (!this._initializeCalled) {
 			throw Error("initialize method not called");
 		}
 
 		const folderList = responseData.folderList;
-    	const  searchesNotInFolders = responseData.searchesNotInFolders;
-    	const  noSearchesFound = responseData.noSearchesFound;
+    	const searchesNotInFolders = responseData.searchesNotInFolders;
+		const noSearchesFound = responseData.noSearchesFound;
+		
+		sortSearchesOnDisplayOrder_OrDefaultOrder({ folderList, searchesNotInFolders }); // External Function
 
 		//  Insert the outer block first
 
@@ -673,6 +677,7 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		}
 
 	};
+
 
 	/**
 	 * 

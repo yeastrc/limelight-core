@@ -222,6 +222,7 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 			WebserviceResultSearchItem searchItem = new WebserviceResultSearchItem();
 			searchItem.id = searchItemMinimal.getProjectSearchId();
 			searchItem.searchId = searchItemMinimal.getSearchId();
+			searchItem.displayOrder = searchItemMinimal.getDisplayOrder();
 			searchItem.name = searchItemMinimal.getName();
 			webserviceResultSearchItemList.add( searchItem );
 		}
@@ -303,6 +304,7 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 		
 		private int id;
 		private int searchId;
+		private int displayOrder;
 		private String name;
 		
 		public int getId() {
@@ -322,6 +324,9 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 		}
 		public void setName(String name) {
 			this.name = name;
+		}
+		public int getDisplayOrder() {
+			return displayOrder;
 		}
 	}
 

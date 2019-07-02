@@ -339,8 +339,8 @@ public class ProjectView_SearchList_RestWebserviceController {
 			WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
 			resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
 			resultItem.searchId = searchListDBItem.getSearchId();
-			resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( 
-					searchListDBItem.getName(), searchListDBItem.getSearchId() );
+			resultItem.displayOrder = searchListDBItem.getDisplayOrder();
+			resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchListDBItem.getName(), searchListDBItem.getSearchId() );
 			resultItem.searchDataLookupParamsCode = searchDataLookupParamsCode;
 			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 				resultItem.setCanChangeSearchName(true);
@@ -456,6 +456,7 @@ public class ProjectView_SearchList_RestWebserviceController {
     	
     	private int projectSearchId;
     	private int searchId;
+    	private int displayOrder; // zero if no display order applied
     	private String name;
     	private String searchDataLookupParamsCode;
     	private boolean canChangeSearchName;
@@ -496,6 +497,12 @@ public class ProjectView_SearchList_RestWebserviceController {
 		}
 		public void setCanDelete(boolean canDelete) {
 			this.canDelete = canDelete;
+		}
+		public int getDisplayOrder() {
+			return displayOrder;
+		}
+		public void setDisplayOrder(int displayOrder) {
+			this.displayOrder = displayOrder;
 		}
     	
     }
