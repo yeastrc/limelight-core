@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 
+import org.yeastrc.user_mgmt_central.user_mgmt_central__embed_code.UserMgmtEmbed_SQL_Connection_Provider_IF;
+
 /**
  * @author danj
  *
@@ -27,15 +29,15 @@ public interface UserMgmtCentralWebappWebserviceAccessIF {
 	 * Initialize the Singleton instance
 	 * @throws Exception
 	 */
-	void init();
+	void init( UserMgmtEmbed_SQL_Connection_Provider_IF userMgmtEmbed_SQL_Connection_Provider );
 
 	/**
-	 * @param userMgmtSessionKeyAliveWebserviceRequest
+	 * @param userMgmtSessionKeyAliveRequest
 	 * @return
 	 * @throws Exception
 	 */
-	UserMgmtSessionKeyAliveWebserviceResponse sessionKeyAlive(
-			UserMgmtSessionKeyAliveWebserviceRequest userMgmtSessionKeyAliveWebserviceRequest) throws Exception;
+	UserMgmtSessionKeyAliveResponse sessionKeyAlive(
+			UserMgmtSessionKeyAliveWebserviceRequest userMgmtSessionKeyAliveRequest) throws Exception;
 
 	/**
 	 * @param userMgmtCreateAccountRequest

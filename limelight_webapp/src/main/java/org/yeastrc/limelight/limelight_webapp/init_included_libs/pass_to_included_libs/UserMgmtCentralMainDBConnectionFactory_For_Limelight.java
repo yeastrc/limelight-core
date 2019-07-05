@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
-import org.yeastrc.user_mgmt_central.main_code.db.IUserMgmtCentralMainDBConnectionFactory;
+import org.yeastrc.user_mgmt_central.user_mgmt_central__embed_code.UserMgmtEmbed_SQL_Connection_Provider_IF;
 
 /**
  * concrete class that will be passed to AuthLibraryDBConnectionFactory in User Mgmt Embed Library
@@ -32,7 +32,7 @@ import org.yeastrc.user_mgmt_central.main_code.db.IUserMgmtCentralMainDBConnecti
  *
  */
 @Component
-public class UserMgmtCentralMainDBConnectionFactory_For_Limelight extends Limelight_JDBC_Base implements IUserMgmtCentralMainDBConnectionFactory {
+public class UserMgmtCentralMainDBConnectionFactory_For_Limelight extends Limelight_JDBC_Base implements UserMgmtEmbed_SQL_Connection_Provider_IF {
 	
 	private static final Logger log = LoggerFactory.getLogger( UserMgmtCentralMainDBConnectionFactory_For_Limelight.class );
 		

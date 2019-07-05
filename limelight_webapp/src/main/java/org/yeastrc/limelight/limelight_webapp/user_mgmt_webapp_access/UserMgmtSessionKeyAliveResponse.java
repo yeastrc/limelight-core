@@ -1,6 +1,6 @@
 package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 
-public class UserMgmtSessionKeyAliveWebserviceResponse {
+public class UserMgmtSessionKeyAliveResponse {
 
 	private boolean success;
 	

@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.init_included_libs.pass_to_included_libs.UserMgmtCentralMainDBConnectionFactory_For_Limelight;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 import org.yeastrc.session_mgmt.main.YRCSessionMgmtMain;
-import org.yeastrc.user_mgmt_central.main_code.db.UserMgmtCentralMainDBConnectionFactory;
 
 /**
  * Initialize code in jars included in the web app
@@ -65,10 +64,9 @@ public class InitializeIncludedLibraries {
 		} 
 
 		//  Provide DB connection for UserMgmtCentral_Embedded_Facade
-		UserMgmtCentralMainDBConnectionFactory.setDbConnectionFactoryImpl( userMgmtCentralMainDBConnectionFactory_For_Limelight );
 		
 		//  Initialize Limelight class for interacting with UserMgmtCentral classes
-		userMgmtCentralWebappWebserviceAccess.init();
+		userMgmtCentralWebappWebserviceAccess.init( userMgmtCentralMainDBConnectionFactory_For_Limelight );
     }
     
 
