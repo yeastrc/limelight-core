@@ -402,17 +402,22 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 					log.warn( msg );
 			        return null;  //  Early Exit
 				}
-				UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-				userMgmtGetUserDataRequest.setUserId( userMgmtUserId );
-				UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 
-						userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
-				if ( ! userMgmtGetUserDataResponse.isSuccess() ) {
-					String msg = "Failed to get Full user data from User Mgmt Webapp for user id: " + userId
-							+ ", userMgmtUserId: " + userMgmtUserId;
-					log.error( msg );
-					throw new LimelightInternalErrorException( msg );
+				String nameOfUploadUser = "User info unavailable";
+				{
+					UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
+					userMgmtGetUserDataRequest.setUserId( userMgmtUserId );
+					UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 
+							userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
+					if ( ! userMgmtGetUserDataResponse.isSuccess() ) {
+						String msg = "Failed to get Full user data from User Mgmt Webapp for user id: " + userId
+								+ ", userMgmtUserId: " + userMgmtUserId;
+						log.error( msg );
+						// throw new LimelightInternalErrorException( msg );
+					} else {
+						nameOfUploadUser = userMgmtGetUserDataResponse.getFirstName() 
+								+ " " + userMgmtGetUserDataResponse.getLastName();
+					}
 				}
-				String nameOfUploadUser = userMgmtGetUserDataResponse.getFirstName() + " " + userMgmtGetUserDataResponse.getLastName();
 				displayItem.setNameOfUploadUser( nameOfUploadUser );
 				if ( trackingItem.getStatus() == FileImportStatus.COMPLETE
 						|| trackingItem.getStatus() == FileImportStatus.FAILED ) {
