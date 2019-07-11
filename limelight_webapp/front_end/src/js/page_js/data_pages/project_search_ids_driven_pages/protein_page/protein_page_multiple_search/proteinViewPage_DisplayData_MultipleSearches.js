@@ -25,6 +25,8 @@ import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplay
 
 import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
+import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile.js';
+
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 
 import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder.js';
@@ -259,11 +261,14 @@ export class ProteinViewPage_Display_MultipleSearches {
 	 * 
 	 */
 	_displayProteinListOnPage( { projectSearchIds } ) {
+
+		const objectThis = this;
 		
 		const proteinDisplayData = this._createProteinDisplayData( { projectSearchIds } );
 		
-		this._renderToPageProteinList( { projectSearchIds, proteinDisplayData } );
+		const renderToPageProteinList_Result = this._renderToPageProteinList( { projectSearchIds, proteinDisplayData } );
 
+		const proteinListLength = renderToPageProteinList_Result.proteinListLength;
 
 		{
 			const proteinSequenceVersionId_FromURL = this._singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
@@ -274,6 +279,41 @@ export class ProteinViewPage_Display_MultipleSearches {
 			}
 		}
 
+		if ( proteinListLength === 0 ) {
+
+			const $protein_download_proteins = $("#protein_download_proteins");
+			$protein_download_proteins.hide();
+
+		} else {
+
+			if ( ! this._downloadProteinsClickHandlerAttached ) {
+		
+				//  Download Proteins container and link.  The version for multiple project search id
+
+				//  Show and attach click handler here since now have the data loaded for downloading
+			
+				const $protein_download_proteins = $("#protein_download_proteins");
+
+				//  First remove any previous click handler
+				$protein_download_proteins.off("click");
+				
+				$protein_download_proteins.show();
+
+				$protein_download_proteins.click( function(eventObject) {
+					try {
+						eventObject.preventDefault();
+
+						objectThis._downloadProteinList();
+
+					} catch (e) {
+						reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+						throw e;
+					}
+				});
+
+				this._downloadProteinsClickHandlerAttached = true;
+			}
+		}
 	};
 	
 	/////////////
@@ -612,14 +652,16 @@ export class ProteinViewPage_Display_MultipleSearches {
 		// const reportedPeptideCount_TotalForSearch_Display = proteinDisplayData.reportedPeptideCount_TotalForSearch.toLocaleString();
 		// const psmCount_TotalForSearch_Display = proteinDisplayData.psmCount_TotalForSearch.toLocaleString();
 
-		$("#protein_list_size").text( proteinListLength );
+		$("#protein_list_size").text( proteinCount );
 		// $("#reported_peptide_count_display").text( reportedPeptideCount_TotalForSearch_Display );
 		// $("#psm_count_display").text( psmCount_TotalForSearch_Display );
 		
 		$protein_list_container.empty();
 
+		this.currentProteinListDisplayTableData = undefined;
+
 		if (proteinList && proteinList.length > 0) {
-			
+
 			// Build $proteinDataTable detached from DOM while adding to it.  
 			//   That way browser rendering engine only has to do single render after after all elements added. 
 			
@@ -637,6 +679,11 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			// the data we're showing on the page
 			const tableObjects = proteinList_ForDataTable;
+
+			//  Save off currently displayed table data
+			this.currentProteinListDisplayTableData = { columns, tableObjects };
+
+
 			tableDisplayHandler.addGraphWidths( { dataObjects : tableObjects, columns } );
 
 			// add the table to the page
@@ -675,6 +722,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		console.log("Rendering Protein List END, Now: " + new Date() );
 		
+		return { proteinListLength };
 	};
 
 	/**
@@ -1081,4 +1129,93 @@ export class ProteinViewPage_Display_MultipleSearches {
 		
 		return tooltipHTML;
 	}
+
+
+
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	
+	/**
+	 * Download Protein List
+	 */
+	_downloadProteinList() {
+
+		if ( ! this.currentProteinListDisplayTableData ) {
+			alert("No Data to Download");
+			return; // EARLY RETURN
+		}
+
+		const proteinDisplayDataAsString = this._downloadProteinList_GenerateDownloadString();
+
+		//  For getting search info for projectSearchIds
+		const searchNamesKeyProjectSearchId = 
+			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+
+
+		const searchIds = [];
+
+		for ( const projectSearchId of this._projectSearchIds ) {
+			const searchNameObject = searchNamesKeyProjectSearchId[ projectSearchId ];
+			if ( ! searchNameObject ) {
+				throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
+			}
+			searchIds.push( searchNameObject.searchId );
+		}
+
+		const searchIdsDashDelim = searchIds.join("-");
+		
+		const filename = 'proteins-search-' + searchIdsDashDelim + '.txt';
+		
+		
+        StringDownloadUtils.downloadStringAsFile( 
+			{ stringToDownload : proteinDisplayDataAsString, filename: filename } );
+	}
+
+	/**
+	 * Download Protein List - Generate download String
+	 */
+	_downloadProteinList_GenerateDownloadString() {
+
+		//  Create String that will be dowloaded from browser
+
+		const columns = this.currentProteinListDisplayTableData.columns;
+		const tableObjects = this.currentProteinListDisplayTableData.tableObjects;
+
+		const outputLines = [];
+
+		{
+			//  Add Header row
+			const outputColumns = [];
+				
+			for ( const column of columns ) {
+				const columnText = column.displayName;
+				outputColumns.push( columnText );
+			}
+			const headerRow = outputColumns.join("\t");
+			outputLines.push( headerRow );
+		}
+
+		if ( tableObjects ) {
+			//  Add Data rows
+			for ( const tableObject of tableObjects ) {
+				const outputColumns = [];
+				for ( const column of columns ) {
+					const dataProperty = column.dataProperty;
+					const dataPropertyValue = tableObject[ dataProperty ];
+					outputColumns.push( dataPropertyValue );
+				}
+				const dataRow = outputColumns.join("\t");
+				outputLines.push( dataRow );
+			}
+		}
+
+		//  Add end of line for last line since next "join" will not add end of line on last line
+		outputLines.push("\n");
+
+		const outputLinesJoined = outputLines.join("\n");
+
+		return outputLinesJoined;
+	}
+
 }
