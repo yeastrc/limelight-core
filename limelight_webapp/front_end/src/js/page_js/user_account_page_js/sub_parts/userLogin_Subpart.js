@@ -27,6 +27,9 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
 
+import { createSpinner, destroySpinner, incrementSpinner, decrementSpinner } from 'page_js/common_all_pages/spinner.js';
+
+		
 /**
  * 
  */
@@ -66,7 +69,6 @@ export class UserLogin_Subpart {
 		
 		$user_login_form_main_display_html.appendTo( $containerHTMLElement );
 
-		
 		$("#login_username").focus();
 		
 		var $login_form = $("#login_form");
@@ -125,6 +127,8 @@ export class UserLogin_Subpart {
 			return;  //  !!!  EARLY EXIT
 		}
 
+		createSpinner(); // external function
+		
 		var requestObj = { username : login_username, password : login_password };
 
 		if ( this.inviteTrackingCode ) {
@@ -137,7 +141,10 @@ export class UserLogin_Subpart {
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-		promise_webserviceCallStandardPost.catch( () => {  }  );
+		promise_webserviceCallStandardPost.catch( () => { 
+
+			destroySpinner(); // external function
+		 }  );
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {
@@ -170,6 +177,8 @@ export class UserLogin_Subpart {
 			}
 		}
 		
+		destroySpinner(); // external function
+
 		//  Not successful
 		
 		if ( responseData.invalidUserOrPassword ) {
