@@ -499,7 +499,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			pendingItemsList.sort( (a, b) => {
 				if ( a.trackingId < b.trackingId ) {
 					return 1; // reverse sort
-				} else if ( a.trackingId < b.trackingId ) {
+				} else if ( a.trackingId > b.trackingId ) {
 					return -1; // reverse sort
 				}
 				return 0; // Should never get here.  All trackingId should be unique
@@ -564,7 +564,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			historyItemsList.sort( (a, b) => {
 				if ( a.trackingId < b.trackingId ) {
 					return 1; // reverse sort
-				} else if ( a.trackingId < b.trackingId ) {
+				} else if ( a.trackingId > b.trackingId ) {
 					return -1; // reverse sort
 				}
 				return 0; // Should never get here.  All trackingId should be unique
