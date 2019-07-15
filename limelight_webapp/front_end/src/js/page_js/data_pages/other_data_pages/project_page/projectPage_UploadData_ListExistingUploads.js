@@ -496,6 +496,15 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 			$upload_data_pending_items_table.empty();
 
+			pendingItemsList.sort( (a, b) => {
+				if ( a.trackingId < b.trackingId ) {
+					return 1; // reverse sort
+				} else if ( a.trackingId < b.trackingId ) {
+					return -1; // reverse sort
+				}
+				return 0; // Should never get here.  All trackingId should be unique
+			});
+
 			//  Add data to the page
 
 			for (let dataIndex = 0; dataIndex < pendingItemsList.length; dataIndex++) {
@@ -549,6 +558,17 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			}
 
 			$upload_data_history_items_table.empty();
+
+			//  Sort data on trackingId reverse
+
+			historyItemsList.sort( (a, b) => {
+				if ( a.trackingId < b.trackingId ) {
+					return 1; // reverse sort
+				} else if ( a.trackingId < b.trackingId ) {
+					return -1; // reverse sort
+				}
+				return 0; // Should never get here.  All trackingId should be unique
+			});
 
 			//  Add data to the page
 
