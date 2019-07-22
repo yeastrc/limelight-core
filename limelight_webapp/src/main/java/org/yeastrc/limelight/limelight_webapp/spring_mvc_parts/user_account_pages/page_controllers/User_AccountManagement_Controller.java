@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -27,7 +28,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.searchers.User_IsAny_ProjectOwner_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSessionKeyAliveResponse;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSessionKeyAliveWebserviceRequest;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
+import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 import org.yeastrc.limelight.limelight_webapp.web_utils.PopulatePageHeaderDataIF;
 
 @Controller
@@ -41,6 +46,12 @@ public class User_AccountManagement_Controller {
 
 	@Autowired
 	private AccessControl_GetUserSession_RefreshAccessEnabled_IF accessControl_GetUserSession_RefreshAccessEnabled;
+
+	@Autowired
+	private UserMgmtCentralWebappWebserviceAccessIF userMgmtCentralWebappWebserviceAccess;
+
+	@Autowired
+	private UserSessionManager userSessionManager;
 
 	@Autowired
 	private PopulatePageHeaderDataIF populatePageHeaderData;
@@ -67,14 +78,32 @@ public class User_AccountManagement_Controller {
 			} )
 	
     public String controllerMethod(
-    		HttpServletRequest httpServletRequest ) {
+    		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) {
 		
 //		log.warn( "controllerMethod(...) called" );
 		try {
 			UserSession userSession = accessControl_GetUserSession_RefreshAccessEnabled.getUserSession_RefreshAccessEnabled( httpServletRequest );
 
 			if ( userSession == null || ( ! userSession.isActualUser() ) ) {
-				return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER;
+				return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER; //  EARLY RETURN
+			}
+			
+			//  Validate User Mgmt Session Key
+			UserMgmtSessionKeyAliveWebserviceRequest userMgmtSessionKeyAliveRequest = new UserMgmtSessionKeyAliveWebserviceRequest();
+			userMgmtSessionKeyAliveRequest.setSessionKey( userSession.getUserMgmtSessionKey() );
+			UserMgmtSessionKeyAliveResponse userMgmtSessionKeyAliveResponse =
+					userMgmtCentralWebappWebserviceAccess.sessionKeyAlive( userMgmtSessionKeyAliveRequest );
+			if ( ! userMgmtSessionKeyAliveResponse.isSuccess() ) {
+				if ( userMgmtSessionKeyAliveResponse.isSessionKeyNotValid() ) {
+
+					//  No User session In User Mgmt
+					
+					//  Invalidate session
+					userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+					
+					// Forward to Login Page
+					return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER; //  EARLY RETURN
+				}
 			}
 
 			populatePageHeaderData.populatePageHeaderData( null /* projectIds */, userSession, httpServletRequest );

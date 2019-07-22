@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF;
 import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -115,7 +116,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 
 			WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class ); 
 
-			WebserviceResult webserviceResult = webserviceMethodInternal( webserviceRequest, remoteIP, httpServletRequest );
+			WebserviceResult webserviceResult = webserviceMethodInternal( webserviceRequest, remoteIP, httpServletRequest, httpServletResponse );
 			
 			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -138,7 +139,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 	 * @return
 	 * @throws Exception
 	 */
-	private WebserviceResult webserviceMethodInternal( WebserviceRequest webserviceRequest, String remoteIP, HttpServletRequest httpServletRequest ) throws Exception {
+	private WebserviceResult webserviceMethodInternal( WebserviceRequest webserviceRequest, String remoteIP, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) throws Exception {
 		
 		//		log.warn( "webserviceMethod(...) called" );
 		
@@ -228,7 +229,18 @@ public class UserChangeAccountInfo_RestWebserviceController {
 						manageUserData( userMgmtManageAccountRequest );
 				
 				if ( ! userMgmtManageAccountResponse.isSuccess() ) {
-
+					
+					if ( userMgmtManageAccountResponse.isSessionKeyNotValid() ) {
+						
+						//  No User session In User Mgmt
+						
+						//  Invalidate session
+						userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+						
+						//  Return HTTP status so JS reloads page and user logs back in, creating new session in User Mgmt
+						throw new Limelight_WS_AuthError_Unauthorized_Exception();
+					}
+					
 					webserviceResult.setStatus(false);
 					return webserviceResult; // EARLY RETURN
 				}
@@ -267,6 +279,17 @@ public class UserChangeAccountInfo_RestWebserviceController {
 						manageUserData( userMgmtManageAccountRequest );
 				
 				if ( ! userMgmtManageAccountResponse.isSuccess() ) {
+
+					if ( userMgmtManageAccountResponse.isSessionKeyNotValid() ) {
+						
+						//  No User session In User Mgmt
+						
+						//  Invalidate session
+						userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+						
+						//  Return HTTP status so JS reloads page and user logs back in, creating new session in User Mgmt
+						throw new Limelight_WS_AuthError_Unauthorized_Exception();
+					}
 					
 					webserviceResult.setStatus(false);
 					if ( userMgmtManageAccountResponse.isDuplicateUsername() ) {
@@ -308,15 +331,19 @@ public class UserChangeAccountInfo_RestWebserviceController {
 						userMgmtCentralWebappWebserviceAccess.changePassword( userMgmtChangePasswordRequest );
 
 				if ( ! userMgmtChangePasswordResponse.isSuccess() ) {
+
+					if ( userMgmtChangePasswordResponse.isSessionKeyNotValid() ) {
+						
+						//  No User session In User Mgmt
+						
+						//  Invalidate session
+						userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+						
+						//  Return HTTP status so JS reloads page and user logs back in, creating new session in User Mgmt
+						throw new Limelight_WS_AuthError_Unauthorized_Exception();
+					}
+					
 					webserviceResult.setStatus(false);
-					//				if ( userMgmtChangePasswordResponse.isSessionKeyNotValid() ) {
-					//					//  No User session 
-					//					throw new WebApplicationException(
-					//							Response.status( WebServiceErrorMessageConstants.NO_SESSION_STATUS_CODE )  //  Send HTTP code
-					//							.entity( WebServiceErrorMessageConstants.NO_SESSION_TEXT ) // This string will be passed to the client
-					//							.build()
-					//							);
-					//				}
 					if ( userMgmtChangePasswordResponse.isOldPasswordNotValid() ) {
 						webserviceResult.setStatus(false);
 						webserviceResult.setOldPasswordInvalid(true);
