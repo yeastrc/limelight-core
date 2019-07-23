@@ -48,6 +48,7 @@ import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetGetSpectrumSe
 import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetRootData;
 import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetStaticMod;
 import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetVariableMod;
+import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.Lorikeet_ScanData_RetentionTime_PrecursorMZ;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -310,7 +311,11 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
         	/////////////////////////////
 
     		LorikeetGetSpectrumServiceResult lorikeetGetSpectrumServiceResult = new LorikeetGetSpectrumServiceResult();
-
+    		
+    		//  Always from the scan
+    		Lorikeet_ScanData_RetentionTime_PrecursorMZ lorikeet_ScanData_RetentionTime_PrecursorMZ = new Lorikeet_ScanData_RetentionTime_PrecursorMZ();
+    		lorikeetGetSpectrumServiceResult.setLorikeet_ScanData_RetentionTime_PrecursorMZ( lorikeet_ScanData_RetentionTime_PrecursorMZ );
+    		
     		LorikeetRootData lorikeetRootData = new LorikeetRootData();
     		lorikeetGetSpectrumServiceResult.setData( lorikeetRootData );
 
@@ -410,9 +415,24 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 	        
 
         	lorikeetRootData.setFileName( scanFilename );
-			lorikeetRootData.setPrecursorMz( ms_2_precursor_M_Over_Z );
-			lorikeetRootData.setRetentionTimeSeconds( ms_2_retentionTime ); // For data displayed with Lorikeet
-			
+        	
+        	lorikeet_ScanData_RetentionTime_PrecursorMZ.setScan_precursorMZ( ms_2_precursor_M_Over_Z );
+        	lorikeet_ScanData_RetentionTime_PrecursorMZ.setScan_retentionTimeSeconds( ms_2_retentionTime );
+        	
+        	if ( psmDTO.getPrecursor_MZ() != null ) {
+        		
+        		lorikeetRootData.setPrecursorMz( psmDTO.getPrecursor_MZ().doubleValue() );
+        	} else {
+        		lorikeetRootData.setPrecursorMz( ms_2_precursor_M_Over_Z );
+        	}
+        	
+        	if ( psmDTO.getPrecursor_RetentionTime() != null ) {
+        		
+        		lorikeetRootData.setRetentionTimeSeconds( psmDTO.getPrecursor_RetentionTime().floatValue() );
+        	} else {
+        		lorikeetRootData.setRetentionTimeSeconds( ms_2_retentionTime ); // For data displayed with Lorikeet
+        	}
+        	
 			{
 				// Add MS 2 peaks to output 
 				SingleScan_SubResponse ms_2_scanDataFromSpectralStorageService = scanDataFromSpectralStorageService_MS_2_1.ms_2_scanDataFromSpectralStorageService;

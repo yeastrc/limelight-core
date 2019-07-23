@@ -17,6 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,9 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	private long psmId;
 
 	private int charge;
+	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
+	private BigDecimal psm_precursor_MZ;            // precursor_m_z
+	
 	private int scanNumber;
 
 	private Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap;
@@ -117,6 +121,18 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	}
 	public void setCtermMod(double ctermMod) {
 		this.ctermMod = ctermMod;
+	}
+	public BigDecimal getPsm_precursor_RetentionTime() {
+		return psm_precursor_RetentionTime;
+	}
+	public void setPsm_precursor_RetentionTime(BigDecimal psm_precursor_RetentionTime) {
+		this.psm_precursor_RetentionTime = psm_precursor_RetentionTime;
+	}
+	public BigDecimal getPsm_precursor_MZ() {
+		return psm_precursor_MZ;
+	}
+	public void setPsm_precursor_MZ(BigDecimal psm_precursor_MZ) {
+		this.psm_precursor_MZ = psm_precursor_MZ;
 	}
 	
 	

@@ -40,7 +40,8 @@ public class PsmsWithSameScanNumberScanFilenameIdSearchIdSearcher extends Limeli
 
 	private static final String SQL = 
 			"SELECT psm_primary_tbl.id AS psm_id, psm_primary_tbl.reported_peptide_id AS reported_peptide_id, "
-			+ " psm_primary_tbl.charge, psm_primary_tbl.scan_number AS scan_number"
+			+ " psm_primary_tbl.charge, psm_primary_tbl.precursor_retention_time, psm_primary_tbl.precursor_m_z, "
+			+ " psm_primary_tbl.scan_number AS scan_number"
 			
 			+ " FROM psm_tbl AS psm_psm_lookup_tbl  "
 
@@ -78,6 +79,8 @@ public class PsmsWithSameScanNumberScanFilenameIdSearchIdSearcher extends Limeli
 					resultItem.setPsmId( rs.getLong( "psm_id" ) );
 					resultItem.setReportedPeptideId( rs.getInt( "reported_peptide_id" ) );
 					resultItem.setCharge( rs.getInt( "charge" ) );
+					resultItem.setPrecursor_RetentionTime( rs.getBigDecimal( "precursor_retention_time" ) );
+					resultItem.setPrecursor_MZ( rs.getBigDecimal( "precursor_m_z" ) );
 					resultItem.setScanNumber( rs.getInt( "scan_number" ) );
 
 					resultList.add( resultItem );

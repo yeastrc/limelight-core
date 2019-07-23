@@ -38,9 +38,9 @@ import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_
 //   !!!  Constants visible in this file/module
 
 
-const LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT = 5;
+// const LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT = 4;
 
-const LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT = 2;
+// const LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT = 2;
 
 
 
@@ -129,584 +129,584 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 
 		return;
 		
-		const loadedDataFromServer = {};
+		// const loadedDataFromServer = {};
 
-		const loadSpectrumDataPromise = this._loadSpectrumData( { psmId, projectSearchId, loadedDataFromServer, newWindow } );
+		// const loadSpectrumDataPromise = this._loadSpectrumData( { psmId, projectSearchId, loadedDataFromServer, newWindow } );
 
-		loadSpectrumDataPromise.catch( function( reason ) {
+		// loadSpectrumDataPromise.catch( function( reason ) {
 			
-		})
+		// })
 		
-		const loadPSMPeptideDataPromise = this._loadPSMPeptideData( { psmId, projectSearchId, loadedDataFromServer, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, newWindow } );
+		// const loadPSMPeptideDataPromise = this._loadPSMPeptideData( { psmId, projectSearchId, loadedDataFromServer, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, newWindow } );
 		
-		loadPSMPeptideDataPromise.catch( function( reason ) {
+		// loadPSMPeptideDataPromise.catch( function( reason ) {
 			
-		})
+		// })
 		
-		Promise.all( [ loadSpectrumDataPromise, loadPSMPeptideDataPromise ] ).then(function(value) {
-			try {
-				const psmPeptideTable_HeadersAndData = objectThis._createPsmPeptideTable_HeadersAndData( { psmId, projectSearchId, newWindow, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
+		// Promise.all( [ loadSpectrumDataPromise, loadPSMPeptideDataPromise ] ).then(function(value) {
+		// 	try {
+		// 		const psmPeptideTable_HeadersAndData = objectThis._createPsmPeptideTable_HeadersAndData( { psmId, projectSearchId, newWindow, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
 				
-				objectThis._createLorikeetViewerInNewWindow( { psmId, projectSearchId, newWindow, loadedDataFromServer, psmPeptideTable_HeadersAndData } );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		})
+		// 		objectThis._createLorikeetViewerInNewWindow( { psmId, projectSearchId, newWindow, loadedDataFromServer, psmPeptideTable_HeadersAndData } );
+		// 	} catch( e ) {
+		// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+		// 		throw e;
+		// 	}
+		// })
 	}
 
-	/**
-	 * 
-	 */
-	_loadSpectrumData( { psmId, projectSearchId, loadedDataFromServer, newWindow } ) {
+// 	/**
+// 	 * 
+// 	 */
+// 	_loadSpectrumData( { psmId, projectSearchId, loadedDataFromServer, newWindow } ) {
 		
-		//  Maybe need visual indication that retrieving the data??
+// 		//  Maybe need visual indication that retrieving the data??
 
-		return new Promise( function( resolve, reject ) {
-				try {
-						console.log("AJAX Call to get Spectrum Data START, Now: " + new Date() );
+// 		return new Promise( function( resolve, reject ) {
+// 				try {
+// 						console.log("AJAX Call to get Spectrum Data START, Now: " + new Date() );
 
-						let requestObject = {
-								psmId : psmId,
-								projectSearchId : projectSearchId
-						};
+// 						let requestObject = {
+// 								psmId : psmId,
+// 								projectSearchId : projectSearchId
+// 						};
 
-						const url = "d/rws/for-page/psb/spectrum-for-psm-id";
+// 						const url = "d/rws/for-page/psb/spectrum-for-psm-id";
 
-						const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+// 						const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 		
-						const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+// 						const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 		
-						promise_webserviceCallStandardPost.catch( () => { 
-							try {
-								if ( newWindow ) {
-									newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
-								}
+// 						promise_webserviceCallStandardPost.catch( () => { 
+// 							try {
+// 								if ( newWindow ) {
+// 									newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
+// 								}
 
-								reject();
+// 								reject();
 
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}
-						} );
+// 							} catch( e ) {
+// 								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 								throw e;
+// 							}
+// 						} );
 
-						promise_webserviceCallStandardPost.then( ({ responseData }) => {
-							try {
-								console.log("AJAX Call to get Spectrum Data END, Now: " + new Date() );
+// 						promise_webserviceCallStandardPost.then( ({ responseData }) => {
+// 							try {
+// 								console.log("AJAX Call to get Spectrum Data END, Now: " + new Date() );
 
-								if ( loadedDataFromServer ) {
-									loadedDataFromServer.primaryLorikeetData = responseData;
-								}
+// 								if ( loadedDataFromServer ) {
+// 									loadedDataFromServer.primaryLorikeetData = responseData;
+// 								}
 								
-								resolve( { primaryLorikeetData : responseData } );
+// 								resolve( { primaryLorikeetData : responseData } );
 
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}
+// 							} catch( e ) {
+// 								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 								throw e;
+// 							}
 
-						});
-				} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-				}
-		}); 
-	}
+// 						});
+// 				} catch( e ) {
+// 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 						throw e;
+// 				}
+// 		}); 
+// 	}
 	
-	/**
-	 * 
-	 */
-	_loadPSMPeptideData( { psmId, projectSearchId, loadedDataFromServer, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, newWindow } ) {
+// 	/**
+// 	 * 
+// 	 */
+// 	_loadPSMPeptideData( { psmId, projectSearchId, loadedDataFromServer, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, newWindow } ) {
 		
-		//  Maybe need visual indication that retrieving the data??
+// 		//  Maybe need visual indication that retrieving the data??
 
-		let searchDataLookupParams_For_Single_ProjectSearchId = 
-			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
+// 		let searchDataLookupParams_For_Single_ProjectSearchId = 
+// 			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
         
-        let psmAnnotationTypeIdsForSorting = PageStateUtils.getPsmAnnotationTypeIdsWhereSortOrderPopulated( { dataPageStateManager_DataFrom_Server, projectSearchId } );
+//         let psmAnnotationTypeIdsForSorting = PageStateUtils.getPsmAnnotationTypeIdsWhereSortOrderPopulated( { dataPageStateManager_DataFrom_Server, projectSearchId } );
         
-        let requestObject = {
-                psmId : psmId,
-            projectSearchId : projectSearchId,
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
-            psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting,
-        };
+//         let requestObject = {
+//                 psmId : psmId,
+//             projectSearchId : projectSearchId,
+//             searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
+//             psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting,
+//         };
 		
-		return new Promise( function( resolve, reject ) {
-				try {
-						console.log("AJAX Call to get PSM data for Spectrum Viewer window START, Now: " + new Date() );
+// 		return new Promise( function( resolve, reject ) {
+// 				try {
+// 						console.log("AJAX Call to get PSM data for Spectrum Viewer window START, Now: " + new Date() );
 
-						const url = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
+// 						const url = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
 
-						const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+// 						const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 		
-						const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+// 						const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 		
-						promise_webserviceCallStandardPost.catch( () => { 
-							try {
-								if ( newWindow ) {
-									newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
-								}
+// 						promise_webserviceCallStandardPost.catch( () => { 
+// 							try {
+// 								if ( newWindow ) {
+// 									newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
+// 								}
 											
-								reject();
+// 								reject();
 
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}
-						});
+// 							} catch( e ) {
+// 								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 								throw e;
+// 							}
+// 						});
 
-						promise_webserviceCallStandardPost.then( ({ responseData }) => {
-							try {
-								console.log("AJAX Call to get PSM data for Spectrum Viewer window END, Now: " + new Date() );
+// 						promise_webserviceCallStandardPost.then( ({ responseData }) => {
+// 							try {
+// 								console.log("AJAX Call to get PSM data for Spectrum Viewer window END, Now: " + new Date() );
 
-								loadedDataFromServer.psmPeptideData = responseData;
+// 								loadedDataFromServer.psmPeptideData = responseData;
 								
-								resolve( { psmPeptideData : responseData } );
+// 								resolve( { psmPeptideData : responseData } );
 
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}
-						});
-				} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-				}
-		}); 
-	}
+// 							} catch( e ) {
+// 								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 								throw e;
+// 							}
+// 						});
+// 				} catch( e ) {
+// 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 						throw e;
+// 				}
+// 		}); 
+// 	}
 	
-	////////
+// 	////////
 
-	/**
-	 * 
-	 */
-	_createPsmPeptideTable_HeadersAndData( { psmId, projectSearchId, newWindow, loadedDataFromServer, dataPageStateManager_DataFrom_Server } ) {
+// 	/**
+// 	 * 
+// 	 */
+// 	_createPsmPeptideTable_HeadersAndData( { psmId, projectSearchId, newWindow, loadedDataFromServer, dataPageStateManager_DataFrom_Server } ) {
 
-        const psmPeptideData = loadedDataFromServer.psmPeptideData.resultList;
+//         const psmPeptideData = loadedDataFromServer.psmPeptideData.resultList;
         
-		const sorted_psmPeptideData = this._sortPsmPeptideListOnSortOrder( { psmPeptideData, projectSearchId, dataPageStateManager_DataFrom_Server } );
+// 		const sorted_psmPeptideData = this._sortPsmPeptideListOnSortOrder( { psmPeptideData, projectSearchId, dataPageStateManager_DataFrom_Server } );
 		
-		const dataTableDataObjectArray = this._createDataTableDataObjectArrayFromWebServiceResponse( { sorted_psmPeptideData, loadedDataFromServer } );
+// 		const dataTableDataObjectArray = this._createDataTableDataObjectArrayFromWebServiceResponse( { sorted_psmPeptideData, loadedDataFromServer } );
 		
-		const dataTableColumns = this._getDataTableColumns( { dataObjectArray : dataTableDataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
+// 		const dataTableColumns = this._getDataTableColumns( { dataObjectArray : dataTableDataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
 		
-		return {
-			dataTableDataObjectArray,
-			dataTableColumns,
-			initialPsmId : psmId
-		}
-	}
+// 		return {
+// 			dataTableDataObjectArray,
+// 			dataTableColumns,
+// 			initialPsmId : psmId
+// 		}
+// 	}
 	
 
-    /**
-     * Get the columns for the PSM table.
-     * 
-     * @param {*} param0 
-     */
-    _getDataTableColumns( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } ) {
+//     /**
+//      * Get the columns for the PSM table.
+//      * 
+//      * @param {*} param0 
+//      */
+//     _getDataTableColumns( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
-		//  Determine anyPsmsHave_precursor_M_Over_Z and anyPsmsHave_retentionTime
+// 		//  Determine anyPsmsHave_precursor_M_Over_Z and anyPsmsHave_retentionTime
 		
-		let anyPsmsHave_precursor_M_Over_Z = false; 
-		let anyPsmsHave_retentionTime = false;
+// 		let anyPsmsHave_precursor_M_Over_Z = false; 
+// 		let anyPsmsHave_retentionTime = false;
 
-		if( dataObjectArray && dataObjectArray.length > 0 ) {
-			for ( const dataObjectItem of dataObjectArray ) {
-				if ( dataObjectItem.precursor_M_Over_Z_Display !== undefined ) {
-					anyPsmsHave_precursor_M_Over_Z = true;
-					break;
-				}
-			}
+// 		if( dataObjectArray && dataObjectArray.length > 0 ) {
+// 			for ( const dataObjectItem of dataObjectArray ) {
+// 				if ( dataObjectItem.precursor_M_Over_Z_Display !== undefined ) {
+// 					anyPsmsHave_precursor_M_Over_Z = true;
+// 					break;
+// 				}
+// 			}
 
-			for ( const dataObjectItem of dataObjectArray ) {
-				if ( dataObjectItem.retentionTimeMinutesDisplay !== undefined ) {
-					anyPsmsHave_retentionTime = true;
-					break;
-				}
-			}
-		}
+// 			for ( const dataObjectItem of dataObjectArray ) {
+// 				if ( dataObjectItem.retentionTimeMinutesDisplay !== undefined ) {
+// 					anyPsmsHave_retentionTime = true;
+// 					break;
+// 				}
+// 			}
+// 		}
 
     	
-        let columns = [ ];
+//         let columns = [ ];
         
-        {
-            let column = {
-				id :           'viewPsm',
-				width :        '70px',
-                displayName :  '',
-                hideColumnHeader : true,
-                dataProperty : 'viewPsmLink',
-                sort : false,
-                style_override : 'font-size:12px;',
-                css_class : 'fake-link selector_view_psm_item',
-			};
+//         {
+//             let column = {
+// 				id :           'viewPsm',
+// 				width :        '70px',
+//                 displayName :  '',
+//                 hideColumnHeader : true,
+//                 dataProperty : 'viewPsmLink',
+//                 sort : false,
+//                 style_override : 'font-size:12px;',
+//                 css_class : 'fake-link selector_view_psm_item',
+// 			};
 
-			columns.push( column );
-        }
-//
-//		{
-//			let column = {
-//				id :           'sn',
-//				width :        '100px',
-//				displayName :  'Scan Number',
-//				dataProperty : 'scanNumber',
-//                sort : 'number',
-//                style_override : 'font-size:12px;',
-//			};
-//
-//			columns.push( column );
-//        }
+// 			columns.push( column );
+//         }
+// //
+// //		{
+// //			let column = {
+// //				id :           'sn',
+// //				width :        '100px',
+// //				displayName :  'Scan Number',
+// //				dataProperty : 'scanNumber',
+// //                sort : 'number',
+// //                style_override : 'font-size:12px;',
+// //			};
+// //
+// //			columns.push( column );
+// //        }
 
-		{
-			let column = {
-				id :           'sequence',
-				width :        '500px',
-				displayName :  'Sequence',
-				dataProperty : 'reportedPeptideString',
-                sort : 'string',
-                style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
-			};
+// 		{
+// 			let column = {
+// 				id :           'sequence',
+// 				width :        '500px',
+// 				displayName :  'Sequence',
+// 				dataProperty : 'reportedPeptideString',
+//                 sort : 'string',
+//                 style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
+// 			};
 
-			columns.push( column );
-        }
+// 			columns.push( column );
+//         }
 
-		if ( anyPsmsHave_precursor_M_Over_Z ) {
-			let column = {
-					id :           'mz',
-					width :        '100px',
-					displayName :  'Obs. m/z',
-					dataProperty : 'precursor_M_Over_Z_Display',
-					sort : 'number',
-					style_override : 'font-size:12px;',
-			};
+// 		if ( anyPsmsHave_precursor_M_Over_Z ) {
+// 			let column = {
+// 					id :           'mz',
+// 					width :        '100px',
+// 					displayName :  'Obs. m/z',
+// 					dataProperty : 'precursor_M_Over_Z_Display',
+// 					sort : 'number',
+// 					style_override : 'font-size:12px;',
+// 			};
 
-			columns.push( column );
-		} 
+// 			columns.push( column );
+// 		} 
 		
-		{
-			let column = {
-					id :           'Charge',
-					width :        '55px',
-					displayName :  'Charge',
-					dataProperty : 'charge',
-					sort : 'number',
-					style_override : 'font-size:12px;',
-			};
+// 		{
+// 			let column = {
+// 					id :           'Charge',
+// 					width :        '55px',
+// 					displayName :  'Charge',
+// 					dataProperty : 'charge',
+// 					sort : 'number',
+// 					style_override : 'font-size:12px;',
+// 			};
 
-			columns.push( column );
-		} 
+// 			columns.push( column );
+// 		} 
 		
-		if ( anyPsmsHave_retentionTime ) {
-			let column = {
-					id :           'rt',
-					width :        '60px',
-					displayName :  'RT(min)',
-					dataProperty : 'retentionTimeMinutesDisplay',
-					sort : 'number',
-					style_override : 'font-size:12px;',
-			};
+// 		if ( anyPsmsHave_retentionTime ) {
+// 			let column = {
+// 					id :           'rt',
+// 					width :        '60px',
+// 					displayName :  'RT(min)',
+// 					dataProperty : 'retentionTimeMinutesDisplay',
+// 					sort : 'number',
+// 					style_override : 'font-size:12px;',
+// 			};
 
-			columns.push( column );
-		} 
+// 			columns.push( column );
+// 		} 
 
-        let sortedPSMAnnotationsToShow = TableDataUtils.getOrderedPSMAnnotationsToShowForSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
+//         let sortedPSMAnnotationsToShow = TableDataUtils.getOrderedPSMAnnotationsToShowForSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
 
-        for( let annotation of sortedPSMAnnotationsToShow ) {
+//         for( let annotation of sortedPSMAnnotationsToShow ) {
 
-            let column = {
-				id :           annotation.annotationTypeId,
-				width :        '100px',
-				displayName :  annotation.name,
-				dataProperty : annotation.annotationTypeId,
-                sort : annotation.sorttype,
-                style_override : 'font-size:12px;',
-			};
+//             let column = {
+// 				id :           annotation.annotationTypeId,
+// 				width :        '100px',
+// 				displayName :  annotation.name,
+// 				dataProperty : annotation.annotationTypeId,
+//                 sort : annotation.sorttype,
+//                 style_override : 'font-size:12px;',
+// 			};
 
-			columns.push( column );
-        }
+// 			columns.push( column );
+//         }
 
-        columns[ columns.length - 1 ].lastItem = true;
-        return columns;
-    }
+//         columns[ columns.length - 1 ].lastItem = true;
+//         return columns;
+//     }
 
 
-    /**
-     * return dataObjectArray created using the data returned from a web service call for PSMs
-     * 
-     * @param {*} param0 
-     */
-    _createDataTableDataObjectArrayFromWebServiceResponse( { sorted_psmPeptideData, loadedDataFromServer } ) {
+//     /**
+//      * return dataObjectArray created using the data returned from a web service call for PSMs
+//      * 
+//      * @param {*} param0 
+//      */
+//     _createDataTableDataObjectArrayFromWebServiceResponse( { sorted_psmPeptideData, loadedDataFromServer } ) {
 
-    	const dataTableDataObjectArray = [];
+//     	const dataTableDataObjectArray = [];
     	
-    	const primaryLorikeetData = loadedDataFromServer.primaryLorikeetData.data;
+//     	const primaryLorikeetData = loadedDataFromServer.primaryLorikeetData.data;
     	
-        for ( const psmObject of sorted_psmPeptideData ) {
+//         for ( const psmObject of sorted_psmPeptideData ) {
 
-            let dataObject = { };
+//             let dataObject = { };
             
-            dataObject.uniqueId = psmObject.psmId;
-            dataObject.id = psmObject.psmId;
+//             dataObject.uniqueId = psmObject.psmId;
+//             dataObject.id = psmObject.psmId;
 
-            dataObject.reportedPeptideString = psmObject.reportedPeptideString;
+//             dataObject.reportedPeptideString = psmObject.reportedPeptideString;
             
-            dataObject.scanNumber = primaryLorikeetData.scanNum;
-            dataObject.viewPsmLink = 'View PSM';
+//             dataObject.scanNumber = primaryLorikeetData.scanNum;
+//             dataObject.viewPsmLink = 'View PSM';
 			
-            dataObject.charge = psmObject.charge;
-            if ( primaryLorikeetData.precursorMz !== undefined && primaryLorikeetData.precursorMz !== null ) {
-            	dataObject.precursor_M_Over_Z_Display = primaryLorikeetData.precursorMz.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
-			}
+//             dataObject.charge = psmObject.charge;
+//             if ( primaryLorikeetData.precursorMz !== undefined && primaryLorikeetData.precursorMz !== null ) {
+//             	dataObject.precursor_M_Over_Z_Display = primaryLorikeetData.precursorMz.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
+// 			}
             
-			if ( primaryLorikeetData.retentionTimeSeconds !== undefined && primaryLorikeetData.retentionTimeSeconds !== null ) {
-				const retentionTimeMinutesNumber = primaryLorikeetData.retentionTimeSeconds / 60;
-				dataObject.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
-			}
+// 			if ( primaryLorikeetData.retentionTimeSeconds !== undefined && primaryLorikeetData.retentionTimeSeconds !== null ) {
+// 				const retentionTimeMinutesNumber = primaryLorikeetData.retentionTimeSeconds / 60;
+// 				dataObject.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
+// 			}
 
-            dataObject.loadedData = psmObject;
+//             dataObject.loadedData = psmObject;
 
-            for( let annoId of Object.keys( psmObject.psmAnnotationMap ) ) {
-                dataObject[ annoId ] = psmObject.psmAnnotationMap[ annoId ][ 'valueString' ];
-            }
+//             for( let annoId of Object.keys( psmObject.psmAnnotationMap ) ) {
+//                 dataObject[ annoId ] = psmObject.psmAnnotationMap[ annoId ][ 'valueString' ];
+//             }
 
-            dataTableDataObjectArray.push( dataObject );
-        }
-        return dataTableDataObjectArray;
-	}
+//             dataTableDataObjectArray.push( dataObject );
+//         }
+//         return dataTableDataObjectArray;
+// 	}
     
 
-	/**
-	 * Sort PSM Peptide Array on PSM Sort order then Psm Id
-	 */
-	_sortPsmPeptideListOnSortOrder( { psmPeptideData, projectSearchId, dataPageStateManager_DataFrom_Server } ) {
+// 	/**
+// 	 * Sort PSM Peptide Array on PSM Sort order then Psm Id
+// 	 */
+// 	_sortPsmPeptideListOnSortOrder( { psmPeptideData, projectSearchId, dataPageStateManager_DataFrom_Server } ) {
 
-		const sorted_psmPeptideData = psmPeptideData;
+// 		const sorted_psmPeptideData = psmPeptideData;
 		
-        const annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( { dataPageStateManager_DataFrom_Server } );
+//         const annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( { dataPageStateManager_DataFrom_Server } );
 
-		//  First get all Unique PSM Annotation Type Ids in the List
+// 		//  First get all Unique PSM Annotation Type Ids in the List
 		
-		let uniquePSMAnnotationTypeIds_InList = new Set();
+// 		let uniquePSMAnnotationTypeIds_InList = new Set();
 
-		for ( const sorted_psmPeptideDataItem of sorted_psmPeptideData ) {
-			const psmAnnotationMap = sorted_psmPeptideDataItem.psmAnnotationMap;
-			if ( psmAnnotationMap ) {
-				for ( const psmAnnotationMapKeyItem of Object.keys ( psmAnnotationMap ) ) {
-					const psmAnnotationDTOItem = psmAnnotationMap[ psmAnnotationMapKeyItem ];
-					uniquePSMAnnotationTypeIds_InList.add( psmAnnotationDTOItem.annotationTypeId );
-				}
-			}
-		}
+// 		for ( const sorted_psmPeptideDataItem of sorted_psmPeptideData ) {
+// 			const psmAnnotationMap = sorted_psmPeptideDataItem.psmAnnotationMap;
+// 			if ( psmAnnotationMap ) {
+// 				for ( const psmAnnotationMapKeyItem of Object.keys ( psmAnnotationMap ) ) {
+// 					const psmAnnotationDTOItem = psmAnnotationMap[ psmAnnotationMapKeyItem ];
+// 					uniquePSMAnnotationTypeIds_InList.add( psmAnnotationDTOItem.annotationTypeId );
+// 				}
+// 			}
+// 		}
 		
-		//  Get AnnotationType records for found AnnotationTypeIds to Get AnnotationType Names
+// 		//  Get AnnotationType records for found AnnotationTypeIds to Get AnnotationType Names
 		
-		let psmAnnotationTypesForListEntries = 
-			annotationTypeData_ReturnSpecifiedTypes.get_Psm_AnnotationTypeRecords_InDisplayOrder( { 
-				projectSearchId, uniqueAnnotationTypeIds : uniquePSMAnnotationTypeIds_InList } );
+// 		let psmAnnotationTypesForListEntries = 
+// 			annotationTypeData_ReturnSpecifiedTypes.get_Psm_AnnotationTypeRecords_InDisplayOrder( { 
+// 				projectSearchId, uniqueAnnotationTypeIds : uniquePSMAnnotationTypeIds_InList } );
 		
-		let psmAnnotationTypesForListEntriesLength = psmAnnotationTypesForListEntries.length;
+// 		let psmAnnotationTypesForListEntriesLength = psmAnnotationTypesForListEntries.length;
 
-		sorted_psmPeptideData.sort( function( a, b ) {
+// 		sorted_psmPeptideData.sort( function( a, b ) {
 
-			//  Compare PSM Ann Type Values match
-			let a_psmAnnotationMap = a.psmAnnotationMap;
-			let b_psmAnnotationMap = b.psmAnnotationMap;
-			if ( a_psmAnnotationMap && b_psmAnnotationMap ) {
+// 			//  Compare PSM Ann Type Values match
+// 			let a_psmAnnotationMap = a.psmAnnotationMap;
+// 			let b_psmAnnotationMap = b.psmAnnotationMap;
+// 			if ( a_psmAnnotationMap && b_psmAnnotationMap ) {
 
-				for ( let psmAnnotationTypesForListEntriesLength_Index = 0; psmAnnotationTypesForListEntriesLength_Index < psmAnnotationTypesForListEntriesLength; psmAnnotationTypesForListEntriesLength_Index++ ) {
-					let psmAnnotationTypesForListEntries_Entry = psmAnnotationTypesForListEntries[ psmAnnotationTypesForListEntriesLength_Index ];
-					let annotationTypeId = psmAnnotationTypesForListEntries_Entry.annotationTypeId;
-					let a_psmAnnotationMap_ForAnnType = a_psmAnnotationMap[ annotationTypeId ];
-					let b_psmAnnotationMap_ForAnnType = b_psmAnnotationMap[ annotationTypeId ];
+// 				for ( let psmAnnotationTypesForListEntriesLength_Index = 0; psmAnnotationTypesForListEntriesLength_Index < psmAnnotationTypesForListEntriesLength; psmAnnotationTypesForListEntriesLength_Index++ ) {
+// 					let psmAnnotationTypesForListEntries_Entry = psmAnnotationTypesForListEntries[ psmAnnotationTypesForListEntriesLength_Index ];
+// 					let annotationTypeId = psmAnnotationTypesForListEntries_Entry.annotationTypeId;
+// 					let a_psmAnnotationMap_ForAnnType = a_psmAnnotationMap[ annotationTypeId ];
+// 					let b_psmAnnotationMap_ForAnnType = b_psmAnnotationMap[ annotationTypeId ];
 
-					if ( a_psmAnnotationMap_ForAnnType && b_psmAnnotationMap_ForAnnType ) {
-						if ( psmAnnotationTypesForListEntries_Entry.filterDirectionBelow ) {
-							if ( a_psmAnnotationMap_ForAnnType.valueDouble < b_psmAnnotationMap_ForAnnType.valueDouble ) {
-								return -1;
-							}
-							if ( a_psmAnnotationMap_ForAnnType.valueDouble > b_psmAnnotationMap_ForAnnType.valueDouble ) {
-								return 1;
-							}
-							//  Values match so go to next ann type values
-						} else if ( psmAnnotationTypesForListEntries_Entry.filterDirectionAbove ) {
-							if ( a_psmAnnotationMap_ForAnnType.valueDouble > b_psmAnnotationMap_ForAnnType.valueDouble ) {
-								return -1;
-							}
-							if ( a_psmAnnotationMap_ForAnnType.valueDouble < b_psmAnnotationMap_ForAnnType.valueDouble ) {
-								return 1;
-							}
-							//  Values match so go to next ann type values
-						} else {
-							throw Error( "filterDirectionBelow, filterDirectionAbove: Neither is true. annotationTypeId: " + annotationTypeId );
-						}
-					}
-				}
-			}
+// 					if ( a_psmAnnotationMap_ForAnnType && b_psmAnnotationMap_ForAnnType ) {
+// 						if ( psmAnnotationTypesForListEntries_Entry.filterDirectionBelow ) {
+// 							if ( a_psmAnnotationMap_ForAnnType.valueDouble < b_psmAnnotationMap_ForAnnType.valueDouble ) {
+// 								return -1;
+// 							}
+// 							if ( a_psmAnnotationMap_ForAnnType.valueDouble > b_psmAnnotationMap_ForAnnType.valueDouble ) {
+// 								return 1;
+// 							}
+// 							//  Values match so go to next ann type values
+// 						} else if ( psmAnnotationTypesForListEntries_Entry.filterDirectionAbove ) {
+// 							if ( a_psmAnnotationMap_ForAnnType.valueDouble > b_psmAnnotationMap_ForAnnType.valueDouble ) {
+// 								return -1;
+// 							}
+// 							if ( a_psmAnnotationMap_ForAnnType.valueDouble < b_psmAnnotationMap_ForAnnType.valueDouble ) {
+// 								return 1;
+// 							}
+// 							//  Values match so go to next ann type values
+// 						} else {
+// 							throw Error( "filterDirectionBelow, filterDirectionAbove: Neither is true. annotationTypeId: " + annotationTypeId );
+// 						}
+// 					}
+// 				}
+// 			}
 
-			//  All PSM Ann Type Values match so order on psm id
-			if ( a.psmId < b.psmId ) {
-				return -1;
-			}
-			if ( a.psmId > b.psmId ) {
-				return 1;
-			}
-			return 0;
+// 			//  All PSM Ann Type Values match so order on psm id
+// 			if ( a.psmId < b.psmId ) {
+// 				return -1;
+// 			}
+// 			if ( a.psmId > b.psmId ) {
+// 				return 1;
+// 			}
+// 			return 0;
 
-		});
+// 		});
 		
-		return sorted_psmPeptideData;
-	}
+// 		return sorted_psmPeptideData;
+// 	}
 	
 
 
-	////////
+// 	////////
 
-	/**
-	 * 
-	 */
-	_createLorikeetViewerInNewWindow( { psmId, newWindow, loadedDataFromServer, psmPeptideTable_HeadersAndData } ) {
+// 	/**
+// 	 * 
+// 	 */
+// 	_createLorikeetViewerInNewWindow( { psmId, newWindow, loadedDataFromServer, psmPeptideTable_HeadersAndData } ) {
 		
-		if ( ! newWindow || newWindow.closed ) {
-			return;
-		}
+// 		if ( ! newWindow || newWindow.closed ) {
+// 			return;
+// 		}
 
-		var lorikeetOptions = loadedDataFromServer.primaryLorikeetData.data;
+// 		var lorikeetOptions = loadedDataFromServer.primaryLorikeetData.data;
 
-		if ( lorikeetOptions === undefined || lorikeetOptions === null ) {
+// 		if ( lorikeetOptions === undefined || lorikeetOptions === null ) {
 
-			try {
-				newWindow.close();
-			} catch ( e) {
+// 			try {
+// 				newWindow.close();
+// 			} catch ( e) {
 				
-			}
+// 			}
 			
-			var msg = "Error retrieving data.  lorikeetOptions === undefined || lorikeetOptions === null";
+// 			var msg = "Error retrieving data.  lorikeetOptions === undefined || lorikeetOptions === null";
 
-//			handleGeneralServerError( { msg: msg  });
+// //			handleGeneralServerError( { msg: msg  });
 			
-			alert( msg );
-		}
+// 			alert( msg );
+// 		}
 		
-		//  Add these items to the lorikeetOptions variable
-		lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM;
-		lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM;
+// 		//  Add these items to the lorikeetOptions variable
+// 		lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM;
+// 		lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM;
 		
-		this._addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount : 0 } );
-	}
+// 		this._addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount : 0 } );
+// 	}
 
-	/**
-	 * 
-	 */
-	_addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount } ) {
+// 	/**
+// 	 * 
+// 	 */
+// 	_addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount } ) {
 
-		try {
-			if ( ! newWindow || newWindow.closed ) {
-				return;
-			}
+// 		try {
+// 			if ( ! newWindow || newWindow.closed ) {
+// 				return;
+// 			}
 			
-			if ( ( ! newWindow.lorikeetSpectrumViewer_OwnPage_Root ) || ( ! newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage ) ) {
+// 			if ( ( ! newWindow.lorikeetSpectrumViewer_OwnPage_Root ) || ( ! newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage ) ) {
 
-				const objectThis = this;
+// 				const objectThis = this;
 
-				if ( ! retryCount ) {
-					retryCount = 1;
-				}
-				retryCount++;
+// 				if ( ! retryCount ) {
+// 					retryCount = 1;
+// 				}
+// 				retryCount++;
 
-				if ( retryCount > 10 ) {
+// 				if ( retryCount > 10 ) {
 
-					const msg = "Failed to add Lorikeet Spectrum viewer to child window.  Cannot find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.";
-					console.log( msg + "  Error msg next: " )
-					console.log( e );
+// 					const msg = "Failed to add Lorikeet Spectrum viewer to child window.  Cannot find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.";
+// 					console.log( msg + "  Error msg next: " )
+// 					console.log( e );
 					
-					try {
-						throw Error( msg + "  Exception/Error caught will be logged to server next" );
-					} catch( e2 ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e2 } );
-					}
+// 					try {
+// 						throw Error( msg + "  Exception/Error caught will be logged to server next" );
+// 					} catch( e2 ) {
+// 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e2 } );
+// 					}
 					
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					alert( msg );
-					throw e;
-				}
+// 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 					alert( msg );
+// 					throw e;
+// 				}
 				
-				console.log( "Cannot find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.  Call objectThis._addLorikeetToPageInNewWindow(...): retryCount: " + retryCount );
+// 				console.log( "Cannot find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.  Call objectThis._addLorikeetToPageInNewWindow(...): retryCount: " + retryCount );
 				
-				window.setTimeout(function() {
-					objectThis._addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount } );
-				}, 500 )
+// 				window.setTimeout(function() {
+// 					objectThis._addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount } );
+// 				}, 500 )
 				
-				return;  // Exit since don't have function in object on new window yet
-			}
-		} catch( e ) {
+// 				return;  // Exit since don't have function in object on new window yet
+// 			}
+// 		} catch( e ) {
 
-			if ( retryCount > 10 ) {
+// 			if ( retryCount > 10 ) {
 
-				const msg = "Failed to add Lorikeet Spectrum viewer to child window.  Exception find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.";
-				console.log( msg + "  Error msg next: " )
-				console.log( e );
+// 				const msg = "Failed to add Lorikeet Spectrum viewer to child window.  Exception find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.";
+// 				console.log( msg + "  Error msg next: " )
+// 				console.log( e );
 				
-				try {
-					throw Error( msg + "  Exception/Error caught will be logged to server next" );
-				} catch( e2 ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e2 } );
-				}
+// 				try {
+// 					throw Error( msg + "  Exception/Error caught will be logged to server next" );
+// 				} catch( e2 ) {
+// 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e2 } );
+// 				}
 				
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				alert( msg );
-				throw e;
-			}
+// 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 				alert( msg );
+// 				throw e;
+// 			}
 			
-			const objectThis = this;
+// 			const objectThis = this;
 			
-			if ( ! retryCount ) {
-				retryCount = 1;
-			}
-			retryCount++;
+// 			if ( ! retryCount ) {
+// 				retryCount = 1;
+// 			}
+// 			retryCount++;
 
-			console.log( "Exception find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.  Call objectThis._addLorikeetToPageInNewWindow(...): retryCount: " + retryCount );
+// 			console.log( "Exception find object property 'newWindow.lorikeetSpectrumViewer_OwnPage_Root'.  Call objectThis._addLorikeetToPageInNewWindow(...): retryCount: " + retryCount );
 			
-			window.setTimeout(function() {
-				objectThis._addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount } );
-			}, 500 )
-		}
+// 			window.setTimeout(function() {
+// 				objectThis._addLorikeetToPageInNewWindow( { newWindow, lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData, retryCount } );
+// 			}, 500 )
+// 		}
 		
-		//   Convert objects to pass in to a single JSON string. 
-		//      Required to pass JSON only for MS Edge, when pass JS objects like Array, could not use 'for of' on them.
+// 		//   Convert objects to pass in to a single JSON string. 
+// 		//      Required to pass JSON only for MS Edge, when pass JS objects like Array, could not use 'for of' on them.
 		
-		const addLorikeetToPage_Params = {
-				lorikeetOptions,
-				loadedDataFromServer,
-				psmPeptideTable_HeadersAndData
-		}
+// 		const addLorikeetToPage_Params = {
+// 				lorikeetOptions,
+// 				loadedDataFromServer,
+// 				psmPeptideTable_HeadersAndData
+// 		}
 		
-		const addLorikeetToPage_Params_JSON = JSON.stringify( addLorikeetToPage_Params ); 
+// 		const addLorikeetToPage_Params_JSON = JSON.stringify( addLorikeetToPage_Params ); 
 		
-		try {
-			//  Pass Single JSON String to function
-			newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage( addLorikeetToPage_Params_JSON )
+// 		try {
+// 			//  Pass Single JSON String to function
+// 			newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage( addLorikeetToPage_Params_JSON )
 
-		} catch( e ) {
+// 		} catch( e ) {
 
-			console.log( "Exception call newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage(...): retryCount: " + retryCount );
+// 			console.log( "Exception call newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage(...): retryCount: " + retryCount );
 			
-			const msg = "Failed to add Lorikeet Spectrum viewer to child window.  Call to 'newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage(...)' failed.";
-			console.log( msg + "  Error msg next: " )
-			console.log( e );
+// 			const msg = "Failed to add Lorikeet Spectrum viewer to child window.  Call to 'newWindow.lorikeetSpectrumViewer_OwnPage_Root.addLorikeetToPage(...)' failed.";
+// 			console.log( msg + "  Error msg next: " )
+// 			console.log( e );
 			
-			try {
-				throw Error( msg + "  Exception/Error caught will be logged to server next" );
-			} catch( e2 ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e2 } );
-			}
+// 			try {
+// 				throw Error( msg + "  Exception/Error caught will be logged to server next" );
+// 			} catch( e2 ) {
+// 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e2 } );
+// 			}
 			
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			alert( msg );
-			throw e;
-		}
-	}
+// 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+// 			alert( msg );
+// 			throw e;
+// 		}
+// 	}
 
 
 }

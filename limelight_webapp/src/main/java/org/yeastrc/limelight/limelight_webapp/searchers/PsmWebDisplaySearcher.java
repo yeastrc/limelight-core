@@ -44,7 +44,8 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	private static final Logger log = LoggerFactory.getLogger( PsmWebDisplaySearcher.class );
 
 	private static final String SQL_MAIN = 
-			"SELECT psm_tbl.id AS psm_id, psm_tbl.charge, psm_tbl.scan_number AS scan_number, "
+			"SELECT psm_tbl.id AS psm_id, psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
+			+ 		 " psm_tbl.scan_number AS scan_number, "
 			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
 			+ " FROM psm_tbl  "
 			+ " LEFT OUTER JOIN search_scan_file_tbl ON psm_tbl.search_scan_file_id = search_scan_file_tbl.id ";
@@ -143,7 +144,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					PsmWebDisplayWebServiceResult psmWebDisplay = new PsmWebDisplayWebServiceResult();
 					psmWebDisplay.setSearchId( searchId );
 					psmWebDisplay.setPsmId( rs.getLong( "psm_id" ) );
+
 					psmWebDisplay.setCharge( rs.getInt( "charge" ) );
+					psmWebDisplay.setPsm_precursor_RetentionTime( rs.getBigDecimal( "precursor_retention_time" ) );
+					psmWebDisplay.setPsm_precursor_MZ( rs.getBigDecimal( "precursor_m_z" ) );
+					
 					psmWebDisplay.setScanNumber( rs.getInt( "scan_number" ) );
 					psmWebDisplay.setScanFilename( rs.getString( "scan_filename" ) );
 					

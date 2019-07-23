@@ -74,6 +74,9 @@ public class PopulatePsmDTO {
 		}
 		psmDTO.setCharge( psm.getPrecursorCharge().intValue() );
 		
+		psmDTO.setPrecursor_RetentionTime( psm.getPrecursorRetentionTime() );
+		psmDTO.setPrecursor_MZ( psm.getPrecursorMZ() );
+		
 		psmDTO.setHasModifications( psmHasModifications );
 		
 		if ( psm.getScanNumber() != null ) {

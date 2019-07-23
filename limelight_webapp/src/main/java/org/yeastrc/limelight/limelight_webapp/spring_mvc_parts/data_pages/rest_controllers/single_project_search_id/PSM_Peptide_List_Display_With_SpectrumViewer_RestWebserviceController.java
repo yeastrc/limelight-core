@@ -53,7 +53,6 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.objects.AnnotationDataItem_ForPage;
-import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_DescriptiveAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
@@ -289,6 +288,10 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			
     			result.setPsmId( psmFromDBItem.getPsmId() );
     			result.setCharge( psmFromDBItem.getCharge() );
+    			
+    			result.setPsm_precursor_RetentionTime( psmFromDBItem.getPrecursor_RetentionTime() );
+    			result.setPsm_precursor_MZ( psmFromDBItem.getPrecursor_MZ() );
+    			
     			result.setScanNumber( psmFromDBItem.getScanNumber() );
 
     			PsmDTO psmDTOForFoundPsmId = psmDAO.getById( psmIdForDbItem );

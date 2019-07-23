@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers_results;
 
+import java.math.BigDecimal;
+
 /**
  * Result from PsmWebDisplaySearcher
  *
@@ -25,6 +27,8 @@ public class PsmWebDisplayWebServiceResult {
 	
 	private long psmId;
 	private int charge;
+	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
+	private BigDecimal psm_precursor_MZ;            // precursor_m_z
 	private int scanNumber;
 	private String scanFilename;
 	private Integer scanFileId;
@@ -37,15 +41,6 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setPsmId(long psmId) {
 		this.psmId = psmId;
-	}
-
-
-	public Integer getScanNumber() {
-		return scanNumber;
-	}
-
-	public void setScanNumber(Integer scanNumber) {
-		this.scanNumber = scanNumber;
 	}
 
 	public String getScanFilename() {
@@ -78,5 +73,23 @@ public class PsmWebDisplayWebServiceResult {
 
 	public void setScanFileId(Integer scanFileId) {
 		this.scanFileId = scanFileId;
+	}
+	public BigDecimal getPsm_precursor_RetentionTime() {
+		return psm_precursor_RetentionTime;
+	}
+	public void setPsm_precursor_RetentionTime(BigDecimal psm_precursor_RetentionTime) {
+		this.psm_precursor_RetentionTime = psm_precursor_RetentionTime;
+	}
+	public BigDecimal getPsm_precursor_MZ() {
+		return psm_precursor_MZ;
+	}
+	public void setPsm_precursor_MZ(BigDecimal psm_precursor_MZ) {
+		this.psm_precursor_MZ = psm_precursor_MZ;
+	}
+	public void setScanNumber(int scanNumber) {
+		this.scanNumber = scanNumber;
+	}
+	public int getScanNumber() {
+		return scanNumber;
 	}
 }

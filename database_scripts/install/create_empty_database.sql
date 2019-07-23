@@ -265,6 +265,8 @@ CREATE TABLE  psm_tbl (
   scan_number MEDIUMINT UNSIGNED NOT NULL,
   search_scan_file_id MEDIUMINT UNSIGNED NULL,
   has_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  precursor_retention_time DECIMAL(9,4) NULL,
+  precursor_m_z DECIMAL(10,4) NULL,
   PRIMARY KEY (id),
   CONSTRAINT psm_tbl_srch_id_fk
     FOREIGN KEY (search_id)
@@ -1659,7 +1661,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE  search_data_lookup_parameters (
   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  hash_of_main_params VARCHAR(200) CHARACTER SET 'latin1' COLLATE 'latin1_bin' NOT NULL,
+  hash_of_main_params VARCHAR(200) CHARACTER SET 'latin1' NOT NULL,
   hash_collision_index INT NOT NULL COMMENT 'Increment for hash collisions',
   single_project_search_id__default_values INT NULL COMMENT 'Set to project_search_id if this record is for the defaults \nfor that project_search_id and defaults computed by server.\nIMPORTANT:  Assumes default cutoffs \nand default ann type display do NOT change.',
   root_id_type_id SMALLINT UNSIGNED NOT NULL COMMENT 'Project_search_ids, etc',

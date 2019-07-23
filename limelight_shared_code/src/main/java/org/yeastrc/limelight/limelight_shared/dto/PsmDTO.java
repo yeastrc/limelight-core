@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_shared.dto;
 
+import java.math.BigDecimal;
+
 /**
  * table psm_tbl
  *
@@ -30,6 +32,8 @@ public class PsmDTO {
 	private int scanNumber;
 	private Integer searchScanFileId;
 	private boolean hasModifications;
+	private BigDecimal precursor_RetentionTime; // precursor_retention_time
+	private BigDecimal precursor_MZ;            // precursor_m_z
 	
 	public long getId() {
 		return id;
@@ -72,5 +76,17 @@ public class PsmDTO {
 	}
 	public void setHasModifications(boolean hasModifications) {
 		this.hasModifications = hasModifications;
+	}
+	public BigDecimal getPrecursor_RetentionTime() {
+		return precursor_RetentionTime;
+	}
+	public void setPrecursor_RetentionTime(BigDecimal precursor_RetentionTime) {
+		this.precursor_RetentionTime = precursor_RetentionTime;
+	}
+	public BigDecimal getPrecursor_MZ() {
+		return precursor_MZ;
+	}
+	public void setPrecursor_MZ(BigDecimal precursor_MZ) {
+		this.precursor_MZ = precursor_MZ;
 	}
 }

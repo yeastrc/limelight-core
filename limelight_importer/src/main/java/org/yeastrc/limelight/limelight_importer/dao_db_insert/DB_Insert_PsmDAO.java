@@ -63,8 +63,9 @@ public class DB_Insert_PsmDAO {
 			
 			"INSERT INTO psm_tbl "
 			+ "( search_id, reported_peptide_id, charge, "
-			+ " scan_number, search_scan_file_id, has_modifications ) "
-			+ "VALUES ( ?, ?, ?, ?, ?, ? )";
+			+ " scan_number, search_scan_file_id, has_modifications,"
+			+ " precursor_retention_time, precursor_m_z ) "
+			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 	
 	/**
 	 * @param psm
@@ -105,6 +106,11 @@ public class DB_Insert_PsmDAO {
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
+			
+			counter++;
+			pstmt.setBigDecimal( counter, psm.getPrecursor_RetentionTime() );
+			counter++;
+			pstmt.setBigDecimal( counter, psm.getPrecursor_MZ() );
 			
 			pstmt.executeUpdate();
 			

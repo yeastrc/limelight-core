@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers_results;
 
+import java.math.BigDecimal;
+
 /**
  * Result for PsmsForScanNumberScanFilenameIdSearchIdSearcher
  *
@@ -27,6 +29,8 @@ public class PsmsForScanNumberScanFilenameIdSearchId_Result {
 	private int reportedPeptideId;
 	private int scanNumber;
 	private int charge;
+	private BigDecimal precursor_RetentionTime; // precursor_retention_time
+	private BigDecimal precursor_MZ;            // precursor_m_z
 	
 	public long getPsmId() {
 		return psmId;
@@ -51,6 +55,18 @@ public class PsmsForScanNumberScanFilenameIdSearchId_Result {
 	}
 	public void setCharge(int charge) {
 		this.charge = charge;
+	}
+	public BigDecimal getPrecursor_RetentionTime() {
+		return precursor_RetentionTime;
+	}
+	public void setPrecursor_RetentionTime(BigDecimal precursor_RetentionTime) {
+		this.precursor_RetentionTime = precursor_RetentionTime;
+	}
+	public BigDecimal getPrecursor_MZ() {
+		return precursor_MZ;
+	}
+	public void setPrecursor_MZ(BigDecimal precursor_MZ) {
+		this.precursor_MZ = precursor_MZ;
 	}
 	
 }

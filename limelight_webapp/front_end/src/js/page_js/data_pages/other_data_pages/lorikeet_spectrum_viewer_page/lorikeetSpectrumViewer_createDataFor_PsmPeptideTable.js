@@ -15,7 +15,7 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data
 //   !!!  Constants visible in this file/module
 
 
-const LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT = 5;
+const LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT = 4;
 
 const LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT = 2;
 
@@ -173,7 +173,8 @@ export class CreatePsmPeptideTable_HeadersAndData {
 
     	const dataTableDataObjectArray = [];
     	
-    	const primaryLorikeetData = loadedDataFromServer.primaryLorikeetData.data;
+		const primaryLorikeetData = loadedDataFromServer.primaryLorikeetData.data;
+		const lorikeet_ScanData_RetentionTime_PrecursorMZ = loadedDataFromServer.primaryLorikeetData.lorikeet_ScanData_RetentionTime_PrecursorMZ;
     	
         for ( const psmObject of sorted_psmPeptideData ) {
 
@@ -186,14 +187,41 @@ export class CreatePsmPeptideTable_HeadersAndData {
             
             dataObject.scanNumber = primaryLorikeetData.scanNum;
             
-            dataObject.charge = psmObject.charge;
-            if ( primaryLorikeetData.precursorMz !== undefined && primaryLorikeetData.precursorMz !== null ) {
-            	dataObject.precursor_M_Over_Z_Display = primaryLorikeetData.precursorMz.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
+			dataObject.charge = psmObject.charge;
+			
+			// 			psm_precursor_MZ: 5913.5679
+			// psm_precursor_RetentionTime
+
+			{
+				let outputPrecursorMZ_Number = undefined;
+				if ( psmObject.psm_precursor_MZ !== undefined && psmObject.psm_precursor_MZ !== null ) {
+					//  Have value from PSM so use that
+					outputPrecursorMZ_Number = psmObject.psm_precursor_MZ;
+
+				} else if ( primaryLorikeetData.precursorMz !== undefined && primaryLorikeetData.precursorMz !== null ) {
+					//  Have value from Scan so use that
+					outputPrecursorMZ_Number = lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_precursorMZ;
+				}
+				if ( outputPrecursorMZ_Number !== undefined ) {
+					dataObject.precursor_M_Over_Z_Display = outputPrecursorMZ_Number.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
+				}
 			}
-            
-			if ( primaryLorikeetData.retentionTimeSeconds !== undefined && primaryLorikeetData.retentionTimeSeconds !== null ) {
-				const retentionTimeMinutesNumber = primaryLorikeetData.retentionTimeSeconds / 60;
-				dataObject.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
+			
+			{
+				let outputRetentionTime_Number_Seconds = undefined;
+				if ( psmObject.psm_precursor_RetentionTime !== undefined && psmObject.psm_precursor_RetentionTime !== null ) {
+					//  Have value from PSM so use that
+					outputRetentionTime_Number_Seconds = psmObject.psm_precursor_RetentionTime;
+
+				} else if ( primaryLorikeetData.retentionTimeSeconds !== undefined && primaryLorikeetData.retentionTimeSeconds !== null ) {
+
+					outputRetentionTime_Number_Seconds = lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds;
+				}
+				if ( outputRetentionTime_Number_Seconds !== undefined ) {
+					const retentionTimeMinutesNumber = outputRetentionTime_Number_Seconds / 60;
+					dataObject.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
+				}
+
 			}
 
             dataObject.loadedData = psmObject;

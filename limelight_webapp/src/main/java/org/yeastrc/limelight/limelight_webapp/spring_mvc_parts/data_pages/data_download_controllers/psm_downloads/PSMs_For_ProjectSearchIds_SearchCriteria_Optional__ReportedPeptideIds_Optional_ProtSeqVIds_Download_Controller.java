@@ -19,6 +19,8 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -98,6 +100,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 	private static final String CONTROLLER_PATH =
 			AA_DataDownloadControllersPaths_Constants.PATH_START_ALL
 			+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_DOWNLOAD_CONTROLLER;
+	
+	private static final int RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR = 60;
+	private static final BigDecimal RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR_BD = new BigDecimal( RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR );
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
@@ -782,9 +787,25 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 
 							writer.write( String.valueOf( psmWebDisplay.getCharge() ) );
 
-							if ( ! searchHasScanData ) {
+
+							if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null 
+									&& psmWebDisplay.getPsm_precursor_MZ() != null ) {
+
+								writer.write( "\t" );
+								writer.write( String.valueOf( psmWebDisplay.getPsm_precursor_MZ() ) );
+								
+								BigDecimal retentionTimeMinutes = 
+										psmWebDisplay.getPsm_precursor_RetentionTime().divide( RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR_BD, RoundingMode.HALF_UP );
+
+								writer.write( "\t" );
+								writer.write( String.valueOf( retentionTimeMinutes ) );
+
+							} else if ( ( ! searchHasScanData ) 
+									&& psmWebDisplay.getPsm_precursor_RetentionTime() == null 
+									&& psmWebDisplay.getPsm_precursor_MZ() == null ) {
 
 								writer.write( "\t\t" );
+								
 							} else {
 
 								Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
@@ -807,11 +828,26 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 								}
 
 								writer.write( "\t" );
-								writer.write( String.valueOf( scan.getPrecursor_M_Over_Z() ) );
+								
+								if ( psmWebDisplay.getPsm_precursor_MZ() != null ) {
+
+									writer.write( String.valueOf( psmWebDisplay.getPsm_precursor_MZ() ) );
+								} else {
+									
+									writer.write( String.valueOf( scan.getPrecursor_M_Over_Z() ) );
+								}
 
 								writer.write( "\t" );
-								writer.write( String.valueOf( ( scan.getRetentionTime() / 60 ) ) );
+								
+								if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null ) {
 
+									BigDecimal retentionTimeMinutes = 
+											psmWebDisplay.getPsm_precursor_RetentionTime().divide( RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR_BD, RoundingMode.HALF_UP );
+									writer.write( String.valueOf( retentionTimeMinutes ) );
+									
+								} else {
+									writer.write( String.valueOf( ( scan.getRetentionTime() / RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR ) ) );
+								}
 							}
 
 							writer.write( "\t" );

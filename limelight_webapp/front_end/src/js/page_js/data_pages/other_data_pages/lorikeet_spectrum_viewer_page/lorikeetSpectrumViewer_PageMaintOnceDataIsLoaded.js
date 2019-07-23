@@ -89,6 +89,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		
 		this.lastUsed_lorikeetOptions = undefined;
 		
+		this._lorikeet_ScanData_RetentionTime_PrecursorMZ = undefined;
 	}
 
 	/**
@@ -103,13 +104,15 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Single parameter, JSON string
 	 */
-	addLorikeetToPage({ lorikeetOptions, loadedDataFromServer, psmPeptideTable_HeadersAndData } ) {
+	addLorikeetToPage({ loadedDataFromServer, psmPeptideTable_HeadersAndData } ) {
 		try {
 			const lorikeetOptions = loadedDataFromServer.primaryLorikeetData.data;
 
 			//  Add these items to the lorikeetOptions variable
 			lorikeetOptions.height = LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM;
 			lorikeetOptions.width =  LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM;
+
+			this._lorikeet_ScanData_RetentionTime_PrecursorMZ = loadedDataFromServer.primaryLorikeetData.lorikeet_ScanData_RetentionTime_PrecursorMZ;
 
 			this._addLorikeetToPageInternal( { lorikeetOptions } );
 
@@ -278,8 +281,12 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			throw Error("psmIdOfClicked is null or undefined");
 		}
 
-		//  TODO  - Optimize to check if psm id is one already being displayed and if yes, do nothing
-		//    First implement code to update browser URL for chosen psm id
+		if ( this._psmId_Displayed === psmIdOfClicked ) {
+
+			//  This is the currently displayed PSM Id so just exit
+			return; // EARLY RETURN
+		}
+
 
 		this._psmId_Displayed = psmIdOfClicked;
 
@@ -302,7 +309,8 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		}
 		//  storedPsmPeptideDataForPsmId
 		//		charge, peptideSequence, variableMods [{aminoAcid,index,modMass}], ntermMod, ctermMod,
-		//		psmId, reportedPeptideId, reportedPeptideString, scanNumber
+		//		psmId, reportedPeptideId, reportedPeptideString, scanNumber,
+		// 		psm_precursor_MZ, psm_precursor_RetentionTime
 
 		new_lorikeetOptions.charge = storedPsmPeptideDataForPsmId.charge;
 		new_lorikeetOptions.sequence = storedPsmPeptideDataForPsmId.peptideSequence;
@@ -310,7 +318,21 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		new_lorikeetOptions.ntermMod = storedPsmPeptideDataForPsmId.ntermMod;
 		new_lorikeetOptions.ctermMod = storedPsmPeptideDataForPsmId.ctermMod;
 		new_lorikeetOptions.label = storedPsmPeptideDataForPsmId.label;
+
+		if ( storedPsmPeptideDataForPsmId.psm_precursor_MZ !== undefined && storedPsmPeptideDataForPsmId.psm_precursor_MZ !== null ) {
+
+			new_lorikeetOptions.precursorMz = storedPsmPeptideDataForPsmId.psm_precursor_MZ;
+		} else {
+			new_lorikeetOptions.precursorMz = this._lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_precursorMZ;
+		}
 		
+		if ( storedPsmPeptideDataForPsmId.psm_precursor_RetentionTime !== undefined && storedPsmPeptideDataForPsmId.psm_precursor_RetentionTime !== null ) {
+
+			new_lorikeetOptions.retentionTimeSeconds = storedPsmPeptideDataForPsmId.psm_precursor_RetentionTime;
+		} else {
+			new_lorikeetOptions.retentionTimeSeconds = this._lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds;
+		}
+
 		this._addLorikeetToPageInternal( { lorikeetOptions : new_lorikeetOptions } );
 	}
 

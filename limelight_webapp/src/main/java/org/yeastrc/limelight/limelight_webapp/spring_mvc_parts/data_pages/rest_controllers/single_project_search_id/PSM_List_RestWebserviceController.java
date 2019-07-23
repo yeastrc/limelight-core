@@ -324,7 +324,7 @@ public class PSM_List_RestWebserviceController {
     			result.setCharge( psmWebDisplay.getCharge() );
     			result.setScanNumber( psmWebDisplay.getScanNumber() );
     			result.setScanFilename( psmWebDisplay.getScanFilename() );
-    			
+
     			if ( searchHasScanData ) {
     				
     				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
@@ -345,6 +345,15 @@ public class PSM_List_RestWebserviceController {
     				result.setRetentionTimeSeconds( scan.getRetentionTime() );
     				result.setPrecursor_M_Over_Z( scan.getPrecursor_M_Over_Z() );
     			}
+
+				if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null ) {
+    			
+					result.setRetentionTimeSeconds( psmWebDisplay.getPsm_precursor_RetentionTime().floatValue() );
+				}
+				if ( psmWebDisplay.getPsm_precursor_MZ() != null ) {
+
+    				result.setPrecursor_M_Over_Z( psmWebDisplay.getPsm_precursor_MZ().doubleValue() );
+				}
     			
     			Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap = new HashMap<>();
     			
