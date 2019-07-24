@@ -2,17 +2,7 @@
 // $LastChangedBy$
 // $LastChangedRevision$
 
-//  Local Import
-
-import { AminoAcid } from './aminoacid.js';
-import { Ion, MASS_PROTON } from './ion.js';
-import { Peptide, Modification, VariableModification, NeutralLoss, LossCombination, LossCombinationList }
-	from './peptide.js';
-
-
-let addLorikeetToJquery = function( $ ) {
-	
-//(function($) {
+(function($) {
 
     // plugin name - specview
 	$.fn.specview = function (opts) {
@@ -2535,8 +2525,4 @@ let addLorikeetToJquery = function( $ ) {
     }
 	
 	
-//})(jQuery);
-    
-}
-
-export { addLorikeetToJquery }
+})(jQuery);

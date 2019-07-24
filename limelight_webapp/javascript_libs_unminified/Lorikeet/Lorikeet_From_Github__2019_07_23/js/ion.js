@@ -259,5 +259,3 @@ function Ion_Z (peptide, startIdx, charge, massType) {
 	this.term = "c";
 	return this;
 }
-
-export { Ion, MASS_PROTON }
