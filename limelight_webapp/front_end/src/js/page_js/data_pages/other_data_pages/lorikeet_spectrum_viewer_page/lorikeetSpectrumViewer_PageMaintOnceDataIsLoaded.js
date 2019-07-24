@@ -40,6 +40,11 @@ import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplay
 import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
 
 
+//  Overrides for LorikeetOptions:
+
+//  Override default value for massError - Assign to lorikeetOptions.massError
+const LORIKEET_OPTIONS__MASS_ERROR = 0.01; // mass tolerance (in th) for labeling peaks
+
 
 //  Size of lorikeet spectrum part of viewer
 const LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM = 700;
@@ -159,6 +164,9 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		const $newDivInHolder = $( '<div id="lorikeet_inner_holder"></div>' ).appendTo( $lorikeet_holderElement );
 		
 		//  Set Lorikeet options
+
+		//  Override default value for massError
+		lorikeetOptions.massError = LORIKEET_OPTIONS__MASS_ERROR; // mass tolerance (in th) for labeling peaks
 		
 		lorikeetOptions.peakDetect = false;
 		
