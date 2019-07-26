@@ -5,11 +5,10 @@
   "private": true,
   "scripts": {},
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.24.1",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "css-loader": "^0.28.11",
     "extract-loader": "^2.0.1",
@@ -22,8 +21,13 @@
     "sass-loader": "^7.0.1",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack": "^4.12.1",
-    "webpack-cli": "^3.0.8"
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "babel-loader": "^8.0.6",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
 }

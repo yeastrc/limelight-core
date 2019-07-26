@@ -10,12 +10,27 @@
         background-color:$site-color-light;
     }
 
+    //  Data Table: Start
+
     div.hoveredTableRow {
         background-color:$site-color-light;
     }
 
+    div.table-row-hovered-highlight:hover {
+        background-color:$site-color-medium;
+    }
+
     div.div-table-container {
         display: inline-block;
+    }
+
+
+    $table-group-border-or-filler: 2px;  //  The space added around groups to provide room for the border on hover
+    $table-group-item-margin-top-bottom: 10px - $table-group-border-or-filler;
+
+    div.div-table-header-row-groups-container { //  container div placed around header row when Data Table contains groups
+        padding-left: $table-group-border-or-filler;
+        padding-right: $table-group-border-or-filler;
     }
 
     div.div-table-header-cell {
@@ -39,6 +54,60 @@
         background-color:$site-color-medium;
     }
 
+    div.table-rows-container { // Table Data Rows Container
+        margin: 0px;
+        padding: 0px;
+    }
+
+    div.table-row-group-outer-container { // Table Group Outer Container for a group of Data Rows
+        position: relative;
+        padding-left: $table-group-border-or-filler;
+        padding-right: $table-group-border-or-filler;
+        padding-top: $table-group-border-or-filler;
+        padding-bottom: $table-group-border-or-filler;
+        margin-bottom: $table-group-item-margin-top-bottom;
+
+        &:first-child {
+            margin-top: $table-group-item-margin-top-bottom;    
+        }
+
+        // &:hover {
+        //     color: red;
+        // }
+
+
+
+        &:hover { 
+            border-style: solid;
+            border-width: 2px;
+            border-color: $site-color-gray;
+            padding-left: 0px;
+            padding-right: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        // &:hover::after { //  NEVER apply a z-index > -1 to this.  If do so, the pseudo-element will cover the contents
+        //     content: '';		//  Creates pseudo element after the actual element with this to put a box around it
+        //     z-index: -1;
+        //     position: absolute;
+        //     top: -$table-group-border-or-filler;
+        //     left: -$table-group-border-or-filler;
+        //     right: -$table-group-border-or-filler;
+        //     bottom: -$table-group-border-or-filler;
+        //     padding: 0px;
+        //     border-style: solid;
+        //     border-width: $table-group-border-or-filler;
+        //     border-color: $site-color-gray;
+        // }
+    
+    }
+
+    div.table-row-group-inner-container-highlighted-row { // Table Group Inner Container for a group of Data Rows - highlighted
+
+        background: $site-color-light
+    }
+
     div.div-table-row {
         white-space:nowrap;
     }
@@ -50,6 +119,8 @@
     div.div-table-data-cell {
         vertical-align:top;
     }
+
+    //  Data Table: End
 
 
     div.outermost-div {

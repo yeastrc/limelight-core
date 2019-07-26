@@ -58,9 +58,10 @@ import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHea
 //  From local dir
 import { ProteinViewPage_DisplayDataOnPage }  
 	from './proteinViewPage_DisplayDataOnPage.js';
+	
+import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
 
-import { SingleProtein_CentralStateManagerObjectClass }
-	from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
 
 import { SearchColorManager }
 	from 'page_js/data_pages/color_manager/searchColorManager.js';
@@ -92,6 +93,7 @@ export class ProteinViewPage_RootClass_Common {
 		this._centralPageStateManager = new CentralPageStateManager();
 
 		this._singleProtein_CentralStateManagerObject = new SingleProtein_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
+		this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 		this._searchColors_CentralStateManagerObject = new SearchColorManager( { centralPageStateManager : this._centralPageStateManager } );
 
 		//  Instances of class DataPageStateManager
@@ -125,7 +127,8 @@ export class ProteinViewPage_RootClass_Common {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager : this._centralPageStateManager,
-			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
+			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
@@ -148,6 +151,7 @@ export class ProteinViewPage_RootClass_Common {
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
 		this._singleProtein_CentralStateManagerObject.initialize();
+		this._proteinList_CentralStateManagerObjectClass.initialize();
 		
 		let referrerFromURL = initialStateFromURL.referrer;
 		

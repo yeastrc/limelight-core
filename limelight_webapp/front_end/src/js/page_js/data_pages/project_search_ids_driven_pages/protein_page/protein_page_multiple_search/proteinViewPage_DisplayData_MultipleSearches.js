@@ -58,7 +58,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager,
-		singleProtein_CentralStateManagerObject
+		singleProtein_CentralStateManagerObject,
+		proteinList_CentralStateManagerObjectClass
 	}) {
 
 		//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
@@ -84,6 +85,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 		this._centralPageStateManager = centralPageStateManager;
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
+		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
@@ -204,20 +206,18 @@ export class ProteinViewPage_Display_MultipleSearches {
 		// this._loadedDataPerProjectSearchIdHolder.clearAllData();
 		
 		
-		let $protein_table_loading_text = $("#protein_table_loading_text");
-		if ( $protein_table_loading_text.length === 0 ) {
-			throw Error("No element found with id 'protein_table_loading_text'");
+		let $protein_table_loading_text_display = $("#protein_table_loading_text_display");
+		if ( $protein_table_loading_text_display.length === 0 ) {
+			throw Error("No element found with id 'protein_table_loading_text_display'");
 		}
+		$protein_table_loading_text_display.show();
 		
-		let protein_table_loading_text = $protein_table_loading_text.html();
-
 		let $protein_list_container = $("#protein_list_container");
 		if ( $protein_list_container.length === 0 ) {
 			throw Error("No element found for id 'protein_list_container'");
 		}
 		
-		$protein_list_container.empty();
-		$protein_list_container.html( protein_table_loading_text );
+		$protein_list_container.hide();
 		
 		$("#protein_list_size").empty();
 
@@ -638,6 +638,12 @@ export class ProteinViewPage_Display_MultipleSearches {
 		const proteinList = proteinDisplayData.proteinList;
 		const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder;
 
+		let $protein_table_loading_text_display = $("#protein_table_loading_text_display");
+		if ( $protein_table_loading_text_display.length === 0 ) {
+			throw Error("No element found with id 'protein_table_loading_text_display'");
+		}
+		$protein_table_loading_text_display.hide();
+		
 		let $protein_list_container = $("#protein_list_container");
 		if ( $protein_list_container.length === 0 ) {
 			throw Error("No element found for id 'protein_list_container'");
@@ -696,6 +702,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			const dataTableContainer_HTML = this._common_template_dataTable_Template( { tableObject } );
 			const $tableContainerDiv = $( dataTableContainer_HTML );
 			$protein_list_container.append( $tableContainerDiv );
+			$protein_list_container.show();
 
 			// add in the click handlers for sorting the table
 			tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );

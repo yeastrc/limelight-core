@@ -60,26 +60,31 @@
 	</h3>
 		
 	<div id="protein_counts_download_assoc_psms_block" style=" margin-bottom: 10px; display: none;">
-		Protein Count: <span id="protein_list_size"></span>
-		<span  id="reported_peptide_count_label" style="padding-left: 10px; display: none;">Peptide Count: 
+	
+		<span id="protein_group_list_size_section_display" style="padding-right: 10px; white-space: nowrap; display: none;">Protein Group Count: 
+			<span id="protein_group_list_size"></span>
+		</span>
+		
+		<span style=" white-space: nowrap; ">Protein Count: <span id="protein_list_size"></span></span>
+		
+		<span  id="reported_peptide_count_label" style="padding-left: 10px; white-space: nowrap; display: none;">Peptide Count: 
 			</span><span id="reported_peptide_count_display"></span>
-		<span id="psm_count_label" style="padding-left: 10px; display: none;">PSM Count: 
+		<span id="psm_count_label" style="padding-left: 10px; white-space: nowrap; display: none;">PSM Count: 
 			</span><span id="psm_count_display"></span>
 	
-		<span style="padding-left: 10px; display: none;" id="protein_download_proteins" class=" fake-link " >Download Proteins</span>
+		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_proteins" class=" fake-link " >Download Proteins</span>
 	
-		<span style="padding-left: 10px; display: none;" id="protein_download_assoc_psms" class=" fake-link " >Download PSMs</span>
+		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_assoc_psms" class=" fake-link " >Download PSMs</span>
 	</div>
+	
+	<%--  Proteins Loading Text --%>
+	<div id="protein_table_loading_text_display">Loading Data</div>
 	
 	<%--  Proteins are displayed here --%>
 	
-  <div id="protein_list_container">
+  	<div id="protein_list_container">
+	</div>
   
-  	
-  </div>
-  
-  	<script id="protein_table_loading_text"  type="text/text">Loading Data</script>
-
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>

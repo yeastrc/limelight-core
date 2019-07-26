@@ -1,15 +1,20 @@
 //  Comments of this style allowed.  See for allowed format: https://www.npmjs.com/package/json5
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": [
-        	"last 1 versions",
-        	"not ie > 0"
-        ]
-      }
-    }
+    [
+    	"@babel/preset-env", {
+    		"targets": "> .5% in US  and last 1 version and not ie > 0 and not op_mini all"
+			
+			// "targets" is browser targets
+	
+			//  Current value of 'targets' is to output es6 'class' so outputting relatively current Javascript.
+    		
+			// run npx browserslist '' with the contents of 'targets' inside the quotes to see the browsers supported.
+    	}
     ],
-    "stage-2"
+    [
+    	"@babel/preset-react",
+	    {}
+    ]
   ]
 }

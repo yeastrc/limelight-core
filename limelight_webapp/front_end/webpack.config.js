@@ -102,6 +102,12 @@ const mainConfig = {
 
 	module:{
 		rules:[
+		      {
+		          test: /\.(js|jsx)$/,
+		          exclude: /(node_modules|bower_components)/,
+		          loader: "babel-loader",
+		          options: {  } // Do not put this inside options: { } :  { presets: ["@babel/env"] }
+		        },
 				{
 					test:/\.scss$/,
 					use: [

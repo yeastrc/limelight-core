@@ -37,7 +37,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager,
-		singleProtein_CentralStateManagerObject
+		singleProtein_CentralStateManagerObject,
+		proteinList_CentralStateManagerObjectClass
 	}) {
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
@@ -49,6 +50,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 		this._centralPageStateManager = centralPageStateManager;
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
+		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 
 		//  Bind method to 'this' to pass to callback
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
@@ -70,7 +72,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager : this._centralPageStateManager,
-			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
+			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass
 		});
 
 		this._proteinViewPage_Display_MultipleSearches = new ProteinViewPage_Display_MultipleSearches( {
@@ -81,7 +84,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager : this._centralPageStateManager,
-			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
+			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass
 		});
 	}
 
