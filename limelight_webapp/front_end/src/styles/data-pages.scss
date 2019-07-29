@@ -10,27 +10,143 @@
         background-color:$site-color-light;
     }
 
+    //  Data Table React: Start
+
+    // Table Format:
+
+    // <div className=" data-table-container-react selector_data_table_container">
+    //         <table className="react-table-container selector_data_table_container ">
+
+    //             <thead>
+    //                 { header }
+    //             </thead>
+    //             <tbody>
+    //                 { dataRows }
+    //             </tbody>
+    //         </table>
+    //     </div>
+    //     <div className=" data-table-container-react selector_data_table_container">
+    //         <table className="react-table-container selector_data_table_container ">
+
+    //             <thead>
+    //                 { header }
+    //             </thead>
+    //             <tbody>
+    //                 { dataRows }
+    //             </tbody>
+    //         </table>
+    //     </div>
+
+    div.data-table-container-react {
+
+        //  Groups of Rows classes
+
+        $table-group-border-or-filler: 2px;  //  The space added around groups to provide room for the border on hover
+        $table-group-item-margin-top-bottom: 10px - $table-group-border-or-filler;
+    
+        div.data-table-header-row-groups-container { //  container div placed around header row when Data Table contains groups
+            padding-left: $table-group-border-or-filler;
+            padding-right: $table-group-border-or-filler;
+        }
+
+        div.table-row-group-outer-container { // Table Group Outer Container for a group of Data Rows
+            position: relative;
+            display: inline-block;
+            padding-left: $table-group-border-or-filler;
+            padding-right: $table-group-border-or-filler;
+            padding-top: $table-group-border-or-filler;
+            padding-bottom: $table-group-border-or-filler;
+            margin-bottom: $table-group-item-margin-top-bottom;
+
+            &:first-child {
+                margin-top: $table-group-item-margin-top-bottom;    
+            }
+
+            &:hover { 
+                border-style: solid;
+                border-width: 2px;
+                border-color: $site-color-gray;
+                padding-left: 0px;
+                padding-right: 0px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+            }
+
+            div.table-row-group-inner-container { // Table Group Inner Container for a group of Data Rows
+                display: inline-block;
+                margin-bottom: -3px;  // hide stray 3 pixels at bottom of this div
+            }
+
+            div.table-row-group-inner-container-highlighted-row { // Table Group Inner Container for a group of Data Rows - highlighted
+
+                background: $site-color-light
+            }
+        }
+
+        //  Header Table and Data Rows Table
+
+        table.data-table-header-table, table.data-table-data-rows-table { border-spacing: 0px; }
+
+        table.data-table-header-table > thead > tr > th, table.data-table-data-rows-table > tbody > tr > td {
+            padding: 5px;
+            padding-left: 11px;
+        }
+
+        table.data-table-header-table > thead > tr > th:first-child, table.data-table-data-rows-table > tbody > tr > td:first-child {
+            padding-left: 5px;
+        }
+
+        //  Header Table 
+
+        table.data-table-header-table {  }
+
+        table.data-table-header-table th {
+            text-align: left;
+            vertical-align: baseline;
+            // padding: 4px;
+        }
+
+        //  Header Row 
+
+        tr.data-table-header-row {
+            font-size:14px;
+            font-weight:bold;
+            background-color:$site-color-medium;
+        }
+    
+        div.data-table-header-cell {
+            vertical-align:bottom;
+            // white-space:normal;
+        }
+    
+        //  Data Rows - Either all or in a group
+
+        td.data-table-data-cell {
+            vertical-align: top;
+        }
+
+        td.data-table-cell {
+            // white-space:normal;
+        }
+
+    
+        tr.table-row-hovered-highlight:hover {
+            background-color:$site-color-medium;
+        }
+
+    }
+
+    //  Data Table React: End
+
+
     //  Data Table: Start
 
     div.hoveredTableRow {
         background-color:$site-color-light;
     }
 
-    div.table-row-hovered-highlight:hover {
-        background-color:$site-color-medium;
-    }
-
     div.div-table-container {
         display: inline-block;
-    }
-
-
-    $table-group-border-or-filler: 2px;  //  The space added around groups to provide room for the border on hover
-    $table-group-item-margin-top-bottom: 10px - $table-group-border-or-filler;
-
-    div.div-table-header-row-groups-container { //  container div placed around header row when Data Table contains groups
-        padding-left: $table-group-border-or-filler;
-        padding-right: $table-group-border-or-filler;
     }
 
     div.div-table-header-cell {
@@ -57,55 +173,6 @@
     div.table-rows-container { // Table Data Rows Container
         margin: 0px;
         padding: 0px;
-    }
-
-    div.table-row-group-outer-container { // Table Group Outer Container for a group of Data Rows
-        position: relative;
-        padding-left: $table-group-border-or-filler;
-        padding-right: $table-group-border-or-filler;
-        padding-top: $table-group-border-or-filler;
-        padding-bottom: $table-group-border-or-filler;
-        margin-bottom: $table-group-item-margin-top-bottom;
-
-        &:first-child {
-            margin-top: $table-group-item-margin-top-bottom;    
-        }
-
-        // &:hover {
-        //     color: red;
-        // }
-
-
-
-        &:hover { 
-            border-style: solid;
-            border-width: 2px;
-            border-color: $site-color-gray;
-            padding-left: 0px;
-            padding-right: 0px;
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
-
-        // &:hover::after { //  NEVER apply a z-index > -1 to this.  If do so, the pseudo-element will cover the contents
-        //     content: '';		//  Creates pseudo element after the actual element with this to put a box around it
-        //     z-index: -1;
-        //     position: absolute;
-        //     top: -$table-group-border-or-filler;
-        //     left: -$table-group-border-or-filler;
-        //     right: -$table-group-border-or-filler;
-        //     bottom: -$table-group-border-or-filler;
-        //     padding: 0px;
-        //     border-style: solid;
-        //     border-width: $table-group-border-or-filler;
-        //     border-color: $site-color-gray;
-        // }
-    
-    }
-
-    div.table-row-group-inner-container-highlighted-row { // Table Group Inner Container for a group of Data Rows - highlighted
-
-        background: $site-color-light
     }
 
     div.div-table-row {

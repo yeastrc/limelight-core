@@ -26,7 +26,7 @@ export class DataTable_Table_DataRowEntry extends React.Component {
       classesAdditions = column.css_class;
     }
 
-    const className = "div-table-data-cell div-table-cell column-" 
+    const className = "data-table-data-cell data-table-cell column-" // 'data-table-cell' not in CSS file
         + column.id
         + classesAdditions;
 
@@ -71,7 +71,7 @@ export class DataTable_Table_DataRowEntry extends React.Component {
     }
 
     return (
-    <div style={ styleContainerDiv }
+    <td style={ styleContainerDiv }
         className={ className }
         data-columnid={ column.id }
         data-value={ this.props.dataColumn.displayValue }
@@ -81,7 +81,7 @@ export class DataTable_Table_DataRowEntry extends React.Component {
         { horizontalGraph_SpaceAfter }
         { this.props.dataColumn.displayValue }
 
-    </div>
+    </td>
     )
   }
 

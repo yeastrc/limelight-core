@@ -21,19 +21,19 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
 
     if ( column.hideColumnHeader ) {
 
-      const className_Outer = "div-table-header-cell column-" + column.id + " blank-header non-sortable-header" ;
+      const className = "data-table-header-cell column-" + column.id + " blank-header non-sortable-header" ;
 
       //  Empty Column Header
       headerItem = (
 
-        <div style={ { whiteSpace: "nowrap", width: column.width, maxWidth: column.width } } 
-          class={ className_Outer }  data-columnid={ column.id }>
+        <th style={ { whiteSpace: "nowrap", width: column.width, maxWidth: column.width } } 
+          class={ className }  data-columnid={ column.id }>
 
             <div style={ { display: "inline-block", width: "80%", whiteSpace: "normal" } }>
                 &nbsp;
             </div>
 
-        </div>
+        </th>
       )
     
     } else {
@@ -48,7 +48,7 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
           dataSortType = column.sort;
       }
   
-      const className = "div-table-header-cell column-" + column.id + " " + classNameSortable;
+      const className = "data-table-header-cell column-" + column.id + " " + classNameSortable;
   
       const styleInnerDiv = { display: "inline-block", width: "80%", whiteSpace: "normal", fontSize: "12px" };
 
@@ -81,31 +81,35 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
 
       if ( ! column.lastItem ) {
         columnSeparator = (
-          <div style={ { display: "inline-block", paddingLeft: "3px", paddingRight: "3px" } }>
-              <svg preserveAspectRatio="none" height="16px" width="2px"><line x1="0" y1="0" x2="0" y2="16" style={ { stroke: "#d3d3d3", strokeWidth:2 } } /></svg>
+          <div style={ { position: "relative", display: "inline-block" } }>
+            <div style={ { position: "absolute", left: "4px", bottom: "-4px" } }>
+                <svg preserveAspectRatio="none" height="16px" width="2px"><line x1="0" y1="0" x2="0" y2="16" style={ { stroke: "#d3d3d3" /* "red" */, strokeWidth:2 } } /></svg>
+            </div>
           </div>
         );
       }
 
       headerItem = (
-        <div style={ { whiteSpace: "nowrap", width: column.width, maxWidth: column.width } }
+        <th style={ { whiteSpace: "nowrap", width: column.width, maxWidth: column.width } }
             className={ className }
             onClick={ this.props.onClickFcn }
             data-sort_type={ dataSortType } data-columnid={ column.id }>
 
             <div style= { styleInnerDiv } >
+
                 { column.displayName }
             </div>
 
             <div style={ { display: "inline-block", width: "20%", whiteSpace: "nowrap", textAlign: "right", paddingRight: "3px" } }>
 
               { sortIcon }
-              { columnSeparator }
+
+              { columnSeparator /* Place here so aligned to base line of column name  */ }
 
             </div>
             
 
-        </div>
+        </th>
       );
     }
 

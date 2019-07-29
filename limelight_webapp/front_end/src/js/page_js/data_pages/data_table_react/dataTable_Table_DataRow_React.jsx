@@ -24,7 +24,7 @@ export class DataTable_Table_DataRow extends React.Component {
       classNameClickable = " clickable " 
     }
 
-    const className = ( "selector_data_table_row div-table-data-row div-table-row table-row-hovered-highlight  mod-data-row " 
+    const className = ( "selector_data_table_row data-table-data-row  table-row-hovered-highlight   " 
         + classNameClickable );
         //   expandable-table-row
 
@@ -53,22 +53,29 @@ export class DataTable_Table_DataRow extends React.Component {
     // put inside <div> to use it: ref={ this.rowDivRef }
 
     return (
-      <div 
-        style={ { position: "relative" } } 
-        className={ className } 
-        onClick={ (event) => 
-            { if ( this.props.tableOptions.rowClickHandler ) {
-              this.props.tableOptions.rowClickHandler({ 
-                event, uniqueId : this.props.dataObject.uniqueId, dataObject : this.props.dataObject }) } } }
-        data-id={ this.props.dataObject.uniqueId }>
+      <div >
+        <table className=" data-table-data-rows-table ">
+          <tbody>
 
-        { dataRowColumns.map(dataColumn =>
-            <DataTable_Table_DataRowEntry 
-              tableObject={ this.props.tableObject }
-              dataObject={ this.props.dataObject }
-              dataColumn={ dataColumn } 
-              key={ dataColumn.column.id } />)}
+            <tr 
+              style={ { position: "relative" } } 
+              className={ className } 
+              onClick={ (event) => 
+                  { if ( this.props.tableOptions.rowClickHandler ) {
+                    this.props.tableOptions.rowClickHandler({ 
+                      event, uniqueId : this.props.dataObject.uniqueId, dataObject : this.props.dataObject }) } } }
+              data-id={ this.props.dataObject.uniqueId }>
 
+              { dataRowColumns.map(dataColumn =>
+                  <DataTable_Table_DataRowEntry 
+                    tableObject={ this.props.tableObject }
+                    dataObject={ this.props.dataObject }
+                    dataColumn={ dataColumn } 
+                    key={ dataColumn.column.id } />)}
+
+            </tr>
+          </tbody>
+        </table>
       </div>
     )
   }

@@ -43,7 +43,7 @@ export class DataTable_Table_DataRow_Group extends React.Component {
 
       <div className=" table-row-group-outer-container ">
         <div className={ innerClassName } >
-        { reactRowElements }
+              { reactRowElements }
         </div>
       </div>
     )

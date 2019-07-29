@@ -211,10 +211,14 @@ export class DataTable_TableRoot extends React.Component {
 
         let headerMain = (
 
-            <div className="div-table-header-row div-table-row">
-                
-                { headerColumnsReactComponents }
-            </div>
+            <table className=" data-table-header-table ">
+                <thead>
+                    <tr className=" data-table-header-row data-table-row ">
+                        
+                        { headerColumnsReactComponents }
+                    </tr>
+                </thead>
+            </table>
         )
 
         let header = headerMain;
@@ -222,9 +226,10 @@ export class DataTable_TableRoot extends React.Component {
         if ( this.state.tableOptions.tableGroups ) {
 
             header = (
-                <div className=" div-table-header-row-groups-container selector_group_container " >
+                <div className=" data-table-header-row-groups-container selector_group_container " >
                     
-                    { headerMain }
+                        { headerMain }
+                    
                 </div>
             )
         }
@@ -241,7 +246,7 @@ export class DataTable_TableRoot extends React.Component {
 
             //  Convert this.state.tableObject.dataGroupObjects into React components
 
-            const dataRowsReactComponents = [];
+            const dataGroupRowsReactComponents = [];
 
             let highlightRow = false;
             for ( const dataGroupObject of this.state.tableObject.dataGroupObjects ) {
@@ -254,7 +259,7 @@ export class DataTable_TableRoot extends React.Component {
                         key={ dataGroupObject.uniqueId } />
                 );
         
-                dataRowsReactComponents.push( reactRowElement );
+                dataGroupRowsReactComponents.push( reactRowElement );
 
                 if ( highlightRow ) {
                     highlightRow = false;
@@ -266,7 +271,7 @@ export class DataTable_TableRoot extends React.Component {
             dataRows = (
                 <div className="table-rows-container selector_table_rows_container" >
 
-                    { dataRowsReactComponents }
+                    { dataGroupRowsReactComponents }
                 </div>
             );
         } else {
@@ -288,20 +293,15 @@ export class DataTable_TableRoot extends React.Component {
                         key={ dataObject.uniqueId } />)
             );
 
-            dataRows = (
-                <div className="table-rows-container selector_table_rows_container" >
-
-                    { dataRowsReactComponents }
-                </div>
-            );
+            dataRows = dataRowsReactComponents ;
         }
 
         return (
-            <div className="div-table-container selector_data_table_container ">
-
+            <div className=" data-table-container-react selector_data_table_container">
+              
                 { header }
-
                 { dataRows }
+              
             </div>
         )
     }
