@@ -158,6 +158,30 @@ export class DataTable_TableRoot extends React.Component {
                 const columnInfo_dataProperty = columnInfo.dataProperty;
                 const a_ColumnValue = dataObject_A[ columnInfo_dataProperty ];
                 const b_ColumnValue = dataObject_B[ columnInfo_dataProperty ];
+
+                if ( a_ColumnValue === undefined && b_ColumnValue === undefined ) {
+                    continue;  // EARLY CONTINUE
+                }
+
+                if ( a_ColumnValue === undefined && b_ColumnValue !== undefined ) {
+                     // Sort undefined before not undefined
+                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                        return -1;
+                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                        return 1;
+                    }
+                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+                }
+                if ( a_ColumnValue !== undefined && b_ColumnValue === undefined ) {
+                    // Sort undefined before not undefined
+                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                        return 1;
+                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                        return -1;
+                    }
+                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+                }
+
                 if ( a_ColumnValue < b_ColumnValue ) {
                     if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
                         return -1;
@@ -196,14 +220,19 @@ export class DataTable_TableRoot extends React.Component {
      */
     render () {
 
-            //  Convert this.state.tableObject.columns into React components
+        //  Convert this.state.tableObject.columns into React components
+
+        const columnsArrayLength = this.state.tableObject.columns.length;
 
         const headerColumnsReactComponents = (
             this.state.tableObject.columns.map( ( column, index ) => {
                 const onClickFcn = (event) => { 
                     this._headerColumnClicked({ event, columnId : column.id }); 
                 };
-                return <DataTable_Table_HeaderRowEntry column={ column } index={ index } 
+
+                const lastColumn = index === ( columnsArrayLength - 1 );
+
+                return <DataTable_Table_HeaderRowEntry column={ column } index={ index } lastColumn={ lastColumn }
                     onClickFcn={ onClickFcn }
                     key={ column.id } />
                 })
@@ -211,14 +240,16 @@ export class DataTable_TableRoot extends React.Component {
 
         let headerMain = (
 
-            <table className=" data-table-header-table ">
-                <thead>
-                    <tr className=" data-table-header-row data-table-row ">
-                        
-                        { headerColumnsReactComponents }
-                    </tr>
-                </thead>
-            </table>
+            <div >
+                <table className=" data-table-header-table ">
+                    <thead>
+                        <tr className=" data-table-header-row data-table-row ">
+                            
+                            { headerColumnsReactComponents }
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         )
 
         let header = headerMain;

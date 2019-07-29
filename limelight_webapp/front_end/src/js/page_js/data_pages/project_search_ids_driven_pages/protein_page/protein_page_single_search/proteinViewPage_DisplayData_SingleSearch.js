@@ -1236,6 +1236,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : 'string',
 				style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
 				style_override_React : { whiteSpace : "nowrap", overflowX:"auto", fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' ' 
 			};
 
@@ -1251,6 +1252,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : 'string',
                 style_override : 'white-space:nowrap;overflow:hidden;text-overflow: ellipsis;font-size:12px;',   //prevent line breaks and scroll if too long
 				style_override_React : { whiteSpace : "nowrap", overflow:"hidden", textOverflow: "ellipsis", fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' ' 
 			};
 
@@ -1270,6 +1272,7 @@ export class ProteinViewPage_Display_SingleSearch {
 				graphWidth:50,
 				style_override : 'font-size:12px;',
 				style_override_React : { fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
 				css_class : ' clickable ' 
 			};
 			
@@ -1284,6 +1287,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : 'number',
                 style_override : 'font-size:12px;',
 				style_override_React : { fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' 
 			};
 
@@ -1298,6 +1302,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : 'number',
                 style_override : 'font-size:12px;',
 				style_override_React : { fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' 
 			};
 
@@ -1312,6 +1317,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : 'number',
                 style_override : 'font-size:12px;',
 				style_override_React : { fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' 
 			};
 
@@ -1328,6 +1334,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : annotation.sorttype,  // property sorttype populated in AnnotationTypeDataRetrieval 
                 style_override : 'font-size:12px;',
 				style_override_React : { fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' 
 			};
 
@@ -1344,6 +1351,7 @@ export class ProteinViewPage_Display_SingleSearch {
                 sort : annotation.sorttype,  // property sorttype populated in AnnotationTypeDataRetrieval
                 style_override : 'font-size:12px;',
 				style_override_React : { fontSize:"12px" }, // React format Style overrides
+				style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 css_class : ' clickable ' 
 			};
 

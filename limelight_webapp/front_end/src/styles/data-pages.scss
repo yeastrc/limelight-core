@@ -100,12 +100,6 @@
 
         table.data-table-header-table {  }
 
-        table.data-table-header-table th {
-            text-align: left;
-            vertical-align: baseline;
-            // padding: 4px;
-        }
-
         //  Header Row 
 
         tr.data-table-header-row {
@@ -114,7 +108,8 @@
             background-color:$site-color-medium;
         }
     
-        div.data-table-header-cell {
+        th.data-table-header-cell {
+            text-align: left;
             vertical-align:bottom;
             // white-space:normal;
         }
