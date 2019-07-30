@@ -1637,9 +1637,11 @@ export class ProteinViewPage_Display_SingleSearch {
 	 */
 	_updateTooltipOnMouseMove( eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable ) {
 
-		const $target = $( eventObject.target )
+		const $target = $( eventObject.target );
+
+		const $targetParent = $target.parent();
 		
-		if ( ! $target.hasClass( _CSS_CLASS_SELECTOR_PROTEIN_NAME ) ) {
+		if ( ( ! $target.hasClass( _CSS_CLASS_SELECTOR_PROTEIN_NAME ) ) && ( ! $targetParent.hasClass( _CSS_CLASS_SELECTOR_PROTEIN_NAME ) ) ) {
 			
 			if ( lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId === proteinSequenceVersionIdNotAvailable ) {
 				//  Already not showing tooltip so exit
@@ -1657,8 +1659,13 @@ export class ProteinViewPage_Display_SingleSearch {
 			
 			return;
 		}
+
+		let $tableCell = $target;
+		if ( ! $target.hasClass( _CSS_CLASS_SELECTOR_PROTEIN_NAME ) ) {
+			$tableCell = $targetParent;
+		}
 		
-		const proteinSequenceVersionIdString = $target.attr( "data-row-id" );
+		const proteinSequenceVersionIdString = $tableCell.attr( "data-row-id" );
 		const proteinSequenceVersionIdInt = Number.parseInt( proteinSequenceVersionIdString, 10 );
 		if ( Number.isNaN( proteinSequenceVersionIdInt ) ) {
 			throw Error( "value in attr 'data-row-id' is not integer.  value: " + proteinSequenceVersionIdString );
