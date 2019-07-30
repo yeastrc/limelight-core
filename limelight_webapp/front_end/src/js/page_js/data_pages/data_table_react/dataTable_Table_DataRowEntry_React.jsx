@@ -72,13 +72,6 @@ export class DataTable_Table_DataRowEntry extends React.Component {
 
     const displayValue = this.props.dataColumn.displayValue;
 
-    // if ( this.props.dataColumn.displayValue !== undefined && this.props.dataColumn.displayValue !== null ) {
-    //   displayValue = this.props.dataColumn.displayValue;
-    // } else {
-    //   displayValue = this.props.dataColumn.displayValue;
-    //   // displayValue = ( <span dangerouslySetInnerHTML={{ __html: '&nbsp;' }} ></span> ); // Fill the table cell with something
-    // }
-
     return (
     <td 
         className={ className }

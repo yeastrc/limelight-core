@@ -5,6 +5,8 @@
  */
 import React from 'react'
 
+import { DataTable_Table_HeaderRowEntry_SortIcon_InContainer } from './dataTable_HeaderRowEntry_SortIcon_InContainer.jsx'
+
 /**
  * 
  */
@@ -56,11 +58,11 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
   
       const className = classNameCommon + " " + classNameSortable;
   
-      const styleDisplayNameDiv = { whiteSpace: "normal", fontSize: "12px" };
+      const styleDisplayNameDiv = { whiteSpace: "normal", fontSize: "12px", overflowX: "hidden", textOverflow: "ellipsis" };
 
-      const style_override_React = column.style_override_React;
+      // const style_override_React = column.style_override_React;
   
-      // const style_override_React = column.style_override_header_React;
+      const style_override_React = column.style_override_header_React;
   
       if ( style_override_React ) {
         //  Copy style_override_React object to styleInnerDiv object
@@ -71,27 +73,24 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
         }
       }
 
-      let sortIcon = undefined;
+      let sortIconContainer = undefined;
 
       if ( column.sort ) {
 
-        const sortIconStyle = { display: "flex", alignItems: "flex-end" };
-        if ( this.props.lastColumn ) {
-          sortIconStyle.paddingRight = "3px";
-        }
-        sortIcon =  ( <div style={ sortIconStyle }>
-                        <img src="static/images/icon-sort.png" style={{ maxHeight: "12px" } }/>
-                    </div>
-                    );
+        sortIconContainer = 
+          <DataTable_Table_HeaderRowEntry_SortIcon_InContainer
+          column_sortDirection={ this.props.column_sortDirection } column_sortPosition={ this.props.column_sortPosition } lastColumn={ this.props.lastColumn } />;
       }
 
       let columnSeparator = undefined;
 
       if ( ! this.props.lastColumn ) {
+
+        //  Column separator vertical line positioned to be on the edge between cells in the table
         columnSeparator = (
           <div style={ { position: "relative", display: "inline-block" } }>
-            <div style={ { position: "absolute", left: "4px", bottom: "-4px" } }>
-                <svg preserveAspectRatio="none" height="16px" width="2px"><line x1="0" y1="0" x2="0" y2="16" style={ { stroke: "#d3d3d3" /* "red" */, strokeWidth:2 } } /></svg>
+            <div style={ { position: "absolute", left: "4px", bottom: "-0px" } }>
+                <svg preserveAspectRatio="none" height="16px" width="2px"><line x1="0" y1="0" x2="0" y2="16" style={ { stroke: "#d3d3d3", strokeWidth:2 } } /></svg>
             </div>
           </div>
         );
@@ -99,9 +98,9 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
 
       //  Style the cell for which parts are in it.
 
-      if ( sortIcon && columnSeparator ) {
+      if ( sortIconContainer && columnSeparator ) {
         cellInnerContainerDivStyle.gridTemplateColumns = "auto  min-content min-content";
-      } else if ( sortIcon ) {
+      } else if ( sortIconContainer ) {
         cellInnerContainerDivStyle.gridTemplateColumns = "auto  min-content";
       } else if ( columnSeparator ) {
         cellInnerContainerDivStyle.gridTemplateColumns = "auto  min-content";
@@ -116,12 +115,12 @@ export class DataTable_Table_HeaderRowEntry extends React.Component {
             data-sort_type={ dataSortType } data-columnid={ column.id }>
           <div style={ cellOuterContainerDivStyle }>
             <div style={ cellInnerContainerDivStyle }>
-              <div style= { styleDisplayNameDiv } >
+              <div style= { styleDisplayNameDiv } className=" display-name-container " >
 
                   { column.displayName }
               </div>
 
-              { sortIcon }
+              { sortIconContainer }
 
               { columnSeparator /* Place here so aligned to base line of column name  */ }
             </div>

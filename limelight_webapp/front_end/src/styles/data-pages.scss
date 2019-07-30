@@ -88,8 +88,13 @@
         table.data-table-header-table, table.data-table-data-rows-table { border-spacing: 0px; }
 
         table.data-table-header-table > thead > tr > th, table.data-table-data-rows-table > tbody > tr > td {
-            padding: 5px;
-            padding-left: 11px;
+            padding-right: 5px;
+            padding-left: 8px;
+        }
+
+        table.data-table-data-rows-table > tbody > tr > td {
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         table.data-table-header-table > thead > tr > th:first-child, table.data-table-data-rows-table > tbody > tr > td:first-child {
@@ -103,21 +108,31 @@
         //  Header Row 
 
         tr.data-table-header-row {
-            font-size:14px;
-            font-weight:bold;
-            background-color:$site-color-medium;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: $site-color-medium;
         }
     
         th.data-table-header-cell {
             text-align: left;
             vertical-align:bottom;
+            padding-top: 1px;
+            padding-bottom: 1px;
             // white-space:normal;
+
+            div.display-name-container {
+                padding-top: 4px;
+                padding-bottom: 4px;
+            }
         }
+       
     
         //  Data Rows - Either all or in a group
 
         td.data-table-data-cell {
             vertical-align: top;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         td.data-table-cell {

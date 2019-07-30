@@ -4,12 +4,12 @@
  * Actual Table Root
  */
 import React from 'react'
+
+import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from "./dataTable_constants.js";
+
 import { DataTable_Table_HeaderRowEntry }  from './dataTable_Table_HeaderRowEntry_React.jsx';
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React.jsx';
 import { DataTable_Table_DataRow_Group } from './dataTable_Table_DataRow_Group_React.jsx';
-
-const SORT_DIRECTION_ASCENDING = "A";
-const SORT_DIRECTION_DECENDING = "D";
 
 /**
  * 
@@ -91,7 +91,7 @@ export class DataTable_TableRoot extends React.Component {
 
         if ( ! sortColumnsInfo ) {
             //  No previous entries
-            sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING } ];
+            sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: 1 } ];
         } else if ( ! shiftKeyDown ) {
             //  Shift Key not down
             if ( sortColumnsInfo.length === 1 && sortColumnsInfo[ 0 ].columnId === columnId ) {
@@ -103,7 +103,7 @@ export class DataTable_TableRoot extends React.Component {
                 }
             } else {
                 //  Replace sortColumnsInfo with new value
-                sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING } ];
+                sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: 1 } ];
             }
         } else {
             // Shift Key down when column header clicked
@@ -117,7 +117,8 @@ export class DataTable_TableRoot extends React.Component {
                 }
             } else {
                 //  Not selected column so add to end
-                sortColumnsInfo.push( { columnId, sortDirection : SORT_DIRECTION_ASCENDING } );
+                const sortColumnsInfo_Length = sortColumnsInfo.length;
+                sortColumnsInfo.push( { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: sortColumnsInfo_Length + 1 } );
             }
         }
 
@@ -139,7 +140,9 @@ export class DataTable_TableRoot extends React.Component {
         }
 
         dataToSort.sort( ( dataObject_A, dataObject_B ) => {
-            //  Sort each selected columnId
+
+            //  Sort each selected columnId.   Sort undefined and null before other values
+
             for ( const sortColumnsInfoEntry of sortColumnsInfo ) {
 
                 const columnId = sortColumnsInfoEntry.columnId;
@@ -224,18 +227,47 @@ export class DataTable_TableRoot extends React.Component {
 
         const columnsArrayLength = this.state.tableObject.columns.length;
 
+        const sortColumnsInfo = this.state.sortColumnsInfo;
+
         const headerColumnsReactComponents = (
             this.state.tableObject.columns.map( ( column, index ) => {
+
+                const columnId = column.id;
+
                 const onClickFcn = (event) => { 
-                    this._headerColumnClicked({ event, columnId : column.id }); 
+                    this._headerColumnClicked({ event, columnId }); 
                 };
+
+                let column_sortDirection = undefined;
+                let column_sortPosition = undefined;
+
+                if ( sortColumnsInfo ) {
+
+                    for ( const sortColumnsInfoEntry_InArray of sortColumnsInfo ) {
+
+                        const columnId_InSortEntry = sortColumnsInfoEntry_InArray.columnId;
+                        if ( columnId === columnId_InSortEntry ) {
+                            column_sortDirection = sortColumnsInfoEntry_InArray.sortDirection;
+                            if ( sortColumnsInfo.length !== 1 ) {
+                                column_sortPosition = sortColumnsInfoEntry_InArray.sortPosition;
+                            }
+                            break;
+                        }
+                    }    
+                }
 
                 const lastColumn = index === ( columnsArrayLength - 1 );
 
-                return <DataTable_Table_HeaderRowEntry column={ column } index={ index } lastColumn={ lastColumn }
-                    onClickFcn={ onClickFcn }
-                    key={ column.id } />
-                })
+                return (
+                    <DataTable_Table_HeaderRowEntry 
+                        column={ column } 
+                        column_sortDirection={ column_sortDirection } 
+                        column_sortPosition={ column_sortPosition }
+                        index={ index } lastColumn={ lastColumn }
+                        onClickFcn={ onClickFcn }
+                        key={ column.id } />
+                );
+            })
         );
 
         let headerMain = (
