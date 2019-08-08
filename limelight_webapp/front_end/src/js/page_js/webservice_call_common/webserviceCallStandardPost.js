@@ -64,21 +64,49 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                 url : _URL,
                 data : requestData,
                 contentType: _AJAX_POST_JSON_CONTENT_TYPE,
-                dataType : "json",
+                dataType : "text", // "json",
                 beforeSend : function( jqXHR, settings ) { // ( jqXHR jqXHR, PlainObject settings )
                     // A pre-request callback function that can be used to modify the jqXHR (in jQuery 1.4.x, XMLHTTPRequest) object before it is sent. Use this to set custom headers, etc. The jqXHR and settings objects are passed as arguments. This is an Ajax Event. Returning false in the beforeSend function will cancel the request. As of jQuery 1.5, the beforeSend option will be called regardless of the type of request.
 
                     jqXHR.setRequestHeader( webserviceSyncTrackingCodeHeaderParam, webserviceSyncTrackingCode );
                 },
-                success : function( responseData ) {
+                success : function( responseDataJSON ) {
 
                     request = undefined;
 
                     try {
+
+                        let responseData;
+                        try {
+                            responseData = JSON.parse( responseDataJSON );
+                        } catch( e_JSON_parse ) {
+                            
+                            try {
+                                //  Create error to send to server
+                                throw Error("Response from server cannot be parsed as JSON. Server response contents: " + responseDataJSON );
+                            } catch( e ) {
+
+                                if ( ! doNotHandleErrorResponse ) {
+                                    handleAJAXFailure( "Response from server cannot be parsed as JSON." );  //  Sometimes throws exception so rest of processing won't always happen
+                                }
+        
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                throw e;
+                            }
+                        }
+                            
                         resolve({ responseData });
                         
                     } catch( e ) {
+
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+
+                        const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                        //  Need to set properties on object rejectReasonObject
+
+                        reject({ rejectReasonObject });
+
                         throw e;
                     }
                 },

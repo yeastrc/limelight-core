@@ -43,7 +43,7 @@ var AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE = 400;
 
 function handleAJAXFailure( errMsg ) {
 
-	showAjaxErrorMsgFromMsg( { errorMsg : "Connecting to server failed: " + errorMsg } );
+	showAjaxErrorMsgFromMsg( { errorMsg : "Connecting to server failed: " + errMsg } );
 }
 
 
@@ -111,9 +111,9 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 //		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 		
 		//  Unable to parse JSON so display on page
-		showAjaxErrorMsg( { errorMsg : "exception: " + errorThrown + ", jqXHR: " + jqXHR + ", textStatus: " + textStatus } );
+		// showAjaxErrorMsg( { errorMsg : "exception: " + errorThrown + ", jqXHR: " + jqXHR + ", textStatus: " + textStatus } );
 
-		throw e;
+		// throw e;
 	}
 	
 	if ( jqXHR_responseText_JSON ) {
@@ -194,7 +194,27 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 		
 	} else {
 		
-		showAjaxErrorMsg( { errorMsg : "exception: " + errorThrown + ", jqXHR: " + jqXHR + ", textStatus: " + textStatus } );
+		try {
+			const msg = (
+				 "Response HTTP Status Code from server not an expected status. HTTP Status Code: " + jqXHR_statusCode 
+				+ ", textStatus: " + textStatus 
+				+ ", jqXHR.responseText: " + jqXHR.responseText
+			);
+
+			console.log( msg );
+
+			//  Create error to send to server
+			throw Error( msg );
+		} catch( e ) {
+			try {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			} catch( e2 ) {
+				console.log("reportWebErrorToServer.reportErrorObjectToServer threw exception:")
+				console.log( e2 );
+			}
+		}
+
+		showAjaxErrorMsg( { errorMsg : "exception: " + errorThrown + ", jqXHR: " + jqXHR + ", HTTP Status Code: " + jqXHR_statusCode + ", textStatus: " + textStatus } );
 	}
 	
 	
