@@ -213,7 +213,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 
 		//  Various Maps, key Reported Peptide Id
 		const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
-//		const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
+		// const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
+		//  These 3 may be undefined if not populated since not applicable.
 		const reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId();
 		const reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId();
 		const psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId();
@@ -289,19 +290,20 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 
 			{
 				//  Best PSM Ann Values
+				if ( psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId ) {
+					//  Create Object from Map since that is expected in other code
+					const psmBestFilterable_annData_KeyAnnTypeId = psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId.get( reportedPeptideId );
+					if ( psmBestFilterable_annData_KeyAnnTypeId ) {
 
-				//  Create Object from Map since that is expected in other code
-				const psmBestFilterable_annData_KeyAnnTypeId = psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId.get( reportedPeptideId );
-				if ( psmBestFilterable_annData_KeyAnnTypeId ) {
-
-					const psmAnnotationData = {}; // property name will be ann type id
-					for ( const annDataEntry of psmBestFilterable_annData_KeyAnnTypeId ) {
-						const annTypeId = annDataEntry[ 0 ]; // key
-						const annData = annDataEntry[ 1 ]; // value
-						const annDataForDisplay =  { annotationTypeId : annTypeId, valueDouble : annData.valueDouble, valueString : annData.valueString };
-						psmAnnotationData[ annTypeId ] = annDataForDisplay;
+						const psmAnnotationData = {}; // property name will be ann type id
+						for ( const annDataEntry of psmBestFilterable_annData_KeyAnnTypeId ) {
+							const annTypeId = annDataEntry[ 0 ]; // key
+							const annData = annDataEntry[ 1 ]; // value
+							const annDataForDisplay =  { annotationTypeId : annTypeId, valueDouble : annData.valueDouble, valueString : annData.valueString };
+							psmAnnotationData[ annTypeId ] = annDataForDisplay;
+						}
+						peptideItem.psmAnnotationMap = psmAnnotationData;
 					}
-					peptideItem.psmAnnotationMap = psmAnnotationData;
 				}
 			}
 			
