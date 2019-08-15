@@ -22,12 +22,17 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 
 /**
  * Base class for all JDBC access to database 'Limelight' (primary database)
+ * 
+ * All objects of classes that extend this class MUST be created by Spring.  Any objects created using 'new' will not be set up properly
  * 
  * Connection comes from primary JdbcTemplate jdbcTemplate
  * 
@@ -38,6 +43,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public abstract class Limelight_JDBC_Base {
+	
+	private static final Logger log = LoggerFactory.getLogger( Limelight_JDBC_Base.class );
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -49,6 +56,17 @@ public abstract class Limelight_JDBC_Base {
 	 * @throws SQLException 
 	 */
 	protected Connection getDBConnection() throws SQLException {
+		
+		if ( jdbcTemplate == null ) {
+			final String msg = "Limelight_JDBC_Base:getDBConnection(): jdbcTemplate == null.  jdbcTemplate object property not set by Spring.  This object must be created by Spring.  If this object is created by 'new' it will NOT be set up properly.";
+			try {
+				throw new LimelightInternalErrorException( msg );
+				
+			} catch( LimelightInternalErrorException e ) {
+				log.error( msg, e );
+				throw e;
+			}
+		}
 
 		DataSource dataSourceDB = jdbcTemplate.getDataSource();
 		
@@ -59,6 +77,18 @@ public abstract class Limelight_JDBC_Base {
 	
 	//  Called from classes extending this class
 	protected JdbcTemplate getJdbcTemplate() {
+
+		if ( jdbcTemplate == null ) {
+			final String msg = "Limelight_JDBC_Base:getDBConnection(): jdbcTemplate == null.  jdbcTemplate object property not set by Spring.  This object must be created by Spring.  If this object is created by 'new' it will NOT be set up properly.";
+			try {
+				throw new LimelightInternalErrorException( msg );
+				
+			} catch( LimelightInternalErrorException e ) {
+				log.error( msg, e );
+				throw e;
+			}
+		}
+		
 		return jdbcTemplate;
 	}
 

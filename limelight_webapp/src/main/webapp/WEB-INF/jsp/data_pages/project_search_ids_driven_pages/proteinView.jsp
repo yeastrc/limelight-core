@@ -75,6 +75,12 @@
 		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_proteins" class=" fake-link " >Download Proteins</span>
 	
 		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_assoc_psms" class=" fake-link " >Download PSMs</span>
+		
+		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="show_status_link" class=" fake-link " >Show Stats</span>
+	</div>
+	
+	<div id="stats_data_container">
+
 	</div>
 	
 	<%--  Proteins Loading Text --%>

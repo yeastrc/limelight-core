@@ -124,6 +124,14 @@ export class ProteinViewPage_DisplayDataOnPage {
 		
 		const objectThis = this;
 
+		{
+			const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
+			if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
+				throw Error("Failed to find DOM element with id 'protein_counts_download_assoc_psms_block'");
+			}
+			$protein_counts_download_assoc_psms_block.hide();
+		}
+
 		var projectSearchIds = 
 			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
 
@@ -166,7 +174,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 	 * 
 	 */
 	populateProteinListBlock_SingleSearch({ projectSearchId }) {
-		
+
 		const objectThis = this;
 
 		// Wait to show and attach click handler for #protein_download_proteins until after protein list is displayed

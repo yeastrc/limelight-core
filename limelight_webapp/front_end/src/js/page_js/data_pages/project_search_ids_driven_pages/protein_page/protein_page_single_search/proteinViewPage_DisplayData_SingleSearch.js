@@ -34,6 +34,8 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data
 import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder.js';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder.js';
 
+import { ProteinViewPage_StatsSectionCreator_SingleSearch } from './proteinPageStatsSectionCreator_SingleSearch.js';
+
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from './proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
 
 import { ProteinViewPage_Display_SingleProtein_SingleSearch }
@@ -92,7 +94,8 @@ export class ProteinViewPage_Display_SingleSearch {
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( {
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
+		} );
 		
 		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer =
 			new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
@@ -112,6 +115,8 @@ export class ProteinViewPage_Display_SingleSearch {
 			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
 		} );
+
+		this._proteinViewPage_StatsSectionCreator_SingleSearch = new ProteinViewPage_StatsSectionCreator_SingleSearch({ loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder });
 
 		// From common template:
 
@@ -803,7 +808,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	_renderToPageProteinList( { projectSearchId, proteinDisplayData } ) {
 		
 		let objectThis = this;
-		
+
 		console.log("Rendering Protein List START, Now: " + new Date() );
 		
 		const proteinList = proteinDisplayData.proteinList;
@@ -834,6 +839,19 @@ export class ProteinViewPage_Display_SingleSearch {
 		$("#reported_peptide_count_display").text( reportedPeptideCount_TotalForSearch_Display );
 		$("#psm_count_label").show();
 		$("#psm_count_display").text( psmCount_TotalForSearch_Display );
+
+
+		this._proteinViewPage_StatsSectionCreator_SingleSearch.setProteinListData({ 
+			projectSearchId : this._projectSearchId,
+			proteinListData : { 
+				psmCount: proteinDisplayData.psmCount_TotalForSearch,
+				reportedPeptideCount: proteinDisplayData.reportedPeptideCount_TotalForSearch,
+				proteinCount: proteinListLength
+			}
+		});
+
+		this._proteinViewPage_StatsSectionCreator_SingleSearch.addDisplayClickHandler();
+		
 
 		if (proteinList && proteinList.length > 0) {
 
