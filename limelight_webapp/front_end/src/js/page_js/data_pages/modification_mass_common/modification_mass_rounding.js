@@ -26,6 +26,7 @@ const modificationMass_CommonRounding_ReturnNumber = function( modificationMass 
 }
 
 /**
+ *
 * @param modificationMass
 * @returns String with modification mass rounded
 */
