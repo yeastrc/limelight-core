@@ -7,9 +7,6 @@
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 --%>
 
-<%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
-<%@page import="org.yeastrc.limelight.limelight_import.api.xml_dto.FilterDirectionType"%>
-
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
 
 
@@ -36,7 +33,7 @@
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
 
 	<h3>
-		List search mods:
+		Modifications View
 	</h3>
 	
 	<!--  Navigation Links -->
