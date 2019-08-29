@@ -34,7 +34,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // label defs
         const labelFontSize = 14;               // font size (in pixels) of labels
-        const maxSearchLabelLength = 43;        // max # of characters in a search label before truncation
+        const maxSearchLabelLength = 39;        // max # of characters in a search label before truncation
 
         const width = ModViewDataVizRenderer_MultiSearch.getWidth({sortedModMasses, widthDefs});
         const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds, heightDefs});
