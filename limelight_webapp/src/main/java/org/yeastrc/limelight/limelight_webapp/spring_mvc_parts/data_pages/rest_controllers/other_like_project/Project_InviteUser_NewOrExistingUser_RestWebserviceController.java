@@ -58,7 +58,6 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailIF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
@@ -195,13 +194,9 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
     		String projectIdentifier = webserviceRequest.getProjectIdentifier();
 
     		Integer invitedPersonUserId = webserviceRequest.getInvitedPersonUserId();
-        	String invitedPersonLastName = webserviceRequest.getInvitedPersonLastName();
         	String invitedPersonEmail = webserviceRequest.getInvitedPersonEmail();
         	Integer invitedPersonAccessLevel = webserviceRequest.getInvitedPersonAccessLevel();
         	
-    		if ( invitedPersonLastName != null ) {
-    			invitedPersonLastName = invitedPersonLastName.trim();
-    		}
     		if ( invitedPersonEmail != null ) {
     			invitedPersonEmail = invitedPersonEmail.trim();
     		}
@@ -216,11 +211,8 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
     		}
 
     		if ( invitedPersonUserId == null ) {
-    			if ( StringUtils.isEmpty( invitedPersonLastName ) && StringUtils.isEmpty( invitedPersonEmail )) {
-    				log.warn( "UserInviteService: invitedPersonLastName and invitedPersonEmail both empty" );
-    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    			} else if ( StringUtils.isNotEmpty( invitedPersonLastName ) && StringUtils.isNotEmpty( invitedPersonEmail )) {
-    				log.warn( "UserInviteService: invitedPersonLastName and invitedPersonEmail both not empty" );
+    			if ( StringUtils.isEmpty( invitedPersonEmail )) {
+    				log.warn( "UserInviteService: invitedPersonUserId and invitedPersonEmail both empty" );
     				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     			}
     		}
@@ -270,10 +262,9 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			//   Process the request
 			if ( invitedPersonUserId != null ) {
 				//  process the user id
+
 				addExistingUserToProjectUsingProjectId( invitedPersonUserId, invitedPersonAccessLevel, projectId, webserviceResult );
-			} else if ( StringUtils.isNotEmpty( invitedPersonLastName ) ) {
-				//  process the last name
-				addExistingUserToProjectUsingLastName( invitedPersonLastName, invitedPersonAccessLevel, projectId, webserviceResult /*, sessionKey */ );
+
 			} else {
 				//  Process the email
 				UserMgmtSearchUserDataRequest userMgmtSearchUserDataRequest = new UserMgmtSearchUserDataRequest();
@@ -308,7 +299,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 					}
 					Integer userMgmtUserIdEntry = userMgmtUserIdList.get( 0 );
 					int invitedPersonUserMgmtUserIdFromEmail = userMgmtUserIdEntry;
-					
 					
 					addExistingUser_In_UserMgmt_ToProjectUsingProjectId( invitedPersonUserMgmtUserIdFromEmail, invitedPersonAccessLevel, projectId, webserviceResult );
 				} else {
@@ -436,54 +426,9 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 	}
     
 	/**
-	 * @param invitedPersonLastName
-	 * @param invitedPersonAccessLevel
-	 * @param projectId
-	 * @param webserviceResult
-	 * @throws Exception
-	 */
-	private void addExistingUserToProjectUsingLastName( 
-			String invitedPersonLastName, 
-			int invitedPersonAccessLevel,
-			int projectId,
-			WebserviceResult webserviceResult
-//			,
-//			String sessionKey 
-			) throws Exception {
-		
-		UserMgmtSearchUserDataRequest userMgmtSearchUserDataRequest = new UserMgmtSearchUserDataRequest();
-//		userMgmtSearchUserDataRequest.setSessionKey( sessionKey );
-		userMgmtSearchUserDataRequest.setSearchString( invitedPersonLastName );
-		userMgmtSearchUserDataRequest.setSearchStringExactMatch(true);
-		
-		UserMgmtSearchUserDataResponse userMgmtSearchUserDataResponse = 
-				userMgmtCentralWebappWebserviceAccess.searchUserDataByEmail( userMgmtSearchUserDataRequest );
-		
-		if ( ! userMgmtSearchUserDataResponse.isSuccess() ) {
-			if ( userMgmtSearchUserDataResponse.isSessionKeyNotValid() ) {
-				String msg = "Session Key invalid for call to UserMgmtCentralWebappWebserviceAccess.getInstance().searchUserDataByEmail(...)";
-				log.error( msg );
-				throw new LimelightInternalErrorException( msg );
-			}
-			String msg = "call to UserMgmtCentralWebappWebserviceAccess.getInstance().searchUserDataByEmail(...) not successful, invitedPersonLastName: " + invitedPersonLastName;
-			log.error( msg );
-			throw new LimelightInternalErrorException( msg );
-		}
-		List<Integer> userIdList = userMgmtSearchUserDataResponse.getUserIdList();
-		if ( ! userIdList.isEmpty() ) {
-			webserviceResult.setLastNameNotFoundError(true);
-		} else if ( userIdList.size() > 1 ) {
-			webserviceResult.setLastNameDuplicateError(true);
-		} else {
-			int invitedPersonUserId = userIdList.get( 0 );
-			addExistingUserToProjectUsingProjectId( invitedPersonUserId, invitedPersonAccessLevel, projectId, webserviceResult );
-		}
-	}
-
-	/**
 	 * Have existing Limelight user to add to this project
 	 * 
-	 * @param invitedPersonUserId
+	 * @param invitedPerson_Limelight_UserId
 	 * @param invitedPersonAccessLevel
 	 * @param projectId
 	 * @param webserviceResult
@@ -751,80 +696,84 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 		
 		return sendEmailItem;
 	}
+	
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	//   Not Currently Used
 
-	/**
-	 * @param userInviteTrackingDTO
-	 * @param userDatabaseRecord
-	 * @param request
-	 * @return
-	 * @throws Exception 
-	 */
-	private SendEmailItem createInviteToAppToViewProjectMailMessageToSend( 
-			int projectId, String invitedPersonEmail, UserSession userSession, HttpServletRequest httpServletRequest )
-	throws Exception {
-		
-		//  Create the URl (to the Page controller for processing the invite) to add to the email sent for the invite.
-		
-		//  Get base path to Page controller for processing the invite.
-		String requestURL = httpServletRequest.getRequestURL().toString();
-		
-		int controllerStartInURL_Index = requestURL.indexOf( PATH_OF_MAIN_PROCESS_INVITE_REQUEST_CONTROLLER );
-		
-		if ( controllerStartInURL_Index == -1 ) {
-			String msg = "Failed to find path of current controller in request URL.  request URL: " + requestURL
-					+ ", path of current page controller: " + PATH_OF_MAIN_PROCESS_INVITE_REQUEST_CONTROLLER;
-			log.error( msg );
-			throw new LimelightInternalErrorException(msg);
-		}
-		
-		String baseURL = requestURL.substring( 0, controllerStartInURL_Index );
-
-		//  Create URL to Page controller for processing the invite.
-		String projectURL = baseURL + AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER
-				+ "/" + projectId;
-		
-		String atOrgText = "";
-		
-		if ( StringUtils.isNotEmpty( userSession.getOrganization() ) ) {
-			atOrgText = " at "
-					+ userSession.getOrganization();
-		}
-		
-		// set the email message body
-		String text = 
-				"You have been added to the project in the limelight web application by "
-				+ userSession.getFirstName()
-				+ " "
-				+ userSession.getLastName()
-				+ atOrgText
-				+ ".\n\n"
-//				+ "The project is: " +
+//	/**
+//	 * @param userInviteTrackingDTO
+//	 * @param userDatabaseRecord
+//	 * @param request
+//	 * @return
+//	 * @throws Exception 
+//	 */
+//	private SendEmailItem createInviteToAppToViewProjectMailMessageToSend( 
+//			int projectId, String invitedPersonEmail, UserSession userSession, HttpServletRequest httpServletRequest )
+//	throws Exception {
+//		
+//		//  Create the URl (to the Page controller for processing the invite) to add to the email sent for the invite.
+//		
+//		//  Get base path to Page controller for processing the invite.
+//		String requestURL = httpServletRequest.getRequestURL().toString();
+//		
+//		int controllerStartInURL_Index = requestURL.indexOf( PATH_OF_MAIN_PROCESS_INVITE_REQUEST_CONTROLLER );
+//		
+//		if ( controllerStartInURL_Index == -1 ) {
+//			String msg = "Failed to find path of current controller in request URL.  request URL: " + requestURL
+//					+ ", path of current page controller: " + PATH_OF_MAIN_PROCESS_INVITE_REQUEST_CONTROLLER;
+//			log.error( msg );
+//			throw new LimelightInternalErrorException(msg);
+//		}
+//		
+//		String baseURL = requestURL.substring( 0, controllerStartInURL_Index );
+//
+//		//  Create URL to Page controller for processing the invite.
+//		String projectURL = baseURL + AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER
+//				+ "/" + projectId;
+//		
+//		String atOrgText = "";
+//		
+//		if ( StringUtils.isNotEmpty( userSession.getOrganization() ) ) {
+//			atOrgText = " at "
+//					+ userSession.getOrganization();
+//		}
+//		
+//		// set the email message body
+//		String text = 
+//				"You have been added to the project in the limelight web application by "
+//				+ userSession.getFirstName()
+//				+ " "
+//				+ userSession.getLastName()
+//				+ atOrgText
 //				+ ".\n\n"
-				+ "To view the project follow this link: " + projectURL 
-				+ "\n\n"
-				+ "Thank you\n\nlimelight";
-		
-		String fromEmailAddress = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY );
-
-		if ( StringUtils.isEmpty( fromEmailAddress ) ) {
-			
-			String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY
-					+ "'.";
-			log.error(msg);
-			throw new LimelightWebappConfigException( msg );
-		}
-		
-		String toEmailAddress = invitedPersonEmail;
-		String emailSubject = "Welcome To limelight Webapp project"; 
-		String emailBody = text;
-		SendEmailItem sendEmailItem = new SendEmailItem();
-		sendEmailItem.setFromEmailAddress( fromEmailAddress );
-		sendEmailItem.setToEmailAddress( toEmailAddress );
-		sendEmailItem.setEmailSubject( emailSubject );
-		sendEmailItem.setEmailBody( emailBody );
-		
-		return sendEmailItem;
-	}
+////				+ "The project is: " +
+////				+ ".\n\n"
+//				+ "To view the project follow this link: " + projectURL 
+//				+ "\n\n"
+//				+ "Thank you\n\nlimelight";
+//		
+//		String fromEmailAddress = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY );
+//
+//		if ( StringUtils.isEmpty( fromEmailAddress ) ) {
+//			
+//			String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY
+//					+ "'.";
+//			log.error(msg);
+//			throw new LimelightWebappConfigException( msg );
+//		}
+//		
+//		String toEmailAddress = invitedPersonEmail;
+//		String emailSubject = "Welcome To limelight Webapp project"; 
+//		String emailBody = text;
+//		SendEmailItem sendEmailItem = new SendEmailItem();
+//		sendEmailItem.setFromEmailAddress( fromEmailAddress );
+//		sendEmailItem.setToEmailAddress( toEmailAddress );
+//		sendEmailItem.setEmailSubject( emailSubject );
+//		sendEmailItem.setEmailBody( emailBody );
+//		
+//		return sendEmailItem;
+//	}
 	
 	//////////////////////////////////////////////////////////////////////
 	
@@ -1006,7 +955,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
     	private String projectIdentifier;
     	
     	private Integer invitedPersonUserId;
-    	private String invitedPersonLastName;
     	private String invitedPersonEmail;
     	private Integer invitedPersonAccessLevel;
     	
@@ -1021,12 +969,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 		}
 		public void setInvitedPersonUserId(Integer invitedPersonUserId) {
 			this.invitedPersonUserId = invitedPersonUserId;
-		}
-		public String getInvitedPersonLastName() {
-			return invitedPersonLastName;
-		}
-		public void setInvitedPersonLastName(String invitedPersonLastName) {
-			this.invitedPersonLastName = invitedPersonLastName;
 		}
 		public String getInvitedPersonEmail() {
 			return invitedPersonEmail;
