@@ -116,6 +116,71 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 				throw e;
 			}
 		});
+
+
+		//  Listen for changes to invite_user_last_name and invite_user_email
+		
+		const invite_user_last_name_DOM = document.getElementById("invite_user_last_name");
+		if ( ! invite_user_last_name_DOM ) {
+			throw Error("No DOM element with id 'invite_user_last_name'");
+		}
+		const invite_user_email_DOM = document.getElementById("invite_user_email");
+		if ( ! invite_user_email_DOM ) {
+			throw Error("No DOM element with id 'invite_user_email'");
+		}
+		
+		invite_user_last_name_DOM.addEventListener('input', ( eventObject ) => {
+			try {
+				eventObject.preventDefault();
+				// console.log("'input' fired");
+				const eventTarget = eventObject.target;
+				const eventTargetValue = eventTarget.value;
+				if ( eventTargetValue !== "" ) {
+					
+					//  disable invite button
+					this._disableInviteButton();
+
+					// has value so clear value in invite_user_email
+					const invite_user_email_DOM = document.getElementById("invite_user_email");
+					if ( ! invite_user_email_DOM ) {
+						throw Error("No DOM element with id 'invite_user_email'");
+					}
+					invite_user_email_DOM.value = "";
+				}
+				return false;
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+
+		invite_user_email_DOM.addEventListener('input', ( eventObject ) => {
+			try {
+				eventObject.preventDefault();
+				// console.log("'input' fired");
+				const eventTarget = eventObject.target;
+				const eventTargetValue = eventTarget.value;
+				if ( eventTargetValue !== "" ) {
+
+					// has value so enable invite button
+					this._enableInviteButton();
+
+					// has value so clear value in invite_user_last_name_DOM
+					const invite_user_last_name_DOM = document.getElementById("invite_user_last_name");
+					if ( ! invite_user_last_name_DOM ) {
+						throw Error("No DOM element with id 'invite_user_last_name'");
+					}
+					invite_user_last_name_DOM.value = "";
+				} else {
+					//  Not have value so disable invite button
+					this._disableInviteButton();
+				}
+				return false;
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
 		
 		this._initInviteUserLastNameAutoComplete();
 		
@@ -144,7 +209,33 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 		$invite_user_collapsed.show();
 		$invite_user_expanded.hide();
 	}
-	
+
+	/**
+	 * 
+	 */		
+	_enableInviteButton() {
+
+		//  Enable Invite button
+		const $invite_user_button = $("#invite_user_button");
+		$invite_user_button.prop("disabled",false);
+		//  Hide cover over Invite Button
+		const $invite_user_button_disabled_cover = $("#invite_user_button_disabled_cover");
+		$invite_user_button_disabled_cover.hide();
+	}
+
+	/**
+	 * 
+	 */
+	_disableInviteButton() {
+
+		//  Disable Invite button
+		const $invite_user_button = $("#invite_user_button");
+		$invite_user_button.prop("disabled",true);
+		//  Show cover over Invite Button
+		const $invite_user_button_disabled_cover = $("#invite_user_button_disabled_cover");
+		$invite_user_button_disabled_cover.show();
+	}
+
 	/**
 	 * 
 	 */
@@ -162,6 +253,8 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 		let $invite_user_email = $("#invite_user_email");
 		$invite_user_last_name.val("");
 		$invite_user_email.val("");
+
+		this._disableInviteButton();
 	}
 
 	/**
@@ -265,6 +358,8 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 		$("#invite_user_auto_complete_value").text(item.label);
 		$("#invite_user_auto_complete_display").show();
 		$("#invite_user_input_fields").hide();
+
+		this._enableInviteButton();
 	};
 
 	/**
@@ -294,31 +389,16 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 			ajaxParams.invitedPersonUserId = this._existingUserIdForAddProjectAccess;
 			requestData.existingUserIdForAddProjectAccess = this._existingUserIdForAddProjectAccess;
 		} else {
-			var $invite_user_last_name = $("#invite_user_last_name");
-			if ($invite_user_last_name.length === 0) {
-				throw Error( "Unable to find input field for id 'invite_user_last_name' " );
-			}
+			//  Remove invite_user_last_name input since user must choose an existing last name which this._existingUserIdForAddProjectAccess is then populated
 			var $invite_user_email = $("#invite_user_email");
 			if ($invite_user_email.length === 0) {
 				throw Error( "Unable to find input field for id 'invite_user_email' " );
 			}
-			var invite_user_last_name = $invite_user_last_name.val();
 			var invite_user_email = $invite_user_email.val();
-			if ( invite_user_last_name === "" && invite_user_email === "" ) {
-//				alert("last name or email must be specified");
-				var $element = $("#error_message_invite_name_or_email_required");
-				showErrorMsg( $element );
-				return false;  //  !!!  EARLY EXIT			
-			}
-			if ( invite_user_last_name !== "" && invite_user_email !== "" ) {
-//				alert("last name and email cannot both be specified");
-				var $element = $("#error_message_invite_name_and_email_have_values");
-				showErrorMsg( $element );
-				return false;  //  !!!  EARLY EXIT	
-			}
-			ajaxParams.invitedPersonLastName = invite_user_last_name;
+		 	//  Should never occur since button disabled when field is empty
+			// if ( invite_user_email === "" ) {
+			// }
 			ajaxParams.invitedPersonEmail = invite_user_email;
-			requestData.invite_user_last_name = invite_user_last_name;
 			requestData.invite_user_email = invite_user_email;
 		}
 		requestData.ajaxParams = ajaxParams;

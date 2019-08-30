@@ -44,9 +44,7 @@
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>
 
  <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_closing_body_tag_include_data_pages.jsp" %>
-  
-  <script type="text/javascript" src="static/js_generated_bundles/data_pages/peptideViewPage_RootLaunch_LoggedInUsers-bundle.js?x=${ cacheBustValue }"></script>
-  
+    
   <%@ include file="//WEB-INF/jsp/jsp_includes_body_start_body_end/body_right_before_closing_body_tag.jsp" %>	
 </body>
 </html>
