@@ -14,14 +14,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                               searchDetailsBlockDataMgmtProcessing,
                               dataPageStateManager_DataFrom_Server } ) {
 
-        console.log(projectSearchIds);
-
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds });
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds});
         const sortedModMasses = Object.keys(modMap).sort( (a,b) => ( parseInt(a) - parseInt(b)));
         const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix);
-
-        console.log(sortedModMasses);
 
         // if an existing viz is here, blow it away
         let $mainContentDiv = $('#mod_list_container');
@@ -171,7 +167,10 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')
-            .attr('fill', (d) => (colorScale(d)));
+            .attr('fill', (d) => (colorScale(d.psmCount)))
+            .on("mouseover", function (d, i) {
+                console.log(d);
+            });
 
     }
 
@@ -246,8 +245,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         for(let i = 0; i < modMatrix.length; i++ ) {
             for(let k = 0; k < modMatrix[i].length; k++) {
-                if(modMatrix[i][k] > max) {
-                    max = modMatrix[i][k];
+                if(modMatrix[i][k]['psmCount'] > max) {
+                    max = modMatrix[i][k]['psmCount'];
                 }
             }
         }
@@ -268,9 +267,21 @@ export class ModViewDataVizRenderer_MultiSearch {
             for(const projectSearchId of projectSearchIds) {
 
                 if(modMass in modMap && projectSearchId in modMap[modMass]) {
-                    modMatrix[i][k] = modMap[modMass][projectSearchId];
+                    modMatrix[i][k] = {
+                        psmCount: modMap[modMass][projectSearchId],
+                        projectSearchId: projectSearchId,
+                        modMass: modMass,
+                        searchIndex: k,
+                        modMassIndex: i
+                    };
                 } else {
-                    modMatrix[i][k] = 0;
+                    modMatrix[i][k] = {
+                        psmCount: 0,
+                        projectSearchId: projectSearchId,
+                        modMass: modMass,
+                        searchIndex: k,
+                        modMassIndex: i
+                    };
                 }
 
                 k++;
