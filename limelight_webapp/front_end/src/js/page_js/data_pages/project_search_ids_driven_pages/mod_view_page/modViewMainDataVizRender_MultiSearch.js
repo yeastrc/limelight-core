@@ -44,9 +44,20 @@ export class ModViewDataVizRenderer_MultiSearch {
             .domain(projectSearchIds)
             .range([0, height]);
 
-        let colorScale = d3.scaleSqrt()
-            .domain([0, maxPsmCount])
-            .range([d3.rgb(255,255,255), d3.rgb(255,0,0)]);
+        // let colorScale = d3.scaleSqrt()
+        //     .domain([0, maxPsmCount])
+        //     .range([d3.rgb(255,255,255), d3.rgb(255,0,0)]);
+
+        // const colorScale = d3.scaleSequential(d3.interpolateYlGn)
+        //     .domain([0, maxPsmCount])
+
+        const logScale = d3.scaleLog()
+            .domain([1, maxPsmCount])
+
+        const colorScale = d3.scaleSequential(
+            (d) => d3.interpolateYlGn(logScale(d))
+            //(d) => d3.interpolatePlasma(logScale(d))
+        )
 
         // start drawing the actual viz
         let svg = d3.select("#mod_list_container").append("svg")
@@ -55,7 +66,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds });
+        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height });
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
@@ -148,7 +159,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return height;
     }
 
-    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds }) {
+    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height }) {
 
         // Create a group for each column in the data matrix and translate the group horizontally
         const svgColGroups = svg.selectAll('.search-col-group')
@@ -169,9 +180,14 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('stroke', 'none')
             .attr('fill', (d) => (colorScale(d.psmCount)))
             .on("mouseover", function (d, i) {
-                console.log(d);
+                d3.select(this)
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', '1');
+            })
+            .on("mouseout", function (d, i) {
+                d3.select(this)
+                    .attr('stroke', 'none')
             });
-
     }
 
     static addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
