@@ -25,7 +25,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // some defaults for the viz
         const margin = {top: 200, right: 10, bottom: 10, left: 300};
-        const widthDefs = {default:1000, min: 2, max: 40};
+        const widthDefs = {default:1000, min: 3, max: 40};
         const heightDefs = {default:500, min:40, max:40};
 
         // label defs
@@ -180,12 +180,11 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('fill', (d) => (colorScale(d.psmCount)))
             .on("mouseover", function (d, i) {
                 d3.select(this)
-                    .attr('stroke', 'black')
-                    .attr('stroke-width', '1');
+                    .attr('fill', 'white')
             })
             .on("mouseout", function (d, i) {
                 d3.select(this)
-                    .attr('stroke', 'none')
+                    .attr('fill', (d) => (colorScale(d.psmCount)))
             });
     }
 
