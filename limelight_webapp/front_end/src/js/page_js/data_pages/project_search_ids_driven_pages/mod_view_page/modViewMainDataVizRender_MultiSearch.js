@@ -55,8 +55,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .domain([1, maxPsmCount])
 
         const colorScale = d3.scaleSequential(
-            (d) => d3.interpolateYlGn(logScale(d))
-            //(d) => d3.interpolatePlasma(logScale(d))
+            (d) => d3.interpolatePlasma(logScale(d))
         )
 
         // start drawing the actual viz
