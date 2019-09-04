@@ -65,7 +65,22 @@ export class ModViewDataVizRenderer_MultiSearch {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height });
+        // set up div to use for tooltips
+        d3.select('#mod-viz-tooltip').remove();
+        const tooltip = d3.select("body")
+            .append("div")
+            .attr("id", "mod-viz-tooltip")
+            .style("width", "100px")
+            .style("height", "100px")
+            .style("background-color", "white")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("border-style", "solid")
+            .style("border-color", "gray")
+            .style("border-width", "1px")
+            .style("visibility", "hidden");
+
+        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip });
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
@@ -158,7 +173,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return height;
     }
 
-    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height }) {
+    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip }) {
 
         // Create a group for each column in the data matrix and translate the group horizontally
         const svgColGroups = svg.selectAll('.search-col-group')
@@ -179,13 +194,28 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('stroke', 'none')
             .attr('fill', (d) => (colorScale(d.psmCount)))
             .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .attr('fill', 'white')
+                d3.select(this).attr('fill', 'white')
+            })
+            .on("mousemove", function (d, i) {
+                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d.projectSearchId, modMass:d.modMass, psmCount:d.psmCount, tooltip })
             })
             .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr('fill', (d) => (colorScale(d.psmCount)))
+                d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
+                ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
             });
+    }
+
+    static showToolTip({ projectSearchId, modMass, psmCount, tooltip }) {
+        tooltip
+            .style("top", (event.pageY + 20)+"px")
+            .style("left",(event.pageX + 20)+"px")
+            .style("visibility", "visible")
+            .text(modMass);
+    }
+
+    static hideToolTip({ tooltip }) {
+        tooltip
+            .style("visibility", "hidden")
     }
 
     static addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
