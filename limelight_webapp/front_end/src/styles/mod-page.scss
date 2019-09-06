@@ -1,0 +1,31 @@
+
+body.mod-page {
+  rect.selection {
+    stroke: white;
+    stroke-dasharray: 2px;
+    stroke-opacity: 1.0;
+    fill: transparent;
+  }
+
+  rect.selected {
+    opacity:1.0;
+  }
+
+  rect.unselected {
+    opacity:0.5;
+  }
+
+
+  /* disable text selection */
+  svg *::selection {
+    background: transparent;
+  }
+
+  svg *::-moz-selection {
+    background: transparent;
+  }
+
+  svg *::-webkit-selection {
+    background: transparent;
+  }
+}

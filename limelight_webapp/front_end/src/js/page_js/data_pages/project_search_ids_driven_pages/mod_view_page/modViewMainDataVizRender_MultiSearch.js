@@ -84,6 +84,82 @@ export class ModViewDataVizRenderer_MultiSearch {
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
+        ModViewDataVizRenderer_MultiSearch.addDragHandler({ svg, xScale, yScale })
+    }
+
+    static addDragHandler({ svg, xScale, yScale }) {
+
+        console.log('calling addDragHandler()' )
+
+        svg
+            .on( "mousedown", function() {
+
+                console.log('mousedown');
+
+                const p = d3.mouse(this);
+
+                svg.append( "rect")
+                    .attr('class', 'selection')
+                    .attr("x", p[0])
+                    .attr('y', p[1])
+                    .attr('width', '0px')
+                    .attr('height', '0px')
+            })
+            .on( "mousemove", function(d, i) {
+
+                console.log('mousemove');
+
+                let s = svg.select( "rect.selection");
+
+                if( !s.empty()) {
+                    let p = d3.mouse( this),
+                        d = {
+                            x       : parseInt( s.attr( "x"), 10),
+                            y       : parseInt( s.attr( "y"), 10),
+                            width   : parseInt( s.attr( "width"), 10),
+                            height  : parseInt( s.attr( "height"), 10)
+                        },
+                        move = {
+                            x : p[0] - d.x,
+                            y : p[1] - d.y
+                        }
+                    ;
+
+                    if( move.x < 1 || (move.x*2<d.width)) {
+                        d.x = p[0];
+                        d.width -= move.x;
+                    } else {
+                        d.width = move.x;
+                    }
+
+                    if( move.y < 1 || (move.y*2<d.height)) {
+                        d.y = p[1];
+                        d.height -= move.y;
+                    } else {
+                        d.height = move.y;
+                    }
+
+                    s.attr("x", d.x)
+                        .attr("y", d.y)
+                        .attr("width", d.width)
+                        .attr("height", d.height);
+
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, xScale, yScale, d });
+
+                }
+            })
+            .on( "mouseup", function() {
+
+                console.log('mouseup');
+
+                // remove selection frame
+                svg.selectAll( "rect.selection").remove();
+            })
+
+    }
+
+    // todo: use this
+    static updateSelectedRectIndicators({ svg, xScale, yScale, d }) {
 
     }
 
@@ -189,6 +265,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .enter()
             .append('rect')
             .attr('y', (d, i) => (yScale(projectSearchIds[i])))
+            .attr('class', 'selected')
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')
