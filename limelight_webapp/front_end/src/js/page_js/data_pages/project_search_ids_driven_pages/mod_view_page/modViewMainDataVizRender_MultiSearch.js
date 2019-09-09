@@ -114,44 +114,44 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 if( !s.empty()) {
                     const p = d3.mouse(this)
-                    let d = {
+                    let rectParams = {
                             x       : s.attr( "x"),
                             y       : s.attr( "y"),
                             width   : s.attr( "width"),
                             height  : s.attr( "height")
                         };
                     const move = {
-                            x : p[0] - d.x,
-                            y : p[1] - d.y
+                            x : p[0] - rectParams.x,
+                            y : p[1] - rectParams.y
                         };
 
-                    console.log(d);
+                    console.log(rectParams);
                     console.log(p);
                     console.log(move);
 
 
-                    if( move.x < 1 || (move.x*2<d.width)) {
-                        d.x = p[0];
-                        d.width -= move.x;
+                    if( move.x < 1 || (move.x*2<rectParams.width)) {
+                        rectParams.x = p[0];
+                        rectParams.width -= move.x;
                     } else {
-                        d.width = move.x;
+                        rectParams.width = move.x;
                     }
 
-                    if( move.y < 1 || (move.y*2<d.height)) {
-                        d.y = p[1];
-                        d.height -= move.y;
+                    if( move.y < 1 || (move.y*2<rectParams.height)) {
+                        rectParams.y = p[1];
+                        rectParams.height -= move.y;
                     } else {
-                        d.height = move.y;
+                        rectParams.height = move.y;
                     }
 
-                    console.log(d);
+                    console.log(rectParams);
 
-                    s.attr("x", d.x)
-                        .attr("y", d.y)
-                        .attr("width", d.width)
-                        .attr("height", d.height);
+                    s.attr("x", rectParams.x)
+                        .attr("y", rectParams.y)
+                        .attr("width", rectParams.width)
+                        .attr("height", rectParams.height);
 
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, xScale, yScale, d });
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, xScale, yScale, rectParams });
 
                 }
             })
@@ -165,7 +165,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     // todo: use this
-    static updateSelectedRectIndicators({ svg, xScale, yScale, d }) {
+    static updateSelectedRectIndicators({ svg, xScale, yScale, rectParams }) {
 
     }
 
