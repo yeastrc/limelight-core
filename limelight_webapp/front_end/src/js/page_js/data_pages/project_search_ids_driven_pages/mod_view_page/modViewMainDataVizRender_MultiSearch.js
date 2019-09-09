@@ -84,10 +84,10 @@ export class ModViewDataVizRenderer_MultiSearch {
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addDragHandler({ svg, xScale, yScale })
+        ModViewDataVizRenderer_MultiSearch.addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds })
     }
 
-    static addDragHandler({ svg, xScale, yScale }) {
+    static addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds }) {
 
         console.log('calling addDragHandler()' )
 
@@ -105,6 +105,16 @@ export class ModViewDataVizRenderer_MultiSearch {
                     .attr('y', p[1])
                     .attr('width', '0')
                     .attr('height', '0')
+
+                let rectParams = {
+                    x       : p[0],
+                    y       : p[1],
+                    width   : 0,
+                    height  : 0
+                };
+
+                ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams });
+
             })
             .on( "mousemove", function() {
 
@@ -144,7 +154,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         .attr("width", rectParams.width)
                         .attr("height", rectParams.height);
 
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, xScale, yScale, rectParams });
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams });
 
                 }
             })
@@ -161,9 +171,58 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     // todo: use this
-    static updateSelectedRectIndicators({ svg, xScale, yScale, rectParams }) {
+    static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams }) {
 
+        svg.selectAll('rect')
+            .style('opacity', '0.35');
+
+        for( const modMass of sortedModMasses ) {
+
+            if(ModViewDataVizRenderer_MultiSearch.rectangleContainsModMass({ modMass, xScale, rectParams })) {
+
+                for (const projectSearchId of projectSearchIds) {
+
+                    if (ModViewDataVizRenderer_MultiSearch.rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams })) {
+                        const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
+                        svg.select(selector).style('opacity', '1.0');
+                    }
+
+                }
+            }
+        }
     }
+
+    static rectangleContainsModMass({ modMass, xScale, rectParams }) {
+
+        const modMassMinPosition = xScale(modMass);
+        const modMassMaxPosition = modMassMinPosition + xScale.bandwidth();
+
+        const rectLeft = parseInt(rectParams.x);
+        const rectRight = rectLeft + parseInt(rectParams.width);
+
+        if( modMassMinPosition <= rectRight && rectLeft <= modMassMaxPosition ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    static rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams }) {
+
+        const psidMinPosition = yScale(projectSearchId);
+        const psidMaxPosition = psidMinPosition + yScale.bandwidth();
+
+        const rectTop = parseInt(rectParams.y);
+        const rectBottom = rectTop + parseInt(rectParams.height);
+
+        if( psidMinPosition <= rectBottom && rectTop <= psidMaxPosition ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 
     static getInterval({xScale, labelFontSize}) {
 
@@ -271,19 +330,19 @@ export class ModViewDataVizRenderer_MultiSearch {
             .enter()
             .append('rect')
             .attr('y', (d, i) => (yScale(projectSearchIds[i])))
-            .attr('class', 'selected')
+            .attr('class', (d, i) => ('project-search-id-' + d.projectSearchId + ' mod-mass-' + d.modMass))
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')
             .attr('fill', (d) => (colorScale(d.psmCount)))
-            .on("mouseover", function (d, i) {
-                d3.select(this).attr('fill', 'white')
-            })
+            // .on("mouseover", function (d, i) {
+            //     d3.select(this).attr('fill', 'white')
+            // })
             .on("mousemove", function (d, i) {
                 ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d.projectSearchId, modMass:d.modMass, psmCount:d.psmCount, tooltip })
             })
             .on("mouseout", function (d, i) {
-                d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
+                //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
                 ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
             });
     }
