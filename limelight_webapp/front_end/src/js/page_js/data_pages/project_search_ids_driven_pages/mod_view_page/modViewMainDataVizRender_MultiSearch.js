@@ -91,39 +91,44 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         console.log('calling addDragHandler()' )
 
-        svg
+        svg.select('#rect-group')
             .on( "mousedown", function() {
 
                 console.log('mousedown');
 
                 const p = d3.mouse(this);
 
-                svg.append( "rect")
+                svg.select('#rect-group')
+                    .append( "rect")
                     .attr('class', 'selection')
                     .attr("x", p[0])
                     .attr('y', p[1])
-                    .attr('width', '0px')
-                    .attr('height', '0px')
+                    .attr('width', '0')
+                    .attr('height', '0')
             })
-            .on( "mousemove", function(d, i) {
+            .on( "mousemove", function() {
 
                 console.log('mousemove');
 
-                let s = svg.select( "rect.selection");
+                let s = svg.select('#rect-group').select( "rect.selection");
 
                 if( !s.empty()) {
-                    let p = d3.mouse( this),
-                        d = {
-                            x       : parseInt( s.attr( "x"), 10),
-                            y       : parseInt( s.attr( "y"), 10),
-                            width   : parseInt( s.attr( "width"), 10),
-                            height  : parseInt( s.attr( "height"), 10)
-                        },
-                        move = {
+                    const p = d3.mouse(this)
+                    let d = {
+                            x       : s.attr( "x"),
+                            y       : s.attr( "y"),
+                            width   : s.attr( "width"),
+                            height  : s.attr( "height")
+                        };
+                    const move = {
                             x : p[0] - d.x,
                             y : p[1] - d.y
-                        }
-                    ;
+                        };
+
+                    console.log(d);
+                    console.log(p);
+                    console.log(move);
+
 
                     if( move.x < 1 || (move.x*2<d.width)) {
                         d.x = p[0];
@@ -139,6 +144,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                         d.height = move.y;
                     }
 
+                    console.log(d);
+
                     s.attr("x", d.x)
                         .attr("y", d.y)
                         .attr("width", d.width)
@@ -153,9 +160,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                 console.log('mouseup');
 
                 // remove selection frame
-                svg.selectAll( "rect.selection").remove();
+                svg.select('#rect-group').selectAll( "rect.selection").remove();
             })
-
     }
 
     // todo: use this
@@ -251,8 +257,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip }) {
 
+        // add a group to hold the data rects
+        const svgRectGroup = svg.append('g')
+            .attr('id', 'rect-group');
+
         // Create a group for each column in the data matrix and translate the group horizontally
-        const svgColGroups = svg.selectAll('.search-col-group')
+        const svgColGroups = svgRectGroup.selectAll('.search-col-group')
             .data(modMatrix)
             .enter()
             .append('g')
