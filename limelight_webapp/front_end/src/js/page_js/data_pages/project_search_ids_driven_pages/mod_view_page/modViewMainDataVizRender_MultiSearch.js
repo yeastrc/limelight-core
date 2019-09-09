@@ -125,11 +125,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                             y : p[1] - rectParams.y
                         };
 
-                    console.log(rectParams);
-                    console.log(p);
-                    console.log(move);
-
-
                     if( move.x < 1 || (move.x*2<rectParams.width)) {
                         rectParams.x = p[0];
                         rectParams.width -= move.x;
@@ -143,8 +138,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                     } else {
                         rectParams.height = move.y;
                     }
-
-                    console.log(rectParams);
 
                     s.attr("x", rectParams.x)
                         .attr("y", rectParams.y)
