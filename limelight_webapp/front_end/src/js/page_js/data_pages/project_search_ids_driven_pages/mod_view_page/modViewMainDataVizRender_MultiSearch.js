@@ -155,6 +155,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 // remove selection frame
                 svg.select('#rect-group').selectAll( "rect.selection").remove();
             })
+            .on( "mouseleave", function() {
+                svg.select('#rect-group').selectAll( "rect.selection").remove();
+            })
     }
 
     // todo: use this
@@ -300,7 +303,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
 
-        svg.selectAll('.separator-line')
+        svg.select('#rect-group').selectAll('.separator-line')
             .data(projectSearchIds)
             .enter()
             .append('line')
