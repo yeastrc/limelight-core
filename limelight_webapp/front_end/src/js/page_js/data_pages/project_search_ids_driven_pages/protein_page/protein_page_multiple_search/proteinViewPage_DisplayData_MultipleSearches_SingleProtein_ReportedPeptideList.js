@@ -418,7 +418,11 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
 		if ( proteinCoverageObject === undefined ) {
-			throw Error("_getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " + proteinSequenceVersionId );
+			throw Error("_getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " 
+				+ proteinSequenceVersionId
+				+ ", projectSearchId: "
+				+ projectSearchId
+			);
 		}
 		const proteinCoverageEntries_PerReportedPeptideId_Array = proteinCoverageObject.get_proteinCoverageEntries_PerReportedPeptideId_Array();
 
