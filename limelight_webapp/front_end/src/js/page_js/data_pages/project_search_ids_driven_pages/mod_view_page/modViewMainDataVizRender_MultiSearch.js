@@ -84,10 +84,10 @@ export class ModViewDataVizRenderer_MultiSearch {
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds })
+        ModViewDataVizRenderer_MultiSearch.addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds, selectedStateObject: {} })
     }
 
-    static addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds }) {
+    static addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds, selectedStateObject }) {
 
         console.log('calling addDragHandler()' )
 
@@ -95,6 +95,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             .on( "mousedown", function() {
 
                 console.log('mousedown');
+
+                // reset selected state object unless control is being held down
+                selectedStateObject = { };
 
                 const p = d3.mouse(this);
 
@@ -113,7 +116,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     height  : 0
                 };
 
-                ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams });
+                ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
 
             })
             .on( "mousemove", function() {
@@ -154,24 +157,35 @@ export class ModViewDataVizRenderer_MultiSearch {
                         .attr("width", rectParams.width)
                         .attr("height", rectParams.height);
 
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams });
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
 
                 }
             })
             .on( "mouseup", function() {
 
-                console.log('mouseup');
+                let s = svg.select('#rect-group').select( "rect.selection");
 
-                // remove selection frame
-                svg.select('#rect-group').selectAll( "rect.selection").remove();
+                if( !s.empty()) {
+                    // remove selection frame
+                    svg.select('#rect-group').selectAll("rect.selection").remove();
+
+                    console.log(selectedStateObject);
+                }
+
             })
             .on( "mouseleave", function() {
-                svg.select('#rect-group').selectAll( "rect.selection").remove();
+
+                let s = svg.select('#rect-group').select( "rect.selection");
+
+                if( !s.empty()) {
+                    svg.select('#rect-group').selectAll("rect.selection").remove();
+                    console.log(selectedStateObject);
+                }
             })
     }
 
     // todo: use this
-    static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams }) {
+    static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
         svg.selectAll('rect')
             .style('opacity', '0.35');
@@ -185,8 +199,13 @@ export class ModViewDataVizRenderer_MultiSearch {
                     if (ModViewDataVizRenderer_MultiSearch.rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams })) {
                         const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
                         svg.select(selector).style('opacity', '1.0');
-                    }
 
+                        if(!(projectSearchId in selectedStateObject)) {
+                            selectedStateObject[projectSearchId] = [ ];
+                        }
+
+                        selectedStateObject[projectSearchId].push(modMass);
+                    }
                 }
             }
         }
