@@ -97,7 +97,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 console.log('mousedown');
 
                 // reset selected state object unless control is being held down
-                selectedStateObject = { };
+                if(!d3.event.ctrlKey) {
+                    selectedStateObject = {};
+                }
 
                 const p = d3.mouse(this);
 
@@ -184,11 +186,12 @@ export class ModViewDataVizRenderer_MultiSearch {
             })
     }
 
-    // todo: use this
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
-        svg.selectAll('rect')
-            .style('opacity', '0.35');
+        if(!d3.event.ctrlKey) {
+            svg.selectAll('rect')
+                .style('opacity', '0.35');
+        }
 
         for( const modMass of sortedModMasses ) {
 
@@ -204,7 +207,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                             selectedStateObject[projectSearchId] = [ ];
                         }
 
-                        selectedStateObject[projectSearchId].push(modMass);
+                        if(!(modMass in selectedStateObject[projectSearchId])) {
+                            selectedStateObject[projectSearchId].push(modMass);
+                        }
                     }
                 }
             }
