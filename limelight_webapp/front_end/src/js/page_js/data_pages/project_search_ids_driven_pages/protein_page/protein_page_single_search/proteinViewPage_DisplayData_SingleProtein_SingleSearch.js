@@ -162,6 +162,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		this._singleProteinCloseCallback = undefined; // passed in openOverlay
 
 		this._proteinNameDescription = undefined; // passed in openOverlay
+
+		this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 	}
 
 	/**
@@ -176,13 +178,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		this._proteinNameDescription = proteinNameDescription;
 
 		//  Attach resize handler
-		const $window = $(window);
-		$window.on("resize", function() {
-
-			objectThis._resize_OverlayHeight_BasedOnViewportHeight();
-
-			objectThis._update_Overlay_OnWindowResize();
-		});
+		this._resizeWindow_Handler_Attach();
 
 		this._projectSearchId = projectSearchId;
 
@@ -1661,8 +1657,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		this._singleProtein_CentralStateManagerObject.clearAll();
 
 		//  Remove resize handler
-		const $window = $(window);
-		$window.off("resize");
+		this._resizeWindow_Handler_Remove();
 
 		if ( this._singleProteinCloseCallback ) {
 			this._singleProteinCloseCallback();
@@ -1670,6 +1665,43 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	}
 
 	//////////////
+
+	//////////////
+
+	/**
+	 * 
+	 */
+	_resizeWindow_Handler_Attach() {
+
+		//  Attach resize handler
+		window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
+	}
+
+	/**
+	 * 
+	 */
+	_resizeWindow_Handler_Remove() {
+
+		//  Remove resize handler
+		window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
+	}
+	
+	/**
+	 * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
+	 */
+	_resizeWindow_Handler() {
+		try {
+			this._resize_OverlayHeight_BasedOnViewportHeight();
+
+			this._update_Overlay_OnWindowResize();
+
+		} catch( e ) {
+			console.log("Exception caught in _resizeWindow_Handler()");
+			console.log( e );
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		}
+	}
 
 	/**
 	 * 
