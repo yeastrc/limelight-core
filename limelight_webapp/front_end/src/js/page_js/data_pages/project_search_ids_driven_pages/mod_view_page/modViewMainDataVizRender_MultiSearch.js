@@ -174,7 +174,17 @@ export class ModViewDataVizRenderer_MultiSearch {
                 if( !s.empty()) {
                     svg.select('#rect-group').selectAll("rect.selection").remove();
                 }
-            })
+            });
+
+        d3.select("body")
+            .on("keydown", function() {
+                if(d3.event.ctrlKey) {
+                    if(d3.event.keyCode === 27) {
+                        selectedStateObject = {};
+                        svg.selectAll('rect').style('opacity', '1.0');
+                    }
+                }
+            });
     }
 
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
