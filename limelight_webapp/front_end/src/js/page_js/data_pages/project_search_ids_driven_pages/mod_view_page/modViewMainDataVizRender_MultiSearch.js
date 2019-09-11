@@ -93,7 +93,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .on( "mousedown", function() {
 
                 // reset selected state object unless control is being held down
-                if(!d3.event.ctrlKey) {
+                if(!d3.event.ctrlKey && !d3.event.metaKey) {
                     selectedStateObject = {};
                 }
 
@@ -179,7 +179,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
-        if(!d3.event.ctrlKey) {
+        if(!d3.event.ctrlKey && !d3.event.metaKey) {
             svg.selectAll('rect')
                 .style('opacity', '0.35');
         }
