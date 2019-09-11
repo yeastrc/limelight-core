@@ -418,11 +418,9 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
 		if ( proteinCoverageObject === undefined ) {
-			throw Error("_getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " 
-				+ proteinSequenceVersionId
-				+ ", projectSearchId: "
-				+ projectSearchId
-			);
+
+			return new Map(); //  EARLY RETURN
+			//  Since Multiple Search, return instead of throw:  throw Error("_getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
 		}
 		const proteinCoverageEntries_PerReportedPeptideId_Array = proteinCoverageObject.get_proteinCoverageEntries_PerReportedPeptideId_Array();
 
@@ -542,7 +540,8 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 	// 	const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
 	// 	if ( proteinCoverageObject === undefined ) {
-	// 		throw Error("_combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " + proteinSequenceVersionId );
+	// 		return new Map(); //  EARLY RETURN
+	// 		//  Since Multiple Search, return instead of throw:  throw Error("_combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " + proteinSequenceVersionId );
 	// 	}
 	// 	const proteinCoverageEntries_PerReportedPeptideId_Array = proteinCoverageObject.get_proteinCoverageEntries_PerReportedPeptideId_Array();
 
