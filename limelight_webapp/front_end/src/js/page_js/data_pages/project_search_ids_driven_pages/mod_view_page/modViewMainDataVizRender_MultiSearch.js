@@ -89,12 +89,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds, selectedStateObject }) {
 
-        console.log('calling addDragHandler()' )
-
         svg.select('#rect-group')
             .on( "mousedown", function() {
-
-                console.log('mousedown');
 
                 // reset selected state object unless control is being held down
                 if(!d3.event.ctrlKey) {
@@ -122,8 +118,6 @@ export class ModViewDataVizRenderer_MultiSearch {
 
             })
             .on( "mousemove", function() {
-
-                console.log('mousemove');
 
                 let s = svg.select('#rect-group').select( "rect.selection");
 
@@ -169,9 +163,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 if( !s.empty()) {
                     // remove selection frame
-                    svg.select('#rect-group').selectAll("rect.selection").remove();
-
-                    console.log(selectedStateObject);
+                    s.remove();
                 }
 
             })
@@ -181,7 +173,6 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 if( !s.empty()) {
                     svg.select('#rect-group').selectAll("rect.selection").remove();
-                    console.log(selectedStateObject);
                 }
             })
     }
