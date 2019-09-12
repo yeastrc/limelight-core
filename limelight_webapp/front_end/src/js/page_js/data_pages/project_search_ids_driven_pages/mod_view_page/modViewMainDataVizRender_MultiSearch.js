@@ -178,11 +178,10 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         d3.select("body")
             .on("keydown", function() {
-                if(d3.event.ctrlKey) {
-                    if(d3.event.keyCode === 27) {
-                        selectedStateObject = {};
-                        svg.selectAll('rect').style('opacity', '1.0');
-                    }
+
+                if(d3.event.keyCode === 27) {
+                    selectedStateObject = {};
+                    svg.selectAll('rect').style('opacity', '1.0');
                 }
             });
     }
