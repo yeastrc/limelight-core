@@ -100,7 +100,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             proteinData,
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
-            dataPageStateManager_DataFrom_Server
+            dataPageStateManager_DataFrom_Server,
+            modMap,
         });
     }
 
@@ -117,7 +118,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                               proteinData,
                               proteinPositionFilterStateManager,
                               searchDetailsBlockDataMgmtProcessing,
-                              dataPageStateManager_DataFrom_Server }) {
+                              dataPageStateManager_DataFrom_Server,
+                              modMap}) {
 
         svg.select('#rect-group')
             .on( "mousedown", function() {
@@ -196,7 +198,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     s.remove();
 
                     // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
                 }
 
             })
@@ -208,7 +210,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                     svg.select('#rect-group').selectAll("rect.selection").remove();
 
                     // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sorted
+                    } );
                 }
             });
 
@@ -220,7 +223,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     svg.selectAll('rect').style('opacity', '1.0');
 
                     // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
 
                 }
             });
