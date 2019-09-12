@@ -259,9 +259,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                 }
             }
         }
-
-        console.log('foo');
-        console.log(selectedStateObject);
     }
 
     static rectangleContainsModMass({ modMass, xScale, rectParams }) {
