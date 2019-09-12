@@ -1,6 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
+import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch.js';
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -84,10 +85,39 @@ export class ModViewDataVizRenderer_MultiSearch {
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds, selectedStateObject: {} })
+
+        ModViewDataVizRenderer_MultiSearch.addDragHandler({
+            svg,
+            xScale,
+            yScale,
+            sortedModMasses,
+            projectSearchIds,
+            selectedStateObject: {},
+            reportedPeptideModData,
+            proteinPositionResidues,
+            totalPSMCount,
+            aminoAcidModStats,
+            proteinData,
+            proteinPositionFilterStateManager,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server
+        });
     }
 
-    static addDragHandler({ svg, xScale, yScale, sortedModMasses, projectSearchIds, selectedStateObject }) {
+    static addDragHandler({ svg,
+                              xScale,
+                              yScale,
+                              sortedModMasses,
+                              projectSearchIds,
+                              selectedStateObject,
+                              reportedPeptideModData,
+                              proteinPositionResidues,
+                              totalPSMCount,
+                              aminoAcidModStats,
+                              proteinData,
+                              proteinPositionFilterStateManager,
+                              searchDetailsBlockDataMgmtProcessing,
+                              dataPageStateManager_DataFrom_Server }) {
 
         svg.select('#rect-group')
             .on( "mousedown", function() {
@@ -164,6 +194,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 if( !s.empty()) {
                     // remove selection frame
                     s.remove();
+
+                    // redraw the data table
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
                 }
 
             })
@@ -173,6 +206,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 if( !s.empty()) {
                     svg.select('#rect-group').selectAll("rect.selection").remove();
+
+                    // redraw the data table
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
                 }
             });
 
@@ -182,6 +218,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                 if(d3.event.keyCode === 27) {
                     selectedStateObject = {};
                     svg.selectAll('rect').style('opacity', '1.0');
+
+                    // redraw the data table
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+
                 }
             });
     }
