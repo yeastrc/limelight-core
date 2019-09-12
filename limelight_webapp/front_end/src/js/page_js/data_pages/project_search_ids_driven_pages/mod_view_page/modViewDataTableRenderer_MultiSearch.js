@@ -21,14 +21,14 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 	static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject }) {
 
-		if(ModViewDataTableRenderer_MultiSearch.isObjectEmpty( vizSelectedStateObject )) {
+		if(ModViewDataTableRenderer_MultiSearch.isObjectEmpty( vizSelectedStateObject.data )) {
 			return sortedModMasses;
 		}
 
 		let sortedModsToDisplay = [ ];
 		for( const modMass of sortedModMasses ) {
-			for( const projectSearchId of Object.keys(vizSelectedStateObject) ) {
-				if(vizSelectedStateObject[projectSearchId].includes(modMass)) {
+			for( const projectSearchId of Object.keys(vizSelectedStateObject.data) ) {
+				if(vizSelectedStateObject.data[projectSearchId].includes(modMass)) {
 					sortedModsToDisplay.push(modMass);
 					break;
 				}
@@ -61,10 +61,11 @@ export class ModViewDataTableRenderer_MultiSearch {
 	}) {
 
 		console.log('calling renderDataTable()');
+		console.log(vizSelectedStateObject);
 
 		// based on user filter, these are the mods to show in the table
 		const sortedModsToDisplay = ModViewDataTableRenderer_MultiSearch.getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject });
-
+		console.log( sortedModsToDisplay );
 
 
 
