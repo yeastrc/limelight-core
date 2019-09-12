@@ -247,7 +247,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                             selectedStateObject[projectSearchId] = [ ];
                         }
 
-                        if(!(modMass in selectedStateObject[projectSearchId])) {
+                        if(!(selectedStateObject[projectSearchId].includes(modMass))) {
                             selectedStateObject[projectSearchId].push(modMass);
                         }
                     }
