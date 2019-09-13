@@ -1,5 +1,22 @@
 
 body.mod-page {
+
+  span.mod-mass-text {
+    font-size:16px;
+    font-weight:bold;
+  }
+
+  div.indicator-image {
+    display:inline-block;
+    margin-right:10px;
+  }
+
+  div.mod-mass-listing {
+    margin-left:20px;
+    font-size:14px;
+    margin-bottom:15px;
+  }
+
   rect.selection {
     stroke: limegreen;
     stroke-dasharray: 2px;

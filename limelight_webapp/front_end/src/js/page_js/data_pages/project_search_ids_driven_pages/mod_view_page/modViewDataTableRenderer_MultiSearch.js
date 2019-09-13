@@ -67,7 +67,26 @@ export class ModViewDataTableRenderer_MultiSearch {
 		const sortedModsToDisplay = ModViewDataTableRenderer_MultiSearch.getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject });
 		console.log( sortedModsToDisplay );
 
+		// blow away existing table
+		let $mainContainerDiv = $('#mod_list_container');
+		$mainContainerDiv.find('#mod-mass-list-outer-container').remove();
 
+		// add the element back in
+		let template = Handlebars.templates.listModMassContainer_MultiSearch;
+		let html = template( {  } );
+		let $modListContainerDiv = $( html );
+		$mainContainerDiv.append( $modListContainerDiv );
+
+		// add in divs for each mod mass
+		template = Handlebars.templates.listModMass_MultiSearch;
+		for( const modMass of sortedModsToDisplay ) {
+
+			let dataObject = { 'modMass': modMass };
+
+			let html = template( dataObject );
+			let $modDiv = $( html );
+			$modListContainerDiv.append( $modDiv );
+		}
 
 	}
 
