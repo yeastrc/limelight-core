@@ -7,11 +7,11 @@
 
 let Handlebars = require('handlebars/runtime');
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
 
-import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
-import { ProteinPositionDataListingManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionDataListingManager.js';
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
+import {ProteinPositionDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionDataListingManager.js';
+import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 
 
 export class ProteinDataListingManager {
@@ -31,6 +31,46 @@ export class ProteinDataListingManager {
 
         return $containerDiv;        
     }
+
+	createJQueryElementForProteinListing_MultiSearch( { searchDetailsBlockDataMgmtProcessing, proteinData, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, $clickedRow, dataPageStateManager_DataFrom_Server, proteinPositionFilterStateManager } ) {
+
+		let template = Handlebars.templates.proteinListingExpansionDiv;
+		let $containerDiv = $( template() );
+		let proteinDataListingManager = new ProteinDataListingManager();
+
+		let projectSearchId = proteinDataListingManager.getProjectSearchIdFromMultiSearchRow( { $clickedRow } );
+		let modMass = proteinDataListingManager.getModMassFromMultiSearchRow( { $clickedRow } );
+
+		proteinDataListingManager.populateProteinListingDiv( {
+			searchDetailsBlockDataMgmtProcessing,
+			$containerDiv,
+			proteinData: proteinData[projectSearchId],
+			reportedPeptideModData: reportedPeptideModData[projectSearchId],
+			proteinPositionResidues: proteinPositionResidues[projectSearchId],
+			totalPSMCount: totalPSMCount[projectSearchId],
+			aminoAcidModStats: aminoAcidModStats[projectSearchId],
+			modMass,
+			projectSearchId,
+			dataPageStateManager_DataFrom_Server,
+			proteinPositionFilterStateManager
+		});
+
+		return $containerDiv;
+	}
+
+	getProjectSearchIdFromMultiSearchRow({$clickedRow}) {
+
+    	const fields = $clickedRow.data('id').split("---");
+    	return parseInt(fields[1]);
+
+	}
+
+	getModMassFromMultiSearchRow({$clickedRow}) {
+
+		const fields = $clickedRow.data('id').split("---");
+		return fields[0];
+
+	}
 
     getModMassFromClickedRow( { $clickedRow } ) {
         return $clickedRow.data( 'id' );

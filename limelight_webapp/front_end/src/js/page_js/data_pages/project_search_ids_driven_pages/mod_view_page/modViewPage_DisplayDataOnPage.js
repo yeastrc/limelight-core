@@ -15,14 +15,15 @@ let _mod_table_template_bundle =
 let _common_template_bundle = 
 	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
-import { ModViewPage_DataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
-import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
-import { ProteinPositionFilterStateManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager.js';
-import { ModViewDataTableRenderer } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer.js';
+import {dataPageStateManager_Keys} from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
+import {SearchDetailsAndFilterBlock_MainPage} from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
+import {ModViewPage_DataLoader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
+import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
+import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager.js';
+import {ModViewDataTableRenderer} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer.js';
+import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
 
 /**
  * 
@@ -216,8 +217,7 @@ export class ModViewPage_DisplayDataOnPage {
 			this.renderModDataPageSingleSearch({ searchDetailsBlockDataMgmtProcessing, loadedData : loadedData[ projectSearchId ], projectSearchId : projectSearchId } );
 		} else {
 
-			console.log( "multiple searches not done yet." );		
-
+			this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds } );
 		}
 
 	};
@@ -235,6 +235,29 @@ export class ModViewPage_DisplayDataOnPage {
 		let proteinData = loadedData.proteinData;
 
 		ModViewDataTableRenderer.renderDataTable( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
+	}
+
+	renderModDataPageMultiSearch({ loadedData, projectSearchIds, searchDetailsBlockDataMgmtProcessing } ) {
+
+		// enable click handler for filtering proteins and positions overlay
+		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager();
+
+		let reportedPeptideModData = {};
+		let proteinPositionResidues = {};
+		let totalPSMCount = {};
+		let aminoAcidModStats = {};
+		let proteinData = {};
+
+		for(const projectSearchId of projectSearchIds) {
+
+			reportedPeptideModData[projectSearchId] = loadedData[projectSearchId].modData.reportedPeptides;
+			proteinPositionResidues[projectSearchId] = loadedData[projectSearchId].proteinPositionResidues;
+			totalPSMCount[projectSearchId] = loadedData[projectSearchId].totalPSMCount;
+			aminoAcidModStats[projectSearchId] = loadedData[projectSearchId].aminoAcidModStats.reportedPeptideData;
+			proteinData[projectSearchId] = loadedData[projectSearchId].proteinData;
+		}
+
+		ModViewDataVizRenderer_MultiSearch.renderDataViz( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
 	}
 
 }
