@@ -71,22 +71,24 @@ export class ModViewDataVizRenderer_MultiSearch {
         const tooltip = d3.select("body")
             .append("div")
             .attr("id", "mod-viz-tooltip")
-            .style("width", "100px")
-            .style("height", "100px")
+            .style("width", "auto")
+            .style("height", "auto")
             .style("background-color", "white")
             .style("position", "absolute")
             .style("z-index", "10")
             .style("border-style", "solid")
             .style("border-color", "gray")
             .style("border-width", "1px")
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
+            .style("padding", "10px")
+            .style("max-width", "250px");
 
-        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip });
+        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, searchDetailsBlockDataMgmtProcessing });
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
-        ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize });
+        ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
 
-        ModViewDataVizRenderer_MultiSearch.addDragHandler({
+        ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
             svg,
             xScale,
             yScale,
@@ -105,7 +107,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         });
     }
 
-    static addDragHandler({ svg,
+    static addDragHandlerToRects({ svg,
                               xScale,
                               yScale,
                               sortedModMasses,
@@ -315,7 +317,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .text((d,i) => ( i % interval == 0 ? sortedModMasses[i] : '' ));
     }
 
-    static addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize }) {
+    static addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip }) {
 
         svg.selectAll('.project-label')
             .data(projectSearchIds)
@@ -327,7 +329,14 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr("text-anchor", "end")
             .attr('font-size', labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
-            .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength})));
+            .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength})))
+            .on("mousemove", function (d, i) {
+                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d, tooltip, searchDetailsBlockDataMgmtProcessing })
+            })
+            .on("mouseout", function (d, i) {
+                //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
+                ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
+            });
     }
 
     static getTruncatedSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength}) {
@@ -377,7 +386,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return height;
     }
 
-    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip }) {
+    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, searchDetailsBlockDataMgmtProcessing }) {
 
         // add a group to hold the data rects
         const svgRectGroup = svg.append('g')
@@ -406,7 +415,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             //     d3.select(this).attr('fill', 'white')
             // })
             .on("mousemove", function (d, i) {
-                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d.projectSearchId, modMass:d.modMass, psmCount:d.psmCount, tooltip })
+                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d.projectSearchId, modMass:d.modMass, psmCount:d.psmCount, tooltip, searchDetailsBlockDataMgmtProcessing })
             })
             .on("mouseout", function (d, i) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
@@ -414,12 +423,25 @@ export class ModViewDataVizRenderer_MultiSearch {
             });
     }
 
-    static showToolTip({ projectSearchId, modMass, psmCount, tooltip }) {
+    static showToolTip({ projectSearchId, modMass, psmCount, tooltip, searchDetailsBlockDataMgmtProcessing }) {
         tooltip
             .style("top", (event.pageY + 20)+"px")
             .style("left",(event.pageX + 20)+"px")
             .style("visibility", "visible")
-            .text(modMass);
+            .html( function() {
+
+                let txt = "";
+
+                if(modMass) {
+                    txt += "<p>Mod mass: " + modMass + "</p>";
+                }
+
+                if(projectSearchId) {
+                    txt += "<p>Search: " + ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing }) + "</p>";
+                }
+
+                return txt;
+            });
     }
 
     static hideToolTip({ tooltip }) {
