@@ -301,7 +301,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 // capture escape key press, reset viz
                 if(d3.event.keyCode === 27) {
                     selectedStateObject.data = {};
-                    svg.selectAll('rect').style('opacity', '1.0');
+                    svg.selectAll('rect.psm-count-rect').style('opacity', '1.0');
 
                     // redraw the data table
                     ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
@@ -313,7 +313,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
         if(!d3.event.ctrlKey && !d3.event.metaKey) {
-            svg.selectAll('rect').style('opacity', '0.35');
+            svg.selectAll('rect.psm-count-rect').style('opacity', '0.35');
             selectedStateObject.data = { };
         }
 
@@ -503,7 +503,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .enter()
             .append('rect')
             .attr('y', (d, i) => (yScale(projectSearchIds[i])))
-            .attr('class', (d, i) => ('project-search-id-' + d.projectSearchId + ' mod-mass-' + d.modMass))
+            .attr('class', (d, i) => ('psm-count-rect project-search-id-' + d.projectSearchId + ' mod-mass-' + d.modMass))
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')
