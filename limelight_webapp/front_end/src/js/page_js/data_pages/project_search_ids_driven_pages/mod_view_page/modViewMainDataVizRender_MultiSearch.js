@@ -522,13 +522,17 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')
             .attr('fill', (d) => (colorScale(d.psmCount)))
-            // .on("mouseover", function (d, i) {
-            //     d3.select(this).attr('fill', 'white')
-            // })
             .on("mousemove", function (d, i) {
-                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d.projectSearchId, modMass:d.modMass, psmCount:d.psmCount, tooltip, searchDetailsBlockDataMgmtProcessing })
+
+                    ModViewDataVizRenderer_MultiSearch.showToolTip({
+                        projectSearchId: d.projectSearchId,
+                        modMass: d.modMass,
+                        psmCount: d.psmCount,
+                        tooltip,
+                        searchDetailsBlockDataMgmtProcessing
+                    })
             })
-            .on("mouseout", function (d, i) {
+            .on("mouseleave", function (d, i) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
                 ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
             });
