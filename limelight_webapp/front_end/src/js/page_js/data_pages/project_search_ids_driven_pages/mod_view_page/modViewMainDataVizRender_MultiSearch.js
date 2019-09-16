@@ -25,15 +25,19 @@ export class ModViewDataVizRenderer_MultiSearch {
         $mainContentDiv.empty();
 
         // some defaults for the viz
-        const margin = {top: 50, right: 10, bottom: 10, left: 300};
+        const margin = {top: 60, right: 30, bottom: 78, left: 300};
         const widthDefs = {default:1000, min: 3, max: 40};
         const heightDefs = {default:500, min:40, max:40};
+
+        // legend defs
+        const legendHeight = 40;
+        const minLegendWidth = 400;
 
         // label defs
         const labelFontSize = 14;               // font size (in pixels) of labels
         const maxSearchLabelLength = 39;        // max # of characters in a search label before truncation
 
-        const width = ModViewDataVizRenderer_MultiSearch.getWidth({sortedModMasses, widthDefs});
+        const width = ModViewDataVizRenderer_MultiSearch.getWidth({sortedModMasses, widthDefs, minLegendWidth});
         const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds, heightDefs});
 
         // set up our scales
@@ -85,8 +89,11 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, searchDetailsBlockDataMgmtProcessing });
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
+
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
+
+        ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, minPSMCount: 1, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize });
 
         ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
             svg,
@@ -105,6 +112,77 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataPageStateManager_DataFrom_Server,
             modMap,
         });
+    }
+
+    static addColorScaleLegend({ svg, rectAreaHeight, colorScale, minPSMCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize }) {
+
+        // create group element to hold legend
+        let legendGroup = svg.append('g')
+            .attr("transform", () => 'translate(0, ' + (rectAreaHeight + 10) + ')');
+
+        // add legend text label
+        legendGroup.append('text')
+            .attr('class', 'project-label')
+            .attr('x', -10)
+            .attr('y', () => ( (yScale.bandwidth() / 2) + (labelFontSize / 2) ))
+            .attr("text-anchor", "end")
+            .attr('font-size', labelFontSize + 'px')
+            .attr('font-family', 'sans-serif')
+            .text((d,i) => ( 'PSM Count Color:'));
+
+        // width of color scale bar
+        const width = minLegendWidth;
+
+        // add color scale group
+        let colorScaleGroup = legendGroup.append('g');
+
+        // add colored rects for scale bar
+        for( let i = 0; i <= width; i++ ) {
+
+            const psmCountForI = Math.floor( ( i / width ) * ( maxPsmCount - minPSMCount ) );
+
+            colorScaleGroup.append('rect')
+                .attr('y', () => (0))
+                .attr('x', () => (i))
+                .attr('width', 1)
+                .attr('height', legendHeight)
+                .attr('stroke', 'none')
+                .attr('fill', () => (colorScale(psmCountForI)));
+        }
+
+        // add labels to scale bar
+        let scaleBarLegendGroup = legendGroup.append('g')
+            .attr("transform", () => 'translate(0, ' + legendHeight + ')');
+
+
+        const numTicks = 5;
+        for( let i = 0; i < numTicks; i++ ) {
+
+            const dx = Math.floor( (i / (numTicks - 1)) * width );
+            const psmCountForX = Math.ceil( ( dx / width ) * ( maxPsmCount - minPSMCount ) );
+
+            let tickGroup = scaleBarLegendGroup.append('g')
+                .attr("transform", () => 'translate(' + dx + ',0)');
+
+            tickGroup.append('line')
+                .attr('x1', 0)
+                .attr('y1', 0)
+                .attr('x2', 0)
+                .attr('y2', 5)
+                .attr('stroke', 'gray')
+                .attr('stroke-width', '1')
+                .attr('opacity','0.95');
+
+            tickGroup.append('text')
+                .attr('x', 0)
+                .attr('y', () => (7 + labelFontSize))
+                .attr("text-anchor", "middle")
+                .attr('font-size', labelFontSize + 'px')
+                .attr('font-family', 'sans-serif')
+                .text((d,i) => ( psmCountForX ));
+
+        }
+
     }
 
     static addDragHandlerToRects({ svg,
@@ -358,7 +436,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return searchName;
     }
 
-    static getWidth({sortedModMasses, widthDefs}) {
+    static getWidth({sortedModMasses, widthDefs, minLegendWidth}) {
 
         let width = widthDefs.default;
 
@@ -367,6 +445,10 @@ export class ModViewDataVizRenderer_MultiSearch {
             width = sortedModMasses.length * widthDefs.min;
         } else if(width > sortedModMasses.length * widthDefs.max) {
             width = sortedModMasses.length * widthDefs.max;
+        }
+
+        if( width < minLegendWidth ) {
+            width = minLegendWidth;
         }
 
         return width;
