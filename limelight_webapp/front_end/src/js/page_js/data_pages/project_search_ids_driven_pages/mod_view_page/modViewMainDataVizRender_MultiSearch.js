@@ -35,7 +35,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // label defs
         const labelFontSize = 14;               // font size (in pixels) of labels
-        const maxSearchLabelLength = 39;        // max # of characters in a search label before truncation
+        const maxSearchLabelLength = 40;        // max # of characters in a search label before truncation
 
         const width = ModViewDataVizRenderer_MultiSearch.getWidth({sortedModMasses, widthDefs, minLegendWidth});
         const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds, heightDefs});
@@ -92,6 +92,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip });
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
+        ModViewDataVizRenderer_MultiSearch.addModLabelsHeader({ svg, width, labelFontSize });
 
         ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, minPSMCount: 1, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize });
 
@@ -377,6 +378,20 @@ export class ModViewDataVizRenderer_MultiSearch {
         const bandwidth = xScale.bandwidth();
 
         return Math.ceil( spaceNeeded / bandwidth );
+    }
+
+    static addModLabelsHeader({ svg, width, labelFontSize }) {
+
+        const dx = Math.round( width / 2 );
+        const dy = -1 * labelFontSize - 30;
+
+        svg.append('text')
+            .attr("text-anchor", "middle")
+            .attr('font-size', labelFontSize + 'px')
+            .attr('font-family', 'sans-serif')
+            .attr("transform", (d,i) => 'translate(' + dx + ', ' + dy + ')')
+            .text('Modification Mass');
+
     }
 
     static addModLabels({ svg, sortedModMasses, xScale, labelFontSize }) {
