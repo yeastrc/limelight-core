@@ -537,6 +537,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                     txt += "<p>Search: " + ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing }) + "</p>";
                 }
 
+                if(psmCount !== undefined) {
+                    txt += "<p>PSM Count: " + psmCount + "</p>";
+                }
+
                 return txt;
             });
     }
