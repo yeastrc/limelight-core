@@ -200,13 +200,15 @@ export class ModViewDataVizRenderer_MultiSearch {
                               proteinPositionFilterStateManager,
                               searchDetailsBlockDataMgmtProcessing,
                               dataPageStateManager_DataFrom_Server,
-                              modMap}) {
+                              modMap
+    }) {
 
         svg.select('#rect-group')
             .on( "mousedown", function() {
 
                 // reset selected state object unless control is being held down
                 if(!d3.event.ctrlKey && !d3.event.metaKey) {
+                    svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
                     selectedStateObject.data = {};
                 }
 
@@ -219,15 +221,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                     .attr('y', p[1])
                     .attr('width', '0')
                     .attr('height', '0')
-
-                let rectParams = {
-                    x       : p[0],
-                    y       : p[1],
-                    width   : 0,
-                    height  : 0
-                };
-
-                ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
 
             })
             .on( "mousemove", function() {
@@ -266,8 +259,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                         .attr("width", rectParams.width)
                         .attr("height", rectParams.height);
 
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
-
                 }
             })
             .on( "mouseup", function() {
@@ -275,6 +266,17 @@ export class ModViewDataVizRenderer_MultiSearch {
                 let s = svg.select('#rect-group').select( "rect.selection");
 
                 if( !s.empty()) {
+
+                    let rectParams = {
+                        x       : s.attr( "x"),
+                        y       : s.attr( "y"),
+                        width   : s.attr( "width"),
+                        height  : s.attr( "height")
+                    };
+
+                    // update final opacity for viz
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
+
                     // remove selection frame
                     s.remove();
 
@@ -288,6 +290,17 @@ export class ModViewDataVizRenderer_MultiSearch {
                 let s = svg.select('#rect-group').select( "rect.selection");
 
                 if( !s.empty()) {
+
+                    let rectParams = {
+                        x       : s.attr( "x"),
+                        y       : s.attr( "y"),
+                        width   : s.attr( "width"),
+                        height  : s.attr( "height")
+                    };
+
+                    // update final opacity for viz
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
+
                     svg.select('#rect-group').selectAll("rect.selection").remove();
 
                     // redraw the data table
@@ -301,7 +314,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 // capture escape key press, reset viz
                 if(d3.event.keyCode === 27) {
                     selectedStateObject.data = {};
-                    svg.selectAll('rect.psm-count-rect').style('opacity', '1.0');
+                    svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
 
                     // redraw the data table
                     ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
@@ -312,11 +325,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
+        // reset selected state object unless control is being held down
         if(!d3.event.ctrlKey && !d3.event.metaKey) {
-            svg.selectAll('rect.psm-count-rect').style('opacity', '0.35');
-            selectedStateObject.data = { };
+            svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
         }
 
+        // add opacity adjustment for selected items
         for( const modMass of sortedModMasses ) {
 
             if(ModViewDataVizRenderer_MultiSearch.rectangleContainsModMass({ modMass, xScale, rectParams })) {
@@ -325,7 +339,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                     if (ModViewDataVizRenderer_MultiSearch.rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams })) {
                         const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
-                        svg.select(selector).style('opacity', '1.0');
+                        svg.select('#rect-group').select(selector).style('opacity', '1.0');
 
                         if(!(projectSearchId in selectedStateObject.data)) {
                             selectedStateObject.data[projectSearchId] = [ ];
@@ -503,7 +517,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .enter()
             .append('rect')
             .attr('y', (d, i) => (yScale(projectSearchIds[i])))
-            .attr('class', (d, i) => ('psm-count-rect project-search-id-' + d.projectSearchId + ' mod-mass-' + d.modMass))
+            .attr('class', (d, i) => ('project-search-id-' + d.projectSearchId + ' mod-mass-' + d.modMass))
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')

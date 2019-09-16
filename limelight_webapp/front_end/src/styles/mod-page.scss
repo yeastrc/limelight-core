@@ -24,10 +24,11 @@ body.mod-page {
   }
 
   rect.selection {
-    stroke: limegreen;
+    stroke: green;
     stroke-dasharray: 2px;
     stroke-opacity: 1.0;
     fill: transparent;
+    stroke-width: 3px;
   }
 
   rect.selected {
