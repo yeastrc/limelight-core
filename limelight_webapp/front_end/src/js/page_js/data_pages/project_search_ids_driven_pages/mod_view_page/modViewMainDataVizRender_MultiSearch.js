@@ -96,13 +96,14 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, minPSMCount: 1, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize });
 
+        let selectedStateObject = { data: { } };
         ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
             svg,
             xScale,
             yScale,
             sortedModMasses,
             projectSearchIds,
-            selectedStateObject: { data: { } },
+            selectedStateObject,
             reportedPeptideModData,
             proteinPositionResidues,
             totalPSMCount,
@@ -112,6 +113,22 @@ export class ModViewDataVizRenderer_MultiSearch {
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             modMap,
+        });
+
+        // show the data table under the vizualization by default
+        ModViewDataTableRenderer_MultiSearch.renderDataTable({
+            projectSearchIds,
+            vizSelectedStateObject: selectedStateObject,
+            reportedPeptideModData,
+            proteinPositionResidues,
+            totalPSMCount,
+            aminoAcidModStats,
+            proteinData,
+            proteinPositionFilterStateManager,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            modMap,
+            sortedModMasses
         });
     }
 
