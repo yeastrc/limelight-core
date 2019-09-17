@@ -87,16 +87,37 @@ export class ModViewDataVizRenderer_MultiSearch {
             .style("padding", "10px")
             .style("max-width", "250px");
 
+        // keep track of what the user has selected to see
+        let selectedStateObject = { data: { } };
+
         ModViewDataVizRenderer_MultiSearch.addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, searchDetailsBlockDataMgmtProcessing });
         ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds, yScale, width, height });
 
-        ModViewDataVizRenderer_MultiSearch.addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip });
+        ModViewDataVizRenderer_MultiSearch.addSearchLabels({
+            svg,
+            projectSearchIds,
+            yScale,
+            searchDetailsBlockDataMgmtProcessing,
+            maxSearchLabelLength,
+            labelFontSize,
+            tooltip,
+            sortedModMasses,
+            selectedStateObject,
+            reportedPeptideModData,
+            proteinPositionResidues,
+            totalPSMCount,
+            aminoAcidModStats,
+            proteinData,
+            proteinPositionFilterStateManager,
+            dataPageStateManager_DataFrom_Server,
+            modMap
+        });
+
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabelsHeader({ svg, width, labelFontSize });
 
         ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, minPSMCount: 1, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize });
 
-        let selectedStateObject = { data: { } };
         ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
             svg,
             xScale,
@@ -318,6 +339,21 @@ export class ModViewDataVizRenderer_MultiSearch {
             });
     }
 
+    static updateShownRectOpacities({ svg, selectedStateObject }) {
+
+        // reset selected state object unless control is being held down
+        if(!d3.event.ctrlKey && !d3.event.metaKey) {
+            svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
+        }
+
+        for(const projectSearchId of Object.keys(selectedStateObject.data)) {
+            for(const modMass of selectedStateObject.data[projectSearchId]) {
+                const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
+                svg.select('#rect-group').select(selector).style('opacity', '1.0');
+            }
+        }
+    }
+
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
         // reset selected state object unless control is being held down
@@ -419,13 +455,13 @@ export class ModViewDataVizRenderer_MultiSearch {
             .text((d,i) => ( i % interval == 0 ? sortedModMasses[i] : '' ));
     }
 
-    static addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip }) {
+    static addSearchLabels({ svg, projectSearchIds, yScale, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength, labelFontSize, tooltip, sortedModMasses, selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, dataPageStateManager_DataFrom_Server, modMap }) {
 
         svg.selectAll('.project-label')
             .data(projectSearchIds)
             .enter()
             .append('text')
-            .attr('class', 'project-label')
+            .attr('class', 'search-label')
             .attr('x', -10)
             .attr('y', (d, i) => (yScale(projectSearchIds[i]) + (yScale.bandwidth() / 2) + (labelFontSize / 2)))
             .attr("text-anchor", "end")
@@ -438,6 +474,35 @@ export class ModViewDataVizRenderer_MultiSearch {
             .on("mouseout", function (d, i) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
                 ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
+            })
+            .on("click", function(d,i) {
+
+                // reset selected state object unless control is being held down
+                if(!d3.event.ctrlKey && !d3.event.metaKey) {
+                    svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
+                    selectedStateObject.data = {};
+                }
+
+                selectedStateObject.data[d] = [...sortedModMasses];
+
+                // update final opacity for viz
+                ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject })
+
+                // redraw the data table
+                ModViewDataTableRenderer_MultiSearch.renderDataTable({
+                    projectSearchIds,
+                    vizSelectedStateObject: selectedStateObject,
+                    reportedPeptideModData,
+                    proteinPositionResidues,
+                    totalPSMCount,
+                    aminoAcidModStats,
+                    proteinData,
+                    proteinPositionFilterStateManager,
+                    searchDetailsBlockDataMgmtProcessing,
+                    dataPageStateManager_DataFrom_Server,
+                    modMap,
+                    sortedModMasses
+                });
             });
     }
 

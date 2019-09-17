@@ -23,6 +23,10 @@ body.mod-page {
     margin-left:25px;
   }
 
+  text.search-label {
+    cursor:pointer;
+  }
+
   rect.selection {
     stroke: green;
     stroke-dasharray: 2px;
