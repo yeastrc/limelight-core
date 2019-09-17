@@ -301,28 +301,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                     ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
                 }
 
-            })
-            .on( "mouseleave", function() {
-
-                let s = svg.select('#rect-group').select( "rect.selection");
-
-                if( !s.empty()) {
-
-                    let rectParams = {
-                        x       : s.attr( "x"),
-                        y       : s.attr( "y"),
-                        width   : s.attr( "width"),
-                        height  : s.attr( "height")
-                    };
-
-                    // update final opacity for viz
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
-
-                    svg.select('#rect-group').selectAll("rect.selection").remove();
-
-                    // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses} );
-                }
             });
 
         d3.select("body")
