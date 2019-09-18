@@ -1,6 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
+import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch.js';
 
 export class ModViewDataVizRenderer_MultiSearch {
@@ -14,6 +15,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                               projectSearchIds,
                               searchDetailsBlockDataMgmtProcessing,
                               dataPageStateManager_DataFrom_Server } ) {
+
+        // make this a copy of what was passed in so the original never gets changed
+        projectSearchIds = [...projectSearchIds];
 
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds });
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds});
@@ -503,8 +507,135 @@ export class ModViewDataVizRenderer_MultiSearch {
                     modMap,
                     sortedModMasses
                 });
-            });
+            })
+            .call(Drag.drag()
+                .on("drag", function(d, i) {
+                    ModViewDataVizRenderer_MultiSearch.handleSearchLabelDrag({ draggedObject: this });
+                })
+                .on("end", function(d, i ) {
+                    ModViewDataVizRenderer_MultiSearch.handleSearchLabelDragEnd({
+                        yScale,
+                        reportedPeptideModData,
+                        proteinPositionResidues,
+                        totalPSMCount,
+                        aminoAcidModStats,
+                        proteinData,
+                        proteinPositionFilterStateManager,
+                        projectSearchIds,
+                        searchDetailsBlockDataMgmtProcessing,
+                        dataPageStateManager_DataFrom_Server,
+                        labelFontSize,
+                        draggedProjectSearchId:d,
+                        draggedObject: this
+                    });
+                }));
     }
+
+
+    static handleSearchLabelDrag({ draggedObject }) {
+
+        d3.select(draggedObject)
+            .attr("y", d3.event.y)
+    }
+
+    static handleSearchLabelDragEnd({
+                                        yScale,
+                                        reportedPeptideModData,
+                                        proteinPositionResidues,
+                                        totalPSMCount,
+                                        aminoAcidModStats,
+                                        proteinData,
+                                        proteinPositionFilterStateManager,
+                                        projectSearchIds,
+                                        searchDetailsBlockDataMgmtProcessing,
+                                        dataPageStateManager_DataFrom_Server,
+                                        labelFontSize,
+                                        draggedProjectSearchId,
+                                        draggedObject
+                                    }) {
+
+
+        const newTextYStart = d3.event.y;
+
+        const insertionData = ModViewDataVizRenderer_MultiSearch.getInsertionPointForProjectSearchId({
+            yScale,
+            projectSearchIds,
+            newTextYStart,
+            labelFontSize,
+            draggedProjectSearchId
+        });
+
+        if( insertionData.insertIndex === projectSearchIds.indexOf(draggedProjectSearchId) ) {
+
+            // do nothing, put label back in place
+            d3.select(draggedObject)
+                .attr("y", yScale(draggedProjectSearchId) + yScale.bandwidth() / 2 + labelFontSize / 2);
+
+
+        } else {
+
+            let newProjectSearchIds =  [...projectSearchIds];
+            newProjectSearchIds.splice(newProjectSearchIds.indexOf(draggedProjectSearchId), 1);
+            newProjectSearchIds.splice(insertionData.insertIndex, 0, draggedProjectSearchId);
+
+            ModViewDataVizRenderer_MultiSearch.renderDataViz({
+                reportedPeptideModData,
+                proteinPositionResidues,
+                totalPSMCount,
+                aminoAcidModStats,
+                proteinData,
+                proteinPositionFilterStateManager,
+                projectSearchIds: newProjectSearchIds,
+                searchDetailsBlockDataMgmtProcessing,
+                dataPageStateManager_DataFrom_Server
+            });
+        }
+    }
+
+    static getInsertionPointForProjectSearchId({ yScale, projectSearchIds, newTextYStart, labelFontSize, draggedProjectSearchId }) {
+
+        let i = 0;
+        let returnedObject = { };
+
+        const startOfDraggedElement =  yScale(draggedProjectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
+
+        /*
+         * Project search IDs are already in order from top to bottom. So, we can just find the first one that the
+         * dragged project search id is above and that is the point at which the dragged project search id should
+         * be inserted
+         */
+        for( const projectSearchId of projectSearchIds ) {
+
+            const start = yScale(projectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
+
+            if( newTextYStart < start ) {
+
+                if( newTextYStart < startOfDraggedElement ) {   // we dragged up
+
+                    returnedObject.insertIndex = i;
+                    returnedObject.insertBefore = projectSearchId;
+
+                } else {    // we dragged down
+
+                    returnedObject.insertIndex = i - 1;
+                    returnedObject.insertBefore = projectSearchId;
+
+                }
+
+                return returnedObject;
+            }
+
+            i++;
+        }
+
+        // if we got here, then it should be inserted at the end
+        returnedObject.insertIndex = projectSearchIds.length - 1;
+        returnedObject.insertBefore = null;
+
+        return returnedObject;
+    }
+
+
 
     static getTruncatedSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength}) {
 

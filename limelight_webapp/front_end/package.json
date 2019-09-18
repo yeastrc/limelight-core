@@ -28,6 +28,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "babel-loader": "^8.0.6",
+    "d3-drag": "^1.2.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }
