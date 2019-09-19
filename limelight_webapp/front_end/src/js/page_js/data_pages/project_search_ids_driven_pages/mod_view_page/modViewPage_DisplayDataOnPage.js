@@ -24,6 +24,7 @@ import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven
 import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager.js';
 import {ModViewDataTableRenderer} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer.js';
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
+import {ModViewDataVizRendererOptionsHandler} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizOptionsManager.js';
 
 /**
  * 
@@ -257,7 +258,35 @@ export class ModViewPage_DisplayDataOnPage {
 			proteinData[projectSearchId] = loadedData[projectSearchId].proteinData;
 		}
 
-		ModViewDataVizRenderer_MultiSearch.renderDataViz( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
+		// add the viz options form to the page
+		let vizOptionsData = { data: { } };
+		vizOptionsData.data.projectSearchIds = [...projectSearchIds];	// ordered list of project ids to show is considered a viz option
+
+		// add the options section to the page using these viz options
+		ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
+			vizOptionsData,
+			reportedPeptideModData,
+			proteinPositionResidues,
+			totalPSMCount,
+			aminoAcidModStats,
+			proteinData,
+			proteinPositionFilterStateManager,
+			searchDetailsBlockDataMgmtProcessing,
+			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
+		});
+
+		// add the viz to the page using these viz options
+		ModViewDataVizRenderer_MultiSearch.renderDataViz({
+			vizOptionsData,
+			reportedPeptideModData,
+			proteinPositionResidues,
+			totalPSMCount,
+			aminoAcidModStats,
+			proteinData,
+			proteinPositionFilterStateManager,
+			searchDetailsBlockDataMgmtProcessing,
+			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
+		});
 	}
 
 }

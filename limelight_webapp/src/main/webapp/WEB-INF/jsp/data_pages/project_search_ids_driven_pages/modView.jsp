@@ -54,7 +54,7 @@
 
     <div id="mod_list_container">
   
-	  <h2>Loading modification data...</h2>
+	  <h2 id="loading-message">Loading modification data...</h2>
  	
     </div>
   
