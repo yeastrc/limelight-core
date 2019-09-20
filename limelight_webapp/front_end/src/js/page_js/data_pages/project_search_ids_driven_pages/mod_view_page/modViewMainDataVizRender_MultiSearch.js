@@ -23,7 +23,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData });
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
         const sortedModMasses = Object.keys(modMap).sort( (a,b) => ( parseInt(a) - parseInt(b)));
-        const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix);
+        const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
 
         // add a div for this viz to the page
         ModViewDataVizRenderer_MultiSearch.addDataVizContainerToPage();
@@ -734,6 +734,10 @@ export class ModViewDataVizRenderer_MultiSearch {
             width = minLegendWidth;
         }
 
+        // adjust to be an integer multiple of the number of mod masses
+        // done in an effort to avoid white space between rects
+        width = Math.round( width / sortedModMasses.length) * sortedModMasses.length;
+
         return width;
     }
 
@@ -874,6 +878,15 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 for(const modMass of Object.keys(reportedPeptideMap)) {
 
+                    // enforce requested mod mass cutoffs
+                    if(vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
+                        continue;
+                    }
+
+                    if(vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                        continue;
+                    }
+
                     const roundedMass = Math.round(parseFloat(modMass));
                     let psmCount = ModViewDataVizRenderer_MultiSearch.getPsmCountForReportedPeptide({reportedPeptideId, projectSearchId, aminoAcidModStats});
 
@@ -897,7 +910,15 @@ export class ModViewDataVizRenderer_MultiSearch {
         return modMap;
     }
 
-    static getMaxPSMCount(modMatrix) {
+    static getMaxPSMCount(modMatrix, vizOptionsData) {
+
+        if( vizOptionsData.data.psmQuant === 'ratios' && vizOptionsData.data.colorCutoffRatio !== undefined) {
+            return vizOptionsData.data.colorCutoffRatio;
+        }
+
+        if( vizOptionsData.data.psmQuant === 'counts' && vizOptionsData.data.colorCutoffCount !== undefined) {
+            return vizOptionsData.data.colorCutoffCount;
+        }
 
         let max = 0;
 

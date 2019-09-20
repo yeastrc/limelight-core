@@ -12,6 +12,19 @@ body.mod-page {
 
   div#data-viz-form {
     margin-top:15px;
+    max-width:800px;
+    margin-bottom:25px;
+
+    div.viz-form-section {
+      vertical-align: top;
+      display:inline-block;
+      margin-left:15px;
+    }
+
+    td {
+      vertical-align:top;
+    }
+
   }
 
   span.mod-mass-text {

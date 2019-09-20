@@ -58,13 +58,50 @@ export class ModViewDataVizRendererOptionsHandler {
 
         const $formDiv = $('div#data-viz-form');
 
-        $formDiv.find('input').change( function() {
+        $formDiv.find('input#update-viz-button').click( function() {
 
             // update ratios vs/ counts
             {
                 // value of psm quant choice
                 const choice = $formDiv.find("input:radio[name='psm-quant']:checked").val()
                 vizOptionsData.data.psmQuant = choice;
+            }
+
+            // update cutoffs for color scale
+            {
+                const ratioCutoff = $formDiv.find("input#color-cutoff-ratio").val();
+                if( ratioCutoff === '') {
+                    delete vizOptionsData.data.colorCutoffRatio;
+                } else if( ratioCutoff !== undefined && !isNaN(ratioCutoff) ) {
+                    vizOptionsData.data.colorCutoffRatio = parseFloat(ratioCutoff);
+                }
+
+                const countCutoff = $formDiv.find("input#color-cutoff-count").val();
+                if( countCutoff === '' ) {
+                    delete vizOptionsData.data.colorCutoffCount;
+                } else if( countCutoff !== undefined && !isNaN(countCutoff) ) {
+                    vizOptionsData.data.colorCutoffCount = parseInt(countCutoff);
+                }
+            }
+
+            // update min and max mod masses
+            {
+
+                const cutoff = $formDiv.find("input#modmass-cutoff-min").val();
+                if( cutoff === '' ) {
+                    delete vizOptionsData.data.modMassCutoffMin;
+                } else if( cutoff !== undefined && !isNaN(cutoff) ) {
+                    vizOptionsData.data.modMassCutoffMin = parseInt(cutoff);
+                }
+            }
+            {
+
+                const cutoff = $formDiv.find("input#modmass-cutoff-max").val();
+                if( cutoff === '' ) {
+                    delete vizOptionsData.data.modMassCutoffMax;
+                } else if( cutoff !== undefined && !isNaN(cutoff) ) {
+                    vizOptionsData.data.modMassCutoffMax = parseInt(cutoff);
+                }
             }
 
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
@@ -98,6 +135,26 @@ export class ModViewDataVizRendererOptionsHandler {
                 $formToUpdate.find("input#psm-quant-option-ratios").attr('checked', 'checked');
             } else {
                 $formToUpdate.find("input#psm-quant-option-counts").attr('checked', 'checked');
+            }
+        }
+
+        // update ratio and count cutoffs
+        {
+            if( vizOptionsData.data.colorCutoffRatio !== undefined ) {
+                $formToUpdate.find("input#color-cutoff-ratio").val(vizOptionsData.data.colorCutoffRatio )
+            }
+            if( vizOptionsData.data.colorCutoffCount !== undefined ) {
+                $formToUpdate.find("input#color-cutoff-count").val(vizOptionsData.data.colorCutoffCount )
+            }
+        }
+
+        // update min and max mod masses
+        {
+            if( vizOptionsData.data.modMassCutoffMin !== undefined ) {
+                $formToUpdate.find("input#input#modmass-cutoff-min").val(vizOptionsData.data.modMassCutoffMin )
+            }
+            if( vizOptionsData.data.modMassCutoffMax !== undefined ) {
+                $formToUpdate.find("input#input#modmass-cutoff-max").val(vizOptionsData.data.modMassCutoffMax )
             }
         }
     }

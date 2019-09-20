@@ -1,8 +1,56 @@
 <div id="data-viz-options-container">
     <div id="data-viz-title">Data Visualization Options:</div>
     <div id="data-viz-form">
-        PSM quant method:
-            <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" selected>Ratios
-            <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts">Counts
+
+        <div id="form-sections">
+
+                <div class="viz-form-section">
+                PSM quant method:
+
+                <div style="margin-top:10px;">
+                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" selected>Ratios<br>
+                    <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts">Counts
+                </div>
+
+                <div style="margin-top:10px;">
+                    <input type="button" id="update-viz-button" class="button" value="Update Visualization"/>
+                </div>
+            </div>
+
+            <div class="viz-form-section">
+                Max cutoff for color scale:<br>
+                <span style="font-size:10px">(Leave blank to use defaults.)</span>
+
+                <table style="margin-top:10px;">
+                    <tr>
+                        <td>Ratio:</td>
+                        <td><input type="text" id="color-cutoff-ratio" name="color-cutoff-ratio" size="4"/></td>
+                    </tr>
+                    <tr>
+                        <td>Count:</td>
+                        <td><input type="text" id="color-cutoff-count" name="color-cutoff-count" size="4"/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="viz-form-section">
+                Min and max mod masses:<br>
+                <span style="font-size:10px">(Leave blank to use defaults.)</span>
+
+                <table style="margin-top:10px;">
+                    <tr>
+                        <td>Minimum:</td>
+                        <td><input type="text" id="modmass-cutoff-min" name="modmass-cutoff-min" size="4"/></td>
+                    </tr>
+                    <tr>
+                        <td>Maximum:</td>
+                        <td><input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size="4"/></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div> <!-- end form sections -->
+
     </div>
+
 </div>
