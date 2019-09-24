@@ -22,7 +22,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData });
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
-        const sortedModMasses = Object.keys(modMap).sort( (a,b) => ( parseInt(a) - parseInt(b)));
+        const sortedModMasses = Object.keys(modMap).map(Number).sort( (a,b) => ( a - b));
         const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
 
         // add a div for this viz to the page
@@ -92,7 +92,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .style("max-width", "250px");
 
         // keep track of what the user has selected to see
-        let selectedStateObject = { data: { } };
+        let selectedStateObject = vizOptionsData.data.selectedStateObject;
 
         ModViewDataVizRenderer_MultiSearch.addColoredRectangles({
             svg,
@@ -152,6 +152,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             modMap,
+            vizOptionsData
         });
 
         // show the data table under the vizualization by default
@@ -282,7 +283,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                               proteinPositionFilterStateManager,
                               searchDetailsBlockDataMgmtProcessing,
                               dataPageStateManager_DataFrom_Server,
-                              modMap
+                              modMap,
+                              vizOptionsData
     }) {
 
         svg.select('#rect-group')
@@ -362,6 +364,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                     // remove selection frame
                     s.remove();
 
+                    // update hash in URL to reflect user customization state
+                    vizOptionsData.stateManagementObject.updateState();
+
                     // redraw the data table
                     ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
                 }
@@ -374,7 +379,11 @@ export class ModViewDataVizRenderer_MultiSearch {
                 // capture escape key press, reset viz
                 if(d3.event.keyCode === 27) {
                     selectedStateObject.data = {};
-                    svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
+
+                    // update hash in URL to reflect user customization state
+                    vizOptionsData.stateManagementObject.updateState();
+
+                    ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject });
 
                     // redraw the data table
                     ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
@@ -385,15 +394,17 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static updateShownRectOpacities({ svg, selectedStateObject }) {
 
-        // reset selected state object unless control is being held down
-        if(!d3.event.ctrlKey && !d3.event.metaKey) {
-            svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
-        }
+        if( !selectedStateObject.data || Object.keys(selectedStateObject.data).length < 1) {
+            svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
+        } else {
 
-        for(const projectSearchId of Object.keys(selectedStateObject.data)) {
-            for(const modMass of selectedStateObject.data[projectSearchId]) {
-                const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
-                svg.select('#rect-group').select(selector).style('opacity', '1.0');
+            svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
+
+            for (const projectSearchId of Object.keys(selectedStateObject.data)) {
+                for (const modMass of selectedStateObject.data[projectSearchId]) {
+                    const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
+                    svg.select('#rect-group').select(selector).style('opacity', '1.0');
+                }
             }
         }
     }
@@ -401,7 +412,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
 
         // reset selected state object unless control is being held down
-        if(!d3.event.ctrlKey && !d3.event.metaKey) {
+        if(!d3.event || (!d3.event.ctrlKey && !d3.event.metaKey)) {
             svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
         }
 
@@ -549,6 +560,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 selectedStateObject.data[d] = [...sortedModMasses];
 
+                // update hash in URL to reflect user customization state
+                vizOptionsData.stateManagementObject.updateState();
+
                 // update final opacity for viz
                 ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject })
 
@@ -640,6 +654,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             newProjectSearchIds.splice(insertionData.insertIndex, 0, draggedProjectSearchId);
 
             vizOptionsData.data.projectSearchIds = newProjectSearchIds;
+
+            // update hash in URL to reflect user customization state
+            vizOptionsData.stateManagementObject.updateState();
 
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
                 reportedPeptideModData,
@@ -795,6 +812,19 @@ export class ModViewDataVizRenderer_MultiSearch {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
                 ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
             });
+
+        // update opacity as necessary
+        // if no selections are defined, everything is selected
+        {
+            const selectedStateObject = vizOptionsData.data.selectedStateObject;
+
+            if (selectedStateObject.data !== undefined || Object.keys(selectedStateObject.data).length > 0) {
+                ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({
+                    svg,
+                    selectedStateObject
+                })
+            }
+        }
     }
 
     static showToolTip({ projectSearchId, modMass, psmCount, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData }) {

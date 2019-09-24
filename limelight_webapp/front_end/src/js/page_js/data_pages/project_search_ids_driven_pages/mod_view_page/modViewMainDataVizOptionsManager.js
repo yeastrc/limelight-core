@@ -104,6 +104,9 @@ export class ModViewDataVizRendererOptionsHandler {
                 }
             }
 
+            // update hash in URL to reflect user customization state
+            vizOptionsData.stateManagementObject.updateState();
+
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
                 reportedPeptideModData,
                 proteinPositionResidues,
@@ -151,10 +154,10 @@ export class ModViewDataVizRendererOptionsHandler {
         // update min and max mod masses
         {
             if( vizOptionsData.data.modMassCutoffMin !== undefined ) {
-                $formToUpdate.find("input#input#modmass-cutoff-min").val(vizOptionsData.data.modMassCutoffMin )
+                $formToUpdate.find("input#modmass-cutoff-min").val(vizOptionsData.data.modMassCutoffMin )
             }
             if( vizOptionsData.data.modMassCutoffMax !== undefined ) {
-                $formToUpdate.find("input#input#modmass-cutoff-max").val(vizOptionsData.data.modMassCutoffMax )
+                $formToUpdate.find("input#modmass-cutoff-max").val(vizOptionsData.data.modMassCutoffMax )
             }
         }
     }

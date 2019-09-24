@@ -28,38 +28,31 @@ Handlebars.templates = _dummy_template_template_bundle;
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
+import {catchAndReportGlobalOnError} from 'page_js/catchAndReportGlobalOnError.js';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
 //   From data_pages_common
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import {dataPageStateManager_Keys} from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import {_REFERRER_PATH_STRING} from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
+
+import {Page_UserDefault_processing} from 'page_js/data_pages/data_pages_common/page_UserDefault_processing.js';
+
+import {GetSearchDataLookupParametersFromPage} from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage.js';
+import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing.js';
+import {LoadCoreData_ProjectSearchIds_Based} from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based.js';
+
+import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
+
+import {CentralPageStateManager} from '../../central_page_state_manager/centralPageStateManager.js';
+
+import {SharePage_dataPages} from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+//  From main_pages
+import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader.js';
+//  From local dir
+import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage.js';
 
 //  From data_pages_common
-
-import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
-
-import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing.js';
-
-import { GetSearchDataLookupParametersFromPage }  from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage.js';
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing.js';
-import { LoadCoreData_ProjectSearchIds_Based } from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based.js';
-
-import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
-
-import { CentralPageStateManager } from '../../central_page_state_manager/centralPageStateManager.js';
-
-import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
-
-//  From main_pages
-import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
-
-//  From local dir
-import { ModViewPage_DisplayDataOnPage }  from './modViewPage_DisplayDataOnPage.js';
-
-import { SearchColorManager }
-	from 'page_js/data_pages/color_manager/searchColorManager.js';
 
 /**
  * 
@@ -83,8 +76,6 @@ export class ModViewPage_RootClass_Common {
 
 		this._centralPageStateManager = new CentralPageStateManager();
 
-		this._searchColors_CentralStateManagerObject = new SearchColorManager( { centralPageStateManager : this._centralPageStateManager } );
-
 
 		//  Instances of class DataPageStateManager
 
@@ -101,8 +92,7 @@ export class ModViewPage_RootClass_Common {
 
 		this._searchDetailsBlockDataMgmtProcessing = new SearchDetailsBlockDataMgmtProcessing({
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchColorManager : this._searchColors_CentralStateManagerObject
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
 		});
 
 		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
@@ -110,7 +100,8 @@ export class ModViewPage_RootClass_Common {
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			centralPageStateManager : this._centralPageStateManager
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
@@ -131,7 +122,6 @@ export class ModViewPage_RootClass_Common {
 		this._page_UserDefault_processing.page_UserDefault_processing();
 
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
-
 		let referrerFromURL = initialStateFromURL.referrer;
 		
 		if ( referrerFromURL === _REFERRER_PATH_STRING ) {
@@ -170,17 +160,6 @@ export class ModViewPage_RootClass_Common {
 		}
 		
 		this._sharePage_dataPages.initialize({ projectSearchIds });
-
-		this._searchColors_CentralStateManagerObject.initialize();
-
-		// initialize the colors if they've never been set (ie, weren't in the central state manager)
-		if( this._searchColors_CentralStateManagerObject.searchIds === undefined ||
-		this._searchColors_CentralStateManagerObject.searchIds.length < 1 ) {
-			this._searchColors_CentralStateManagerObject.searchIds = projectSearchIds;
-		}
-
-		console.log( this._searchColors_CentralStateManagerObject );
-
 				
 		this._loadCoreData_ProjectSearchIds_Based =
 			new LoadCoreData_ProjectSearchIds_Based( {
