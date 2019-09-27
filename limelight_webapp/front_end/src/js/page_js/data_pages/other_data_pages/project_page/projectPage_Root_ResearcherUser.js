@@ -111,7 +111,7 @@ class ProjectViewPage_Root_ResearcherUser {
 
 		this._projectPage_ProjectUserAccessAdminSection =
 			new ProjectPage_ProjectUserAccessAdminSection( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked } );
+				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction =
 				new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 

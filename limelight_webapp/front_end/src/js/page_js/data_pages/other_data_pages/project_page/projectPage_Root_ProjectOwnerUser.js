@@ -113,12 +113,12 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 		
 		this._projectPage_ProjectSection_ProjectOwnerInteraction =
 			new ProjectPage_ProjectSection_ProjectOwnerInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked 
+				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked 
 			} );
 		
 		this._projectPage_ProjectUserAccessAdminSection =
 			new ProjectPage_ProjectUserAccessAdminSection( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked } );
+				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 		
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction =
 			new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 

@@ -36,27 +36,27 @@ export class ProjectPage_ProjectUserAccessAdminSection {
 	/**
 	 * 
 	 */
-	constructor({projectIdentifierFromURL}) {
+	constructor({ projectIdentifierFromURL, userIsProjectOwner, projectLocked }) {
 
 		this._initializeCalled = false;
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 
-		this._projectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople = new ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople(
-			{
-				projectIdentifierFromURL : this._projectIdentifierFromURL
-			});
+		this._projectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople = new ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople({
+			projectIdentifierFromURL : this._projectIdentifierFromURL
+		});
 
-		this._projectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers = new ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers(
-			{
-				projectIdentifierFromURL : this._projectIdentifierFromURL
-			});
+		this._projectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers = new ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers({
+			projectIdentifierFromURL : this._projectIdentifierFromURL
+		});
 
-		this._projectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser = new ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser(
-			{
+		if ( userIsProjectOwner && ( ! projectLocked ) ) {
+
+			this._projectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser = new ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser({
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
 				projectPage_ProjectUserAccessAdminSection : this
 			});
+		}
 	}
 
 	/**
@@ -69,7 +69,10 @@ export class ProjectPage_ProjectUserAccessAdminSection {
 
 		this._projectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople.initialize();
 		this._projectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers.initialize();
-		this._projectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser.initialize();
+		
+		if ( this._projectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser ) {
+			this._projectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser.initialize();
+		}
 	};
 
 	/**

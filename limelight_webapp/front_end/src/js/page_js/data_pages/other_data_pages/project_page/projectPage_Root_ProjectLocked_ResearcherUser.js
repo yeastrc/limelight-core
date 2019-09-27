@@ -78,6 +78,7 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 		const projectPage_CommonOverall = new ProjectPage_CommonOverall();
 		projectPage_CommonOverall.initialize();
 		
+		const userIsProjectOwner = false;
 		const projectLocked = true;
 		
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
@@ -98,11 +99,11 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 
 		this._projectPage_ProjectUserAccessAdminSection =
 			new ProjectPage_ProjectUserAccessAdminSection( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked } );
+				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction =
 			new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked } );
+				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
