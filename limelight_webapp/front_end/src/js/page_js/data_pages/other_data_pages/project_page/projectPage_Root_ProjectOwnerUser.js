@@ -139,7 +139,12 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 
 		this._projectPage_ProjectSection_ProjectOwnerInteraction.initialize();
 		this._projectPage_ProjectSection_LoggedInUsersInteraction.initialize({ projectPage_ProjectSection_AllUsersInteraction : this._projectPage_ProjectSection_AllUsersInteraction });
-		this._projectPage_ProjectUserAccessAdminSection.initialize();
+		
+		window.setTimeout(() => {
+			//  Run in setTimeout to catch Errors
+			this._projectPage_ProjectUserAccessAdminSection.initialize();
+		}, 10 );
+
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction.initialize();
 		this._projectPage_UploadData.initialize();
 		

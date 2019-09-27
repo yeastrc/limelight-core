@@ -108,7 +108,12 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 
-		this._projectPage_ProjectUserAccessAdminSection.initialize();
+		
+		window.setTimeout(() => {
+			//  Run in setTimeout to catch Errors
+			this._projectPage_ProjectUserAccessAdminSection.initialize();
+		}, 10 );
+
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction.initialize();
 		
 		////Instance of class
