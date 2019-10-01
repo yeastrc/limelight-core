@@ -30,7 +30,9 @@ export class ModStatsUtils {
             selectedData = vizOptionsData.data.selectedStateObject.data
         }
 
-        for( const projectSearchId1 of projectSearchIds ) {
+        for( let i = 0; i < projectSearchIds.length; i++ ) {
+
+            const projectSearchId1 = projectSearchIds[ i ];
 
             // skip this search if we have selected data and none of it includes this project search id
             if( selectedData !== undefined && !(projectSearchId1 in selectedData)) {
@@ -39,16 +41,18 @@ export class ModStatsUtils {
 
             let n1 = totalPSMCount[projectSearchId1].psmCount;
 
-            for( const projectSearchId2 of projectSearchIds ) {
+            for( let k = 0; k < projectSearchIds.length; k++ ) {
 
-                // skip this search if we have selected data and none of it includes this project search id
-                if(selectedData !== undefined && !(projectSearchId2 in selectedData)) {
-                    continue;
-                }
+                if( i < k ) {
 
-                let n2 = totalPSMCount[projectSearchId2].psmCount;
+                    const projectSearchId2 = projectSearchIds[ k ];
 
-                if( projectSearchId1 < projectSearchId2 ) {
+                    // skip this search if we have selected data and none of it includes this project search id
+                    if(selectedData !== undefined && !(projectSearchId2 in selectedData)) {
+                        continue;
+                    }
+
+                    let n2 = totalPSMCount[projectSearchId2].psmCount;
 
                     for (const modMass of sortedModMasses) {
 
