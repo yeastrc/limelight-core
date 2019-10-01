@@ -14,8 +14,6 @@ export class ModStatsUtils {
                                        searchDetailsBlockDataMgmtProcessing
     }) {
 
-        console.log(searchDetailsBlockDataMgmtProcessing);
-
         let output = "search1\tsearch2\tmod mass\tpsm count 1\tpsm count 2\tz-score\tp-value\n";
 
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
@@ -27,17 +25,38 @@ export class ModStatsUtils {
             countsOverride: true
         });
 
+        let selectedData = undefined;
+        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
+            selectedData = vizOptionsData.data.selectedStateObject.data
+        }
+
         for( const projectSearchId1 of projectSearchIds ) {
+
+            // skip this search if we have selected data and none of it includes this project search id
+            if( selectedData !== undefined && !(projectSearchId1 in selectedData)) {
+                continue;
+            }
 
             let n1 = totalPSMCount[projectSearchId1].psmCount;
 
             for( const projectSearchId2 of projectSearchIds ) {
+
+                // skip this search if we have selected data and none of it includes this project search id
+                if(selectedData !== undefined && !(projectSearchId2 in selectedData)) {
+                    continue;
+                }
 
                 let n2 = totalPSMCount[projectSearchId2].psmCount;
 
                 if( projectSearchId1 < projectSearchId2 ) {
 
                     for (const modMass of sortedModMasses) {
+
+                        // if we have selected data and it doesn't include this combination of mod mass for both project search ids, skip it
+                        if (selectedData !== undefined && (!selectedData[projectSearchId1].includes(modMass) || !selectedData[projectSearchId2].includes(modMass))) {
+                            continue;
+                        }
+
 
                         let x1 = modMap[modMass][projectSearchId1];
                         if (x1 === undefined) {
