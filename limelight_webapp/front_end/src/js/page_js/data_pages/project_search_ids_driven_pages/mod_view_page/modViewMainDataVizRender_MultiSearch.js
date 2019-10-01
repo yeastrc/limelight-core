@@ -5,6 +5,7 @@ let Handlebars = require('handlebars/runtime');
 import * as d3 from "d3";
 import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch.js';
+import {ModStatsUtils} from "./modStatsUtils";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -39,7 +40,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // label defs
         const labelFontSize = 14;               // font size (in pixels) of labels
-        const maxSearchLabelLength = 40;        // max # of characters in a search label before truncation
+        const maxSearchLabelLength = 44;        // max # of characters in a search label before truncation
 
         const width = ModViewDataVizRenderer_MultiSearch.getWidth({sortedModMasses, widthDefs, minLegendWidth});
         const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds:vizOptionsData.data.projectSearchIds, heightDefs});
@@ -133,7 +134,6 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabelsHeader({ svg, width, labelFontSize });
-
         ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, minPSMCount: 0, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData });
 
         ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
@@ -155,6 +155,15 @@ export class ModViewDataVizRenderer_MultiSearch {
             vizOptionsData
         });
 
+        ModViewDataVizRenderer_MultiSearch.addDataDownloadLinks({
+            reportedPeptideModData,
+            totalPSMCount,
+            aminoAcidModStats,
+            searchDetailsBlockDataMgmtProcessing,
+            sortedModMasses,
+            vizOptionsData
+        })
+
         // show the data table under the vizualization by default
         ModViewDataTableRenderer_MultiSearch.renderDataTable({
             projectSearchIds:vizOptionsData.data.projectSearchIds,
@@ -170,6 +179,38 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             sortedModMasses
         });
+    }
+
+    static addDataDownloadLinks({
+                                    reportedPeptideModData,
+                                    totalPSMCount,
+                                    aminoAcidModStats,
+                                    searchDetailsBlockDataMgmtProcessing,
+                                    sortedModMasses,
+                                    vizOptionsData
+                                }) {
+
+
+        let html = "<div class=\"clickable\">[Download Stats Report]</div>"
+        let $html = $(html)
+
+        $html.click(function() {
+
+            // calculate and show stats
+            ModStatsUtils.downloadSignificantMods({
+                reportedPeptideModData,
+                aminoAcidModStats,
+                vizOptionsData,
+                sortedModMasses,
+                totalPSMCount,
+                searchDetailsBlockDataMgmtProcessing,
+                projectSearchIds: vizOptionsData.data.projectSearchIds
+            });
+
+        });
+
+        $("div#data-viz-container").append($html);
+
     }
 
     /**
@@ -731,7 +772,18 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
         const maxLength = 30;
+
         const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server._pageState.searchNames[projectSearchId].name;
+        const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
+
+        const retName = "(" + searchId + ") " + searchName;
+
+        return retName;
+    }
+
+    static getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
+        const maxLength = 30;
+        let searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server._pageState.searchNames[projectSearchId].searchId;
 
         return searchName;
     }
@@ -894,7 +946,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                            aminoAcidModStats,
                            projectSearchIds,
                            totalPSMCount,
-                           vizOptionsData
+                           vizOptionsData,
+                           countsOverride
                        }) {
 
         const modMap = { };
@@ -920,7 +973,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     const roundedMass = Math.round(parseFloat(modMass));
                     let psmCount = ModViewDataVizRenderer_MultiSearch.getPsmCountForReportedPeptide({reportedPeptideId, projectSearchId, aminoAcidModStats});
 
-                    if( vizOptionsData.data.psmQuant === 'ratios' ) {
+                    if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
                         psmCount = psmCount / totalPSMCount[projectSearchId].psmCount;
                     }
 
