@@ -170,28 +170,32 @@ public class SearcherCutoffValues_Factory {
 		
 		//////////////////////
 		//  Process Input
-		for ( SearchDataLookupParams_Filter_Per_AnnotationType cutoffValuesAnnotationLevel : psmCutoffValues ) {
-			Integer annotationTypeId = cutoffValuesAnnotationLevel.getAnnTypeId();
-			if ( cutoffValuesAnnotationLevel.getValue() != null ) {
-				//  Only add to the output data structure if the input cutoff value is not empty 
-				SearcherCutoffValuesAnnotationLevel output = 
-						createSearcherCutoffRequestPerAnnotationType( 
-								annotationTypeId, 
-								cutoffValuesAnnotationLevel, 
-								srchPgmFilterablePsmAnnotationTypeDTOMap );
-				searcherCutoffValuesSearchLevel.addPsmPerAnnotationCutoffs( output );
+		if ( psmCutoffValues != null && ( ! psmCutoffValues.isEmpty() ) ) {
+			for ( SearchDataLookupParams_Filter_Per_AnnotationType cutoffValuesAnnotationLevel : psmCutoffValues ) {
+				Integer annotationTypeId = cutoffValuesAnnotationLevel.getAnnTypeId();
+				if ( cutoffValuesAnnotationLevel.getValue() != null ) {
+					//  Only add to the output data structure if the input cutoff value is not empty 
+					SearcherCutoffValuesAnnotationLevel output = 
+							createSearcherCutoffRequestPerAnnotationType( 
+									annotationTypeId, 
+									cutoffValuesAnnotationLevel, 
+									srchPgmFilterablePsmAnnotationTypeDTOMap );
+					searcherCutoffValuesSearchLevel.addPsmPerAnnotationCutoffs( output );
+				}
 			}
 		}
-		for ( SearchDataLookupParams_Filter_Per_AnnotationType cutoffValuesAnnotationLevel : peptideCutoffValues ) {
-			Integer annotationTypeId = cutoffValuesAnnotationLevel.getAnnTypeId();
-			if ( cutoffValuesAnnotationLevel.getValue() != null ) {
-				//  Only add to the output data structure if the input cutoff value is not empty 
-				SearcherCutoffValuesAnnotationLevel output = 
-						createSearcherCutoffRequestPerAnnotationType( 
-								annotationTypeId, 
-								cutoffValuesAnnotationLevel, 
-								srchPgmFilterableReportedPeptideAnnotationTypeDTOMap );
-				searcherCutoffValuesSearchLevel.addPeptidePerAnnotationCutoffs( output );
+		if ( peptideCutoffValues != null && ( ! peptideCutoffValues.isEmpty() ) ) {
+			for ( SearchDataLookupParams_Filter_Per_AnnotationType cutoffValuesAnnotationLevel : peptideCutoffValues ) {
+				Integer annotationTypeId = cutoffValuesAnnotationLevel.getAnnTypeId();
+				if ( cutoffValuesAnnotationLevel.getValue() != null ) {
+					//  Only add to the output data structure if the input cutoff value is not empty 
+					SearcherCutoffValuesAnnotationLevel output = 
+							createSearcherCutoffRequestPerAnnotationType( 
+									annotationTypeId, 
+									cutoffValuesAnnotationLevel, 
+									srchPgmFilterableReportedPeptideAnnotationTypeDTOMap );
+					searcherCutoffValuesSearchLevel.addPeptidePerAnnotationCutoffs( output );
+				}
 			}
 		}
 		return searcherCutoffValuesSearchLevel;
