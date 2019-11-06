@@ -2013,8 +2013,9 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	 */
 	_downloadPeptides_All_ClickHandler( { clickThis, eventObject } ) {
 
-		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = 
-			this._getReportedPeptideIdsForDisplay_AllProjectSearchIds({ not_filtered_position_modification_selections : true });
+		const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result = this._getReportedPeptideIdsForDisplay_AllProjectSearchIds({ not_filtered_position_modification_selections : true });
+
+		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId;
 
 		const reportedPeptideDisplayDownloadDataAsString =
 			this._proteinViewPage_DisplayData_SingleProtein_ReportedPeptideList.createReportedPeptideDisplayDownloadDataAsString(
@@ -2033,8 +2034,9 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	 */
 	_downloadPeptides_Shown_ClickHandler( { clickThis, eventObject } ) {
 		
-		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = 
-			this._getReportedPeptideIdsForDisplay_AllProjectSearchIds();
+		const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result = this._getReportedPeptideIdsForDisplay_AllProjectSearchIds();
+
+		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId;
 
 		const reportedPeptideDisplayDownloadDataAsString =
 			this._proteinViewPage_DisplayData_SingleProtein_ReportedPeptideList.createReportedPeptideDisplayDownloadDataAsString(
@@ -2057,8 +2059,9 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	_downloadPsmsClickHandler_All( { clickThis, eventObject } ) {
 
 		//  Data in Map
-		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = 
-			this._getReportedPeptideIdsForDisplay_AllProjectSearchIds({ not_filtered_position_modification_selections : true });
+		const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result = this._getReportedPeptideIdsForDisplay_AllProjectSearchIds({ not_filtered_position_modification_selections : true });
+
+		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId;
 
 		//  Transfer Map into Object for serializing to JSON
 
@@ -2087,8 +2090,9 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	_downloadPsmsClickHandler_Shown( { clickThis, eventObject } ) {
 
 		//  Data in Map
-		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = 
-			this._getReportedPeptideIdsForDisplay_AllProjectSearchIds();
+		const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result = this._getReportedPeptideIdsForDisplay_AllProjectSearchIds();
+
+		const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId = getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId;
 
 		//  Transfer Map into Object for serializing to JSON
 
@@ -2444,7 +2448,9 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 				throw Error( "No loadedDataPerProjectSearchIdHolder for projectSearchId: " + projectSearchId );
 			}
 
-			const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay_SpecificProjectSearchId({ loadedDataPerProjectSearchIdHolder, projectSearchId } );
+			const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay_SpecificProjectSearchId({ 
+				loadedDataPerProjectSearchIdHolder, projectSearchId, not_filtered_position_modification_selections
+			} );
 			// reportedPeptides_Filtered_Array,
 			// peptideSearchStrings_AnyEntered,
 			// peptideSearchStrings_FoundAtAnyPositionsOnProteinSequence,
