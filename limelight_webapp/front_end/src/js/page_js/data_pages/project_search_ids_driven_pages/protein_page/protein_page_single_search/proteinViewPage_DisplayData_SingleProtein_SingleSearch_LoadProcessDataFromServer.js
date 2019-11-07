@@ -49,9 +49,27 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	loadDataForInitialOverlayShow( { proteinSequenceVersionId, projectSearchId } ) {
 
 		const objectThis = this;
+
+		// console.log("loadDataForInitialOverlayShow(...): projectSearchId: " + projectSearchId );
+
+		//  When Called for multiple searches in a row like on the multiple search page and experiment page, 
+		//  for each search this code will retrieve the protein sequence 
+		//  since this code is called for each search before the AJAX response from getting the same protein sequence for the previous search.
+
+		{
+			//  class ProteinSequenceData_For_ProteinSequenceVersionId
+			const proteinSequenceData = this._loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } );
 		
-		if ( this._loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) !== undefined ) {
-			return null;
+			if ( proteinSequenceData !== undefined ) {
+
+				const proteinSequenceString = proteinSequenceData.getProteinSequence();
+
+				//  Call this again since use this for multiple searches and need to call this for each projectSearchId
+
+				objectThis._populateStaticModificationsPositionsOnProteinSequence({ proteinSequenceVersionId, proteinSequenceString });
+							
+				return null; //  EARLY RETURN
+			}
 		}
 		
 		return new Promise( function(resolve, reject) {
@@ -238,6 +256,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	/**
 	 * Find the Positions on the Protein Sequence String of the Static modifications for the Search 
 	 * Store on this._loadedDataPerProjectSearchIdHolder
+	 * 
+	 * This can be (but not likely) called multiple times for the same search due to where it is currently called from.
 	 */
 	_populateStaticModificationsPositionsOnProteinSequence({ proteinSequenceVersionId, proteinSequenceString }) {
 
