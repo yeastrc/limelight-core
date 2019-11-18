@@ -867,7 +867,6 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 	 */
 	_get_className_ForStyling_ForProteinSequencePosition({ proteinSequencePosition }) {
 
-
 		if ( ! this._widget_SequenceCoverageParam_All_Peptides.isProteinCoverageAtPosition( { position : proteinSequencePosition } ) ) {
 
 			//  position has no sequence coverage, by default, then has no mods

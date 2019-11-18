@@ -91,13 +91,20 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 					try {
 						const promiseAllArray = [];
 
-						//  Static Mods - Arbitrarily put here
+						//  Static Mods - Arbitrarily put here - Not used on Protein List Page
 						if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_staticMods() ) {
 							//  No static mods so load them
 							const promise = objectThis._getAndProcessStaticMods_forProjectSearchId( { projectSearchId } );
 							promiseAllArray.push( promise );
 						}
 						
+						//  Unique Reporter Ion Masses for the Search - Arbitrarily put here - Not used on Protein List Page
+						if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_reporterIonMasses_ForSearch() ) {
+							//  No Unique Reporter Ion Masses for the Search so load them
+							const promise = objectThis._getAndProcess_ReporterIonsUnique_ForSearch_forProjectSearchId( { projectSearchId } );
+							promiseAllArray.push( promise );
+						}
+
 						objectThis._processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
 						
 						if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() ) {
@@ -174,7 +181,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 
 
 	/**
-	 * Performed here since currently not used for single search
+	 * Performed here since currently not used for single search protein list
 	 */
 	_getAndProcessStaticMods_forProjectSearchId( { projectSearchId } ) {
 
@@ -207,8 +214,43 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 			}
 		});
 	}
-	
 
+	/**
+	 * Performed here since currently not used for single search protein list
+	 */
+	_getAndProcess_ReporterIonsUnique_ForSearch_forProjectSearchId( { projectSearchId } ) {
+
+		const objectThis = this;
+		
+		return new Promise((resolve, reject) => {
+			try {
+				const promise_getData = ProteinViewDataLoader._get_ReporterIonsUnique_ForSearch_forProjectSearchId( { projectSearchId } );
+
+				promise_getData.catch((reason) => { reject(reason)});
+
+				promise_getData.then((reporterIonMassesUniqueList) => {
+					try {
+						// DB Results: reporterIonMassesUniqueList: result list item BigDecimal
+						// Store: Set <mass>
+
+						const reporterIonMassesUniqueSet = new Set( reporterIonMassesUniqueList )
+
+						objectThis._loadedDataPerProjectSearchIdHolder.set_reporterIonMasses_ForSearch(reporterIonMassesUniqueSet);
+
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} catch( e ) {
+				console.log("Exception caught in New Promise in _getAndProcess_ReporterIonsUnique_ForSearch_forProjectSearchId(...)");
+				console.log( e );
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+	}
 
 	/**
 	 * Get Number of PSMs per Reported Peptide Id from Reported Peptide Ids, Search Criteria
@@ -514,20 +556,42 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		//             numPsms_IfComputedOrInDB is only populated for some criteria (Default Cutoffs).  Otherwise, it is null.
 		
 		//  Extract the reportedPeptideIds into an array and if populated put the numPsms in a Map on loadedData
+
+		// console.log("_processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } ) reportedPeptideCoreDataArray:");
+		// console.log( reportedPeptideCoreDataArray );
 		
 		const reportedPeptideIds = [];
 		const numPsmsForReportedPeptideIdMap = new Map();
+		const reportedPeptideIds_HasDynamicModifications = new Set();
+		const reportedPeptideIds_AnyPsmHas_DynamicModifications = new Set();
+		const reportedPeptideIds_AnyPsmHas_ReporterIons = new Set();
 		
 		let allSet_numPsmsForReportedPeptideIdMap = true;
 		
 		for ( const reportedPeptideCoreDataEntry of reportedPeptideCoreDataArray ) {
+
 			const reportedPeptideId = reportedPeptideCoreDataEntry.reportedPeptideId;
 			const numPsms_IfComputedOrInDB = reportedPeptideCoreDataEntry.numPsms_IfComputedOrInDB;
+			const reportedPeptideHas_DynamicModifications = reportedPeptideCoreDataEntry.reportedPeptideHas_DynamicModifications;
+			const anyPsmHas_DynamicModifications = reportedPeptideCoreDataEntry.anyPsmHas_DynamicModifications;
+			const anyPsmHas_ReporterIons = reportedPeptideCoreDataEntry.anyPsmHas_ReporterIons;
+
 			reportedPeptideIds.push( reportedPeptideId );
+
 			if ( numPsms_IfComputedOrInDB !== undefined && numPsms_IfComputedOrInDB !== null ) {
 				numPsmsForReportedPeptideIdMap.set( reportedPeptideId, numPsms_IfComputedOrInDB );
 			} else {
 				allSet_numPsmsForReportedPeptideIdMap = false;
+			}
+
+			if ( reportedPeptideHas_DynamicModifications ) {
+				reportedPeptideIds_HasDynamicModifications.add( reportedPeptideId );
+			}
+			if ( anyPsmHas_DynamicModifications ) {
+				reportedPeptideIds_AnyPsmHas_DynamicModifications.add( reportedPeptideId );
+			}
+			if ( anyPsmHas_ReporterIons ) {
+				reportedPeptideIds_AnyPsmHas_ReporterIons.add( reportedPeptideId );
 			}
 		}
 		
@@ -535,6 +599,12 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		if ( allSet_numPsmsForReportedPeptideIdMap ) {
 			this._loadedDataPerProjectSearchIdHolder.set_numPsmsForReportedPeptideIdMap( numPsmsForReportedPeptideIdMap );
 		}
+		//  Reported Peptides for Current Cutoffs/Filters that contain Reported Peptide Level Dynamic Modifications
+		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_HasDynamicModifications( reportedPeptideIds_HasDynamicModifications );
+		//  Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Dynamic Modifications
+		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_AnyPsmHas_DynamicModifications( reportedPeptideIds_AnyPsmHas_DynamicModifications );
+		//  Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Reporter Ions
+		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_AnyPsmHas_ReporterIons( reportedPeptideIds_AnyPsmHas_ReporterIons );
 	}
 
 	/**

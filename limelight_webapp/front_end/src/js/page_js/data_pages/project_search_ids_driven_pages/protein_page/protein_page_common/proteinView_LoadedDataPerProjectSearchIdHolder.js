@@ -15,18 +15,23 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 	 */
 	constructor() {
 
-		this._data = undefined;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData = undefined;
 
 		//  For Current Cutoffs or Displayed Data
 
 		this._data_AtCurrentCutoffs_Or_DisplayData = undefined;
 
+		
+
 		//   Per: Project Search Id  
 
-		//    on ojbect 'this._data'
+		//    on ojbect 'this._data__NOT__AtCurrentCutoffs_Or_DisplayData.'
 
 		//  Static Mods for this search
 		// _staticMods - Array [{ String residue, BigDecimal mass }] : [Static Mods]
+
+		//  Reporter Ions - Unique Masses for this Search
+		// _reporterIonMasses_ForSearch - Set<Reporter Ion Masses>
 
 		// 		MS2 Scan counts for all scan files in the search - As returned from Webservice
 		// _ms2ScanCounts_ForSearch - { boolean searchHasScanData, integer ms2Count ) {
@@ -56,7 +61,7 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 		//  For Current Cutoffs or Displayed Data
 
-		this._data_AtCurrentCutoffs_Or_DisplayData = undefined;
+		//        this._data_AtCurrentCutoffs_Or_DisplayData = undefined;
 
 		//  	Reported Peptides for Current Cutoffs/Filters
 		// _reportedPeptideIds - Array [integer] : [ReportedPeptideIds]
@@ -64,6 +69,26 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 		//  	Number of PSMS per Reported Peptide for Reported Peptides for Current Cutoffs/Filters
 		// _numPsmsForReportedPeptideIdMap - Map<integer,integer> : Map<ReportedPeptideId,numPsms>
+
+		//  	Reported Peptides for Current Cutoffs/Filters that contain Reported Peptide Level Dynamic Modifications
+		// _reportedPeptideIds_HasDynamicModifications - Set<integer> : Set<ReportedPeptideIds>
+
+		//  	Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Dynamic Modifications
+		// _reportedPeptideIds_AnyPsmHas_DynamicModifications - Set<integer> : Set<ReportedPeptideIds>
+
+		//  	Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Reporter Ions
+		// _reportedPeptideIds_AnyPsmHas_ReporterIons - Set<integer> : Set<ReportedPeptideIds>
+
+
+		//  	PSM Ids per Reported Peptide for Reported Peptides for Current Cutoffs/Filters
+		// _psmIdsForReportedPeptideIdMap - Map<integer, Array [ integer ] > : Map<ReportedPeptideId, [ Psm Id ] >
+
+		//  	PSM: Reporter Ion Mass Values for each PSM for current cutoffs per PSM Id per Reported Peptide Id
+		// _psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs - Map<integer, { integer, Map<integer, { integer, Set<bigdecimal> } > } > : Map<Reported Peptide Id, { reportedPeptideId, Map<PsmId, { psmId, reporterIonMasses (Set) > >
+
+		//  	Reporter Ion Mass Unique Values for all PSMs for current cutoffs per Reported Peptide Id
+		// _psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs - Map<integer, { integer, Map<integer, { integer, Set<bigdecimal> } > } > : Map<Reported Peptide Id, reporterIonMasses (Set) >
+
 
 		//  	Reported Peptide Ids per Protein Sequence Version Id for Current Cutoffs/Filters
 		//  	Per proteinSequenceVersionId
@@ -98,7 +123,7 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 		//   Per: Project Search Id
 
-		this._data = undefined;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData = undefined;
 
 		//  For Current Cutoffs or Displayed Data
 
@@ -118,7 +143,7 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 	/////////////
 
-	//   In this._data
+	//   In this._data__NOT__AtCurrentCutoffs_Or_DisplayData
 
 	////////////
 
@@ -126,141 +151,157 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 	// Map <integer,integer> <reportedPeptideId,peptideId>
 	get_peptideIdForReportedPeptide_KeyReportedPeptideId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._peptideIdForReportedPeptide_KeyReportedPeptideId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId;
 	}
 	// Map <integer,integer> <reportedPeptideId,peptideId>
 	set_peptideIdForReportedPeptide_KeyReportedPeptideId(peptideIdForReportedPeptide_KeyReportedPeptideId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._peptideIdForReportedPeptide_KeyReportedPeptideId = peptideIdForReportedPeptide_KeyReportedPeptideId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId = peptideIdForReportedPeptide_KeyReportedPeptideId;
 	}
 	add_peptideIdForReportedPeptide_KeyReportedPeptideId( { peptideId, reportedPeptideId } ) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		if ( ! this._data._peptideIdForReportedPeptide_KeyReportedPeptideId ) {
-			this._data._peptideIdForReportedPeptide_KeyReportedPeptideId = new Map();
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId = new Map();
 		}
-		this._data._peptideIdForReportedPeptide_KeyReportedPeptideId.set( reportedPeptideId, peptideId );
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId.set( reportedPeptideId, peptideId );
 	}
 	get_peptideId_For_reportedPeptideId( { reportedPeptideId } ) {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		if ( ! this._data._peptideIdForReportedPeptide_KeyReportedPeptideId ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId ) {
 			return undefined;
 		}
-		return this._data._peptideIdForReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._peptideIdForReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
 	}
 	
 	////////////
 
 	get_staticMods() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._staticMods;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._staticMods;
 	}
 	set_staticMods(staticMods) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._staticMods = staticMods;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._staticMods = staticMods;
+	}
+
+	//  Reporter Ions - Unique Masses for this Search
+	// _reporterIonMasses_ForSearch - Set<Reporter Ion Masses>
+
+	get_reporterIonMasses_ForSearch() {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reporterIonMasses_ForSearch;
+	}
+	set_reporterIonMasses_ForSearch(reporterIonMasses_ForSearch) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reporterIonMasses_ForSearch = reporterIonMasses_ForSearch;
 	}
 
 	get_ms2ScanCounts_ForSearch() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._ms2ScanCounts_ForSearch;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._ms2ScanCounts_ForSearch;
 	}
-	set_ms2ScanCounts_ForSearch(staticMods) {
-		if ( ! this._data ) {
-			this._data = {};
+	set_ms2ScanCounts_ForSearch(ms2ScanCounts_ForSearch) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._ms2ScanCounts_ForSearch = staticMods;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._ms2ScanCounts_ForSearch = ms2ScanCounts_ForSearch;
 	}
 
 	get_proteinInfoMapKeyProteinSequenceVersionId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._proteinInfoMapKeyProteinSequenceVersionId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinInfoMapKeyProteinSequenceVersionId;
 	}
 	set_proteinInfoMapKeyProteinSequenceVersionId(proteinInfoMapKeyProteinSequenceVersionId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._proteinInfoMapKeyProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinInfoMapKeyProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionId;
 	}
 
 	get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
 	set_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId(dynamicModificationsOnReportedPeptide_KeyReportedPeptideId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
 
 	get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 	set_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId(reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 
 	get_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 	set_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId(reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 
 	get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 	set_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId(psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 
 	get_proteinCoverage_KeyReportedPeptideId() {
-		if ( ! this._data ) {
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
 			return undefined;
 		}
-		return this._data._proteinCoverage_KeyReportedPeptideId;
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinCoverage_KeyReportedPeptideId;
 	}
 	set_proteinCoverage_KeyReportedPeptideId(proteinCoverage_KeyReportedPeptideId) {
-		if ( ! this._data ) {
-			this._data = {};
+		if ( ! this._data__NOT__AtCurrentCutoffs_Or_DisplayData ) {
+			this._data__NOT__AtCurrentCutoffs_Or_DisplayData = {};
 		}
-		this._data._proteinCoverage_KeyReportedPeptideId = proteinCoverage_KeyReportedPeptideId;
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinCoverage_KeyReportedPeptideId = proteinCoverage_KeyReportedPeptideId;
 	}
 
 	/////////////
@@ -293,6 +334,84 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 			this._data_AtCurrentCutoffs_Or_DisplayData = {};
 		}
 		this._data_AtCurrentCutoffs_Or_DisplayData._numPsmsForReportedPeptideIdMap = numPsmsForReportedPeptideIdMap;
+	}
+
+	get_reportedPeptideIds_HasDynamicModifications() {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data_AtCurrentCutoffs_Or_DisplayData._reportedPeptideIds_HasDynamicModifications;
+	}
+	set_reportedPeptideIds_HasDynamicModifications(reportedPeptideIds_HasDynamicModifications) {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			this._data_AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data_AtCurrentCutoffs_Or_DisplayData._reportedPeptideIds_HasDynamicModifications = reportedPeptideIds_HasDynamicModifications;
+	}
+
+	get_reportedPeptideIds_AnyPsmHas_DynamicModifications() {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data_AtCurrentCutoffs_Or_DisplayData._reportedPeptideIds_AnyPsmHas_DynamicModifications;
+	}
+	set_reportedPeptideIds_AnyPsmHas_DynamicModifications(reportedPeptideIds_AnyPsmHas_DynamicModifications) {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			this._data_AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data_AtCurrentCutoffs_Or_DisplayData._reportedPeptideIds_AnyPsmHas_DynamicModifications = reportedPeptideIds_AnyPsmHas_DynamicModifications;
+	}
+
+	get_reportedPeptideIds_AnyPsmHas_ReporterIons() {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data_AtCurrentCutoffs_Or_DisplayData._reportedPeptideIds_AnyPsmHas_ReporterIons;
+	}
+	set_reportedPeptideIds_AnyPsmHas_ReporterIons(reportedPeptideIds_AnyPsmHas_ReporterIons) {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			this._data_AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data_AtCurrentCutoffs_Or_DisplayData._reportedPeptideIds_AnyPsmHas_ReporterIons = reportedPeptideIds_AnyPsmHas_ReporterIons;
+	}
+
+	get_psmIdsForReportedPeptideIdMap() {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data_AtCurrentCutoffs_Or_DisplayData._psmIdsForReportedPeptideIdMap;
+	}
+	set_psmIdsForReportedPeptideIdMap(psmIdsForReportedPeptideIdMap) {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			this._data_AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data_AtCurrentCutoffs_Or_DisplayData._psmIdsForReportedPeptideIdMap = psmIdsForReportedPeptideIdMap;
+	}
+
+	get_psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs() {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data_AtCurrentCutoffs_Or_DisplayData._psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs;
+	}
+	set_psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs(psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap) {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			this._data_AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data_AtCurrentCutoffs_Or_DisplayData._psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap;
+	}
+
+	get_psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs() {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			return undefined;
+		}
+		return this._data_AtCurrentCutoffs_Or_DisplayData._psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs;
+	}
+	set_psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs(psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs) {
+		if ( ! this._data_AtCurrentCutoffs_Or_DisplayData ) {
+			this._data_AtCurrentCutoffs_Or_DisplayData = {};
+		}
+		this._data_AtCurrentCutoffs_Or_DisplayData._psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs = psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs;
 	}
 
 	get_proteinSequenceVersionIdsKeyReportedPeptideId() {

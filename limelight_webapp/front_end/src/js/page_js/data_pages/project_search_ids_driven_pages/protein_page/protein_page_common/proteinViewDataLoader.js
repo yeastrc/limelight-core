@@ -72,6 +72,49 @@ export class ProteinViewDataLoader {
 	};
 
 	/**
+	 * Get Reporter Ions - Unique Masses for this Search - For Single Project Search Id
+	 * 
+	 * result list item { String residue, BigDecimal mass }
+	 */
+	static _get_ReporterIonsUnique_ForSearch_forProjectSearchId( { projectSearchId } ) {
+
+		let promise = new Promise( function( resolve, reject ) {
+		  try {
+			let requestObject = {
+					projectSearchId : projectSearchId
+			};
+
+			console.log("AJAX Call to get Get Reporter Ions - Unique Masses for this Search START, Now: " + new Date() );
+
+			const url = "d/rws/for-page/psb/reporter-ion-masses-unique-search-level-single-project-search-id";
+
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					console.log("AJAX Call to get Get Reporter Ions - Unique Masses for this Search END, Now: " + new Date() );
+
+					resolve( responseData.reporterIonMassesUniqueList );
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
+		});
+		
+		return promise;
+	};
+
+	/**
 	 * Get Reported Peptide Ids For Single Project Search Id
 	 * 
 	 * Also returns Number of PSMs per Reported Peptide Id under specific conditions (Default Cutoffs, ...)
@@ -145,6 +188,94 @@ export class ProteinViewDataLoader {
 					console.log("AJAX Call to get psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
 					resolve( responseData.numPsms_KeyReportedPeptideId );
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
+		});
+		
+		return promise;
+	};
+
+	/**
+	 * MAYBE NOT USED
+	 * 
+	 * Get PSM IDs per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
+	 */
+	static getPsmsIdsForReportedPeptideIdsCutoffs( { projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId } ) {
+
+		let promise = new Promise( function( resolve, reject ) {
+		  try {
+			let requestObject = {
+					projectSearchId,
+					reportedPeptideIds,
+					searchDataLookupParams_For_Single_ProjectSearchId,
+			};
+
+			console.log("AJAX Call to get psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
+
+			const url = "d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					console.log("AJAX Call to get psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
+
+					resolve({ reportedPeptideId_psmIdList_List : responseData.reportedPeptideId_psmIdList_List });
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+		  } catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		  }
+		});
+		
+		return promise;
+	};
+
+	/**
+	 * Get PSM Reporter Ion Masses per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
+	 */
+	static getPsmsReporterIonMassesForReportedPeptideIdsCutoffs( { projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId } ) {
+
+		let promise = new Promise( function( resolve, reject ) {
+		  try {
+			let requestObject = {
+					projectSearchId,
+					reportedPeptideIds,
+					searchDataLookupParams_For_Single_ProjectSearchId,
+			};
+
+			console.log("AJAX Call to get psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
+
+			const url = "d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					console.log("AJAX Call to get psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
+
+					resolve({ reportedPeptideId_psmReporterIonMassesList_List : responseData.reportedPeptideId_psmReporterIonMassesList_List });
 
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

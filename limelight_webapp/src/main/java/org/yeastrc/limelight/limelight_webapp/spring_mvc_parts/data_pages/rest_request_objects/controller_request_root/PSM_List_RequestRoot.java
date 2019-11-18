@@ -30,6 +30,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 public class PSM_List_RequestRoot {
 
 	private Integer projectSearchId;
+	private List<Long> psmIds; // Optional
 	private Integer reportedPeptideId;
 	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
 	private List<Integer> psmAnnotationTypeIdsForSorting;
@@ -65,6 +66,14 @@ public class PSM_List_RequestRoot {
 
 	public void setPsmAnnotationTypeIdsForSorting(List<Integer> psmAnnotationTypeIdsForSorting) {
 		this.psmAnnotationTypeIdsForSorting = psmAnnotationTypeIdsForSorting;
+	}
+
+	public List<Long> getPsmIds() {
+		return psmIds;
+	}
+
+	public void setPsmIds(List<Long> psmIds) {
+		this.psmIds = psmIds;
 	}
 
 

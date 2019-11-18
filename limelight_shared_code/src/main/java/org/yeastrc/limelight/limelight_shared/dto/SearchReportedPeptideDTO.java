@@ -27,11 +27,13 @@ public class SearchReportedPeptideDTO {
 	private int reportedPeptideId;
 	private int peptideId;
 	private boolean anyPsmHasDynamicModifications;
+	private boolean anyPsmHasReporterIons;
 
 	@Override
 	public String toString() {
 		return "SearchReportedPeptideDTO [searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
-				+ ", peptideId=" + peptideId + ", anyPsmHasDynamicModifications=" + anyPsmHasDynamicModifications + "]";
+				+ ", peptideId=" + peptideId + ", anyPsmHasDynamicModifications=" + anyPsmHasDynamicModifications
+				+ ", anyPsmHasReporterIons=" + anyPsmHasReporterIons + "]";
 	}
 
 	public int getSearchId() {
@@ -59,5 +61,11 @@ public class SearchReportedPeptideDTO {
 
 	public void setAnyPsmHasDynamicModifications(boolean anyPsmHasDynamicModifications) {
 		this.anyPsmHasDynamicModifications = anyPsmHasDynamicModifications;
+	}
+	public boolean isAnyPsmHasReporterIons() {
+		return anyPsmHasReporterIons;
+	}
+	public void setAnyPsmHasReporterIons(boolean anyPsmHasReporterIons) {
+		this.anyPsmHasReporterIons = anyPsmHasReporterIons;
 	}
 }

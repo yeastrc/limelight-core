@@ -71,9 +71,9 @@
                         <rect x="0" y="0" width="{{column.graphWidth}}px" height="100%" style="fill-opacity:0.0;fill:rgb(255,255,255);stroke-width:2;stroke:#d3d3d3" />
                         <rect x="0" y="0" width="{{lookup dataObject.graphWidths column.id}}px" height="100%" style="fill-opacity:1.0;fill:#32cd32;stroke-width:1;stroke:#d3d3d3" />
                     </svg>
-                    {{lookup dataObject column.dataProperty }}
+                    <span class=" table-data-cell-property-value " >{{lookup dataObject column.dataProperty }}</span>
                 {{else}}
-                    {{lookup dataObject column.dataProperty }}
+                    <span class=" table-data-cell-property-value " >{{lookup dataObject column.dataProperty }}</span>
                 {{/if}}
             </div>
         {{/each}}

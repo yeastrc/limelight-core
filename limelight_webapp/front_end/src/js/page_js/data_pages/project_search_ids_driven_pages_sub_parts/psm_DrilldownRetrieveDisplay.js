@@ -241,6 +241,7 @@ export class Psm_DrilldownRetrieveDisplay {
 			
 			let anyPsmsHave_precursor_M_Over_Z = false; 
 			let anyPsmsHave_retentionTime = false;
+			let anyPsmsHave_reporterIonMassesDisplay = false;
 
 			psmList.forEach( function( psmListItem, index, array ) {
 
@@ -249,6 +250,9 @@ export class Psm_DrilldownRetrieveDisplay {
 				}
 				if ( psmListItem.retentionTimeSeconds !== undefined && psmListItem.retentionTimeSeconds !== null ) {
 					anyPsmsHave_retentionTime = true;
+				}
+				if ( psmListItem.reporterIonMassList ) {
+					anyPsmsHave_reporterIonMassesDisplay = true;
 				}
 			}, this );
 			
@@ -263,7 +267,8 @@ export class Psm_DrilldownRetrieveDisplay {
 					searchHasScanData : searchHasScanData,
 
 					anyPsmsHave_precursor_M_Over_Z : anyPsmsHave_precursor_M_Over_Z, 
-					anyPsmsHave_retentionTime : anyPsmsHave_retentionTime
+					anyPsmsHave_retentionTime : anyPsmsHave_retentionTime,
+					anyPsmsHave_reporterIonMassesDisplay
 			};
 
 			let psmDataTablehtml = this._psm_list_table_headers_template_Template( psmDataTablecontext );
@@ -282,7 +287,7 @@ export class Psm_DrilldownRetrieveDisplay {
 				
 				context.anyPsmsHave_precursor_M_Over_Z = anyPsmsHave_precursor_M_Over_Z; 
 				context.anyPsmsHave_retentionTime = anyPsmsHave_retentionTime;
-				
+				context.anyPsmsHave_reporterIonMassesDisplay = anyPsmsHave_reporterIonMassesDisplay;
 				
 				if ( psmListItem.precursor_M_Over_Z !== undefined && psmListItem.precursor_M_Over_Z !== null ) {
 					psmListItem.precursor_M_Over_Z_Display = psmListItem.precursor_M_Over_Z.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
@@ -291,6 +296,17 @@ export class Psm_DrilldownRetrieveDisplay {
 				if ( psmListItem.retentionTimeSeconds !== undefined && psmListItem.retentionTimeSeconds !== null ) {
 					let retentionTimeMinutesNumber = psmListItem.retentionTimeSeconds / 60;
 					psmListItem.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
+				}
+
+				if ( psmListItem.reporterIonMassList ) {
+					const reporterIonMassAsString_List = [];
+					for ( const reporterIonMass of psmListItem.reporterIonMassList ) {
+						const reporterIonMass_String = reporterIonMass.toString();
+						reporterIonMassAsString_List.push( reporterIonMass_String );
+					}
+					const reporterIonMassesDisplay = reporterIonMassAsString_List.join(", ");
+					context.reporterIonMassesDisplay = reporterIonMassesDisplay;
+	   
 				}
 
 				//  Put PSM annotations into a list for display matching table headers

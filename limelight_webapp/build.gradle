@@ -38,6 +38,11 @@ apply plugin: "org.ajoberstar.grgit"
 repositories {
 	jcenter()
     mavenCentral()
+    
+    //  For Limelight Import API
+    maven {
+       url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
+   }
 }
 
 //  Default Task
@@ -56,7 +61,30 @@ configurations.all {
 //   exclude group:'org.apache.logging.log4j', module: 'log4j-api'
 }
 
+
+
+//  Build 'compile' string for 'org.yeastrc:limelight-import-api:###'
+
+ String limelight_import_version = project.file('../Gradle_limelight-import-api_version_for_Gradle.txt').getText('UTF-8');
+
+// String limelight_import_version = "0.9.0";
+ 
+println("limelight_import_version: " + limelight_import_version);
+
+String limelight_import = 'org.yeastrc:limelight-import-api:' + limelight_import_version;
+
+println("compile for 'org.yeastrc:limelight-import-api': " + limelight_import);
+
+
+
 dependencies {
+
+	//  Limelight Import API Jar - Need to Update Version as needed
+	
+	//      Pulled from REPO (entered above): url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
+	
+	compile limelight_import
+
 
 //  Specify dependency on Limelight Shared Code
 	
@@ -131,8 +159,10 @@ dependencies {
 	
 	//  Other Limelight Jars
 		
+		
+	//  Removed since pull the API jar another way
 	//  Jars built from other Limelight Github repositories
-	compile fileTree(dir: '../libs_limelight_github_jars', include: ['*.jar'])
+	// compile fileTree(dir: '../libs_limelight_github_jars', include: ['*.jar'])
 	
 	//  Other Yeastrc Jars
 	

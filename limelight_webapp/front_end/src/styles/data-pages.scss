@@ -194,8 +194,11 @@
     }
 
     div.div-table-data-cell {
-        word-break:break-all;
         vertical-align:top;
+
+        span.table-data-cell-property-value {
+            overflow-wrap: break-word;
+        }
     }
 
     //  Data Table: End
@@ -840,12 +843,13 @@
             margin-bottom: 2px;
         }
 
+        //  NOT USED???
         .mod-mass { 
             display: inline-block;
             position: relative;
         }
 
-    } // end .modification-selection-block
+    } // end .modification-mass-selection-outer-block
 
     //  Modification Mass Selection - Modal Dialog
 
@@ -884,6 +888,36 @@
         }
 
     } // end .mod-mass-select-dialog-mass-list-block
+
+
+    //  Reporter Ion Mass Selection - main page (or single protein)
+
+    .reporter-ion-mass-selection-outer-block {
+
+        .reporter-ion-mass-selection-block {
+
+            width: 480px; 
+            margin-left: $single-protein-filter-margin-left; 
+            padding-top: 1px; 
+            position: relative;
+        }
+    
+        .reporter-ion-mass-outer-div {
+            display: inline-block;
+            position: relative;
+            white-space: nowrap;
+            padding-right: 10px;
+            margin-bottom: 2px;
+        }
+
+                //  NOT USED
+        // .reporter-ion-mass { 
+        //     display: inline-block;
+        //     position: relative;
+        // }
+
+    } // end .reporter-ion-mass-selection-outer-block
+
 
     //  Peptide Sequence String Selection
     .peptide-sequence-selection-outer-block {

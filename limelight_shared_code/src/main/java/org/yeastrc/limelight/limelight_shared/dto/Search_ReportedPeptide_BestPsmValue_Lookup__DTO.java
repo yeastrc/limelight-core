@@ -30,6 +30,7 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	
 	private boolean hasDynamicModifications;
 	private boolean hasIsotopeLabels;
+	private boolean anyPsmHasReporterIons;
 	
 	private double bestPsmValueForAnnTypeId;
 	private long psmIdForBestValue;
@@ -38,13 +39,14 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	
 	public Search_ReportedPeptide_BestPsmValue_Lookup__DTO() { }
 
-	public Search_ReportedPeptide_BestPsmValue_Lookup__DTO( Search_ReportedPeptide__Lookup__DTO unifiedRepPep_Search_ReportedPeptide__Lookup__DTO ) {
+	public Search_ReportedPeptide_BestPsmValue_Lookup__DTO( Search_ReportedPeptide__Lookup__DTO search_ReportedPeptide__Lookup__DTO ) {
 
-		this.reportedPeptideId = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.getReportedPeptideId();
-		this.searchId = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.getSearchId();
+		this.reportedPeptideId = search_ReportedPeptide__Lookup__DTO.getReportedPeptideId();
+		this.searchId = search_ReportedPeptide__Lookup__DTO.getSearchId();
 		
-		this.hasDynamicModifications = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.isHasDynamicModifications();
-		this.hasIsotopeLabels = unifiedRepPep_Search_ReportedPeptide__Lookup__DTO.isHasIsotopeLabels();
+		this.hasDynamicModifications = search_ReportedPeptide__Lookup__DTO.isHasDynamicModifications();
+		this.hasIsotopeLabels = search_ReportedPeptide__Lookup__DTO.isHasIsotopeLabels();
+		this.anyPsmHasReporterIons = search_ReportedPeptide__Lookup__DTO.isAnyPsmHasReporterIons();
 	}
 	
 	public int getSearchId() {
@@ -88,6 +90,14 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	}
 	public void setPsmIdForBestValue(long psmIdForBestValue) {
 		this.psmIdForBestValue = psmIdForBestValue;
+	}
+
+	public boolean isAnyPsmHasReporterIons() {
+		return anyPsmHasReporterIons;
+	}
+
+	public void setAnyPsmHasReporterIons(boolean anyPsmHasReporterIons) {
+		this.anyPsmHasReporterIons = anyPsmHasReporterIons;
 	}
 	
 

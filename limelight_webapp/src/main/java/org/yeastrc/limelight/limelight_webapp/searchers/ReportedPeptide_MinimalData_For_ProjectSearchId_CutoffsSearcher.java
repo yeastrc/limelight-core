@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
@@ -78,7 +79,10 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 	private final String PEPTIDE_VALUE_FILTER_TABLE_ALIAS = "srch__rep_pept_fltrbl_tbl_";
 	
 	private final String SQL_FIRST_PART = 
-			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id "
+			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
+					+ " search__rep_pept__lookup_tbl.has_dynamic_modifictions, "
+					+ " search__rep_pept__lookup_tbl.any_psm_has_dynamic_modifications, "
+					+ " search__rep_pept__lookup_tbl.any_psm_has_reporter_ions "
 			;
 	
 	private final String SQL_MAIN_FROM_START = " FROM search__rep_pept__lookup_tbl ";
@@ -376,6 +380,24 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 		int reportedPeptideId = rs.getInt( "reported_peptide_id" );
 		item.setReportedPeptideId(reportedPeptideId);
 		
+		{
+			int reportedPeptideHas_DynamicModifications_Int = rs.getInt( "has_dynamic_modifictions" );
+			if ( reportedPeptideHas_DynamicModifications_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				item.setReportedPeptideHas_DynamicModifications(true);
+			}
+		}
+		{
+			int anyPsmHas_DynamicModifications_Int = rs.getInt( "any_psm_has_dynamic_modifications" );
+			if ( anyPsmHas_DynamicModifications_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				item.setAnyPsmHas_DynamicModifications(true);
+			}
+		}
+		{
+			int anyPsmHas_ReporterIons_Int = rs.getInt( "any_psm_has_reporter_ions" );
+			if ( anyPsmHas_ReporterIons_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				item.setAnyPsmHas_ReporterIons(true);
+			}
+		}
 		if ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
 				|| minimumNumberOfPSMsPerReportedPeptide > 1 ) {
 

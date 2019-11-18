@@ -50,6 +50,7 @@ public class PopulatePsmDTO {
 	 * @param reportedPeptideDTO
 	 * @param psm
 	 * @param psmHasModifications
+	 * @param psmHasReporterIons
 	 * @param searchScanFileEntry_KeyScanFilename
 	 * @return
 	 * @throws LimelightImporterDataException
@@ -60,6 +61,7 @@ public class PopulatePsmDTO {
 			ReportedPeptideDTO reportedPeptideDTO, 
 			Psm psm,
 			boolean psmHasModifications,
+			boolean psmHasReporterIons,
 			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws LimelightImporterDataException, Exception {
 		
 		PsmDTO psmDTO = new PsmDTO();
@@ -78,6 +80,7 @@ public class PopulatePsmDTO {
 		psmDTO.setPrecursor_MZ( psm.getPrecursorMZ() );
 		
 		psmDTO.setHasModifications( psmHasModifications );
+		psmDTO.setHasReporterIons( psmHasReporterIons );
 		
 		if ( psm.getScanNumber() != null ) {
 			psmDTO.setScanNumber( psm.getScanNumber().intValue() );

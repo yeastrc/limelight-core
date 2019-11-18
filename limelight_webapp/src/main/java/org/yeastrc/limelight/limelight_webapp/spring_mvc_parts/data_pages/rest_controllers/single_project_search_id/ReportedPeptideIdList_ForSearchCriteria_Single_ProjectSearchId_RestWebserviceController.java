@@ -200,6 +200,15 @@ public class ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_Rest
     			Integer numPsms = entry.getNumPsms_IfComputedOrInDB();
     			reportedPeptideItemForProjectSearch.setNumPsms_IfComputedOrInDB( numPsms );
     			
+    			boolean reportedPeptideHas_DynamicModifications = entry.isReportedPeptideHas_DynamicModifications();
+    			reportedPeptideItemForProjectSearch.setReportedPeptideHas_DynamicModifications( reportedPeptideHas_DynamicModifications );
+
+    			boolean anyPsmHas_DynamicModifications = entry.isAnyPsmHas_DynamicModifications();
+    			reportedPeptideItemForProjectSearch.setAnyPsmHas_DynamicModifications( anyPsmHas_DynamicModifications );
+    			
+    			boolean anyPsmHas_ReporterIons = entry.isAnyPsmHas_ReporterIons();
+    			reportedPeptideItemForProjectSearch.setAnyPsmHas_ReporterIons( anyPsmHas_ReporterIons );
+    			
     			peptideResultListResult.add( reportedPeptideItemForProjectSearch );
     		}
     		

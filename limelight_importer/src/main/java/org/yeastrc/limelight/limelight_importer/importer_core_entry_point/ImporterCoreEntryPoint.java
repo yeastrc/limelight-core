@@ -53,6 +53,7 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatched
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReporterIons_OnPSMs;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightInput;
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
 import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
@@ -273,9 +274,10 @@ public class ImporterCoreEntryPoint {
 			ValidateModificationsOnReportedPeptides.getInstance().validateModificationsOnReportedPeptides( limelightInputForImport );
 			
 			//   Throws LimelightImporterDataException if data error found
-			//  Call ValidateModificationsOnReportedPeptides first
 			ValidateModificationsOnReportedPeptidesAndPSMs.getInstance().validateModificationsOnReportedPeptidesAndPSMs( limelightInputForImport );
 
+			//   Throws LimelightImporterDataException if data error found
+			Validate_ReporterIons_OnPSMs.getInstance().validate_ReporterIons_OnPSMs( limelightInputForImport );
 			
 			//  Process Limelight Input
 			processLimelightInput = ProcessLimelightInput.getInstance();

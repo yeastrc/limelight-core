@@ -1,4 +1,8 @@
-{{!--  protein_page_single_protein_display_in_overlay_template.handlebars --}}
+{{!--  protein_page_single_protein_display_in_overlay_template.handlebars 
+
+	Main Overlay, displayed after initial data is loaded
+	
+--}}
 <div class="modal-overlay-body-standard-padding" >
 
 	<div class=" selector_section_above_reported_peptides_list_block " > {{!--   display of data above Reported Peptides --}}
@@ -169,6 +173,9 @@
 
 			<div class=" selector_protein_mod_list_block ">
 			</div>
+			
+			<div class=" selector_protein_psm_reporter_ions_selection_block ">
+			</div>
 
 			<div class=" selector_protein_peptide_sequence_selection_block peptide-sequence-selection-outer-block " >
 
@@ -217,30 +224,45 @@
 
 		<div class=" selector_reported_peptides_outer_container " >
 			
-			<div style=" margin-top: 10px; padding-bottom: 10px;">
-				<div>
-					<span style="font-size: 18px;" >
-						<span style="font-weight: bold;">Peptides:</span>
-						<span >(Click row to expand.)</span>
-					</span>
-				</div>
-				 <div >
-				 	Currently showing: 
-				 	<span class=" selector_number_of_reported_peptides_shown " ></span>
-				 	peptides
-				 	 (<span class=" selector_number_of_psms_for_reported_peptides_shown " ></span> PSMs)
-				 </div>
+			<div class=" selector_reported_peptides_loading_message_container " >
+					<div>
+						<span style="font-size: 18px;" >
+							<span style="font-weight: bold;">Peptides:</span>
+							<span >(Click row to expand.)</span>
+						</span>
+					</div>
+					<div >
+						Loading Data to show Peptides
+					</div>
 			</div>
-			
-			<div style="padding-left: 20px;">
-				 {{!-- Container for Reported Peptides using Data Table --}}
-				<div class=" selector_reported_peptides_data_table_container "
-					>  {{!-- Padding to make room for expand icon to left of each row of data --}}
-					{{!-- Loading Reported Peptides --}}
+
+			<div class=" selector_reported_peptides_main_display_container " style="display: none;" >
+				
+				<div style=" margin-top: 10px; padding-bottom: 10px;">
+					<div>
+						<span style="font-size: 18px;" >
+							<span style="font-weight: bold;">Peptides:</span>
+							<span >(Click row to expand.)</span>
+						</span>
+					</div>
+					<div >
+						Currently showing: 
+						<span class=" selector_number_of_reported_peptides_shown " ></span>
+						peptides
+						(<span class=" selector_number_of_psms_for_reported_peptides_shown " ></span> PSMs)
+					</div>
 				</div>
 				
-				<div  class=" selector_reported_peptides_none_to_display " style="display: none;">
-					No peptides meet the current filtering criteria.
+				<div style="padding-left: 20px;">
+					{{!-- Container for Reported Peptides using Data Table --}}
+					<div class=" selector_reported_peptides_data_table_container "
+						>  {{!-- Padding to make room for expand icon to left of each row of data --}}
+						{{!-- Loading Reported Peptides --}}
+					</div>
+					
+					<div  class=" selector_reported_peptides_none_to_display " style="display: none;">
+						No peptides meet the current filtering criteria.
+					</div>
 				</div>
 			</div>
 		</div>

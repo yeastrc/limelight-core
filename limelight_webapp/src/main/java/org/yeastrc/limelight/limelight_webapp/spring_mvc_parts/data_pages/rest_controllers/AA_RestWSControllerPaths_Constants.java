@@ -299,6 +299,10 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/static-mods-single-project-search-id";
 
+	//  Reporter Ions - Unique Masses for this Search - for Project Search Id
+	public static final String REPORTER_ION_MASSES_UNIQUE_SEARCH_LEVEL_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/reporter-ion-masses-unique-search-level-single-project-search-id";
+
 	//  Get MS2 count for a project search id
 	public static final String MS2_COUNT_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/ms2-count-single-project-search-id";
@@ -320,6 +324,12 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
+	public static final String PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
+	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 
 
 	//  PSM Best (at Reported Peptide level) Filterable Annotation data for Reported Peptide Ids, Annotation Type Ids, Project Search Id

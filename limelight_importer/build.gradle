@@ -45,6 +45,11 @@ sourceCompatibility = 1.8      //    defaults to currently installed JVM
 repositories {
     mavenCentral()
     jcenter()
+    
+    //  For Limelight Import API
+    maven {
+       url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
+   }
 }
 
 //  Set default task for this build.gradle file
@@ -60,7 +65,29 @@ configurations.all {
 //   exclude group:'org.apache.logging.log4j', module: 'log4j-api'
 }
 
+//  Build 'compile' string for 'org.yeastrc:limelight-import-api:###'
+
+ String limelight_import_version = project.file('../Gradle_limelight-import-api_version_for_Gradle.txt').getText('UTF-8');
+
+// String limelight_import_version = "0.9.0";
+ 
+println("limelight_import_version: " + limelight_import_version);
+
+String limelight_import = 'org.yeastrc:limelight-import-api:' + limelight_import_version;
+
+println("compile for 'org.yeastrc:limelight-import-api': " + limelight_import);
+
+
+
 dependencies {
+
+	//  Limelight Import API Jar - Need to Update Version as needed
+	
+	//      Pulled from REPO (entered above): url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
+	
+	compile limelight_import
+
+
     // This dependency is found on compile classpath of this component and consumers.
 //	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
 //	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'	
@@ -101,8 +128,9 @@ dependencies {
 	//  Jars copied and placed here	
 	compile fileTree(dir: '../lib_other', include: ['*.jar'])
 	
+	//  Removed since pull the API jar another way
 	//  Jars built from other Limelight Github repositories
-	compile fileTree(dir: '../libs_limelight_github_jars', include: ['*.jar'])
+	// compile fileTree(dir: '../libs_limelight_github_jars', include: ['*.jar'])
 	
 	//  Jars built from other Yeastrc Github repositories
 	compile fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])

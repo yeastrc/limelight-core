@@ -56,10 +56,11 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 	private static final String SAVE_SQL =
 			"INSERT INTO search__rep_pept__lookup_tbl "
 			+ 	"( reported_peptide_id, search_id, "
-			+  		" has_dynamic_modifictions, has_isotope_labels, any_psm_has_dynamic_modifications, "
+			+  		" has_dynamic_modifictions, has_isotope_labels, "
+			+ 		" any_psm_has_dynamic_modifications, any_psm_has_reporter_ions, "
 			+ 		" psm_num_at_default_cutoff, "
 			+ 		" peptide_meets_default_cutoffs, related_peptide_unique_for_search ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -88,8 +89,15 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
+			
 			counter++;
 			if ( item.isAnyPsmHasDynamicModifications() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			counter++;
+			if ( item.isAnyPsmHasReporterIons() ) {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );

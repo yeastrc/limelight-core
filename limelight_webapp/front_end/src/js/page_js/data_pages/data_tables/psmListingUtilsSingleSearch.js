@@ -48,18 +48,25 @@ export class PSMListingUtilsSingleSearch {
     }
 
     /**
-     * Create and populate a new jquery element with a table of PSMs based on the input
-     * data.
+     * Create and populate a new jquery element with a table of PSMs based on the input data.
+     * 
+     * Exactly 1 of searchDetailsBlockDataMgmtProcessing or psmIds must be populated.  Not Both.  Not Neither
      * 
      * @param {*} param0 
      */
-    static createJQueryElementForPSMListing( { searchDetailsBlockDataMgmtProcessing, $clickedRow, projectSearchId, dataPageStateManager_DataFrom_Server } ) {
+    static createJQueryElementForPSMListing( { 
+        $clickedRow, 
+        projectSearchId, 
+        alwaysShow_ReporterIonMasses_Column,  //  Optional to indicate show Reporter Ions Column
+        psmIds,  //  PSM Ids to list.  Overrides the ones from the search cutoffs. reportedPeptideId and projectSearchId  still apply
+        searchDetailsBlockDataMgmtProcessing, 
+        dataPageStateManager_DataFrom_Server } ) {
 
         let $containerDiv = PSMListingUtilsSingleSearch.getNewJQueryContainerDiv();
 
         let reportedPeptideId = PSMListingUtilsSingleSearch.getReportedPeptideIdFromClickedRow( { $clickedRow } );
 
-        PSMListingUtilsSingleSearch.populateListingDiv( { $containerDiv, reportedPeptideId, searchDetailsBlockDataMgmtProcessing, projectSearchId, dataPageStateManager_DataFrom_Server } );
+        PSMListingUtilsSingleSearch.populateListingDiv( { $containerDiv, alwaysShow_ReporterIonMasses_Column, psmIds, reportedPeptideId, searchDetailsBlockDataMgmtProcessing, projectSearchId, dataPageStateManager_DataFrom_Server } );
 
         return $containerDiv;        
     }
@@ -69,14 +76,16 @@ export class PSMListingUtilsSingleSearch {
      * 
      * @param {*} param0 
      */
-    static populateListingDiv( { $containerDiv, reportedPeptideId, searchDetailsBlockDataMgmtProcessing, projectSearchId, dataPageStateManager_DataFrom_Server } ) {
+    static populateListingDiv( { $containerDiv, alwaysShow_ReporterIonMasses_Column, psmIds, reportedPeptideId, searchDetailsBlockDataMgmtProcessing, projectSearchId, dataPageStateManager_DataFrom_Server } ) {
 
-        let objectThis = this;
+        const loadedData = { };
         let dataObjectArray = [ ];
 
-        PSMListingUtilsSingleSearch.getPSMDataObjectArrayForReportedPeptideId({ dataObjectArray, searchDetailsBlockDataMgmtProcessing, reportedPeptideId, projectSearchId, dataPageStateManager_DataFrom_Server }).then( function( result ) {
+
+
+        PSMListingUtilsSingleSearch.getPSMDataObjectArrayForReportedPeptideId({ loadedData, dataObjectArray, searchDetailsBlockDataMgmtProcessing, psmIds, reportedPeptideId, projectSearchId, dataPageStateManager_DataFrom_Server }).then( function( result ) {
             try {
-                PSMListingUtilsSingleSearch.createAndAddTableSingleSearch( { $containerDiv, dataObjectArray, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+                PSMListingUtilsSingleSearch.createAndAddTableSingleSearch( { $containerDiv, alwaysShow_ReporterIonMasses_Column, loadedData, dataObjectArray, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
@@ -106,12 +115,23 @@ export class PSMListingUtilsSingleSearch {
 			
             dataObject.charge = psmObject.charge;
             if ( psmObject.precursor_M_Over_Z !== undefined && psmObject.precursor_M_Over_Z !== null ) {
-            	dataObject.precursor_M_Over_Z_Display = psmObject.precursor_M_Over_Z.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
+                dataObject.precursor_M_Over_Z_Display = psmObject.precursor_M_Over_Z.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
 			}
 			if ( psmObject.retentionTimeSeconds !== undefined && psmObject.retentionTimeSeconds !== null ) {
 				const retentionTimeMinutesNumber = psmObject.retentionTimeSeconds / 60;
 				dataObject.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
-			}
+            }
+            
+            if ( psmObject.reporterIonMassList ) {
+
+                const reporterIonMassAsString_List = [];
+                for ( const reporterIonMass of psmObject.reporterIonMassList ) {
+                    const reporterIonMass_String = reporterIonMass.toString();
+                    reporterIonMassAsString_List.push( reporterIonMass_String );
+                }
+                const reporterIonMassesDisplay = reporterIonMassAsString_List.join(", ");
+                dataObject.reporterIonMassesDisplay = reporterIonMassesDisplay;
+            }
 
             dataObject.loadedData = psmObject;
 
@@ -128,12 +148,12 @@ export class PSMListingUtilsSingleSearch {
 	 * 
 	 * @param {*} param0 
 	 */
-	static createAndAddTableSingleSearch( { dataObjectArray, projectSearchId, $containerDiv, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
+	static createAndAddTableSingleSearch( { alwaysShow_ReporterIonMasses_Column, loadedData, dataObjectArray, projectSearchId, $containerDiv, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
 
         let tableDisplayHandler = new TableDisplayHandler();
 
         let tableObject = { };
-        tableObject.columns = PSMListingUtilsSingleSearch.getColumnsSingleSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
+        tableObject.columns = PSMListingUtilsSingleSearch.getColumnsSingleSearch( { alwaysShow_ReporterIonMasses_Column, loadedData, dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
         tableObject.dataObjects = dataObjectArray;
         tableDisplayHandler.addGraphWidths( { dataObjects : dataObjectArray, columns : tableObject.columns } );
 
@@ -173,7 +193,7 @@ export class PSMListingUtilsSingleSearch {
     static addClickHandlerForViewingSpectra( { $tableContainerDiv, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
 
         $tableContainerDiv.find( 'div.div-table-data-row' ).children('div.column-viewScan').click( function(clickEvent) {
-        	clickEvent.preventDefault();
+            clickEvent.preventDefault();
             PSMListingUtilsSingleSearch.handleScanLinkClick( { $clickedElement : $(this), projectSearchId, clickEvent, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
             return false;
         });
@@ -184,12 +204,22 @@ export class PSMListingUtilsSingleSearch {
      * 
      * @param {*} param0 
      */
-    static getColumnsSingleSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } ) {
+    static getColumnsSingleSearch( { alwaysShow_ReporterIonMasses_Column, loadedData, dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
 		//  Determine anyPsmsHave_precursor_M_Over_Z and anyPsmsHave_retentionTime
 		
 		let anyPsmsHave_precursor_M_Over_Z = false; 
-		let anyPsmsHave_retentionTime = false;
+        let anyPsmsHave_retentionTime = false;
+
+        let anyPsmsHave_reporterIonMassesDisplay = false;
+        
+        if ( alwaysShow_ReporterIonMasses_Column ) {  //  Input parameter from outside this class/file
+            anyPsmsHave_reporterIonMassesDisplay = true;
+        }
+
+        if ( loadedData.search_anyPsmHas_ReporterIons ) { //  from search_tbl flag
+            anyPsmsHave_reporterIonMassesDisplay = true;
+        }
 
 		if( dataObjectArray && dataObjectArray.length > 0 ) {
 			for ( const dataObjectItem of dataObjectArray ) {
@@ -204,10 +234,17 @@ export class PSMListingUtilsSingleSearch {
 					anyPsmsHave_retentionTime = true;
 					break;
 				}
-			}
+            }
+
+			for ( const dataObjectItem of dataObjectArray ) {
+				if ( dataObjectItem.reporterIonMassesDisplay !== undefined ) {
+					anyPsmsHave_reporterIonMassesDisplay = true;
+					break;
+				}
+            }
 		}
 
-    	
+	
         let columns = [ ];
         
         if( dataObjectArray && dataObjectArray.length > 0 && dataObjectArray[ 0 ].hasScanData ) {
@@ -276,7 +313,20 @@ export class PSMListingUtilsSingleSearch {
 			};
 
 			columns.push( column );
-		} 
+        } 
+        
+        if ( anyPsmsHave_reporterIonMassesDisplay ) {
+            let column = {
+                id :           'reporterIons',
+                width :        '60px',
+                displayName :  'Reporter Ions',
+                dataProperty : 'reporterIonMassesDisplay',
+                sort : 'string',
+                style_override : 'font-size:12px;',
+            };
+
+            columns.push( column );
+        }
 
         let sortedPSMAnnotationsToShow = TableDataUtils.getOrderedPSMAnnotationsToShowForSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
 
@@ -303,16 +353,28 @@ export class PSMListingUtilsSingleSearch {
      * 
      * @param {*} param0 
      */
-    static getPSMDataObjectArrayForReportedPeptideId({ dataObjectArray, searchDetailsBlockDataMgmtProcessing, reportedPeptideId, projectSearchId, dataPageStateManager_DataFrom_Server }) {
+    static getPSMDataObjectArrayForReportedPeptideId({ loadedData, dataObjectArray, searchDetailsBlockDataMgmtProcessing, psmIds, reportedPeptideId, projectSearchId, dataPageStateManager_DataFrom_Server }) {
 
-        let loadedData = { };
+        if ( loadedData && ( ! ( typeof loadedData === 'object' ) ) ) {
+            const msg = "getPSMDataObjectArrayForReportedPeptideId: parameter 'loadedData' is set and not an object";
+            console.warn( msg );
+            throw Error( msg );
+        }
+
+        let loadedData_Local = undefined;
+
+        if ( loadedData ) {
+            loadedData_Local = loadedData;
+        } else {
+            loadedData_Local = { };
+        }
 
         return new Promise(function (resolve, reject) {
             try {
                 // make ajax call to load the peptides, then load peptide object
-                PSMListingUtilsSingleSearch.getPSMInfoForReportedPeptideFromWebService( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId, loadedData } ).then( function( result ) {
+                PSMListingUtilsSingleSearch.getPSMInfoForReportedPeptideFromWebService( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, psmIds,reportedPeptideId, loadedData : loadedData_Local } ).then( function( result ) {
                     try {
-                        PSMListingUtilsSingleSearch.populateDataObjectArrayFromWebServiceResponse( { dataObjectArray, loadedData } )
+                        PSMListingUtilsSingleSearch.populateDataObjectArrayFromWebServiceResponse( { dataObjectArray, loadedData : loadedData_Local } )
 
                         resolve();
                     } catch( e ) {
@@ -332,7 +394,7 @@ export class PSMListingUtilsSingleSearch {
      * 
      * @param {*} param0 
      */
-    static __createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId } ) {
+    static __createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, psmIds, reportedPeptideId } ) {
 
 		let searchDataLookupParams_For_Single_ProjectSearchId = 
 			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -341,13 +403,14 @@ export class PSMListingUtilsSingleSearch {
         
         let requestObject = {
             projectSearchId : projectSearchId,
+            psmIds, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
             reportedPeptideId : reportedPeptideId,
             searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
             psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting,
         };
 		
 		return requestObject;
-    };
+    }
 
     /**
      * Query the web serivice for PSM data for the supplied reported peptide id, populate
@@ -355,13 +418,13 @@ export class PSMListingUtilsSingleSearch {
      * 
      * @param {*} param0 
      */
-    static getPSMInfoForReportedPeptideFromWebService( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId, loadedData } ) {        
+    static getPSMInfoForReportedPeptideFromWebService( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, psmIds,reportedPeptideId, loadedData } ) {        
 
 		let objectThis = this;
                 
 		return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideId } );
+                let requestObject = objectThis.__createRequestForPSMInfoForReportedPeptideId( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, psmIds, reportedPeptideId } );
 
                 const url = "d/rws/for-page/psb/psm-list";
 
@@ -382,6 +445,11 @@ export class PSMListingUtilsSingleSearch {
                     try {
                         loadedData.psmList = responseData.resultList;
                         loadedData.searchHasScanData = responseData.searchHasScanData;
+                        loadedData.search_anyPsmHas_DynamicModifications = responseData.search_anyPsmHas_DynamicModifications;
+                        loadedData.search_anyPsmHas_ReporterIons = responseData.search_anyPsmHas_ReporterIons;
+                        loadedData.search_hasIsotopeLabel = responseData.search_hasIsotopeLabel;
+                        loadedData.search_hasScanFilenames = responseData.search_hasScanFilenames;
+                        loadedData.xxx = responseData.xxx;
 
                         resolve();
 

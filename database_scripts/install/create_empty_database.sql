@@ -133,6 +133,7 @@ CREATE TABLE  search_tbl (
   has_scan_data TINYINT UNSIGNED NOT NULL DEFAULT 0,
   has_isotope_label TINYINT NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT NOT NULL DEFAULT 0,
+  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   reported_peptide_matched_protein_mapping_provided TINYINT NOT NULL DEFAULT 0,
   import_end_timestamp TIMESTAMP NULL,
   created_by_user_id INT UNSIGNED NULL,
@@ -236,6 +237,7 @@ CREATE TABLE  search_reported_peptide_tbl (
   reported_peptide_id INT(10) UNSIGNED NOT NULL,
   peptide_id INT(10) UNSIGNED NOT NULL,
   any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL,
+  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (search_id, reported_peptide_id),
   CONSTRAINT srch_rep_pept_search_id
     FOREIGN KEY (search_id)
@@ -265,6 +267,7 @@ CREATE TABLE  psm_tbl (
   scan_number MEDIUMINT UNSIGNED NOT NULL,
   search_scan_file_id MEDIUMINT UNSIGNED NULL,
   has_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   precursor_retention_time DECIMAL(9,4) NULL,
   precursor_m_z DECIMAL(10,4) NULL,
   PRIMARY KEY (id),
@@ -846,10 +849,11 @@ CREATE TABLE  search__rep_pept__lookup_tbl (
   has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
   has_isotope_labels TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   psm_num_at_default_cutoff INT(10) UNSIGNED NOT NULL,
   peptide_meets_default_cutoffs ENUM('yes','no','not_applicable') NOT NULL,
   related_peptide_unique_for_search TINYINT(1) NOT NULL DEFAULT 0,
-  num_unique_psm_at_default_cutoff INT(10) UNSIGNED NULL COMMENT 'Allow num_unique_psm_at_default_cutoff since don\'t have value at record insert.',
+  num_unique_psm_at_default_cutoff INT(10) UNSIGNED NULL COMMENT 'Allow num_unique_psm_at_default_cutoff since do not have value at record insert.',
   PRIMARY KEY (search_id, reported_peptide_id),
   CONSTRAINT search__rep_pept__gnrc_lkp_reported_peptide_id_fk
     FOREIGN KEY (reported_peptide_id)
@@ -881,6 +885,7 @@ CREATE TABLE  search__rep_pept__best_psm_value_lookup_tbl (
   annotation_type_id INT(10) UNSIGNED NOT NULL,
   has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
   has_isotope_labels TINYINT(3) NOT NULL DEFAULT 0,
+  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   best_psm_value_for_ann_type_id DOUBLE NOT NULL,
   psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
@@ -1877,6 +1882,123 @@ CREATE TABLE  conversion_program_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX conv_pgm_search_id_fk_idx ON conversion_program_tbl (search_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table experiment_tbl
+-- -----------------------------------------------------
+CREATE TABLE  experiment_tbl (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NOT NULL,
+  draft_flag TINYINT NOT NULL DEFAULT 0,
+  assoc_search_data_lookup_parameters_id INT UNSIGNED NULL COMMENT 'id of record in search_data_lookup_parameters',
+  name VARCHAR(200) NOT NULL,
+  project_search_ids_only_json MEDIUMTEXT NULL COMMENT 'Just Project Search Ids, in ARRAY JSON',
+  experiment_json__main_data MEDIUMTEXT NULL COMMENT 'Main Data - JSON',
+  version_number_main_json INT UNSIGNED NOT NULL COMMENT 'Version number in JSON',
+  created_by_user_id INT UNSIGNED NULL,
+  created_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_by_remote_ip VARCHAR(45) NULL,
+  experiment_last_updated_by_user_id INT NULL,
+  experiment_last_updated_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
+  experiment_last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_accessed DATETIME NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_experiment_tbl_sdlp_id
+    FOREIGN KEY (assoc_search_data_lookup_parameters_id)
+    REFERENCES search_data_lookup_parameters (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_experiment_tbl_prjct_id
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_experiment_tbl_sdlp_id_idx ON experiment_tbl (assoc_search_data_lookup_parameters_id ASC);
+
+CREATE INDEX fk_experiment_tbl_prjct_id_idx ON experiment_tbl (project_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table experiment_assoc_project_search_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  experiment_assoc_project_search_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  assoc_main_id INT UNSIGNED NOT NULL,
+  project_search_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT experiment_assoc_prjct_srch_id_fk
+    FOREIGN KEY (assoc_main_id)
+    REFERENCES experiment_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX experiment_assoc_prjct_srch_id_fk_idx ON experiment_assoc_project_search_id_tbl (assoc_main_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table search__reporter_ion_mass_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__reporter_ion_mass_lookup_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reporter_ion_mass DECIMAL(11,6) NOT NULL,
+  PRIMARY KEY (search_id, reporter_ion_mass),
+  CONSTRAINT search__reporter_ion__search_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table srch_rep_pept__reporter_ion_mass_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch_rep_pept__reporter_ion_mass_lookup_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT(10) UNSIGNED NOT NULL,
+  reporter_ion_mass DECIMAL(11,6) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT srch_rp_ppt__repion_lkp_srch_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT srch_rp_ppt__repion_lkp_rprtd_pd_id_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin;
+
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__reporter_ion_mass_lookup_tbl (search_id ASC, reported_peptide_id ASC);
+
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__reporter_ion_mass_lookup_tbl (reported_peptide_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table psm_reporter_ion_mass_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_reporter_ion_mass_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  psm_id BIGINT UNSIGNED NOT NULL,
+  reporter_ion_mass DECIMAL(11,6) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT psm_rep_ion_mas_psm_id_fk
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_reporter_ion_mass_tbl (psm_id ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

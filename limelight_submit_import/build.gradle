@@ -101,17 +101,6 @@ dependencies {
 	//  Jars copied and placed here	
 	compile fileTree(dir: '../lib_other', include: ['*.jar'])
 
-	//  Jars built from other Limelight Github repositories
-//	compile fileTree(dir: '../libs_limelight_github_jars', include: ['*.jar'])
-	
-	//  Jars built from other Yeastrc Github repositories
-//	compile fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])
-	
-	
-//  Specify dependency on Limelight Shared Code
-	
-//	compile project(":limelight_shared_code")
-
 }
 
 

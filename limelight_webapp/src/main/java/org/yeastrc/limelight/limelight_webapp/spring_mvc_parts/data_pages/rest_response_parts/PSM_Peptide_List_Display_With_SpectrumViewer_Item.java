@@ -45,7 +45,9 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	private String reportedPeptideString;
 	private String peptideSequence;
 
-
+	private List<BigDecimal> reporterIonMassList;
+	private boolean hasReporterIons;
+	
 	/**
 	 * Variable Mods / Dynamic Mods
 	 */
@@ -55,6 +57,8 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	private double ctermMod = 0; // additional mass to be added to the c-term
 	
 	private String label;		// stable isotope label name
+	
+	
 	
 	public long getPsmId() {
 		return psmId;
@@ -133,6 +137,18 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	}
 	public void setPsm_precursor_MZ(BigDecimal psm_precursor_MZ) {
 		this.psm_precursor_MZ = psm_precursor_MZ;
+	}
+	public List<BigDecimal> getReporterIonMassList() {
+		return reporterIonMassList;
+	}
+	public void setReporterIonMassList(List<BigDecimal> reporterIonMassList) {
+		this.reporterIonMassList = reporterIonMassList;
+	}
+	public boolean isHasReporterIons() {
+		return hasReporterIons;
+	}
+	public void setHasReporterIons(boolean hasReporterIons) {
+		this.hasReporterIons = hasReporterIons;
 	}
 	
 	

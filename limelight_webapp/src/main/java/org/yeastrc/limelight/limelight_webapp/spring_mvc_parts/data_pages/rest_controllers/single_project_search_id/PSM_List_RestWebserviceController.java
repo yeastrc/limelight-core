@@ -18,7 +18,10 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.single_project_search_id;
 
 
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,8 +57,11 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
@@ -91,7 +97,7 @@ public class PSM_List_RestWebserviceController {
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 	
 	@Autowired
-	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
+	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
@@ -107,6 +113,9 @@ public class PSM_List_RestWebserviceController {
 	
 	@Autowired
 	private Psm_DescriptiveAnnotationData_SearcherIF psm_DescriptiveAnnotationData_Searcher;
+	
+	@Autowired
+	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -180,6 +189,8 @@ public class PSM_List_RestWebserviceController {
     			log.warn(msg);
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		
+    		List<Long> psmIds = webserviceRequest.getPsmIds();
 
     		Integer projectSearchId = webserviceRequest.getProjectSearchId();
 
@@ -211,9 +222,9 @@ public class PSM_List_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-			Boolean searchHasScanData = searchHasScanDataForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
-			if ( searchHasScanData == null ) {
-				String msg = "No searchHasScanData for searchId: " + searchId;
+			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
+			if ( searchFlagsForSearchIdSearcher_Result == null ) {
+				String msg = "No searchFlagsForSearchIdSearcher_Result for searchId: " + searchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
@@ -237,11 +248,11 @@ public class PSM_List_RestWebserviceController {
 			}
 			
     		List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, webserviceRequest.getReportedPeptideId(), searcherCutoffValuesSearchLevel );
+    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, webserviceRequest.getReportedPeptideId(), psmIds, searcherCutoffValuesSearchLevel );
 
     		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
 			
-    		if ( searchHasScanData ) {
+    		if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
 
     			//  Get Scan Info from Spectral Storage Service
     			
@@ -324,8 +335,10 @@ public class PSM_List_RestWebserviceController {
     			result.setCharge( psmWebDisplay.getCharge() );
     			result.setScanNumber( psmWebDisplay.getScanNumber() );
     			result.setScanFilename( psmWebDisplay.getScanFilename() );
+    			
+    			result.setHasReporterIons( psmWebDisplay.isHasReporterIons() );
 
-    			if ( searchHasScanData ) {
+    			if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
     				
     				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
     						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
@@ -399,10 +412,20 @@ public class PSM_List_RestWebserviceController {
     			resultList.add( result );
     		}
     		
+    		populateReporterIonMassesForPSMs( resultList );
+    		
 
     		WebserviceResult webserviceResult = new WebserviceResult();
+    		
     		webserviceResult.resultList = resultList;
-    		webserviceResult.searchHasScanData = searchHasScanData;
+    		
+    		webserviceResult.searchHasScanData = searchFlagsForSearchIdSearcher_Result.isHasScanData();
+
+    		webserviceResult.search_hasScanFilenames = searchFlagsForSearchIdSearcher_Result.isHasScanFilenames();
+    		webserviceResult.search_hasIsotopeLabel = searchFlagsForSearchIdSearcher_Result.isHasIsotopeLabel();
+    		webserviceResult.search_anyPsmHas_DynamicModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_DynamicModifications();
+    		webserviceResult.search_anyPsmHas_ReporterIons = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_ReporterIons();
+    	
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
     		
@@ -421,29 +444,95 @@ public class PSM_List_RestWebserviceController {
     }
     
     /**
+     * @param psm_ResultList
+     * @return 
+     * @throws SQLException 
+     */
+    private void populateReporterIonMassesForPSMs( List<PSM_Item_ForPSM_List> psm_ResultList ) throws SQLException {
+
+    	if ( psm_ResultList.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psm_ResultList.size() );
+    	
+    	for ( PSM_Item_ForPSM_List entry : psm_ResultList ) {
+    		if ( entry.isHasReporterIons() ) {
+    			psmIds_ContainingReporterIonMasses.add( entry.getPsmId() );
+    		}
+    	}
+
+    	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
+    			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds_ContainingReporterIonMasses );
+
+    	//  Copy into Set in Map
+    	
+    	Map<Long, Set<BigDecimal>> reporterIonMassesSet_Key_PsmId = new HashMap<>();
+    	
+    	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : reporterIonMassesSearcherResult ) {
+    		
+    		Long psmId = item.getPsmId();
+    		Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    		if ( reporterIonMassesSet_For_PsmId == null ) {
+    			reporterIonMassesSet_For_PsmId = new HashSet<>();
+    			reporterIonMassesSet_Key_PsmId.put( psmId, reporterIonMassesSet_For_PsmId );
+    		}
+    		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
+    	}
+    	
+    	for ( PSM_Item_ForPSM_List entry : psm_ResultList ) {
+    		if ( entry.isHasReporterIons() ) {
+    			Long psmId = entry.getPsmId();
+    			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    			if ( reporterIonMassesSet_For_PsmId == null ) {
+    				log.warn( "No entry in reporterIonMassesSet_Key_PsmId when entry.isHasReporterIons() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( reporterIonMassesSet_For_PsmId != null ) {
+    				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
+    				Collections.sort( reporterIonMassesList );
+    				entry.setReporterIonMassList( reporterIonMassesList );
+    			}
+    		}
+    	}
+    }
+    
+    /**
      * 
      *
      */
     public static class WebserviceResult {
+    	
     	List<PSM_Item_ForPSM_List> resultList;
+    	
     	boolean searchHasScanData;
-
+    	boolean search_hasScanFilenames;
+		boolean search_hasIsotopeLabel;
+		boolean search_anyPsmHas_DynamicModifications;
+		boolean search_anyPsmHas_ReporterIons;
+		
+		
 		public List<PSM_Item_ForPSM_List> getResultList() {
 			return resultList;
 		}
-
-		public void setResultList(List<PSM_Item_ForPSM_List> resultList) {
-			this.resultList = resultList;
-		}
-
 		public boolean isSearchHasScanData() {
 			return searchHasScanData;
 		}
-
-		public void setSearchHasScanData(boolean searchHasScanData) {
-			this.searchHasScanData = searchHasScanData;
+		public boolean isSearch_hasScanFilenames() {
+			return search_hasScanFilenames;
 		}
-
+		public boolean isSearch_hasIsotopeLabel() {
+			return search_hasIsotopeLabel;
+		}
+		public boolean isSearch_anyPsmHas_DynamicModifications() {
+			return search_anyPsmHas_DynamicModifications;
+		}
+		public boolean isSearch_anyPsmHas_ReporterIons() {
+			return search_anyPsmHas_ReporterIons;
+		}
+		
 
     }
 }

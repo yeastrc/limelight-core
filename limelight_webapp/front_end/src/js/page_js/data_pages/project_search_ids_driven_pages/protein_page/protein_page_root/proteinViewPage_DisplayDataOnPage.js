@@ -115,15 +115,13 @@ export class ProteinViewPage_DisplayDataOnPage {
 	populateSearchDetailsBlock() {
 		
 		this._searchDetailsAndFilterBlock_MainPage.populatePage();
-	};
+	}
 
 	/**
 	 * 
 	 */
 	populateProteinListBlock() {
 		
-		const objectThis = this;
-
 		{
 			const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
 			if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
@@ -152,9 +150,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		let projectSearchId = projectSearchIds[0];
 
 		this.populateProteinListBlock_SingleSearch({ projectSearchId }) ;
-
 	}
-
 
 	/**
 	 * 
@@ -208,13 +204,14 @@ export class ProteinViewPage_DisplayDataOnPage {
 						throw Error( "searchDataLookupParamsRoot not found" );
 					}
 
+					const single_projectSearchId_ReportedPeptideIdsPsmIds = { projectSearchId : projectSearchId_InDownloadClickHandler };
+					
+					const projectSearchIdsReportedPeptideIdsPsmIds = [ single_projectSearchId_ReportedPeptideIdsPsmIds ];
+
 					downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( { 
-						projectSearchIds : [ projectSearchId_InDownloadClickHandler ],
-						searchDataLookupParamsRoot : searchDataLookupParamsRoot,
-						//  No value for reportedPeptideIds or proteinSequenceVersionIds so don't use those to filter download
-						// reportedPeptideIds : reportedPeptideIds, 
-						// proteinSequenceVersionIds 
-					 } );
+						projectSearchIdsReportedPeptideIdsPsmIds,
+						searchDataLookupParamsRoot : searchDataLookupParamsRoot
+					} );
 				} catch (e) {
 					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
 					throw e;
@@ -233,6 +230,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 		this._proteinViewPage_Display_SingleSearch.populateProteinList({ projectSearchId });
 
 		
-	};
+	}
 	
 }

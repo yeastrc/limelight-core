@@ -1000,8 +1000,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
      * @param {*} param0 
      */
     _createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray } ) {
-    	
-    	const objectThis = this;
+
+        const objectThis = this;
 
         let props = { };
         props.width = _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH.toString();
@@ -1086,6 +1086,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                 try {
                     $contentDiv.remove();
                 } catch( e2 ) {
+                    const znothing = 0;
                 }
             }
             throw e;
@@ -1096,12 +1097,12 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	/**
 	 * 
 	 */
-    _createModalOverlayContentDiv( {  } ) {
+    _createModalOverlayContentDiv() {
         
         const protein_mods_selection_dialog_root_Context = { proteinData : this._proteinNameDescription };
-    	let contentDivHTML = this._protein_mods_selection_dialog_root_Template( protein_mods_selection_dialog_root_Context );
-    	let $contentDiv = $( contentDivHTML );
-    	return $contentDiv;
+        let contentDivHTML = this._protein_mods_selection_dialog_root_Template( protein_mods_selection_dialog_root_Context );
+        let $contentDiv = $( contentDivHTML );
+        return $contentDiv;
     }
     
 	/**
@@ -1452,7 +1453,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
                         const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                         if ( ! numPsmsForReportedPeptideId ) {
-                            throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", proteinSequenceVersionId: " + proteinSequenceVersionId );
+                            throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", proteinSequenceVersionId: " + this._proteinSequenceVersionId );
                         }
 
                         let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );

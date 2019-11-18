@@ -20,7 +20,7 @@ package org.yeastrc.limelight.limelight_shared.dto;
 import org.yeastrc.limelight.limelight_shared.enum_classes.Yes_No__NOT_APPLICABLE_Enum;
 
 /**
- * Table unified_rp__search__rep_pept__lookup_tbl
+ * Table search__rep_pept__lookup_tbl
  *
  */
 public class Search_ReportedPeptide__Lookup__DTO {
@@ -32,6 +32,7 @@ public class Search_ReportedPeptide__Lookup__DTO {
 	private boolean hasDynamicModifications;
 	private boolean hasIsotopeLabels;
 	private boolean anyPsmHasDynamicModifications;
+	private boolean anyPsmHasReporterIons;
 	private boolean relatedPeptideUniqueForSearch;
 	
 	private int psmNumAtDefaultCutoff;
@@ -49,7 +50,7 @@ public class Search_ReportedPeptide__Lookup__DTO {
 
 	@Override
 	public String toString() {
-		return "UnifiedRepPep_Search_ReportedPeptide__Lookup__DTO [searchId=" + searchId + ", reportedPeptideId="
+		return "Search_ReportedPeptide__Lookup__DTO [searchId=" + searchId + ", reportedPeptideId="
 				+ reportedPeptideId 
 				+ ", hasDynamicModifications=" + hasDynamicModifications + ", hasIsotopeLabels=" + hasIsotopeLabels
 				+ ", anyPsmHasDynamicModifications=" + anyPsmHasDynamicModifications
@@ -133,6 +134,16 @@ public class Search_ReportedPeptide__Lookup__DTO {
 
 	public void setAnyPsmHasDynamicModifications(boolean anyPsmHasDynamicModifications) {
 		this.anyPsmHasDynamicModifications = anyPsmHasDynamicModifications;
+	}
+
+
+	public boolean isAnyPsmHasReporterIons() {
+		return anyPsmHasReporterIons;
+	}
+
+
+	public void setAnyPsmHasReporterIons(boolean anyPsmHasReporterIons) {
+		this.anyPsmHasReporterIons = anyPsmHasReporterIons;
 	}
 
 }

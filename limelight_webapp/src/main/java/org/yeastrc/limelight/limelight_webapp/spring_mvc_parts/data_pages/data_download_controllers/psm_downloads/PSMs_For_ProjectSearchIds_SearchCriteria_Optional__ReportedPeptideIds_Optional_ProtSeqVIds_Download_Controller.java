@@ -68,9 +68,11 @@ import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInRe
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
@@ -100,6 +102,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 	private static final String CONTROLLER_PATH =
 			AA_DataDownloadControllersPaths_Constants.PATH_START_ALL
 			+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_DOWNLOAD_CONTROLLER;
+	
+
+	private static final int MINIMUM_NUMBER_OF_PSMS_PER_REPORTED_PEPTIDE = 1; // TODO standard minimum # PSMs 
+
 	
 	private static final int RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR = 60;
 	private static final BigDecimal RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR_BD = new BigDecimal( RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR );
@@ -142,6 +148,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 	
 	@Autowired
 	private Psm_DescriptiveAnnotationData_SearcherIF psm_DescriptiveAnnotationData_Searcher;
+
+	@Autowired
+	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -173,7 +182,41 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 		try {
 			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( postRequestParameters.requestJSONString, RequestJSONParsed.class );
 
-			List<Integer> projectSearchIds = webserviceRequest.getProjectSearchIds();
+			List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds = webserviceRequest.projectSearchIdsReportedPeptideIdsPsmIds;
+
+			if ( projectSearchIdsReportedPeptideIdsPsmIds == null || projectSearchIdsReportedPeptideIdsPsmIds.isEmpty() ) {
+				log.warn( "No projectSearchIdsReportedPeptideIdsPsmIds entries" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			List<Integer> proteinSequenceVersionIds = webserviceRequest.proteinSequenceVersionIds;
+			
+			List<Integer> projectSearchIds = new ArrayList<>( projectSearchIdsReportedPeptideIdsPsmIds.size() );
+			
+			for ( RequestJSONParsed_PerProjectSearchId entry : projectSearchIdsReportedPeptideIdsPsmIds ) {
+				if ( entry.projectSearchId == null ) {
+					log.warn( "No Project Search Id in projectSearchIdsReportedPeptideIdsPsmIds entry" );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				projectSearchIds.add( entry.projectSearchId );
+				
+				if ( proteinSequenceVersionIds != null ) {
+					//  Have proteinSequenceVersionIds so cannot have reportedPeptideIdsAndTheirPsmIds
+					if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
+						log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, proteinSequenceVersionIds is populated so entry.reportedPeptideIdsAndTheirPsmIds being populated is not allowed " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+				}
+				if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
+					for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : entry.reportedPeptideIdsAndTheirPsmIds ) {
+						Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
+						if ( reportedPeptideId == null ) {
+							log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, reportedPeptideId == null" );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+					}
+				}
+			}
 
 			if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
 				log.warn( "No Project Search Ids" );
@@ -186,7 +229,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 				log.warn( "No searchDataLookupParamsRoot" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-			
+		
 			SearchDataLookupParams_For_ProjectSearchIds searchDataLookupParams_For_ProjectSearchIds = searchDataLookupParamsRoot.getParamsForProjectSearchIds();
 
 			if ( searchDataLookupParams_For_ProjectSearchIds == null ) {
@@ -194,31 +237,6 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-			// optional
-			Map<Integer,List<Integer>> reportedPeptideIdsPerProjectSearchId = webserviceRequest.getReportedPeptideIdsPerProjectSearchId(); 
-
-			//  Validate that all Reported Peptide Ids are only for provide Project Search Ids
-			if ( reportedPeptideIdsPerProjectSearchId != null ) {
-				for ( Map.Entry<Integer,List<Integer>> entry : reportedPeptideIdsPerProjectSearchId.entrySet() ) {
-					
-					Integer projectSearchId_Key_reportedPeptideIdsPerProjectSearchId = entry.getKey();
-					boolean found_projectSearchId_In_projectSearchIds = false;
-					
-					for ( Integer projectSearchId : projectSearchIds ) {
-						if ( projectSearchId_Key_reportedPeptideIdsPerProjectSearchId.equals( projectSearchId ) ) {
-							found_projectSearchId_In_projectSearchIds = true;
-							break;
-						}
-					}
-					if ( ! found_projectSearchId_In_projectSearchIds ) {
-						String msg = "reportedPeptideIdsPerProjectSearchId populated but has projectSearchId not in projectSearchIds:" + projectSearchId_Key_reportedPeptideIdsPerProjectSearchId;
-						log.warn(msg);
-						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-					}
-				}
-			}
-
-
 			//  Validate PSM Annotation data for Ann Type Display is populated
 			
 			List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList = searchDataLookupParams_For_ProjectSearchIds.getParamsForProjectSearchIdsList();
@@ -259,7 +277,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 				}
 			}
-
+			
 			////////////////
 
 			//  AUTH - validate access
@@ -328,7 +346,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
     		for ( Map.Entry<Integer,Integer> projectSearchIdMapToSearchIdEntry : projectSearchIdMapToSearchId.entrySet() ){
 	    		
     			Integer projectSearchId = projectSearchIdMapToSearchIdEntry.getKey();
-    			Integer searchId = projectSearchIdMapToSearchIdEntry.getValue();
+    			// Integer searchId = projectSearchIdMapToSearchIdEntry.getValue();
     			
     			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
     			
@@ -339,192 +357,22 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
     			}
     		}
     		
-    		
-    		
     		//  Get Data for all the searches:
     		
     		// Create list to pass to writeOutputToResponse
     		List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List = new ArrayList<>( projectSearchIdMapToSearchId.size() ); 
     		
-    		for ( Map.Entry<Integer,Integer> projectSearchIdMapToSearchIdEntry : projectSearchIdMapToSearchId.entrySet() ){
-	    		
-    			Integer projectSearchId = projectSearchIdMapToSearchIdEntry.getKey();
-    			Integer searchId = projectSearchIdMapToSearchIdEntry.getValue();
+    		for ( RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : projectSearchIdsReportedPeptideIdsPsmIds ) {
+    		
+    			WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId =
+    					create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
+    							webserviceRequest, 
+    							paramsForProjectSearchIdsList, 
+    							projectSearchIdMapToSearchId,
+    							searchHasScanDataMap_Key_projectSearchId, searcherCutoffValuesRootLevel,
+    							singleprojectSearchId_ReportedPeptideIdsPsmIds );
     			
-    			Boolean searchHasScanData = searchHasScanDataMap_Key_projectSearchId.get( projectSearchId );
-    			
-    			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
-    			
-    			SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = null;
-
-    			for ( SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchIdInList : paramsForProjectSearchIdsList ) { 
-    				
-    				if ( searchDataLookupParams_For_Single_ProjectSearchIdInList.getProjectSearchId() == projectSearchId.intValue() ) {
-    					searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchIdInList;
-    					break;
-    				}
-    			}
-    			if ( searchDataLookupParams_For_Single_ProjectSearchId == null ) {
-    				//  Should never throw this since checked for above
-    				log.warn( "paramsForProjectSearchIdsList does not contain projectSearchId: " + projectSearchId );
-    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    			}
-    			
-    			List<Integer> psmAnnTypeDisplay = searchDataLookupParams_For_Single_ProjectSearchId.getPsmAnnTypeDisplay();
-    			
-				//  All Ann Type for search id
-				List<AnnotationTypeDTO> annotationTypeDTO_AllForSearchId = 
-						annotationTypeListForSearchIdSearcher.getAnnotationTypeListForSearchId( searchId );
-				
-				//  Ann Type for display
-				List<AnnotationTypeDTO> annotationTypeDTO_ForDisplayInOrder = new ArrayList<>( psmAnnTypeDisplay.size() );
-				
-				for ( Integer psmAnnTypeDisplayItem : psmAnnTypeDisplay ) {
-					AnnotationTypeDTO annotationTypeDTO_ForDisplay = null;
-					for ( AnnotationTypeDTO annotationTypeDTO_AllForSearchId_Item : annotationTypeDTO_AllForSearchId ) {
-						if ( psmAnnTypeDisplayItem.intValue() == annotationTypeDTO_AllForSearchId_Item.getId() ) {
-							annotationTypeDTO_ForDisplay = annotationTypeDTO_AllForSearchId_Item;
-							break;
-						}
-					}
-					if ( annotationTypeDTO_ForDisplay == null ) {
-						String msg = "No Ann Type for id: " +  psmAnnTypeDisplayItem + " for searchId: " + searchId;
-						log.warn( msg );
-						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-					}
-					annotationTypeDTO_ForDisplayInOrder.add( annotationTypeDTO_ForDisplay );
-				}
-				
-				
-				//  Process reportedPeptideIds in request
-				
-				List<Integer> reportedPeptideIds = null;
-				
-				if ( reportedPeptideIdsPerProjectSearchId != null ) {
-
-					reportedPeptideIds = reportedPeptideIdsPerProjectSearchId.get( projectSearchId );
-				
-				} else {
-	
-					//  Reported Peptide Ids not provided, get all for Project Search Id and Criteria
-	
-					final int minimumNumberOfPSMsPerReportedPeptide = 1; // TODO standard minimum # PSMs 
-	
-					//  Get initial Reported Peptide Id list (maybe include Num PSMs) based on search criteria
-	
-					List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideMinimalObjectsList = 
-							reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service
-							.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
-	
-					reportedPeptideIds = new ArrayList<>( peptideMinimalObjectsList.size() );
-					
-					for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideMinimalObjectsList ) {
-						reportedPeptideIds.add( entry.getReportedPeptideId() );
-					}
-				}
-				
-				
-				List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds = null;
-				Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId = null;
-
-	    		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = null;
-	
-				
-				if ( reportedPeptideIds != null && ( ! reportedPeptideIds.isEmpty() ) ) {
-					
-					//  Have reportedPeptideIds for this Project Search Id
-					
-					if ( webserviceRequest.proteinSequenceVersionIds != null && ( ! webserviceRequest.proteinSequenceVersionIds.isEmpty() ) ) {
-						
-						//  If protein sequence version id restriction, filter Reported Peptide Ids to those protein sequence version ids
-						
-						List<Integer> reportedPeptideIdsFiltered = new ArrayList<>( reportedPeptideIds.size() );
-						
-						for ( Integer reportedPeptideId : reportedPeptideIds ) {
-							List<Integer> proteinSequenceVersionIdsForReportedPeptideId =
-									proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher
-									.getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher( searchId, reportedPeptideId );
-							
-							for ( Integer proteinSequenceVersionId : webserviceRequest.proteinSequenceVersionIds ) {
-								if ( proteinSequenceVersionIdsForReportedPeptideId.contains( proteinSequenceVersionId ) ) {
-									reportedPeptideIdsFiltered.add( reportedPeptideId );
-								}
-								break;
-							}
-						}
-						reportedPeptideIds = reportedPeptideIdsFiltered;
-					}
-
-					if ( reportedPeptideIds != null && ( ! reportedPeptideIds.isEmpty() ) ) {
-						
-						//  Have reportedPeptideIds for this Project Search Id and optional proteinSequenceVersionIds
-								
-						//  Get PSM core data for all Reported Peptide Ids
-						
-						psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIds.size() );
-						
-						for ( Integer reportedPeptideId : reportedPeptideIds ) {
-							List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-									psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, searcherCutoffValuesSearchLevel );
-							PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
-							psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
-							psmsForSingleReportedPeptideId.psmWebDisplayList = psmWebDisplayList;
-							psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
-						}
-						
-						//  Get Mods for Reported Peptides
-						
-						DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result =
-								modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher
-								.getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
-						mods_Key_ReportedPeptideId =
-								modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result.getResults_Key_ReportedPeptideId();
-						
-						//  Get Scan Data if search has scans
-						
-			    		if ( searchHasScanData ) {
-			    			//  Get Scan Data from Spectral Storage Service
-			    			scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId =
-			    				getScanDataFromSpectralStorageService( psmWebDisplayListForReportedPeptideIds );
-			    		}
-			
-						if ( searchHasScanData ) {
-							
-							//  Validate all PSMs have scan data
-			
-					 		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
-					 			for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayListForReportedPeptideIdsEntry.psmWebDisplayList ) {
-			
-					 				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
-					 						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
-					 				if ( scanData_KeyedOn_ScanNumber == null ) {
-					 					String msg = "ScanFileId not found in lookup map: " + psmWebDisplay.getScanFileId();
-					 					log.error(msg);
-					 					throw new LimelightInternalErrorException(msg);
-					 				}
-					 				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
-					 				if ( scan == null ) {
-					 					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
-					 					+ ", ScanFileId: " + psmWebDisplay.getScanFileId();
-					 					log.error(msg);
-					 					throw new LimelightInternalErrorException(msg);
-					 				}
-					 			}
-			    			}
-						}
-					}
-				}
-				
-				WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId = new WriteOutputToResponse_Per_SearchId();
-				
-				writeOutputToResponse_Per_SearchId.searchId = searchId;
-				writeOutputToResponse_Per_SearchId.searchHasScanData = searchHasScanData;
-				writeOutputToResponse_Per_SearchId.annotationTypeDTO_ForDisplayInOrder = annotationTypeDTO_ForDisplayInOrder;
-				writeOutputToResponse_Per_SearchId.psmWebDisplayListForReportedPeptideIds = psmWebDisplayListForReportedPeptideIds;
-				writeOutputToResponse_Per_SearchId.mods_Key_ReportedPeptideId = mods_Key_ReportedPeptideId;
-				writeOutputToResponse_Per_SearchId.scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
-				
-				writeOutputToResponse_Per_SearchId_List.add( writeOutputToResponse_Per_SearchId );
+    			writeOutputToResponse_Per_SearchId_List.add( writeOutputToResponse_Per_SearchId );
     		}
 			
     		writeOutputToResponse(
@@ -551,7 +399,330 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 			throw new RuntimeException();
 		}
 	}
+	
+	////////////////////
+	////////////////////
+	////////////////////
 
+	//  create WriteOutputToResponse_Per_SearchId  For Single Search
+	
+	/**
+	 * @param webserviceRequest
+	 * @param paramsForProjectSearchIdsList
+	 * @param projectSearchIdMapToSearchId
+	 * @param searchHasScanDataMap_Key_projectSearchId
+	 * @param searcherCutoffValuesRootLevel
+	 * @param singleprojectSearchId_ReportedPeptideIdsPsmIds
+	 * @return
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	private WriteOutputToResponse_Per_SearchId create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
+			
+			RequestJSONParsed webserviceRequest,
+			List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList,
+			Map<Integer, Integer> projectSearchIdMapToSearchId,
+			Map<Integer, Boolean> searchHasScanDataMap_Key_projectSearchId,
+			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
+			RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds)
+			throws SQLException, Exception {
+		
+		Integer projectSearchId = singleprojectSearchId_ReportedPeptideIdsPsmIds.getProjectSearchId();
+		Integer searchId = projectSearchIdMapToSearchId.get( projectSearchId );
+		
+		if ( searchId == null ) {
+			String msg = "searchId == null for projectSearchId: " + projectSearchId;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		Boolean searchHasScanData = searchHasScanDataMap_Key_projectSearchId.get( projectSearchId );
+		
+		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
+		
+		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = null;
+
+		for ( SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchIdInList : paramsForProjectSearchIdsList ) { 
+			
+			if ( searchDataLookupParams_For_Single_ProjectSearchIdInList.getProjectSearchId() == projectSearchId.intValue() ) {
+				searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchIdInList;
+				break;
+			}
+		}
+		if ( searchDataLookupParams_For_Single_ProjectSearchId == null ) {
+			//  Should never throw this since checked for above
+			log.warn( "paramsForProjectSearchIdsList does not contain projectSearchId: " + projectSearchId );
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		}
+		
+		List<Integer> psmAnnTypeDisplay = searchDataLookupParams_For_Single_ProjectSearchId.getPsmAnnTypeDisplay();
+		
+		//  All Ann Type for search id
+		List<AnnotationTypeDTO> annotationTypeDTO_AllForSearchId = 
+				annotationTypeListForSearchIdSearcher.getAnnotationTypeListForSearchId( searchId );
+		
+		//  Ann Type for display
+		List<AnnotationTypeDTO> annotationTypeDTO_ForDisplayInOrder = new ArrayList<>( psmAnnTypeDisplay.size() );
+		
+		for ( Integer psmAnnTypeDisplayItem : psmAnnTypeDisplay ) {
+			AnnotationTypeDTO annotationTypeDTO_ForDisplay = null;
+			for ( AnnotationTypeDTO annotationTypeDTO_AllForSearchId_Item : annotationTypeDTO_AllForSearchId ) {
+				if ( psmAnnTypeDisplayItem.intValue() == annotationTypeDTO_AllForSearchId_Item.getId() ) {
+					annotationTypeDTO_ForDisplay = annotationTypeDTO_AllForSearchId_Item;
+					break;
+				}
+			}
+			if ( annotationTypeDTO_ForDisplay == null ) {
+				String msg = "No Ann Type for id: " +  psmAnnTypeDisplayItem + " for searchId: " + searchId;
+				log.warn( msg );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			annotationTypeDTO_ForDisplayInOrder.add( annotationTypeDTO_ForDisplay );
+		}
+		
+
+		List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds = null;
+		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId = null;
+
+		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = null;
+
+		//  Passed from client - Optional
+		List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
+		
+		//  Process reportedPeptideIds in request, or retrieve reportedPeptideIds for cutoffs and Process
+		
+		List<Integer> reportedPeptideIds_ForAdditionalProcessing = null;
+		
+		if ( reportedPeptideIdsAndTheirPsmIds != null ) {
+
+			// Process reportedPeptideIds and possibly their PSMs in request
+			
+			//  Have reportedPeptideIds from client for this Project Search Id to process
+
+			//  Get PSM core data for all Reported Peptide Ids
+
+			reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( reportedPeptideIdsAndTheirPsmIds.size() );
+			
+			psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIdsAndTheirPsmIds.size() );
+
+			for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
+				
+				Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
+				List<Long> psmIds = reportedPeptideIdAndItsPsmIds.psmIds;
+				
+				reportedPeptideIds_ForAdditionalProcessing.add( reportedPeptideId );
+				
+				List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+						psmWebDisplaySearcher.getPsmsWebDisplay( 
+								searchId, 
+								reportedPeptideId, 
+								psmIds, 
+								searcherCutoffValuesSearchLevel );
+				
+				populateReporterIonMassesForPSMs( psmWebDisplayList );
+				
+				PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
+				psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
+				psmsForSingleReportedPeptideId.psmWebDisplayList = psmWebDisplayList;
+				psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
+			}
+
+		} else {
+
+			//  Reported Peptide Ids not provided, get all for Project Search Id and Criteria
+
+			//   retrieve reportedPeptideIds for cutoffs and Process
+		
+			//  Get initial Reported Peptide Id list (maybe include Num PSMs) based on search criteria
+
+			List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideMinimalObjectsList = 
+					reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service
+					.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, MINIMUM_NUMBER_OF_PSMS_PER_REPORTED_PEPTIDE );
+
+			reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( peptideMinimalObjectsList.size() );
+			
+			for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideMinimalObjectsList ) {
+				reportedPeptideIds_ForAdditionalProcessing.add( entry.getReportedPeptideId() );
+			}
+			
+			if ( webserviceRequest.proteinSequenceVersionIds != null && ( ! webserviceRequest.proteinSequenceVersionIds.isEmpty() ) ) {
+				
+				//  If protein sequence version id restriction, filter Reported Peptide Ids to those protein sequence version ids
+				
+				List<Integer> reportedPeptideIdsFiltered = new ArrayList<>( reportedPeptideIds_ForAdditionalProcessing.size() );
+				
+				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
+					List<Integer> proteinSequenceVersionIdsForReportedPeptideId =
+							proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher
+							.getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher( searchId, reportedPeptideId );
+					
+					for ( Integer proteinSequenceVersionId : webserviceRequest.proteinSequenceVersionIds ) {
+						if ( proteinSequenceVersionIdsForReportedPeptideId.contains( proteinSequenceVersionId ) ) {
+							reportedPeptideIdsFiltered.add( reportedPeptideId );
+						}
+						break;
+					}
+				}
+				reportedPeptideIds_ForAdditionalProcessing = reportedPeptideIdsFiltered;
+			}
+
+			if ( reportedPeptideIds_ForAdditionalProcessing != null && ( ! reportedPeptideIds_ForAdditionalProcessing.isEmpty() ) ) {
+				
+				//  Have reportedPeptideIds for this Project Search Id to process
+
+				//  Get PSM core data for all Reported Peptide Ids
+
+				psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIds_ForAdditionalProcessing.size() );
+
+				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
+					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, searcherCutoffValuesSearchLevel );
+					
+					populateReporterIonMassesForPSMs( psmWebDisplayList );
+					
+					PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
+					psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
+					psmsForSingleReportedPeptideId.psmWebDisplayList = psmWebDisplayList;
+					psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
+				}
+			}
+		}
+		
+		
+
+		if ( psmWebDisplayListForReportedPeptideIds != null && (  ! psmWebDisplayListForReportedPeptideIds.isEmpty() ) ) {
+			
+			//  Have PSMs
+
+			//  Get Mods for Reported Peptides
+
+			DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result =
+					modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher
+					.getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, reportedPeptideIds_ForAdditionalProcessing );
+			mods_Key_ReportedPeptideId =
+					modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result.getResults_Key_ReportedPeptideId();
+
+			//  Get Scan Data if search has scans
+
+			if ( searchHasScanData ) {
+				//  Get Scan Data from Spectral Storage Service
+				scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId =
+						getScanDataFromSpectralStorageService( psmWebDisplayListForReportedPeptideIds );
+			}
+
+			if ( searchHasScanData ) {
+				//  Validate all PSMs have scan data
+				validate_All_PSMs_haveScanData( psmWebDisplayListForReportedPeptideIds, scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId );
+			}
+		}
+		
+		WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId = new WriteOutputToResponse_Per_SearchId();
+		
+		writeOutputToResponse_Per_SearchId.searchId = searchId;
+		writeOutputToResponse_Per_SearchId.searchHasScanData = searchHasScanData;
+		writeOutputToResponse_Per_SearchId.annotationTypeDTO_ForDisplayInOrder = annotationTypeDTO_ForDisplayInOrder;
+		writeOutputToResponse_Per_SearchId.psmWebDisplayListForReportedPeptideIds = psmWebDisplayListForReportedPeptideIds;
+		writeOutputToResponse_Per_SearchId.mods_Key_ReportedPeptideId = mods_Key_ReportedPeptideId;
+		writeOutputToResponse_Per_SearchId.scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
+		
+		return writeOutputToResponse_Per_SearchId;
+	}
+	
+	//////////////////////////////////////
+
+
+    /**
+     * @param psmWebDisplayList
+     * @return 
+     * @throws SQLException 
+     */
+    private void populateReporterIonMassesForPSMs( List<PsmWebDisplayWebServiceResult> psmWebDisplayList ) throws SQLException {
+
+    	if ( psmWebDisplayList.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psmWebDisplayList.size() );
+    	
+    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
+    		if ( entry.isHasReporterIons() ) {
+    			psmIds_ContainingReporterIonMasses.add( entry.getPsmId() );
+    		}
+    	}
+
+    	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
+    			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds_ContainingReporterIonMasses );
+
+    	//  Copy into Set in Map
+    	
+    	Map<Long, Set<BigDecimal>> reporterIonMassesSet_Key_PsmId = new HashMap<>();
+    	
+    	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : reporterIonMassesSearcherResult ) {
+    		
+    		Long psmId = item.getPsmId();
+    		Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    		if ( reporterIonMassesSet_For_PsmId == null ) {
+    			reporterIonMassesSet_For_PsmId = new HashSet<>();
+    			reporterIonMassesSet_Key_PsmId.put( psmId, reporterIonMassesSet_For_PsmId );
+    		}
+    		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
+    	}
+    	
+    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
+    		if ( entry.isHasReporterIons() ) {
+    			Long psmId = entry.getPsmId();
+    			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    			if ( reporterIonMassesSet_For_PsmId == null ) {
+    				log.warn( "No entry in reporterIonMassesSet_Key_PsmId when entry.isHasReporterIons() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( reporterIonMassesSet_For_PsmId != null ) {
+    				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
+    				Collections.sort( reporterIonMassesList );
+    				entry.setReporterIonMassList( reporterIonMassesList );
+    			}
+    		}
+    	}
+    }
+    
+	//////////////////////////////////////
+
+	/**
+	 * @param psmWebDisplayListForReportedPeptideIds
+	 * @param scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId
+	 */
+	private void validate_All_PSMs_haveScanData(
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
+			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId) {
+		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+			for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayListForReportedPeptideIdsEntry.psmWebDisplayList ) {
+
+				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
+						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
+				if ( scanData_KeyedOn_ScanNumber == null ) {
+					String msg = "ScanFileId not found in lookup map: " + psmWebDisplay.getScanFileId();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
+				if ( scan == null ) {
+					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
+					+ ", ScanFileId: " + psmWebDisplay.getScanFileId();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+			}
+		}
+	}
+	
+	//////////////////////////////////////
+	//////////////////////////////////////
+	//////////////////////////////////////
+
+	////  Get Scan Data From Spectral Storage Service
+	
 	/**
 	 * Get Scan Data from Spectral Storage Service
 	 * 
@@ -640,7 +811,19 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 
 		return scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
 	}
+	
+	//////////////////////////////////////
+	//////////////////////////////////////
+	//////////////////////////////////////
 
+	////  Write Output to Response
+	
+	//   Things retrieved from DB in this method:
+	
+	//			Peptide Sequence String from peptide_tbl: PeptideStringForSearchIdReportedPeptideIdSearcher
+	
+	//			PSM Annotation Data per Single PSM (Filterable and Descriptive)
+	
 	/**
 	 * @param writeOutputToResponse_Per_SearchId_List
 	 * @param httpServletResponse
@@ -684,7 +867,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tSCAN FILENAME" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tSCAN FILENAME" );
 			
 			for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
 
@@ -849,6 +1032,30 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 									writer.write( String.valueOf( ( scan.getRetentionTime() / RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR ) ) );
 								}
 							}
+							
+							writer.write( "\t" );
+							{
+								List<BigDecimal> reporterIonMassList = psmWebDisplay.getReporterIonMassList();
+								if ( reporterIonMassList != null && ( ! reporterIonMassList.isEmpty() ) ) {
+									StringBuilder reporterIonMassAsStringSB = new StringBuilder( 10000 );
+									boolean first = true;
+									for ( BigDecimal reporterIonMass : reporterIonMassList ) {
+										String reporterIonMassString = reporterIonMass.toPlainString();
+										if ( reporterIonMassString.contains( "." ) ) {
+											//  reporterIonMassString constains '.' so strip trailing zeros
+											reporterIonMassString = StringUtils.stripEnd(reporterIonMassString, "0" );
+										}
+										if ( first ) {
+											first = false;
+										} else {
+											reporterIonMassAsStringSB.append( ", " );
+										}
+										reporterIonMassAsStringSB.append( reporterIonMassString );
+									}
+									String reporterIonMassAsString = reporterIonMassAsStringSB.toString();
+									writer.write( String.valueOf( reporterIonMassAsString ) );
+								}
+							}
 
 							writer.write( "\t" );
 							if ( psmWebDisplay.getScanFilename() != null ) {
@@ -1011,37 +1218,69 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 	 */
 	public static class RequestJSONParsed {
 
-		private List<Integer> projectSearchIds;
+		private List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds;
+		private SearchDataLookupParamsRoot searchDataLookupParamsRoot; // optional
 		
-		private SearchDataLookupParamsRoot searchDataLookupParamsRoot;
-		
-		private Map<Integer,List<Integer>> reportedPeptideIdsPerProjectSearchId; // optional
 		private List<Integer> proteinSequenceVersionIds; // optional
-		
-		public List<Integer> getProjectSearchIds() {
-			return projectSearchIds;
-		}
-		public void setProjectSearchIds(List<Integer> projectSearchIds) {
-			this.projectSearchIds = projectSearchIds;
-		}
-		public Map<Integer, List<Integer>> getReportedPeptideIdsPerProjectSearchId() {
-			return reportedPeptideIdsPerProjectSearchId;
-		}
-		public void setReportedPeptideIdsPerProjectSearchId(Map<Integer, List<Integer>> reportedPeptideIdsPerProjectSearchId) {
-			this.reportedPeptideIdsPerProjectSearchId = reportedPeptideIdsPerProjectSearchId;
-		}
-		public List<Integer> getProteinSequenceVersionIds() {
-			return proteinSequenceVersionIds;
-		}
-		public void setProteinSequenceVersionIds(List<Integer> proteinSequenceVersionIds) {
-			this.proteinSequenceVersionIds = proteinSequenceVersionIds;
-		}
-		public SearchDataLookupParamsRoot getSearchDataLookupParamsRoot() {
-			return searchDataLookupParamsRoot;
+
+		public void setProjectSearchIdsReportedPeptideIdsPsmIds(
+				List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds) {
+			this.projectSearchIdsReportedPeptideIdsPsmIds = projectSearchIdsReportedPeptideIdsPsmIds;
 		}
 		public void setSearchDataLookupParamsRoot(SearchDataLookupParamsRoot searchDataLookupParamsRoot) {
 			this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
 		}
+		public void setProteinSequenceVersionIds(List<Integer> proteinSequenceVersionIds) {
+			this.proteinSequenceVersionIds = proteinSequenceVersionIds;
+		}
+		public List<RequestJSONParsed_PerProjectSearchId> getProjectSearchIdsReportedPeptideIdsPsmIds() {
+			return projectSearchIdsReportedPeptideIdsPsmIds;
+		}
+		public SearchDataLookupParamsRoot getSearchDataLookupParamsRoot() {
+			return searchDataLookupParamsRoot;
+		}
+		public List<Integer> getProteinSequenceVersionIds() {
+			return proteinSequenceVersionIds;
+		}
+	}
+	
+	public static class RequestJSONParsed_PerProjectSearchId {
 		
+		private Integer projectSearchId;
+		
+		// reportedPeptideIdsAndTheirPsmIds is optionally populated
+		private List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds;
+		
+		public Integer getProjectSearchId() {
+			return projectSearchId;
+		}
+		public void setProjectSearchId(Integer projectSearchId) {
+			this.projectSearchId = projectSearchId;
+		}
+		public List<RequestJSONParsed_PerReportedPeptideId> getReportedPeptideIdsAndTheirPsmIds() {
+			return reportedPeptideIdsAndTheirPsmIds;
+		}
+		public void setReportedPeptideIdsAndTheirPsmIds( List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds) {
+			this.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+		}
+	}
+
+	public static class RequestJSONParsed_PerReportedPeptideId {
+		
+		private Integer reportedPeptideId;
+		private List<Long> psmIds;
+		
+		public Integer getReportedPeptideId() {
+			return reportedPeptideId;
+		}
+		public void setReportedPeptideId(Integer reportedPeptideId) {
+			this.reportedPeptideId = reportedPeptideId;
+		}
+		public List<Long> getPsmIds() {
+			return psmIds;
+		}
+		public void setPsmIds(List<Long> psmIds) {
+			this.psmIds = psmIds;
+		}
 	}
 }

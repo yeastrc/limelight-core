@@ -188,4 +188,41 @@ public class SearchDAO {
 			throw e;
 		}
 	}
+	
+
+	/**
+	 * Update the any_psm_has_reporter_ions associated with this search
+	 * @param searchId
+	 * @param status
+	 * @throws Exception
+	 */
+	public void updateAnyPsmHasReporterIons( int searchId, boolean anyPsmHasReporterIons ) throws Exception {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+			updateAnyPsmHasReporterIons( searchId, anyPsmHasReporterIons, dbConnection );
+		}
+	}
+	
+	/**
+	 * Update the any_psm_has_reporter_ions associated with this search
+	 * @param searchId
+	 * @param status
+	 * @throws Exception
+	 */
+	public void updateAnyPsmHasReporterIons( int searchId, boolean anyPsmHasReporterIons, Connection dbConnection ) throws Exception {
+		
+		final String sql = "UPDATE search_tbl SET any_psm_has_reporter_ions = ?, import_end_timestamp = NOW() WHERE id = ?";
+		
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+			if ( anyPsmHasReporterIons ) {
+				pstmt.setInt( 1, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( 1, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			pstmt.setInt( 2, searchId );
+			pstmt.executeUpdate();
+		} catch ( Exception e ) {
+			log.error( "ERROR: updateAnyPsmHasReporterIons(...) sql: " + sql, e );
+			throw e;
+		}
+	}
 }

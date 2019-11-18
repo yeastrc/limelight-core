@@ -37,9 +37,14 @@
                 </div>
             {{/if}}
         {{/if}}
+        {{#if selectedReporterIonMasses }}
+        <div >
+            PSM reporter ion mass(es) must contain: {{ selectedReporterIonMasses }}
+        </div>
+        {{/if}}
         {{#if peptideSequenceSearchStrings }}
         <div >
-            Peptide Sequences must contain: {{ peptideSequenceSearchStrings }}
+            Peptide sequences must contain: {{ peptideSequenceSearchStrings }}
         </div>
         {{/if}}
     </div>

@@ -32,6 +32,7 @@ public class PsmDTO {
 	private int scanNumber;
 	private Integer searchScanFileId;
 	private boolean hasModifications;
+	private boolean hasReporterIons;
 	private BigDecimal precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal precursor_MZ;            // precursor_m_z
 	
@@ -88,5 +89,11 @@ public class PsmDTO {
 	}
 	public void setPrecursor_MZ(BigDecimal precursor_MZ) {
 		this.precursor_MZ = precursor_MZ;
+	}
+	public boolean isHasReporterIons() {
+		return hasReporterIons;
+	}
+	public void setHasReporterIons(boolean hasReporterIons) {
+		this.hasReporterIons = hasReporterIons;
 	}
 }

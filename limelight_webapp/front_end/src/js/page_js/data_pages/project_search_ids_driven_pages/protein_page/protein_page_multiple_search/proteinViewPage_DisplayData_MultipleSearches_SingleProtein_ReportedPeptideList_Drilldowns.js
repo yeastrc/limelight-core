@@ -114,13 +114,11 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	 * Callback function called by TableDisplayHandler
 	 * when user clicks on a row in the top level "combined" reported peptide
 	 */
-	combinedReportedPeptideRow_ShowSearches( params ) {
-
-		const projectSearchIds = params.projectSearchIds;
-		const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
-		const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
-
-		const $clickedRow = params.$clickedRow;  //  Added by DataTableHandler
+	combinedReportedPeptideRow_ShowSearches({
+		
+		projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, any_ReporterIonMasses_ForAllSearches, reporterIonMassesSelected,
+		$clickedRow  //  Added by DataTableHandler
+	}) {
 
         const peptideSequenceDisplayString = $clickedRow.data( 'id' );
         
@@ -172,6 +170,8 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			const functionParams = {
 				peptideSequenceDisplayString : peptideSequenceDisplayString,
 				projectSearchIds : projectSearchIds,
+				any_ReporterIonMasses_ForAllSearches, 
+				reporterIonMassesSelected,
 				searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
 			};
@@ -222,7 +222,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
             }
             const searchName = searchNameObject.name;
             const searchId = searchNameObject.searchId;
-			    
+
 			const reportedPeptideIdsForProjectSearchId_ObjectPropertyName = _REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX + projectSearchId;
 
             const reportedPeptideIds = peptideItem[ reportedPeptideIdsForProjectSearchId_ObjectPropertyName ];
@@ -241,7 +241,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	/**
 	 * Create Table Columns - Per Search List
 	 */
-	_getDataTableColumns_PerSearch( {} ) {
+	_getDataTableColumns_PerSearch() {
 
 		let columns = [ ];
 
@@ -273,7 +273,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
         columns[ columns.length - 1 ].lastItem = true;
         return columns;
-	};
+	}
 	
 	//////////////////////////////////
 
@@ -287,17 +287,17 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	 * Callback function called by TableDisplayHandler
 	 * when user clicks on a row in the second level Per Search
 	 */
-	_showReportedPeptides_perSearchRow_expansion( params ) {
+	_showReportedPeptides_perSearchRow_expansion({
+
+		peptideSequenceDisplayString,
+		projectSearchIds,
+		any_ReporterIonMasses_ForAllSearches, 
+		reporterIonMassesSelected,
+		searchDetailsBlockDataMgmtProcessing,
+		dataPageStateManager_DataFrom_Server,
+		$clickedRow  //  Added by DataTableHandler
+	}) {
 		try {
-			const objectThis = this;
-
-			const peptideSequenceDisplayString = params.peptideSequenceDisplayString;
-			const projectSearchIds = params.projectSearchIds;
-			const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
-			const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
-
-			const $clickedRow = params.$clickedRow;  //  Added by DataTableHandler
-
 			const projectSearchIdFromElement = $clickedRow.data( 'id' );
 
 			const projectSearchId = Number.parseInt( projectSearchIdFromElement ); // Ensure it is a number
@@ -351,12 +351,12 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 			if ( ! promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch ) {
 				
-				objectThis._showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder });
+				this._showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, reporterIonMassesSelected, projectSearchId, loadedDataPerProjectSearchIdHolder });
 
 			} else {
-				promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch.then(function() {
+				promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch.then( () => {
 					try {
-						objectThis._showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder });
+						this._showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, reporterIonMassesSelected, projectSearchId, loadedDataPerProjectSearchIdHolder });
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 						throw e;
@@ -378,7 +378,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
      * Have Loaded the Data for:  Show Reported Peptides for a Search for clicked Search row
      * 
 	 */
-	_showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder })  {
+	_showReportedPeptides_perSearchRow_expansion_HaveLoadedData({ $outerContainer, reportedPeptideIds, reporterIonMassesSelected, projectSearchId, loadedDataPerProjectSearchIdHolder })  {
 
 		const proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList(
 			{
@@ -394,6 +394,8 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 		proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.createReportedPeptideDisplayData_From_reportedPeptideIds( { 
 			$reported_peptides_outer_container : $outerContainer,
 			reportedPeptideIdsForDisplay : reportedPeptideIds, 
-			projectSearchId });
+			reporterIonMassesSelected,
+			projectSearchId,
+			forMultipleSearchesPage : true });
 	}
 }

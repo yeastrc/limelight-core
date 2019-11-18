@@ -155,6 +155,8 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		// })
 	}
 
+	//  Out of date and NOT Maintained.
+	
 // 	/**
 // 	 * 
 // 	 */

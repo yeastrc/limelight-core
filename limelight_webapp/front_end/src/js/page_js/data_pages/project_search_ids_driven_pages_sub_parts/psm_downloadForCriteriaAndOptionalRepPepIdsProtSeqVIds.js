@@ -15,18 +15,18 @@
  * 
  * Open URL in new window to download from server
  * 
- * @param reportedPeptideIdsPerProjectSearchId - optional - JS object where property names are ProjectSearchId and property values are Array of reportedPeptideIds 
+ * @param projectSearchIdsReportedPeptideIdsPsmIds - JS Array of { projectSearchId, and optionally either reportedPeptideIds or reportedPeptideIdsAndTheirPsmIds }
+ * @param searchDataLookupParamsRoot - 
  * @param proteinSequenceVersionIds - optional
  */
 const downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds = function( { 
 	
-	projectSearchIds, searchDataLookupParamsRoot, reportedPeptideIdsPerProjectSearchId, proteinSequenceVersionIds } ) {
+	searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds } ) {
     
     const requestJSONObject = {
-    		projectSearchIds : projectSearchIds,
-    		searchDataLookupParamsRoot : searchDataLookupParamsRoot,
-    		reportedPeptideIdsPerProjectSearchId : reportedPeptideIdsPerProjectSearchId,
-            proteinSequenceVersionIds : proteinSequenceVersionIds
+        projectSearchIdsReportedPeptideIdsPsmIds,
+        searchDataLookupParamsRoot,
+        proteinSequenceVersionIds
     }
     
     const requestJSONString = JSON.stringify( requestJSONObject );

@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.yeastrc.limelight.limelight_webapp.objects.AnnotationDataItem_ForPage;
@@ -35,6 +37,10 @@ public class PSM_Item_ForPSM_List {
 
 	private Float retentionTimeSeconds;
 	private Double precursor_M_Over_Z;
+	
+	private List<BigDecimal> reporterIonMassList;
+	
+	private boolean hasReporterIons;
 	
 	private Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap;
 	
@@ -85,6 +91,18 @@ public class PSM_Item_ForPSM_List {
 	}
 	public void setPrecursor_M_Over_Z(Double precursor_M_Over_Z) {
 		this.precursor_M_Over_Z = precursor_M_Over_Z;
+	}
+	public boolean isHasReporterIons() {
+		return hasReporterIons;
+	}
+	public void setHasReporterIons(boolean hasReporterIons) {
+		this.hasReporterIons = hasReporterIons;
+	}
+	public List<BigDecimal> getReporterIonMassList() {
+		return reporterIonMassList;
+	}
+	public void setReporterIonMassList(List<BigDecimal> reporterIonMassList) {
+		this.reporterIonMassList = reporterIonMassList;
 	}
 	
 

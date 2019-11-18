@@ -27,6 +27,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.Yes_No__NOT_APPLICABLE_Enum;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
@@ -49,6 +50,9 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 	
 	private final String SQL = 
 			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
+					+ " search__rep_pept__lookup_tbl.has_dynamic_modifictions, "
+					+ " search__rep_pept__lookup_tbl.any_psm_has_dynamic_modifications, "
+					+ " search__rep_pept__lookup_tbl.any_psm_has_reporter_ions, "
 					+ " search__rep_pept__lookup_tbl.psm_num_at_default_cutoff "
 //			+ " search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff "
 			+ " FROM search__rep_pept__lookup_tbl "
@@ -108,10 +112,29 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 					ReportedPeptide_MinimalData_List_FromSearcher_Entry item = new ReportedPeptide_MinimalData_List_FromSearcher_Entry();
 					int reportedPeptideId = rs.getInt( "reported_peptide_id" );
 					item.setReportedPeptideId(reportedPeptideId);
+					{
+						int reportedPeptideHas_DynamicModifications_Int = rs.getInt( "has_dynamic_modifictions" );
+						if ( reportedPeptideHas_DynamicModifications_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setReportedPeptideHas_DynamicModifications(true);
+						}
+					}
+					{
+						int anyPsmHas_DynamicModifications_Int = rs.getInt( "any_psm_has_dynamic_modifications" );
+						if ( anyPsmHas_DynamicModifications_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setAnyPsmHas_DynamicModifications(true);
+						}
+					}
+					{
+						int anyPsmHas_ReporterIons_Int = rs.getInt( "any_psm_has_reporter_ions" );
+						if ( anyPsmHas_ReporterIons_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setAnyPsmHas_ReporterIons(true);
+						}
+					}
 					int numPsmsForDefaultCutoffs = rs.getInt( "psm_num_at_default_cutoff" );
 					if ( ! rs.wasNull() ) {
 						item.setNumPsms_IfComputedOrInDB( numPsmsForDefaultCutoffs );
 					}
+					
 					resultList.add( item );
 				}
 			}

@@ -160,6 +160,7 @@ public class ProcessSave_SingleReportedPeptide {
 		int peptideId = peptideDTO.getId();
 		
 		boolean anyPsmHasDynamicModifications = false;
+		boolean anyPsmHasReporterIons = false;
 		
 		if ( reportedPeptide.getPsms() != null ) {
 			for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
@@ -170,7 +171,22 @@ public class ProcessSave_SingleReportedPeptide {
 
 					anyPsmHasDynamicModifications = true;
 					
-					break;
+					if ( anyPsmHasReporterIons ) {
+						// also found anyPsmHasReporterIons so exit loop
+						break;
+					}
+				}
+
+				if ( psm.getReporterIons() != null 
+						&& psm.getReporterIons().getReporterIon() != null
+						&& ( ! psm.getReporterIons().getReporterIon().isEmpty() ) ) {
+
+					anyPsmHasReporterIons = true;
+
+					if ( anyPsmHasDynamicModifications ) {
+						// also found anyPsmHasDynamicModifications so exit loop
+						break;
+					}
 				}
 			}
 		}
@@ -180,6 +196,7 @@ public class ProcessSave_SingleReportedPeptide {
 		searchReportedPeptideDTO.setReportedPeptideId( reportedPeptideId );
 		searchReportedPeptideDTO.setPeptideId( peptideId );
 		searchReportedPeptideDTO.setAnyPsmHasDynamicModifications( anyPsmHasDynamicModifications );
+		searchReportedPeptideDTO.setAnyPsmHasReporterIons( anyPsmHasReporterIons );
 		DB_Insert_SearchReportedPeptideDAO.getInstance().saveToDatabaseIgnoreDuplicates( searchReportedPeptideDTO );
 		
 		List<SearchReportedPeptideFilterableAnnotationDTO> searchReportedPeptideFilterableAnnotationDTOList = 

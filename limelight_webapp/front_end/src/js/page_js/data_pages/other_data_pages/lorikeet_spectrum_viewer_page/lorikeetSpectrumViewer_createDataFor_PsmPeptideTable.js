@@ -57,6 +57,7 @@ export class CreatePsmPeptideTable_HeadersAndData {
 		
 		let anyPsmsHave_precursor_M_Over_Z = false; 
 		let anyPsmsHave_retentionTime = false;
+        let anyPsmsHave_reporterIonMassesDisplay = false;
 
 		if( dataObjectArray && dataObjectArray.length > 0 ) {
 			for ( const dataObjectItem of dataObjectArray ) {
@@ -72,6 +73,13 @@ export class CreatePsmPeptideTable_HeadersAndData {
 					break;
 				}
 			}
+
+			for ( const dataObjectItem of dataObjectArray ) {
+				if ( dataObjectItem.reporterIonMassesDisplay !== undefined && dataObjectItem.reporterIonMassesDisplay !== null ) {
+					anyPsmsHave_reporterIonMassesDisplay = true;
+					break;
+				}
+            }
 		}
 
     	
@@ -142,6 +150,19 @@ export class CreatePsmPeptideTable_HeadersAndData {
 
 			columns.push( column );
 		} 
+
+        if ( anyPsmsHave_reporterIonMassesDisplay ) {
+            let column = {
+                id :           'reporterIons',
+                width :        '60px',
+                displayName :  'Reporter Ions',
+                dataProperty : 'reporterIonMassesDisplay',
+                sort : 'string',
+                style_override : 'font-size:12px;',
+            };
+
+            columns.push( column );
+        }
 
         let sortedPSMAnnotationsToShow = TableDataUtils.getOrderedPSMAnnotationsToShowForSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
 
@@ -221,7 +242,18 @@ export class CreatePsmPeptideTable_HeadersAndData {
 					const retentionTimeMinutesNumber = outputRetentionTime_Number_Seconds / 60;
 					dataObject.retentionTimeMinutesDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
 				}
+			}
+			{
+				if ( psmObject.reporterIonMassList ) {
 
+					const reporterIonMassAsString_List = [];
+					for ( const reporterIonMass of psmObject.reporterIonMassList ) {
+						const reporterIonMass_String = reporterIonMass.toString();
+						reporterIonMassAsString_List.push( reporterIonMass_String );
+					}
+					const reporterIonMassesDisplay = reporterIonMassAsString_List.join(", ");
+					dataObject.reporterIonMassesDisplay = reporterIonMassesDisplay;
+				}
 			}
 
             dataObject.loadedData = psmObject;

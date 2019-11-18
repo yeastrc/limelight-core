@@ -31,11 +31,12 @@ public interface PsmWebDisplaySearcherIF {
 	/**
 	 * @param searchId
 	 * @param reportedPeptideId
+	 * @param psmIds - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
 	 * @param searcherCutoffValuesSearchLevel - PSM and Peptide cutoffs for a search id
 	 * @return
 	 * @throws Exception
 	 */
 	List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay(int searchId, int reportedPeptideId,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
+			List<Long> psmIds, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

@@ -24,6 +24,10 @@ package org.yeastrc.limelight.limelight_webapp.searchers_results;
 public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 
 	private int reportedPeptideId;
+
+	private boolean reportedPeptideHas_DynamicModifications;
+	private boolean anyPsmHas_DynamicModifications;
+	private boolean anyPsmHas_ReporterIons;
 	
 	//  These are null if not computed
 	private Integer numPsms_IfComputedOrInDB;
@@ -39,5 +43,23 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 	}
 	public void setNumPsms_IfComputedOrInDB(Integer numPsms_IfComputedOrInDB) {
 		this.numPsms_IfComputedOrInDB = numPsms_IfComputedOrInDB;
+	}
+	public boolean isAnyPsmHas_ReporterIons() {
+		return anyPsmHas_ReporterIons;
+	}
+	public void setAnyPsmHas_ReporterIons(boolean anyPsmHas_ReporterIons) {
+		this.anyPsmHas_ReporterIons = anyPsmHas_ReporterIons;
+	}
+	public boolean isAnyPsmHas_DynamicModifications() {
+		return anyPsmHas_DynamicModifications;
+	}
+	public void setAnyPsmHas_DynamicModifications(boolean anyPsmHas_DynamicModifications) {
+		this.anyPsmHas_DynamicModifications = anyPsmHas_DynamicModifications;
+	}
+	public boolean isReportedPeptideHas_DynamicModifications() {
+		return reportedPeptideHas_DynamicModifications;
+	}
+	public void setReportedPeptideHas_DynamicModifications(boolean reportedPeptideHas_DynamicModifications) {
+		this.reportedPeptideHas_DynamicModifications = reportedPeptideHas_DynamicModifications;
 	}
 }

@@ -18,7 +18,10 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.single_project_search_id;
 
 
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,9 +61,11 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_For_PsmId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmsWithSameScanNumberScanFilenameIdSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmsForScanNumberScanFilenameIdSearchId_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -115,6 +120,9 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 	@Autowired
 	private PsmDynamicModification_For_PsmId_SearcherIF psmDynamicModification_For_PsmId_Searcher;
 
+	@Autowired
+	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
+	
 	@Autowired
 	private SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF srchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher;
 	
@@ -301,6 +309,8 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
         			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     			}
     			
+    			result.setHasReporterIons( psmDTOForFoundPsmId.isHasReporterIons() );
+    			
     			ReportedPeptideDTO reportedPeptideDTO = reportedPeptideDAO.getForId( reportedPeptideId );
     			if ( reportedPeptideDTO == null ) {
     				String msg = "Unable to find reportedPeptideDTO for reportedPeptideId = " + reportedPeptideId;
@@ -442,6 +452,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			resultList.add( result );
     		}
     		
+    		populateReporterIonMassesForPSMs( resultList );
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.resultList = resultList;
@@ -459,6 +470,62 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     		String msg = "Failed in controller: ";
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();
+    	}
+    }
+
+    /**
+     * @param psm_ResultList
+     * @return 
+     * @throws SQLException 
+     */
+    private void populateReporterIonMassesForPSMs( List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> psm_ResultList ) throws SQLException {
+
+    	if ( psm_ResultList.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psm_ResultList.size() );
+    	
+    	for ( PSM_Peptide_List_Display_With_SpectrumViewer_Item entry : psm_ResultList ) {
+    		if ( entry.isHasReporterIons() ) {
+    			psmIds_ContainingReporterIonMasses.add( entry.getPsmId() );
+    		}
+    	}
+
+    	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
+    			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds_ContainingReporterIonMasses );
+
+    	//  Copy into Set in Map
+    	
+    	Map<Long, Set<BigDecimal>> reporterIonMassesSet_Key_PsmId = new HashMap<>();
+    	
+    	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : reporterIonMassesSearcherResult ) {
+    		
+    		Long psmId = item.getPsmId();
+    		Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    		if ( reporterIonMassesSet_For_PsmId == null ) {
+    			reporterIonMassesSet_For_PsmId = new HashSet<>();
+    			reporterIonMassesSet_Key_PsmId.put( psmId, reporterIonMassesSet_For_PsmId );
+    		}
+    		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
+    	}
+    	
+    	for ( PSM_Peptide_List_Display_With_SpectrumViewer_Item entry : psm_ResultList ) {
+    		if ( entry.isHasReporterIons() ) {
+    			Long psmId = entry.getPsmId();
+    			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    			if ( reporterIonMassesSet_For_PsmId == null ) {
+    				log.warn( "No entry in reporterIonMassesSet_Key_PsmId when entry.isHasReporterIons() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( reporterIonMassesSet_For_PsmId != null ) {
+    				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
+    				Collections.sort( reporterIonMassesList );
+    				entry.setReporterIonMassList( reporterIonMassesList );
+    			}
+    		}
     	}
     }
 
@@ -510,10 +577,6 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 
 		public List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> getResultList() {
 			return resultList;
-		}
-
-		public void setResultList(List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> resultList) {
-			this.resultList = resultList;
 		}
 
     }

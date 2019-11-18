@@ -41,8 +41,8 @@ public class DB_Insert_SearchReportedPeptideDAO {
 
 	private static final String sql = 
 			"INSERT INTO search_reported_peptide_tbl "
-			+ " ( search_id, reported_peptide_id, peptide_id, any_psm_has_dynamic_modifications ) "
-			+ " VALUES ( ?, ?, ?, ? )";
+			+ " ( search_id, reported_peptide_id, peptide_id, any_psm_has_dynamic_modifications, any_psm_has_reporter_ions ) "
+			+ " VALUES ( ?, ?, ?, ?, ? )";
 
 	/**
 	 *	insert duplicates are ignored
@@ -66,6 +66,12 @@ public class DB_Insert_SearchReportedPeptideDAO {
 				pstmt.setInt( counter, item.getPeptideId() );
 				counter++;
 				if ( item.isAnyPsmHasDynamicModifications() ) {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				counter++;
+				if ( item.isAnyPsmHasReporterIons() ) {
 					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 				} else {
 					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );

@@ -17,6 +17,9 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,8 @@ import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchDynamicModMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchIsotopeLabelDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.dto.SearchProteinVersionDTO;
 import org.yeastrc.limelight.limelight_importer.lookup_records_create_update.LookupRecordsCreate_Main;
@@ -46,6 +51,7 @@ import org.yeastrc.limelight.limelight_importer.process_input.ProcessSave_Single
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 
 /**
@@ -92,6 +98,7 @@ public class ProcessReportedPeptidesAndPSMs {
 				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId();
 
 		boolean anyReportedPeptideHasAnyPsmsHasDynamicModifications = false;
+		boolean anyReportedPeptideHasAnyPsmsHasReporterIons = false;
 		
 		//////////////
 		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
@@ -105,6 +112,8 @@ public class ProcessReportedPeptidesAndPSMs {
 				
 				//  Accumulate Unique Dynamic Mod Masses to insert into a lookup table
 				Set<Double> uniqueDynamicModMassesForTheSearch = new HashSet<>();
+				//  Accumulate Unique Reporter Ion Masses to insert into a lookup table
+				Set<BigDecimal> uniqueReporterIonMassesForTheSearch = new HashSet<>();
 				//  Accumulate Unique Isotope Label Ids to insert into a lookup table
 				Set<Integer> uniqueIsotopeLabelIdsForTheSearch = new HashSet<>();
 				
@@ -133,6 +142,12 @@ public class ProcessReportedPeptidesAndPSMs {
 					if ( savedSearchReportedPeptideDTO.isAnyPsmHasDynamicModifications() ) {
 						anyReportedPeptideHasAnyPsmsHasDynamicModifications = true;
 					}
+
+					if ( savedSearchReportedPeptideDTO.isAnyPsmHasReporterIons() ) {
+						anyReportedPeptideHasAnyPsmsHasReporterIons = true;
+					}
+					
+					Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide = new HashSet<>();
 					
 					PsmStatisticsAndBestValues psmStatisticsAndBestValues =
 							ProcessPSMsForReportedPeptide.getInstance()
@@ -142,8 +157,33 @@ public class ProcessReportedPeptidesAndPSMs {
 									savedReportedPeptideDTO, 
 									searchProgramEntryMap,
 									filterablePsmAnnotationTypesOnId,
-									searchScanFileEntry_KeyScanFilename
+									searchScanFileEntry_KeyScanFilename,
+									uniqueReporterIonMassesForTheReportedPeptide
 									);
+					
+					
+					{  // Save to DB
+						//  Copy to List and Sort so insert smallest to largest.  Not required but creates consistency
+						List<BigDecimal> uniqueReporterIonMassesForTheReportedPeptideList = new ArrayList<>( uniqueReporterIonMassesForTheReportedPeptide );
+						Collections.sort( uniqueReporterIonMassesForTheReportedPeptideList );
+						int reportedPeptideId = savedReportedPeptideDTO.getId();
+						
+						DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO db_Insert_Search_ReportedPeptide_ReporterIonMassDAO = DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO.getInstance();
+						
+						for ( BigDecimal reporterIonMass : uniqueReporterIonMassesForTheReportedPeptideList ) {
+							
+							Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO dto = new Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO();
+							dto.setSearchId( searchId );
+							dto.setReportedPeptideId( reportedPeptideId );
+							dto.setReporterIonMass( reporterIonMass );
+							db_Insert_Search_ReportedPeptide_ReporterIonMassDAO.saveSearch_ReportedPeptide_ReporterIonMass( dto );
+							
+							uniqueReporterIonMassesForTheSearch.add( reporterIonMass );
+						}
+					}
+					
+					//  Add to unique values per search
+					uniqueReporterIonMassesForTheSearch.addAll( uniqueReporterIonMassesForTheReportedPeptide );
 
 					LookupRecordsCreate_Main.getInstance()
 					.unifiedReportedPeptide_MainProcessing( 
@@ -157,10 +197,13 @@ public class ProcessReportedPeptidesAndPSMs {
 							processSave_SingleReportedPeptide_Results.getProteinVersionIdsForReportedPeptide().size() );
 				}
 				
-				// Save unique values across all reported peptides
+				//  Insert of Reported Peptides Complete
+				
+				// Save unique values at search level across all reported peptides
 				
 				insertUniqueProtinVersionIdsForTheSearch( proteinSequenceVersionIdsAll, searchId );
 				insertUniqueDynamicModMassesForTheSearch( uniqueDynamicModMassesForTheSearch, searchId );
+				insertUniqueReporterIonMassesForTheSearch( uniqueReporterIonMassesForTheSearch, searchId );
 				insertIsotopeLabelIdsForTheSearch( uniqueIsotopeLabelIdsForTheSearch, searchId );
 			}
 		}
@@ -173,6 +216,16 @@ public class ProcessReportedPeptidesAndPSMs {
 			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
 			
 			SearchDAO.getInstance().updateAnyPsmHasDynamicModifications( searchId, true /* anyPsmHasDynamicModifications */ );
+		}
+		
+		if ( anyReportedPeptideHasAnyPsmsHasReporterIons ) {
+			
+			// Update search_tbl to set flag
+			
+			//  First commit any in progress bulk inserts 
+			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			
+			SearchDAO.getInstance().updateAnyPsmHasReporterIons( searchId, true /* anyPsmHasReporterIons */ );
 		}
 		
 		
@@ -207,6 +260,18 @@ public class ProcessReportedPeptidesAndPSMs {
 		for ( Double dynamicModMass : uniqueDynamicModMassesForTheSearch ) {
 			
 			DB_Insert_SearchDynamicModMassDAO.getInstance().saveSearchDynamicModMass( searchId, dynamicModMass );
+		}	
+	}
+
+	/**
+	 * @param uniqueReporterIonMassesForTheSearch
+	 * @throws Exception
+	 */
+	private void insertUniqueReporterIonMassesForTheSearch( 
+			Set<BigDecimal> uniqueReporterIonMassesForTheSearch, int searchId ) throws Exception {
+		for ( BigDecimal reporterIonMass : uniqueReporterIonMassesForTheSearch ) {
+			
+			DB_Insert_Search_ReporterIonMassDAO.getInstance().saveSearch_ReporterIonMass( searchId, reporterIonMass );
 		}	
 	}
 

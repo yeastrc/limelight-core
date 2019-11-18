@@ -17,8 +17,13 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -26,22 +31,26 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmModification;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.ReporterIon;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModificationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationLookupDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.utils.ReporterIonMass_Round_IfNecessary;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationLookupDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 
 /**
@@ -67,6 +76,7 @@ public class ProcessPSMsForReportedPeptide {
 	 * @param searchProgramEntryMap
 	 * @param filterablePsmAnnotationTypesOnId
 	 * @param searchScanFileEntry_KeyScanFilename
+	 * @param uniqueReporterIonMassesForTheReportedPeptide
 	 * @return
 	 * @throws LimelightImporterDataException
 	 * @throws Exception
@@ -77,7 +87,8 @@ public class ProcessPSMsForReportedPeptide {
 			ReportedPeptideDTO reportedPeptideDTO, 
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId,
-			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws LimelightImporterDataException, Exception {
+			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename,
+			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide ) throws LimelightImporterDataException, Exception {
 		
 		String peptideString = reportedPeptide.getSequence();
 		
@@ -89,6 +100,7 @@ public class ProcessPSMsForReportedPeptide {
 		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
 		
 		DB_Insert_PsmDynamicModificationDAO db_Insert_PsmDynamicModificationDAO = DB_Insert_PsmDynamicModificationDAO.getInstance();
+		DB_Insert_PsmReporterIonMassDAO db_Insert_PsmReporterIonMassDAO = DB_Insert_PsmReporterIonMassDAO.getInstance();
 		DB_Insert_PsmFilterableAnnotationDAO db_Insert_PsmFilterableAnnotationDAO = DB_Insert_PsmFilterableAnnotationDAO.getInstance();
 		DB_Insert_PsmDescriptiveAnnotationDAO db_Insert_PsmDescriptiveAnnotationDAO = DB_Insert_PsmDescriptiveAnnotationDAO.getInstance();
 		DB_Insert_PsmFilterableAnnotationLookupDAO db_Insert_PsmFilterableAnnotationLookupDAO = DB_Insert_PsmFilterableAnnotationLookupDAO.getInstance();
@@ -98,12 +110,19 @@ public class ProcessPSMsForReportedPeptide {
 		for ( Psm psm : psmList ) {
 
 			boolean psmHasModifications = false;
+			boolean psmHasReporterIons = false;
 			
 			if ( psm.getPsmModifications() != null 
 					&& psm.getPsmModifications().getPsmModification() != null
 					&& ( ! psm.getPsmModifications().getPsmModification().isEmpty() ) ) {
 				
 				psmHasModifications = true;
+			}
+			if ( psm.getReporterIons() != null 
+					&& psm.getReporterIons().getReporterIon() != null
+					&& ( ! psm.getReporterIons().getReporterIon().isEmpty() ) ) {
+				
+				psmHasReporterIons = true;
 			}
 			
 			PsmDTO psmDTO = 
@@ -112,6 +131,7 @@ public class ProcessPSMsForReportedPeptide {
 							reportedPeptideDTO, 
 							psm,
 							psmHasModifications,
+							psmHasReporterIons,
 							searchScanFileEntry_KeyScanFilename );
 			
 			DB_Insert_PsmDAO.getInstance().saveToDatabase( psmDTO );
@@ -134,6 +154,35 @@ public class ProcessPSMsForReportedPeptide {
 					}
 					psmDynamicModificationDTO.setMass( psmModification.getMass().doubleValue() );
 					db_Insert_PsmDynamicModificationDAO.saveToDatabase( psmDynamicModificationDTO );
+				}
+			}
+			
+			if ( psmHasReporterIons ) {
+				
+				//  Process Reporter Ions entries
+				
+				//  Copy to Set to remove duplicates
+				Set<BigDecimal> reporterIonMassesSet = new HashSet<>();
+				
+				List<ReporterIon> reporterIonList = psm.getReporterIons().getReporterIon();
+				for ( ReporterIon reporterIon :  reporterIonList ) {
+					BigDecimal reporterIonMass = reporterIon.getMass();
+					BigDecimal reporterIonMass_RoundedIfNeeded = ReporterIonMass_Round_IfNecessary.reporterIonMass_Round_IfNecessary( reporterIonMass );
+					reporterIonMassesSet.add( reporterIonMass_RoundedIfNeeded );
+				}
+				//  Copy to List and Sort so insert in ascending mass order.  Not Required but creates consistency
+				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet );
+				Collections.sort( reporterIonMassesList );
+				
+				for ( BigDecimal reporterIonMass : reporterIonMassesList) {
+					
+					uniqueReporterIonMassesForTheReportedPeptide.add( reporterIonMass );
+					
+					//  Create DB DTO and insert to DB
+					PsmReporterIonMassDTO psmReporterIonMassDTO = new PsmReporterIonMassDTO();
+					psmReporterIonMassDTO.setPsmId( psmDTO.getId() );
+					psmReporterIonMassDTO.setReporterIonMass( reporterIonMass );
+					db_Insert_PsmReporterIonMassDAO.saveToDatabase( psmReporterIonMassDTO );
 				}
 			}
 			

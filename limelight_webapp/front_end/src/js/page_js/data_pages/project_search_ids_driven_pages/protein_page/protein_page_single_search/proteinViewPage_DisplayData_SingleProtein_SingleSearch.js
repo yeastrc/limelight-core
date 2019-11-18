@@ -10,6 +10,10 @@ let _protein_table_template_bundle = require("../../../../../../../handlebars_te
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
+
+import { createSpinner, destroySpinner, incrementSpinner, decrementSpinner } from 'page_js/common_all_pages/spinner.js';
+
+
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile.js';
@@ -17,6 +21,8 @@ import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downlo
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
 
 import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+
+import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues.js';
 
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
 
@@ -30,6 +36,7 @@ import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideL
 
 import { getDynamicModificationsForProteinSequenceVersionId } from '../protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_DynamicModifications_Processing.js';
 
+import { ProteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect } from '../protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.js';
 import { ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect } from '../protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.js';
 import { ProteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect } from '../protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect.js';
 
@@ -163,6 +170,10 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._proteinNameDescription = undefined; // passed in openOverlay
 
+
+		this._load_ReporterIonMasses_InProgress = false;  //  Flag that Loading Reporter Ion Masses is In Progress
+
+
 		this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 	}
 
@@ -177,58 +188,174 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._proteinNameDescription = proteinNameDescription;
 
-		//  Attach resize handler
-		this._resizeWindow_Handler_Attach();
-
 		this._projectSearchId = projectSearchId;
 
 		this._proteinSequenceVersionId = proteinSequenceVersionId;
 
-		this._loadDataForInitialOverlay({
-			proteinSequenceVersionId ,
-			projectSearchId
-		}).then(function(value) {
+
+		//  Reporter Ions Display and Selection
+		{
+			//  Construct here since need to initialize from URL to get the initial selection data
+
+			const callbackMethodForSelected_ReporterIonMassesChangeBoundThis = this._callbackMethodForSelected_ReporterIonMassesChange.bind( this );
+			const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = new Map();
+			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set( projectSearchId, this._loadedDataPerProjectSearchIdHolder );
+
+			this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect = new ProteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect({
+				rootDisplayJquerySelector : ".selector_protein_psm_reporter_ions_selection_block",
+				projectSearchIds : [ projectSearchId ],
+				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+				callbackMethodForSelectedChange : callbackMethodForSelected_ReporterIonMassesChangeBoundThis
+			});
+
+			this._any_ReporterIonMasses_ForAllSearches = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.any_ReporterIonMasses_ForAllSearches();
+
+			this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.initialize({ 
+				encodedStateData : this._singleProtein_CentralStateManagerObject.getReporterIonMassesSelectedEncodedStateData()
+			});
+		}
+
+		//  Add Outer Overlay with Initial Loading message and protein name and description
+
+		this._createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription } );
+
+		createSpinner(); // external function
+
+		//  Put rest in setTimeout to allow initial paint
+
+		window.setTimeout( () => {
+
+			//  Load data for initial main overlay display
+			
+			this._loadDataForInitialOverlay({
+				proteinSequenceVersionId ,
+				projectSearchId
+			}).then( (value) => {
+				try {
+					destroySpinner(); // external function
+					
+					//  Attach resize handler
+					this._resizeWindow_Handler_Attach();
+
+					// On to displaying the data
+					this._openOverlayAfterLoadData({
+						proteinNameDescription,
+						proteinSummaryStatistics
+					});
+				} catch( e ) {
+
+					destroySpinner(); // external function
+					
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			}, (reason) => {
+
+				destroySpinner(); // external function
+			});
+
+
+		}, 10 );
+
+	}
+
+	/**
+	 * 
+	 */
+	_createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription } ) {
+
+		const objectThis = this;
+
+		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
+		if ( $data_page_overall_enclosing_block_div.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'data_page_overall_enclosing_block_div'");
+		}
+		
+		const overlayContainerHTML = this._protein_page_single_protein_overlay_container_template_Template({ proteinData : proteinNameDescription });
+		const $overlayContainer = $( overlayContainerHTML );
+		$overlayContainer.insertAfter( $data_page_overall_enclosing_block_div );
+			
+		const backgroundHTML = this._protein_page_single_protein_overlay_background_template_Template();
+		const $background = $( backgroundHTML );
+		$background.insertAfter( $data_page_overall_enclosing_block_div );
+	
+		const $single_protein_overlay_background = $("#single_protein_overlay_background");
+		if ( $single_protein_overlay_background.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'single_protein_overlay_background'");
+		}
+		const $view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
+		if ( $view_single_protein_overlay_div.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_div'");
+		}
+
+		const $view_single_protein_overlay_body = $("#view_single_protein_overlay_body");
+		if ( $view_single_protein_overlay_body.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_body'");
+		}
+
+		this._resize_OverlayHeight_BasedOnViewportHeight();
+
+		// $view_single_protein_overlay_body.empty();
+
+
+		//   Remove Click on background to close Single Protein View
+		
+		// $single_protein_overlay_background.click( function(eventObject) {
+		// 	try {
+		// 		eventObject.preventDefault();
+		// 		objectThis._overlayHideClicked();
+		// 		return false;
+		// 	} catch( e ) {
+		// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+		// 		throw e;
+		// 	}
+		// });	
+
+		const $view_single_protein_overlay_X_for_exit_overlay = $("#view_single_protein_overlay_X_for_exit_overlay");
+		if ( $view_single_protein_overlay_X_for_exit_overlay.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_X_for_exit_overlay'");
+		}
+		$view_single_protein_overlay_X_for_exit_overlay.click( function(eventObject) {
 			try {
-				// On to displaying the data
-				objectThis._openOverlayAfterLoadData({
-					proteinNameDescription,
-					proteinSummaryStatistics
-				});
+				eventObject.preventDefault();
+				objectThis._overlayHideClicked();
+				return false;
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
 			}
-		}, function(reason) {});
+		});	
 	}
+
 
 	/**
 	 * 
 	 */
 	_loadDataForInitialOverlay({proteinSequenceVersionId, projectSearchId}) {
 
-		const objectThis = this;
-
-		return new Promise(function(resolve, reject) {
+		return new Promise( (resolve, reject) => {
 			try {
 				const promises_LoadData_Array = [];
 
-				const promise_loadDataForInitialOverlayShow = objectThis._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
-					.loadDataForInitialOverlayShow({
-						proteinSequenceVersionId ,
-						projectSearchId
-					});
-				if (promise_loadDataForInitialOverlayShow) {
-					promises_LoadData_Array.push(promise_loadDataForInitialOverlayShow);
+				{
+					const promise = this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
+						.loadDataForInitialOverlayShow({
+							proteinSequenceVersionId ,
+							projectSearchId
+						});
+					if (promise) {
+						promises_LoadData_Array.push(promise);
+					}
 				}
 
 				try {
-					const promise_getDynamicModificationsForProteinSequenceVersionId = getDynamicModificationsForProteinSequenceVersionId({ //  Imported function
-						loadedDataPerProjectSearchIdHolder : objectThis._loadedDataPerProjectSearchIdHolder, 
+					const promise = getDynamicModificationsForProteinSequenceVersionId({ //  Imported function
+						loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder, 
 						proteinSequenceVersionId, 
 						projectSearchId });
 
-					if (promise_getDynamicModificationsForProteinSequenceVersionId) {
-						promises_LoadData_Array.push(promise_getDynamicModificationsForProteinSequenceVersionId);
+					if (promise) {
+						promises_LoadData_Array.push(promise);
 					}
 				} catch( e ) {
 					console.log("Exception caught calling getDynamicModificationsForProteinSequenceVersionId:");
@@ -237,14 +364,21 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 					throw e;
 				}
 
+				{  //  Run here if any selected Reporter Ion Mass entries in URL at time of load
+					const promise = this._load_PSMReporterIon_Data_IfNotLoaded( { proteinSequenceVersionId, projectSearchId } );
+					if (promise) {
+						promises_LoadData_Array.push(promise);
+					}
+				}
+
 				if (promises_LoadData_Array.length !== 0) {
 
 					const promisesAll = Promise.all(promises_LoadData_Array);
 
-					promisesAll.catch(function(reason) {
+					promisesAll.catch( (reason) => {
 						reject(reason);
 					})
-					promisesAll.then(function(value) {
+					promisesAll.then( (value) => {
 						try {
 							resolve(value);
 						} catch( e ) {
@@ -288,10 +422,10 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		
 		//  Create links to external resources
 		const linksToExternalResources = this._createLinksToExternalResources( { proteinSequenceString } );
-		
+
 		const $contentDiv = this._createModalOverlayContentDiv( { proteinNameDescription, proteinSummaryStatistics, linksToExternalResources } );
 
-		this._createSingleProteinModalOverlay( { $contentDiv } );
+		this._createAndInsertIntoDOM_SingleProteinModalOverlay_MainContent( { $contentDiv } );
 
 		this._contentDivHTMLElement = $contentDiv[0];
 
@@ -328,7 +462,13 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		
 		this._attachClickHandlersOnLinksToExternalResources( { linksToExternalResources, $contentDiv } );
 
+		//  Reporter Ions Display and Selection
 
+		if ( this._any_ReporterIonMasses_ForAllSearches ) {
+			//  Constructed previously
+
+			this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.reporterIon_Display();
+		}
 
 		/// Modification Display and Selection
 		{
@@ -432,7 +572,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 
 			//  Create and initialize object of class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId
-			//  here since used in call next to this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsAndProteinPositions()
+			//  here since used in call next to this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsReporterIonsPeptideSearchStringAndProteinPositions()
 
 			this._protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId = new Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId({
 				forSingleSearch : true,
@@ -440,6 +580,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 				loadedDataCommonHolder : this._loadedDataCommonHolder,
 				proteinSequenceFormattedDisplay_Main_displayWidget : this._proteinSequenceFormattedDisplay_Main_displayWidget, 
 				proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect : this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect,
+				proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect : this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect,
 				proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect : this._proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect
 			});
 
@@ -476,10 +617,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			}
 			if ( this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyVariableModificationSelected() ||
 					this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyStaticModificationSelected() ||
+					this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.isAnyReporterIonMassSelected() ||
 					this._proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect.getPeptideSearchStrings() ||
 					selectedProteinSequencePositions ) { 
-				//   Set Sequence coverge for peptides for this protein applying Mod mass or Protein Position filters
-				const widget_SequenceCoverageParam = this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsAndProteinPositions({ reportedPeptideIdsForDisplay });
+				//   Set Sequence coverge for peptides for this protein applying Mod mass, Reporter Ion Mass, Peptide String, or Protein Position filters
+				const widget_SequenceCoverageParam = this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsReporterIonsPeptideSearchStringAndProteinPositions({ reportedPeptideIdsForDisplay });
 				this._proteinSequenceFormattedDisplay_Main_displayWidget.set_initial_widget_SequenceCoverageParam_Selected_Peptides({ initial_widget_SequenceCoverageParam_Selected_Peptides : widget_SequenceCoverageParam });
 			}
 			
@@ -497,10 +639,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		//  Load and Display data after initial overlay show.  Currently Reported Peptide List
 
-		const promise_loadDataAfterInitialOverlayShow = 
+		const promise_loadDataAfterInitialOverlayShow = (
 			this
 			._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
-			.loadDataAfterInitialOverlayShow({ retrieveForSingleSearch : true, proteinSequenceVersionId, projectSearchId });
+			.loadDataAfterInitialOverlayShow({ retrieveForSingleSearch : true, proteinSequenceVersionId, projectSearchId })
+		);
 
 		promise_loadDataAfterInitialOverlayShow.catch(function(reason) {});
 
@@ -620,7 +763,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 					try {
 						if ( ! foundAllReportedPeptideIdsForProjectSearchId ) {
 							throw Error("In _getPeptideSequencesAndProcess: foundAllReportedPeptideIdsForProjectSearchId is false");
-							reject();
+							// reject();
 						}
 
 						objectThis._process_getPeptideSequenceResult( { peptideSequenceString_PeptideId_MappingList, projectSearchId } );
@@ -733,11 +876,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	}
 
 	/**
-	 * Uses the user selected modifications and sequence positions to compute the sequence
+	 * Uses the user selected modifications, reporter ions, peptide search string and sequence positions to compute the sequence
 	 * 
 	 * @returns widget_SequenceCoverageParam = new ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam
 	 */
-	_get_widget_SequenceCoverageParam_Object_UsingCurrentModsAndProteinPositions({ reportedPeptideIdsForDisplay }) {
+	_get_widget_SequenceCoverageParam_Object_UsingCurrentModsReporterIonsPeptideSearchStringAndProteinPositions({ reportedPeptideIdsForDisplay }) {
 
 		//  Sequence Coverage Data
 		const proteinCoverage_KeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
@@ -750,10 +893,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		if ( ( ! this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyVariableModificationSelected() ) &&
 				( ! this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyStaticModificationSelected() ) &&
+				( ! this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.isAnyReporterIonMassSelected() ) &&
 				( ! this._proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect.getPeptideSearchStrings() ) &&
 				( ! selectedProteinSequencePositions ) ) {
 
-			//  No Modification or Peptide Sequence Search Strings or Protein Sequence Positions Selected so use existing computed sequence coverage
+			//  No Modification or Reporter Ion Masses or Peptide Sequence Search Strings or Protein Sequence Positions Selected so use existing computed sequence coverage
 
 			//  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
 			const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
@@ -916,6 +1060,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		const selectedModificationsMasses = this._userSelectionDisplay_GetModificationsFormatted();
 
+		const selectedReporterIonMasses = this._userSelectionDisplay_Get_selectedReporterIonMasses_Formatted();
+
 		let peptideSequenceSearchStringsDisplay = undefined;
 
 		const peptideSequenceSearchStrings_Array = this._proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect.getPeptideSearchStrings();
@@ -923,10 +1069,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			peptideSequenceSearchStringsDisplay = peptideSequenceSearchStrings_Array.join(" or ");
 		}
 
-		if ( selectedProteinSequencePositionsDisplay || selectedModificationsMasses || peptideSequenceSearchStringsDisplay ) {
+		if ( selectedProteinSequencePositionsDisplay || selectedModificationsMasses || selectedReporterIonMasses || peptideSequenceSearchStringsDisplay ) {
 			const context = {
 				selectedProteinSequencePositions : selectedProteinSequencePositionsDisplay,
-				selectedModificationsMasses : selectedModificationsMasses,
+				selectedModificationsMasses,
+				selectedReporterIonMasses,
 				peptideSequenceSearchStrings : peptideSequenceSearchStringsDisplay
 			};
 			const html = this._protein_page_single_protein_user_filter_selection_template_Template( context );
@@ -942,7 +1089,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			$selector_clear_user_selection_modifications_protein_positions.click( function(eventObject) {
 				try {
 					eventObject.preventDefault();
-					objectThis._clearUserSelection_modificationPeptideSearchStringsAndProteinPositions();
+					objectThis._clearUserSelection_reporterIonsMassesmodificationPeptideSearchStringsAndProteinPositions();
 					return false;
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -1143,28 +1290,92 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		return result;
 	}
 
+	/**
+	 * Get User Selected Reporter Ion Masses Formatted
+	 */
+	_userSelectionDisplay_Get_selectedReporterIonMasses_Formatted() {
+
+		const reporterIonMassesSelected_Set = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
+
+		if ( reporterIonMassesSelected_Set.size === 0 ) {
+			//  None selected so return null
+			return undefined;  //  EARLY RETURN
+		}
+
+		const reporterIonMassesSelected_Array = Array.from( reporterIonMassesSelected_Set );
+		reporterIonMassesSelected_Array.sort();
+
+		const result = reporterIonMassesSelected_Array.join(", ");
+		return result;
+	}
+
 	///////////////////////////////////////////
 
-	//  Handle Updates to User selection of Modifications, Peptide Sequence Search Strings and Protein Positions
+	//  Handle Updates to User selection of Reporter Ion Masses, Modifications, Peptide Sequence Search Strings and Protein Positions
 
 	//   Click Handler for Clear All selections
 
 	/**
 	 * 
 	 */
-	_clearUserSelection_modificationPeptideSearchStringsAndProteinPositions() {
+	_clearUserSelection_reporterIonsMassesmodificationPeptideSearchStringsAndProteinPositions() {
 
+		this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.clear_selected_ReporterIonMasses();
 		this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.clear_selectedModifications();
 		this._proteinSequenceFormattedDisplay_Main_displayWidget.clear_selectedProteinSequencePositions();
 		this._proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect.clearPeptideSearchStrings()
 
+		this._handleSelected_ReporterIonMassesChange();
 		this._handleSelectedModificationsChange();
 		this._handleSelectedPeptideSequenceChange();
 		this._handleSelectedProteinPositionsChange();
-		this._updatePageForSelectionModificationPeptideSequenceProteinPositionChangeChange();
+		this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange();
 	}
 
-	//  Callbacks for Updates to User selection of Modifications, Peptide Sequence Filter and Protein Positions
+	//  Callbacks for Updates to User selection of Reporter Ion Masses, Modifications, Peptide Sequence Filter and Protein Positions
+
+	/**
+	 * 
+	 */
+	_callbackMethodForSelected_ReporterIonMassesChange() {
+
+		// console.log("_callbackMethodForSelected_ReporterIonMassesChange")
+
+		this._handleSelected_ReporterIonMassesChange();
+
+		if ( this._load_ReporterIonMasses_InProgress ) {
+
+			//  Already loading Reporter Ion Masses so exit.
+			//   *  When the existing Promise for loading Reporter Ion Masses, the page will be updated for the current selection change as well.
+
+			return; // EARLY RETURN
+		}
+
+		//  returns Promise or undefined.  If user has chosen a Reporter Ion Mass, this loads if needed the data to filter on reporter ion
+		const promise = this._load_PSMReporterIon_Data_IfNotLoaded( { proteinSequenceVersionId : this._proteinSequenceVersionId, projectSearchId : this._projectSearchId } );
+
+		if ( promise ) {
+
+			this._load_ReporterIonMasses_InProgress = true;  //  Set flag that Loading Reporter Ion Masses is In Progress
+
+			//  Show loading message for peptide list since may take time to load new values from DB
+			this._reportedPeptideList_ShowLoadingMessage();
+
+			promise.catch( (reason) => { 
+				this._load_ReporterIonMasses_InProgress = false; //  Clear flag since existing Promise is complete
+			});
+
+			promise.then( (value) => {
+
+				this._load_ReporterIonMasses_InProgress = false; //  Clear flag since existing Promise is complete
+
+				this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange();
+			});
+			return // EARLY RETURN
+		}
+
+		this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange();
+	}
 
 	/**
 	 * 
@@ -1172,7 +1383,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	_callbackMethodForSelectedModificationsChange() {
 
 		this._handleSelectedModificationsChange();
-		this._updatePageForSelectionModificationPeptideSequenceProteinPositionChangeChange();
+		this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange();
 	}
 
 	/**
@@ -1181,7 +1392,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	_callbackMethodForSelectedPeptideSequenceChange() {
 
 		this._handleSelectedPeptideSequenceChange();
-		this._updatePageForSelectionModificationPeptideSequenceProteinPositionChangeChange();
+		this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange();
 	}
 
 	/**
@@ -1189,17 +1400,25 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_callbackMethodForSelectedProteinSequenceChange( params ) {
 
-		let newSelection = undefined;
-		if ( params ) {
-			newSelection = params.newSelection;
-		}
+		// let newSelection = undefined;
+		// if ( params ) {
+		// 	newSelection = params.newSelection;
+		// }
 
 		this._handleSelectedProteinPositionsChange();
-		this._updatePageForSelectionModificationPeptideSequenceProteinPositionChangeChange();
+		this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange();
 	}
 
 	//  Handling Specific Changes by updating the URL
 
+	/**
+	 * 
+	 */
+	_handleSelected_ReporterIonMassesChange() {
+
+		const reporterIonMassesSelectedEncodedStateData = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getEncodedStateData();
+		this._singleProtein_CentralStateManagerObject.setReporterIonMassesSelectedEncodedStateData( { reporterIonMassesSelectedEncodedStateData } );
+	}
 
 	/**
 	 * 
@@ -1233,7 +1452,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	/**
 	 * 
 	 */
-	_updatePageForSelectionModificationPeptideSequenceProteinPositionChangeChange() {
+	_updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange() {
 
 
 		const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay();
@@ -1285,10 +1504,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			}
 			if ( this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyVariableModificationSelected() || 
 					this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.isAnyStaticModificationSelected() || 
+					this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.isAnyReporterIonMassSelected() ||
 					this._proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect.getPeptideSearchStrings() ||
 					selectedProteinSequencePositions ) { 
-				//  Update Sequence coverge for peptides for this protein applying Mod mass or Protein Position filters
-				const widget_SequenceCoverageParam = this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsAndProteinPositions({ reportedPeptideIdsForDisplay });
+				//  Update Sequence coverge for peptides for this protein applying Mod mass, Reporter Ion, Peptide String, or Protein Position filters
+				const widget_SequenceCoverageParam = this._get_widget_SequenceCoverageParam_Object_UsingCurrentModsReporterIonsPeptideSearchStringAndProteinPositions({ reportedPeptideIdsForDisplay });
 				this._proteinSequenceFormattedDisplay_Main_displayWidget.update_widget_SequenceCoverageParam_Selected_Peptides({ widget_SequenceCoverageParam_Selected_Peptides : widget_SequenceCoverageParam });
 			} else {
 				//  No selections so clear widget_SequenceCoverageParam_Selected_Peptides
@@ -1308,6 +1528,21 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	/**
 	 * 
 	 */
+	_reportedPeptideList_ShowLoadingMessage() {
+
+		const $contentDiv = $(this._contentDivHTMLElement);
+
+		const $reported_peptides_outer_container = $contentDiv.find(".selector_reported_peptides_outer_container");
+		if ( $reported_peptides_outer_container.length === 0 ) {
+			throw Error("Failed to find DOM element with class 'reported_peptides_outer_container'");
+		}
+
+		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.showLoadingMessage({ $reported_peptides_outer_container });
+	}
+
+	/**
+	 * 
+	 */
 	_createOrReplaceReportedPeptideList({ reportedPeptideIdsForDisplay }) {
 
 		const $contentDiv = $(this._contentDivHTMLElement);
@@ -1317,14 +1552,17 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			throw Error("Failed to find DOM element with class 'reported_peptides_outer_container'");
 		}
 
-		let selectedProteinSequencePositions = this._proteinSequenceFormattedDisplay_Main_displayWidget.get_selectedProteinSequencePositions();
+		//  Set
+		let reporterIonMassesSelected = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
 
-		if ( selectedProteinSequencePositions && selectedProteinSequencePositions.size === 0 ) {
-			selectedProteinSequencePositions = undefined;
+		if ( reporterIonMassesSelected && reporterIonMassesSelected.size === 0 ) {
+			reporterIonMassesSelected = undefined;
 		}
 
 		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.createOrUpdateReportedPeptideDisplayData({
 				reportedPeptideIdsForDisplay,
+				any_ReporterIonMasses_ForAllSearches : this._any_ReporterIonMasses_ForAllSearches,
+				reporterIonMassesSelected,
 				proteinSequenceVersionId : this._proteinSequenceVersionId,
 				projectSearchId : this._projectSearchId,
 				$reported_peptides_outer_container });
@@ -1357,71 +1595,16 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	/**
 	 * 
 	 */
-	_createSingleProteinModalOverlay( { $contentDiv } ) {
-
-		const objectThis = this;
-
-
-		// const $data_page_outermost_div = $("#data_page_outermost_div");
-		// if ( $data_page_outermost_div.length === 0 ) {
-		// 	throw Error("Failed to find DOM element with id 'data_page_outermost_div'");
-		// }
-
-		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-		if ( $data_page_overall_enclosing_block_div.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'data_page_overall_enclosing_block_div'");
-		}
-		
-		const overlayContainerHTML = this._protein_page_single_protein_overlay_container_template_Template();
-		const $overlayContainer = $( overlayContainerHTML );
-		$overlayContainer.insertAfter( $data_page_overall_enclosing_block_div );
-			
-		const backgroundHTML = this._protein_page_single_protein_overlay_background_template_Template();
-		const $background = $( backgroundHTML );
-		$background.insertAfter( $data_page_overall_enclosing_block_div );
-	
-		const $single_protein_overlay_background = $("#single_protein_overlay_background");
-		if ( $single_protein_overlay_background.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'single_protein_overlay_background'");
-		}
-		const $view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
-		if ( $view_single_protein_overlay_div.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_div'");
-		}
+	_createAndInsertIntoDOM_SingleProteinModalOverlay_MainContent( { $contentDiv } ) {
 
 		const $view_single_protein_overlay_body = $("#view_single_protein_overlay_body");
 		if ( $view_single_protein_overlay_body.length === 0 ) {
 			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_body'");
 		}
+
+		$view_single_protein_overlay_body.empty();
+
 		$view_single_protein_overlay_body.append( $contentDiv );
-
-		//   Remove Click on background to close Single Protein View
-		
-		// $single_protein_overlay_background.click( function(eventObject) {
-		// 	try {
-		// 		eventObject.preventDefault();
-		// 		objectThis._overlayHideClicked();
-		// 		return false;
-		// 	} catch( e ) {
-		// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-		// 		throw e;
-		// 	}
-		// });	
-
-		const $view_single_protein_overlay_X_for_exit_overlay = $("#view_single_protein_overlay_X_for_exit_overlay");
-		if ( $view_single_protein_overlay_X_for_exit_overlay.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_X_for_exit_overlay'");
-		}
-		$view_single_protein_overlay_X_for_exit_overlay.click( function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._overlayHideClicked();
-				return false;
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});	
 
 		this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded({ $view_single_protein_overlay_body });
 	}
@@ -1514,22 +1697,25 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		
 		const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay({ not_filtered_position_modification_selections : true });
 
-		// reportedPeptides_Filtered_Array,
-		// peptideSearchStrings_FoundAtAnyPositionsOnProteinSequence,
-		// proteinPositions_CoveredBy_PeptideSearchStrings
-
 		const reportedPeptideIdsForDisplay = getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result.reportedPeptides_Filtered_Array;
+
+		//  Set
+		let reporterIonMassesSelected = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
+
+		if ( reporterIonMassesSelected && reporterIonMassesSelected.size === 0 ) {
+			reporterIonMassesSelected = undefined;
+		}
 		
 		const reportedPeptideDisplayDownloadDataAsString =
 			this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.createReportedPeptideDisplayDownloadDataAsString(
 					{
 						reportedPeptideIdsForDisplay,
+						reporterIonMassesSelected,
 						proteinSequenceVersionId : this._proteinSequenceVersionId,
 						projectSearchId : this._projectSearchId
 					});
 
-        StringDownloadUtils.downloadStringAsFile( 
-        		{ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' } );
+        StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
 	}
 
 	/**
@@ -1538,22 +1724,25 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	_downloadPeptides_Shown_ClickHandler( { clickThis, eventObject } ) {
 		const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay();
 
-		// reportedPeptides_Filtered_Array,
-		// peptideSearchStrings_FoundAtAnyPositionsOnProteinSequence,
-		// proteinPositions_CoveredBy_PeptideSearchStrings
-
 		const reportedPeptideIdsForDisplay = getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result.reportedPeptides_Filtered_Array;
+		
+		//  Set
+		let reporterIonMassesSelected = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
+
+		if ( reporterIonMassesSelected && reporterIonMassesSelected.size === 0 ) {
+			reporterIonMassesSelected = undefined;
+		}
 		
 		const reportedPeptideDisplayDownloadDataAsString =
 			this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.createReportedPeptideDisplayDownloadDataAsString(
 					{
 						reportedPeptideIdsForDisplay,
+						reporterIonMassesSelected,
 						proteinSequenceVersionId : this._proteinSequenceVersionId,
 						projectSearchId : this._projectSearchId
 					});
 
-        StringDownloadUtils.downloadStringAsFile( 
-        		{ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' } );
+        StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
 	}
 	
 
@@ -1564,16 +1753,30 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_downloadPsmsClickHandler_All( { clickThis, eventObject } ) {
 
+		const single_projectSearchId_ReportedPeptideIdsPsmIds = { projectSearchId : this._projectSearchId };
+		
+		const projectSearchIdsReportedPeptideIdsPsmIds = [ single_projectSearchId_ReportedPeptideIdsPsmIds ];
+
 		const reportedPeptideIdsKeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();
 
 		//  reportedPeptideIds for this proteinSequenceVersionId
 		const reportedPeptideIds = reportedPeptideIdsKeyProteinSequenceVersionId.get( this._proteinSequenceVersionId );
 		if ( ! reportedPeptideIds ) {
-			throw Error("_createReportedPeptideDisplayData: No reportedPeptideIds for proteinSequenceVersionId: " + proteinSequenceVersionId 
+			throw Error("_createReportedPeptideDisplayData: No reportedPeptideIds for proteinSequenceVersionId: " + this._proteinSequenceVersionId 
 					+ ", projectSearchId: " + this._projectSearchId );
 		}
 
-		this._downloadPsms( { reportedPeptideIds } );
+		const reportedPeptideIdsAndTheirPsmIds = [];
+
+		for ( const reportedPeptideId of reportedPeptideIds ) {
+
+			const reportedPeptideIdsAndTheirPsmIdsEntry = { reportedPeptideId };
+			reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
+		}
+
+		single_projectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+
+		this._downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } );
 	}
 
 	/**
@@ -1583,15 +1786,68 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_downloadPsmsClickHandler_Shown( { clickThis, eventObject } ) {
 
+		// window.alert("Download PSMs Shown is under construction");
+
+		// throw Error("_downloadPsmsClickHandler_Shown not updated");
+
+		const single_projectSearchId_ReportedPeptideIdsPsmIds = { projectSearchId : this._projectSearchId };
+		
+		const projectSearchIdsReportedPeptideIdsPsmIds = [ single_projectSearchId_ReportedPeptideIdsPsmIds ];
+
+
 		const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay();
 
-		// reportedPeptides_Filtered_Array,
-		// peptideSearchStrings_FoundAtAnyPositionsOnProteinSequence,
-		// proteinPositions_CoveredBy_PeptideSearchStrings
-
 		const reportedPeptideIds = getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result.reportedPeptides_Filtered_Array;
+
+		//  Set
+		const reporterIonMassesSelected = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
+
+		if ( reporterIonMassesSelected && reporterIonMassesSelected.size !== 0 ) {
+			
+			//  YES reporterIonMassesSelected.  Send PSM Ids as filtered.
+
+			const reportedPeptideIdsAndTheirPsmIds = [];
+
+
+			const psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = this._loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs();
+			if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs ) {
+				throw Error("_createReportedPeptideDisplayData: reporterIonMassesSelected is populated. nothing returned from this._loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs()" );
+			}
+
+
+			for ( const reportedPeptideId of reportedPeptideIds ) {
+
+				const psmReporterIonMassesPerPSM_ForPsmIdMap_Object = psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
+
+				if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_Object ) {
+					// No data for this reported peptide
+					throw Error("_createReportedPeptideDisplayData: reporterIonMassesSelected is populated. nothing returned from psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId ). reportedPeptideId: " + reportedPeptideId );
+				}
+
+				const psmReporterIonMassesPerPSM_ForPsmIdMap = psmReporterIonMassesPerPSM_ForPsmIdMap_Object.psmReporterIonMassesPerPSM_ForPsmIdMap;
+
+				const psm_ReporterIonMasses_FilterOnSelectedValues_Result = (
+					psm_ReporterIonMasses_FilterOnSelectedValues({ reporterIonMassesSelected, psmReporterIonMassesPerPSM_ForPsmIdMap, returnPsmIds : true })
+				);
+
+				const reportedPeptideIdAndPsmIds = {
+					reportedPeptideId,
+					psmIds : psm_ReporterIonMasses_FilterOnSelectedValues_Result.psmIds
+				};
+
+				reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
+			}
+
+			single_projectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+
+		} else {
+
+			//  NO reporterIonMassesSelected.  Populate just reported peptides
+
+			single_projectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIds = reportedPeptideIds;
+		}
 		
-		this._downloadPsms( { reportedPeptideIds } );
+		this._downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } );
 	}
 	
 	/**
@@ -1599,20 +1855,17 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 * 
 	 * Don't have all PSMs in memory and may be many so open URL in new window to download from server
 	 */
-	_downloadPsms( { reportedPeptideIds } ) {
+	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } ) {
 		
-		const reportedPeptideIdsPerProjectSearchId = {}
-		
-		reportedPeptideIdsPerProjectSearchId[ this._projectSearchId ] = reportedPeptideIds;
-
-		const searchDataLookupParamsRoot = 
+		const searchDataLookupParamsRoot = (
 			this._searchDetailsBlockDataMgmtProcessing.
-			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
+		);
 
-		downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( { 
-			projectSearchIds : [ this._projectSearchId ],
-			searchDataLookupParamsRoot : searchDataLookupParamsRoot,
-			reportedPeptideIdsPerProjectSearchId : reportedPeptideIdsPerProjectSearchId } );
+		downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( {  // External Function
+			projectSearchIdsReportedPeptideIdsPsmIds,
+			searchDataLookupParamsRoot, //  If populated, Used to filter PSMs for each Reported Peptide
+		} );
 	}
 	
 	
@@ -1624,6 +1877,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_overlayHideClicked() {
 
+		try {
+			destroySpinner(); // external function
+		} catch ( e ) {
+			const znothing = 0;
+		}
 		{
 			//  Remove _domMutationObserver_reported_peptides_outer_container if set
 			// stop observing
@@ -1632,6 +1890,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 					this._domMutationObserver_reported_peptides_outer_container.disconnect();
 				}
 			} catch ( e ) {
+				const znothing = 0;
 			}
 			this._domMutationObserver_reported_peptides_outer_container = undefined;
 		}
@@ -1708,7 +1967,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_resize_OverlayHeight_BasedOnViewportHeight() {
 
-		if (!this._contentDivHTMLElement) {
+		const $view_single_protein_inner_overlay_div = $("#view_single_protein_inner_overlay_div");
+		if ( $view_single_protein_inner_overlay_div.length === 0 ) {
 			// Exit if no overlay
 			return;
 		}
@@ -1734,11 +1994,6 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		const footerOuterHeight = 31;  // Hard code footer height since measuring doesn't work right
 
 		const overlayHeight = windowHeight - headerOuterHeight - footerOuterHeight;
-
-		const $view_single_protein_inner_overlay_div = $("#view_single_protein_inner_overlay_div");
-		if ( $view_single_protein_inner_overlay_div.length === 0 ) {
-			throw Error("No DOM element found with id 'view_single_protein_inner_overlay_div'");
-		}
 
 		$view_single_protein_inner_overlay_div.css('min-height', overlayHeight + 'px');
 	}
@@ -1784,7 +2039,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	//////////////
 	
 	/**
-	 * called by this._createSingleProteinModalOverlay
+	 * called by this._createAndInsertIntoDOM_SingleProteinModalOverlay_MainContent
 	 */
 	_add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded({ $view_single_protein_overlay_body }) {
 
@@ -1796,6 +2051,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 					this._domMutationObserver_reported_peptides_outer_container.disconnect();
 				}
 			} catch ( e ) {
+				const znothing = 0;
 			}
 			this._domMutationObserver_reported_peptides_outer_container = undefined;
 		}
@@ -1986,6 +2242,28 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		}
 
 		return proteinCoverageArrayOfBoolean;
+	}
+
+	/////////////////////////////////
+	/////////////////////////////////
+	/////////////////////////////////
+
+	/**
+	 * @returns Promise or undefined
+	 */
+	_load_PSMReporterIon_Data_IfNotLoaded( { proteinSequenceVersionId, projectSearchId } ) {
+
+		const reporterIonMassesSelected = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
+		if ( reporterIonMassesSelected.size === 0 ) {
+			return undefined;
+		}
+		const promise = this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer
+			.loadDataFor_PSM_ReporterIonMasses_Per_ReportedPeptideId_For_ProteinSequenceVersionId({
+				proteinSequenceVersionId ,
+				projectSearchId
+			});
+
+		return promise;
 	}
 	
 }

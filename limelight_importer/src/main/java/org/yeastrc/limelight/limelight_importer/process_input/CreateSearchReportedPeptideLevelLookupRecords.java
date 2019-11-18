@@ -102,6 +102,7 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		boolean hasDynamicModifications = false;
 		boolean hasIsotopeLabels = false;
 		boolean anyPsmHasDynamicModifications = false;
+		boolean anyPsmHasReporterIons = false;
 		
 		if ( reportedPeptide.getPeptideModifications() != null 
 				&& reportedPeptide.getPeptideModifications().getPeptideModification() != null 
@@ -116,6 +117,9 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		
 		if ( savedSearchReportedPeptideDTO.isAnyPsmHasDynamicModifications() ) {
 			anyPsmHasDynamicModifications = true;
+		}
+		if ( savedSearchReportedPeptideDTO.isAnyPsmHasReporterIons() ) {
+			anyPsmHasReporterIons = true;
 		}
 		
 		if ( proteinVersionIdsForReportedPeptideCount < 1 ) {
@@ -195,6 +199,7 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		search_ReportedPeptide__Lookup__DTO.setHasDynamicModifications( hasDynamicModifications );
 		search_ReportedPeptide__Lookup__DTO.setHasIsotopeLabels( hasIsotopeLabels );
 		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasDynamicModifications( anyPsmHasDynamicModifications );
+		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasReporterIons( anyPsmHasReporterIons );
 		search_ReportedPeptide__Lookup__DTO.setPsmNumAtDefaultCutoff( psmStatisticsAndBestValues.getPsmCountPassDefaultCutoffs() );
 		search_ReportedPeptide__Lookup__DTO.setPeptideMeetsDefaultCutoffs( peptideMeetsDefaultCutoffs );
 		

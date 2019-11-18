@@ -26,6 +26,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
@@ -44,7 +45,8 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	private static final Logger log = LoggerFactory.getLogger( PsmWebDisplaySearcher.class );
 
 	private static final String SQL_MAIN = 
-			"SELECT psm_tbl.id AS psm_id, psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
+			"SELECT psm_tbl.id AS psm_id, psm_tbl.has_reporter_ions,"
+			+ 		" psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
 			+ 		 " psm_tbl.scan_number AS scan_number, "
 			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
 			+ " FROM psm_tbl  "
@@ -52,13 +54,19 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	
 	private static final String SQL_WHERE_START =  " WHERE psm_tbl.search_id = ? AND psm_tbl.reported_peptide_id = ?  ";
 
-	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF#getPsmsWebDisplay(int, int, org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValuesSearchLevel)
+	/**
+	 * @param searchId
+	 * @param reportedPeptideId
+	 * @param psmIds - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
+	 * @param searcherCutoffValuesSearchLevel - PSM and Peptide cutoffs for a search id
+	 * @return
+	 * @throws Exception
 	 */
 	@Override
 	public List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay( 
 			int searchId, 
 			int reportedPeptideId, 
+			List<Long> psmIds, //  Optional
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel  ) throws Exception {
 		
 		List<PsmWebDisplayWebServiceResult> psms = new ArrayList<PsmWebDisplayWebServiceResult>();
@@ -69,50 +77,68 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		//////////////////////
 		/////   Start building the SQL
 		sqlSB.append( SQL_MAIN );
-		{
-				//  Add inner join for each PSM cutoff
-				for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
-					sqlSB.append( " INNER JOIN " );
-					//  If slow, use psm_filterable_annotation__generic_lookup and put more limits in query on search, reported peptide, and maybe link type
-					sqlSB.append( " psm_filterable_annotation_tbl AS psm_fltrbl_tbl_" );
-					sqlSB.append( Integer.toString( counter ) );
-					sqlSB.append( " ON "  );
-					sqlSB.append( " psm_tbl.id = "  );
-					sqlSB.append( "psm_fltrbl_tbl_" );
-					sqlSB.append( Integer.toString( counter ) );
-					sqlSB.append( ".psm_id" );
-				}
+		
+		if ( psmIds == null || psmIds.isEmpty() ) {
+			//  Add inner join for each PSM cutoff
+			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
+				sqlSB.append( " INNER JOIN " );
+				//  If slow, use psm_filterable_annotation__generic_lookup and put more limits in query on search, reported peptide, and maybe link type
+				sqlSB.append( " psm_filterable_annotation_tbl AS psm_fltrbl_tbl_" );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( " ON "  );
+				sqlSB.append( " psm_tbl.id = "  );
+				sqlSB.append( "psm_fltrbl_tbl_" );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".psm_id" );
+			}
 		}
 		///////////
 		sqlSB.append( SQL_WHERE_START );
 		//////////
-		// Process PSM Cutoffs for WHERE
-		{
-				int counter = 0; 
-				for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
-					AnnotationTypeDTO srchPgmFilterablePsmAnnotationTypeDTO = searcherCutoffValuesPsmAnnotationLevel.getAnnotationTypeDTO();
-					counter++;
-					sqlSB.append( " AND " );
-					sqlSB.append( " ( " );
-					sqlSB.append( "psm_fltrbl_tbl_" );
-					sqlSB.append( Integer.toString( counter ) );
-					sqlSB.append( ".annotation_type_id = ? AND " );
-					sqlSB.append( "psm_fltrbl_tbl_" );
-					sqlSB.append( Integer.toString( counter ) );
-					sqlSB.append( ".value_double " );
-					if ( srchPgmFilterablePsmAnnotationTypeDTO.getAnnotationTypeFilterableDTO() == null ) {
-						String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + srchPgmFilterablePsmAnnotationTypeDTO.getId();
-						log.error( msg );
-						throw new Exception(msg);
-					}
-					if ( srchPgmFilterablePsmAnnotationTypeDTO.getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
-						sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
-					} else {
-						sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
-					}
-					sqlSB.append( " ? " );
-					sqlSB.append( " ) " );
+		
+		if ( psmIds == null || psmIds.isEmpty() ) {
+
+			// Process PSM Cutoffs for WHERE
+
+			int counter = 0; 
+			for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
+				AnnotationTypeDTO srchPgmFilterablePsmAnnotationTypeDTO = searcherCutoffValuesPsmAnnotationLevel.getAnnotationTypeDTO();
+				counter++;
+				sqlSB.append( " AND " );
+				sqlSB.append( " ( " );
+				sqlSB.append( "psm_fltrbl_tbl_" );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".annotation_type_id = ? AND " );
+				sqlSB.append( "psm_fltrbl_tbl_" );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".value_double " );
+				if ( srchPgmFilterablePsmAnnotationTypeDTO.getAnnotationTypeFilterableDTO() == null ) {
+					String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + srchPgmFilterablePsmAnnotationTypeDTO.getId();
+					log.error( msg );
+					throw new Exception(msg);
 				}
+				if ( srchPgmFilterablePsmAnnotationTypeDTO.getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+					sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
+				} else {
+					sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
+				}
+				sqlSB.append( " ? " );
+				sqlSB.append( " ) " );
+			}
+		} else {
+			
+			//  Filter using psmIds
+			
+			sqlSB.append( " AND psm_tbl.id IN ( " );
+			
+			for ( int counter = 1; counter <= psmIds.size(); counter++ ) {
+				if ( counter != 1 ) {
+					sqlSB.append( "," );
+				}
+				sqlSB.append( "?" );
+			}
+			sqlSB.append( " ) " );
+			
 		}
 		
 		String sql = sqlSB.toString();
@@ -125,8 +151,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			preparedStatement.setInt( paramCounter, searchId );
 			paramCounter++;
 			preparedStatement.setInt( paramCounter, reportedPeptideId );
-			// Process PSM Cutoffs for WHERE
-			{
+			
+			if ( psmIds == null || psmIds.isEmpty() ) {
+
+				// Process PSM Cutoffs for WHERE
+				
 //				if ( ! onlyDefaultPsmCutoffs ) {
 					//  PSM Cutoffs are not the default 
 					for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
@@ -137,6 +166,14 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 						preparedStatement.setDouble( paramCounter, searcherCutoffValuesPsmAnnotationLevel.getAnnotationCutoffValue() );
 					}
 //				}
+			} else {
+
+				//  Filter using psmIds
+
+				for ( Long psmId : psmIds ) {
+					paramCounter++;
+					preparedStatement.setLong(paramCounter, psmId );
+				}
 			}
 
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
@@ -144,6 +181,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					PsmWebDisplayWebServiceResult psmWebDisplay = new PsmWebDisplayWebServiceResult();
 					psmWebDisplay.setSearchId( searchId );
 					psmWebDisplay.setPsmId( rs.getLong( "psm_id" ) );
+					
+					int hasReporterIonsInt = rs.getInt("has_reporter_ions" );
+					if ( hasReporterIonsInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+						psmWebDisplay.setHasReporterIons( true );
+					}
 
 					psmWebDisplay.setCharge( rs.getInt( "charge" ) );
 					psmWebDisplay.setPsm_precursor_RetentionTime( rs.getBigDecimal( "precursor_retention_time" ) );
