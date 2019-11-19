@@ -17,6 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.dto_lorikeet;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,10 @@ public class LorikeetRootData {
 	private double ctermMod = 0; // additional mass to be added to the c-term
 	
 	private String label;		// stable isotope label name
+	
+	//  Reporter Ions
+	
+	private List<BigDecimal> userReporterIons;
 	
 	/**
 	 * 
@@ -286,6 +291,16 @@ public class LorikeetRootData {
 
 	public void setCtermMod(double ctermMod) {
 		this.ctermMod = ctermMod;
+	}
+
+
+	public List<BigDecimal> getUserReporterIons() {
+		return userReporterIons;
+	}
+
+
+	public void setUserReporterIons(List<BigDecimal> userReporterIons) {
+		this.userReporterIons = userReporterIons;
 	}
 
 

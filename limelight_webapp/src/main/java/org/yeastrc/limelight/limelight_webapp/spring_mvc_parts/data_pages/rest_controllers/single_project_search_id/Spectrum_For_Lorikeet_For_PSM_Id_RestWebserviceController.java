@@ -18,47 +18,28 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.single_project_search_id;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
-import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
-import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
-import org.yeastrc.limelight.limelight_shared.dto.SrchRepPeptDynamicModDTO;
-import org.yeastrc.limelight.limelight_shared.dto.StaticModDTO;
+import org.yeastrc.limelight.limelight_shared.dto.*;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.PsmDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.SearchScanFileDAO_IF;
-import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetGetSpectrumServiceResult;
-import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetRootData;
-import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetStaticMod;
-import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetVariableMod;
-import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.Lorikeet_ScanData_RetentionTime_PrecursorMZ;
+import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.*;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_For_PsmId_SearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.StaticModDTOForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.*;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -68,6 +49,12 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScanPeak_SubResponse;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -118,6 +105,9 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 	
 	@Autowired
 	private SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF srchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher;
+
+	@Autowired
+	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
 	
 	@Autowired
 	private StaticModDTOForSearchIdSearcherIF staticModDTOForSearchIdSearcher;
@@ -450,16 +440,36 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 				}     
 			}
 			
-	        // Static Mods
-	        List<StaticModDTO> staticModsForSearch = staticModDTOForSearchIdSearcher.getListForSearchId( searchId );
-	        List<LorikeetStaticMod> staticModsLorikeet = new ArrayList<>( staticModsForSearch.size() );
-	        for ( StaticModDTO staticModDTO : staticModsForSearch ) {
-	        	LorikeetStaticMod  staticModLorikeet = new LorikeetStaticMod();
-	        	staticModLorikeet.setAminoAcid( staticModDTO.getResidue() );
-	        	staticModLorikeet.setModMass( staticModDTO.getMass().doubleValue() );
-	        	staticModsLorikeet.add( staticModLorikeet );
+			{ // Static Mods
+				List<StaticModDTO> staticModsForSearch = staticModDTOForSearchIdSearcher.getListForSearchId( searchId );
+				List<LorikeetStaticMod> staticModsLorikeet = new ArrayList<>( staticModsForSearch.size() );
+				for ( StaticModDTO staticModDTO : staticModsForSearch ) {
+					LorikeetStaticMod  staticModLorikeet = new LorikeetStaticMod();
+					staticModLorikeet.setAminoAcid( staticModDTO.getResidue() );
+					staticModLorikeet.setModMass( staticModDTO.getMass().doubleValue() );
+					staticModsLorikeet.add( staticModLorikeet );
+				}
+				lorikeetRootData.setStaticMods( staticModsLorikeet );	
+			}
+			
+	        {  //  Reporter Ions from PSM
+	        	if ( psmDTO.isHasReporterIons() ) {
+	        		
+	        		List<Long> psmIds = new ArrayList<>( 1 );
+	        		psmIds.add( psmId );
+	
+		        	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
+		        			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
+		        			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds );
+
+		        	List<BigDecimal> userReporterIons = new ArrayList<>( reporterIonMassesSearcherResult.size() );
+		        	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem dbItem : reporterIonMassesSearcherResult ) {
+		        		BigDecimal reporterIonMass = dbItem.getReporterIonMass();
+		        		userReporterIons.add( reporterIonMass );
+		        	}
+		        	lorikeetRootData.setUserReporterIons( userReporterIons );
+	        	}
 	        }
-	        lorikeetRootData.setStaticMods( staticModsLorikeet );			
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( lorikeetGetSpectrumServiceResult );
     		

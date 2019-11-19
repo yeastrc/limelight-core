@@ -24,20 +24,20 @@ const _common_template_bundle =
 	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 
-//  module import 
+//  module import
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
 
-import { addFlotToJquery } from 'libs/Lorikeet/jquery.flot.js';
-import { addFlotSelectionToJquery } from 'libs/Lorikeet/jquery.flot.selection.js';
+import {addFlotToJquery} from 'libs/Lorikeet/jquery.flot.js';
+import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection.js';
 
-import { addLorikeetToJquery } from 'libs/Lorikeet/specview.js';
-
-
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import {addLorikeetToJquery} from 'libs/Lorikeet/specview.js';
 
 
-import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
+import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+
+
+import {lorikeetSpectrumViewer_CreateURL} from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
 
 
 //  Overrides for LorikeetOptions:
@@ -120,6 +120,9 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			this._lorikeet_ScanData_RetentionTime_PrecursorMZ = loadedDataFromServer.primaryLorikeetData.lorikeet_ScanData_RetentionTime_PrecursorMZ;
 
 			this._addLorikeetToPageInternal( { lorikeetOptions } );
+			console.log('lorikeet options:');
+			console.log(lorikeetOptions);
+
 
 			if ( psmPeptideTable_HeadersAndData ) {
 
