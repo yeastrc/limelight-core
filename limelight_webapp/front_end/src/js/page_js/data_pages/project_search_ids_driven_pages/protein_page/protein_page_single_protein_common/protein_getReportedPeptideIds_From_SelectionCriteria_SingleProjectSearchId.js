@@ -375,7 +375,12 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 		}
 
 		const variableModificationsSelected_ExcludingNoModificationOption = this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.getVariableModificationsSelected_ExcludingNoModificationOption();
-		if ( variableModificationsSelected_ExcludingNoModificationOption && variableModificationsSelected_ExcludingNoModificationOption.length !== 0 ) {
+		if ( variableModificationsSelected_ExcludingNoModificationOption && variableModificationsSelected_ExcludingNoModificationOption.size !== 0 ) {
+			if ( variableModificationsSelected_ExcludingNoModificationOption.size === undefined ) {
+				const msg = "_filter_reportedPeptides_OnModificationsSelections: variableModificationsSelected_ExcludingNoModificationOption.size === undefined";
+				console.warn( msg );
+				throw Error( msg );
+			}
 			// Variable Modification other than 'unmodified' selected
 			this._update_ReportedPeptideIds_Set_For_VariableModificationMassesSelected_OtherThanUnmodified({ 
 				reportedPeptideIds_ToAddTo_Set: reportedPeptideIds_ForModifications_Set, variableModificationsSelected_ExcludingNoModificationOption, loadedDataPerProjectSearchIdHolder });

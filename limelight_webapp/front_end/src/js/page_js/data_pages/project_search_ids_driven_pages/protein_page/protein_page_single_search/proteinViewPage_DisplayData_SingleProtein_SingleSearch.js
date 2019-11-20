@@ -182,8 +182,6 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	openOverlay( { proteinSequenceVersionId, projectSearchId, proteinNameDescription, proteinSummaryStatistics, singleProteinCloseCallback } ) {
 
-		const objectThis = this;
-
 		this._singleProteinCloseCallback = singleProteinCloseCallback;
 
 		this._proteinNameDescription = proteinNameDescription;
@@ -1454,6 +1452,24 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange() {
 
+		this._reportedPeptideList_ShowUpdatingPeptidesMessage();
+
+		window.setTimeout( () => {
+
+			//  In Settimeout to allow paint cycle
+
+			this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange_After_setTimout();
+		}, 10 );
+
+	}
+
+	//  Updating Page for Altered Selection Change - After window.setTimeout to allow paint cycle
+
+	/**
+	 * 
+	 */
+	_updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange_After_setTimout() {
+
 
 		const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay();
 
@@ -1539,6 +1555,23 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.showLoadingMessage({ $reported_peptides_outer_container });
 	}
+
+	/**
+	 * 
+	 */
+	_reportedPeptideList_ShowUpdatingPeptidesMessage() {
+
+		const $contentDiv = $(this._contentDivHTMLElement);
+
+		const $reported_peptides_outer_container = $contentDiv.find(".selector_reported_peptides_outer_container");
+		if ( $reported_peptides_outer_container.length === 0 ) {
+			throw Error("Failed to find DOM element with class 'reported_peptides_outer_container'");
+		}
+
+		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.showUpdatingListMessage({ $reported_peptides_outer_container });
+	}
+
+	///////////////////////////////////////////
 
 	/**
 	 * 

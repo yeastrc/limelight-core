@@ -108,25 +108,79 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 	 * 
 	 */
 	showLoadingMessage( {  $reported_peptides_outer_container } ) {
-
-		const $selector_reported_peptides_loading_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_loading_message_container");
-		if ( $selector_reported_peptides_loading_message_container.length === 0 ) {
-			const msg = "No DOM element with class 'selector_reported_peptides_loading_message_container' found under $reported_peptides_outer_container";
-			console.warn( msg + ".  $reported_peptides_outer_container: " );
-			console.warn( $reported_peptides_outer_container );
-			throw Error( msg )
+		{
+			const $selector_reported_peptides_loading_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_loading_message_container");
+			if ( $selector_reported_peptides_loading_message_container.length === 0 ) {
+				const msg = "No DOM element with class 'selector_reported_peptides_loading_message_container' found under $reported_peptides_outer_container";
+				console.warn( msg + ".  $reported_peptides_outer_container: " );
+				console.warn( $reported_peptides_outer_container );
+				throw Error( msg )
+			}
+			$selector_reported_peptides_loading_message_container.show();
 		}
-		$selector_reported_peptides_loading_message_container.show();
-
-		const $selector_reported_peptides_main_display_container = $reported_peptides_outer_container.find(".selector_reported_peptides_main_display_container");
-		if ( $selector_reported_peptides_main_display_container.length === 0 ) {
-			const msg = "No DOM element with class 'selector_reported_peptides_main_display_container' found under $reported_peptides_outer_container";
-			console.warn( msg + ".  $reported_peptides_outer_container: " );
-			console.warn( $reported_peptides_outer_container );
-			throw Error( msg )
+		{
+			const $selector_reported_peptides_updating_message_container = $reported_peptides_outer_container.find(".selectselector_reported_peptides_updating_message_containeror_reported_peptides_loading_message_container");
+			if ( $selector_reported_peptides_updating_message_container.length === 0 ) {
+				const msg = "No DOM element with class 'selector_reported_peptides_updating_message_container' found under $reported_peptides_outer_container";
+				console.warn( msg + ".  $reported_peptides_outer_container: " );
+				console.warn( $reported_peptides_outer_container );
+				throw Error( msg )
+			}
+			$selector_reported_peptides_updating_message_container.hide();
 		}
-		$selector_reported_peptides_main_display_container.hide();
+		{
+			const $selector_reported_peptides_main_display_container = $reported_peptides_outer_container.find(".selector_reported_peptides_main_display_container");
+			if ( $selector_reported_peptides_main_display_container.length === 0 ) {
+				const msg = "No DOM element with class 'selector_reported_peptides_main_display_container' found under $reported_peptides_outer_container";
+				console.warn( msg + ".  $reported_peptides_outer_container: " );
+				console.warn( $reported_peptides_outer_container );
+				throw Error( msg )
+			}
+			$selector_reported_peptides_main_display_container.hide();
+		}
+		//  Not needed since not visible after $selector_reported_peptides_main_display_container.hide()
 
+		let $selector_number_of_reported_peptides_shown = $reported_peptides_outer_container.find(".selector_number_of_reported_peptides_shown");
+		let $selector_number_of_psms_for_reported_peptides_shown = $reported_peptides_outer_container.find(".selector_number_of_psms_for_reported_peptides_shown");
+
+		$selector_number_of_reported_peptides_shown.text( "???" );
+		$selector_number_of_psms_for_reported_peptides_shown.text( "???" );
+	}
+
+	/**
+	 * 
+	 */
+	showUpdatingListMessage( {  $reported_peptides_outer_container } ) {
+		{
+			const $selector_reported_peptides_updating_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_updating_message_container");
+			if ( $selector_reported_peptides_updating_message_container.length === 0 ) {
+				const msg = "No DOM element with class 'selector_reported_peptides_updating_message_container' found under $reported_peptides_outer_container";
+				console.warn( msg + ".  $reported_peptides_outer_container: " );
+				console.warn( $reported_peptides_outer_container );
+				throw Error( msg )
+			}
+			$selector_reported_peptides_updating_message_container.show();
+		}
+		{
+			const $selector_reported_peptides_loading_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_loading_message_container");
+			if ( $selector_reported_peptides_loading_message_container.length === 0 ) {
+				const msg = "No DOM element with class 'selector_reported_peptides_loading_message_container' found under $reported_peptides_outer_container";
+				console.warn( msg + ".  $reported_peptides_outer_container: " );
+				console.warn( $reported_peptides_outer_container );
+				throw Error( msg )
+			}
+			$selector_reported_peptides_loading_message_container.hide();
+		}
+		{
+			const $selector_reported_peptides_main_display_container = $reported_peptides_outer_container.find(".selector_reported_peptides_main_display_container");
+			if ( $selector_reported_peptides_main_display_container.length === 0 ) {
+				const msg = "No DOM element with class 'selector_reported_peptides_main_display_container' found under $reported_peptides_outer_container";
+				console.warn( msg + ".  $reported_peptides_outer_container: " );
+				console.warn( $reported_peptides_outer_container );
+				throw Error( msg )
+			}
+			$selector_reported_peptides_main_display_container.hide();
+		}
 		//  Not needed since not visible after $selector_reported_peptides_main_display_container.hide()
 
 		let $selector_number_of_reported_peptides_shown = $reported_peptides_outer_container.find(".selector_number_of_reported_peptides_shown");
@@ -609,24 +663,39 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 		const peptideList = reportedPeptideDisplayData.peptideList;
 		const annotationTypeRecords_DisplayOrder = reportedPeptideDisplayData.annotationTypeRecords_DisplayOrder;
 
-		if ( ! skip_HideLoadingMessage ) {  //  Hide loading message and show data block
-			const $selector_reported_peptides_loading_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_loading_message_container");
-			if ( $selector_reported_peptides_loading_message_container.length === 0 ) {
-				const msg = "No DOM element with class 'selector_reported_peptides_loading_message_container' found under $reported_peptides_outer_container";
-				console.warn( msg + ".  $reported_peptides_outer_container: " );
-				console.warn( $reported_peptides_outer_container );
-				throw Error( msg )
+		if ( ! skip_HideLoadingMessage ) {  //  skip_HideLoadingMessage, // true when call from createReportedPeptideDisplayData_From_reportedPeptideIds for Multiple search
+			
+			{ //  Hide loading message and show data block
+				const $selector_reported_peptides_loading_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_loading_message_container");
+				if ( $selector_reported_peptides_loading_message_container.length === 0 ) {
+					const msg = "No DOM element with class 'selector_reported_peptides_loading_message_container' found under $reported_peptides_outer_container";
+					console.warn( msg + ".  $reported_peptides_outer_container: " );
+					console.warn( $reported_peptides_outer_container );
+					throw Error( msg )
+				}
+				$selector_reported_peptides_loading_message_container.hide();
 			}
-			$selector_reported_peptides_loading_message_container.hide();
+			{ //  Also Hide selector_reported_peptides_updating_message_container
 
-			const $selector_reported_peptides_main_display_container = $reported_peptides_outer_container.find(".selector_reported_peptides_main_display_container");
-			if ( $selector_reported_peptides_main_display_container.length === 0 ) {
-				const msg = "No DOM element with class 'selector_reported_peptides_main_display_container' found under $reported_peptides_outer_container";
-				console.warn( msg + ".  $reported_peptides_outer_container: " );
-				console.warn( $reported_peptides_outer_container );
-				throw Error( msg )
+				const $selector_reported_peptides_updating_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_updating_message_container");
+				if ( $selector_reported_peptides_updating_message_container.length === 0 ) {
+					const msg = "No DOM element with class 'selector_reported_peptides_updating_message_container' found under $reported_peptides_outer_container";
+					console.warn( msg + ".  $reported_peptides_outer_container: " );
+					console.warn( $reported_peptides_outer_container );
+					throw Error( msg )
+				}
+				$selector_reported_peptides_updating_message_container.hide();
 			}
-			$selector_reported_peptides_main_display_container.show();
+			{
+				const $selector_reported_peptides_main_display_container = $reported_peptides_outer_container.find(".selector_reported_peptides_main_display_container");
+				if ( $selector_reported_peptides_main_display_container.length === 0 ) {
+					const msg = "No DOM element with class 'selector_reported_peptides_main_display_container' found under $reported_peptides_outer_container";
+					console.warn( msg + ".  $reported_peptides_outer_container: " );
+					console.warn( $reported_peptides_outer_container );
+					throw Error( msg )
+				}
+				$selector_reported_peptides_main_display_container.show();
+			}
 		}
 
 		{

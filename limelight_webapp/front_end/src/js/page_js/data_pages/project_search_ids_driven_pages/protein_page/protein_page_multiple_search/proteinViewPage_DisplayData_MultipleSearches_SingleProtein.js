@@ -1778,6 +1778,24 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	 */
 	_updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange() {
 
+		this._reportedPeptideList_ShowUpdatingPeptidesMessage();
+
+		window.setTimeout( () => {
+
+			//  In Settimeout to allow paint cycle
+
+			this._updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange_After_setTimout();
+		}, 10 );
+
+	}
+
+	//  Updating Page for Altered Selection Change - After window.setTimeout to allow paint cycle
+
+	/**
+	 * 
+	 */
+	_updatePageForSelectionModificationReporterIonPeptideSequenceProteinPositionChangeChange_After_setTimout() {
+
 		const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result = this._getReportedPeptideIdsForDisplay_AllProjectSearchIds();
 
 		const proteinPositions_CoveredBy_PeptideSearchStrings = getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result.proteinPositions_CoveredBy_PeptideSearchStrings;
@@ -1869,6 +1887,23 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		this._proteinViewPage_DisplayData_SingleProtein_ReportedPeptideList.showLoadingMessage({ $reported_peptides_outer_container });
 	}
+
+	/**
+	 * 
+	 */
+	_reportedPeptideList_ShowUpdatingPeptidesMessage() {
+
+		const $contentDiv = $(this._contentDivHTMLElement);
+
+		const $reported_peptides_outer_container = $contentDiv.find(".selector_reported_peptides_outer_container");
+		if ( $reported_peptides_outer_container.length === 0 ) {
+			throw Error("Failed to find DOM element with class 'reported_peptides_outer_container'");
+		}
+
+		this._proteinViewPage_DisplayData_SingleProtein_ReportedPeptideList.showUpdatingListMessage({ $reported_peptides_outer_container });
+	}
+
+	///////////////////////////////////////////
 
 	/**
 	 * 
@@ -2573,23 +2608,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		};
 	}
 	
-	// /**
-	//  * Get Reported Peptide Ids to display (or download).  Also called from parent/owner class for download of PSMs of shown Reported Peptides
-	//  * 
-	//  * @param not_filtered_position_modification_selections - true if not filtering on user selections of protein positions and/or modification masses
-	//  * 
-	//  * Uses:
-	//  * 		this._proteinSequenceFormattedDisplay_Main_displayWidget
-	//  * 		this._proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect
-	//  * 
-	//  * @returns empty array if no reportedPeptideIds for proteinSequenceVersionId for projectSearchId
-	//  */
-	// _getReportedPeptideIdsForDisplay_SpecificProjectSearchId( { 
-	// 	not_filtered_position_modification_selections, 
-	// 	loadedDataPerProjectSearchIdHolder,
-	// 	proteinSequenceVersionId, 
-	// 	projectSearchId } ) {
-
 	///////////////////////////////////////////
 	///////////////////////////////////////////
 
