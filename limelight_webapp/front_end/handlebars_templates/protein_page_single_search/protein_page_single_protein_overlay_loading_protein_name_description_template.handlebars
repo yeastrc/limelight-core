@@ -1,0 +1,16 @@
+{{!--  
+    protein_page_single_protein_overlay_loading_protein_name_description_template.handlebars
+
+    Loading Protein Name and Description for: Overlay Container for Single Protein Display
+ --}}
+
+<div style="padding-bottom: 15px;">
+	<div style="font-size: 24px; font-weight: bold; ">
+		Name (from FASTA): {{ proteinData.name }}
+	</div>
+	{{#if proteinData.description }}
+	<div style="font-size: 14px; font-weight: bold; padding-top: 10px;">
+		{{ proteinData.description }}
+	</div>
+	{{/if}}
+</div>

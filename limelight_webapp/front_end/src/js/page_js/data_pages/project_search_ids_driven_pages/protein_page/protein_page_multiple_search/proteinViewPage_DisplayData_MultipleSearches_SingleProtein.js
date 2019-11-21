@@ -60,16 +60,18 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	/**
 	 * 
 	 */
-	constructor(
-			{ proteinViewPage_Display_MultipleSearch,
-				dataPages_LoggedInUser_CommonObjectsFactory,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-				dataPageStateManager_OtherUserSelections, 
-				dataPageStateManager_DataFrom_Server,
-				searchDetailsBlockDataMgmtProcessing, 
-				loadedDataCommonHolder, 
-				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-				singleProtein_CentralStateManagerObject } ) {
+	constructor({
+		proteinViewPage_Display_MultipleSearch,
+		dataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+		dataPageStateManager_OtherUserSelections, 
+		dataPageStateManager_DataFrom_Server,
+		searchDetailsBlockDataMgmtProcessing, 
+		loadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+		singleProtein_CentralStateManagerObject,
+		singleProteinCloseCallback
+	}) {
 		
 		this._proteinViewPage_Display_MultipleSearch = proteinViewPage_Display_MultipleSearch; // reference to creating class object
 
@@ -89,6 +91,8 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 
+		this._singleProteinCloseCallback = singleProteinCloseCallback;
+
 
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes({
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
@@ -105,6 +109,11 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_overlay_container_template");
 		}
 		this._protein_page_single_protein_overlay_container_template_Template = _protein_table_template_bundle.protein_page_single_protein_overlay_container_template;
+
+		if (!_protein_table_template_bundle.protein_page_single_protein_overlay_loading_protein_name_description_template) {
+			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_overlay_loading_protein_name_description_template");
+		}
+		this._protein_page_single_protein_overlay_loading_protein_name_description_template_Template = _protein_table_template_bundle.protein_page_single_protein_overlay_loading_protein_name_description_template;
 
 		if (!_protein_table_template_bundle.protein_page_single_protein_overlay_background_template) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_overlay_background_template");
@@ -160,8 +169,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		//  Have click handlers been attached to download data elements?
 		this._clickHandlersAttachedToDownloadDataElements = false;
 
-		this._singleProteinCloseCallback = undefined; // passed in openOverlay
-
 		this._proteinNameDescription = undefined; // passed in openOverlay
 
 		//  Save on object when computed
@@ -173,16 +180,28 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		this._load_ReporterIonMasses_InProgress = false;  //  Flag that Loading Reporter Ion Masses is In Progress
 
 		this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
+
+		this._singleProtein_OverlayOpened = false;
+	}
+
+	/**
+	 * Call when going straight to Single Protein view on Page load and don't have any data loaded yet
+	 */
+	openOverlay_OnlyLoadingMessage() {
+
+		this._singleProtein_OverlayOpened = true;
+
+		//  Add Outer Overlay with Initial Loading message and protein name and description
+
+		this._createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription : undefined } ); //  proteinNameDescription not passed so NO initial display of protein name and description
 	}
 
 	/**
 	 * 
 	 */
-	openOverlay( { proteinSequenceVersionId, projectSearchIds, proteinNameDescription, singleProteinCloseCallback } ) {
+	openOverlay( { proteinSequenceVersionId, projectSearchIds, proteinNameDescription } ) {
 
 		const objectThis = this;
-
-		this._singleProteinCloseCallback = singleProteinCloseCallback;
 
 		this._proteinNameDescription = proteinNameDescription;
 
@@ -217,19 +236,134 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 			});
 		}
 
-		this._loadDataForInitialOverlay().then(function(value) {
-			try {
-				// On to displaying the data
-				objectThis._openOverlayAfterLoadData();
+		if ( ! this._singleProtein_OverlayOpened ) {
 
+			//  Overlay not already added so add now
+
+			//  Add Outer Overlay with Initial Loading message and protein name and description
+
+			this._createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription } ); //  proteinNameDescription used for initial display of protein name and description
+		}
+
+		this._singleProtein_OverlayOpened = true;
+
+
+		//  Put rest in setTimeout to allow initial paint
+
+		window.setTimeout( () => {
+
+			this._loadDataForInitialOverlay().then(function(value) {
+				try {
+					destroySpinner(); // external function
+					
+					// On to displaying the data
+					objectThis._openOverlayAfterLoadData();
+
+				} catch( e ) {
+					
+					destroySpinner(); // external function
+					
+					console.log("Exception caught in New Promise in _loadDataForInitialOverlay(...)");
+					console.log( e );
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			}, function(reason) {
+
+				destroySpinner(); // external function
+			});
+
+		}, 10 );
+
+	}
+
+	/**
+	 * 
+	 */
+	_createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription } ) {
+
+		const objectThis = this;
+
+		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
+		if ( $data_page_overall_enclosing_block_div.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'data_page_overall_enclosing_block_div'");
+		}
+		
+		const overlayContainerHTML = this._protein_page_single_protein_overlay_container_template_Template();
+		const $overlayContainer = $( overlayContainerHTML );
+		$overlayContainer.insertAfter( $data_page_overall_enclosing_block_div );
+			
+		const backgroundHTML = this._protein_page_single_protein_overlay_background_template_Template();
+		const $background = $( backgroundHTML );
+		$background.insertAfter( $data_page_overall_enclosing_block_div );
+	
+		const $single_protein_overlay_background = $("#single_protein_overlay_background");
+		if ( $single_protein_overlay_background.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'single_protein_overlay_background'");
+		}
+		const $view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
+		if ( $view_single_protein_overlay_div.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_div'");
+		}
+
+		const $view_single_protein_overlay_body = $("#view_single_protein_overlay_body");
+		if ( $view_single_protein_overlay_body.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_body'");
+		}
+
+		//  Add in Protein Name and Description, if provided
+		if ( proteinNameDescription ) {
+
+			const proteinNameDescriptionHTML = this._protein_page_single_protein_overlay_loading_protein_name_description_template_Template({ proteinData : proteinNameDescription });
+			const $proteinNameDescription = $( proteinNameDescriptionHTML );
+	
+			const $view_single_protein_overlay_loading_protein_name_description = $("#view_single_protein_overlay_loading_protein_name_description");
+			if ( $view_single_protein_overlay_loading_protein_name_description.length === 0 ) {
+				throw Error("Failed to find DOM element with id 'view_single_protein_overlay_loading_protein_name_description'");
+			}
+			$view_single_protein_overlay_loading_protein_name_description
+
+			$proteinNameDescription.appendTo( $view_single_protein_overlay_loading_protein_name_description );
+		}
+
+		this._resize_OverlayHeight_BasedOnViewportHeight();
+
+		// $view_single_protein_overlay_body.empty();
+
+
+		//   Remove Click on background to close Single Protein View
+		
+		// $single_protein_overlay_background.click( function(eventObject) {
+		// 	try {
+		// 		eventObject.preventDefault();
+		// 		objectThis._overlayHideClicked();
+		// 		return false;
+		// 	} catch( e ) {
+		// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+		// 		throw e;
+		// 	}
+		// });	
+
+		const $view_single_protein_overlay_X_for_exit_overlay = $("#view_single_protein_overlay_X_for_exit_overlay");
+		if ( $view_single_protein_overlay_X_for_exit_overlay.length === 0 ) {
+			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_X_for_exit_overlay'");
+		}
+		$view_single_protein_overlay_X_for_exit_overlay.click( function(eventObject) {
+			try {
+				eventObject.preventDefault();
+				objectThis._overlayHideClicked();
+				return false;
 			} catch( e ) {
-				console.log("Exception caught in New Promise in _loadDataForInitialOverlay(...)");
-				console.log( e );
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
 			}
-		}, function(reason) {});
+		});	
+
+
+		createSpinner(); // external function
+
 	}
+
 
 	/**
 	 * 
@@ -462,7 +596,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		
 		const $contentDiv = this._createModalOverlayContentDiv( { proteinSummaryStatistics, linksToExternalResources } );
 
-		this._createSingleProteinModalOverlay( { $contentDiv } );
+		this._createAndInsertIntoDOM_SingleProteinModalOverlay_MainContent( { $contentDiv } );
 
 		this._contentDivHTMLElement = $contentDiv[0];
 
@@ -1964,37 +2098,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	/**
 	 * 
 	 */
-	_createSingleProteinModalOverlay( { $contentDiv } ) {
-
-		const objectThis = this;
-
-
-		// const $data_page_outermost_div = $("#data_page_outermost_div");
-		// if ( $data_page_outermost_div.length === 0 ) {
-		// 	throw Error("Failed to find DOM element with id 'data_page_outermost_div'");
-		// }
-
-		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-		if ( $data_page_overall_enclosing_block_div.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'data_page_overall_enclosing_block_div'");
-		}
-		
-		const overlayContainerHTML = this._protein_page_single_protein_overlay_container_template_Template();
-		const $overlayContainer = $( overlayContainerHTML );
-		$overlayContainer.insertAfter( $data_page_overall_enclosing_block_div );
-			
-		const backgroundHTML = this._protein_page_single_protein_overlay_background_template_Template();
-		const $background = $( backgroundHTML );
-		$background.insertAfter( $data_page_overall_enclosing_block_div );
-	
-		const $single_protein_overlay_background = $("#single_protein_overlay_background");
-		if ( $single_protein_overlay_background.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'single_protein_overlay_background'");
-		}
-		const $view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
-		if ( $view_single_protein_overlay_div.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_div'");
-		}
+	_createAndInsertIntoDOM_SingleProteinModalOverlay_MainContent( { $contentDiv } ) {
 
 		const $view_single_protein_overlay_body = $("#view_single_protein_overlay_body");
 		if ( $view_single_protein_overlay_body.length === 0 ) {
@@ -2004,34 +2108,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		$view_single_protein_overlay_body.empty();
 
 		$view_single_protein_overlay_body.append( $contentDiv );
-
-		//   Remove Click on background to close Single Protein View
-		
-		// $single_protein_overlay_background.click( function(eventObject) {
-		// 	try {
-		// 		eventObject.preventDefault();
-		// 		objectThis._overlayHideClicked();
-		// 		return false;
-		// 	} catch( e ) {
-		// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-		// 		throw e;
-		// 	}
-		// });	
-
-		const $view_single_protein_overlay_X_for_exit_overlay = $("#view_single_protein_overlay_X_for_exit_overlay");
-		if ( $view_single_protein_overlay_X_for_exit_overlay.length === 0 ) {
-			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_X_for_exit_overlay'");
-		}
-		$view_single_protein_overlay_X_for_exit_overlay.click( function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._overlayHideClicked();
-				return false;
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});	
 
 		this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded({ $view_single_protein_overlay_body });
 	}
@@ -2262,18 +2338,38 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	 */
 	_overlayHideClicked() {
 
+		this._singleProtein_OverlayOpened = false;
+
+		try {
+			destroySpinner(); // external function
+		} catch ( e ) {
+			const znothing = 0; // Eat exception
+		}
+
 		const $single_protein_overlay_background = $("#single_protein_overlay_background");
 		if ( $single_protein_overlay_background.length === 0 ) {
 			throw Error("No DOM element found with id 'single_protein_overlay_background'");
 		}
-		$single_protein_overlay_background.remove();
+		$single_protein_overlay_background.detach();
 
+		window.setTimeout( () => {
+			//  Run here so all other updates run and paint before remove all these DOM nodes
+			console.log("Running single_protein_overlay_background.remove();")
+			$single_protein_overlay_background.remove();
+		}, 10 );
+		
 		const $view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
 		if ( $view_single_protein_overlay_div.length === 0 ) {
 			throw Error("No DOM element found with id 'view_single_protein_overlay_div'");
 		}
-		$view_single_protein_overlay_div.remove();
-
+		$view_single_protein_overlay_div.detach();
+		
+		window.setTimeout( () => {
+			//  Run here so all other updates run and paint before remove all these DOM nodes
+			console.log("view_single_protein_overlay_div single_protein_overlay_background.remove();")
+			$view_single_protein_overlay_div.remove();
+		}, 10 );
+		
 		this._contentDivHTMLElement = undefined;
 		this._proteinSequenceFormattedDisplay_Main_displayWidget = undefined;
 
@@ -2331,7 +2427,8 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	 */
 	_resize_OverlayHeight_BasedOnViewportHeight() {
 
-		if (!this._contentDivHTMLElement) {
+		const $view_single_protein_inner_overlay_div = $("#view_single_protein_inner_overlay_div");
+		if ( $view_single_protein_inner_overlay_div.length === 0 ) {
 			// Exit if no overlay
 			return;
 		}
@@ -2357,11 +2454,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		const footerOuterHeight = 31;  // Hard code footer height since measuring doesn't work right
 
 		const overlayHeight = windowHeight - headerOuterHeight - footerOuterHeight;
-
-		const $view_single_protein_inner_overlay_div = $("#view_single_protein_inner_overlay_div");
-		if ( $view_single_protein_inner_overlay_div.length === 0 ) {
-			throw Error("No DOM element found with id 'view_single_protein_inner_overlay_div'");
-		}
 
 		$view_single_protein_inner_overlay_div.css('min-height', overlayHeight + 'px');
 	}
@@ -2631,7 +2723,8 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		return this._protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId.getReportedPeptideIdsForDisplay_SingleProjectSearchId( { 
 			not_filtered_position_modification_selections, 
 			loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder,
-			projectSearchId : projectSearchId } );
+			projectSearchId : projectSearchId 
+		} );
 	}
 
 	////////////////////////////////////////////

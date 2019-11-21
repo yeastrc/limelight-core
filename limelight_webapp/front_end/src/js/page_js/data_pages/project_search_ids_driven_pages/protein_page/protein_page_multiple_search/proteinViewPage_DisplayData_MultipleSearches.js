@@ -77,6 +77,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = new Map();
 
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
+
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 		
@@ -88,18 +90,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( {
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
-
-		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinViewPage_Display_MultipleSearches_SingleProtein( {
-			proteinViewPage_Display_MultipleSearch : this,
-			dataPages_LoggedInUser_CommonObjectsFactory,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_OtherUserSelections,
-			dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing,
-			loadedDataCommonHolder : this._loadedDataCommonHolder,
-			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
 		} );
 
 		// From common template:
@@ -163,15 +154,37 @@ export class ProteinViewPage_Display_MultipleSearches {
 		let objectThis = this;
 
 		{
+			//  If Have Single Protein to display in URL, Immediately hide the Main Display <div id="data_page_overall_enclosing_block_div" >
+
 			const proteinSequenceVersionId_FromURL = this._singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
 
 			if ( proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null ) {
 				//  Have proteinSequenceVersionId_FromURL so going to display Single Protein Overlay
 
 				//  Hide Main Div inside of header/footer
-				const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-				$data_page_overall_enclosing_block_div.hide();
+				const data_page_overall_enclosing_block_divDOM = document.getElementById( "data_page_overall_enclosing_block_div" );
+				if ( ! data_page_overall_enclosing_block_divDOM ) {
+					const msg = "No element on DOM with id 'data_page_overall_enclosing_block_div'";
+					console.warn( msg );
+					throw Error( msg );
+				}
+				data_page_overall_enclosing_block_divDOM.style.display = "none";
+				
+				if ( ! this._proteinViewPage_Display_MultipleSearches_SingleProtein ) {
+					this._instantiateObject_Class__ProteinViewPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY : undefined });
+				}
+				this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay_OnlyLoadingMessage();
 			}
+		}
+		{
+			//  Show <div id="protein_page_outermost_block"> (the outermost <div> on the protein page) ,which is just inside <div id="data_page_overall_enclosing_block_div" > from header
+			const protein_page_outermost_blockDOM = document.getElementById( "protein_page_outermost_block" );
+			if ( ! protein_page_outermost_blockDOM ) {
+				const msg = "No element on DOM with id 'protein_page_outermost_block'";
+				console.warn( msg );
+				throw Error( msg );
+			}
+			protein_page_outermost_blockDOM.style.display = "";
 		}
 
 		//   Clear: Protein Name and Description in a Map, Key ProteinSequenceVersionId
@@ -265,19 +278,34 @@ export class ProteinViewPage_Display_MultipleSearches {
 		const objectThis = this;
 		
 		const proteinDisplayData = this._createProteinDisplayData( { projectSearchIds } );
-		
+	
+		const proteinSequenceVersionId_FromURL = this._singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
+
+		if ( proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null ) {
+			//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
+			this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL } ) ;
+
+			//  Delay render Protein List since currently hidden.  Probably could skip render until close Single Protein Overlay
+			window.setTimeout( () => {
+
+				this._displayProteinListOnPage_ActualRender( { projectSearchIds, proteinDisplayData } );
+			}, 2000 );
+
+		} else {
+
+			//  render Protein List immediately
+			this._displayProteinListOnPage_ActualRender( { projectSearchIds, proteinDisplayData } );
+		}
+	}
+
+	/**
+	 * 
+	 */
+	_displayProteinListOnPage_ActualRender( { projectSearchIds, proteinDisplayData } ) {
+
 		const renderToPageProteinList_Result = this._renderToPageProteinList( { projectSearchIds, proteinDisplayData } );
 
 		const proteinListLength = renderToPageProteinList_Result.proteinListLength;
-
-		{
-			const proteinSequenceVersionId_FromURL = this._singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
-
-			if ( proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null ) {
-				//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
-				this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL } ) ;
-			}
-		}
 
 		if ( proteinListLength === 0 ) {
 
@@ -314,7 +342,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 				this._downloadProteinsClickHandlerAttached = true;
 			}
 		}
-	};
+	}
 	
 	/////////////
 
@@ -730,7 +758,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		console.log("Rendering Protein List END, Now: " + new Date() );
 		
 		return { proteinListLength };
-	};
+	}
 
 	/**
 	 * Create object 
@@ -839,7 +867,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
         columns[ columns.length - 1 ].lastItem = true;
         return columns;
-    };
+    }
     
 	//////////////////////////////////////
 	//////////////////////////////////////
@@ -983,13 +1011,57 @@ export class ProteinViewPage_Display_MultipleSearches {
 		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
 		$data_page_overall_enclosing_block_div.hide();
 
-		this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay( 
-				{ proteinSequenceVersionId, 
-					projectSearchIds : this._projectSearchIds, 
-					proteinNameDescription : proteinNameDescriptionParam,
-					singleProteinCloseCallback } );
+		if ( ! this._proteinViewPage_Display_MultipleSearches_SingleProtein ) {
+			this._instantiateObject_Class__ProteinViewPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY });
+		}
+
+		this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({ 
+			proteinSequenceVersionId, 
+			projectSearchIds : this._projectSearchIds, 
+			proteinNameDescription : proteinNameDescriptionParam
+		} );
 	}
 
+	/**
+	 * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
+	 */
+	_instantiateObject_Class__ProteinViewPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY }) {
+		
+		//  Create callback function to call on single protein close
+		
+		const singleProteinCloseCallback = () => {
+
+			this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
+
+			//  Show Main Div inside of header/footer
+			const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
+			console.log("running $data_page_overall_enclosing_block_div.show();")
+			$data_page_overall_enclosing_block_div.show();
+
+			if ( currentWindowScrollY ) {
+
+				//  Scroll window down to original position when protein was clicked to open Single Protein view
+				
+				//  Web standard, should be supported in Edge but doesn't seem to work in Edge
+				// window.scrollTo({ top : currentWindowScrollY });
+
+				$( window ).scrollTop( currentWindowScrollY );
+			}
+		}
+
+		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinViewPage_Display_MultipleSearches_SingleProtein( {
+			proteinViewPage_Display_MultipleSearch : this,
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			loadedDataCommonHolder : this._loadedDataCommonHolder,
+			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
+			singleProteinCloseCallback
+		} );
+	}
 	
 	/**
 	 * 

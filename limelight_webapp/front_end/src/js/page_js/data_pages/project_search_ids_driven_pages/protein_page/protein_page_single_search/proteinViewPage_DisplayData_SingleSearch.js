@@ -82,7 +82,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		this._loadedDataPerProjectSearchIdHolder = new ProteinViewPage_LoadedDataPerProjectSearchIdHolder();
 		
-		
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 		
@@ -97,25 +97,11 @@ export class ProteinViewPage_Display_SingleSearch {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
 		} );
 		
-		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer =
-			new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-				loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
-				searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
-			})
-		
-		this._proteinViewPage_Display_SingleProtein_SingleSearch = new ProteinViewPage_Display_SingleProtein_SingleSearch( {
-			dataPages_LoggedInUser_CommonObjectsFactory,
-			proteinViewPage_Display_SingleSearch : this,
-			proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_OtherUserSelections,
-			dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing,
-			loadedDataCommonHolder : this._loadedDataCommonHolder,
+		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
 			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
-			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
-		} );
-
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
+		});
+		
 		this._proteinViewPage_StatsSectionCreator_SingleSearch = new ProteinViewPage_StatsSectionCreator_SingleSearch({ loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder });
 
 		// From common template:
@@ -168,15 +154,37 @@ export class ProteinViewPage_Display_SingleSearch {
 		}
 
 		{
+			//  If Have Single Protein to display in URL, Immediately hide the Main Display <div id="data_page_overall_enclosing_block_div" >
+
 			const proteinSequenceVersionId_FromURL = this._singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
 
 			if ( proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null ) {
 				//  Have proteinSequenceVersionId_FromURL so going to display Single Protein Overlay
 
 				//  Hide Main Div inside of header/footer
-				const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-				$data_page_overall_enclosing_block_div.hide();
+				const data_page_overall_enclosing_block_divDOM = document.getElementById( "data_page_overall_enclosing_block_div" );
+				if ( ! data_page_overall_enclosing_block_divDOM ) {
+					const msg = "No element on DOM with id 'data_page_overall_enclosing_block_div'";
+					console.warn( msg );
+					throw Error( msg );
+				}
+				data_page_overall_enclosing_block_divDOM.style.display = "none";
+				
+				if ( ! this._proteinViewPage_Display_SingleProtein_SingleSearch ) {
+					this._instantiateObject_Class__ProteinViewPage_Display_SingleProtein_SingleSearch({ currentWindowScrollY : undefined });
+				}
+				this._proteinViewPage_Display_SingleProtein_SingleSearch.openOverlay_OnlyLoadingMessage();
 			}
+		}
+		{
+			//  Show <div id="protein_page_outermost_block"> (the outermost <div> on the protein page) ,which is just inside <div id="data_page_overall_enclosing_block_div" > from header
+			const protein_page_outermost_blockDOM = document.getElementById( "protein_page_outermost_block" );
+			if ( ! protein_page_outermost_blockDOM ) {
+				const msg = "No element on DOM with id 'protein_page_outermost_block'";
+				console.warn( msg );
+				throw Error( msg );
+			}
+			protein_page_outermost_blockDOM.style.display = "";
 		}
 
 		//   Clear: Protein Name and Description in a Map, Key ProteinSequenceVersionId
@@ -359,7 +367,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			this._downloadProteinsClickHandlerAttached = true;
 		}
 
-	};
+	}
 
 	
 	/////////////
@@ -500,15 +508,15 @@ export class ProteinViewPage_Display_SingleSearch {
 			//  reportedPeptideIds for proteinSequenceVersionId
 			let reportedPeptideIds = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId().get( proteinSequenceVersionId );
 		
-    		for ( let reportedPeptideId of reportedPeptideIds ) {
+			for ( let reportedPeptideId of reportedPeptideIds ) {
 
-    			let numberOfPSMsForReportedPeptide = this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap().get( reportedPeptideId );
-    			    			
-    			if ( numberOfPSMsForReportedPeptide === undefined || numberOfPSMsForReportedPeptide === null ) {
-    				throw Error( "number of PSMs Not Found for reportedPeptideId: " + reportedPeptideId );
-    			}
+			let numberOfPSMsForReportedPeptide = this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap().get( reportedPeptideId );
 
-    			numReportedPeptides++;
+				if ( numberOfPSMsForReportedPeptide === undefined || numberOfPSMsForReportedPeptide === null ) {
+					throw Error( "number of PSMs Not Found for reportedPeptideId: " + reportedPeptideId );
+				}
+
+				numReportedPeptides++;
 				numPsms += numberOfPSMsForReportedPeptide;
 				
 				if ( ! reportedPeptideIds_SetForTrackingAlreadyAddedToTotalForSearch.has( reportedPeptideId ) ) {
@@ -518,54 +526,54 @@ export class ProteinViewPage_Display_SingleSearch {
 					reportedPeptideCount_TotalForSearch++;
 					psmCount_TotalForSearch += numberOfPSMsForReportedPeptide;
 				}
-    			
-    			//  Is this Reported Peptide Unique?
-    			// proteinSequenceVersionIds array of proteinSequenceVersionIds for this reported peptide id
-    			const proteinSequenceVersionIds = proteinSequenceVersionIdsPerReportedPeptideId.get( reportedPeptideId );
-    			if ( ! proteinSequenceVersionIds ) {
-    				throw Error( "No proteinSequenceVersionIds for reportedPeptideId: " + reportedPeptideId );
-    			}
-    			if ( proteinSequenceVersionIds.length === 1 ) {
-    				numReportedPeptidesUnique++
-    			}
-    			////////////
-    			
-    			if ( this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
-    				//  Skip if Not Populated if no User cutoffs for type
+		
+				//  Is this Reported Peptide Unique?
+				// proteinSequenceVersionIds array of proteinSequenceVersionIds for this reported peptide id
+				const proteinSequenceVersionIds = proteinSequenceVersionIdsPerReportedPeptideId.get( reportedPeptideId );
+				if ( ! proteinSequenceVersionIds ) {
+					throw Error( "No proteinSequenceVersionIds for reportedPeptideId: " + reportedPeptideId );
+				}
+				if ( proteinSequenceVersionIds.length === 1 ) {
+					numReportedPeptidesUnique++
+				}
+				////////////
+				
+				if ( this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
+					//  Skip if Not Populated if no User cutoffs for type
 
-    				let peptideAnnotationMap = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
+					let peptideAnnotationMap = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
 
-    				//  Update Reported Peptide Best Values
-    				this._updateBestAnnotationValues( {
-    					bestAnnotationDataMap : annotationBestData_ForReportedPeptidesMap, // best values 
-    					entryAnnotationDataMap : peptideAnnotationMap, // values for current Reported Peptide Entry
-    					filterableAnnotationTypes : reportedPeptideFilterableAnnotationTypes // Reported Peptide or PSM Filterable Annotation type records
-    				} );
-    			}
+					//  Update Reported Peptide Best Values
+					this._updateBestAnnotationValues( {
+						bestAnnotationDataMap : annotationBestData_ForReportedPeptidesMap, // best values 
+						entryAnnotationDataMap : peptideAnnotationMap, // values for current Reported Peptide Entry
+						filterableAnnotationTypes : reportedPeptideFilterableAnnotationTypes // Reported Peptide or PSM Filterable Annotation type records
+					} );
+				}
 
-    			if ( this._loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
-    				//  Skip if Not Populated if no User cutoffs for type
+				if ( this._loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
+					//  Skip if Not Populated if no User cutoffs for type
 
-    				let psmBestAnnotationMap = this._loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
+					let psmBestAnnotationMap = this._loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
 
-    				//  Update PSM Best Values
-    				this._updateBestAnnotationValues( {
-    					bestAnnotationDataMap : annotationBestData_ForPsmsMap, // best values 
-    					entryAnnotationDataMap : psmBestAnnotationMap, // values for current Reported Peptide Entry
-    					filterableAnnotationTypes : psmFilterableAnnotationTypes // Reported Peptide or PSM Filterable Annotation type records
-    				} );
-    			}
-    		}
-    		
-    		//  Stored computed values per proteinSequenceVersionId
-    		const countsFor_proteinSequenceVersionId = {
-    				numReportedPeptides,
-    				numReportedPeptidesUnique,
-    				numPsms
-    		}
+					//  Update PSM Best Values
+					this._updateBestAnnotationValues( {
+						bestAnnotationDataMap : annotationBestData_ForPsmsMap, // best values 
+						entryAnnotationDataMap : psmBestAnnotationMap, // values for current Reported Peptide Entry
+						filterableAnnotationTypes : psmFilterableAnnotationTypes // Reported Peptide or PSM Filterable Annotation type records
+					} );
+				}
+			}
+			
+			//  Stored computed values per proteinSequenceVersionId
+			const countsFor_proteinSequenceVersionId = {
+					numReportedPeptides,
+					numReportedPeptidesUnique,
+					numPsms
+			}
 			this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId.set( proteinSequenceVersionId, countsFor_proteinSequenceVersionId );
 
-    		
+			
 			proteinItemForProjectSearch.numPsms = numPsms;
 			proteinItemForProjectSearch.numReportedPeptides = numReportedPeptides;
 			proteinItemForProjectSearch.numReportedPeptidesUnique = numReportedPeptidesUnique;
@@ -688,7 +696,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			psmAnnotationTypesForProteinListEntries : psmAnnotationTypesForProteinListEntries,
 			reportedPeptideAnnotationTypesForProteinListEntries : reportedPeptideAnnotationTypesForProteinListEntries
 		};
-	};
+	}
 	
 
 	/**
@@ -944,7 +952,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			//   This code shows that after the component is created it can be updated from outside.
 			
 			//  Fake code to update the state after some time.  
-			//    React render happens some time after setState is called from headerColumnClicked_UpdateState
+			//	React render happens some time after setState is called from headerColumnClicked_UpdateState
 			// window.setTimeout( () => { 
 
 			// 	const columnId = 'psms';
@@ -971,7 +979,7 @@ export class ProteinViewPage_Display_SingleSearch {
 		this._addTooltipForProteinName( { $selector_table_rows_container : $protein_list_container } )
 
 		// this._populated_DOM_id_protein_list_container__With_React = true;
-	};
+	}
 
 	/**
 	 * Create tableObject object  for DataTable
@@ -1046,7 +1054,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		const proteinList_Local = proteinList;
 
-	 	const dataGroupObjects = [];
+		const dataGroupObjects = [];
 
 		const groupedProteins = this._renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries({ proteinList: proteinList_Local, projectSearchId });
 
@@ -1378,7 +1386,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
         columns[ columns.length - 1 ].lastItem = true;
         return columns;
-    };
+    }
     
 	//////////////////////////////////////
 	//////////////////////////////////////
@@ -1390,9 +1398,9 @@ export class ProteinViewPage_Display_SingleSearch {
 	//  * 
 	//  */
     // _addClickHandlersAndTooltips_ToDataTable( { $selector_table_rows_container } ) {
-    	
+
     // 	this._addTooltipForProteinName( { $selector_table_rows_container } );
-    	
+
     // 	this._addClickHandler_ToDataTable_OpenSingleProtein( { $selector_table_rows_container } );
     // }
     
@@ -1433,7 +1441,7 @@ export class ProteinViewPage_Display_SingleSearch {
 //		
 //		const proteinSequenceVersionIdString = $target.attr( "data-row-id" );  // Does not work for bar in table row, would be some parent DOM element
 		
-    	const RowUniqueIdProbablyInt = new TableDisplayHandler().getRowUniqueIdForDOMElement( { domElement : eventObject.target } );
+	const RowUniqueIdProbablyInt = new TableDisplayHandler().getRowUniqueIdForDOMElement( { domElement : eventObject.target } );
 		
 		if ( RowUniqueIdProbablyInt === undefined ) {
 			//  No value so exit
@@ -1469,7 +1477,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		const newWindowURL = this._centralPageStateManager.getURL_ForCurrentState({ componentOverridesAdditions: [ singleProtein_CentralStateManagerObjectClass_ForNewWindow ] })
 
-		 // MUST open window before make AJAX Call.  This is a Browser Security requirement
+		// MUST open window before make AJAX Call.  This is a Browser Security requirement
 		//  window.open(...): Must run in code directly triggered by click event
 
 		const newWindow = window.open(newWindowURL, "_blank");
@@ -1530,14 +1538,37 @@ export class ProteinViewPage_Display_SingleSearch {
 		//  Current Window Scroll position
 		const currentWindowScrollY = window.scrollY;
 
+		//  Hide Main Div inside of header/footer
+		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
+		$data_page_overall_enclosing_block_div.hide();
+
+		if ( ! this._proteinViewPage_Display_SingleProtein_SingleSearch ) {
+
+			this._instantiateObject_Class__ProteinViewPage_Display_SingleProtein_SingleSearch({ currentWindowScrollY });
+		}
+
+		this._proteinViewPage_Display_SingleProtein_SingleSearch.openOverlay({ 
+			proteinSequenceVersionId, 
+			projectSearchId : this._projectSearchId, 
+			proteinNameDescription : proteinNameDescriptionParam,
+			proteinSummaryStatistics : proteinSummaryStatisticsParam 
+		});
+	}
+
+	/**
+	 * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
+	 */
+	_instantiateObject_Class__ProteinViewPage_Display_SingleProtein_SingleSearch({ currentWindowScrollY }) {
+		
 		//  Create callback function to call on single protein close
 		
-		const singleProteinCloseCallback = function() {
+		const singleProteinCloseCallback = () => {
 
-			const proteinSequenceVersionIdLocal = proteinSequenceVersionId;
+			this._proteinViewPage_Display_SingleProtein_SingleSearch = undefined;
 
 			//  Show Main Div inside of header/footer
 			const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
+			console.log("running $data_page_overall_enclosing_block_div.show();")
 			$data_page_overall_enclosing_block_div.show();
 
 			if ( currentWindowScrollY ) {
@@ -1550,20 +1581,23 @@ export class ProteinViewPage_Display_SingleSearch {
 				$( window ).scrollTop( currentWindowScrollY );
 			}
 		}
-		
 
-		//  Hide Main Div inside of header/footer
-		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-		$data_page_overall_enclosing_block_div.hide();
-
-		this._proteinViewPage_Display_SingleProtein_SingleSearch.openOverlay( 
-				{ proteinSequenceVersionId, projectSearchId : this._projectSearchId, 
-					proteinNameDescription : proteinNameDescriptionParam,
-					proteinSummaryStatistics : proteinSummaryStatisticsParam,
-					singleProteinCloseCallback } );
+		this._proteinViewPage_Display_SingleProtein_SingleSearch = new ProteinViewPage_Display_SingleProtein_SingleSearch( {
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+			proteinViewPage_Display_SingleSearch : this,
+			proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			loadedDataCommonHolder : this._loadedDataCommonHolder,
+			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
+			singleProteinCloseCallback : singleProteinCloseCallback
+		} );
 	}
 
-	
+
 	/**
 	 * 
 	 */
@@ -1759,7 +1793,7 @@ export class ProteinViewPage_Display_SingleSearch {
 		
         StringDownloadUtils.downloadStringAsFile( 
 			{ stringToDownload : proteinDisplayDataAsString, filename: filename } );
-	};
+	}
 
 	/**
 	 * 
@@ -1769,8 +1803,8 @@ export class ProteinViewPage_Display_SingleSearch {
 		const proteinList = proteinDisplayData.proteinList;
 		const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder;
 
-		const psmAnnotationTypes = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-		const reportedPeptideAnnotationTypes = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;;
+		// const psmAnnotationTypes = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
+		// const reportedPeptideAnnotationTypes = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
 
 		// the columns for the data being shown on the page
 		const columns = this._getProteinDataTableColumns( 

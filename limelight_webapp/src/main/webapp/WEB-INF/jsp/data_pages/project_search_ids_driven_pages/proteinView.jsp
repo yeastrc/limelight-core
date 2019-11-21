@@ -35,6 +35,10 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
+   <%--  Outermost div inside <div id="data_page_overall_enclosing_block_div"> from header --%>
+   
+   <div id="protein_page_outermost_block" style="display: none;"> <%--  Hidden until Javascript has loaded and displays it --%>
+   
 	<h3>
 		List search proteins:
 	</h3>
@@ -90,6 +94,10 @@
 	
   	<div id="protein_list_container">
 	</div>
+	
+     
+   </div> <%--  close <div id="protein_page_outermost_block"  --%>
+   
   
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	

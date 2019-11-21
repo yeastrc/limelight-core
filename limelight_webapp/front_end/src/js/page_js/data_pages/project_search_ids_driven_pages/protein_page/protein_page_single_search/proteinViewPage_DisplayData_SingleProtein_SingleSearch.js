@@ -68,7 +68,8 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 				searchDetailsBlockDataMgmtProcessing, 
 				loadedDataCommonHolder, 
 				loadedDataPerProjectSearchIdHolder,
-				singleProtein_CentralStateManagerObject } ) {
+				singleProtein_CentralStateManagerObject,
+				singleProteinCloseCallback } ) {
 		
 		this._proteinViewPage_Display_SingleSearch = proteinViewPage_Display_SingleSearch; // reference to creating class object
 
@@ -88,6 +89,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 
+		this._singleProteinCloseCallback = singleProteinCloseCallback;
 
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes({
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
@@ -104,6 +106,11 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_overlay_container_template");
 		}
 		this._protein_page_single_protein_overlay_container_template_Template = _protein_table_template_bundle.protein_page_single_protein_overlay_container_template;
+
+		if (!_protein_table_template_bundle.protein_page_single_protein_overlay_loading_protein_name_description_template) {
+			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_overlay_loading_protein_name_description_template");
+		}
+		this._protein_page_single_protein_overlay_loading_protein_name_description_template_Template = _protein_table_template_bundle.protein_page_single_protein_overlay_loading_protein_name_description_template;
 
 		if (!_protein_table_template_bundle.protein_page_single_protein_overlay_background_template) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_overlay_background_template");
@@ -166,8 +173,6 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		//  Have click handlers been attached to download data elements?
 		this._clickHandlersAttachedToDownloadDataElements = false;
 
-		this._singleProteinCloseCallback = undefined; // passed in openOverlay
-
 		this._proteinNameDescription = undefined; // passed in openOverlay
 
 
@@ -175,14 +180,26 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 
 		this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
+
+		this._singleProtein_OverlayOpened = false;
+	}
+
+	/**
+	 * Call when going straight to Single Protein view on Page load and don't have any data loaded yet
+	 */
+	openOverlay_OnlyLoadingMessage() {
+
+		this._singleProtein_OverlayOpened = true;
+
+		//  Add Outer Overlay with Initial Loading message and protein name and description
+
+		this._createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription : undefined } ); //  proteinNameDescription not passed so NO initial display of protein name and description
 	}
 
 	/**
 	 * 
 	 */
-	openOverlay( { proteinSequenceVersionId, projectSearchId, proteinNameDescription, proteinSummaryStatistics, singleProteinCloseCallback } ) {
-
-		this._singleProteinCloseCallback = singleProteinCloseCallback;
+	openOverlay( { proteinSequenceVersionId, projectSearchId, proteinNameDescription, proteinSummaryStatistics } ) {
 
 		this._proteinNameDescription = proteinNameDescription;
 
@@ -213,11 +230,18 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			});
 		}
 
-		//  Add Outer Overlay with Initial Loading message and protein name and description
+		if ( ! this._singleProtein_OverlayOpened ) {
 
-		this._createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription } );
+			//  Overlay not already added so add now
 
-		createSpinner(); // external function
+			//  Add Outer Overlay with Initial Loading message and protein name and description
+
+			this._createAndInsertIntoDOM_SingleProteinModalOverlay_OuterOverlay( { proteinNameDescription } ); //  proteinNameDescription used for initial display of protein name and description
+		}
+
+		this._singleProtein_OverlayOpened = true;
+
+
 
 		//  Put rest in setTimeout to allow initial paint
 
@@ -269,7 +293,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 			throw Error("Failed to find DOM element with id 'data_page_overall_enclosing_block_div'");
 		}
 		
-		const overlayContainerHTML = this._protein_page_single_protein_overlay_container_template_Template({ proteinData : proteinNameDescription });
+		const overlayContainerHTML = this._protein_page_single_protein_overlay_container_template_Template();
 		const $overlayContainer = $( overlayContainerHTML );
 		$overlayContainer.insertAfter( $data_page_overall_enclosing_block_div );
 			
@@ -289,6 +313,21 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		const $view_single_protein_overlay_body = $("#view_single_protein_overlay_body");
 		if ( $view_single_protein_overlay_body.length === 0 ) {
 			throw Error("Failed to find DOM element with id 'view_single_protein_overlay_body'");
+		}
+
+		//  Add in Protein Name and Description, if provided
+		if ( proteinNameDescription ) {
+
+			const proteinNameDescriptionHTML = this._protein_page_single_protein_overlay_loading_protein_name_description_template_Template({ proteinData : proteinNameDescription });
+			const $proteinNameDescription = $( proteinNameDescriptionHTML );
+	
+			const $view_single_protein_overlay_loading_protein_name_description = $("#view_single_protein_overlay_loading_protein_name_description");
+			if ( $view_single_protein_overlay_loading_protein_name_description.length === 0 ) {
+				throw Error("Failed to find DOM element with id 'view_single_protein_overlay_loading_protein_name_description'");
+			}
+			$view_single_protein_overlay_loading_protein_name_description
+
+			$proteinNameDescription.appendTo( $view_single_protein_overlay_loading_protein_name_description );
 		}
 
 		this._resize_OverlayHeight_BasedOnViewportHeight();
@@ -323,6 +362,10 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 				throw e;
 			}
 		});	
+
+
+		createSpinner(); // external function
+
 	}
 
 
@@ -1910,10 +1953,12 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_overlayHideClicked() {
 
+		this._singleProtein_OverlayOpened = false;
+
 		try {
 			destroySpinner(); // external function
 		} catch ( e ) {
-			const znothing = 0;
+			const znothing = 0; // Eat exception
 		}
 		{
 			//  Remove _domMutationObserver_reported_peptides_outer_container if set
@@ -1923,7 +1968,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 					this._domMutationObserver_reported_peptides_outer_container.disconnect();
 				}
 			} catch ( e ) {
-				const znothing = 0;
+				const znothing = 0; // Eat exception
 			}
 			this._domMutationObserver_reported_peptides_outer_container = undefined;
 		}
@@ -1932,14 +1977,26 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		if ( $single_protein_overlay_background.length === 0 ) {
 			throw Error("No DOM element found with id 'single_protein_overlay_background'");
 		}
-		$single_protein_overlay_background.remove();
+		$single_protein_overlay_background.detach();
 
+		window.setTimeout( () => {
+			//  Run here so all other updates run and paint before remove all these DOM nodes
+			console.log("Running single_protein_overlay_background.remove();")
+			$single_protein_overlay_background.remove();
+		}, 10 );
+		
 		const $view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
 		if ( $view_single_protein_overlay_div.length === 0 ) {
 			throw Error("No DOM element found with id 'view_single_protein_overlay_div'");
 		}
-		$view_single_protein_overlay_div.remove();
-
+		$view_single_protein_overlay_div.detach();
+		
+		window.setTimeout( () => {
+			//  Run here so all other updates run and paint before remove all these DOM nodes
+			console.log("view_single_protein_overlay_div single_protein_overlay_background.remove();")
+			$view_single_protein_overlay_div.remove();
+		}, 10 );
+		
 		this._contentDivHTMLElement = undefined;
 		this._proteinSequenceFormattedDisplay_Main_displayWidget = undefined;
 
