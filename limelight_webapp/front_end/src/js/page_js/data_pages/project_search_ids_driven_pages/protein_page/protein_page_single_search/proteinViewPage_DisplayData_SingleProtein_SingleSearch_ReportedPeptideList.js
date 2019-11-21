@@ -119,7 +119,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 			$selector_reported_peptides_loading_message_container.show();
 		}
 		{
-			const $selector_reported_peptides_updating_message_container = $reported_peptides_outer_container.find(".selectselector_reported_peptides_updating_message_containeror_reported_peptides_loading_message_container");
+			const $selector_reported_peptides_updating_message_container = $reported_peptides_outer_container.find(".selector_reported_peptides_updating_message_container");
 			if ( $selector_reported_peptides_updating_message_container.length === 0 ) {
 				const msg = "No DOM element with class 'selector_reported_peptides_updating_message_container' found under $reported_peptides_outer_container";
 				console.warn( msg + ".  $reported_peptides_outer_container: " );
