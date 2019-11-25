@@ -323,11 +323,11 @@ export class ProteinViewPage_Display_MultipleSearches {
 				
 				$protein_download_proteins.show();
 
-				$protein_download_proteins.click( function(eventObject) {
+				$protein_download_proteins.click( (eventObject) => {
 					try {
 						eventObject.preventDefault();
 
-						objectThis._downloadProteinList();
+						this._downloadProteinList();
 
 					} catch (e) {
 						reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
