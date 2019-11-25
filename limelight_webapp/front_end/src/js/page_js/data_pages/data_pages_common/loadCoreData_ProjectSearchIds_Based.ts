@@ -1,5 +1,5 @@
 /**
- * loadCoreData_ProjectSearchIds_Based.js
+ * loadCoreData_ProjectSearchIds_Based.ts
  * 
  * Load core data for Project Search Id Based pages page  
  * 
@@ -9,6 +9,9 @@
  * 
  */
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+
+//   From data_pages_common
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { SearchNameRetrieval }  from './searchNameRetrieval.js';
 import { SearchProgramsPerSearchDataRetrieval }  from './searchProgramsPerSearchDataRetrieval.js';
@@ -20,10 +23,24 @@ import { AnnotationTypeDataRetrieval } from './annotationTypeDataRetrieval.js';
  */
 export class LoadCoreData_ProjectSearchIds_Based{
 
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+
+	_annotationTypeDataRetrieval : AnnotationTypeDataRetrieval;
+	_searchNameRetrieval : SearchNameRetrieval;
+	_searchProgramsPerSearchDataRetrieval : SearchProgramsPerSearchDataRetrieval;
+
+	//  Bind 'this' to 'this.loadDataFor_ProjectSearchIds_ExcludeMainQueries'
+	_processRequestAsPromise_BoundThis;
+	
+
 	/**
 	 * 
 	 */
-	constructor( { dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, dataPageStateManager_DataFrom_Server } ) {
+	constructor( 
+		{ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, dataPageStateManager_DataFrom_Server } :
+		{ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager, dataPageStateManager_DataFrom_Server : DataPageStateManager }
+	) {
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
@@ -75,11 +92,10 @@ export class LoadCoreData_ProjectSearchIds_Based{
 			}
 
 			{
-				let retrieveAnnotationType_Promise =
-					this._annotationTypeDataRetrieval.retrieveSearchAnnotationTypeData( {
-						dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-						dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
-					} );
+				let retrieveAnnotationType_Promise = this._annotationTypeDataRetrieval.retrieveSearchAnnotationTypeData( {
+					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
+				} );
 
 				if ( retrieveAnnotationType_Promise ) {
 					promisesToWaitFor.push( retrieveAnnotationType_Promise );
@@ -87,10 +103,9 @@ export class LoadCoreData_ProjectSearchIds_Based{
 			}
 
 			{
-				let searchProgramsPerSearchDataRetrieval_Promise =
-					this._searchProgramsPerSearchDataRetrieval.retrieveSearchProgramsPerSearchData( 
-							this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, this._dataPageStateManager_DataFrom_Server, 
-							this._loadCoreDataFor_ProjectSearchIds_BoundThis );
+				let searchProgramsPerSearchDataRetrieval_Promise = this._searchProgramsPerSearchDataRetrieval.retrieveSearchProgramsPerSearchData( 
+					this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, this._dataPageStateManager_DataFrom_Server
+				);
 
 				if ( searchProgramsPerSearchDataRetrieval_Promise ) {
 					promisesToWaitFor.push( searchProgramsPerSearchDataRetrieval_Promise );
@@ -137,6 +152,6 @@ export class LoadCoreData_ProjectSearchIds_Based{
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
-	};
+	}
 	
 }

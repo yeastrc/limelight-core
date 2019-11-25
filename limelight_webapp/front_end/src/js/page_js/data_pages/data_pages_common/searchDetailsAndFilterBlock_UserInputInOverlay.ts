@@ -1,5 +1,5 @@
 /**
- * searchDetailsAndFilterBlock_UserInputInOverlay.js
+ * searchDetailsAndFilterBlock_UserInputInOverlay.ts
  * 
  * Javascript for User input of Searches Filters in overlay
  * on project search id driven pages
@@ -16,18 +16,21 @@
 
 //  module import 
 
-let Handlebars = require('handlebars/runtime');
-
-let _search_detail_section_user_input_section_bundle = 
-	require("../../../../../handlebars_templates_precompiled/search_detail_section_user_input_section/search_detail_section_user_input_section_template-bundle.js" );
+import { Handlebars, _search_detail_section_user_input_section_bundle } from './searchDetailsAndFilterBlock_UserInputInOverlay_ImportHandleBarsTemplates';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { copyObject_DeepCopy_Limelight }  from 'page_js/data_pages/data_pages_common/copyObject_DeepCopy.js';
 import { UpdatePageState_URL_With_NewFilterCutoffs_FromUser }  from 'page_js/data_pages/data_pages_common/updatePageState_URL_With_NewFilterCutoffs_FromUser.js';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
+
+//  For type 
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsAndFilterBlock_MainPage } from './searchDetailsAndFilterBlock_MainPage'
+
+//////////////
 
 const _TYPE_KEY_PSM = "PSM";
 const _TYPE_KEY_PEPTIDE = "Peptide";
@@ -38,11 +41,34 @@ const USER_CLICKED_IN_TYPE_PSM = "PSM";
 const USER_CLICKED_IN_TYPE_PEPTIDE = "Peptide";
 const USER_CLICKED_IN_TYPE_PROTEIN = "Protein";
 
+/////
+
 /**
  * 
  */
 class SearchDetailsAndFilterBlock_UserInputInOverlay {
 
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage; // 'Parent class object'
+	private _updatePageState_URL_With_NewFilterCutoffs_FromUser : UpdatePageState_URL_With_NewFilterCutoffs_FromUser;
+
+	private _type_display_label_psm : string;
+	private _type_display_label_peptide : string;
+	private _type_display_label_protein : string;
+
+	private _userDataResult : any; // generic object, properties added in this method
+	private _modalOverlay : ModalOverlay;
+
+
+	//  Handlebars Templates
+	private _search_details_OverallRoot_HandlebarsTemplate : any;
+	private _search_details_root_except_filtersHandlebarsTemplate : any;
+	private _search_details_root_per_type_row_HandlebarsTemplate : any;
+	private _search_details_root_per_type_entry_HandlebarsTemplate : any;
+	private _searchDetailsUserInputSection_SearchSeparatorEntry_HandlebarsTemplate : any;
+			
 	/**
 	 * 
 	 */
@@ -121,23 +147,29 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
      * 
      * @param {*} param0 
      */
-    _createModalOverlay( {  } ) {
+    _createModalOverlay() {
     	
     	const objectThis = this;
 
-        let props = { };
-        props.width = '800';
-        props.height = '500'
-        props.title = 'Change Search Filters';
-        props.$containerDiv = $('body' );
-
-        let $contentDiv = this._createModalOverlayContentDiv( {  } );
-        props.$contentDiv = $contentDiv;
+        let $contentDiv = this._createModalOverlayContentDiv();
+        $contentDiv = $contentDiv;
         
-        props.callbackOnClickedHide = function() {
+        const callbackOnClickedHide = function() {
         	
         	objectThis._search_filters_change_cancel_button_Click();
         }
+
+        let props = { 
+			width : '800',
+			height : '500',
+			title : 'Change Search Filters',
+			$containerDiv : $('body' ),
+			$contentDiv,
+			callbackOnClickedHide,
+			hideOnBackgroundClick : undefined
+		};
+
+		// $containerDiv, $contentDiv, width, height, title, hideOnBackgroundClick, callbackOnClickedHide
 
         let overlay = new ModalOverlay( props );
         
@@ -189,7 +221,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 	/**
 	 * 
 	 */
-    _createModalOverlayContentDiv( {  } ) {
+    _createModalOverlayContentDiv() {
     	
     	let contentDivHTML = this._search_details_OverallRoot_HandlebarsTemplate( { } );
     	let $contentDiv = $( contentDivHTML );
@@ -207,10 +239,10 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		//  Process project search ids to get data
 
 		let projectSearchIds = // array
-			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		let searchDetails_Filters_AnnTypeDisplayRootObject = 
-			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
 		
 		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 
@@ -219,13 +251,13 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		let filtersAnnTypeDisplayPerProjectSearchIds = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
 
 		let searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
 		let searchProgramsPerSearchData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchProgramsPerSearchData();
 
 		let annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		if ( ! annotationTypeData ) {
 			throw Error("No annotation type data loaded" );
@@ -234,7 +266,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 
 		if ( ! this._modalOverlay ) {
 			
-			this._modalOverlay = this._createModalOverlay( { } );
+			this._modalOverlay = this._createModalOverlay();
 		}
 		this._modalOverlay.show();
 		
@@ -380,8 +412,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 			
 			$search_filters_change_per_searches_container_scrollable_div.scrollTop( containerDivScrollTop );
 		}
-		
-	};
+	}
 
 	/**
 	 * @param filterableAnnotationTypes_ForType: for psm, peptide, or protein 
@@ -419,7 +450,8 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		let searchCutoffForTypeRowcontext = {
 				perTypeLabel: typeDispayLabel,
 				searchId : searchNameObject.searchId,
-				projectSearchId : searchNameObject.projectSearchId
+				projectSearchId : searchNameObject.projectSearchId,
+				highlightThisSectionClass : undefined
 		};
 		
 		if ( highlightThisSection ) {
@@ -437,7 +469,10 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 
 		for ( const filterableAnnotationTypes_AnnotationTypeIds_Item of filterableAnnotationTypes_AnnotationTypeIds ) {
 			
-			let userResultData_PerAnnTypeId = {};
+			let userResultData_PerAnnTypeId = {
+				value : undefined
+			};
+
 			userResultData_PerType[ filterableAnnotationTypes_AnnotationTypeIds_Item ] = userResultData_PerAnnTypeId;
 
 			let filterableAnnotation_Item = filterableAnnotationTypes_ForType[ filterableAnnotationTypes_AnnotationTypeIds_Item ];
@@ -519,14 +554,13 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 			if ( highlightThisInputField ) {
 				$selector_annotation_cutoff_input_field.select();
 			}
-		};
+		}
 		
 		if ( highlightThisSection && ! highlighedAnInputField ) {
 			//  No field had data to select so set focus to first field
 			$selector_annotation_cutoff_input_field_FirstField.focus();
 		}
-	};
-
+	}
 	
 	/**
 	 * User changed a cutoff field 
@@ -554,7 +588,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		let fieldValueNumber = undefined;
 		let invalidNumber = false;
 		
-		let fieldValue = $fieldThis.val();
+		let fieldValue = <string> $fieldThis.val();
 		
 		if ( fieldValue === "" ) {
 			$annotation_cutoff_not_number_message_jq.hide();
@@ -582,7 +616,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 			userResultData_PerAnnTypeId.invalidNumberError = false;
 			userResultData_PerAnnTypeId.value = fieldValueNumber;
 		}
-	};
+	}
 	
 	_isFieldValueValidNumber( { fieldValue } ) {
 
@@ -596,7 +630,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 			return false; 
 		}
 		return true;
-	};
+	}
 
 	/**
 	 *  
@@ -611,7 +645,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		} else {
 			$search_filters_change_update_button.prop("disabled",false);
 		}
-	};
+	}
 	
 	/**
 	 *  
@@ -649,7 +683,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		}
 		
 		return foundAnyFieldError;
-	};
+	}
 	
 	//////////////////////////////////
 	
@@ -668,7 +702,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		//  Process project search ids to get data
 
 		let searchDetails_Filters_AnnTypeDisplayRootObject = 
-			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
 
 		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 
@@ -885,7 +919,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 //		window.alert("Not implemented yet")
 //		throw Error("_search_filters_change_reset_to_defaults_button_Click() Not implemented yet")
 //	}
-};
+}
 
 
 export { SearchDetailsAndFilterBlock_UserInputInOverlay, USER_CLICKED_IN_TYPE_PSM, USER_CLICKED_IN_TYPE_PEPTIDE, USER_CLICKED_IN_TYPE_PROTEIN }

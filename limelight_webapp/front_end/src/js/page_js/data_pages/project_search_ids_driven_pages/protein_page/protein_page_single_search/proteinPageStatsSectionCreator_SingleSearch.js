@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { ProteinViewPage_StatsSection } from './proteinPageStatsSection.jsx';
 

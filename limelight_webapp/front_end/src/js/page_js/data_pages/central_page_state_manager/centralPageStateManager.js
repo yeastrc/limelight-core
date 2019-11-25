@@ -253,8 +253,6 @@ export class CentralPageStateManager {
 		//			pageStateIdentifier = _STANDARD_PAGE_STATE_IDENTIFIER;
 		//		}
 
-		//  Parts taken from userSelection_q_OnURL_Update_UpdateJSobjectFromURL.js
-
 		const stateAsJSON = JSON.stringify( pageStateObject );
 
 		let stateAsJSON_Compressed = this._stringCompressDecompress.compress(stateAsJSON);

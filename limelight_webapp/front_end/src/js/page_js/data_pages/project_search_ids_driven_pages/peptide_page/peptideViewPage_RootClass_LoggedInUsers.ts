@@ -1,5 +1,5 @@
 /**
- * peptideViewPage_RootClass_LoggedInUsers.js
+ * peptideViewPage_RootClass_LoggedInUsers.ts
  * 
  * For peptideView.jsp page
  * 
@@ -14,11 +14,11 @@
 
 //  Imports
 
-import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory.js';
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
 //  From local dir
 import { PeptideViewPage_RootClass_Common }  
-	from 'page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_RootClass_Common.js';
+	from 'page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_RootClass_Common';
 
 /**
  * 

@@ -25,7 +25,7 @@ import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE_
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 //  Local Imports:
 
@@ -284,7 +284,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
-	};
+	}
 	
 	/**
 	 * 
@@ -294,7 +294,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		//  Seemed to work but now doesn't work to clean up the temp dir
 		//  Call to remove partial upload if one is set up or in progress
 		this.closeOverlay( { eventObject : eventObject } );
-	};
+	}
 	
 	/**
 	 * 
@@ -305,7 +305,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		}
 		this.prevFileIndex++;
 		return this.prevFileIndex;
-	};
+	}
 	
 	////////////  File Data
 	/**
@@ -319,7 +319,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			return true;
 		}
 		return false;
-	};
+	}
 	/**
 	 * 
 	 */
@@ -328,7 +328,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			return [];
 		}
 		return this.fileStorage;
-	};
+	}
 	/**
 	 * 
 	 */
@@ -339,7 +339,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		}
 		let fileData = this.fileStorage[ fileIndex ];
 		return fileData;
-	};
+	}
 	/**
 	 * 
 	 */
@@ -350,7 +350,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			this.fileStorage = [];
 		}
 		this.fileStorage[ fileIndex ] = fileData;
-	};
+	}
 	/**
 	 * 
 	 */
@@ -366,7 +366,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			throw Error( "no file in fileStorage for index: " + fileIndex );
 		}
 		delete this.fileStorage[ fileIndex ];
-	};
+	}
 	/**
 	 * 
 	 */
@@ -376,7 +376,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			return;
 		}
 		delete this.fileStorage;
-	};
+	}
 	
 	/**
 	 * 
@@ -395,7 +395,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			throw Error( 'Fail parse to int:  $domElement.attr("data-file_index") : fileIndexString: ' + fileIndexString );
 		}
 		return fileIndex;
-	};
+	}
 	
 //	User clicked the "Cancel" button or the close "X"
 	/**
@@ -409,7 +409,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			return;
 		}
 		this.closeOverlay( { clickThis : clickThis, eventObject : eventObject } );
-	};
+	}
 	
 	/**
 	 * 
@@ -432,7 +432,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			this.updateServerAbandonedUploadKey();
 		}
 		this.clearFileData();
-	};
+	}
 	
 	/**
 	 * 
@@ -445,7 +445,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		$("#import_limelight_xml_chosen_limelight_xml_file_block").hide();
 		$("#import_limelight_xml_chosen_limelight_xml_file_name").text( "" );
 		$("#import_limelight_xml_choose_scan_file_block").hide();
-	};
+	}
 	
 	/**
 	 * 
@@ -462,7 +462,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		$("#import_limelight_xml_file_cancel_failed_message_block").hide();
 		$("#import_limelight_xml_file_cancel_message_block").hide();
 		this.hideSubmitInProgress();
-	};
+	}
 	
 	/**
 	 * 
@@ -520,7 +520,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		$("#import_limelight_xml_chosen_limelight_xml_file_name").text( filename );
 //		Start the upload of the selected file
 		this.uploadFile( { isLimelightXMLFile : true, $containingBlock : $import_limelight_xml_chosen_limelight_xml_file_block } );
-	};
+	}
 	
 	//	User is removing their choice of Limelight XML file
 	//	TODO  If uploaded, remove from server
@@ -548,7 +548,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		}
 		this.removeFileData( { fileIndex : fileIndex } );
 		this.resetOverlayLimelightXMLSection();
-	};
+	}
 	
 	//	Remove The Scan file, aborting the upload if in progress
 	/**
@@ -574,7 +574,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		this.removeFileData( { fileIndex : fileIndex } );
 		$import_limelight_xml_file_scan_file_entry_block_jq.remove();
 		this.enableDisableSubmitUploadButtonAndAddScanFileLinkConditional();
-	};
+	}
 	
 	///////////////////////////////////////////////
 	//	Abort the send of the XMLHttpRequest
@@ -598,10 +598,11 @@ export class ProjectPage_UploadData_NewUploadMain {
 				try {
 					xmlHttpRequest.abort();
 				} catch(e) { 
+					const znothing = 0;
 				}
 			}
 		}
-	};
+	}
 	
 //	User chose a file in the Scan file dialog, or it is empty
 	/**
@@ -679,7 +680,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		$fileElement.val(""); // clear the input field after get the selected file(s)
 		let fileIndex = this.getNextFileIndex();
 
-		let context = { fileIndex : fileIndex, fileType : fileType, fileName : filename };
+		let context = { fileIndex : fileIndex, fileType : fileType, fileName : filename }
 		let html = this._per_upload_file_template(context);
 		let $import_limelight_xml_scan_files_block = $("#import_limelight_xml_scan_files_block");
 		let $scanFileEntry = $(html).appendTo( $import_limelight_xml_scan_files_block );
@@ -695,7 +696,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		this.addFileData( { fileData : projectPage_UploadData_NewSingleFileEntry,  fileIndex : fileIndex } );
 //		Start the upload of the selected file
 		this.uploadFile( { isLimelightXMLFile : false, $containingBlock : $scanFileEntry } );
-	};
+	}
 	
 	/**
 	 * 
@@ -706,7 +707,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 
 		let requestData = {
 				projectIdentifier : this._projectIdentifierFromURL
-		};
+		}
 
 		const url = "d/rws/for-page/project-upload-data-upload-initialize";
 
@@ -724,7 +725,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 				throw e;
 			}
 		});
-	};
+	}
 	
 	/**
 	 * 
@@ -757,7 +758,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		$overlay_container.css( { top : overlayNewTop + "px" } );
 		$overlay_background.show();
 		$overlay_container.show();
-	};
+	}
 	
 	/**
 	 * 
@@ -828,7 +829,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 //						resp = {
 //						statusSuccess: false,
 //						data: 'Unknown error occurred: [' + xhrResponseText + ']'
-//						};
+//						}
 						let errorMessage = "File Uploaded but failed to get information from server response.";
 						objectThis.failedFileUpload( 
 								{ isLimelightXMLFile : isLimelightXMLFile,
@@ -955,7 +956,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 //					resp = {
 //					statusSuccess: false,
 //					data: 'Unknown error occurred: [' + xhrResponseText + ']'
-//					};
+//					}
 //					}
 					let errorMessage = "File NOT Uploaded, server error, status 500";
 					objectThis.failedFileUpload( 
@@ -971,7 +972,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 //					resp = {
 //					statusSuccess: false,
 //					data: 'Unknown error occurred: [' + xhrResponseText + ']'
-//					};
+//					}
 //					}
 					let errorMessage = "File NOT Uploaded, Service not found on server. status 404";
 					objectThis.failedFileUpload( 
@@ -991,7 +992,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
 			}
-		};
+		}
 		
 		xmlHttpRequest.upload.addEventListener('error', function(event){
 			try {
@@ -1046,21 +1047,22 @@ export class ProjectPage_UploadData_NewUploadMain {
 				fileIndex : fileIndex,
 				fileType : fileType,
 				filename : filename
-		};
+		}
 		let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
 		
 		xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, uploadFileHeaderParamsJSON );
 		
-		try {
+		//  ES Lint reports useless try/catch so remove
+		// try {
 			//  Send File object from page <input type="file"> element instead of creating a Form and appending a File to it
 			
 			xmlHttpRequest.send( fileToUpload );
 			
-		} catch( e ) {
-			throw e;
-		}
+		// } catch( e ) {
+		// 	throw e;
+		// }
 
-	};
+	}
 	
 	/**
 	 * 
@@ -1076,12 +1078,12 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let $upload_complete_msg_jq = $containingBlock.find(".upload_complete_msg_jq");
 		$upload_complete_msg_jq.show();
 		projectPage_UploadData_NewSingleFileEntry.setUploadedToServer( true );
-		if ( isLimelightXMLFile ) {
-		}
+		// if ( isLimelightXMLFile ) {
+		// }
 		$("#import_limelight_xml_choose_scan_file_block").show();
 //		this.enableSubmitUploadButton();
 		this.enableDisableSubmitUploadButtonAndAddScanFileLinkConditional();
-	};
+	}
 ////	/
 	/**
 	 * 
@@ -1099,7 +1101,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		$("#import_limelight_xml_file_error_message_filename").text( filename );
 		$("#import_limelight_xml_file_file_error_message").text( errorMessage );
 		$(".import_limelight_xml_file_upload_error_overlay_show_hide_parts_jq").show();
-	};
+	}
 	
 	/**
 	 * 
@@ -1111,7 +1113,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let $progress_bar_container_jq = $containingBlock.find(".progress_bar_container_jq");
 		$progress_bar_container_jq.show();
 		this.progressBarUpdate( { progressPercent : 0, $containingBlock : $containingBlock } );
-	};
+	}
 	
 	/**
 	 * 
@@ -1125,7 +1127,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		progressBar.style.width = progressPercentText;
 		let $progress_bar_text_jq = $containingBlock.find(".progress_bar_text_jq");
 		$progress_bar_text_jq.text( progressPercentText );
-	};
+	}
 	
 	/**
 	 * 
@@ -1167,7 +1169,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 						uploadedFilename : filename,
 						fileType : fileType,
 						fileIndex : fileData.getFileIndex()
-				};
+				}
 				fileItems.push( fileItem );
 			}
 		}
@@ -1181,7 +1183,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 				projectIdentifier : this._projectIdentifierFromURL,
 				uploadKey : uploadKey,
 				searchName : searchName,
-				fileItems : fileItems };
+				fileItems : fileItems }
 		
 		this.uploadKey = undefined; // Clear since about to make AJAX call
 		
@@ -1201,7 +1203,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 				throw e;
 			}
 		});
-	};
+	}
 	
 	/**
 	 * 
@@ -1238,7 +1240,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		this._projectPage_UploadData_ListExistingUploads.populateDataBlockAndPendingCount();
 		
 		this.closeOverlay();
-	};
+	}
 	
 	/**
 	 * 
@@ -1258,8 +1260,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 					limelightXMLfileUploaded = true;
 				}
 			} else {
-				if ( projectPage_UploadData_NewSingleFileEntry.isUploadedToServer() ) {
-				} else {
+				if ( ! ( projectPage_UploadData_NewSingleFileEntry.isUploadedToServer() ) ) {
 					allScanFilesUploadedOrNoScanFiles = false;
 				}
 			}
@@ -1271,7 +1272,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			this.disableSubmitUploadButton();
 			$("#import_limelight_xml_choose_scan_file_block").hide();
 		}
-	};
+	}
 	
 	/**
 	 * 
@@ -1279,7 +1280,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 	enableSubmitUploadButton() {
 		$("#import_limelight_xml_file_submit_button").prop( "disabled", false );
 		$("#import_limelight_xml_file_submit_button_disabled_overlay").hide();
-	};
+	}
 	
 	/**
 	 * 
@@ -1287,7 +1288,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 	disableSubmitUploadButton() {
 		$("#import_limelight_xml_file_submit_button_disabled_overlay").show();
 		$("#import_limelight_xml_file_submit_button").prop( "disabled", true );
-	};
+	}
 	
 	/**
 	 * 
@@ -1299,7 +1300,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		if ( window.createSpinner ) {
 			window.createSpinner();				// create spinner
 		}
-	};
+	}
 	
 	/**
 	 * 
@@ -1312,7 +1313,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		if ( window.destroySpinner ) {
 			window.destroySpinner();				// destroy spinner
 		}
-	};
+	}
 	
 	/**
 	 * 
@@ -1326,7 +1327,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let uploadKey = this.uploadKey;
 
 //		All properties put in requestObj must be accepted by the web service
-		let requestObj = { projectIdentifier : this._projectIdentifierFromURL, uploadKey : uploadKey };
+		let requestObj = { projectIdentifier : this._projectIdentifierFromURL, uploadKey : uploadKey }
 		
 		const url = "d/rws/for-page/project-upload-data-upload-remove-abandoned";
 
@@ -1338,5 +1339,5 @@ export class ProjectPage_UploadData_NewUploadMain {
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => 
 		{ });
-	};
+	}
 }

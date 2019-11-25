@@ -1,5 +1,7 @@
 /**
- * webserviceCallStandardPost.js
+ * webserviceCallStandardPost__InternalJS.js
+ * 
+ * !!!!!!   INTERNAL Only:  Only called from webserviceCallStandardPost.ts
  * 
  * Make webservice call to server.
  * 
@@ -33,21 +35,12 @@ import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXEr
 import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallStandardPost_RejectObject_Class.js';
 
 /**
- * Make webservice call
+ * !!!!!   INTERNAL ONLY
  * 
- * @param dataToSend Object that will be serialized to JSON and sent to server
- * @param url - without trailing '/' or getWebserviceSyncTrackingCode() 
- * @param doNotHandleErrorResponse - Do not process non-200 response code or AJAX Parse failures, Caller is responsible.
- * 
- * @return { promise, api }. On promise, call resolve({ responseData }) or reject({ rejectReasonObject }).  On api, call abort()
- * 
- * content type of post is assumed _AJAX_POST_JSON_CONTENT_TYPE
+ * ONLY CALL FROM webserviceCallStandardPost.ts
  * 
  */
-var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorResponse }) {
-
-    let request = undefined;
-    let abortCalled = false;
+const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doNotHandleErrorResponse = false, api }) {
 
     const webserviceCallFunction = function( resolve, reject ) {
         try {
@@ -58,7 +51,7 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
 
             const requestData = JSON.stringify( dataToSend );
 
-            request =
+            const request =
             $.ajax({
                 type : "POST",
                 url : _URL,
@@ -72,7 +65,7 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                 },
                 success : function( responseDataJSON ) {
 
-                    request = undefined;
+                    api._clear_request();
 
                     try {
 
@@ -112,7 +105,7 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                 },
                 failure: function(errMsg) {
 
-                    request = undefined;
+                    api._clear_request();
 
                     try {
                         if ( ! doNotHandleErrorResponse ) {
@@ -132,9 +125,9 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                 },
                 error : function(jqXHR, textStatus, errorThrown) {
 
-                    request = undefined;
+                    api._clear_request();
 
-                    if ( ! abortCalled ) {
+                    if ( ! api._is_abortCalled() ) {
                         //  Abort not called so report error
                         try {
                             if ( ! doNotHandleErrorResponse ) {
@@ -157,26 +150,19 @@ var webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorRe
                 }
                 
             });
+
+            api._set_request( request );
+
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }
     }
 
-    const api = {
-        abort : function() {
-            if ( request ) {
-                abortCalled = true;
-                request.abort();
-                request = undefined;
-            }
-        }
-    }
-
     const promise = new Promise( webserviceCallFunction );
 
-    return { promise, api };
+    return promise;
 };
 
-export { webserviceCallStandardPost }
+export { webserviceCallStandardPost_INTERNALONLY }
 

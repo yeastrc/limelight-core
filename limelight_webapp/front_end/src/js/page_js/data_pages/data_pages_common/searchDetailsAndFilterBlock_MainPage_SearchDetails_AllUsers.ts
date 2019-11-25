@@ -1,5 +1,5 @@
 /**
- * searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.js
+ * searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.ts
  * 
  * Javascript for Search Details (Expand a search to show the details) on all pages (except Project Page), all users
  * 
@@ -24,13 +24,9 @@
 
 //  module import 
 
-//  Import Handlebars templates
+import { Handlebars, _search_detail_section_main_page_template } from './searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_ImportHandleBarsTemplates';
 
-const Handlebars = require('handlebars/runtime');
-
-let _search_detail_section_main_page_template = require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js");
-
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
@@ -38,20 +34,42 @@ import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pa
 
 import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core.js';
 
+//  For type 
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+
 
 //  Local imports
+
+
+import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from './searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers';
+
 
 /**
  * 
  */
 export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
+	//  Handlebars Templates
+	private _searchDetails_ExpandSearchContents_Additions;
+	private _searchDetails_WeblinksEntry;
+	private _searchDetails_CommentEntry;
+	
+	private _initializeCalled : boolean;
+
+	private _searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers : SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers;
+	private _searchDetails_GetCoreDataFromServer : SearchDetails_GetCoreDataFromServer;
+
+	private _searchDetailsExpanded_ProjectSearchIds : Set<number>; // ProjectSearchIds
+	private _searchDetailsDataLoaded_ProjectSearchIds : Set<number>;  // ProjectSearchIds
+	private _searchDetailsDataLoadedOrInProgress_ProjectSearchIds : Set<number>;   // ProjectSearchIds
+
 	/**
 	 * @param dataPages_LoggedInUser_CommonObjectsFactory - Optional - passed in when logged in user
 	 */
-    constructor({ 
-        dataPages_LoggedInUser_CommonObjectsFactory
-    }) {
+    constructor(
+		{ dataPages_LoggedInUser_CommonObjectsFactory } : 
+		{ dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory }
+	) {
 
         this._initializeCalled = false;
 		
@@ -90,9 +108,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	initialize({ }) {
-
-		//  NOT CALLED
+	public initialize() {
 
         this._initializeCalled = true;
     }
@@ -100,7 +116,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	hideSearchDetailsClicked({ clickedThis, projectSearchId }) {
+	public hideSearchDetailsClicked({ clickedThis, projectSearchId }) {
 
 		const $clickedThis = $( clickedThis );
 
@@ -139,13 +155,13 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	showSearchDetailsClicked({ clickedThis, projectSearchId }) {
+	public showSearchDetailsClicked({ clickedThis, projectSearchId }) {
 
 		const objectThis = this;
 
 		if ( this._searchDetailsDataLoaded_ProjectSearchIds.has( projectSearchId ) ) {
 
-			this._displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId });
+			this._displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId, searchDetailsResultsCombined : undefined });
 			return;
 		}
 
@@ -164,7 +180,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	_getSearchDetails({ projectSearchIds }) {
+	private _getSearchDetails({ projectSearchIds }) {
 
 		const objectThis = this;
 
@@ -182,7 +198,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 					try {
 						//  Combine promise results, each promise result has a different property
 
-						const searchDetailsResultsCombined = {};
+						const searchDetailsResultsCombined = {
+							coreSearchDetails : undefined,
+							projectPageSearchDetails : undefined
+						};
 
 						for ( const promiseResult of promiseResults ) {
 							if (promiseResult.coreSearchDetails) {
@@ -210,7 +229,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */	
-	_get_SearchDetailsProjectPageDataHTML({ projectSearchIds }) {
+	private _get_SearchDetailsProjectPageDataHTML({ projectSearchIds }) {
 
         const objectThis = this;
 
@@ -228,7 +247,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 				promise_webserviceCallStandardPost.then( ({ responseData }) => {
 					try {
-						const promiseResponse = objectThis._getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData, projectSearchIds } );
+						const promiseResponse = objectThis._getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData } );
 						
 						resolve( { projectPageSearchDetails : promiseResponse } );
 						
@@ -248,7 +267,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-    _getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData } ) {
+    private _getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData } ) {
 
 		const rootWsResult = responseData.result;
 		
@@ -287,7 +306,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	 * @param projectSearchId
 	 * @param coreSearchDetailsForProjectSearchId - loaded data. undefined if not loaded data since already have data
 	 */
-	_displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId, searchDetailsResultsCombined }) {
+	private _displaySearchDetails_SingleProjectSearchId(
+		{ clickedThis, projectSearchId, searchDetailsResultsCombined } :
+		{ clickedThis : any, projectSearchId : number, searchDetailsResultsCombined : any }
+	) {
 
 		const $clickedThis = $( clickedThis );
 
@@ -411,7 +433,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    _searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container }) {
+    private _searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container }) {
 
 		const webLinkList = data.webLinkList;
 		const commentList = data.commentList;
@@ -451,7 +473,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * Also called to add entries to the container
 	 */    
-    searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container }) {
+    public searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container }) {
 		
 		if ( ! this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers ) {
 			webLink.canDelete = false;
@@ -473,7 +495,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * Also called to add entries to the container
 	 */    
-	searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container }) {
+	public searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container }) {
 
 		if ( ! this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers ) {
 			comment.canEdit = false;
@@ -489,10 +511,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 			this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.searchDetails_Edit_Delete_Comment_AddClickHandlers({ projectSearchId, comment, $commentEntry });
 		}
-
-
 	}
-
 
     ///////////////////////////////////////////
 
@@ -501,74 +520,76 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    _searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) {
+    private _searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) {
 
         if ( this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers ) {
             this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
         }
-    }
-
-	/**
-	 * 
-	 */
-	displaySearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
-
-		const objectThis = this;
-
-		const projectSearchIdsGetFromServer = [];
-
-		for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-
-			if ( ! this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds.has( projectSearchId ) ) {
-				projectSearchIdsGetFromServer.push( projectSearchId );
-			}
-		}
-
-		if ( projectSearchIdsGetFromServer.length === 0 ) {
-
-			//  No Data to Load. Expand All
-
-			for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-				objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId });
-			}
-			return; // EARLY RETURN
-		}
-
-		const promise_getSearchDetails = this._getSearchDetails({ projectSearchIds : projectSearchIdsGetFromServer });
-
-		promise_getSearchDetails.then((searchDetailsResultsCombined) => {
-			try {
-				for ( const projectSearchId of projectSearchIdsGetFromServer ) {
-
-					objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined });
-				}
-
-				//  Then expand all
-
-				for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-					objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId });
-				}
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		
-		})
 	}
+	
+	//  Not sure if this works but doesn't make sense 
+	//    since call to this._displaySearchDetails_SingleProjectSearchId(...) does not pass clickedThis
 
+	// /**
+	//  * 
+	//  */
+	// public displaySearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
 
-	/**
-	 * 
-	 */
-	hideSearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
+	// 	const projectSearchIdsGetFromServer = [];
 
-		const objectThis = this;
+	// 	for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
 
-		for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-			this._hideSearchDetailsClicked({ projectSearchId });
-		}
+	// 		if ( ! this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds.has( projectSearchId ) ) {
+	// 			projectSearchIdsGetFromServer.push( projectSearchId );
+	// 		}
+	// 	}
 
-    }
+	// 	if ( projectSearchIdsGetFromServer.length === 0 ) {
+
+	// 		//  No Data to Load. Expand All
+
+	// 		for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
+	// 			this._displaySearchDetails_SingleProjectSearchId({ projectSearchId });
+	// 		}
+	// 		return; // EARLY RETURN
+	// 	}
+
+	// 	const promise_getSearchDetails = this._getSearchDetails({ projectSearchIds : projectSearchIdsGetFromServer });
+
+	// 	promise_getSearchDetails.then((searchDetailsResultsCombined) => {
+	// 		try {
+	// 			for ( const projectSearchId of projectSearchIdsGetFromServer ) {
+
+	// 				this._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined });
+	// 			}
+
+	// 			//  Then expand all
+
+	// 			for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
+	// 				this._displaySearchDetails_SingleProjectSearchId({ projectSearchId });
+	// 			}
+	// 		} catch( e ) {
+	// 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+	// 			throw e;
+	// 		}
+		
+	// 	})
+	// }
+
+	////////
+
+	//  Not sure if this works but doesn't make sense 
+	//    since called method this._hideSearchDetailsClicked(...) does not exist
+
+	// /**
+	//  * 
+	//  */
+	// public hideSearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
+
+	// 	for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
+	// 		this._hideSearchDetailsClicked({ projectSearchId });
+	// 	}
+    // }
     
     ///////////////////////////////////////////
 
@@ -577,7 +598,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    _attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container }) {
+    private _attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container }) {
 
         const objectThis = this;
 
@@ -598,13 +619,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
             this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container });
         }
-        
     }
 
 	/**
 	 * 
 	 */        
-    _downloadSearchFileClicked({ projectSearchId, clickedThis }) {
+    private _downloadSearchFileClicked({ projectSearchId, clickedThis }) {
 
         const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
         if ( $selector_display_search_filename_outer_container.length === 0 ) {
@@ -620,7 +640,6 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
                 + search_file_project_search_idString
                 + ", projectSearchId: " + projectSearchId );
         }
-
 
         const requestJSONObject = {
             projectSearchId: projectSearchId,

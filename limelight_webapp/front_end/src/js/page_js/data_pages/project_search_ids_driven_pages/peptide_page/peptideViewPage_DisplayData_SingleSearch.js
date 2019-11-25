@@ -17,14 +17,13 @@ let _peptide_table_template_bundle =
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
+import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 
 import { Psm_DrilldownRetrieveDisplay } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_DrilldownRetrieveDisplay.js';
 
@@ -38,13 +37,11 @@ export class PeptideViewPage_Display_SingleSearch {
 	 */
 	constructor( {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing
 	}) {
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		
@@ -149,7 +146,7 @@ export class PeptideViewPage_Display_SingleSearch {
 				throw e;
 			}
 		});
-	};
+	}
 
 	/**
 	 * 
@@ -173,7 +170,7 @@ export class PeptideViewPage_Display_SingleSearch {
 		}
 		
 		this._renderToPagePeptideList( { projectSearchId : projectSearchId, peptideList : peptideList } );
-	};
+	}
 
 	/**
 	 * 
@@ -323,10 +320,10 @@ export class PeptideViewPage_Display_SingleSearch {
 				
 				if ( context.numPsms === undefined || context.numPsms === null ) {
 					context.numPsmsNotSet = true;
-				};
+				}
 				if ( context.numUniquePsms === undefined || context.numUniquePsms === null ) {
 					context.numUniquePsmsNotSet = true;
-				};
+				}
 				
 				const modMassesAllList = peptideListItem.modMassList;
 
@@ -485,8 +482,7 @@ export class PeptideViewPage_Display_SingleSearch {
 		}
 
 		console.log("Rendering Peptide List END, Now: " + new Date() );
-		
-	};
+	}
 	
 	/**
 	 * 
@@ -527,7 +523,7 @@ export class PeptideViewPage_Display_SingleSearch {
 				reportedPeptideId : reportedPeptideId
 			});
 		}
-	};
+	}
 	
 
 	
@@ -576,7 +572,7 @@ export class PeptideViewPage_Display_SingleSearch {
 			psmAnnotationTypesForPeptideListEntries : psmAnnotationTypesForPeptideListEntries,
 			reportedPeptideAnnotationTypesForPeptideListEntries : reportedPeptideAnnotationTypesForPeptideListEntries
 		};
-	};
+	}
 
 	
 }

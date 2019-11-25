@@ -4,10 +4,9 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
 import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
 
 export class ModViewPage_DataLoader {
@@ -28,7 +27,7 @@ export class ModViewPage_DataLoader {
 		return {
 			requestObject : requestObject
 		};
-	};
+	}
 	
 	/**
 	 * Get Mod List To Render For Single Project Search Id
@@ -66,7 +65,7 @@ export class ModViewPage_DataLoader {
             throw e;
           }
         });
-	};
+	}
 
 
 	/**
@@ -105,7 +104,7 @@ export class ModViewPage_DataLoader {
             throw e;
           }
         });
-	};
+	}
 
 	//////
 
@@ -118,7 +117,7 @@ export class ModViewPage_DataLoader {
 		// Validate that only 1 project search id since that is what this supports
 		
 		let projectSearchIds = // array
-            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		let searchDataLookupParams_For_Single_ProjectSearchId = 
 			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -131,7 +130,7 @@ export class ModViewPage_DataLoader {
 		return {
 			requestObject : requestObject
 		};
-	};
+	}
 		
 	/**
 	 * Get Protein Info List For Single Project Search Id
@@ -168,8 +167,7 @@ export class ModViewPage_DataLoader {
             throw e;
           }
         });
-
-    };
+    }
 
 
 
@@ -186,7 +184,7 @@ export class ModViewPage_DataLoader {
 		return {
 			requestObject : requestObject
         };
-	};
+	}
 
 	getProteinPositionResidues( { projectSearchId, proteinsAndPositions, loadedData } ) {
 		
@@ -208,7 +206,7 @@ export class ModViewPage_DataLoader {
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
-                    loadedData.proteinPositionResidues = responseData.proteinSeqVId_Position_Residue;                        ;
+                    loadedData.proteinPositionResidues = responseData.proteinSeqVId_Position_Residue;
                     resolve();
 
                 } catch( e ) {
@@ -221,8 +219,7 @@ export class ModViewPage_DataLoader {
             throw e;
           }
         });
-
-    };
+    }
     
     	/**
 	 * Called by getModData_SingleProjectSearchId to create a request
@@ -241,7 +238,7 @@ export class ModViewPage_DataLoader {
 		return {
 			requestObject : requestObject
 		};
-    };
+  }
     
     getAminoAcidModStatsForSearch( { projectSearchId, searchDetailsBlockDataMgmtProcessing, residueArray, loadedData } ) {
         
@@ -262,7 +259,7 @@ export class ModViewPage_DataLoader {
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
-                    loadedData.aminoAcidModStats = responseData;                        ;
+                    loadedData.aminoAcidModStats = responseData;
                     resolve();
 
                 } catch( e ) {
@@ -275,8 +272,7 @@ export class ModViewPage_DataLoader {
             throw e;
           }
         });
-
-    };
+    }
 
 	__createRequestForReportedPeptideInfoForReportedPeptideIdList( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideIds } ) {
 
@@ -297,7 +293,7 @@ export class ModViewPage_DataLoader {
 		};
 		
 		return requestObject;
-    };
+  }
 
     getReportedPeptideInfoForReportedPeptideIdList( { dataPageStateManager_DataFrom_Server, searchDetailsBlockDataMgmtProcessing, projectSearchId, reportedPeptideIds, loadedData } ) {        
 

@@ -1,18 +1,15 @@
 /**
- * saveView_dataPages.js
+ * saveView_dataPages.ts
  * 
  * Javascript for Data Pages: Save the current view/URL.  Optionally for single search, set as default
  * 
  */
 
-
-let Handlebars = require('handlebars/runtime');
-
-let _save_view_template_bundle = require("../../../../../handlebars_templates_precompiled/save_view/save_view_template-bundle.js");
+import { Handlebars, _save_view_template_bundle } from './saveView_dataPages_ImportHandlebarsTemplates.js'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
@@ -25,6 +22,20 @@ import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.
  * 
  */
 export class SaveView_dataPages {
+
+    //  Handlebars templates
+    private _save_view__on_main_page_root_Template : any;
+    private _save_view_overlay_contents_Template : any;
+
+    //  Set in initialize
+    private _projectSearchIds : Array<number>;
+    private _enableSetDefault : boolean;
+    private _canSetDefault  : boolean;
+    private _userIsProjectOwner : boolean;
+
+    //  set later
+
+    private _modalOverlay : ModalOverlay;
 
 	/**
 	 * 
@@ -47,9 +58,10 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-	initialize({ projectSearchIds, container_DOM_Element, enableSetDefault }) {
-
-        const objectThis = this;
+	public initialize(
+        { projectSearchIds, container_DOM_Element, enableSetDefault } :
+        { projectSearchIds : Array<number>, container_DOM_Element : any, enableSetDefault : boolean }
+    ) : void {
 
         this._projectSearchIds = projectSearchIds;
 
@@ -92,10 +104,10 @@ export class SaveView_dataPages {
 
         const $selector_save_view_button = $saveViewButtonContainer.find(".selector_save_view_button");
 
-        $selector_save_view_button.click( function(eventObject) {
+        $selector_save_view_button.click( (eventObject) => {
 			try {
 				eventObject.preventDefault();
-                objectThis._saveView_MainPage_ButtonClicked();
+                this._saveView_MainPage_ButtonClicked();
                 return false;
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -107,14 +119,13 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-	_saveView_MainPage_ButtonClicked() {
+	private _saveView_MainPage_ButtonClicked() : void {
 
 		if ( ! this._modalOverlay ) {
 			
 			this._modalOverlay = this._createModalOverlay( {  } );
 		}
 		this._modalOverlay.show();
-		
     }
 
     /**
@@ -122,24 +133,27 @@ export class SaveView_dataPages {
      * 
      * @param {*} param0 
      */
-    _createModalOverlay( {  } ) {
+    private _createModalOverlay( {  } ) : ModalOverlay {
     	
     	const objectThis = this;
 
-        let props = { };
-        props.width = '800';
-        props.height = '500'
-        props.title = 'Save View';
-        props.$containerDiv = $('body' );
-        props.hideOnBackgroundClick = true;
-
-        let $contentDiv = this._createModalOverlayContentDiv( {  } );
-        props.$contentDiv = $contentDiv;
+        const $contentDiv = this._createModalOverlayContentDiv( {  } );
         
-        props.callbackOnClickedHide = function() {
+        const callbackOnClickedHide = function() {
         	
         	objectThis._cancel_button_Click();
         }
+
+        const props = { 
+            width : '800',
+            height : '500',
+            title : 'Save View',
+            $containerDiv : $('body' ),
+            $contentDiv,
+            callbackOnClickedHide,
+            hideOnBackgroundClick : true
+        }
+
 
         let overlay = new ModalOverlay( props );
 
@@ -188,7 +202,7 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-    _createModalOverlayContentDiv( {  } ) {
+    private _createModalOverlayContentDiv( {  } ) : any {
 
     	let contentDivHTML = this._save_view_overlay_contents_Template( { canSetDefault : this._canSetDefault } );
     	let $contentDiv = $( contentDivHTML );
@@ -198,7 +212,7 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-	_hide_remove_ModalOverlay() {
+	private _hide_remove_ModalOverlay() : void {
 	
 		this._modalOverlay.hide();
 		
@@ -210,7 +224,7 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-	_cancel_button_Click() {
+	private _cancel_button_Click() : void {
 		
 		this._hide_remove_ModalOverlay();
 	}
@@ -218,7 +232,7 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-    _save_view_button_Overlay_Click({ clickThis }) {
+    private _save_view_button_Overlay_Click({ clickThis }) : void {
 
         //  view label
 
@@ -284,7 +298,7 @@ export class SaveView_dataPages {
 	/**
      * Save the view to the server
 	 */
-	_saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds } ) {
+	private _saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds } ) : any {
 
 		let promise = new Promise( function( resolve, reject ) {
             try {
@@ -321,7 +335,7 @@ export class SaveView_dataPages {
 		});
 		
 		return promise;
-	};
+	}
 
 }
 

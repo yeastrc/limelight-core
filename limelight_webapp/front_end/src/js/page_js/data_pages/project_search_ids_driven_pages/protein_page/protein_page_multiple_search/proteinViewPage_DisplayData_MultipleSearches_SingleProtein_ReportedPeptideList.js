@@ -22,8 +22,6 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
 import { peptideSequence_CreateCommonDisplayString } from 'page_js/data_pages/peptide_sequence_display_string_common/peptideSequence_CreateCommonDisplayString.js';
 
 import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding.js';
@@ -226,7 +224,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 
 		//  For getting search info for projectSearchIds
-		const searchNamesKeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+		const searchNamesKeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
 
 		//  Array of Arrays of reportLineParts
@@ -1007,7 +1005,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		//  For getting search info for projectSearchIds
 		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
 
 		let columns = [ ];

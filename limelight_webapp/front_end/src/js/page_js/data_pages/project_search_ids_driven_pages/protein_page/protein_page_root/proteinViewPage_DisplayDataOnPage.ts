@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayDataOnPage.js
+ * proteinViewPage_DisplayDataOnPage.ts
  * 
  * Javascript for proteinView.jsp page - Displaying Main Data  
  * 
@@ -11,9 +11,7 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
+import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js';
 
@@ -22,27 +20,54 @@ import { ProteinViewPage_Display_SingleSearch } from '../protein_page_single_sea
 
 import { ProteinViewPage_Display_MultipleSearches } from '../protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches.js';
 
+//  Import for typing only
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
+
 /**
  * 
  */
 export class ProteinViewPage_DisplayDataOnPage {
 
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _centralPageStateManager : CentralPageStateManager;
+
+	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
+	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
+	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
+
+	private _proteinViewPage_Display_SingleSearch : ProteinViewPage_Display_SingleSearch;
+	private _proteinViewPage_Display_MultipleSearches : ProteinViewPage_Display_MultipleSearches;
+	private _downloadPSMClickHandlerAttached : boolean;
+
 	/**
 	 * 
 	 */
-	constructor( {
-		dataPages_LoggedInUser_CommonObjectsFactory,
+	constructor({ 
+		dataPages_LoggedInUser_CommonObjectsFactory, 
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager,
 		singleProtein_CentralStateManagerObject,
 		proteinList_CentralStateManagerObjectClass
-	}) {
+	 } : { 
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		centralPageStateManager : CentralPageStateManager,
+		singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass,
+		proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
+	 }) {
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		
@@ -56,7 +81,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
-
+			displayOnly : false,
 			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
@@ -68,7 +93,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager : this._centralPageStateManager,
@@ -80,7 +104,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager : this._centralPageStateManager,
@@ -131,7 +154,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		}
 
 		var projectSearchIds = 
-			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		if ( projectSearchIds.length === 0 ) {
 			throw Error( "projectSearchIds.length === 0 " );
@@ -187,7 +210,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 					eventObject.preventDefault();
 
 					const projectSearchIds_InDownloadClickHandler = 
-					objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+					objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 					if ( projectSearchIds_InDownloadClickHandler.length !== 1 ) {
 						alert("More than one Search is not supported" );
@@ -198,7 +221,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 					
 					const searchDataLookupParamsRoot = 
 						objectThis._searchDetailsBlockDataMgmtProcessing.
-						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
 
 					if ( ! searchDataLookupParamsRoot ) {
 						throw Error( "searchDataLookupParamsRoot not found" );
@@ -210,7 +233,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 					downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( { 
 						projectSearchIdsReportedPeptideIdsPsmIds,
-						searchDataLookupParamsRoot : searchDataLookupParamsRoot
+						searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+						proteinSequenceVersionIds : undefined
 					} );
 				} catch (e) {
 					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });

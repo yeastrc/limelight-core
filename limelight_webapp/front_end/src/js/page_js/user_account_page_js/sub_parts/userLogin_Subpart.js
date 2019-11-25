@@ -25,7 +25,7 @@ import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { createSpinner, destroySpinner, incrementSpinner, decrementSpinner } from 'page_js/common_all_pages/spinner.js';
 

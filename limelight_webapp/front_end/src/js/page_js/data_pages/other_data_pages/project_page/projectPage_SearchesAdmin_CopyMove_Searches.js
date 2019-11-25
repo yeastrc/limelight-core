@@ -23,7 +23,7 @@ require("../../../../../../handlebars_templates_precompiled/project_page_searche
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
 
@@ -217,7 +217,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
             $(".copy_searches_display_copy_part_jq").hide();
             $(".copy_searches_display_move_part_jq").show();
         }
-    };
+    }
 
 	/**
 	 * 
@@ -233,7 +233,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
             $(".copy_searches_display_move_part_jq").hide();
             $(".copy_searches_display_copy_part_jq").show();
         }
-    };
+    }
     
 	/**
 	 * 
@@ -302,7 +302,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
             throw e;
           }
         });
-    };
+    }
     
 	/**
 	 * 
@@ -364,7 +364,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
             });
         }
     
-    };
+    }
 
 	/**
 	 * User Chose a Project to Copy/Move searches to.
@@ -423,7 +423,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
             throw e;
           }
         });
-    };
+    }
 
 	/**
 	 * 
@@ -470,7 +470,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
                 throw e;
             }
         });
-    };
+    }
 
 	/**
 	 * 
@@ -503,7 +503,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
                 throw e;
             }
         });
-    };
+    }
 
 	/**
 	 * 
@@ -574,14 +574,14 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
                 }
             });
         }
-    };
+    }
 
 	/**
 	 * 
 	 */
     _showProjectSearchesCopiedMovedTo({ chosenProjectId }) {
         document.location.href = "d/pg/project/" + chosenProjectId;  // Maybe not hard code this path
-    };
+    }
 
 	/**
 	 * 
@@ -590,7 +590,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
         //  reload/replace search list
         this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
         this._overlayClose();
-    };
+    }
 
 
 	/**

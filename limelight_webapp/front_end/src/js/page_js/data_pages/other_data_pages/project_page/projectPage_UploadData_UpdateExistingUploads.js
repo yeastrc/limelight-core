@@ -17,7 +17,7 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 /**
  * 
@@ -167,7 +167,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 				throw e;
 			}
 		});
-	};
+	}
 
 //	User clicked the "Cancel Queued" link 
 	/**
@@ -213,7 +213,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 
 		let $import_file_confirm_remove_upload_overlay_show_hide_parts_jq = $(".import_file_confirm_remove_upload_overlay_show_hide_parts_jq");
 		$import_file_confirm_remove_upload_overlay_show_hide_parts_jq.show();
-	};
+	}
 
 //	User clicked the "Cancel Queued" link 
 	/**
@@ -250,7 +250,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 				throw e;
 			}
 		});
-	};
+	}
 	
 	/**
 	 * 
@@ -279,7 +279,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 		$(".import_file_confirm_remove_upload_overlay_show_hide_parts_jq").hide();
 
 		this._projectPage_UploadData_ListExistingUploads.populateDataBlockAndPendingCount();
-	};
+	}
 
 ///////////////////////////////
 ///////////////////////////////
@@ -311,7 +311,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 		$remove_failed_item_yes_button_jq.data( { tracking_id : tracking_id } );
 
 		$(".import_file_confirm_remove_upload_overlay_show_hide_parts_jq").show();
-	};
+	}
 
 //	User clicked the "Remove Failed" link 
 	/**
@@ -348,7 +348,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 				throw e;
 			}
 		});
-	};
+	}
 
 	/**
 	 * 
@@ -372,7 +372,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 		$(".import_file_confirm_remove_upload_overlay_show_hide_parts_jq").hide();
 
 		this._projectPage_UploadData_ListExistingUploads.populateDataBlockAndPendingCount();
-	};
+	}
 
 
 
@@ -417,7 +417,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 		$remove_completed_item_yes_button_jq.data( { tracking_id : tracking_id } );
 
 		$(".import_file_confirm_remove_upload_overlay_show_hide_parts_jq").show();
-	};
+	}
 
 
 //	User clicked the "Remove Completed" link 
@@ -455,7 +455,7 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 				throw e;
 			}
 		});
-	};
+	}
 
 	/**
 	 * 
@@ -479,5 +479,5 @@ export class ProjectPage_UploadData_UpdateExistingUploads {
 		$(".import_file_confirm_remove_upload_overlay_show_hide_parts_jq").hide();
 
 		this._projectPage_UploadData_ListExistingUploads.populateDataBlockAndPendingCount();
-	};
+	}
 }

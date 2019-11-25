@@ -10,6 +10,9 @@ const path = require('path');
 var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 
+//  !!!!!!!  'extensions:' Needs to be updated for any new file extensions used
+
+
 //  No longer used
 // const HandlebarsPrecompiler = require('webpack-handlebars-precompiler');
 		
@@ -26,7 +29,8 @@ const mainConfig = {
 	    modules: [
 	        path.resolve('./src/js'),
 	        path.resolve('./node_modules'),
-		]
+		],
+		extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss']  //  !!!!!!!  Needs to be updated for any new file extensions used
 	},
 	plugins: [
 		new CaseSensitivePathsPlugin()
@@ -71,7 +75,6 @@ const mainConfig = {
 
 		'data_pages/peptideViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_RootLaunch_LoggedInUsers.js',
 		'data_pages/peptideViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_RootLaunch_PublicUser.js',
-		
 		'data_pages/proteinViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_LoggedInUsers.js',
 		'data_pages/proteinViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_PublicUser.js',
 		
@@ -90,10 +93,8 @@ const mainConfig = {
 		//  Webapp Manage Users Page
 		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.js',
 
-
 		// SASS files
 		'styles' : './src/styles/global.scss',
-
 	},
 	output: {
 		path: path.resolve(__dirname, 'webpack_build_output/'),
@@ -102,12 +103,25 @@ const mainConfig = {
 
 	module:{
 		rules:[
-		      {
+				{
+					test: /\.(ts|tsx)$/,
+					exclude: /(node_modules|bower_components)/,
+					use: [
+						{
+							loader: 'ts-loader',
+							options: {
+								// transpileOnly: true,
+								// "baseUrl": "./src/js", 
+							}
+						}
+					]
+				},
+				{
 		          test: /\.(js|jsx)$/,
 		          exclude: /(node_modules|bower_components)/,
 		          loader: "babel-loader",
 		          options: {  } // Do not put this inside options: { } :  { presets: ["@babel/env"] }
-		        },
+				},
 				{
 					test:/\.scss$/,
 					use: [

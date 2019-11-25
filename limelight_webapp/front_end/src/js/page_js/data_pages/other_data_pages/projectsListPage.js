@@ -31,7 +31,7 @@ import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
 
@@ -195,7 +195,7 @@ var ListProjectsPage = function() {
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-		promise_webserviceCallStandardPost.catch( () => { reject() }  );
+		promise_webserviceCallStandardPost.catch( () => { }  );
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {

@@ -19,12 +19,7 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
-
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
-const _SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM = dataPageStateManager_Keys.SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM;
-
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 /**
  * 
@@ -44,10 +39,10 @@ export class SearchProgramsPerSearchDataRetrieval {
 			dataPageStateManager_DataFrom_Server ) {
 
 		let projectSearchIds = // array
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		let searchProgramsPerSearchDataLoaded = 
-			dataPageStateManager_DataFrom_Server.getPageStateAllowNotInPageState( _SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			dataPageStateManager_DataFrom_Server.get_searchProgramsPerSearchData();
 		
 		let projectSearchIds_dataNotLoadedObj = {};
 		
@@ -135,7 +130,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 		}
 
 		return new Promise( retrieval );
-	};
+	}
 
 	/**
 	 * 
@@ -151,8 +146,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 			throw Error("SearchProgramsPerSearch List return is empty. projectSearchIds_dataNotLoadedArray: " + projectSearchIds_dataNotLoadedArray.join( '_' ));
 		}
 		
-		let searchProgramsPerSearchDataLoaded = 
-			dataPageStateManager_DataFrom_Server.getPageStateAllowNotInPageState( _SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let searchProgramsPerSearchDataLoaded = dataPageStateManager_DataFrom_Server.get_searchProgramsPerSearchData();
 
 		if ( ! searchProgramsPerSearchDataLoaded ) {
 			searchProgramsPerSearchDataLoaded = {};
@@ -174,10 +168,8 @@ export class SearchProgramsPerSearchDataRetrieval {
 		}, this );
 		
 		//  Save Data to state manager
-		dataPageStateManager_DataFrom_Server.setPageState( 
-				dataPageStateManager_Keys.SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM,
-				searchProgramsPerSearchDataLoaded );
-	};
+		dataPageStateManager_DataFrom_Server.set_searchProgramsPerSearchData( searchProgramsPerSearchDataLoaded );
+	}
 
-};
+}
 

@@ -22,7 +22,9 @@ module.exports = {
         "react"
     ],
     "rules": {
-        "no-unused-vars": "off",
+    	"no-empty": "off",
+    	"no-unused-vars": "off",
+        "no-constant-condition": "off",
         "no-mixed-spaces-and-tabs": 0, // disable rule
     }
 };

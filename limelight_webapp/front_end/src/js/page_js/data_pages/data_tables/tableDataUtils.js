@@ -29,7 +29,7 @@ export class TableDataUtils {
     static getAllPossibleOrderedPeptideAnnotations( { dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
         let annotationList = [ ];
-        let annotationTypeData = dataPageStateManager_DataFrom_Server[ '_pageState' ][ 'annotationTypeData' ][ projectSearchId ];
+        let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData()[ projectSearchId ];
 
         for (let annoId of Object.keys( annotationTypeData.reportedPeptideFilterableAnnotationTypes ) ) {
 
@@ -95,7 +95,7 @@ export class TableDataUtils {
     static getAllPossibleOrderedPSMAnnotations( { dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
         let annotationList = [ ];
-        let annotationTypeData = dataPageStateManager_DataFrom_Server[ '_pageState' ][ 'annotationTypeData' ][ projectSearchId ];
+        let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData()[ projectSearchId ];
 
         for (let annoId of Object.keys( annotationTypeData.psmFilterableAnnotationTypes ) ) {
 

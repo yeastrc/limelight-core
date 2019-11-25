@@ -1,5 +1,5 @@
 /**
- * getSearchDataLookupParametersFromPage.js
+ * getSearchDataLookupParametersFromPage.ts
  * 
  * Javascript for getting the project search ids and their filters and annotation type display from page
  * 
@@ -17,6 +17,16 @@
 /**
  * 
  */
+export class GetSearchDataLookupParametersFromPage_Result {
+
+	public search_data_lookup_parameters_at_page_load_code : string;
+	public search_data_lookup_parameters_at_page_load : any;
+	public projectSearchIds : Array<number>;
+}
+
+/**
+ * 
+ */
 export class GetSearchDataLookupParametersFromPage {
 
 	/**
@@ -24,13 +34,12 @@ export class GetSearchDataLookupParametersFromPage {
 	 */
 	constructor() {
 		
-		this._projectSearchIds_RetrievingDataFor = {};
 	}
 	
 	/**
 	 * @return SearchDataLookupParameters from Page DOM
 	 */
-	getSearchDataLookupParametersFromPage() {
+	public getSearchDataLookupParametersFromPage() : GetSearchDataLookupParametersFromPage_Result {
 		
 		//   Process Search Data Lookup Parameters JSON and Code from DOM <script> text element 
 
@@ -72,12 +81,14 @@ export class GetSearchDataLookupParametersFromPage {
 				}, this );
 			}
 		}
+
+		const getSearchDataLookupParametersFromPage_Result : GetSearchDataLookupParametersFromPage_Result = new GetSearchDataLookupParametersFromPage_Result();
+
+		getSearchDataLookupParametersFromPage_Result.search_data_lookup_parameters_at_page_load_code = search_data_lookup_parameters_at_page_load_code;
+		getSearchDataLookupParametersFromPage_Result.search_data_lookup_parameters_at_page_load = search_data_lookup_parameters_at_page_load;
+		getSearchDataLookupParametersFromPage_Result.projectSearchIds = projectSearchIds;
 				
-		return {
-			search_data_lookup_parameters_at_page_load_code : search_data_lookup_parameters_at_page_load_code,
-			search_data_lookup_parameters_at_page_load : search_data_lookup_parameters_at_page_load,
-			projectSearchIds : projectSearchIds
-		};
-	};
+		return getSearchDataLookupParametersFromPage_Result;
+	}
 	
 }

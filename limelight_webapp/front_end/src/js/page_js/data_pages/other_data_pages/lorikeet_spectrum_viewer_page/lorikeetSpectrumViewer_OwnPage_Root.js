@@ -24,7 +24,7 @@ const _lorikeet_page_bundle =
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
 
 import { LorikeetSpectrumViewer_LoadDataFromServer } from './lorikeetSpectrumViewer_LoadDataFromServer.js';
 

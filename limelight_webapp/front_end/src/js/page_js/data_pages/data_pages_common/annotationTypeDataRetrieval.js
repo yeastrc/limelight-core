@@ -17,11 +17,9 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants.js';
-
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
 /**
  * 
@@ -41,11 +39,10 @@ export class AnnotationTypeDataRetrieval {
 	 */
 	retrieveSearchAnnotationTypeData( { dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, dataPageStateManager_DataFrom_Server } ) {
 
-		let projectSearchIds = // array
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+		// array
+		let projectSearchIds = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
-		let annotationTypeDataLoaded = 
-			dataPageStateManager_DataFrom_Server.getPageStateAllowNotInPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeDataLoaded = dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 		
 		let projectSearchIds_dataNotLoadedObj = {};
 		
@@ -73,7 +70,7 @@ export class AnnotationTypeDataRetrieval {
 		return this._retrieveSearchAnnotationTypeDataFromAJAX( 
 				projectSearchIds_dataNotLoadedArray, 
 				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, dataPageStateManager_DataFrom_Server )
-	};
+	}
 
 	/**
 	 * return Promise
@@ -118,7 +115,7 @@ export class AnnotationTypeDataRetrieval {
 		};
 
 		return new Promise( retrieval );
-	};
+	}
 
 	/**
 	 * 
@@ -134,8 +131,7 @@ export class AnnotationTypeDataRetrieval {
 			throw Error("Annotation Type List return is empty. projectSearchIds_dataNotLoadedArray: " + projectSearchIds_dataNotLoadedArray.join( '_' ));
 		}
 		
-		let annotationTypeDataLoaded = 
-			dataPageStateManager_DataFrom_Server.getPageStateAllowNotInPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeDataLoaded = dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		if ( ! annotationTypeDataLoaded ) {
 			annotationTypeDataLoaded = {};
@@ -182,10 +178,8 @@ export class AnnotationTypeDataRetrieval {
 		}
 		
 		//  Save Data to state manager
-		dataPageStateManager_DataFrom_Server.setPageState( 
-				dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM,
-				annotationTypeDataLoaded );
-	};
+		dataPageStateManager_DataFrom_Server.set_annotationTypeData( annotationTypeDataLoaded );
+	}
 
 	/**
 	 * 
@@ -203,8 +197,8 @@ export class AnnotationTypeDataRetrieval {
 		}
 		
 		return annotationTypesObject;
-	};
-};
+	}
+}
 
 
 //  When copied into variables on page, 

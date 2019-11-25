@@ -1,5 +1,5 @@
 /**
- * searchDetailsAndFilterBlock_MainPage.js
+ * searchDetailsAndFilterBlock_MainPage.ts
  * 
  * Javascript for displaying the Searches Details and Searches Filter block 
  * at the top of project search id driven pages
@@ -16,40 +16,76 @@
 
 //  module import 
 
-const Handlebars = require('handlebars/runtime');
+import { Handlebars, _search_detail_section_bundle } from './searchDetailsAndFilterBlock_MainPage_ImportHandleBarsTemplates.js';
 
-const _search_detail_section_bundle = 
-	require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
-
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { SearchDetailsAndFilterBlock_UserInputInOverlay, USER_CLICKED_IN_TYPE_PSM, USER_CLICKED_IN_TYPE_PEPTIDE, USER_CLICKED_IN_TYPE_PROTEIN }
-from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_UserInputInOverlay.js';
+from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_UserInputInOverlay';
 
-import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core.js';
-import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers } from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.js';
+// import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core.js';
+import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers } from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers';
+
+//  For type 
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
 
 /**
  * 
  */
 export class SearchDetailsAndFilterBlock_MainPage {
 
+	private _displayOnly : boolean;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _rerenderPageForUpdatedFilterCutoffs_Callback : any;
+
+	private _type_label_psm : string;
+	private _type_label_peptide : string;
+	private _type_label_protein : string;
+
+	private _searchDetailsAndFilterBlock_UserInputInOverlay : SearchDetailsAndFilterBlock_UserInputInOverlay;
+	// private _searchDetails_GetCoreDataFromServer : SearchDetails_GetCoreDataFromServer;
+	private _searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers : SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers;
+
+	//  Set in initialize method
+	private _rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto : string;
+
+
+	//  Handlebars Templates
+
+	private _searchDetailsMainPage_Single_RootExceptFilters_Template;
+	private _searchDetailsMainPage_MultipleSearches_Root_Template;
+	private _searchDetailsMainPage_MultipleSearches_SingleSearchContainer_Template;
+	private _searchDetailsMainPage_DisplayPerTypeRow_Template;
+	private _searchDetailsMainPage_DisplayPerTypeEntry_Template;
+	private _searchDetailsMainPage_SingleSearch_Name_Details_Template
+
+
 	/**
 	 * 
 	 * @param displayOnly - Do not attach click handlers for changing filters
 	 * @param dataPages_LoggedInUser_CommonObjectsFactory - Optional - passed in when logged in user
 	 */
-	constructor( 
-			{ 
-				displayOnly,
-				dataPages_LoggedInUser_CommonObjectsFactory,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-				dataPageStateManager_DataFrom_Server, 
-				searchDetailsBlockDataMgmtProcessing,
-				rerenderPageForUpdatedFilterCutoffs_Callback,
-				searchColorManager
-			} ) {
+	constructor( { 
+		displayOnly,
+		dataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+		dataPageStateManager_DataFrom_Server, 
+		searchDetailsBlockDataMgmtProcessing,
+		rerenderPageForUpdatedFilterCutoffs_Callback
+	} :
+	{ 
+		displayOnly : boolean,
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager, 
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		rerenderPageForUpdatedFilterCutoffs_Callback : any
+	} 
+	) {
 		
 		this._displayOnly = displayOnly;
 
@@ -123,23 +159,28 @@ export class SearchDetailsAndFilterBlock_MainPage {
 			} );
 
 
-		this._searchDetails_GetCoreDataFromServer = new SearchDetails_GetCoreDataFromServer();
+		// this._searchDetails_GetCoreDataFromServer = new SearchDetails_GetCoreDataFromServer();
 
-		this._searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers =
-			new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({ dataPages_LoggedInUser_CommonObjectsFactory });
+		this._searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers = (
+			new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({ dataPages_LoggedInUser_CommonObjectsFactory })
+		);
 
-		this._searchDetailsDataLoaded_ProjectSearchIds = new Set();
-		this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds = new Set();
+		// Not used
+		// this._searchDetailsDataLoaded_ProjectSearchIds = new Set();
+		// this._searchDetailsDataLoadedOrInProgress_ProjectSearchIds = new Set();
 	}
 
 	/**
 	 * @param rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto - Root DOM element to search for DOM element to insert the Search Details and Filters in
 	 */
-	initialize( { rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto } ) {
+	initialize( 
+		{ rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto } :
+		{ rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto : string } 
+	) {
 		
 		this._rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto = rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto;
 
-		this._searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.initialize( {} );
+		this._searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.initialize();
 	}
 	
 	/**
@@ -163,11 +204,13 @@ export class SearchDetailsAndFilterBlock_MainPage {
 		
 		//  Process project search ids to get data
 
-		const projectSearchIds = // array
-			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+		// const projectSearchIds = // array
+		// 	this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
-		const searchDetails_Filters_AnnTypeDisplayRootObject = 
-			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+		const searchDetails_Filters_AnnTypeDisplayRootObject = (
+			this._searchDetailsBlockDataMgmtProcessing
+			.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
+		);
 		
 		const paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 
@@ -175,13 +218,13 @@ export class SearchDetailsAndFilterBlock_MainPage {
 		const filtersAnnTypeDisplayPerProjectSearchIds = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
 
 		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
 		const searchProgramsPerSearchData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_PROGRAMS_PER_SEARCH_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchProgramsPerSearchData();
 
 		const annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let $filter_section = undefined;
 
@@ -381,8 +424,8 @@ export class SearchDetailsAndFilterBlock_MainPage {
 				searchProgramsPerSearchDataForProjectSearchId,
 				filterableAnnotationTypes_ForType : annotationTypeDataForProjectSearchId.matchedProteinFilterableAnnotationTypes,
 				$cutoffsContainer } );
-		};
-	};
+		}
+	}
 
 	/**
 	 * @param filterableAnnotationTypes_ForType: for psm, peptide, or protein 
@@ -398,8 +441,6 @@ export class SearchDetailsAndFilterBlock_MainPage {
 		filterableAnnotationTypes_ForType,
 		$cutoffsContainer } ) {
 
-		const objectThis = this;
-		
 		if ( ! filterableAnnotationTypes_ForType ) {
 			// No filterableAnnotationTypes_ForType for type
 			return;  //  EARLY EXIT
@@ -444,12 +485,14 @@ export class SearchDetailsAndFilterBlock_MainPage {
 			if ( $cutoff_per_type_block_td_jq.length === 0 ) {
 				throw Error("No HTML element for class 'cutoff_per_type_block_td_jq'");
 			}
-			$cutoff_per_type_block_td_jq.click( function(eventObject) {
+			$cutoff_per_type_block_td_jq.click( (eventObject) => {
 				try {
 					eventObject.preventDefault();
-					objectThis._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay( 
-							{ projectSearchId_UserClickedIn : projectSearchId, 
-								userClickedInTypeIdentifier : typeIdentifierForOpenOverlay } );
+					this._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay({ 
+						projectSearchId_UserClickedIn : projectSearchId, 
+						userClickedInTypeIdentifier : typeIdentifierForOpenOverlay,
+						userClickedOnAnnTypeId : undefined
+					});
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 					throw e;
@@ -459,12 +502,14 @@ export class SearchDetailsAndFilterBlock_MainPage {
 		
 		if ( showingAll ) {
 			const $selector_showing_all = $searchCutoffForTypeRow_entry.find(".selector_showing_all");
-			$selector_showing_all.click( function(eventObject) {
+			$selector_showing_all.click( (eventObject) => {
 				try {
 					eventObject.preventDefault();
-					objectThis._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay( 
-							{ projectSearchId_UserClickedIn : projectSearchId, 
-								userClickedInTypeIdentifier : typeIdentifierForOpenOverlay } );
+					this._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay({ 
+						projectSearchId_UserClickedIn : projectSearchId, 
+						userClickedInTypeIdentifier : typeIdentifierForOpenOverlay,
+						userClickedOnAnnTypeId : undefined
+					});
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 					throw e;
@@ -505,10 +550,10 @@ export class SearchDetailsAndFilterBlock_MainPage {
 
 			if ( ! this._displayOnly ) {
 				//  Not display only so add click handler to filter entry
-				$cutoffEntry_entry.click( function(eventObject) {
+				$cutoffEntry_entry.click( (eventObject) => {
 					try {
 						eventObject.preventDefault();
-						objectThis._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay( 
+						this._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay( 
 								{ projectSearchId_UserClickedIn : projectSearchId, 
 									userClickedInTypeIdentifier : typeIdentifierForOpenOverlay,
 									userClickedOnAnnTypeId : cutoffItem_AnnotationTypeId } );
@@ -519,6 +564,6 @@ export class SearchDetailsAndFilterBlock_MainPage {
 				});
 			}
 		}
-	};
+	}
 
-};
+}

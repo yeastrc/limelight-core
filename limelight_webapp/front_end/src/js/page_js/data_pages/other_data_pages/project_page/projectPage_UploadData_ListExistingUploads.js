@@ -22,7 +22,7 @@ const _project_page_upload_data_section_project_owner_user_interaction_template 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
 
@@ -52,7 +52,7 @@ const CONSTANTS = {
 	DATA_ATTR_FOR_UPLOAD_DATA_LOADED : "UPLOAD_DATA_LOADED",
 
 	DATA_ATTR_FOR_UPLOAD_DATA_SHOWING : "UPLOAD_DATA_SHOWING"
-};
+}
 
 
 /**
@@ -319,7 +319,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			});
 			throw e;
 		}
-	};
+	}
 
 
 	showUploadDataClicked(clickThis, eventObject) {
@@ -335,14 +335,14 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		}
 
 		this.populateDataBlockAndPendingCount();
-	};
+	}
 
 
 
 	refreshDataClicked(clickThis, eventObject) {
 
 		this.populateDataBlockAndPendingCount();
-	};
+	}
 	
 
 	//	Populate Pending Count
@@ -353,7 +353,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		let requestData = {
 				projectIdentifier : this._projectIdentifierFromURL
-		};
+		}
 
 		const url = "d/rws/for-page/project-upload-data-pending-count";
 
@@ -376,7 +376,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 				throw e;
 			}
 		});
-	};
+	}
 
 	populatePendingCountCountProcessAJAXResponse(params) {
 
@@ -408,7 +408,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		let requestData = {
 				projectIdentifier : this._projectIdentifierFromURL
-		};
+		}
 
 		const url = "d/rws/for-page/project-upload-data-list-submitted-items";
 
@@ -431,7 +431,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 				throw e;
 			}
 		});
-	};
+	}
 
 
 
@@ -448,9 +448,9 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		let completeSuccessTrackingIdList = responseData.completeSuccessTrackingIdList;
 
-		if (pendingCount > 0) {
-		} else {
-		}
+		// if (pendingCount > 0) {
+		// } else {
+		// }
 
 		let $upload_data_pending_number = $("#upload_data_pending_number");
 		$upload_data_pending_number.text( pendingCount );
@@ -603,7 +603,6 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			$submit_process_date_time_jq_Pending.css("min-width", submit_process_date_time_jqMaxWidth + "px");
 			$submit_process_date_time_jq_Pending.css("max-width", submit_process_date_time_jqMaxWidth + "px");
 		}
-		;
 
 		if ($submit_process_date_time_jq_History) {
 
@@ -635,13 +634,14 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			//  clear existing timer since refreshed data now
 			try {
 				clearTimeout(this.autoRefreshTimerId);
-			} catch (e) {}
+			} catch (e) {
+			}
 		}
 
 		let $upload_data_pending_and_history_items_block = $("#upload_data_pending_and_history_items_block");
 		$upload_data_pending_and_history_items_block.attr(CONSTANTS.DATA_ATTR_FOR_UPLOAD_DATA_LOADED, true);
 
-		let uploadDataShowing = $("#upload_data_top_level_container").data(CONSTANTS.DATA_ATTR_FOR_UPLOAD_DATA_SHOWING);
+		// let uploadDataShowing = $("#upload_data_top_level_container").data(CONSTANTS.DATA_ATTR_FOR_UPLOAD_DATA_SHOWING);
 
 		//  Remove auto-refresh since now that closes any detail items the user had showing
 		//		if ( uploadDataShowing &&
@@ -654,7 +654,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 	//		objectThis.populateDataBlockAndPendingCount( { fromAutoRefresh : true } );
 	//		}, CONSTANTS.AUTO_REFRESH_DELAY );
 	//		}
-	};
+	}
 
 
 	populateDataBlockPendingOrHistoryItem( { dataItem, scanFileImportAllowedViaWebSubmit, $containerTable }) {
@@ -720,7 +720,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 		let $upload_divider_item = $(htmlDividerRow).appendTo($containerTable);
 
-	};
+	}
 
 
 
@@ -742,7 +742,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 				$import_item_row_jq : $row
 			});
 		});
-	};
+	}
 
 
 
@@ -755,7 +755,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		this.showHideStatusDetailsRow({
 			$import_item_row_jq : $import_item_row_jq
 		});
-	};
+	}
 
 
 
@@ -783,7 +783,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		}
 
 
-	};
+	}
 
 	
 	eval_completeSuccessTrackingIdList_forAdditions(completeSuccessTrackingIdList) {
@@ -861,7 +861,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		//  save current as prev
 		this.prevCompleteSuccessTrackingIdList = completeSuccessTrackingIdList;
 
-	};
+	}
 
 
 	openUploadedCompletedSuccessfullyOverlay() {
@@ -873,13 +873,15 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		
 		return;
 
-		let $limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq = 
-			$(".limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq");
-		if ( $limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq.length === 0 ) {
-			throw Error( "No Elements found with class 'limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq'" );
-		}
-		$limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq.show();
-	};
+		//  after return so not run
+
+		// let $limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq = 
+		// 	$(".limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq");
+		// if ( $limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq.length === 0 ) {
+		// 	throw Error( "No Elements found with class 'limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq'" );
+		// }
+		// $limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq.show();
+	}
 
 	//	User clicked the "Cancel" button or clicked on the background
 
@@ -891,7 +893,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			throw Error( "No Elements found with class 'limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq'" );
 		}
 		$limelight_xml_file_upload_complete_successfully_overlay_show_hide_parts_jq.hide();
-	};
+	}
 
 	//	User clicked the "Refresh" button 
 
@@ -900,7 +902,7 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		//  reload current URL
 
 		window.location.reload(true);
-	};
+	}
 
 
 

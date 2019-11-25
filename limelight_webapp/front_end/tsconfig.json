@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "jsx" : "react",
+      "sourceMap": true,
+      "target": "es2018",
+      "lib": ["es2018","dom","dom.iterable"],
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "baseUrl": ".", 
+      "paths": {
+        "*": ["./src/js/*"]
+      }
+    },
+    "exclude": [
+      "node_modules",
+      "**/__snapshots__/*",
+      "**/*.snap"
+    ]
+}
+  

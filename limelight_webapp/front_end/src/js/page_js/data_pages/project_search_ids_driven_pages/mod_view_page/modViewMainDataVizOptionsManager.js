@@ -1,5 +1,7 @@
 let Handlebars = require('handlebars/runtime');
 
+let _mod_table_template_bundle = require("../../../../../../handlebars_templates_precompiled/mod_view_page/mod_view_page_template-bundle.js" );
+
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
 
 export class ModViewDataVizRendererOptionsHandler {
@@ -169,7 +171,7 @@ export class ModViewDataVizRendererOptionsHandler {
         // blow away existing form if it exists
         $mainContentDiv.find("div#data-viz-options-container").remove();
 
-        const template = Handlebars.templates.dataVizOptionsForm;
+        const template = _mod_table_template_bundle.dataVizOptionsForm;
         const html = template( {  } );
         $mainContentDiv.append(  $( html ) );
     }

@@ -1,5 +1,5 @@
 /**
- * peptideViewPage_DisplayDataOnPage.js
+ * peptideViewPage_DisplayDataOnPage.ts
  * 
  * Javascript for peptideView.jsp page - Displaying Main Data  
  * 
@@ -10,32 +10,48 @@
  */
 
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
+import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 
 //  From local dir
-import { PeptideViewPage_Display_SingleSearch }  
-	from 'page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_DisplayData_SingleSearch.js';
+import { PeptideViewPage_Display_SingleSearch } from 'page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_DisplayData_SingleSearch.js';
+
+//  Import for typing only
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
 
 /**
  * 
  */
 export class PeptideViewPage_DisplayDataOnPage {
 
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _centralPageStateManager : CentralPageStateManager;
+
+	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
+	private _peptideViewPage_Display_SingleSearch : PeptideViewPage_Display_SingleSearch;
+	
 	/**
 	 * 
 	 */
-	constructor( {
-		dataPages_LoggedInUser_CommonObjectsFactory,
+	constructor({ 
+		dataPages_LoggedInUser_CommonObjectsFactory, 
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
-		searchDetailsBlockDataMgmtProcessing
-	}) {
+		searchDetailsBlockDataMgmtProcessing,
+	 } : { 
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+	 }) {
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		
@@ -45,17 +61,17 @@ export class PeptideViewPage_DisplayDataOnPage {
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
+			displayOnly : false,
 			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			rerenderPageForUpdatedFilterCutoffs_Callback : rerenderPageForUpdatedFilterCutoffs_BindThis
 		} );
-		
+
 		this._peptideViewPage_Display_SingleSearch = new PeptideViewPage_Display_SingleSearch( {
 
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
 		});
@@ -98,7 +114,7 @@ export class PeptideViewPage_DisplayDataOnPage {
 	populateSearchDetailsBlock() {
 		
 		this._searchDetailsAndFilterBlock_MainPage.populatePage();
-	};
+	}
 
 	/**
 	 * 
@@ -106,7 +122,7 @@ export class PeptideViewPage_DisplayDataOnPage {
 	populatePeptideListBlock() {
 		
 		var projectSearchIds = 
-			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		if ( projectSearchIds.length === 1 ) {
 			let projectSearchId = projectSearchIds[ 0 ];
@@ -116,6 +132,6 @@ export class PeptideViewPage_DisplayDataOnPage {
 			alert("More than one Search is not supported" );
 			throw Error( "More than one Search is not supported" );
 		}
-	};
+	}
 	
 }

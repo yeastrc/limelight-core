@@ -1,5 +1,5 @@
 /**
- * modViewPage_RootClass_Common.js
+ * modViewPage_RootClass_Common.ts
  * 
  * Common Root Javascript for modView.jsp page  
  * 
@@ -11,46 +11,45 @@
  * 		place default URL on page and redirect to it if coming from another page
  */
 
-
-/**
- * Always do in Root Javascript for page:
- */
-
-/**
- * Require Handlebars and dummy_template_template-bundle.js so that Handlebars is properly initialized for other uses of it
- */
-var Handlebars = require('handlebars/runtime');
-var _dummy_template_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
-Handlebars.templates = _dummy_template_template_bundle;
-
-
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
 import {catchAndReportGlobalOnError} from 'page_js/catchAndReportGlobalOnError.js';
 
 import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
+
 //   From data_pages_common
-import {dataPageStateManager_Keys} from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {_REFERRER_PATH_STRING} from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
 
 import {Page_UserDefault_processing} from 'page_js/data_pages/data_pages_common/page_UserDefault_processing.js';
 
-import {GetSearchDataLookupParametersFromPage} from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage.js';
-import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing.js';
-import {LoadCoreData_ProjectSearchIds_Based} from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based.js';
+import { GetSearchDataLookupParametersFromPage, GetSearchDataLookupParametersFromPage_Result } from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage';
+import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import {LoadCoreData_ProjectSearchIds_Based} from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based';
 
 import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
 
 import {CentralPageStateManager} from '../../central_page_state_manager/centralPageStateManager.js';
 
-import {SharePage_dataPages} from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+import {SharePage_dataPages} from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
+
+import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
+
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
+
+import { SearchColorManager }	from 'page_js/data_pages/color_manager/searchColorManager.js';
+
+
 //  From main_pages
+
+//  Import for typing only
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
+
 import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader.js';
 //  From local dir
-import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage.js';
+import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
 
 //  From data_pages_common
 
@@ -59,14 +58,32 @@ import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage.js'
  */
 export class ModViewPage_RootClass_Common {
 	
+	_dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
+	_saveView_dataPages : SaveView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
+
+	_page_UserDefault_processing : Page_UserDefault_processing;
+	_centralPageStateManager : CentralPageStateManager;
+	_singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
+	_proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
+	_searchColors_CentralStateManagerObject : SearchColorManager;
+
+	_dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	_dataPageStateManager_DataFrom_Server : DataPageStateManager;
+
+	_searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	_modViewPage_DisplayDataOnPage : ModViewPage_DisplayDataOnPage;
+
+	_getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
+	_sharePage_dataPages : SharePage_dataPages;
+
+	_loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
+
 	/**
 	 * 
 	 */
-	constructor( params ) {
+	constructor({ dataPages_LoggedInUser_CommonObjectsFactory } : { dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory }) {
 
-		if ( params ) {
-			this._dataPages_LoggedInUser_CommonObjectsFactory = params.dataPages_LoggedInUser_CommonObjectsFactory;
-		}
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 
 		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
 			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
@@ -141,34 +158,33 @@ export class ModViewPage_RootClass_Common {
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		mainPagesPopulateHeader.initialize();
 		
-		let searchDataLookupParametersFromPage = 
+		const searchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage_Result = 
 			this._getSearchDataLookupParametersFromPage.getSearchDataLookupParametersFromPage();
 		
 		this._searchDetailsBlockDataMgmtProcessing.storeSearchDetails_Filters_AnnTypeDisplay_Root( {
-			searchDetails_Filters_AnnTypeDisplay_Root : searchDataLookupParametersFromPage.search_data_lookup_parameters_at_page_load } ); 
+			searchDetails_Filters_AnnTypeDisplay_Root : searchDataLookupParametersFromPage.search_data_lookup_parameters_at_page_load,
+			dataPageStateManager : undefined
+		} ); 
 		
-		let projectSearchIds = searchDataLookupParametersFromPage.projectSearchIds;
+		const projectSearchIds : Array<number> = searchDataLookupParametersFromPage.projectSearchIds;
 		
-		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.setPageState( 
-				dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM, projectSearchIds );
+		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
 
 		navigation_dataPages_Maint_Instance.initializePageOnLoad({ projectSearchIds }); // Initialize
 
 
 		if ( this._saveView_dataPages ) {
-			this._saveView_dataPages.initialize({ projectSearchIds });
+			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, enableSetDefault : undefined });
 		}
 		
-		this._sharePage_dataPages.initialize({ projectSearchIds });
+		this._sharePage_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined });
 				
-		this._loadCoreData_ProjectSearchIds_Based =
-			new LoadCoreData_ProjectSearchIds_Based( {
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
-			});
+		this._loadCoreData_ProjectSearchIds_Based = new LoadCoreData_ProjectSearchIds_Based( {
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
+		});
 		
-		let _loadCoreData_ProjectSearchIds_Based_Promise =
-			this._loadCoreData_ProjectSearchIds_Based.loadCoreDataFor_ProjectSearchIds();
+		let _loadCoreData_ProjectSearchIds_Based_Promise = this._loadCoreData_ProjectSearchIds_Based.loadCoreDataFor_ProjectSearchIds();
 
 		_loadCoreData_ProjectSearchIds_Based_Promise.then(  // onFulfilled
 				function( value ) {
@@ -223,8 +239,7 @@ export class ModViewPage_RootClass_Common {
 		this._modViewPage_DisplayDataOnPage.populateSearchDetailsBlock();
 		
 		this._modViewPage_DisplayDataOnPage.populateModDataBlock();
-
-	};
+	}
 	
 
 

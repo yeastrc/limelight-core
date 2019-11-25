@@ -18,7 +18,7 @@ const _project_page__saved_views_section_loggedin_users_template = require("../.
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 //  Local imports
 
@@ -53,7 +53,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
         this._projectPage_SavedViews_Section_AllUsersInteraction = projectPage_SavedViews_Section_AllUsersInteraction;
 
 		this._initializeCalled = true;
-	};
+	}
 
 	/**
 	 * 
@@ -279,7 +279,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
             throw e;
           }
         });
-    };
+    }
     
     /**
 	 * 
@@ -378,6 +378,6 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
             throw e;
           }
         });
-    };
+    }
     
 }

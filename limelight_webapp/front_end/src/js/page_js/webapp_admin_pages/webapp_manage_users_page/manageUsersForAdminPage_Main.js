@@ -13,7 +13,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 
 const _admin_user_management_template_bundle = 

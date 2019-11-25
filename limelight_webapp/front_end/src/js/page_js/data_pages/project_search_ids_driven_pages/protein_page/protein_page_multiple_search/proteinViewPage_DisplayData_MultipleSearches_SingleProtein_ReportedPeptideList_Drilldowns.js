@@ -24,8 +24,6 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
 
 import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.js';
@@ -200,7 +198,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		//  For getting search info for projectSearchIds
 		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
         const resultList_ForDataTable = [];
 

@@ -23,14 +23,12 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile.js';
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
 
 import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder.js';
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder.js';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder.ts';
 
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
 
@@ -54,7 +52,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 	constructor( {
 		dataPages_LoggedInUser_CommonObjectsFactory,
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-		dataPageStateManager_OtherUserSelections,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager,
@@ -80,7 +77,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
 		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		
@@ -812,7 +808,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		//  For getting search info for projectSearchIds
 		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
 
 		let columns = [ ];
@@ -1035,7 +1031,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			//  Show Main Div inside of header/footer
 			const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-			console.log("running $data_page_overall_enclosing_block_div.show();")
+			// console.log("running $data_page_overall_enclosing_block_div.show();")
 			$data_page_overall_enclosing_block_div.show();
 
 			if ( currentWindowScrollY ) {
@@ -1053,7 +1049,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			proteinViewPage_Display_MultipleSearch : this,
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_OtherUserSelections : this._dataPageStateManager_OtherUserSelections,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			loadedDataCommonHolder : this._loadedDataCommonHolder,
@@ -1229,7 +1224,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		//  For getting search info for projectSearchIds
 		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_searchNames();
 
 
 		const searchIds = [];

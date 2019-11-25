@@ -17,9 +17,9 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data
 
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile.js';
 
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
+import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 
-import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages.js';
+import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 
 import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding.js';
 import { reporterIonMass_CommonRounding_ReturnNumber } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding.js';
@@ -64,7 +64,6 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		proteinViewPage_Display_MultipleSearch,
 		dataPages_LoggedInUser_CommonObjectsFactory,
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-		dataPageStateManager_OtherUserSelections, 
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing, 
 		loadedDataCommonHolder, 
@@ -78,8 +77,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_OtherUserSelections = dataPageStateManager_OtherUserSelections;
-
+		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
@@ -2323,7 +2321,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		
 		const searchDataLookupParamsRoot = 
 			this._searchDetailsBlockDataMgmtProcessing.
-			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({});
 
 		downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( { 
 			projectSearchIds : this._projectSearchIds,
@@ -2354,7 +2352,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 
 		window.setTimeout( () => {
 			//  Run here so all other updates run and paint before remove all these DOM nodes
-			console.log("Running single_protein_overlay_background.remove();")
+			// console.log("Running single_protein_overlay_background.remove();")
 			$single_protein_overlay_background.remove();
 		}, 10 );
 		
@@ -2366,7 +2364,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 		
 		window.setTimeout( () => {
 			//  Run here so all other updates run and paint before remove all these DOM nodes
-			console.log("view_single_protein_overlay_div single_protein_overlay_background.remove();")
+			// console.log("view_single_protein_overlay_div single_protein_overlay_background.remove();")
 			$view_single_protein_overlay_div.remove();
 		}, 10 );
 		

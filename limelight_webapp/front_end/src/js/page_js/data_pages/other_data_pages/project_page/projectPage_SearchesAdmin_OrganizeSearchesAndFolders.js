@@ -28,7 +28,7 @@ import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pa
 import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder.js';
 
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
 
@@ -269,8 +269,8 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		$("#organize_searches_loading_message").hide();
 		$("#organize_searches_main_data_block").show();
 		
-		const firstSearchesToDisplay = searchesNotInFoldersList;
-		const folderIndex = null;
+		let firstSearchesToDisplay = searchesNotInFoldersList;
+		let folderIndex = null;
 
 		if ( ( ! firstSearchesToDisplay ) || firstSearchesToDisplay.length === 0 ) {
 			//  Find a folder containing searches
@@ -398,7 +398,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		addToolTips( $organize_searches_folder_total_block );  // External Function
 		
 		this._addSearchesToPage( { searchesToDisplay : firstSearchesToDisplay } );
-    };
+    }
     
 
 	/**
@@ -585,7 +585,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		//  Add tooltips
 		addToolTips( $organize_searches_search_entries_block );    // External Function
 
-	};
+	}
     
     //////////////////////////////////
 
@@ -656,7 +656,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
             this._processLoadDataResultsForSpecificFolder({ responseData, selectedFolderData : { folderId: folder_id } });
         });
-	};
+	}
 	
 	/**
 	 * 
@@ -694,7 +694,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
 		this._addSearchesToPage( { searchesToDisplay : searchesToDisplay } );
 
-	};
+	}
 	
 	
     //////////////////////////////////
@@ -737,7 +737,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			throw e;
 		}
 
-	};
+	}
 	
 	/**
 	 * 
@@ -763,7 +763,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		this._showMovedSearchToFolderMessage( { $searchItem : $searchItem, $folder_display_order_item_jq_MouseIsOver : $folder_display_order_item_jq_MouseIsOver } );
 		
 		$searchItem.remove();
-	};
+	}
 	
 	/**
 	 * 
@@ -786,7 +786,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			}, _CONSTANTS.MESSAGE_HIDE_DELAY );
 			$element.data( _CONSTANTS.MESSAGE_SET_TIMEOUT_DATA_KEY, timerId );
 		}
-	};
+	}
 		
 	/**
 	 * 
@@ -803,7 +803,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		} else {
 			$element.hide();
 		}
-	};
+	}
 
 	
 	/**
@@ -815,7 +815,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			return true;
 		}
 		return false;
-	};
+	}
 
 	/**
 	 * 
@@ -828,7 +828,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		const $organize_searches_folder_searches_not_in_any_folder_inner_item =
 			$("#organize_searches_folder_searches_not_in_any_folder_inner_item");
 		$organize_searches_folder_searches_not_in_any_folder_inner_item.removeClass("highlighted-item");
-    };
+    }
     
 	/**
 	 * 
@@ -861,7 +861,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			}
 			
 		});
-	};
+	}
 	
 	/**
 	 * 
@@ -877,7 +877,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			searchDragItemInfo.searchDragTop + ( searchDragItemInfo.searchDragHeight / 2 );
 
 		return searchDragItemInfo;
-	};
+	}
 	
 	/**
 	 * 
@@ -898,7 +898,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			return true; //  Search being dragged is in folder
 		}
 		return false; //  Search being dragged is NOT in folder		
-	};
+	}
 
     //////////////////////////////////
 
@@ -946,7 +946,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 				throw e;
 			}
         });		
-    };
+    }
     
     /////////////////////
     
@@ -981,7 +981,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason) => {  }  );
 
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
@@ -1003,7 +1003,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
-	};
+	}
 	
     /////////////////////
     
@@ -1035,7 +1035,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason) => {  }  );
 
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
@@ -1052,7 +1052,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
-    };
+    }
     
 	/**
 	 *  Save new order of folders
@@ -1080,7 +1080,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason) => {  }  );
 
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
@@ -1097,7 +1097,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
-    };
+    }
 
     /////////////////
 
@@ -1110,7 +1110,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
         this._openConfirmDeleteFolderOverlay({ clickThis, eventObject, inOrganizeOverlay });
 		return;
-	};
+	}
 
 	///////////
 	_openConfirmDeleteFolderOverlay({ clickThis, eventObject, inOrganizeOverlay }) {
@@ -1173,7 +1173,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
                 throw e;
             }
         });
-	};
+	}
 
 	//  END   Delete Folder processing
 
@@ -1184,7 +1184,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 	_renameFolderClickHandler({ clickThis, eventObject, inOrganizeOverlay }) {
 		this._openConfirmRenameFolderOverlay({ clickThis, eventObject, inOrganizeOverlay });
 		return;
-	};
+	}
 
 	///////////
 	_openConfirmRenameFolderOverlay({ clickThis, eventObject, inOrganizeOverlay }) {
@@ -1245,7 +1245,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
                 throw e;
             }
         });
-	};
+	}
 
 	_renameFolderSaveNewName({ newFolderName, folderId, inOrganizeOverlay, overlay }) {
 
@@ -1282,7 +1282,7 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
                 throw e;
             }
         });
-	};
+	}
 
 
 	//  END   Rename Folder processing

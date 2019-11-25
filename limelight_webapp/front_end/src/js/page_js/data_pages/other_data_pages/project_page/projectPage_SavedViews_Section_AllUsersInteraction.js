@@ -22,7 +22,7 @@ const _project_page__saved_views_section_template = require("../../../../../../h
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
 
@@ -62,10 +62,9 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 	 * 
 	 */
 	initialize() {
-		let objectThis = this;
 
 		this._initializeCalled = true;
-	};
+	}
 
 	/**
 	 * 
@@ -102,7 +101,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 				throw e;
 			}
 		});
-	};
+	}
 
 	/**
 	 * 
@@ -181,7 +180,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 			this._addSavedViewItem_ClickHandlers({ $saved_view_entry, savedViewItem });
 
 		}
-	};
+	}
 
 	/**
 	 * for HTML in single_search_expansion_icon_template.handlebars

@@ -12,8 +12,6 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
 import { ProteinSequenceData_For_ProteinSequenceVersionId } from '../protein_page_common/proteinSequenceData_For_ProteinSequenceVersionId.js';
 
 import { ReportedPeptideStringData_For_ReportedPeptideId } from '../protein_page_common/reportedPeptideStringData_For_ReportedPeptideId.js';
@@ -764,7 +762,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 		//  Get Annotation Types
 
-		const annotationTypeData = this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		const annotationTypeData = this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 		if ( ( ! annotationTypeData ) ) {
 			throw Error("No annotation type data loaded." );
 		}

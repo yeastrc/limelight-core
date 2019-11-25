@@ -23,10 +23,9 @@ let _psm_list_template_bundle =
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
 
 import { loadGoogleChart_CoreChart }  from 'page_js/data_pages/data_pages_common/googleChartLoaderForThisWebapp.js';
 
@@ -364,7 +363,7 @@ export class Psm_DrilldownRetrieveDisplay {
 		let resultObject = {};
 		
 		let annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
@@ -475,7 +474,7 @@ export class Psm_DrilldownRetrieveDisplay {
 		//   Get all Psm annotation type records with sortOrder set
 
 		let annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+			this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {

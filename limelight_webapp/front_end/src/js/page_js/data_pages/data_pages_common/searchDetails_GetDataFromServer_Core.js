@@ -21,7 +21,7 @@ let _search_detail_section_bundle =
 	require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
 
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 

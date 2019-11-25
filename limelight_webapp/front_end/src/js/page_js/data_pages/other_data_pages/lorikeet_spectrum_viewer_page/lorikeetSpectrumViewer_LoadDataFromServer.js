@@ -28,10 +28,9 @@ const _common_template_bundle =
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { dataPageStateManager_Keys } from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { AnnotationTypeDataRetrieval } from 'page_js/data_pages/data_pages_common/annotationTypeDataRetrieval.js';
 
@@ -93,9 +92,10 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
         
                         promise_webserviceCallStandardPost.catch( () => { 
                             try {
-                                if ( newWindow ) {
-                                    newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
-                                }
+                                //  newWindow not defined
+                                // if ( newWindow ) {
+                                //     newWindow.close(); // close here before call handleAJAXFailure(...) since that may reload the page
+                                // }
 
                                 reject();
 
@@ -140,8 +140,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                 const dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = new DataPageStateManager();
 
-                dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.setPageState( 
-                    dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM, [ projectSearchId ] );
+                dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( [ projectSearchId ] );
 
                 const annotationTypeDataRetrieval = new AnnotationTypeDataRetrieval();
 
@@ -221,7 +220,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
         const psmDefaultAnnTypeDisplay = [];
         //  Object, key is project search id
-        const annotationTypeDataLoaded_AllProjectSearchIds = dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM )
+        const annotationTypeDataLoaded_AllProjectSearchIds = dataPageStateManager_DataFrom_Server.get_annotationTypeData()
 
         const annotationTypeDataLoaded_SingleProjectSearchId = annotationTypeDataLoaded_AllProjectSearchIds[ projectSearchId ];
         if ( ! annotationTypeDataLoaded_SingleProjectSearchId ) {

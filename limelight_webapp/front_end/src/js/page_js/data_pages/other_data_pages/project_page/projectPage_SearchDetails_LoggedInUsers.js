@@ -21,7 +21,7 @@ const _project_page_searches_section_researcher_user_interaction_template = requ
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 //  Local imports
 

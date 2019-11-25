@@ -5,7 +5,6 @@
 
 "use strict";
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
 export class PageStateUtils {
 
@@ -31,7 +30,7 @@ export class PageStateUtils {
 
 		//   Get all Reported Peptide annotation type records with sortOrder set
 
-		let annotationTypeData = dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
@@ -92,7 +91,7 @@ export class PageStateUtils {
 
 		//   Get all Psm annotation type records with sortOrder set
 
-		let annotationTypeData = dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {

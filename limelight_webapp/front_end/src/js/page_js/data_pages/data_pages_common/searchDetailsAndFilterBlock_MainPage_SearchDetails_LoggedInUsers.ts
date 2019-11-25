@@ -1,5 +1,5 @@
 /**
- * searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.js
+ * searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.ts
  * 
  * Javascript for Search Details (Expand a search to show the details) on all pages (except Project Page).
  * 
@@ -16,24 +16,33 @@
 
 //  Import Handlebars templates
 
-const _search_detail_section_main_page_logged_in_users_template = require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page_logged_in_users/search_detail_section_main_page_logged_in_users_template-bundle.js");
+import { _search_detail_section_main_page_logged_in_users_template } from './searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers_ImportHandleBarsTemplates';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
 
 //  Local imports
 
-//  jQuery .data() keys
-
-//    Stored on Root DOM element in single_search_main_template.handlebars with CSS class 
-const _JQ_DATA_KEY__SEARCH_DETAILS_SHOWN = "SEARCH_DETAILS_SHOWN";
+import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers } from './searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers'
 
 /**
 * 
 */
 export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
+
+    private _initializeCalled : boolean;
+
+    //  Handlebars Templates
+    private _project_search_details_add_weblink_link_template : any;
+    private _project_search_details_add_weblink_dialog_template : any;
+    private _project_search_details_add_comment_template : any;
+    private _project_search_details_add_comment_dialog_template : any;
+    private _project_search_details_update_comment_dialog_template : any;
+
+    //  Set in initialize
+    private _searchDetails_AllUsers : SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers;
 
    /**
     * 
@@ -76,7 +85,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   initialize({ searchDetails_AllUsers }) {
+   public initialize(
+       { searchDetails_AllUsers } :
+       { searchDetails_AllUsers : SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers }
+    ) : void {
        
        this._searchDetails_AllUsers = searchDetails_AllUsers;
 
@@ -88,7 +100,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) {
+   public searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) : void {
 
        if ( weblinksShowAddWeblinkLink ) {
            
@@ -121,7 +133,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   searchDetails_DeleteWeblink_AddClickHandler({ projectSearchId, webLink, $weblinkEntry }) {
+   public searchDetails_DeleteWeblink_AddClickHandler({ projectSearchId, webLink, $weblinkEntry }) : void {
 
        const objectThis = this;
 
@@ -147,7 +159,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   searchDetails_Edit_Delete_Comment_AddClickHandlers({ projectSearchId, comment, $commentEntry }) {
+   public searchDetails_Edit_Delete_Comment_AddClickHandlers({ projectSearchId, comment, $commentEntry }) : void {
 
        const objectThis = this;
 
@@ -192,7 +204,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container }) {
+   public attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container }) : void {
 
        const objectThis = this;
 
@@ -269,7 +281,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Open Change Search Filename Input
     */        
-   _changeSearchFilenameOpenClicked({ projectSearchId, clickedThis }) {
+   private _changeSearchFilenameOpenClicked({ projectSearchId, clickedThis }) : void {
 
        const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
        if ( $selector_display_search_filename_outer_container.length === 0 ) {
@@ -305,7 +317,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Save Change Search Filename Input
     */  
-   _changeSearchFilenameSaveClicked({ projectSearchId, clickedThis }) {
+   private _changeSearchFilenameSaveClicked({ projectSearchId, clickedThis }) : void {
 
         const objectThis = this;
 
@@ -318,7 +330,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         if ( $selector_edit_search_filename_input_field.length === 0 ) {
             throw Error("Failed to find DOM element with class 'selector_edit_search_filename_input_field'. _changeSearchFilenameOpenClicked(...) projectSearchId: " + projectSearchId );
         }
-        const searchFilename = $selector_edit_search_filename_input_field.val();
+        const searchFilename : string = <string> $selector_edit_search_filename_input_field.val();
 
         if ( searchFilename === "" ) {
             // Cannot be empty string
@@ -339,12 +351,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         const promise_saveChangedSearchFilenameToServer = this._saveChangedSearchFilenameToServer({ projectSearchId, searchFileProjectSearchId, searchFilename });
 
         promise_saveChangedSearchFilenameToServer.catch((reason) => {
-            try {
-
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
+            // try {
+                
+            // } catch( e ) {
+            //     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            //     throw e;
+            // }
         })
 
         promise_saveChangedSearchFilenameToServer.then((result) => {
@@ -369,7 +381,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Save Changed Search Filename To Server
     */  
-   _saveChangedSearchFilenameToServer({ projectSearchId, searchFileProjectSearchId, searchFilename }) {
+   private _saveChangedSearchFilenameToServer({ projectSearchId, searchFileProjectSearchId, searchFilename }) : any {
 
        const objectThis = this;
 
@@ -413,7 +425,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Cancel Change Search Filename Input
     */  
-   _changeSearchFilenameCancelClicked({ projectSearchId, clickedThis }) {
+   private _changeSearchFilenameCancelClicked({ projectSearchId, clickedThis }) : void {
 
        this._changeSearchFilenameClose({ projectSearchId, clickedThis });
    }
@@ -421,7 +433,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Close Change Search Filename Input - Hide Input show filename
     */  
-   _changeSearchFilenameClose({ projectSearchId, clickedThis }) {
+   private _changeSearchFilenameClose({ projectSearchId, clickedThis }) : void {
 
        const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
        if ( $selector_display_search_filename_outer_container.length === 0 ) {
@@ -448,7 +460,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Open Add Weblink
     */      
-   _weblinks_OpenAddClicked({ projectSearchId, clickedThis }) {
+   private _weblinks_OpenAddClicked({ projectSearchId, clickedThis }) : void {
 
        const $selector_weblinks_outer_container = $( clickedThis ).closest( ".selector_weblinks_outer_container" );
        if ( $selector_weblinks_outer_container.length === 0 ) {
@@ -513,7 +525,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Cancel Close Add Weblink
     */      
-   _weblinks_CancelCloseAddClicked({ projectSearchId, clickedThis }) {
+   private _weblinks_CancelCloseAddClicked({ projectSearchId, clickedThis }) : void {
 
        const $selector_weblinks_outer_container = $( clickedThis ).closest( ".selector_weblinks_outer_container" );
        if ( $selector_weblinks_outer_container.length === 0 ) {
@@ -537,7 +549,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Add Weblink
     */      
-   _weblinks_AddWeblinkClicked({ projectSearchId, clickedThis }) {
+   private _weblinks_AddWeblinkClicked({ projectSearchId, clickedThis }) : void {
 
         const $selector_weblinks_outer_container = $( clickedThis ).closest( ".selector_weblinks_outer_container" );
         if ( $selector_weblinks_outer_container.length === 0 ) {
@@ -573,6 +585,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         }
 
         if ( this._weblinks_validateURL( weblinkURL )  ) {
+            const znothing = 0;
         } else {
     //		alert("url not valid");
 
@@ -591,18 +604,17 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         const promise__weblinks_AddWeblinkCallServer = this._weblinks_AddWeblinkCallServer({ projectSearchId, weblinkURL, weblinkLabel });
 
         promise__weblinks_AddWeblinkCallServer.catch((reason) => {
-            try {
+            // try {
 
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
+            // } catch( e ) {
+            //     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            //     throw e;
+            // }
         })
 
-        promise__weblinks_AddWeblinkCallServer.then((response) => {
+        promise__weblinks_AddWeblinkCallServer.then((insertedId) => {
             try {
                 //  Add to list on page
-                const insertedId = response.insertedId; 
                 const webLink = {
                     canDelete : true, // assume can delete since can create
                     id : insertedId,
@@ -626,7 +638,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Validate new Weblink URL
     */     
-   _weblinks_validateURL(textval) {
+   private _weblinks_validateURL(textval) {
        var urlregex = new RegExp(
            "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
        return urlregex.test(textval);
@@ -636,7 +648,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Add Weblink - Call Server
     */      
-   _weblinks_AddWeblinkCallServer({ projectSearchId, weblinkURL, weblinkLabel }) {
+   private _weblinks_AddWeblinkCallServer({ projectSearchId, weblinkURL, weblinkLabel }) : Promise<number> {
 
        return new Promise((resolve,reject) => {
             try {
@@ -659,7 +671,9 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
-                        resolve( responseData );
+                        const insertedId : number = responseData.insertedId;
+
+                        resolve( insertedId );
                         
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -676,7 +690,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */    
-   _deleteWeblinkClicked({ projectSearchId, weblinkId, clickedThis }) {
+   private _deleteWeblinkClicked({ projectSearchId, weblinkId, clickedThis }) : void {
        
         if ( ! window.confirm("Delete Link?") ) {
             return;
@@ -685,12 +699,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         const promise__weblinks_DeleteWeblinkCallServer = this._weblinks_DeleteWeblinkCallServer({ projectSearchId, weblinkId });
 
         promise__weblinks_DeleteWeblinkCallServer.catch((reason) => {
-            try {
+            // try {
 
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
+            // } catch( e ) {
+            //     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            //     throw e;
+            // }
         })
 
         promise__weblinks_DeleteWeblinkCallServer.then((response) => {
@@ -713,7 +727,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Delete Weblink - Call Server
     */      
-   _weblinks_DeleteWeblinkCallServer({ projectSearchId, weblinkId }) {
+   private _weblinks_DeleteWeblinkCallServer({ projectSearchId, weblinkId }) {
 
        return new Promise((resolve,reject) => {
          try {
@@ -757,7 +771,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Open Add Comment
     */      
-   _comments_OpenAddClicked({ projectSearchId, clickedThis }) {
+   private _comments_OpenAddClicked({ projectSearchId, clickedThis }) : void {
 
        const $selector_comments_outer_container = $( clickedThis ).closest( ".selector_comments_outer_container" );
        if ( $selector_comments_outer_container.length === 0 ) {
@@ -828,7 +842,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Cancel Close Add Comment
     */      
-   _comments_CancelCloseAddClicked({ projectSearchId, clickedThis }) {
+   private _comments_CancelCloseAddClicked({ projectSearchId, clickedThis }) : void {
 
        const $selector_comments_outer_container = $( clickedThis ).closest( ".selector_comments_outer_container" );
        if ( $selector_comments_outer_container.length === 0 ) {
@@ -852,7 +866,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Add Comment
     */      
-   _comments_AddCommentClicked({ projectSearchId, clickedThis }) {
+   private _comments_AddCommentClicked({ projectSearchId, clickedThis }) : void {
 
        const objectThis = this;
 
@@ -883,17 +897,16 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
        const promise__comments_AddCommentCallServer = this._comments_AddCommentCallServer({ projectSearchId, commentText });
 
        promise__comments_AddCommentCallServer.catch((reason) => {
-        try {
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
+        // try {
+        // } catch( e ) {
+        //     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        //     throw e;
+        // }
        })
 
-       promise__comments_AddCommentCallServer.then((response) => {
+       promise__comments_AddCommentCallServer.then((insertedId) => {
         try {
            //  Add to list on page
-           const insertedId = response.insertedId; 
            const comment = {
                canEdit : true, // assume can edit since can create
                canDelete : true, // assume can delete since can create
@@ -917,7 +930,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Add Comment - Call Server
     */      
-   _comments_AddCommentCallServer({ projectSearchId, commentText }) {
+   private _comments_AddCommentCallServer({ projectSearchId, commentText }) : Promise<number> {
 
        return new Promise((resolve,reject) => {
             try {
@@ -940,8 +953,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
-                        resolve( responseData );
-                        
+                        const insertedId : number = responseData.insertedId;
+
+                        resolve( insertedId );
+
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                         throw e;
@@ -957,7 +972,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */    
-   _editCommentClicked({ projectSearchId, commentId , clickedThis }) {
+   private _editCommentClicked({ projectSearchId, commentId , clickedThis }) : void {
 
        const objectThis = this;
 
@@ -1012,7 +1027,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
        $selector_comments_update_comment_cancel_button.click(function(eventObject) {
            try {
                eventObject.preventDefault();
-               objectThis._changeCommentCancelClicked({ projectSearchId, commentId, clickedThis : this });
+               objectThis._changeCommentCancelClicked({ projectSearchId, clickedThis : this });
            } catch (e) {
                reportWebErrorToServer.reportErrorObjectToServer({
                    errorException : e
@@ -1031,7 +1046,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Save Change Comment Input
     */  
-   _changeCommentSaveClicked({ projectSearchId, commentId, clickedThis }) {
+   private _changeCommentSaveClicked({ projectSearchId, commentId, clickedThis }) : void {
 
         const objectThis = this;
 
@@ -1044,7 +1059,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         if ( $selector_comments_update_comment_input.length === 0 ) {
             throw Error("Failed to find DOM element with class 'selector_comments_update_comment_input'. _changeCommentSaveClicked(...) projectSearchId: " + projectSearchId );
         }
-        const commentText = $selector_comments_update_comment_input.val();
+        const commentText = <string>$selector_comments_update_comment_input.val();
 
         if ( commentText === "" ) {
             // Cannot be empty string
@@ -1054,12 +1069,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
         const promise_saveChangedCommentToServer = this._saveChangedCommentToServer({ projectSearchId, commentId, commentText });
 
         promise_saveChangedCommentToServer.catch((reason) => {
-            try {
+            // try {
 
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
+            // } catch( e ) {
+            //     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            //     throw e;
+            // }
         });
 
         promise_saveChangedCommentToServer.then((result) => {
@@ -1084,7 +1099,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Save Changed Search Filename To Server
     */  
-   _saveChangedCommentToServer({ projectSearchId, commentId, commentText }) {
+   private _saveChangedCommentToServer({ projectSearchId, commentId, commentText }) {
 
        const objectThis = this;
 
@@ -1127,7 +1142,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Cancel Change Comment Input
     */  
-   _changeCommentCancelClicked({ projectSearchId, clickedThis }) {
+   private _changeCommentCancelClicked({ projectSearchId, clickedThis }) : void {
 
        this._changeCommentClose({ projectSearchId, clickedThis });
    }
@@ -1135,7 +1150,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * Close Change Comment Input - Remove Input show comment text
     */  
-   _changeCommentClose({ projectSearchId, clickedThis }) {
+   private _changeCommentClose({ projectSearchId, clickedThis }) : void {
 
        const $selector_comment_root_entry = $( clickedThis ).closest(".selector_comment_root_entry");
        if ( $selector_comment_root_entry.length === 0 ) {
@@ -1158,7 +1173,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */    
-   _deleteCommentClicked({ projectSearchId, commentId, clickedThis }) {
+   private _deleteCommentClicked({ projectSearchId, commentId, clickedThis }) : void {
        
        if ( ! window.confirm("Delete Comment?") ) {
            return;
@@ -1167,12 +1182,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
        const promise__comments_DeleteCommentCallServer = this._comments_DeleteCommentCallServer({ projectSearchId, commentId });
 
        promise__comments_DeleteCommentCallServer.catch((reason) => {
-        try {
+        // try {
 
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
+        // } catch( e ) {
+        //     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        //     throw e;
+        // }
        })
 
        promise__comments_DeleteCommentCallServer.then((response) => {
@@ -1195,7 +1210,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     *  Delete Comment - Call Server
     */      
-   _comments_DeleteCommentCallServer({ projectSearchId, commentId }) {
+   private _comments_DeleteCommentCallServer({ projectSearchId, commentId }) {
 
        return new Promise((resolve,reject) => {
          try {

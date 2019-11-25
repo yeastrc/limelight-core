@@ -17,11 +17,9 @@
 
 //module import 
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
 
 /**
  * 
@@ -46,9 +44,9 @@ export class SearchNameRetrieval {
 		}
 		
 		let projectSearchIds = // array
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState(dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM);
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
-		let searchNamesLoaded = dataPageStateManager_DataFrom_Server.getPageStateAllowNotInPageState(dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM);
+		let searchNamesLoaded = dataPageStateManager_DataFrom_Server.get_searchNames();
 
 		let projectSearchIds_dataNotLoadedObj = {};
 
@@ -130,7 +128,7 @@ export class SearchNameRetrieval {
 		}
 
 		return new Promise( retrieval );
-	};
+	}
 
 	/**
 	 * 
@@ -146,7 +144,7 @@ export class SearchNameRetrieval {
 			throw Error("Search List return is empty. projectSearchIds_dataNotLoadedArray: " + projectSearchIds_dataNotLoadedArray.join( '_' ));
 		}
 
-		let searchNamesLoaded = dataPageStateManager_DataFrom_Server.getPageStateAllowNotInPageState(dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM);
+		let searchNamesLoaded = dataPageStateManager_DataFrom_Server.get_searchNames();
 
 		if (!searchNamesLoaded) {
 			searchNamesLoaded = {};
@@ -157,10 +155,8 @@ export class SearchNameRetrieval {
 		}, this);
 
 		//  Save Data to state manager
-		dataPageStateManager_DataFrom_Server.setPageState(
-			dataPageStateManager_Keys.SEARCH_NAMES_KEY_PROJECT_SEARCH_ID_DPSM,
-			searchNamesLoaded);
-	};
+		dataPageStateManager_DataFrom_Server.set_searchNames( searchNamesLoaded);
+	}
 
 
 }

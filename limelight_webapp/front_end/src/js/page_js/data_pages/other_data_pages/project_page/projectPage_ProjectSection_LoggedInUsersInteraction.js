@@ -27,7 +27,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 //  Local imports
 

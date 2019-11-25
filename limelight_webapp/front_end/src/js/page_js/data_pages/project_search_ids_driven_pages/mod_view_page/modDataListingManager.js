@@ -167,7 +167,7 @@ export class ModDataListingManager {
 
 		return columns;
 
-	};
+	}
 
 
 	/**
@@ -382,10 +382,11 @@ export class ModDataListingManager {
 
 		return columns;
 
-	};
+	}
 
 	getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
-		const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server._pageState.searchNames[projectSearchId].name;
+
+		const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames()[projectSearchId].name;
 
 		return searchName;
 	}

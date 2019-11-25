@@ -1,5 +1,5 @@
 /**
- * modViewPage_DisplayDataOnPage.js
+ * modViewPage_DisplayDataOnPage.ts
  * 
  * Javascript for modView.jsp page - Displaying Main Data  
  * 
@@ -7,18 +7,9 @@
 
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
-
-let _mod_table_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/mod_view_page/mod_view_page_template-bundle.js" );
-
-let _common_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
-
 import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
 
-import {dataPageStateManager_Keys} from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import {SearchDetailsAndFilterBlock_MainPage} from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage.js';
+import {SearchDetailsAndFilterBlock_MainPage} from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 import {ModViewPage_DataLoader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
 import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
 import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager.js';
@@ -27,10 +18,24 @@ import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_sea
 import {ModViewDataVizRendererOptionsHandler} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizOptionsManager.js';
 import {ModMultiSearch_DataVizPageStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMultiSearchDataViz_StateManager.js';
 
+//  Import for typing only
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+
 /**
  * 
  */
 export class ModViewPage_DisplayDataOnPage {
+
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _centralPageStateManager : CentralPageStateManager;
+
+	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
+
 
 	/**
 	 * 
@@ -41,6 +46,12 @@ export class ModViewPage_DisplayDataOnPage {
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager
+	 } : { 
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		centralPageStateManager : CentralPageStateManager
 	 }) {
 
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
@@ -52,14 +63,13 @@ export class ModViewPage_DisplayDataOnPage {
 		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
+			displayOnly : false,
 			dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			rerenderPageForUpdatedFilterCutoffs_Callback : rerenderPageForUpdatedFilterCutoffs_BindThis
 		} );
-			
-		
 	}
 	
 	/**
@@ -70,7 +80,7 @@ export class ModViewPage_DisplayDataOnPage {
 	populateSearchDetailsBlock() {
 		
 		this._searchDetailsAndFilterBlock_MainPage.populatePage();
-	};
+	}
 
 
 	/**
@@ -96,13 +106,13 @@ export class ModViewPage_DisplayDataOnPage {
 		let objectThis = this;
 
 		let projectSearchIds = // array
-			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 				
 		let searchDetailsBlockDataMgmtProcessing = this._searchDetailsBlockDataMgmtProcessing;
 		let dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 
 		this.loadDataForAllProjectSearchIds( { projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay } );
-	};
+	}
 
 	/**
 	 * Load data for all the project search Ids and go to render page when all are done
@@ -221,8 +231,7 @@ export class ModViewPage_DisplayDataOnPage {
 
 			this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds } );
 		}
-
-	};
+	}
 
 	renderModDataPageSingleSearch({ loadedData, projectSearchId, searchDetailsBlockDataMgmtProcessing } ) {
 
@@ -260,7 +269,7 @@ export class ModViewPage_DisplayDataOnPage {
 		}
 
 
-		let vizOptionsData = { data: { } };
+		let vizOptionsData = { data: { selectedStateObject : undefined, projectSearchIds : undefined }, stateManagementObject : undefined };
 		vizOptionsData.data.selectedStateObject = { data: { } };
 		const stateManagementObject = new ModMultiSearch_DataVizPageStateManager( { centralPageStateManager : this._centralPageStateManager, vizOptionsData } );
 		vizOptionsData.stateManagementObject = stateManagementObject;

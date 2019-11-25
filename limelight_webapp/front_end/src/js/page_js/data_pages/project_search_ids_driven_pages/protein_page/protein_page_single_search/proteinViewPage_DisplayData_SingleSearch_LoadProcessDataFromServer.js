@@ -41,7 +41,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 
 		let searchDetails_Filters_AnnTypeDisplayRootObject = 
-			objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+			objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({});
 		
 		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 

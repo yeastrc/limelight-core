@@ -89,8 +89,8 @@ export class PeptideListingUtilsSingleSearch {
 
 	static getColumns( { peptideDataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
-		console.log( peptideDataObjectArray );
-		console.log( dataPageStateManager_DataFrom_Server );
+		// console.log( peptideDataObjectArray );
+		// console.log( dataPageStateManager_DataFrom_Server );
 
 		let columns = [ ];
 

@@ -1,5 +1,5 @@
 /**
- * sharePage_dataPages.js
+ * sharePage_dataPages.ts
  * 
  * Javascript for Data Pages: "Share Page" the current view/URL.  Provides a Shortened URL to the user.
  * 
@@ -7,17 +7,13 @@
  * 
  */
 
-
-let Handlebars = require('handlebars/runtime');
-
-let _share_page_template_bundle = require("../../../../../handlebars_templates_precompiled/share_page/share_page_template-bundle.js");
+import { Handlebars, _share_page_template_bundle } from './sharePage_dataPages_ImportHandlebarsTemplates';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost.js';
+import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { dataPageStateManager_Keys } from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.js';
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
@@ -30,6 +26,15 @@ import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.
  * 
  */
 export class SharePage_dataPages {
+
+    //  Handlebars Templates
+    private _share_page__on_main_page_root_Template : any;
+    private _share_page_overlay_contents_Template : any;
+
+    //  Set in initialize
+    private _projectSearchIds : Array<number>;
+
+    private _modalOverlay : any;
 
 	/**
 	 * 
@@ -50,9 +55,13 @@ export class SharePage_dataPages {
     }
 
 	/**
-	 * 
+     * @param projectSearchIds
+	 * @param container_DOM_Element - optional
 	 */
-	initialize({ projectSearchIds, container_DOM_Element }) {
+	initialize(
+        { projectSearchIds, container_DOM_Element = undefined } : 
+        { projectSearchIds : Array<number>, container_DOM_Element : any }
+    ) : void {
 
         const objectThis = this;
 
@@ -94,7 +103,7 @@ export class SharePage_dataPages {
 	/**
 	 * 
 	 */
-	_sharePage_MainPage_ButtonClicked() {
+	private _sharePage_MainPage_ButtonClicked() : void {
 
         var pageCurrentURL = window.location.href;
 
@@ -143,7 +152,7 @@ export class SharePage_dataPages {
 	/**
      * Send Share Page to the server
 	 */
-	_sharePageToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds } ) {
+	private _sharePageToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds } ) : Promise<any> {
 
 		let promise = new Promise( function( resolve, reject ) {
 		  try {
@@ -188,33 +197,33 @@ export class SharePage_dataPages {
      */
     _createModalOverlay( { urlShortcutString } ) {
     	
-    	const objectThis = this;
-
-        let props = { };
-        props.width = '550';
-        props.height = '150'
-        props.title = 'URL Shortcut';
-        props.$containerDiv = $('body' );
-        props.hideOnBackgroundClick = true;
-
         let $contentDiv = this._createModalOverlayContentDiv( { urlShortcutString } );
-        props.$contentDiv = $contentDiv;
-        
-        props.callbackOnClickedHide = function() {
-        	
-        	objectThis._cancel_button_Click();
-        }
 
-        let overlay = new ModalOverlay( props );
+        const callbackOnClickedHide = () => {
+        	
+        	this._cancel_button_Click();
+        }
+        
+        let props = { 
+            $containerDiv : $('body' ), 
+            $contentDiv, 
+            width : '550', 
+            height : '150', 
+            title : 'URL Shortcut', 
+            hideOnBackgroundClick : undefined, 
+            callbackOnClickedHide 
+        };
+
+        const overlay = new ModalOverlay( props );
 
         // const $selector_share_page_button = $contentDiv.find(".selector_share_page_button");
         // if ( $selector_share_page_button.length === 0 ) {
         // 	throw Error("No element with class 'selector_share_page_button'");
         // }
-        // $selector_share_page_button.click( function(eventObject) {
+        // $selector_share_page_button.click( (eventObject) => {
 		// 	try {
 		// 		eventObject.preventDefault();
-        //         objectThis._share_page_button_Overlay_Click({ clickThis : this });
+        //         this._share_page_button_Overlay_Click({ clickThis : this });
         //         return false;
 		// 	} catch( e ) {
 		// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

@@ -8,9 +8,6 @@
  */
 
 
-
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
-
 /**
  * 
  */
@@ -48,8 +45,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 
 		//   Get all Reported Peptide annotation type records with sortOrder set
 
-		let annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeData = this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
@@ -87,7 +83,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 		})
 		
 		return reportedPeptideFilterableAnnotationTypes_SortOrderPopulated;
-	};
+	}
 
 	/**
 	 * uniqueAnnotationTypeIds is type Set
@@ -98,8 +94,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 			return [];
 		}
 		
-		let annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeData = this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
@@ -123,8 +118,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 			return [];
 		}
 		
-		let annotationTypeData = 
-			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+		let annotationTypeData = this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 
 		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
@@ -163,7 +157,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 		this._sort_AnnotationTypes_OnDisplayOrderAnnTypeName( { annTypesArray : annotationTypesForPeptideListEntries } );
 		
 		return annotationTypesForPeptideListEntries;
-	};
+	}
 	
 	/**
 	 * 

@@ -1,5 +1,5 @@
 /**
- * searchDetailsBlockDataMgmtProcessing.js
+ * searchDetailsBlockDataMgmtProcessing.ts
  * 
  * Javascript:  Manage the Search Details Block Data
  * 
@@ -13,7 +13,8 @@
 
 ///////////////////////////////////////////
 
-import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common/dataPageStateManager_Keys.js';
+//   From data_pages_common
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
 
 /**
@@ -21,13 +22,21 @@ import { dataPageStateManager_Keys }  from 'page_js/data_pages/data_pages_common
  */
 export class SearchDetailsBlockDataMgmtProcessing {
 
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+
+	//  Added only since Mod page code is referencing this.  Otherwise, it is not used in this class
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+
 	/**
 	 * 
 	 */
-	constructor( params ) {
+	constructor(
+		{ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay , dataPageStateManager_DataFrom_Server } :
+		{ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager , dataPageStateManager_DataFrom_Server : DataPageStateManager }
+	) {
 		
-		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = params.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
+		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -35,16 +44,19 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	/**
 	 * Store Search Details (filters, ann types to display) for Webservice Calls, All Project Search Ids
 	 * 
-	 * Defaults to dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
+	 * @param searchDetails_Filters_AnnTypeDisplay_Root - Parsed from JSON passed in HTML from server on page load
+	 * @param dataPageStateManager - optional.  Uses value from constructor if not set
 	 */
-	storeSearchDetails_Filters_AnnTypeDisplay_Root( { searchDetails_Filters_AnnTypeDisplay_Root, dataPageStateManager } ) {
+	storeSearchDetails_Filters_AnnTypeDisplay_Root( 
+		{ searchDetails_Filters_AnnTypeDisplay_Root, dataPageStateManager } :
+		{ searchDetails_Filters_AnnTypeDisplay_Root, dataPageStateManager : DataPageStateManager }
+	) : void {
 
 		if ( ! dataPageStateManager ) {
 			dataPageStateManager = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		}
 		
-		dataPageStateManager.setPageState( 
-				dataPageStateManager_Keys.SEARCH_DETAILS_CRITERIA_DATA_DPSM, searchDetails_Filters_AnnTypeDisplay_Root );
+		dataPageStateManager.set_searchDetailsCriteriaData( searchDetails_Filters_AnnTypeDisplay_Root );
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -53,21 +65,28 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	 * Get Search Details (filters, ann types to display) for Webservice Calls, All Project Search Ids
 	 * 
 	 * Defaults to dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
+	 * 
+	 * @param dataPageStateManager - optional.  Uses value from constructor if not set 
+	 * @returns searchDetails_Filters_AnnTypeDisplay_Root passed to store... method: which is object Parsed from JSON passed in HTML from server on page load
+	 * 				Return value has no type info since is from object Parsed from JSON passed in HTML from server on page load
 	 */
-	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds( params ) {
+	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds(
+		{ dataPageStateManager } : 
+		{ dataPageStateManager : DataPageStateManager }
+	) {
 
-		let dataPageStateManager = undefined;
-		if ( params ) {
-			dataPageStateManager = params.dataPageStateManager;
+		let dataPageStateManager_Local : DataPageStateManager = undefined;
+		if ( dataPageStateManager ) {
+			dataPageStateManager_Local = dataPageStateManager;
 		}
 		
-		if ( ! dataPageStateManager ) {
-			dataPageStateManager = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+		if ( ! dataPageStateManager_Local ) {
+			dataPageStateManager_Local = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		}
 		
 		//  No translation for now
 		
-		return dataPageStateManager.getPageState( dataPageStateManager_Keys.SEARCH_DETAILS_CRITERIA_DATA_DPSM );
+		return dataPageStateManager_Local.get_searchDetailsCriteriaData();
 	}
 	
 
@@ -76,15 +95,21 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	/**
 	 * Get Search Details (filters, ann types to display) for Webservice Calls, Single Project Search Id
 	 * 
-	 * Defaults to dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
+	 * @param dataPageStateManager - optional.  Uses value from constructor if not set 
+	 * @returns part of searchDetails_Filters_AnnTypeDisplay_Root passed to store... method: which is object Parsed from JSON passed in HTML from server on page load
+	 * 				Return value has no type info since is from object Parsed from JSON passed in HTML from server on page load
 	 */
-	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager } ) {
+	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( 
+		{ projectSearchId, dataPageStateManager }  : 
+		{ projectSearchId : number, dataPageStateManager : DataPageStateManager }
+	) {
 
-		if ( ! dataPageStateManager ) {
-			dataPageStateManager = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+		let dataPageStateManager_Local : DataPageStateManager = dataPageStateManager;
+		if ( ! dataPageStateManager_Local ) {
+			dataPageStateManager_Local = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		}
 		
-		let searchDetails_Filters_AnnTypeDisplayRootObject = dataPageStateManager.getPageState( dataPageStateManager_Keys.SEARCH_DETAILS_CRITERIA_DATA_DPSM );
+		let searchDetails_Filters_AnnTypeDisplayRootObject = dataPageStateManager_Local.get_searchDetailsCriteriaData();
 
 		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 		if ( ! paramsForProjectSearchIds ) {
@@ -129,7 +154,7 @@ export class SearchDetailsBlockDataMgmtProcessing {
 //	createForDefaults() {
 //
 //		var projectSearchIds = // array
-//			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.getPageState( dataPageStateManager_Keys.PROJECT_SEARCH_IDS_DPSM );
+//			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 //
 //		var filtersAnnTypeDisplayPerProjectSearchIds = {};
 //		
@@ -155,7 +180,7 @@ export class SearchDetailsBlockDataMgmtProcessing {
 //	createForDefaultsForProjectSearchId( projectSearchIdSingleString ) {
 //
 //		var annotationTypeData = 
-//			this._dataPageStateManager_DataFrom_Server.getPageState( dataPageStateManager_Keys.ANNOTATION_TYPE_DATA_KEY_PROJECT_SEARCH_ID_DPSM );
+//			this._dataPageStateManager_DataFrom_Server.get_annotationTypeData();
 //
 //		if ( ! annotationTypeData ) {
 //			throw Error("No annotation type data loaded" );
@@ -260,7 +285,7 @@ export class SearchDetailsBlockDataMgmtProcessing {
 //		return searchDetails_AnnTypeDisplayDefaultDisplayFinal;
 //	};
 
-};
+}
 
 	
 
