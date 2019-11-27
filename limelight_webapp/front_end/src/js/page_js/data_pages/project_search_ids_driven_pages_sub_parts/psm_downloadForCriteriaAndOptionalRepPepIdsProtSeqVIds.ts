@@ -1,5 +1,5 @@
 /**
- * psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.js
+ * psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.ts
  * 
  * Javascript for download PSM data 
  * 
@@ -15,7 +15,7 @@
  * 
  * Open URL in new window to download from server
  * 
- * @param projectSearchIdsReportedPeptideIdsPsmIds - JS Array of { projectSearchId, and optionally either reportedPeptideIds or reportedPeptideIdsAndTheirPsmIds }
+ * @param projectSearchIdsReportedPeptideIdsPsmIds - JS Array of { projectSearchId, and optionally reportedPeptideIdsAndTheirPsmIds }
  * @param searchDataLookupParamsRoot - 
  * @param proteinSequenceVersionIds - optional
  */

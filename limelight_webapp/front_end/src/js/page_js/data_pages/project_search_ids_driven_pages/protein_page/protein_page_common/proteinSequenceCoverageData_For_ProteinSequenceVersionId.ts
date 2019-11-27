@@ -1,5 +1,5 @@
 /**
- * proteinSequenceCoverageData_For_ProteinSequenceVersionId.js
+ * proteinSequenceCoverageData_For_ProteinSequenceVersionId.ts
  * 
  * Javascript for proteinView.jsp page - Holds Protein Sequence Coverage for a single Protein Sequence Version Id
  * 
@@ -10,6 +10,17 @@
  * 
  */
 export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
+
+	private _proteinLength;
+	private _proteinCoverageEntries_PerReportedPeptideId_Array;
+	private _proteinCoverageMergedRanges;
+	
+	//  Computed in this class and cached
+	
+	private _proteinCoverageRatio;
+	private _coveredPositionCount;
+
+	private _booleanArrayOfProteinCoverage;
 
 	/**
 	 * 

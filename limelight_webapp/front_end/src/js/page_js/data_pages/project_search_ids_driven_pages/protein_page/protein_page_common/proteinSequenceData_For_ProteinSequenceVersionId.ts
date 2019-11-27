@@ -1,5 +1,5 @@
 /**
- * proteinSequenceData_For_ProteinSequenceVersionId.js
+ * proteinSequenceData_For_ProteinSequenceVersionId.ts
  * 
  * Javascript - Holds Protein Sequence Data for a single Protein Sequence Version Id
  * 
@@ -12,10 +12,13 @@
  */
 export class ProteinSequenceData_For_ProteinSequenceVersionId {
 
+	private _proteinSequence : string;
+	private _proteinSequenceAsArray : Array<string>;
+
 	/**
 	 * 
 	 */
-	constructor( { proteinSequence } ) {
+	constructor(  { proteinSequence } : { proteinSequence : string } ) {
 		
 		this._proteinSequence = proteinSequence;
 		
@@ -34,7 +37,7 @@ export class ProteinSequenceData_For_ProteinSequenceVersionId {
 	/**
 	 * 
 	 */
-	getProteinSequenceAsCharArray() {
+	getProteinSequenceAsCharArray() : Array<string> {
 		if ( this._proteinSequenceAsArray ) {
 			return this._proteinSequenceAsArray;
 		}

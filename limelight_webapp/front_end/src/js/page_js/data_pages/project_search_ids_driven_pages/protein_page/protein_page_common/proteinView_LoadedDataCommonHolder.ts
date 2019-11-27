@@ -1,5 +1,5 @@
 /**
- * proteinView_LoadedDataCommonHolder.js
+ * proteinView_LoadedDataCommonHolder.ts
  * 
  * Javascript for proteinView.jsp page - Holds Loaded Data Common across Project Search Id  
  * 
@@ -19,6 +19,15 @@
  * 
  */
 export class ProteinView_LoadedDataCommonHolder {
+
+	//  Per proteinSequenceVersionId
+	private _proteinSequenceData_KeyProteinSequenceVersionId = undefined; // Map <integer,Object> <proteinSequenceVersionId, ProteinSequenceData_For_ProteinSequenceVersionId>
+
+	//  Per reportedPeptideId
+	private _reportedPeptideStringData_KeyReportedPeptideId = undefined; // Map <integer,Object> <reportedPeptideId, ReportedPeptideStringData_For_ReportedPeptideId>
+
+	//  Per peptideId
+	private _peptideSequenceString_KeyPeptideId = undefined; // Map <integer,String> <peptideId, PeptideSequence>
 
 	/**
 	 * 

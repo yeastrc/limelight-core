@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.js
+ * proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.ts
  * 
  * Javascript for proteinView.jsp page - Get data from Server and Process/Reformat it before storing it  
  * 
@@ -10,18 +10,24 @@
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { ProteinSequenceData_For_ProteinSequenceVersionId } from '../protein_page_common/proteinSequenceData_For_ProteinSequenceVersionId.js';
+import { ProteinSequenceData_For_ProteinSequenceVersionId } from '../protein_page_common/proteinSequenceData_For_ProteinSequenceVersionId';
 
-import { ReportedPeptideStringData_For_ReportedPeptideId } from '../protein_page_common/reportedPeptideStringData_For_ReportedPeptideId.js';
+import { ReportedPeptideStringData_For_ReportedPeptideId } from '../protein_page_common/reportedPeptideStringData_For_ReportedPeptideId';
 
-import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
+import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
 
 /**
  * 
  */
 export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer {
+
+	private _loadedDataPerProjectSearchIdHolder;
+	private _loadedDataCommonHolder;
+	private _dataPageStateManager_DataFrom_Server;
+	private _searchDetailsBlockDataMgmtProcessing;
+	private _proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer;
 
 	/**
 	 * 

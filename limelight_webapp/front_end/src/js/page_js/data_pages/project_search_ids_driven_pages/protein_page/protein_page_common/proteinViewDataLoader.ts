@@ -1,5 +1,5 @@
 /**
- * proteinViewDataLoader.js
+ * proteinViewDataLoader.ts
  * 
  * Javascript for proteinView.jsp page - Loading Data  
  * 
@@ -9,7 +9,7 @@
  * 
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
@@ -69,7 +69,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Reporter Ions - Unique Masses for this Search - For Single Project Search Id
@@ -112,7 +112,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Reported Peptide Ids For Single Project Search Id
@@ -158,7 +158,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Number of PSMs per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
@@ -201,7 +201,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * MAYBE NOT USED
@@ -246,7 +246,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get PSM Reporter Ion Masses per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
@@ -289,7 +289,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Peptide Ids from Reported Peptide Ids and Project Search Id
@@ -335,7 +335,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 	
 	/**
 	 * Get Peptide Sequence Strings from Reported Peptide Ids and Project Search Id
@@ -381,7 +381,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 	
 	/**
 	 * Get Reported Peptide Strings from Reported Peptide Ids
@@ -427,7 +427,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 	
 	/**
 	 * Get getProteinSequenceVersionIds from reportedPeptideIds
@@ -471,7 +471,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 	
 
 	/**
@@ -516,7 +516,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Protein Sequences From ProteinSequenceVersionIds
@@ -562,7 +562,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 
 	/**
@@ -608,7 +608,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Reported Peptide Descriptive Annotation Data From Reported Peptide Ids, Ann Type Ids
@@ -653,7 +653,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Best PSM Filterable Annotation Data From Reported Peptide Ids, Ann Type Ids
@@ -698,7 +698,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Protein Coverage Data From Reported Peptide Ids
@@ -742,7 +742,7 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 
 	/**
 	 * Get Dynamic Modification Data From Reported Peptide Ids
@@ -786,6 +786,6 @@ export class ProteinViewDataLoader {
 		});
 		
 		return promise;
-	};
+	}
 	
 }

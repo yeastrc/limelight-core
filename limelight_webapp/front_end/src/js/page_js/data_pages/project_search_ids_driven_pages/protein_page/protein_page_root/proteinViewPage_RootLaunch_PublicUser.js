@@ -8,7 +8,9 @@
  * Create and initialize object of class ProteinViewPage_RootClass_Common
  * 
  * 
- * This is required in ...RootLaunch... files: const Handlebars = require('handlebars/runtime');
+ * !!!  This will stay Javascript (".js") and not Typescript since uses "require" for import of Handlebars and Handlebars Precompiled Templates
+ * 
+ * !!!  This is required in ...RootLaunch... files: const Handlebars = require('handlebars/runtime');
  * 
  * 
  */

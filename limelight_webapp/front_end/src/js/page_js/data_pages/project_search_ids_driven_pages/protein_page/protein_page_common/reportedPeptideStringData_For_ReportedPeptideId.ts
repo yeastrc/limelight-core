@@ -1,5 +1,5 @@
 /**
- * reportedPeptideStringData_For_ReportedPeptideId.js
+ * reportedPeptideStringData_For_ReportedPeptideId.ts
  * 
  * Javascript - Holds Reported Peptide String Data for a single Reported Peptide Id
  * 
@@ -10,6 +10,8 @@
  * 
  */
 export class ReportedPeptideStringData_For_ReportedPeptideId {
+
+	private _reportedPeptideString;
 
 	/**
 	 * 

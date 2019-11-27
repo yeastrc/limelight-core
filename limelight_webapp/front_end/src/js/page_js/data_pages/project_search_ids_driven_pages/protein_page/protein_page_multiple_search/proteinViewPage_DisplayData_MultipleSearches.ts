@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayData_MultipleSearches.js
+ * proteinViewPage_DisplayData_MultipleSearches.ts
  * 
  * Javascript for proteinView.jsp page - Displaying Data for Multiple Searches
  * 
@@ -9,33 +9,25 @@
  * 
  */
 
+import { Handlebars, _common_template_bundle, _protein_table_template_bundle } from './proteinViewPage_DisplayData_MultipleSearches_ImportHandlebarsTemplates';
 
-let Handlebars = require('handlebars/runtime');
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-//  for DataTable
-const _common_template_bundle =
-	require("../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
-let _protein_table_template_bundle = 
-	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile.js';
+import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
 
-import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
-
-import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder.js';
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder.ts';
-
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
-
-import { ProteinViewPage_Display_MultipleSearches_SingleProtein } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein.js';
+import { ProteinViewPage_Display_MultipleSearches_SingleProtein } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein';
 
 import { SingleProtein_CentralStateManagerObjectClass }
-	from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
+	from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
 
 	
 	//  Applied to the element containing the protein name so it can be selected
@@ -46,6 +38,61 @@ const _CSS_CLASS_SELECTOR_PROTEIN_NAME = "selector_protein_name";
  */
 export class ProteinViewPage_Display_MultipleSearches {
 
+	//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
+	
+	// !!!!!!!!!  TODO  Parts of this._loadedDataCommonHolder need to be cleared if the cutoffs or other filters change
+	
+	//   this._loadedDataCommonHolder is shared with this._proteinViewPage_Display_MultipleSearches_SingleProtein
+	
+	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
+
+	
+	// !!!!!!!!!  TODO  Parts of private _loadedDataPerProjectSearchIdHolder need to be cleared if the cutoffs or other filters change
+	
+	//   private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is shared with private _proteinViewPage_Display_SingleProtein_...
+
+	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds; // : Map;
+
+	private _dataPages_LoggedInUser_CommonObjectsFactory;
+
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+	
+	private _dataPageStateManager_DataFrom_Server;
+	
+	private _searchDetailsBlockDataMgmtProcessing;
+	private _centralPageStateManager;
+	private _singleProtein_CentralStateManagerObject;
+	private _proteinList_CentralStateManagerObjectClass;
+	
+	private _annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes;
+
+	// From common template:
+	private _common_template_dataTable_Template = _common_template_bundle.dataTable;
+	
+	//  From Protein Template:
+	private _protein_page_protein_tooltip_Template = _protein_table_template_bundle.protein_page_protein_tooltip;
+		
+	
+	//   projectSearchIds being processed.  Reset All data if receive different projectSearchId
+	private _projectSearchIds = undefined;
+	
+	//   Cached: Protein Name and Description in a Map, Key ProteinSequenceVersionId
+	private _proteinNameDescription_Key_ProteinSequenceVersionId = undefined;
+	
+	//   Clear: Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
+	private _proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId = undefined;
+
+	//   Cached: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
+	private _peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId = undefined;
+
+	private _proteinViewPage_Display_MultipleSearches_SingleProtein : ProteinViewPage_Display_MultipleSearches_SingleProtein;
+	
+	private _proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer;
+		
+	private _downloadProteinsClickHandlerAttached = true;
+	private currentProteinListDisplayTableData = undefined
+	
+	
 	/**
 	 * 
 	 */
@@ -94,29 +141,12 @@ export class ProteinViewPage_Display_MultipleSearches {
 		if ( ! _common_template_bundle.dataTable ) {
 			throw Error("Nothing in _common_template_bundle.dataTable");
 		}
-		this._common_template_dataTable_Template = _common_template_bundle.dataTable;
 		
 		//  From Protein Template:
 		
 		if ( ! _protein_table_template_bundle.protein_page_protein_tooltip ) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_protein_tooltip");
 		}
-		
-		this._protein_page_protein_tooltip_Template = 
-			_protein_table_template_bundle.protein_page_protein_tooltip;
-			
-		
-		//   projectSearchId being processed.  Reset All data if receive different projectSearchId
-		this._projectSearchIs = undefined;
-		
-		//   Cached: Protein Name and Description in a Map, Key ProteinSequenceVersionId
-		this._proteinNameDescription_Key_ProteinSequenceVersionId = undefined;
-		
-		//   Clear: Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
-		this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId = undefined;
-
-		//   Cached: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
-		this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId = undefined;
 	}
 	
 	/**
@@ -279,7 +309,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		if ( proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null ) {
 			//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
-			this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL } ) ;
+			this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL, $target : undefined } ) ;
 
 			//  Delay render Protein List since currently hidden.  Probably could skip render until close Single Protein Overlay
 			window.setTimeout( () => {
@@ -426,12 +456,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 					throw Error("No proteinCoverageObject found.  proteinSequenceVersionId: " + proteinSequenceVersionId );
 				}
 				const proteinCoverageRatio = proteinCoverageObject.getProteinSequenceCoverageRatio();
-
-				//  output Protein Item for this projectSearchId
-				
-				let proteinItemForProjectSearch = { proteinSequenceVersionId : proteinSequenceVersionId };
-				
-				proteinItemForProjectSearch.proteinInfo = proteinInfo;
 				
 				let numReportedPeptides = 0;
 				let numReportedPeptidesUnique = 0; // 'Unique' == map to only one protein
@@ -478,12 +502,16 @@ export class ProteinViewPage_Display_MultipleSearches {
 				}
 				this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId.set( proteinSequenceVersionId, countsFor_proteinSequenceVersionId );
 
+				//  output Protein Item for this projectSearchId
 				
-				proteinItemForProjectSearch.numPsms = numPsms;
-				proteinItemForProjectSearch.numReportedPeptides = numReportedPeptides;
-				proteinItemForProjectSearch.numReportedPeptidesUnique = numReportedPeptidesUnique;
-				
-				proteinItemForProjectSearch.reportedPeptideIds = reportedPeptideIds;
+				let proteinItemForProjectSearch = { 
+					proteinSequenceVersionId : proteinSequenceVersionId, 
+					proteinInfo,
+					numPsms,
+					numReportedPeptides,
+					numReportedPeptidesUnique,
+					reportedPeptideIds
+				};
 				
 				//  Insert Map Entry proteinItemForProjectSearch
 
@@ -718,10 +746,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			// add the table to the page
 
-			const tableObject = { };
-			tableObject.columns = columns;
-			tableObject.dataObjects = tableObjects;
-			tableObject.expandableRows = false;
+			const tableObject = { columns, dataObjects : tableObjects, expandableRows : false };
 
 			const dataTableContainer_HTML = this._common_template_dataTable_Template( { tableObject } );
 			const $tableContainerDiv = $( dataTableContainer_HTML );
@@ -940,7 +965,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		//  Create to override the value of proteinSequenceVersionId from the URL
 		const singleProtein_CentralStateManagerObjectClass_ForNewWindow =
-			new SingleProtein_CentralStateManagerObjectClass({ initialProteinSequenceVersionId: proteinSequenceVersionId });
+			new SingleProtein_CentralStateManagerObjectClass({ initialProteinSequenceVersionId: proteinSequenceVersionId, centralPageStateManager : undefined });
 
 		const newWindowURL = this._centralPageStateManager.getURL_ForCurrentState({ componentOverridesAdditions: [ singleProtein_CentralStateManagerObjectClass_ForNewWindow ] })
 

@@ -1,5 +1,5 @@
 /**
- * proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId.js
+ * proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId.ts
  * 
  * Javascript for proteinView.jsp page - Compute Protein Sequence Coverage Per proteinSequenceVersionId
  * 
@@ -9,9 +9,9 @@
  * !!!!!!!!!!   Assumes for a single Project Search Id since it concatenates arrays of reported peptide ids  !!!!!!!!!!!!!!
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from './proteinSequenceCoverageData_For_ProteinSequenceVersionId.js';
+import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from './proteinSequenceCoverageData_For_ProteinSequenceVersionId';
 
 /**
  * 

@@ -9,8 +9,8 @@
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
 
 
 /**

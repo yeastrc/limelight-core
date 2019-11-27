@@ -1,5 +1,5 @@
 /**
- * peptideViewPage_DisplayData_SingleSearch.js
+ * peptideViewPage_DisplayData_SingleSearch.ts
  * 
  * Javascript for peptideView.jsp page - Displaying Data for Single Search  
  * 
@@ -10,28 +10,44 @@
  */
 
 
-let Handlebars = require('handlebars/runtime');
+import { Handlebars, _peptide_table_template_bundle } from './peptideViewPage_DisplayData_SingleSearch_ImportHandlebarsTemplates';
 
-let _peptide_table_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/peptide_page/peptide_page_single_search_template-bundle.js" );
-
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
-
-import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
+import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 
-import { Psm_DrilldownRetrieveDisplay } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_DrilldownRetrieveDisplay.js';
+import { Psm_DrilldownRetrieveDisplay } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_DrilldownRetrieveDisplay';
 
 /**
  * 
  */
 export class PeptideViewPage_Display_SingleSearch {
 
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+		
+	private _dataPageStateManager_DataFrom_Server;
+	
+	private _searchDetailsBlockDataMgmtProcessing;
+	
+	private _annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes;
+	
+	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
+	
+	private _psm_DrilldownRetrieveDisplay : Psm_DrilldownRetrieveDisplay;
+
+	private _peptide_table_table_headers_template_Template = 
+		_peptide_table_template_bundle.peptide_table_table_headers_template;
+	
+	private _peptide_table_data_entry_template_Template = 
+		_peptide_table_template_bundle.peptide_table_data_entry_template;
+		
+	private _peptide_table_child_row_template_Template = 
+		_peptide_table_template_bundle.peptide_table_child_row_template;
+		
 	/**
 	 * 
 	 */
@@ -51,9 +67,12 @@ export class PeptideViewPage_Display_SingleSearch {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
 		
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
+			displayOnly : false,
+			dataPages_LoggedInUser_CommonObjectsFactory : undefined,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			rerenderPageForUpdatedFilterCutoffs_Callback : undefined
 		} );
 		
 		this._psm_DrilldownRetrieveDisplay = new Psm_DrilldownRetrieveDisplay( { 
@@ -71,16 +90,6 @@ export class PeptideViewPage_Display_SingleSearch {
 		if ( ! _peptide_table_template_bundle.peptide_table_child_row_template ) {
 			throw Error("Nothing in _peptide_table_template_bundle.peptide_table_child_row_template");
 		}
-		
-		this._peptide_table_table_headers_template_Template = 
-			_peptide_table_template_bundle.peptide_table_table_headers_template;
-		
-		this._peptide_table_data_entry_template_Template = 
-			_peptide_table_template_bundle.peptide_table_data_entry_template;
-			
-		this._peptide_table_child_row_template_Template = 
-			_peptide_table_template_bundle.peptide_table_child_row_template;
-			
 		
 	}
 	

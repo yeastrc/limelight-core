@@ -1,5 +1,5 @@
 /**
- * proteinSequenceFormattedDisplay_widget_SequenceCoverageParam.js
+ * proteinSequenceFormattedDisplay_widget_SequenceCoverageParam.ts
  * 
  * Javascript for Widget for displaying the Protein Sequence Formatted  
  * 
@@ -18,6 +18,9 @@
  * 
  */
 export class ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam {
+
+    private _proteinCoverageObject;
+    private _coverageArrayOfBoolean;
 
 	/**
      * Exactly 1 of the parameters proteinCoverageObject, coverageArrayOfBoolean must be populated (but not both)

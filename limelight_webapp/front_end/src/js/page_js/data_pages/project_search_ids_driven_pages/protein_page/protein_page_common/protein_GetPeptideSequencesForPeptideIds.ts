@@ -1,14 +1,14 @@
 /**
- * protein_GetPeptideSequencesForPeptideIds.js
+ * protein_GetPeptideSequencesForPeptideIds.ts
  * 
  * Javascript for proteinView.jsp page - Loads Peptide Sequences
  * 
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { ProteinViewDataLoader } from './proteinViewDataLoader.js';
+import { ProteinViewDataLoader } from './proteinViewDataLoader';
 
 /**
  * 

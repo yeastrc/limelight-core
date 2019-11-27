@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns.js
+ * proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns.ts
  * 
  * Javascript for proteinView.jsp page - 
  * 
@@ -11,24 +11,17 @@
  * 
  */
 
-const Handlebars = require('handlebars/runtime');
+import { Handlebars, _common_template_bundle, _protein_table_template_bundle } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns_ImportHandlebarsTemplates'
 
-//  for DataTable
-const _common_template_bundle =
-	require("../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-const _protein_table_template_bundle = 
-	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
 
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
 
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js';
-
-import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.js';
-
-import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.js';
+import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList';
 
 
 
@@ -47,6 +40,31 @@ let _REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX = undefined;
  * 
  */
 export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns {
+
+
+	private _containing_ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList;
+	private _containing_ProteinViewPage_Display_MultipleSearches_SingleProtein;
+	private _loadedDataCommonHolder;
+	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
+	private _annotationTypeData_ReturnSpecifiedTypes;
+	
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+	private _dataPageStateManager_DataFrom_Server;
+	private _searchDetailsBlockDataMgmtProcessing;
+	
+	// From common template:
+
+	private _common_template_dataTable_Template = _common_template_bundle.dataTable;
+	
+	// From Protein template:
+	
+	private _protein_page_single_protein_reported_peptide_table_template_Template = 
+		_protein_table_template_bundle.protein_page_single_protein_reported_peptide_table_template;
+	private _protein_page_single_protein_reported_peptide_entry_template_Template = 
+		_protein_table_template_bundle.protein_page_single_protein_reported_peptide_entry_template;
+	private _protein_page_single_protein_reported_peptide_child_row_template_Template = 
+		_protein_table_template_bundle.protein_page_single_protein_reported_peptide_child_row_template;
+
 
 	/**
 	 * 
@@ -82,7 +100,6 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 		if ( ! _common_template_bundle.dataTable ) {
 			throw Error("Nothing in _common_template_bundle.dataTable");
 		}
-		this._common_template_dataTable_Template = _common_template_bundle.dataTable;
 		
 		// From Protein template:
 		
@@ -95,13 +112,6 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 		if ( ! _protein_table_template_bundle.protein_page_single_protein_reported_peptide_child_row_template ) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_single_protein_reported_peptide_child_row_template");
 		}
-		
-		this._protein_page_single_protein_reported_peptide_table_template_Template = 
-			_protein_table_template_bundle.protein_page_single_protein_reported_peptide_table_template;
-		this._protein_page_single_protein_reported_peptide_entry_template_Template = 
-			_protein_table_template_bundle.protein_page_single_protein_reported_peptide_entry_template;
-		this._protein_page_single_protein_reported_peptide_child_row_template_Template = 
-			_protein_table_template_bundle.protein_page_single_protein_reported_peptide_child_row_template;
 	}
 
 	/**
@@ -142,7 +152,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 		const tableDisplayHandler = new TableDisplayHandler();
 
 		// the columns for the data being shown on the page
-		const columns = this._getDataTableColumns_PerSearch({});
+		const columns = this._getDataTableColumns_PerSearch();
 
 		// the data we're showing on the page
 		const tableObjects = dataList_ForDataTable;
@@ -150,10 +160,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		// add the table to the page
 
-		const tableObject = { };
-		tableObject.columns = columns;
-		tableObject.dataObjects = tableObjects;
-		tableObject.expandableRows = true;
+		const tableObject = { columns, dataObjects : tableObjects, expandableRows : true };
 
 		const dataTableContainer_HTML = this._common_template_dataTable_Template( { tableObject } );
 		const $tableContainerDiv = $( dataTableContainer_HTML );

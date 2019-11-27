@@ -10,10 +10,10 @@
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader.js';
-import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId } from '../protein_page_common/proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId.js';
+import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
+import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId } from '../protein_page_common/proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId';
 
 
 /**

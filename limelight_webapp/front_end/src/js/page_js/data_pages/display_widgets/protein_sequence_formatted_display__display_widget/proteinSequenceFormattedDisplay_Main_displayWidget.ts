@@ -11,13 +11,9 @@
  * 
  */
 
+import { Handlebars, _protein_sequence_formatted_display_template_bundle } from './proteinSequenceFormattedDisplay_Main_displayWidget_ImportHandlebarsTemplates';
 
-let Handlebars = require('handlebars/runtime');
-
-let _protein_sequence_formatted_display_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/protein_sequence_formatted_display/protein_sequence_formatted_display_template-bundle.js" );
-
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 const positionWrapPoint = 60;
 
@@ -80,6 +76,62 @@ const _ENCODING_DATA__POSITION_SEPARATOR = 'Z';
  * 
  */
 export class ProteinSequenceFormattedDisplay_Main_displayWidget {
+
+	private _initializeCalled = false;
+
+	private _proteinSequenceString;
+	private _proteinSequenceAsArray;
+	
+	private _variableModificationMassesForProteinPositions;
+	private _staticModificationMassesForProteinPositions;
+
+	private _variableModificationSelectionUnmodifiedSelected;
+	private _variableModificationMassesToFilterOn;
+	private _staticModificationMassesToFilterOn;
+	
+	private _widget_SequenceCoverageParam_All_Peptides;
+	private _widget_SequenceCoverageParam_Selected_Peptides;
+
+	private _containerHTML_Element;
+	
+	private _callbackMethodForSelectedChange;
+	
+
+	//  Template Bundle _protein_sequence_formatted_display_template_bundle
+	
+	private _protein_sequence_formatted_display_overall_block_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_overall_block_template;
+
+	private _protein_sequence_formatted_display_single_line_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_line_template;
+	
+	private _protein_sequence_formatted_display_single_position_entry_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_entry_template;
+
+	private _protein_sequence_formatted_display_single_position_tooltip_a_start_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_a_start_template;
+	private _protein_sequence_formatted_display_single_position_tooltip_b_end_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_b_end_template;
+	private _protein_sequence_formatted_display_single_position_tooltip_c_before_variable_mod_masses_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_c_before_variable_mod_masses_template;
+	private _protein_sequence_formatted_display_single_position_tooltip_d_before_static_mod_masses_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_d_before_static_mod_masses_template;
+	private _protein_sequence_formatted_display_single_position_tooltip_e_after_mod_masses_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_e_after_mod_masses_template;
+	private _protein_sequence_formatted_display_single_position_tooltip_mass_entry_template_Template = 
+		_protein_sequence_formatted_display_template_bundle.protein_sequence_formatted_display_single_position_tooltip_mass_entry_template;
+
+
+	private _selectedProteinSequencePositions;
+
+	private _sequencePositions_Applied_Labels_CssClassNames;
+
+	private _sequencePositions_Secondary_Applied_Labels_CssClassNames;
+
+	private _widget_proteinPositions_CoveredBy_PeptideSearchStrings;
+
+	private _renderOnPageCalled;
+	
 
 	/**
 	 * @param proteinSequenceString
@@ -437,7 +489,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 
 		if (this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0) {
 
-			const positionsAsArray = Array.from( this._selectedProteinSequencePositions );
+			const positionsAsArray = ( Array.from( this._selectedProteinSequencePositions ) as any );
 
 			positionsAsArray.sort(function (a, b) {
 				if (a < b) {
@@ -674,7 +726,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 			
 			let show_lineEndPosition = false;
 			if ( ( proteinSequenceIndex + positionWrapPoint )  < proteinSequenceLength ) {
-				show_lineEndPosition = true;; // Only display if not after end of sequence length
+				show_lineEndPosition = true; // Only display if not after end of sequence length
 			}
 			
 			this._addProteinSequenceLineToContainer( 
@@ -1227,7 +1279,7 @@ export class ProteinSequenceFormattedDisplay_Main_displayWidget {
 							if ( index > 0 ) {
 								tooltipContentsHTML_Parts.push( ", " );
 							}
-							const massEntryContext = { modMass : variableModificationMass };
+							const massEntryContext = { modMass : variableModificationMass, highlightMass : undefined };
 
 							if ( objectThis._variableModificationMassesToFilterOn && objectThis._variableModificationMassesToFilterOn.has( variableModificationMass ) ) {
 								massEntryContext.highlightMass = true;
