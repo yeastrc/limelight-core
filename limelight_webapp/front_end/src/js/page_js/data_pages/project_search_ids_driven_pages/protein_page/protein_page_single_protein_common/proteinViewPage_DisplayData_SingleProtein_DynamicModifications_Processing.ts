@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayData_SingleProtein_DynamicModifications_Processing.js
+ * proteinViewPage_DisplayData_SingleProtein_DynamicModifications_Processing.ts
  * 
  * Javascript for proteinView.jsp page - Dynamic Modifications - Single Search Display usage currently
  * 
@@ -12,8 +12,11 @@
  * 
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId } from './proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+
+import { getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId } from './proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides';
 
 /**
  * Dynamic Modifications
@@ -32,7 +35,15 @@ import { getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequence
  *                  which are also mapped together and stored for the parameter protein sequence version id
  *          * returns null if no data needs loading and all processing has been completed
  */
-const getDynamicModificationsForProteinSequenceVersionId = function({ loadedDataPerProjectSearchIdHolder, proteinSequenceVersionId, projectSearchId }) {
+const getDynamicModificationsForProteinSequenceVersionId = function({ 
+    loadedDataPerProjectSearchIdHolder, 
+    proteinSequenceVersionId, 
+    projectSearchId 
+} : { 
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
+    proteinSequenceVersionId, 
+    projectSearchId 
+}) {
 
     //  First check if Dynamic Modifications for Protein already computed and stored
     let dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
@@ -49,7 +60,15 @@ const getDynamicModificationsForProteinSequenceVersionId = function({ loadedData
 /**
  * Get Dynamic Modifications Data for Reported Peptide Ids and projectSearchId
  */
-const _getDynamicModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = function({ loadedDataPerProjectSearchIdHolder, proteinSequenceVersionId, projectSearchId }) {
+const _getDynamicModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = function({ 
+    loadedDataPerProjectSearchIdHolder, 
+    proteinSequenceVersionId, 
+    projectSearchId
+} : { 
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
+    proteinSequenceVersionId, 
+    projectSearchId
+}) {
 
     const promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId = getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId({ loadedDataPerProjectSearchIdHolder, proteinSequenceVersionId, projectSearchId });
 
@@ -97,8 +116,12 @@ const _getDynamicModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = funct
  *      One entry in the array for each combination of the properties.
  */
 const _combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId = function({ 
-    loadedDataPerProjectSearchIdHolder,
-    proteinSequenceVersionId }) {
+    loadedDataPerProjectSearchIdHolder, 
+    proteinSequenceVersionId
+} : { 
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
+    proteinSequenceVersionId
+}) {
 
         //  Param reportedPeptideIds_For_proteinSequenceVersionId not needed here since working from protein coverage for protein
         //              - proteinCoverageObject.get_proteinCoverageEntries_PerReportedPeptideId_Array()

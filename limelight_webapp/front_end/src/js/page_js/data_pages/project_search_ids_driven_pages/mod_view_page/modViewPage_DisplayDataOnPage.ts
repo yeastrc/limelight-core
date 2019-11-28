@@ -119,7 +119,15 @@ export class ModViewPage_DisplayDataOnPage {
 	 * 
 	 * @param {*} param0 
 	 */
-	loadDataForAllProjectSearchIds( { projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay } ) {
+	loadDataForAllProjectSearchIds( { 
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay 
+	} : { 
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
+	} ) {
 
 		let objectThis = this;
 
@@ -152,7 +160,17 @@ export class ModViewPage_DisplayDataOnPage {
 	 * 
 	 * @param {*} param0 
 	 */
-	loadDataForProjectSearchId({ loadedData, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay } ) {
+	loadDataForProjectSearchId({ 
+		loadedData, 
+		projectSearchId, 
+		searchDetailsBlockDataMgmtProcessing, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay 
+	} : { 
+		loadedData, 
+		projectSearchId, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
+	} ) {
 
 		let dataLoader = new ModViewPage_DataLoader();
 
@@ -222,7 +240,15 @@ export class ModViewPage_DisplayDataOnPage {
 	 * 
 	 * @param {*} param0 
 	 */
-	renderModDataPage( { loadedData, projectSearchIds, searchDetailsBlockDataMgmtProcessing } ) {
+	renderModDataPage( { 
+		loadedData, 
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing 
+	} : { 
+		loadedData, 
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+	} ) {
 
 		if( projectSearchIds.length == 1 ) {
 			let projectSearchId = projectSearchIds[ 0 ];
@@ -233,7 +259,15 @@ export class ModViewPage_DisplayDataOnPage {
 		}
 	}
 
-	renderModDataPageSingleSearch({ loadedData, projectSearchId, searchDetailsBlockDataMgmtProcessing } ) {
+	renderModDataPageSingleSearch({ 
+		loadedData, 
+		projectSearchId, 
+		searchDetailsBlockDataMgmtProcessing 
+	} : { 
+		loadedData, 
+		projectSearchId, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+	} ) {
 
 		// enable click handler for filtering proteins and positions overlay
 		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager();
@@ -248,7 +282,15 @@ export class ModViewPage_DisplayDataOnPage {
 		ModViewDataTableRenderer.renderDataTable( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
 	}
 
-	renderModDataPageMultiSearch({ loadedData, projectSearchIds, searchDetailsBlockDataMgmtProcessing } ) {
+	renderModDataPageMultiSearch({ 
+		loadedData, 
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing 
+	} : { 
+		loadedData, 
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+	} ) {
 
 		// enable click handler for filtering proteins and positions overlay
 		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager();

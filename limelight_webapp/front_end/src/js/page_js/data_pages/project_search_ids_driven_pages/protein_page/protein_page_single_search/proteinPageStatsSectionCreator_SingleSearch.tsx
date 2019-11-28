@@ -1,5 +1,5 @@
 /**
- * proteinPageStatsSectionCreator_SingleSearch.js
+ * proteinPageStatsSectionCreator_SingleSearch.tsx
  * 
  * Javascript for proteinView.jsp page - Holds Loaded Data Per Project Search Id  
  * 
@@ -8,25 +8,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { ProteinViewPage_StatsSection } from './proteinPageStatsSection.jsx';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+
+import { ProteinViewPage_StatsSection } from './proteinPageStatsSection';
 
 /**
  * 
  */
 export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
+    private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
+
+    private _show_status_linkClick_BindThis = this._show_status_linkClick.bind(this);
+
+    private _projectSearchId;
+
+    private _proteinListData;
+
 	/**
 	 * 
 	 */
-	constructor({ loadedDataPerProjectSearchIdHolder }) {
+	constructor({ 
+        loadedDataPerProjectSearchIdHolder 
+    } : { 
+        loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+    }) {
 
         this._loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
-
-        this._show_status_linkClick_BindThis = this._show_status_linkClick.bind(this);
     }
 
 	/**
@@ -135,7 +147,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
                 promisesAll.then( (results) => {
                     try {
-                        const statsDataFromServer = { ms2CountsFromServerResponse : ms2ScanCounts_ForSearchCached };
+                        const statsDataFromServer = { ms2CountsFromServerResponse : ms2ScanCounts_ForSearchCached, reportedPeptideIdsHaveDynamicModificationsResult : undefined };
                         if ( results ) {
                             //  Process promise resolve values from the promises
                             for ( const result of results ) {

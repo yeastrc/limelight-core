@@ -19,8 +19,14 @@ import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downlo
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
-import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder';
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
 
@@ -53,13 +59,12 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds; // : Map;
 
-	private _dataPages_LoggedInUser_CommonObjectsFactory;
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 
-	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	
-	private _dataPageStateManager_DataFrom_Server;
-	
-	private _searchDetailsBlockDataMgmtProcessing;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager;
 	private _singleProtein_CentralStateManagerObject;
 	private _proteinList_CentralStateManagerObjectClass;
@@ -101,6 +106,14 @@ export class ProteinViewPage_Display_MultipleSearches {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
+		centralPageStateManager,
+		singleProtein_CentralStateManagerObject,
+		proteinList_CentralStateManagerObjectClass
+	} : {
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager,
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager,
 		singleProtein_CentralStateManagerObject,
 		proteinList_CentralStateManagerObjectClass
@@ -399,8 +412,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 				throw Error("loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() not populated for projectSearchId: " + projectSearchId ); // Must have num PSMs populated
 			}
 		}
-
-		const loadedDataCommonHolder = this._loadedDataCommonHolder;
 
 		//  Map<proteinSequenceVersionId,Map<projectSearchId,ProteinDataForSingleProjectSearchIdSingleProteinSequenceVersionId>>
 		const proteinItemRecordsMap_Key_projectSearchId_Key_proteinSequenceVersionId = new Map();

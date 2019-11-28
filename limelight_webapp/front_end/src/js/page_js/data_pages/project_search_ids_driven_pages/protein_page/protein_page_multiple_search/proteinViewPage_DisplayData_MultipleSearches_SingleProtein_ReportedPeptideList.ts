@@ -13,6 +13,8 @@ import { Handlebars, _common_template_bundle, _protein_table_template_bundle } f
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
 import { peptideSequence_CreateCommonDisplayString } from 'page_js/data_pages/peptide_sequence_display_string_common/peptideSequence_CreateCommonDisplayString';
@@ -22,7 +24,8 @@ import { reporterIonMass_CommonRounding_ReturnNumber } from 'page_js/data_pages/
 
 import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
 
-// import { PSMListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/psmListingUtilsSingleSearch';
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns';
 
@@ -36,13 +39,13 @@ const _REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX = 'reportedPeptideIds
 export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList {
 
 	private _containing_ProteinViewPage_Display_MultipleSearches_SingleProtein;
-	private _loadedDataCommonHolder;
+	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
 	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
 	private _annotationTypeData_ReturnSpecifiedTypes;
 	
-	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-	private _dataPageStateManager_DataFrom_Server;
-	private _searchDetailsBlockDataMgmtProcessing;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	
 	// From common template:
 	private _common_template_dataTable_Template = _common_template_bundle.dataTable;
@@ -71,6 +74,13 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 				dataPageStateManager_DataFrom_Server, 
 				searchDetailsBlockDataMgmtProcessing
+			} : { containing_ProteinViewPage_Display_MultipleSearches_SingleProtein,
+				loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder, 
+				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
+				annotationTypeData_ReturnSpecifiedTypes,
+				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+				dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+				searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 			}) {
 		
 		this._containing_ProteinViewPage_Display_MultipleSearches_SingleProtein = containing_ProteinViewPage_Display_MultipleSearches_SingleProtein;
@@ -924,19 +934,6 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		// add in the click handlers for sorting the table
 		tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );
-
-		//  expansion at bottom level for PSMs
-
-		// add in the click and over handlers for the rows
-		// {
-		// 	const functionParams = { };
-		// 	functionParams.projectSearchId = projectSearchId;
-		// 	functionParams.searchDetailsBlockDataMgmtProcessing = this._searchDetailsBlockDataMgmtProcessing;
-		// 	functionParams.dataPageStateManager_DataFrom_Server = this._dataPageStateManager_DataFrom_Server;
-
-		// 	tableDisplayHandler.addExpansionHandlerToRows( 
-		// 			{ $tableContainerDiv, getElementToInsertFunction : PSMListingUtilsSingleSearch.createJQueryElementForPSMListing, functionParams } );
-		// }
 
 		//  Show the searches the Generated Reported Peptide is in
 

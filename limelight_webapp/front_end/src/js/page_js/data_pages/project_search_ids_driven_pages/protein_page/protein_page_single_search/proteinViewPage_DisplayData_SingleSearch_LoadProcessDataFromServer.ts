@@ -1,9 +1,9 @@
 /**
- * proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.js
+ * proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.ts
  * 
  * Javascript for proteinView.jsp page - Get data from Server and Process/Reformat it before storing it  
  * 
- * Companion file to proteinViewPage_DisplayData_SingleSearch.js
+ * Companion file to proteinViewPage_DisplayData_SingleSearch.ts
  * 
  * 
  * 
@@ -11,6 +11,10 @@
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
 import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
 import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId } from '../protein_page_common/proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId';
@@ -21,12 +25,18 @@ import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionI
  */
 export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer {
 
+	private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+
 	/**
 	 * 
 	 */
-	constructor( {
+	constructor({
 		loadedDataPerProjectSearchIdHolder,
 		searchDetailsBlockDataMgmtProcessing
+	} : {
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 	}) {
 		this._loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
@@ -41,7 +51,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		let objectThis = this;
 
 		let searchDetails_Filters_AnnTypeDisplayRootObject = 
-			objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({});
+			objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
 		
 		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 
@@ -70,7 +80,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 			try {
 				let searchDataLookupParams_For_Single_ProjectSearchId = 
 					objectThis._searchDetailsBlockDataMgmtProcessing.
-					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId } );
+					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined } );
 
 				//  First get Reported Peptide Ids for current cutoffs/filters
 				
@@ -228,12 +238,14 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 
 				promise_getData.catch((reason) => { reject(reason)});
 
-				promise_getData.then((reporterIonMassesUniqueList) => {
+				promise_getData.then( (reporterIonMassesUniqueList) => {
 					try {
 						// DB Results: reporterIonMassesUniqueList: result list item BigDecimal
 						// Store: Set <mass>
 
-						const reporterIonMassesUniqueSet = new Set( reporterIonMassesUniqueList )
+						const reporterIonMassesUniqueList_Local = ( reporterIonMassesUniqueList as any ) ;
+
+						const reporterIonMassesUniqueSet = new Set( reporterIonMassesUniqueList_Local )
 
 						objectThis._loadedDataPerProjectSearchIdHolder.set_reporterIonMasses_ForSearch(reporterIonMassesUniqueSet);
 

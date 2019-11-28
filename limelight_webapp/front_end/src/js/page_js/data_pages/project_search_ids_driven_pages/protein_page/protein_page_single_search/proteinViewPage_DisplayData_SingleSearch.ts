@@ -14,6 +14,10 @@ import { Handlebars, _common_template_bundle, _protein_table_template_bundle } f
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
 import { create_dataTable_Root_React, remove_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_Root_React';
@@ -22,8 +26,10 @@ import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downlo
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
-import { ProteinView_LoadedDataCommonHolder } from '../protein_page_common/proteinView_LoadedDataCommonHolder';
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
 import { ProteinViewPage_StatsSectionCreator_SingleSearch } from './proteinPageStatsSectionCreator_SingleSearch';
 
@@ -57,12 +63,12 @@ export class ProteinViewPage_Display_SingleSearch {
 
 	private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
 	
-	private _dataPages_LoggedInUser_CommonObjectsFactory;
-	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	
-	private _dataPageStateManager_DataFrom_Server;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	
-	private _searchDetailsBlockDataMgmtProcessing;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager;
 	private _singleProtein_CentralStateManagerObject;
 	private _proteinList_CentralStateManagerObjectClass;
@@ -113,6 +119,14 @@ export class ProteinViewPage_Display_SingleSearch {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
+		centralPageStateManager,
+		singleProtein_CentralStateManagerObject,
+		proteinList_CentralStateManagerObjectClass
+	} : {
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager,
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager,
 		singleProtein_CentralStateManagerObject,
 		proteinList_CentralStateManagerObjectClass
@@ -437,8 +451,8 @@ export class ProteinViewPage_Display_SingleSearch {
 			throw Error("this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() not populated"); // Must have num PSMs populated
 		}
 
-		const loadedDataCommonHolder = this._loadedDataCommonHolder;
-		const loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder;
+		// const loadedDataCommonHolder = this._loadedDataCommonHolder;
+		// const loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder;
 
 		//  Get Annotation Types
 
@@ -701,7 +715,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	_getAnnotationTypeRecords_DisplayOrder( { projectSearchId, proteinList } ) {
 
 		let searchDetails_Filters_AnnTypeDisplayRootObject = 
-			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({});
+			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
 		
 		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 

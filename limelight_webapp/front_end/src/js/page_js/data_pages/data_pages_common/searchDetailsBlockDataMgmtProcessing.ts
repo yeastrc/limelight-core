@@ -30,10 +30,14 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	/**
 	 * 
 	 */
-	constructor(
-		{ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay , dataPageStateManager_DataFrom_Server } :
-		{ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager , dataPageStateManager_DataFrom_Server : DataPageStateManager }
-	) {
+	constructor({ 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+		dataPageStateManager_DataFrom_Server
+	} :
+	{ 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager, 
+		dataPageStateManager_DataFrom_Server : DataPageStateManager 
+	}) {
 		
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
@@ -47,10 +51,13 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	 * @param searchDetails_Filters_AnnTypeDisplay_Root - Parsed from JSON passed in HTML from server on page load
 	 * @param dataPageStateManager - optional.  Uses value from constructor if not set
 	 */
-	storeSearchDetails_Filters_AnnTypeDisplay_Root( 
-		{ searchDetails_Filters_AnnTypeDisplay_Root, dataPageStateManager } :
-		{ searchDetails_Filters_AnnTypeDisplay_Root, dataPageStateManager : DataPageStateManager }
-	) : void {
+	storeSearchDetails_Filters_AnnTypeDisplay_Root({ 
+		searchDetails_Filters_AnnTypeDisplay_Root, 
+		dataPageStateManager 
+	} : { 
+		searchDetails_Filters_AnnTypeDisplay_Root, 
+		dataPageStateManager : DataPageStateManager 
+	}) : void {
 
 		if ( ! dataPageStateManager ) {
 			dataPageStateManager = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
@@ -70,10 +77,11 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	 * @returns searchDetails_Filters_AnnTypeDisplay_Root passed to store... method: which is object Parsed from JSON passed in HTML from server on page load
 	 * 				Return value has no type info since is from object Parsed from JSON passed in HTML from server on page load
 	 */
-	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds(
-		{ dataPageStateManager } : 
-		{ dataPageStateManager : DataPageStateManager }
-	) {
+	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ 
+		dataPageStateManager 
+	} : { 
+		dataPageStateManager : DataPageStateManager 
+	}) {
 
 		let dataPageStateManager_Local : DataPageStateManager = undefined;
 		if ( dataPageStateManager ) {

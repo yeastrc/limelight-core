@@ -1,5 +1,5 @@
 /**
- * protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId.js
+ * protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId.ts
  * 
  * Javascript for proteinView.jsp page - Get Reported Peptide Ids From Selection Criteria for a Single Project Search Id
  * 
@@ -8,30 +8,59 @@
  *  2) Search String(s) to search Peptide Sequences
  *  3) Protein Positions
  * 
- * Companion file to proteinViewPage_DisplayData_SingleProtein_SingleSearch.js and proteinViewPage_DisplayData_MultipleSearches_SingleProtein.js
+ * Companion file to proteinViewPage_DisplayData_SingleProtein_SingleSearch.ts and proteinViewPage_DisplayData_MultipleSearches_SingleProtein.ts
  * 
  */
 
 
-import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding.js';
-import { reporterIonMass_CommonRounding_ReturnNumber } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding.js';
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+
+import { modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnString } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
+import { reporterIonMass_CommonRounding_ReturnNumber } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
 
 /**
  * 
  */
 export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId {
 
+	private _forSingleSearch; 
+	// For Single Search display. 
+	//     Error thrown for data not found
+
+	private _forMultipleSearch;
+	// For Multiple Search display. 
+	//   Modifications will be rounded for comparisons
+
+	private _proteinSequenceVersionId;
+	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
+	private _proteinSequenceFormattedDisplay_Main_displayWidget;
+	private _proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect;
+	private _proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect;
+	private _proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect;
+
 	/**
 	 * 
 	 */
-	constructor({ forSingleSearch, forMultipleSearch, 
+	constructor({ 
+		forSingleSearch, 
+		forMultipleSearch, 
 		proteinSequenceVersionId,
 		loadedDataCommonHolder,
 		proteinSequenceFormattedDisplay_Main_displayWidget, 
 		proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect,
 		proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect,
 		proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect
-		}) {
+	} : { 
+		forSingleSearch, 
+		forMultipleSearch, 
+		proteinSequenceVersionId,
+		loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
+		proteinSequenceFormattedDisplay_Main_displayWidget, 
+		proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect,
+		proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect,
+		proteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect
+	}) {
 
 		if ( ( ! forSingleSearch ) && ( ! forMultipleSearch ) ) {
 			throw Error("forSingleSearch and forMultipleSearch cannot both be false or unset. Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId.constructor");
@@ -84,6 +113,10 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	getReportedPeptideIdsForDisplay_SingleProjectSearchId( { 
 		not_filtered_position_modification_selections, 
 		loadedDataPerProjectSearchIdHolder,
+		projectSearchId
+	} : { 
+		not_filtered_position_modification_selections, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
 		projectSearchId
 	} ) {
 
@@ -202,7 +235,15 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * 		peptideSearchStrings_FoundAtAnyPositionsOnProteinSequence - boolean
 	 * }
 	 */	
-	_filter_reportedPeptides_OnPeptidesContainingSearchStringSelections({ reportedPeptideIds_StartingSet, loadedDataPerProjectSearchIdHolder, projectSearchId }) {
+	_filter_reportedPeptides_OnPeptidesContainingSearchStringSelections({ 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder, 
+		projectSearchId 
+	} : { 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
+		projectSearchId 
+	}) {
 
 		const findAll_L_Regex = /L/g; //  Regex with trailing 'g' is the only way to do replace all
 		
@@ -316,7 +357,13 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * 
 	 * User has selected Protein Positions - No Static or Variable Modifications Selections
 	 */
-	_getReportedPeptideIdsForDisplay_ProteinPositionsSelected({ selectedProteinSequencePositions, loadedDataPerProjectSearchIdHolder }) {
+	_getReportedPeptideIdsForDisplay_ProteinPositionsSelected({ 
+		selectedProteinSequencePositions, 
+		loadedDataPerProjectSearchIdHolder 
+	} : { 
+		selectedProteinSequencePositions, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+	}) {
 
 		const reportedPeptideIdsSelection = new Set();  // Build set of filtered reportedPeptideIds
 
@@ -357,7 +404,13 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * 
 	 * @returns Subset reportedPeptideIds_StartingSet meet the Variable or Static Modifications Filters
 	 */	
-	_filter_reportedPeptides_OnModificationsSelections({ reportedPeptideIds_StartingSet, loadedDataPerProjectSearchIdHolder }) {
+	_filter_reportedPeptides_OnModificationsSelections({ 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder 
+	} : { 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+	}) {
 
 		let reportedPeptideIds_ForModifications_Set = undefined;
 
@@ -383,7 +436,8 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 			}
 			// Variable Modification other than 'unmodified' selected
 			this._update_ReportedPeptideIds_Set_For_VariableModificationMassesSelected_OtherThanUnmodified({ 
-				reportedPeptideIds_ToAddTo_Set: reportedPeptideIds_ForModifications_Set, variableModificationsSelected_ExcludingNoModificationOption, loadedDataPerProjectSearchIdHolder });
+				reportedPeptideIds_ToAddTo_Set: reportedPeptideIds_ForModifications_Set, variableModificationsSelected_ExcludingNoModificationOption, loadedDataPerProjectSearchIdHolder 
+			});
 		}
 
 		//  Filter reportedPeptideIds_StartingSet on reportedPeptideIds_ForModifications_Set
@@ -410,7 +464,13 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * 
 	 * @returns Subset reportedPeptideIds_StartingSet meet the Reporter Ion Mass Filters
 	 */	
-	_filter_reportedPeptides_OnReportedIonMassesSelections({ reportedPeptideIds_StartingSet, loadedDataPerProjectSearchIdHolder }) {
+	_filter_reportedPeptides_OnReportedIonMassesSelections({ 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder 
+	} : { 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+	}) {
 
 		//  	Reporter Ion Mass Unique Values for all PSMs for current cutoffs per Reported Peptide Id
 		// _psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs - Map<integer, { integer, Map<integer, { integer, Set<bigdecimal> } > } > : Map<Reported Peptide Id, reporterIonMasses (Set) >
@@ -460,7 +520,14 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * 
 	 */
 	_update_ReportedPeptideIds_Set_For_VariableModificationMassesSelected_OtherThanUnmodified({
-		reportedPeptideIds_ToAddTo_Set, variableModificationsSelected_ExcludingNoModificationOption, loadedDataPerProjectSearchIdHolder }) {
+		reportedPeptideIds_ToAddTo_Set, 
+		variableModificationsSelected_ExcludingNoModificationOption, 
+		loadedDataPerProjectSearchIdHolder
+	} : {
+		reportedPeptideIds_ToAddTo_Set, 
+		variableModificationsSelected_ExcludingNoModificationOption, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+	}) {
 
 		//  Dynamic Modifications ARE same as Variable Modifications
 		const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
@@ -494,7 +561,15 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * @param reportedPeptideIds_StartingSet - 'Starting Set' - Pre-filtered on other criteria (currently Protein Position Selections)
 	 * 
 	 */
-	_update_ReportedPeptideIds_Set_For_UnmodifiedSelected_InModificationMassSection({ reportedPeptideIds_ToAddTo_Set, reportedPeptideIds_StartingSet, loadedDataPerProjectSearchIdHolder }) {
+	_update_ReportedPeptideIds_Set_For_UnmodifiedSelected_InModificationMassSection({ 
+		reportedPeptideIds_ToAddTo_Set, 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder 
+	} : { 
+		reportedPeptideIds_ToAddTo_Set, 
+		reportedPeptideIds_StartingSet, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+	}) {
 
 		const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
@@ -515,7 +590,11 @@ export class Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectS
 	 * 
 	 * @returns reportedPeptideIds (Of All) that meet the Static Modifications Filters
 	 */	
-	_get_reportedPeptideIds_FilteredOnStaticModificationsSelected({ loadedDataPerProjectSearchIdHolder }) {
+	_get_reportedPeptideIds_FilteredOnStaticModificationsSelected({ 
+		loadedDataPerProjectSearchIdHolder 
+	} : {
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder 
+	}) {
 
 		//  Create Set of protein positions and then call _getReportedPeptideIdsForDisplay_ProteinPositionsSelected(...) with those positions
 

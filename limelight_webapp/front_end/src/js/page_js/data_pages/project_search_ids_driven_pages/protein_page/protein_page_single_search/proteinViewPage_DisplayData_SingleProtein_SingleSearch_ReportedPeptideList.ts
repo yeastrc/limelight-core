@@ -13,6 +13,10 @@ import { Handlebars, _common_template_bundle, _protein_table_template_bundle } f
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
 import { PSMListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/psmListingUtilsSingleSearch';
@@ -21,19 +25,22 @@ import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages
 
 import { reporterIonMass_CommonRounding_ReturnNumber } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
 
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+
 /**
  * 
  */
 export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList {
 
 	private _containing_ProteinViewPage_Display_SingleProtein_SingleSearch;
-	private _loadedDataCommonHolder;
-	private _loadedDataPerProjectSearchIdHolder;
+	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
+	private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
 	private _annotationTypeData_ReturnSpecifiedTypes;
 	
-	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-	private _dataPageStateManager_DataFrom_Server;
-	private _searchDetailsBlockDataMgmtProcessing;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	
 	// From common template:
 
@@ -51,16 +58,24 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPept
 	/**
 	 * 
 	 */
-	constructor( 
-			{ containing_ProteinViewPage_Display_SingleProtein_SingleSearch,
-				loadedDataCommonHolder, 
-				loadedDataPerProjectSearchIdHolder, 
-				annotationTypeData_ReturnSpecifiedTypes,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-				dataPageStateManager_DataFrom_Server, 
-				searchDetailsBlockDataMgmtProcessing
-			}) {
-		
+	constructor({ 
+		containing_ProteinViewPage_Display_SingleProtein_SingleSearch,
+		loadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder, 
+		annotationTypeData_ReturnSpecifiedTypes,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+		dataPageStateManager_DataFrom_Server, 
+		searchDetailsBlockDataMgmtProcessing
+	} : { 
+		containing_ProteinViewPage_Display_SingleProtein_SingleSearch,
+		loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
+		annotationTypeData_ReturnSpecifiedTypes,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+	}) {
+
 		this._containing_ProteinViewPage_Display_SingleProtein_SingleSearch = containing_ProteinViewPage_Display_SingleProtein_SingleSearch;
 		this._loadedDataCommonHolder = loadedDataCommonHolder;
 		this._loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;

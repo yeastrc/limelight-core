@@ -1,27 +1,21 @@
 /**
- * proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.js
+ * proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect.ts
  * 
  * Javascript for proteinView.jsp page - Display Mods and Selections of Mods for a protein or selections in a protein sequence. 
  * 
- * Companion file to proteinViewPage_DisplayData_SingleProtein_SingleSearch.js and proteinViewPage_DisplayData_MultipleSearches_SingleProtein.js
+ * Companion file to proteinViewPage_DisplayData_SingleProtein_SingleSearch.ts and proteinViewPage_DisplayData_MultipleSearches_SingleProtein.ts
  * 
  */
 
-let Handlebars = require('handlebars/runtime');
+import { Handlebars, _common_template_bundle, _protein_table_template_bundle } from './proteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect_ImportHandlebarsTemplates';
 
-//  for DataTable
-const _common_template_bundle =
-	require("../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-let _protein_table_template_bundle = require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js");
+import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
-import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
-
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
-
-import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants.js';
+import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants';
 
 
 const _UNMODIFIED_SELECTED = "U"; // A value that a mod mass can never be
@@ -73,6 +67,49 @@ const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR = 'Z';   // Only spec
  */
 export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
+
+    private _initializeCalled = false;
+
+    private _modificationMassTransformer;
+    private _rootDisplayJquerySelector;
+    private _projectSearchIds;
+    private _proteinSequenceVersionId;
+    private _loadedDataCommonHolder;
+    private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
+    private _callbackMethodForSelectedChange;
+
+    // From common template:
+
+    private _common_template_dataTable_Template = _common_template_bundle.dataTable;
+    
+    //  Template Bundle _protein_table_template_bundle
+    
+    //       Main Page
+
+    private _protein_mods_selection_block_Template = _protein_table_template_bundle.protein_mods_selection_block;
+    private _protein_mods_selection_entry_Template = _protein_table_template_bundle.protein_mods_selection_entry;
+    private _protein_mods_static_selection_entry_Template = _protein_table_template_bundle.protein_mods_static_selection_entry;
+    private _protein_mods_selection_add_fake_link_Template = _protein_table_template_bundle.protein_mods_selection_add_fake_link;
+    private _protein_mods_selection_change_fake_link_Template = _protein_table_template_bundle.protein_mods_selection_change_fake_link;
+
+    //      Selection Dialog
+
+    private _protein_mods_selection_dialog_root_Template = _protein_table_template_bundle.protein_mods_selection_dialog_root;
+
+    ////
+
+    //  Instance variables
+
+    //  Set of Selected Variable Modification Masses
+    private _variableModificationsSelected; // = new Set();  // call .clear() to reset the selected
+
+    //  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+    private _staticModificationsSelected; // = new Map();  // call .clear() to reset the selected
+
+    private _proteinNameDescription = undefined; //  Provided in initialize(...)
+
+    private _selectModsOverlay;
+
 	/**
 	 * 
 	 */
@@ -83,7 +120,16 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         proteinSequenceVersionId, 
         loadedDataCommonHolder, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
-        callbackMethodForSelectedChange } ) {
+        callbackMethodForSelectedChange 
+    } : { 
+        modificationMassTransformer,  //  Used in multiple searches to round the modification mass
+        rootDisplayJquerySelector, 
+        projectSearchIds, 
+        proteinSequenceVersionId, 
+        loadedDataCommonHolder, 
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
+        callbackMethodForSelectedChange 
+    } ) {
 
         this._initializeCalled = false;
 
@@ -100,7 +146,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 		if ( ! _common_template_bundle.dataTable ) {
 			throw Error("Nothing in _common_template_bundle.dataTable");
 		}
-		this._common_template_dataTable_Template = _common_template_bundle.dataTable;
 		
         //  Template Bundle _protein_table_template_bundle
         
@@ -109,34 +154,24 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 		if (!_protein_table_template_bundle.protein_mods_selection_block) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_block");
 		}
-        this._protein_mods_selection_block_Template = _protein_table_template_bundle.protein_mods_selection_block;
-
 		if (!_protein_table_template_bundle.protein_mods_selection_entry) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_entry");
 		}
-        this._protein_mods_selection_entry_Template = _protein_table_template_bundle.protein_mods_selection_entry;
-
 		if (!_protein_table_template_bundle.protein_mods_static_selection_entry) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_static_selection_entry");
 		}
-        this._protein_mods_static_selection_entry_Template = _protein_table_template_bundle.protein_mods_static_selection_entry;
-        
 		if (!_protein_table_template_bundle.protein_mods_selection_add_fake_link) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_add_fake_link");
 		}
-        this._protein_mods_selection_add_fake_link_Template = _protein_table_template_bundle.protein_mods_selection_add_fake_link;
-
 		if (!_protein_table_template_bundle.protein_mods_selection_change_fake_link) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_change_fake_link");
 		}
-        this._protein_mods_selection_change_fake_link_Template = _protein_table_template_bundle.protein_mods_selection_change_fake_link;
 
         //      Selection Dialog
 
 		if (!_protein_table_template_bundle.protein_mods_selection_dialog_root) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_mods_selection_dialog_root");
 		}
-        this._protein_mods_selection_dialog_root_Template = _protein_table_template_bundle.protein_mods_selection_dialog_root;
 
         ////
 
@@ -672,7 +707,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                     // $selector_protein_static_modification_list.append('<span style="" >&nbsp;&nbsp;</span>');
                 }
 
-                const modEntryContext = { modEntry };
+                const modEntryContext = { modEntry, isSelected : undefined };
 
                 // this._staticModificationsSelected:  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
                 {
@@ -834,7 +869,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
                     unmodifiedEntry = true;
                 }
 
-                const modEntryContext = { modMass : modEntry, unmodifiedEntry };
+                const modEntryContext = { modMass : modEntry, unmodifiedEntry, isSelected : undefined };
 
                 if ( this._variableModificationsSelected.has( modEntry ) ) {
                     modEntryContext.isSelected = true;
@@ -1003,7 +1038,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         const objectThis = this;
 
-        let props = { };
+        let props = { width : undefined, height : undefined, title : undefined, $containerDiv : undefined, $contentDiv : undefined, callbackOnClickedHide : undefined, hideOnBackgroundClick : undefined };
         props.width = _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH.toString();
         props.height = _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT.toString();
         props.title = 'Change Modification Selection';
@@ -1013,7 +1048,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
         try {
             
-            $contentDiv = this._createModalOverlayContentDiv( {  } );
+            $contentDiv = this._createModalOverlayContentDiv();
             props.$contentDiv = $contentDiv;
             
             props.callbackOnClickedHide = function() {
@@ -1150,10 +1185,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 
 		// add the table to the page
 
-		const tableObject = { };
-		tableObject.columns = columns;
-		tableObject.dataObjects = tableObjects;
-		tableObject.expandableRows = undefined;
+		const tableObject = { columns, dataObjects : tableObjects, expandableRows : undefined };
 
 		const dataTableWithContainer_HTML = this._common_template_dataTable_Template( { tableObject } );
 		const $tableContainerDiv = $( dataTableWithContainer_HTML );

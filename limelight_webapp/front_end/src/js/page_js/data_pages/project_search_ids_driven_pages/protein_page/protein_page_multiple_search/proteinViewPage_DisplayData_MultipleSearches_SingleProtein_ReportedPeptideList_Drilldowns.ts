@@ -15,7 +15,13 @@ import { Handlebars, _common_template_bundle, _protein_table_template_bundle } f
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
+
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
 
@@ -41,16 +47,15 @@ let _REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX = undefined;
  */
 export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList_Drilldowns {
 
-
 	private _containing_ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList;
 	private _containing_ProteinViewPage_Display_MultipleSearches_SingleProtein;
-	private _loadedDataCommonHolder;
+	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
 	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
 	private _annotationTypeData_ReturnSpecifiedTypes;
 	
-	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-	private _dataPageStateManager_DataFrom_Server;
-	private _searchDetailsBlockDataMgmtProcessing;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	
 	// From common template:
 
@@ -69,16 +74,29 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	/**
 	 * 
 	 */
-	constructor( 
-			{ containing_ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList,
-                containing_ProteinViewPage_Display_MultipleSearches_SingleProtein,
-				loadedDataCommonHolder, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, annotationTypeData_ReturnSpecifiedTypes,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-				dataPageStateManager_DataFrom_Server, 
-                searchDetailsBlockDataMgmtProcessing,
-                _NUM_PSMS_JS_OBJECT_PROPERTY_NAME_PREFIX_param,
-                _REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX_param
-			}) {
+	constructor({
+		containing_ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList,
+		containing_ProteinViewPage_Display_MultipleSearches_SingleProtein,
+		loadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
+		annotationTypeData_ReturnSpecifiedTypes,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+		dataPageStateManager_DataFrom_Server, 
+		searchDetailsBlockDataMgmtProcessing,
+		_NUM_PSMS_JS_OBJECT_PROPERTY_NAME_PREFIX_param,
+		_REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX_param
+	} : {
+		containing_ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList,
+		containing_ProteinViewPage_Display_MultipleSearches_SingleProtein,
+		loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
+		annotationTypeData_ReturnSpecifiedTypes,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		_NUM_PSMS_JS_OBJECT_PROPERTY_NAME_PREFIX_param,
+		_REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX_param
+	}) {
 
         //  Set module wide 'constants'
         _NUM_PSMS_JS_OBJECT_PROPERTY_NAME_PREFIX = _NUM_PSMS_JS_OBJECT_PROPERTY_NAME_PREFIX_param;
@@ -125,6 +143,13 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	combinedReportedPeptideRow_ShowSearches({
 		
 		projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, any_ReporterIonMasses_ForAllSearches, reporterIonMassesSelected,
+		$clickedRow  //  Added by DataTableHandler
+	} : {
+		
+		projectSearchIds, 
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
+		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		any_ReporterIonMasses_ForAllSearches, reporterIonMassesSelected,
 		$clickedRow  //  Added by DataTableHandler
 	}) {
 
@@ -300,6 +325,14 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 		reporterIonMassesSelected,
 		searchDetailsBlockDataMgmtProcessing,
 		dataPageStateManager_DataFrom_Server,
+		$clickedRow  //  Added by DataTableHandler
+	} : {
+		peptideSequenceDisplayString,
+		projectSearchIds,
+		any_ReporterIonMasses_ForAllSearches, 
+		reporterIonMassesSelected,
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager,
 		$clickedRow  //  Added by DataTableHandler
 	}) {
 		try {

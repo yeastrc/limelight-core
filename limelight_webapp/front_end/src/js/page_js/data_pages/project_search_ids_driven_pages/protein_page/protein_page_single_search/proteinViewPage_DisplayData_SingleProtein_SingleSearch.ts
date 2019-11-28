@@ -14,18 +14,26 @@ import { createSpinner, destroySpinner, incrementSpinner, decrementSpinner } fro
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
 import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
 
 import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 
 import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
 
+import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds';
 
 import { ProteinSequenceFormattedDisplay_widget_SequenceCoverageParam } from 'page_js/data_pages/display_widgets/protein_sequence_formatted_display__display_widget/proteinSequenceFormattedDisplay_widget_SequenceCoverageParam';
 import { ProteinSequenceFormattedDisplay_Main_displayWidget } from 'page_js/data_pages/display_widgets/protein_sequence_formatted_display__display_widget/proteinSequenceFormattedDisplay_Main_displayWidget';
+
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
 import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
 
@@ -57,16 +65,16 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 	private _proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer;
 
-	private _dataPages_LoggedInUser_CommonObjectsFactory;
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 
-	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 
-	private _dataPageStateManager_DataFrom_Server;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
-	private _searchDetailsBlockDataMgmtProcessing;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 
-	private _loadedDataCommonHolder;
-	private _loadedDataPerProjectSearchIdHolder;
+	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
+	private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
 
 	private _singleProtein_CentralStateManagerObject;
 
@@ -133,17 +141,29 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	/**
 	 * 
 	 */
-	constructor(
-			{ proteinViewPage_Display_SingleSearch,
-				proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer, 
-				dataPages_LoggedInUser_CommonObjectsFactory,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-				dataPageStateManager_DataFrom_Server,
-				searchDetailsBlockDataMgmtProcessing, 
-				loadedDataCommonHolder, 
-				loadedDataPerProjectSearchIdHolder,
-				singleProtein_CentralStateManagerObject,
-				singleProteinCloseCallback } ) {
+	constructor({
+		proteinViewPage_Display_SingleSearch,
+		proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer, 
+		dataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+		dataPageStateManager_DataFrom_Server,
+		searchDetailsBlockDataMgmtProcessing, 
+		loadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder,
+		singleProtein_CentralStateManagerObject,
+		singleProteinCloseCallback 
+	} : {
+		proteinViewPage_Display_SingleSearch,
+		proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer, 
+		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory,
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager, 
+		dataPageStateManager_DataFrom_Server : DataPageStateManager,
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
+		loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder, 
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
+		singleProtein_CentralStateManagerObject,
+		singleProteinCloseCallback 
+	} ) {
 		
 		this._proteinViewPage_Display_SingleSearch = proteinViewPage_Display_SingleSearch; // reference to creating class object
 
@@ -193,25 +213,23 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 
 		this._sharePage_dataPages = new SharePage_dataPages();
 
-		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer(
-			{
-				loadedDataPerProjectSearchIdHolder ,
-				loadedDataCommonHolder ,
-				dataPageStateManager_DataFrom_Server ,
-				searchDetailsBlockDataMgmtProcessing ,
-				proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer
-			});
+		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer({
+			loadedDataPerProjectSearchIdHolder ,
+			loadedDataCommonHolder ,
+			dataPageStateManager_DataFrom_Server ,
+			searchDetailsBlockDataMgmtProcessing ,
+			proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer
+		});
 
-		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList(
-			{
-				containing_ProteinViewPage_Display_SingleProtein_SingleSearch : this,
-				loadedDataCommonHolder : this._loadedDataCommonHolder,
-				loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
-				annotationTypeData_ReturnSpecifiedTypes : this._annotationTypeData_ReturnSpecifiedTypes,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-				searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
-			});
+		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList({
+			containing_ProteinViewPage_Display_SingleProtein_SingleSearch : this,
+			loadedDataCommonHolder : this._loadedDataCommonHolder,
+			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
+			annotationTypeData_ReturnSpecifiedTypes : this._annotationTypeData_ReturnSpecifiedTypes,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
+		});
 
 		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
 			displayOnly : true,  //  Display only.  No attach click handlers to allow changes
@@ -2006,7 +2024,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		
 		const searchDataLookupParamsRoot = (
 			this._searchDetailsBlockDataMgmtProcessing.
-			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({})
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
 		);
 
 		downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( {  // External Function

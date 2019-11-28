@@ -72,13 +72,17 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 	/**
 	 * 
 	 */
-	constructor( 
-			{
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-				dataPageStateManager_DataFrom_Server,
-				searchDetailsBlockDataMgmtProcessing,
-				searchDetailsAndFilterBlock_MainPage
-			} ) {
+	constructor({
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+		dataPageStateManager_DataFrom_Server,
+		searchDetailsBlockDataMgmtProcessing,
+		searchDetailsAndFilterBlock_MainPage
+	} : {
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
+		dataPageStateManager_DataFrom_Server : DataPageStateManager,
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage // 'Parent class object'
+	} ) {
 		
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;

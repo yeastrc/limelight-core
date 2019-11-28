@@ -65,25 +65,25 @@ import { PeptideViewPage_DisplayDataOnPage }
  */
 export class PeptideViewPage_RootClass_Common {
 	
-	_dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
-	_saveView_dataPages : SaveView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
+	private _saveView_dataPages : SaveView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
 
-	_page_UserDefault_processing : Page_UserDefault_processing;
-	_centralPageStateManager : CentralPageStateManager;
-	_singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
-	_proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
-	_searchColors_CentralStateManagerObject : SearchColorManager;
+	private _page_UserDefault_processing : Page_UserDefault_processing;
+	private _centralPageStateManager : CentralPageStateManager;
+	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
+	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
+	private _searchColors_CentralStateManagerObject : SearchColorManager;
 
-	_dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
-	_dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
-	_searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
-	_peptideViewPage_DisplayDataOnPage : PeptideViewPage_DisplayDataOnPage;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _peptideViewPage_DisplayDataOnPage : PeptideViewPage_DisplayDataOnPage;
 
-	_getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
-	_sharePage_dataPages : SharePage_dataPages;
+	private _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
+	private _sharePage_dataPages : SharePage_dataPages;
 
-	_loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
+	private _loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
 
 	/**
 	 * 
