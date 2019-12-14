@@ -7,12 +7,12 @@
 
 let Handlebars = require('handlebars/runtime');
 
-import { ModDataListingManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataListingManager.js';
-import { ProteinDataListingManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinDataListingManager.js';
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
-import { ProteinPositionFilterOverlayDisplayManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterOverlayDisplayManager.js';
-import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
-import { ModViewDataDownloader } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataDownloader.js';
+import {ModDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataListingManager.js';
+import {ProteinDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinDataListingManager.js';
+import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import {ProteinPositionFilterOverlayDisplayManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterOverlayDisplayManager.js';
+import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
+import {ModViewDataDownloader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataDownloader.js';
 
 export class ModViewDataTableRenderer {
 
@@ -28,9 +28,13 @@ export class ModViewDataTableRenderer {
 		for( let proteinId of Object.keys( proteinPositionFilterStateManager.selectedProteinPositions ) ) {
 
 			let filterItem = { };
-			let displayString = proteinData[ proteinId ][ 'annotations' ][ 0 ][ 'name' ] + ' (Position(s): ';
-			displayString += Array.from( proteinPositionFilterStateManager.selectedProteinPositions[ proteinId ] ).sort( (a,b) => (a-b) ).join( ', ' );
-			displayString += ')';
+			let displayString = proteinData[ proteinId ][ 'annotations' ][ 0 ][ 'name' ];
+
+			if(!proteinPositionFilterStateManager.getIsAllSelected({proteinId})) {
+				displayString += ' (Position(s): ';
+				displayString += Array.from(proteinPositionFilterStateManager.selectedProteinPositions[proteinId]).sort((a, b) => (a - b)).join(', ');
+				displayString += ')';
+			}
 
 			filterItem[ 'displayString' ] = displayString;
 
