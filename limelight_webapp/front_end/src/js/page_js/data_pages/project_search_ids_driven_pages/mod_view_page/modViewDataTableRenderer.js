@@ -31,9 +31,13 @@ export class ModViewDataTableRenderer {
 			let displayString = proteinData[ proteinId ][ 'annotations' ][ 0 ][ 'name' ];
 
 			if(!proteinPositionFilterStateManager.getIsAllSelected({proteinId})) {
-				displayString += ' (Position(s): ';
-				displayString += Array.from(proteinPositionFilterStateManager.selectedProteinPositions[proteinId]).sort((a, b) => (a - b)).join(', ');
-				displayString += ')';
+				const selectedPositions = proteinPositionFilterStateManager.getSelectedProteinPositions({proteinId});
+
+				if(selectedPositions !== undefined) {
+					displayString += ' (Position(s): ';
+					displayString += Array.from(selectedPositions).sort((a, b) => (a - b)).join(', ');
+					displayString += ')';
+				}
 			}
 
 			filterItem[ 'displayString' ] = displayString;

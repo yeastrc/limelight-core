@@ -302,9 +302,6 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
         const allSelected = proteinPositionFilterStateManager.getIsAllSelected({ proteinId });
 
-        console.log('called clickedProteinAll()', allSelected);
-
-
         if( allSelected ) {
             proteinPositionFilterStateManager.unmarkAllSelected( { proteinId } );
         } else {

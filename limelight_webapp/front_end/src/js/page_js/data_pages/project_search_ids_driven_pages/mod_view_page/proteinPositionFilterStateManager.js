@@ -46,6 +46,23 @@ export class ProteinPositionFilterStateManager {
     }
 
     /**
+     * Get the positions selected for the given protein. Will return undefined if specific positions
+     * in this protein are not specified to be highlighted.
+     *
+     * @param proteinId
+     * @returns {undefined|*}
+     */
+    getSelectedProteinPositions({proteinId}) {
+        proteinId = parseInt( proteinId );
+
+        if( this.getNoProteinsSelected() ) { return undefined; }
+        if( this.getIsAllSelected({proteinId})) { return undefined; }
+        if( this.selectedProteinPositions[ proteinId ] === undefined  ) { return undefined; }
+
+        return this.selectedProteinPositions[proteinId][this._POSITIONS_KEY_NAME];
+    }
+
+    /**
      * Returns true if at least one position in the supplied protein has
      * been selected for viewing
      * 
@@ -56,6 +73,7 @@ export class ProteinPositionFilterStateManager {
         proteinId = parseInt( proteinId );
 
         if( this.getNoProteinsSelected() ) { return false; }
+        if( this.getIsAllSelected({proteinId})) { return true; }
         if( this.selectedProteinPositions[ proteinId ] !== undefined  ) { return true; }
         return false;
     }
@@ -102,6 +120,7 @@ export class ProteinPositionFilterStateManager {
 
         if( this.getNoProteinsSelected() ) { return false; }
         if( this.selectedProteinPositions[ proteinId ] === undefined  ) { return false; }
+        if( this.getIsAllSelected({proteinId})) { return true; }
 
         if( this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME].has( position ) ) { return true; }
         return false;
@@ -126,7 +145,7 @@ export class ProteinPositionFilterStateManager {
      * Remove the supplied protein and all positions from the
      * underlying data structure
      */
-    removeProtein( { proteinId } ) {
+    removeProtein({ proteinId }) {
 
         proteinId = parseInt( proteinId );
 
@@ -204,9 +223,8 @@ export class ProteinPositionFilterStateManager {
      *
      * @param proteinId
      */
-    unmarkAllSelected( { proteinId } ) {
-        console.log('called unmarkAllSelected', proteinId);
-        this.removeProtein(proteinId);
+    unmarkAllSelected({ proteinId }) {
+        this.removeProtein({proteinId});
     }
 
 }
