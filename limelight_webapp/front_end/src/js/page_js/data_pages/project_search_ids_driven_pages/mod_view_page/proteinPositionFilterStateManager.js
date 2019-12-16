@@ -9,6 +9,10 @@
 export class ProteinPositionFilterStateManager {
 
     constructor( params ) {
+
+        this._POSITIONS_KEY_NAME = 'positions';
+        this._ALL_KEY_NAME = 'all';
+
         this.selectedProteinPositions = { };
         this.overlay = undefined;
     }
@@ -42,6 +46,23 @@ export class ProteinPositionFilterStateManager {
     }
 
     /**
+     * Get the positions selected for the given protein. Will return undefined if specific positions
+     * in this protein are not specified to be highlighted.
+     *
+     * @param proteinId
+     * @returns {undefined|*}
+     */
+    getSelectedProteinPositions({proteinId}) {
+        proteinId = parseInt( proteinId );
+
+        if( this.getNoProteinsSelected() ) { return undefined; }
+        if( this.getIsAllSelected({proteinId})) { return undefined; }
+        if( this.selectedProteinPositions[ proteinId ] === undefined  ) { return undefined; }
+
+        return this.selectedProteinPositions[proteinId][this._POSITIONS_KEY_NAME];
+    }
+
+    /**
      * Returns true if at least one position in the supplied protein has
      * been selected for viewing
      * 
@@ -52,6 +73,7 @@ export class ProteinPositionFilterStateManager {
         proteinId = parseInt( proteinId );
 
         if( this.getNoProteinsSelected() ) { return false; }
+        if( this.getIsAllSelected({proteinId})) { return true; }
         if( this.selectedProteinPositions[ proteinId ] !== undefined  ) { return true; }
         return false;
     }
@@ -98,16 +120,32 @@ export class ProteinPositionFilterStateManager {
 
         if( this.getNoProteinsSelected() ) { return false; }
         if( this.selectedProteinPositions[ proteinId ] === undefined  ) { return false; }
+        if( this.getIsAllSelected({proteinId})) { return true; }
 
-        if( this.selectedProteinPositions[ proteinId ].has( position ) ) { return true; }
+        if( this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME].has( position ) ) { return true; }
         return false;
+    }
+
+    /**
+     * Returns true if all positions in the supplied proteinId are meant to be shown
+     *
+     * @param proteinId
+     * @returns {boolean|*}
+     */
+    getIsAllSelected({ proteinId }) {
+        proteinId = parseInt( proteinId );
+
+        if( this.getNoProteinsSelected() ) { return false; }
+        if( this.selectedProteinPositions[ proteinId ] === undefined  ) { return false; }
+
+        return this.selectedProteinPositions[ proteinId ][this._ALL_KEY_NAME];
     }
 
     /**
      * Remove the supplied protein and all positions from the
      * underlying data structure
      */
-    removeProtein( { proteinId } ) {
+    removeProtein({ proteinId }) {
 
         proteinId = parseInt( proteinId );
 
@@ -124,7 +162,9 @@ export class ProteinPositionFilterStateManager {
 
         if( this.selectedProteinPositions[ proteinId ] === undefined ) {
             this.selectedProteinPositions[ proteinId ] = { };
-            this.selectedProteinPositions[ proteinId ] = new Set();
+
+            this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME] = new Set();
+            this.selectedProteinPositions[ proteinId ][this._ALL_KEY_NAME] = false;
         }
     }
 
@@ -139,10 +179,10 @@ export class ProteinPositionFilterStateManager {
         proteinId = parseInt( proteinId );
 
         if( this.selectedProteinPositions[ proteinId ] !== undefined ) {
-            this.selectedProteinPositions[ proteinId ].delete( position );
+            this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME].delete( position );
         }
 
-        if( this.selectedProteinPositions[ proteinId ].size === 0 ) {
+        if( !this.selectedProteinPositions[ proteinId ][this._ALL_KEY_NAME] && this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME].size === 0 ) {
             this.removeProtein( { proteinId } );
         }
     }
@@ -158,7 +198,33 @@ export class ProteinPositionFilterStateManager {
         proteinId = parseInt( proteinId );
 
         this.addProtein( { proteinId } );
-        this.selectedProteinPositions[ proteinId ].add( parseInt( position ) );
+        this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME].add( parseInt( position ) );
+    }
+
+    /**
+     * Indicate that all positions in this protein should be considered
+     * Note that this removes any previously indicated specific positions.
+     *
+     * @param proteinId
+     */
+    markAllSelected( { proteinId } ) {
+        proteinId = parseInt( proteinId );
+
+        this.addProtein( { proteinId } );
+        this.selectedProteinPositions[ proteinId ][this._POSITIONS_KEY_NAME] = new Set();   // reset positions to empty set
+        this.selectedProteinPositions[ proteinId ][this._ALL_KEY_NAME] = true;
+    }
+
+    /**
+     * Remove the indicator that all positions in this protein should be considered.
+     * Note that because marking all positions as indicated removes any specific positions that were
+     * previously marked, unmarking all positions as selected can only mean that no positions are
+     * selected. This is effectively equal to removing this protein from this data object.
+     *
+     * @param proteinId
+     */
+    unmarkAllSelected({ proteinId }) {
+        this.removeProtein({proteinId});
     }
 
 }
