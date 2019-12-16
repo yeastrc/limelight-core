@@ -166,27 +166,6 @@ export class ProteinPositionFilterOverlayDisplayManager {
         $proteinInformationDiv.empty();
         $proteinInformationDiv.append( $( html ) );
 
-        //  Select all and deselect all links
-        const $selector_select_all_positions = $proteinInformationDiv.find(".selector_select_all_positions");
-        const $selector_deselect_all_positions = $proteinInformationDiv.find(".selector_deselect_all_positions");
-
-        if ( $selector_select_all_positions.length === 0 ) {
-        	console.log("No element with class 'selector_select_all_positions' found");
-        }
-        if ( $selector_deselect_all_positions.length === 0 ) {
-        	console.log("No element with class 'selector_deselect_all_positions' found");
-        }
-        
-        $selector_select_all_positions.click( function( e ) {
-        	ProteinPositionFilterOverlayDisplayManager.clickedSelectAllProteinPositions( { $listingDiv, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server });
-            return false;
-        });
-        $selector_deselect_all_positions.click( function( e ) {
-            ProteinPositionFilterOverlayDisplayManager.clickedDeselectAllProteinPositions( { $listingDiv, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server });
-            return false;
-        });
-
-
         // add in check boxes for the modded positions, check the selected ones
         ProteinPositionFilterOverlayDisplayManager.addCheckBoxesForProteinPositions( { $listingDiv, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
     }
