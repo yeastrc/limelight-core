@@ -153,6 +153,13 @@ export class ProteinPositionFilterStateManager {
     }
 
     /**
+     * Clear all selections
+     */
+    clearAll() {
+        this.selectedProteinPositions = { };
+    }
+
+    /**
      * Adds the supplied protein to the underlying data structure.
      * @param {*} param0 
      */

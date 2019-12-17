@@ -41,7 +41,6 @@ export class ProteinPositionFilterOverlayDisplayManager {
         props.hideOnBackgroundClick = true;
         props.$containerDiv = $('body' );
         props.callbackOnClickedHide = function() {
-            console.log('closed overlay trigger figred');
             ModViewDataTableRenderer
                 .renderDataTable({
                     reportedPeptideModData,
@@ -57,6 +56,24 @@ export class ProteinPositionFilterOverlayDisplayManager {
         }
 
         let $contentDiv = ProteinPositionFilterOverlayDisplayManager.getFilterDiv();
+
+        let $clear_link = $contentDiv.find('span#clear-all-link');
+        $clear_link.click( function( e ) {
+
+            // wipe the state manager
+            proteinPositionFilterStateManager.clearAll();
+
+            // unhighlight all
+            $contentDiv.find("div.protein-position-filter-protein-listing").removeClass( 'selected' );
+
+            // uncheck all
+            $contentDiv.find("div.fake-checkbox.unchecked").css("display", "inline-block");
+            $contentDiv.find("div.protein-position-filter-position-checkbox").css("opacity", "1.0");
+            $contentDiv.find("div.fake-checkbox.checked").hide();
+
+            return false;
+        });
+
         props.$contentDiv = $contentDiv;
 
         let overlay = new ModalOverlay( props );
@@ -253,27 +270,25 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
             let $checkBoxDiv = $( html );
 
-            //add click handler to this element IF all isn't selected
-            if(!allSelected) {
-                $checkBoxDiv.click(function (e) {
-                    ProteinPositionFilterOverlayDisplayManager.clickedProteinPosition({
-                        $listingDiv,
-                        position,
-                        proteinData,
-                        $contentDiv,
-                        proteinPositionFilterStateManager,
-                        proteinId,
-                        proteinPositionResidues,
-                        reportedPeptideModData,
-                        totalPSMCount,
-                        aminoAcidModStats,
-                        projectSearchId,
-                        searchDetailsBlockDataMgmtProcessing,
-                        dataPageStateManager_DataFrom_Server
-                    });
-                    return false;
+            //add click handler to this element
+            $checkBoxDiv.click(function (e) {
+                ProteinPositionFilterOverlayDisplayManager.clickedProteinPosition({
+                    $listingDiv,
+                    position,
+                    proteinData,
+                    $contentDiv,
+                    proteinPositionFilterStateManager,
+                    proteinId,
+                    proteinPositionResidues,
+                    reportedPeptideModData,
+                    totalPSMCount,
+                    aminoAcidModStats,
+                    projectSearchId,
+                    searchDetailsBlockDataMgmtProcessing,
+                    dataPageStateManager_DataFrom_Server
                 });
-            }
+                return false;
+            });
 
             $containerDiv.append( $checkBoxDiv );
         }
@@ -285,6 +300,10 @@ export class ProteinPositionFilterOverlayDisplayManager {
      * @param {*} param0 
      */
     static clickedProteinPosition( { $listingDiv, position, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server }) {
+
+        if(proteinPositionFilterStateManager.getIsAllSelected({ proteinId })) {
+            return;
+        }
 
         if( proteinPositionFilterStateManager.getIsProteinPositionSelected( { proteinId, position } ) ) {
             proteinPositionFilterStateManager.markUnSelected( { proteinId, position } );
