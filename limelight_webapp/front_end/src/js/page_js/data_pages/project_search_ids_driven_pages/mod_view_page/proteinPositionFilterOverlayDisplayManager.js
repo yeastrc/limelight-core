@@ -40,13 +40,39 @@ export class ProteinPositionFilterOverlayDisplayManager {
         props.title = 'Select Proteins and Positions To Show';
         props.hideOnBackgroundClick = true;
         props.$containerDiv = $('body' );
+        props.callbackOnClickedHide = function() {
+            console.log('closed overlay trigger figred');
+            ModViewDataTableRenderer
+                .renderDataTable({
+                    reportedPeptideModData,
+                    proteinPositionResidues,
+                    totalPSMCount,
+                    aminoAcidModStats,
+                    proteinData,
+                    proteinPositionFilterStateManager,
+                    projectSearchId,
+                    searchDetailsBlockDataMgmtProcessing,
+                    dataPageStateManager_DataFrom_Server
+                });
+        }
 
         let $contentDiv = ProteinPositionFilterOverlayDisplayManager.getFilterDiv();
         props.$contentDiv = $contentDiv;
 
         let overlay = new ModalOverlay( props );
 
-        ProteinPositionFilterOverlayDisplayManager.populateProteinList( { $contentDiv, proteinPositionFilterStateManager, proteinData, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+        ProteinPositionFilterOverlayDisplayManager.populateProteinList({
+            $contentDiv,
+            proteinPositionFilterStateManager,
+            proteinData,
+            proteinPositionResidues,
+            reportedPeptideModData,
+            totalPSMCount,
+            aminoAcidModStats,
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server
+        });
 
         return overlay;
     }
@@ -268,8 +294,6 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
         ProteinPositionFilterOverlayDisplayManager.updateProteinInformationDiv( { $listingDiv, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
         ProteinPositionFilterOverlayDisplayManager.updateListingHighlight( { proteinId, proteinPositionFilterStateManager, $listingDiv } );
-
-		ModViewDataTableRenderer.renderDataTable( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
     }
 
     /**
@@ -289,8 +313,6 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
         ProteinPositionFilterOverlayDisplayManager.updateProteinInformationDiv( { $listingDiv, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
         ProteinPositionFilterOverlayDisplayManager.updateListingHighlight( { proteinId, proteinPositionFilterStateManager, $listingDiv } );
-
-        ModViewDataTableRenderer.renderDataTable( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
     }
     
 
