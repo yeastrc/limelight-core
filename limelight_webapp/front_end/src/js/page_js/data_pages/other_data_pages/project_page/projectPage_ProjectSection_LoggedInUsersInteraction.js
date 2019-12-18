@@ -178,9 +178,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         const $add_note_input = $( add_note_inputHTML );
         $add_note_input.appendTo( $selector_add_note_inner_root_container );
 
-        throw Error("A")
-        
-        addToolTips( $noteDOM );  // External Function
+        addToolTips( $add_note_input );  // External Function
 
         const $selector_add_note_save_button = $add_note_input.find(".selector_add_note_save_button");
         if ( $selector_add_note_save_button.length === 0 ) {
@@ -307,12 +305,9 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                 const $noteDOM = $( noteHTML );
                 $noteDOM.appendTo( $notes_list_container_div );
 
-                throw Error("A")
-
         		addToolTips( $noteDOM );  // External Function
 
-                this.addExistingNoteLoggedInUserAdditions({
-                            id : note.id, canEdit : note.canEdit, canDelete : note.canDelete, $noteDOM });
+                this.addExistingNoteLoggedInUserAdditions({ id : note.id, canEdit : note.canEdit, canDelete : note.canDelete, $noteDOM });
 
                 //  Remove Add Note and show Add Note link
 
@@ -670,4 +665,4 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
           }
         });
     }
-};
+}
