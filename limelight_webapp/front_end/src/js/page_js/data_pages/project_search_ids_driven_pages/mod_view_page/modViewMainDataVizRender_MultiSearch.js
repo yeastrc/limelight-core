@@ -21,7 +21,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                              vizOptionsData
     }) {
 
-        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData });
+        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData, proteinPositionFilterStateManager });
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
         const sortedModMasses = Object.keys(modMap).map(Number).sort( (a,b) => ( a - b));
         const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
@@ -948,7 +948,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                            projectSearchIds,
                            totalPSMCount,
                            vizOptionsData,
-                           countsOverride
+                           countsOverride,
+                           proteinPositionFilterStateManager
                        }) {
 
         const modMap = { };
@@ -968,6 +969,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                     }
 
                     if(vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                        continue;
+                    }
+
+                    if(!ModViewDataVizRenderer_MultiSearch.shouldReportedPeptideBeIncludedForModMass({ projectSearchId, reportedPeptideId, modMass, proteinPositionFilterStateManager, reportedPeptideModData })) {
                         continue;
                     }
 
@@ -1054,6 +1059,50 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         return modMatrix;
+    }
+
+
+    static shouldReportedPeptideBeIncludedForModMass({ projectSearchId, proteinPositionFilterStateManager, reportedPeptideModData, modMass, reportedPeptideId }) {
+
+
+        // console.log('called shouldReportedPeptideBeIncludedForModMass()');
+        // console.log('projectSearchId', projectSearchId);
+        // console.log('proteinPositionFilterStateManager', proteinPositionFilterStateManager);
+        // console.log('reportedPeptideModData', reportedPeptideModData);
+        // console.log('modMass', modMass);
+        // console.log('reportedPeptideId', reportedPeptideId);
+
+        if( modMass in reportedPeptideModData[projectSearchId][reportedPeptideId]) {
+
+            if(proteinPositionFilterStateManager.getNoProteinsSelected()) {
+
+                return true;
+
+            } else {
+
+                for(const proteinId of Object.keys(reportedPeptideModData[projectSearchId][reportedPeptideId][modMass]['proteins'])) {
+
+                    if(proteinPositionFilterStateManager.getIsAllSelected({proteinId})) {
+
+                        return true;
+
+                    } else if(proteinPositionFilterStateManager.getIsProteinSelected({proteinId})) {
+
+                        for(const position of reportedPeptideModData[projectSearchId][reportedPeptideId][modMass]['proteins'][proteinId]) {
+
+                            if(proteinPositionFilterStateManager.getIsProteinPositionSelected({ proteinId, position })) {
+
+                                return true;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+
     }
 
     static getPsmCountForReportedPeptide({ reportedPeptideId, projectSearchId, aminoAcidModStats }) {

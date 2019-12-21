@@ -38,9 +38,7 @@
 	
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
-	
-	<h4>Filters:</h4>
-		
+
 	<table class=" selector_filter_section " style="border-width:0px;" >
 	</table>
 

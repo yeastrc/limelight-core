@@ -13,16 +13,14 @@ import {SearchDetailsAndFilterBlock_MainPage} from 'page_js/data_pages/data_page
 import {ModViewPage_DataLoader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
 import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
 import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager.js';
-import {ModViewDataTableRenderer} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer.js';
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
 import {ModViewDataVizRendererOptionsHandler} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizOptionsManager.js';
 import {ModMultiSearch_DataVizPageStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMultiSearchDataViz_StateManager.js';
-
 //  Import for typing only
-import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
-import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import {CentralPageStateManager} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
 /**
  * 
@@ -250,36 +248,7 @@ export class ModViewPage_DisplayDataOnPage {
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 	} ) {
 
-		if( projectSearchIds.length == 1 ) {
-			let projectSearchId = projectSearchIds[ 0 ];
-			this.renderModDataPageSingleSearch({ searchDetailsBlockDataMgmtProcessing, loadedData : loadedData[ projectSearchId ], projectSearchId : projectSearchId } );
-		} else {
-
-			this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds } );
-		}
-	}
-
-	renderModDataPageSingleSearch({ 
-		loadedData, 
-		projectSearchId, 
-		searchDetailsBlockDataMgmtProcessing 
-	} : { 
-		loadedData, 
-		projectSearchId, 
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-	} ) {
-
-		// enable click handler for filtering proteins and positions overlay
-		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager();
-
-		// get our data into convenient variables
-		let reportedPeptideModData = loadedData.modData.reportedPeptides;
-		let proteinPositionResidues = loadedData.proteinPositionResidues;
-		let totalPSMCount = loadedData.totalPSMCount;
-		let aminoAcidModStats = loadedData.aminoAcidModStats.reportedPeptideData;
-		let proteinData = loadedData.proteinData;
-
-		ModViewDataTableRenderer.renderDataTable( { reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
+		this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds } );
 	}
 
 	renderModDataPageMultiSearch({ 
@@ -332,6 +301,7 @@ export class ModViewPage_DisplayDataOnPage {
 			proteinData,
 			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
+			projectSearchIds,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
 		});
 

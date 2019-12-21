@@ -23,6 +23,10 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 	static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject }) {
 
+		console.log('called getSortedModsToDisplay()');
+		console.log('sortedModMasses', sortedModMasses);
+		console.log('vizSelectedStateObject', vizSelectedStateObject);
+
 		if(ModViewDataTableRenderer_MultiSearch.isObjectEmpty( vizSelectedStateObject.data )) {
 			return sortedModMasses;
 		}

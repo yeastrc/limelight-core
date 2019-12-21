@@ -1,8 +1,9 @@
+import {ProteinPositionFilterOverlayDisplayManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterOverlayDisplayManager";
+import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
+
 let Handlebars = require('handlebars/runtime');
 
 let _mod_table_template_bundle = require("../../../../../../handlebars_templates_precompiled/mod_view_page/mod_view_page_template-bundle.js" );
-
-import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
 
 export class ModViewDataVizRendererOptionsHandler {
 
@@ -15,13 +16,30 @@ export class ModViewDataVizRendererOptionsHandler {
                                  proteinPositionFilterStateManager,
                                  searchDetailsBlockDataMgmtProcessing,
                                  dataPageStateManager_DataFrom_Server,
-                                 vizOptionsData
+                                 vizOptionsData,
+                                 projectSearchIds
                              }) {
 
         // defaults for the viz
         const defaults = {
             psmQuant: 'ratios',
         };
+
+        // clear the div
+        ModViewDataVizRendererOptionsHandler.clearDiv();
+
+        // add protein position filter info
+        ModViewDataVizRendererOptionsHandler.addProteinPositionFilterToPage({
+            reportedPeptideModData,
+            proteinPositionResidues,
+            totalPSMCount,
+            aminoAcidModStats,
+            proteinData,
+            proteinPositionFilterStateManager,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData
+        });
 
         // add section to page
         ModViewDataVizRendererOptionsHandler.addFormToPage();
@@ -174,6 +192,56 @@ export class ModViewDataVizRendererOptionsHandler {
         const template = _mod_table_template_bundle.dataVizOptionsForm;
         const html = template( {  } );
         $mainContentDiv.append(  $( html ) );
+    }
+
+    static clearDiv() {
+        const $mainContentDiv = $('#mod_list_container');
+        $mainContentDiv.empty();
+    }
+
+    static addProteinPositionFilterToPage({ vizOptionsData, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server }) {
+
+        const $mainContentDiv = $('#mod_list_container');
+
+        const template = Handlebars.templates.currentProteinPositionFilterList;
+        let props = ProteinPositionFilterOverlayDisplayManager.getPropsForProteinPositionFilterList( { proteinPositionFilterStateManager, proteinData } );
+        const html = template( props );
+        $mainContentDiv.append( html );
+
+        const callbackOnClickedHide = function() {
+
+            ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
+                vizOptionsData,
+                reportedPeptideModData,
+                proteinPositionResidues,
+                totalPSMCount,
+                aminoAcidModStats,
+                proteinData,
+                proteinPositionFilterStateManager,
+                searchDetailsBlockDataMgmtProcessing,
+                projectSearchIds,
+                dataPageStateManager_DataFrom_Server
+            });
+
+            // add the viz to the page using these viz options
+            ModViewDataVizRenderer_MultiSearch.renderDataViz({
+                vizOptionsData,
+                reportedPeptideModData,
+                proteinPositionResidues,
+                totalPSMCount,
+                aminoAcidModStats,
+                proteinData,
+                proteinPositionFilterStateManager,
+                searchDetailsBlockDataMgmtProcessing,
+                dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server
+            });
+        }
+
+        $( 'div#protein-position-filter-launch' ).click( function(e) {
+
+            ProteinPositionFilterOverlayDisplayManager.displayOverlay( { callbackOnClickedHide, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+            return false;
+        });
     }
 
     /**

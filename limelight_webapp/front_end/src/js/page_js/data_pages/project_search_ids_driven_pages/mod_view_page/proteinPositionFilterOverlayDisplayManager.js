@@ -5,7 +5,6 @@
 "use strict";
 
 import {ModalOverlay} from '../../display_utilities/modalOverlay';
-import {ModViewDataTableRenderer} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer.js';
 
 let Handlebars = require('handlebars/runtime');
 
@@ -16,10 +15,21 @@ export class ProteinPositionFilterOverlayDisplayManager {
      * 
      * @param {*} param0 
      */
-    static displayOverlay( { reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
+    static displayOverlay( { callbackOnClickedHide, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
 
         if( !proteinPositionFilterStateManager.getOverlay() ) {
-            proteinPositionFilterStateManager.setOverlay( ProteinPositionFilterOverlayDisplayManager.createOverlay( { proteinPositionFilterStateManager, proteinData, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) )
+            proteinPositionFilterStateManager.setOverlay(ProteinPositionFilterOverlayDisplayManager.createOverlay({
+                callbackOnClickedHide,
+                proteinPositionFilterStateManager,
+                proteinData,
+                proteinPositionResidues,
+                reportedPeptideModData,
+                totalPSMCount,
+                aminoAcidModStats,
+                projectSearchId,
+                searchDetailsBlockDataMgmtProcessing,
+                dataPageStateManager_DataFrom_Server
+            }));
         }
 
         proteinPositionFilterStateManager.getOverlay().show();
@@ -32,7 +42,7 @@ export class ProteinPositionFilterOverlayDisplayManager {
      * 
      * @param {*} param0 
      */
-    static createOverlay( { proteinPositionFilterStateManager, proteinData, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
+    static createOverlay( { callbackOnClickedHide, proteinPositionFilterStateManager, proteinData, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
 
         let props = { };
         props.width = '800';
@@ -40,19 +50,9 @@ export class ProteinPositionFilterOverlayDisplayManager {
         props.title = 'Select Proteins and Positions To Show';
         props.hideOnBackgroundClick = true;
         props.$containerDiv = $('body' );
-        props.callbackOnClickedHide = function() {
-            ModViewDataTableRenderer
-                .renderDataTable({
-                    reportedPeptideModData,
-                    proteinPositionResidues,
-                    totalPSMCount,
-                    aminoAcidModStats,
-                    proteinData,
-                    proteinPositionFilterStateManager,
-                    projectSearchId,
-                    searchDetailsBlockDataMgmtProcessing,
-                    dataPageStateManager_DataFrom_Server
-                });
+
+        if(callbackOnClickedHide) {
+            props.callbackOnClickedHide = callbackOnClickedHide;
         }
 
         let $contentDiv = ProteinPositionFilterOverlayDisplayManager.getFilterDiv();
@@ -115,15 +115,27 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
         let $proteinListingDiv = $contentDiv.find( 'div#protein-position-filter-protein-list' );
 
-        let sortedProteinIds = Object.keys( proteinData ).filter( a => proteinPositionResidues[ a ] !== undefined ).sort( function( a, b ) {
-            if( proteinData[ a ][ 'annotations' ][ 0 ][ 'name' ] > proteinData[ b ][ 'annotations' ][ 0 ][ 'name' ] ) { return 1; }
-            if( proteinData[ a ][ 'annotations' ][ 0 ][ 'name' ] < proteinData[ b ][ 'annotations' ][ 0 ][ 'name' ] ) { return -1; }
+        let proteinIdNameMap = new Map();
+
+        console.log('proteinData', proteinData);
+
+        for( let searchId of Object.keys( proteinData ) ) {
+            for( let proteinId of Object.keys(proteinData[searchId])) {
+                if(proteinPositionResidues[searchId][proteinId] !== undefined) {
+                    proteinIdNameMap.set(proteinId, proteinData[searchId][proteinId]['annotations'][0]['name']);
+                }
+            }
+        }
+
+        let sortedProteinIds = Array.from(proteinIdNameMap.keys()).sort( function( a, b ) {
+            if(proteinIdNameMap.get(a) > proteinIdNameMap.get(b) ) { return 1; }
+            if(proteinIdNameMap.get(a) < proteinIdNameMap.get(b) ) { return -1; }
             return 0;
         });
 
         for( let proteinId of sortedProteinIds ) {
 
-            let proteinName = proteinData[ proteinId ][ 'annotations' ][ 0 ][ 'name' ];
+            let proteinName = proteinIdNameMap.get(proteinId);
 
             $proteinListingDiv.append( ProteinPositionFilterOverlayDisplayManager.getProteinListingDiv( { proteinData, proteinId, proteinPositionFilterStateManager, proteinName, $contentDiv, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) );
         }
@@ -199,8 +211,8 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
         let $proteinInformationDiv = ProteinPositionFilterOverlayDisplayManager.getProteinInformationDiv( { $contentDiv } );
 
-        let proteinName = proteinData[ proteinId ][ 'annotations' ][ 0 ][ 'name' ];
-        let proteinDescription = proteinData[ proteinId ][ 'annotations' ][ 0 ][ 'description' ];
+        let proteinName = ProteinPositionFilterOverlayDisplayManager.getProteinName({ proteinId, proteinData });
+        let proteinDescription = ProteinPositionFilterOverlayDisplayManager.getProteinDescription({ proteinId, proteinData });
 
         let template = Handlebars.templates.proteinPositionFilterProteinInformation;
 
@@ -214,6 +226,41 @@ export class ProteinPositionFilterOverlayDisplayManager {
     }
 
     /**
+     * Get the name to use for a protein in the given data.
+     * Currently just grabs first instance of it.
+     *
+     * @param proteinId
+     * @param proteinData
+     */
+    static getProteinName({ proteinId, proteinData }) {
+        for( let searchId of Object.keys( proteinData ) ) {
+            if( proteinId in proteinData[searchId] ) {
+                return proteinData[ searchId ][ proteinId ][ 'annotations' ][ 0 ][ 'name' ];
+            }
+        }
+
+        return 'not found';     // troublesome
+    }
+
+    /**
+     * Get the description to use for a protein in the given data
+     * Currently just grabs first instance of it
+     *
+     * @param proteinId
+     * @param proteinData
+     * @returns {string|*}
+     */
+    static getProteinDescription({ proteinId, proteinData }) {
+        for( let searchId of Object.keys( proteinData ) ) {
+            if( proteinId in proteinData[searchId] ) {
+                return proteinData[ searchId ][ proteinId ][ 'annotations' ][ 0 ][ 'description' ];
+            }
+        }
+
+        return 'not found';     // troublesome
+    }
+
+    /**
      * Get the jquery handle for the div to use to display protein information in the
      * right-hand panel
      * 
@@ -221,6 +268,43 @@ export class ProteinPositionFilterOverlayDisplayManager {
      */
     static getProteinInformationDiv( { $contentDiv } ) {
         return $contentDiv.find( 'div#protein-position-filter-right-pane-content' );
+    }
+
+    static getPossibleModdedPositionsForProtein({ proteinId, proteinPositionResidues }) {
+
+        let positions = new Set();
+
+        for( let searchId of Object.keys( proteinPositionResidues ) ) {
+            if(proteinId in (proteinPositionResidues[searchId])) {
+                for (let position of Object.keys(proteinPositionResidues[searchId][proteinId])) {
+                    positions.add(position);
+                }
+            }
+        }
+
+        const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+        return Array.from(positions).sort(collator.compare);
+    }
+
+    /**
+     * Get the residue located at the given position in the given protein
+     *
+     * @param proteinId
+     * @param position
+     * @param proteinPositionResidues
+     * @returns {*}
+     */
+    static getProteinPositionResidue({ proteinId, position, proteinPositionResidues }) {
+
+        //console.log('proteinPositionResidues', proteinPositionResidues);
+
+        for( let searchId of Object.keys( proteinPositionResidues ) ) {
+            if( proteinId in proteinPositionResidues[searchId] ) {
+                if( position in proteinPositionResidues[searchId][proteinId] ) {
+                    return proteinPositionResidues[searchId][ proteinId ][ position ];
+                }
+            }
+        }
     }
 
     /**
@@ -252,16 +336,21 @@ export class ProteinPositionFilterOverlayDisplayManager {
             $containerDiv.append( $checkBoxDiv );
         }
 
-        if( proteinPositionResidues[ proteinId ] === undefined ) {
+        const moddedPositions = ProteinPositionFilterOverlayDisplayManager.getPossibleModdedPositionsForProtein({ proteinId, proteinPositionResidues });
+        console.log('proteinId', proteinId);
+        console.log('moddedPositions', moddedPositions);
+
+        if( !moddedPositions || moddedPositions.length < 1) {
             $containerDiv.append( "<div>No modded positions found for protein.</div>" );
             return;
         }
 
-        for( let position of Object.keys( proteinPositionResidues[ proteinId ] ) ) {
+
+        for( let position of moddedPositions ) {
 
             let props = { };
             props.position = position;
-            props.residue = proteinPositionResidues[ proteinId ][ position ];
+            props.residue = ProteinPositionFilterOverlayDisplayManager.getProteinPositionResidue({ proteinId, position, proteinPositionResidues });
             props.isSelected = proteinPositionFilterStateManager.getIsProteinPositionSelected( { proteinId, position } );
             props.allSelected = allSelected;
 
@@ -333,7 +422,37 @@ export class ProteinPositionFilterOverlayDisplayManager {
         ProteinPositionFilterOverlayDisplayManager.updateProteinInformationDiv( { $listingDiv, proteinData, $contentDiv, proteinPositionFilterStateManager, proteinId, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
         ProteinPositionFilterOverlayDisplayManager.updateListingHighlight( { proteinId, proteinPositionFilterStateManager, $listingDiv } );
     }
-    
 
+    static getPropsForProteinPositionFilterList( { proteinPositionFilterStateManager, proteinData } ) {
+
+        if( proteinPositionFilterStateManager.getNoProteinsSelected() ) {
+            return { isEmpty : true }
+        }
+
+        let props = { };
+        props.filterItems = [ ];
+
+        for( let proteinId of Object.keys( proteinPositionFilterStateManager.selectedProteinPositions ) ) {
+
+            let filterItem = { };
+            let displayString = ProteinPositionFilterOverlayDisplayManager.getProteinName({ proteinId, proteinData });
+
+            if(!proteinPositionFilterStateManager.getIsAllSelected({proteinId})) {
+                const selectedPositions = proteinPositionFilterStateManager.getSelectedProteinPositions({proteinId});
+
+                if(selectedPositions !== undefined) {
+                    displayString += ' (Position(s): ';
+                    displayString += Array.from(selectedPositions).sort((a, b) => (a - b)).join(', ');
+                    displayString += ')';
+                }
+            }
+
+            filterItem[ 'displayString' ] = displayString;
+
+            props.filterItems.push( filterItem );
+        }
+
+        return props;
+    }
 
 }
