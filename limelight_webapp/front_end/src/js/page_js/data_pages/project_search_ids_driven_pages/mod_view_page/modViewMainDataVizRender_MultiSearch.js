@@ -1074,7 +1074,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         if( modMass in reportedPeptideModData[projectSearchId][reportedPeptideId]) {
 
-            if(proteinPositionFilterStateManager.getNoProteinsSelected()) {
+            if( ( ! proteinPositionFilterStateManager ) || proteinPositionFilterStateManager.getNoProteinsSelected()) {
 
                 return true;
 
