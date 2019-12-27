@@ -14,7 +14,7 @@ export class ModStatsUtils {
                                        searchDetailsBlockDataMgmtProcessing
     }) {
 
-        let output = "search1\tsearch2\tmod mass\tpsm count 1\tpsm count 2\tz-score\tp-value\n";
+        let output = "Currently NOT filtered on Protein and Position selection\nsearch1\tsearch2\tmod mass\tpsm count 1\tpsm count 2\tz-score\tp-value\n";
 
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
             reportedPeptideModData,
