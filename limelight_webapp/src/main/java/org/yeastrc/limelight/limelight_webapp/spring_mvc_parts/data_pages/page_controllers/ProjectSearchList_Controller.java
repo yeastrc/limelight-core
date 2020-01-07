@@ -185,7 +185,7 @@ public class ProjectSearchList_Controller {
     		
     		projectForDisplay.searches = searchListDB;
     		
-    		log.warn( "projectForDisplay: " + projectForDisplay );
+//    		log.warn( "projectForDisplay: " + projectForDisplay );
 			
 			projectList.add(projectForDisplay);
 		}
