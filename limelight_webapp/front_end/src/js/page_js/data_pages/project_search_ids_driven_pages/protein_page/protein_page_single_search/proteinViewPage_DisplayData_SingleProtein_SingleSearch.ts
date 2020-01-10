@@ -1857,19 +1857,12 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 		const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result = this._getReportedPeptideIdsForDisplay({ not_filtered_position_modification_selections : true });
 
 		const reportedPeptideIdsForDisplay = getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result.reportedPeptides_Filtered_Array;
-
-		//  Set
-		let reporterIonMassesSelected = this._proteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect.getReporterIonMassesSelected();
-
-		if ( reporterIonMassesSelected && reporterIonMassesSelected.size === 0 ) {
-			reporterIonMassesSelected = undefined;
-		}
 		
 		const reportedPeptideDisplayDownloadDataAsString =
 			this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_ReportedPeptideList.createReportedPeptideDisplayDownloadDataAsString(
 					{
 						reportedPeptideIdsForDisplay,
-						reporterIonMassesSelected,
+						reporterIonMassesSelected : undefined,
 						proteinSequenceVersionId : this._proteinSequenceVersionId,
 						projectSearchId : this._projectSearchId
 					});
