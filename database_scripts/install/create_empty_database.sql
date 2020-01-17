@@ -1817,16 +1817,56 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table experiment_tbl
+-- -----------------------------------------------------
+CREATE TABLE  experiment_tbl (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NOT NULL,
+  draft_flag TINYINT NOT NULL DEFAULT 0,
+  assoc_search_data_lookup_parameters_id INT UNSIGNED NULL COMMENT 'id of record in search_data_lookup_parameters',
+  name VARCHAR(200) NOT NULL,
+  project_search_ids_only_json MEDIUMTEXT NULL COMMENT 'Just Project Search Ids, in ARRAY JSON',
+  experiment_json__main_data MEDIUMTEXT NULL COMMENT 'Main Data - JSON',
+  version_number_main_json INT UNSIGNED NOT NULL COMMENT 'Version number in JSON',
+  created_by_user_id INT UNSIGNED NULL,
+  created_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_by_remote_ip VARCHAR(45) NULL,
+  experiment_last_updated_by_user_id INT NULL,
+  experiment_last_updated_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
+  experiment_last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_accessed DATETIME NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_experiment_tbl_sdlp_id
+    FOREIGN KEY (assoc_search_data_lookup_parameters_id)
+    REFERENCES search_data_lookup_parameters (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_experiment_tbl_prjct_id
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_experiment_tbl_sdlp_id_idx ON experiment_tbl (assoc_search_data_lookup_parameters_id ASC);
+
+CREATE INDEX fk_experiment_tbl_prjct_id_idx ON experiment_tbl (project_id ASC);
+
+
+-- -----------------------------------------------------
 -- Table data_page_saved_view_tbl
 -- -----------------------------------------------------
 CREATE TABLE  data_page_saved_view_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   project_id INT UNSIGNED NOT NULL,
   page_controller_path VARCHAR(80) NOT NULL,
+  experiment_id INT UNSIGNED NULL COMMENT 'Only populated for Experiment',
+  experiment_id_default_view INT UNSIGNED NULL,
   single_project_search_id__default_view INT UNSIGNED NULL,
   label VARCHAR(500) NULL,
   url_start_at_page_controller_path VARCHAR(6000) NOT NULL,
-  srch_data_lkp_params_string VARCHAR(300) NOT NULL,
+  srch_data_lkp_params_string VARCHAR(300) NOT NULL COMMENT '\'searchDataLookupParametersCode\'',
   user_id_created_record INT UNSIGNED NOT NULL,
   user_id_last_updated_record INT UNSIGNED NOT NULL,
   date_record_created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1836,12 +1876,19 @@ CREATE TABLE  data_page_saved_view_tbl (
     FOREIGN KEY (project_id)
     REFERENCES project_tbl (id)
     ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT data_page_saved_view_experiment_id
+    FOREIGN KEY (experiment_id)
+    REFERENCES experiment_tbl (id)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX data_page_saved_view_project_id_idx ON data_page_saved_view_tbl (project_id ASC);
 
 CREATE INDEX sngle_prj_srch_id__dflt_vw__bs_cntrllr ON data_page_saved_view_tbl (single_project_search_id__default_view ASC, page_controller_path ASC);
+
+CREATE INDEX data_page_saved_view_experiment_id_idx ON data_page_saved_view_tbl (experiment_id ASC);
 
 
 -- -----------------------------------------------------
@@ -1882,44 +1929,6 @@ CREATE TABLE  conversion_program_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX conv_pgm_search_id_fk_idx ON conversion_program_tbl (search_id ASC);
-
-
--- -----------------------------------------------------
--- Table experiment_tbl
--- -----------------------------------------------------
-CREATE TABLE  experiment_tbl (
-  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  project_id INT UNSIGNED NOT NULL,
-  draft_flag TINYINT NOT NULL DEFAULT 0,
-  assoc_search_data_lookup_parameters_id INT UNSIGNED NULL COMMENT 'id of record in search_data_lookup_parameters',
-  name VARCHAR(200) NOT NULL,
-  project_search_ids_only_json MEDIUMTEXT NULL COMMENT 'Just Project Search Ids, in ARRAY JSON',
-  experiment_json__main_data MEDIUMTEXT NULL COMMENT 'Main Data - JSON',
-  version_number_main_json INT UNSIGNED NOT NULL COMMENT 'Version number in JSON',
-  created_by_user_id INT UNSIGNED NULL,
-  created_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
-  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  created_by_remote_ip VARCHAR(45) NULL,
-  experiment_last_updated_by_user_id INT NULL,
-  experiment_last_updated_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
-  experiment_last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  last_accessed DATETIME NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_experiment_tbl_sdlp_id
-    FOREIGN KEY (assoc_search_data_lookup_parameters_id)
-    REFERENCES search_data_lookup_parameters (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_experiment_tbl_prjct_id
-    FOREIGN KEY (project_id)
-    REFERENCES project_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX fk_experiment_tbl_sdlp_id_idx ON experiment_tbl (assoc_search_data_lookup_parameters_id ASC);
-
-CREATE INDEX fk_experiment_tbl_prjct_id_idx ON experiment_tbl (project_id ASC);
 
 
 -- -----------------------------------------------------
@@ -1999,6 +2008,41 @@ CREATE TABLE  psm_reporter_ion_mass_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_reporter_ion_mass_tbl (psm_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table data_page_saved_view_assoc_experiment_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  data_page_saved_view_assoc_experiment_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  assoc_main_id INT UNSIGNED NOT NULL,
+  experiment_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT dt_pg_svd_vw_assc_exp_id_assc_mn_id
+    FOREIGN KEY (assoc_main_id)
+    REFERENCES data_page_saved_view_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX dt_pg_svd_vw_assc_exp_id_assc_mn_id_idx ON data_page_saved_view_assoc_experiment_id_tbl (assoc_main_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table url_shortener_associated_experiment_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  url_shortener_associated_experiment_id_tbl (
+  url_shortener_id INT UNSIGNED NOT NULL,
+  experiment_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (url_shortener_id, experiment_id),
+  CONSTRAINT url_shortener_associated_search_id_main_id0
+    FOREIGN KEY (url_shortener_id)
+    REFERENCES url_shortener_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX default_page_view_experiment_id_fk_idx ON url_shortener_associated_experiment_id_tbl (url_shortener_id ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
