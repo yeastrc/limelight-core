@@ -76,7 +76,7 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	/**
 	 * 
 	 */
-	viewSpectrum_NewWindow( { psmId, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
+	viewSpectrum_NewWindow( { psmId, projectSearchId /*, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server */ } ) {
 
 		let objectThis = this;
 

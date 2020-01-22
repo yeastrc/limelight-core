@@ -20,7 +20,12 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 /**
  * For Data Pages
  * 
- * User can set a default for a specific 
+ * NOT for Experiment Pages
+ * 
+ * User can set a default for a specific
+ * 
+ *  
+ *  Dependent on HTTP Request parameters set by class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor
  *
  */
 @Component

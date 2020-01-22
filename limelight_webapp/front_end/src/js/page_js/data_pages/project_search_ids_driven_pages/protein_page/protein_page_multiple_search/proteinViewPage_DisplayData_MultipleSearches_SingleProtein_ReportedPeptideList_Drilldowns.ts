@@ -371,8 +371,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 			const proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer =
 				new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-					loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder,
-					searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
+					loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
 				});
 				
 			const proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer(
@@ -385,7 +384,10 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 				});
 
 			const promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch =
-				proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch( { reportedPeptideIds, projectSearchId } );
+				proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch( { 
+					reportedPeptideIds, projectSearchId, 
+					reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param  : undefined // optional
+				 } );
 
 			if ( ! promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch ) {
 				

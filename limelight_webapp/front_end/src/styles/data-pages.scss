@@ -1,6 +1,7 @@
 /*
- * Styles found only on data-view pages, such as
- * listing peptides, proteins, and mod lists.
+ * Styles found only on data-view pages, such as listing peptides, proteins, and mod lists.
+ *
+ * Also found on Project page, Project List Page, and Project Search Page (All Searches for all Projects for current user)
  */
     
  body.data-page {
@@ -10,34 +11,48 @@
         background-color:$site-color-light;
     }
 
+
+    //  These are used when add icon to left of row for show/hide child table
+
+    $data-table-container--div-padding-for-room-for-child-table-show-hide-icon : 24px;
+
+    //  Place here so can use on other elements to position with same left align as data table with icon to left of row for show/hide child table
+    .padding-for-room-for-child-table-show-hide-icon {
+
+        padding-left: $data-table-container--div-padding-for-room-for-child-table-show-hide-icon;
+    }
+
+    .child-data-table-container {
+
+        padding-top: 15px;
+        padding-left: 15px;
+
+        &.child-data-table-container-not-last-parent-row {  // Added to other than parent last row. Adds space between child table and next parent row
+            padding-bottom: 15px;
+        }
+
+        .padding-for-room-for-child-table-show-hide-icon {  // Override padding left when .padding-for-room-for-child-table-show-hide-icon is under .child-data-table-container
+            padding-left: 3px;
+        }
+    }
+
     //  Data Table React: Start
 
-    // Table Format:
-
-    // <div className=" data-table-container-react selector_data_table_container">
-    //         <table className="react-table-container selector_data_table_container ">
-
-    //             <thead>
-    //                 { header }
-    //             </thead>
-    //             <tbody>
-    //                 { dataRows }
-    //             </tbody>
-    //         </table>
-    //     </div>
-    //     <div className=" data-table-container-react selector_data_table_container">
-    //         <table className="react-table-container selector_data_table_container ">
-
-    //             <thead>
-    //                 { header }
-    //             </thead>
-    //             <tbody>
-    //                 { dataRows }
-    //             </tbody>
-    //         </table>
-    //     </div>
-
     div.data-table-container-react {
+
+        //  These are used when add icon to left of row for show/hide child table
+
+        $data-table-container--div-padding-for-room-for-child-table-show-hide-icon : 24px;
+
+        $child-table-show-hide-icon-container--width : 20px;
+        $child-table-show-hide-icon-container--left : -16px;
+    
+        //   Moved to outside containing CSS name:
+
+        // &.padding-for-room-for-child-table-show-hide-icon {
+
+        //     padding-left: $data-table-container--div-padding-for-room-for-child-table-show-hide-icon;
+        // }
 
         //  Groups of Rows classes
 
@@ -103,7 +118,7 @@
 
         //  Header Table 
 
-        table.data-table-header-table {  }
+        // table.data-table-header-table {  }
 
         //  Header Row 
 
@@ -123,25 +138,62 @@
             div.display-name-container {
                 padding-top: 4px;
                 padding-bottom: 4px;
+
+                span.display-name-value {
+                    overflow-wrap: break-word;
+                }
             }
         }
-       
-    
+        
         //  Data Rows - Either all or in a group
 
-        td.data-table-data-cell {
-            vertical-align: top;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
+        div.data-table-data-rows-outer-containing-div {
 
-        td.data-table-cell {
-            // white-space:normal;
-        }
+            position: relative;
 
-    
-        tr.table-row-hovered-highlight:hover {
-            background-color:$site-color-medium;
+            div.child-table-show-hide-icon-container {
+                text-align: center;
+                width: $child-table-show-hide-icon-container--width;
+                position: absolute;
+                left: $child-table-show-hide-icon-container--left;
+                top: 5px;
+
+                img.child-table-show-hide-icon {
+                    max-width: 11px;
+                    max-height: 11px;
+                }
+            }
+
+            div.data-table-data-rows-inner-containing-div {
+
+                table.data-table-data-rows-table {
+
+
+                    tr.data-table-data-row {
+
+                        &.table-row-hovered-highlight:hover {
+                            background-color:$site-color-medium;
+                        }
+
+                        //  Cells inside a row of the table
+
+                        td.data-table-data-cell {
+                            vertical-align: top;
+                            padding-top: 5px;
+                            padding-bottom: 5px;
+                            word-break: break-word; //  Keep this here as long as it works since not all cells will have the <span> with the class name 'table-data-cell-property-value'
+
+                            span.table-data-cell-property-value {
+                                overflow-wrap: break-word;
+                            }
+                        }
+
+                        // td.data-table-cell {
+                            // white-space:normal;
+                        // }
+                    }
+                }
+            }
         }
 
     }
@@ -477,13 +529,50 @@
 
              }//end header div
 
-            div.modal-overlay-content-body {
+             //  Comment out since on same element as .modal-overlay-container
+            // div.modal-overlay-content-body { 
+
+                $modal-overlay-body-standard-padding-value: 20px;
                 
                 .modal-overlay-body-standard-padding { // Standard padding for modal filled with text.
-                	padding: 20px;
+                	padding: $modal-overlay-body-standard-padding-value;
+                }	 
+                .modal-overlay-body-standard-padding-top { // Standard padding for modal filled with text.
+                	padding-top: $modal-overlay-body-standard-padding-value;
              	}	 
-            }
+                .modal-overlay-body-standard-padding-bottom { // Standard padding for modal filled with text.
+                	padding-bottom: $modal-overlay-body-standard-padding-value;
+             	}	 
+                .modal-overlay-body-standard-padding-left { // Standard padding for modal filled with text.
+                	padding-left: $modal-overlay-body-standard-padding-value;
+             	}	 
+                .modal-overlay-body-standard-padding-right { // Standard padding for modal filled with text.
+                	padding-right: $modal-overlay-body-standard-padding-value;
+             	}	 
+            // }
     }
+
+    div.modal-overlay-flexbox-overflow-control-no-header-container {
+
+        //  Currently only used with Overlay with NO header
+
+        //  Uses Flexbox to force all parts to fit within the max height of the DOM element (<div>) that this class is applied to
+
+        //  This supports only 1 size adjusting <div> that will have auto scrollbar if all parts exceed max height of top level DOM element
+
+        display: flex;
+        flex-flow: column;
+
+        .top-level.fixed-height { //  apply 'top-level fixed-height' to all entries but the single variable height entry
+            flex: 0 1 auto;
+        }
+
+        .top-level.single-entry-variable-height { //  apply 'top-level single-entry-variable-height' to only ONE variable height entry
+            flex: 1 1 auto;
+        }
+    }
+
+
 	    
 	/*  --------------------------------------------------  */
     
@@ -745,6 +834,10 @@
 			
 			&:hover {
 				background-color: $site-color-dark;
+            }
+            
+			&.pos-hover:hover {                 //  React version, added this class to end of class names for each position to support hover override
+				background-color: $site-color-dark;
 			}
 
 			&.pos-sel::after {  //  Applies when both classes 'pos' and 'pos-sel' are on the elemennt
@@ -965,7 +1058,106 @@
 				padding-bottom: 2px;	
 			}
 		}
-	}
+    }
+    
+    ////////////////////////////////////////
+
+    // Experiment Display
+
+    .experiment-display-container {
+
+        table.root-table {
+            border-collapse : collapse;
+            border-spacing : 0px;
+            padding : 0px
+        }
+
+        td.cell {
+            border-color: $site-color-gray;
+            border-style: solid;
+            padding: 0px;
+
+            &.main-condition-cell {
+
+                &:hover {
+                    background-color: $site-color-dark;
+                }
+
+                &.selected {
+                    background-color: $site-color-dark;
+                }
+            }
+
+            div.cell-contents-container { //  <div > inside the <td> that contains the actual cell contents
+
+                padding: 3px;
+                white-space: nowrap;
+            }
+
+        }
+
+    }
+
+
+
+    ////////////
+
+    // Experiment Create/Edit
+
+    .experiment-maint-main-body {
+
+        .experiment-maint-default-border-style {
+            
+            border-style: solid;
+            border-color: $site-color-gray;
+        }
+    }
+
+
+    //    Maint of Single Cell Overlay
+
+    .experiment-maint-single-cell-container {
+
+        .condition-group-list-container {
+
+            .condition-group-list-entry {
+                display: grid; 
+                                    // 'drag icon' 'condition grp label' 'condition count' 'condition group type'
+                grid-template-columns: 20px 200px 50px 80px;
+            }
+        }
+
+        .search-column-label {
+            font-weight: bold;
+            margin-top: 8px;
+            margin-bottom: 6px;
+        }
+
+        .search-item {
+            white-space: nowrap;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            padding-top: 2px;
+            padding-bottom: 2px;
+
+            &:hover {
+                background-color: $site-color-medium;
+            }
+        }
+
+        .searches-selected-container {
+
+        }
+
+        .searches-not-selected-container {
+            
+            .search-selected-other-cell {
+                color: $site-color-gray;
+            }
+        }
+    }
+
+    ////////////////////////////////////////
 	
 	//  Spectrum Viewer window
 	

@@ -224,6 +224,7 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 					
 					//  Already in DB with same lookupParametersJSONMainData:
 					//     Update local entry.HashCollisionIndex and return
+					searchDataLookupParametersLookupDTO.setId( dbItem.getId() );
 					searchDataLookupParametersLookupDTO.setHashCollisionIndex( dbItem.getHashCollisionIndex() );
 					searchDataLookupParametersLookupDAO.updateLastAccessed( searchDataLookupParametersLookupDTO.getId() );
 					return; // EARLY EXIT

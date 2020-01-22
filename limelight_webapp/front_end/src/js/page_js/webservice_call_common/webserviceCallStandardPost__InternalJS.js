@@ -40,9 +40,14 @@ import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallS
  * ONLY CALL FROM webserviceCallStandardPost.ts
  * 
  */
-const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doNotHandleErrorResponse = false, api }) {
+const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doNotHandleErrorResponse = false, api, webserviceCallStandardPost_ApiObject_Holder_Class }) {
 
     const webserviceCallFunction = function( resolve, reject ) {
+
+        if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+            webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = api;
+        }
+
         try {
             const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
             const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
@@ -66,6 +71,9 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
                 success : function( responseDataJSON ) {
 
                     api._clear_request();
+                    if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+                        webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
+                    }
 
                     try {
 
@@ -106,6 +114,9 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
                 failure: function(errMsg) {
 
                     api._clear_request();
+                    if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+                        webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
+                    }
 
                     try {
                         if ( ! doNotHandleErrorResponse ) {
@@ -126,6 +137,9 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
                 error : function(jqXHR, textStatus, errorThrown) {
 
                     api._clear_request();
+                    if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+                        webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
+                    }
 
                     if ( ! api._is_abortCalled() ) {
                         //  Abort not called so report error
@@ -154,6 +168,10 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
             api._set_request( request );
 
         } catch( e ) {
+            if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+                webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
+            }
+            
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }

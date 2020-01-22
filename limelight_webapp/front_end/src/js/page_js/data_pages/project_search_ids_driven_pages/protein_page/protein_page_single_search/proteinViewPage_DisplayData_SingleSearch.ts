@@ -14,15 +14,17 @@ import { Handlebars, _common_template_bundle, _protein_table_template_bundle } f
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
-import { create_dataTable_Root_React, remove_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_Root_React';
-
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
+
+import { create_dataTable_Root_React, remove_dataTable_Root_React } from '../../../data_table_react_TRY_1_DO_NOT_USE/dataTable_Root_React_TRY_1_DO_NOT_USE';
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
@@ -38,6 +40,7 @@ import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } fr
 import { ProteinViewPage_Display_SingleProtein_SingleSearch } from './proteinViewPage_DisplayData_SingleProtein_SingleSearch';
 
 import { SingleProtein_CentralStateManagerObjectClass } from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
 
 	
 	//  Applied to the element containing the protein name so it can be selected
@@ -69,9 +72,9 @@ export class ProteinViewPage_Display_SingleSearch {
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
-	private _centralPageStateManager;
-	private _singleProtein_CentralStateManagerObject;
-	private _proteinList_CentralStateManagerObjectClass;
+	private _centralPageStateManager : CentralPageStateManager;
+	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
+	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	
 	private _annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes;
 	
@@ -102,7 +105,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	//   Cached: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
 	private _peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId = undefined;
 
-	private _groupProteins = false; //  default false
+	private _groupProteins : boolean = false; //  default false
 
 
 	private _proteinViewPage_Display_SingleProtein_SingleSearch : ProteinViewPage_Display_SingleProtein_SingleSearch;
@@ -127,9 +130,9 @@ export class ProteinViewPage_Display_SingleSearch {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager,
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
-		centralPageStateManager,
-		singleProtein_CentralStateManagerObject,
-		proteinList_CentralStateManagerObjectClass
+		centralPageStateManager : CentralPageStateManager,
+		singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass,
+		proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
 	}) {
 
 		//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
@@ -161,10 +164,10 @@ export class ProteinViewPage_Display_SingleSearch {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
 		} );
 		
-		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
-		});
+		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer =
+			new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
+				loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder
+			})
 		
 		this._proteinViewPage_StatsSectionCreator_SingleSearch = new ProteinViewPage_StatsSectionCreator_SingleSearch({ loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder });
 
@@ -295,7 +298,17 @@ export class ProteinViewPage_Display_SingleSearch {
 		$("#protein_group_list_size").empty();
 		
 
-		const promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId } )
+		let searchDataLookupParams_For_Single_ProjectSearchId = this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined } );
+			
+		if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+			const msg = "No entry found in searchDetailsBlockDataMgmtProcessing for projectSearchId: " + projectSearchId;
+			console.log( msg );
+			throw Error( msg );
+		}
+		
+		const promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = (
+			this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } )
+		);
 
 		promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.catch( (reason) => {} );
 		promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.then( (value) => {

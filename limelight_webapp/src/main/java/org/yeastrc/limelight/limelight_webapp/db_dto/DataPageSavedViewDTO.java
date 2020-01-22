@@ -9,6 +9,10 @@ public class DataPageSavedViewDTO {
 	private int id;
 	private int projectId;
 	private String pageControllerPath;
+	
+	private Integer experimentId;  // only for experiment
+	private Integer experimentIdDefaultView;  // only for experiment - Default View
+	
 	private Integer singleProjectSearchIdDefaultView;
 	
 	private String label;
@@ -71,5 +75,17 @@ public class DataPageSavedViewDTO {
 	}
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	public Integer getExperimentId() {
+		return experimentId;
+	}
+	public void setExperimentId(Integer experimentId) {
+		this.experimentId = experimentId;
+	}
+	public Integer getExperimentIdDefaultView() {
+		return experimentIdDefaultView;
+	}
+	public void setExperimentIdDefaultView(Integer experimentIdDefaultView) {
+		this.experimentIdDefaultView = experimentIdDefaultView;
 	}
 }

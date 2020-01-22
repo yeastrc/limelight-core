@@ -332,13 +332,17 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds 
 				projectDAO.getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( projectId );
 		
 		if ( projectOnlyProjectLockedPublicAccessLevel == null ) {
-			throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
+			LimelightErrorDataInWebRequestException exc = new LimelightErrorDataInWebRequestException( "Project Id not found" );
+			exc.setProjectIdnotfound(true);
+			throw exc;
 		}
 		
 		if ( ( ! projectOnlyProjectLockedPublicAccessLevel.isEnabled() )
 				|| projectOnlyProjectLockedPublicAccessLevel.isMarkedForDeletion() ) {
 			
-			throw new LimelightErrorDataInWebRequestException( "Project Id Not Enabled Or Marked for Deletion" );
+			LimelightErrorDataInWebRequestException exc = new LimelightErrorDataInWebRequestException( "Project Id Not Enabled Or Marked for Deletion" );
+			exc.setProjectIdNotEnabledOrMarkedforDeletion(true);
+			throw exc;
 		}
 
 		if ( userSession == null ) {

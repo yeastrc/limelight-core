@@ -64,6 +64,10 @@
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SavedViews.jsp" %>
 
+	<%--  Experiments List --%>
+<%--   //  Comment out Experiment Code
+	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_ExperimentList.jsp" %>
+--%>	
 	<%--  Search List --%>
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SearchList.jsp" %>

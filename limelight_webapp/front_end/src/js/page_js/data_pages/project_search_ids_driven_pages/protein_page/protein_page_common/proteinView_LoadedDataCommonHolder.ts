@@ -14,6 +14,10 @@
  * 
  */
 
+import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
+
+import { ProteinSequenceData_For_ProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinSequenceData_For_ProteinSequenceVersionId';
+import { ReportedPeptideStringData_For_ReportedPeptideId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/reportedPeptideStringData_For_ReportedPeptideId'
 
 /**
  * 
@@ -21,45 +25,58 @@
 export class ProteinView_LoadedDataCommonHolder {
 
 	//  Per proteinSequenceVersionId
-	private _proteinSequenceData_KeyProteinSequenceVersionId = undefined; // Map <integer,Object> <proteinSequenceVersionId, ProteinSequenceData_For_ProteinSequenceVersionId>
+	private _proteinSequenceData_KeyProteinSequenceVersionId : Map<number, ProteinSequenceData_For_ProteinSequenceVersionId> = undefined; // Map <integer,Object> <proteinSequenceVersionId, ProteinSequenceData_For_ProteinSequenceVersionId>
 
 	//  Per reportedPeptideId
-	private _reportedPeptideStringData_KeyReportedPeptideId = undefined; // Map <integer,Object> <reportedPeptideId, ReportedPeptideStringData_For_ReportedPeptideId>
+	private _reportedPeptideStringData_KeyReportedPeptideId : Map<number, ReportedPeptideStringData_For_ReportedPeptideId> = undefined; // Map <integer,Object> <reportedPeptideId, ReportedPeptideStringData_For_ReportedPeptideId>
 
 	//  Per peptideId
-	private _peptideSequenceString_KeyPeptideId = undefined; // Map <integer,String> <peptideId, PeptideSequence>
+	private _peptideSequenceString_KeyPeptideId : Map<number, string> = undefined; // Map <integer,String> <peptideId, peptideSequence>
 
 	/**
 	 * 
 	 */
 	constructor() {
-		
-		//  Per proteinSequenceVersionId
-		this._proteinSequenceData_KeyProteinSequenceVersionId = undefined; // Map <integer,Object> <proteinSequenceVersionId, ProteinSequenceData_For_ProteinSequenceVersionId>
-
-		//  Per reportedPeptideId
-		this._reportedPeptideStringData_KeyReportedPeptideId = undefined; // Map <integer,Object> <reportedPeptideId, ReportedPeptideStringData_For_ReportedPeptideId>
-
-		//  Per peptideId
-		this._peptideSequenceString_KeyPeptideId = undefined; // Map <integer,String> <peptideId, PeptideSequence>
 	}
 	
 	//  _proteinSequenceData_KeyProteinSequenceVersionId
 
-	get_proteinSequenceData_KeyProteinSequenceVersionId() {
-		return this._proteinSequenceData_KeyProteinSequenceVersionId;
-	}
-	set_proteinSequenceData_KeyProteinSequenceVersionId( proteinSequenceData_KeyProteinSequenceVersionId ) {
-		this._proteinSequenceData_KeyProteinSequenceVersionId = proteinSequenceData_KeyProteinSequenceVersionId;
-	}
+	//  Not Used
+	// get_proteinSequenceData_KeyProteinSequenceVersionId() : Map<number, ProteinSequenceData_For_ProteinSequenceVersionId> {
+	// 	return this._proteinSequenceData_KeyProteinSequenceVersionId;
+	// }
+	// set_proteinSequenceData_KeyProteinSequenceVersionId( proteinSequenceData_KeyProteinSequenceVersionId : Map<number, ProteinSequenceData_For_ProteinSequenceVersionId> ) : void {
+	// 	this._proteinSequenceData_KeyProteinSequenceVersionId = proteinSequenceData_KeyProteinSequenceVersionId;
+	// }
 
-	add_proteinSequenceData_KeyProteinSequenceVersionId( { proteinSequenceData, proteinSequenceVersionId } ) {
+	add_proteinSequenceData_KeyProteinSequenceVersionId({ 
+		proteinSequenceData, 
+		proteinSequenceVersionId 
+	} : { 
+		proteinSequenceData : ProteinSequenceData_For_ProteinSequenceVersionId, 
+		proteinSequenceVersionId : number
+	} ) : void {
+		if ( ! ( proteinSequenceData instanceof ProteinSequenceData_For_ProteinSequenceVersionId ) ) {
+			const msg = "add_proteinSequenceData_KeyProteinSequenceVersionId: ! ( proteinSequenceData instanceof ProteinSequenceData_For_ProteinSequenceVersionId )";
+			console.warn( msg, proteinSequenceData )
+			throw Error( msg );
+		}
+		if ( ! ( Number.isInteger( proteinSequenceVersionId ) ) ) {
+			const msg = "add_proteinSequenceData_KeyProteinSequenceVersionId: ! ( Number.isInteger( proteinSequenceVersionId )";
+			console.warn( msg, proteinSequenceVersionId )
+			throw Error( msg );
+		}
 		if ( ! this._proteinSequenceData_KeyProteinSequenceVersionId ) {
 			this._proteinSequenceData_KeyProteinSequenceVersionId = new Map();
 		}
 		this._proteinSequenceData_KeyProteinSequenceVersionId.set( proteinSequenceVersionId, proteinSequenceData );
 	}
-	get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) {
+	get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } : { proteinSequenceVersionId : number } ) : ProteinSequenceData_For_ProteinSequenceVersionId {
+		if ( ! ( Number.isInteger( proteinSequenceVersionId ) ) ) {
+			const msg = "get_proteinSequenceData_For_proteinSequenceVersionId: ! ( Number.isInteger( proteinSequenceVersionId )";
+			console.warn( msg, proteinSequenceVersionId )
+			throw Error( msg );
+		}
 		if ( ! this._proteinSequenceData_KeyProteinSequenceVersionId ) {
 			return undefined;
 		}
@@ -68,20 +85,42 @@ export class ProteinView_LoadedDataCommonHolder {
 
 	//  _reportedPeptideStringData_KeyReportedPeptideId
 
-	get_reportedPeptideStringData_KeyReportedPeptideId() {
-		return this._reportedPeptideStringData_KeyReportedPeptideId;
-	}
-	set_reportedPeptideStringData_KeyReportedPeptideId( reportedPeptideStringData_KeyReportedPeptideId ) {
-		this._reportedPeptideStringData_KeyReportedPeptideId = reportedPeptideStringData_KeyReportedPeptideId;
-	}
+	//  Not Used
+	// get_reportedPeptideStringData_KeyReportedPeptideId() : Map<number, ReportedPeptideStringData_For_ReportedPeptideId> {
+	// 	return this._reportedPeptideStringData_KeyReportedPeptideId;
+	// }
+	// set_reportedPeptideStringData_KeyReportedPeptideId( reportedPeptideStringData_KeyReportedPeptideId : Map<number, ReportedPeptideStringData_For_ReportedPeptideId> ) : void {
+	// 	this._reportedPeptideStringData_KeyReportedPeptideId = reportedPeptideStringData_KeyReportedPeptideId;
+	// }
 
-	add_reportedPeptideStringData_KeyReportedPeptideId( { reportedPeptideStringData, reportedPeptideId } ) {
+	add_reportedPeptideStringData_KeyReportedPeptideId( { 
+		reportedPeptideStringData, 
+		reportedPeptideId 
+	} : { 
+		reportedPeptideStringData : ReportedPeptideStringData_For_ReportedPeptideId, 
+		reportedPeptideId : number
+	} ) : void {
+		if ( ! ( reportedPeptideStringData instanceof ReportedPeptideStringData_For_ReportedPeptideId ) ) {
+			const msg = "add_reportedPeptideStringData_KeyReportedPeptideId: ! ( reportedPeptideStringData instanceof ReportedPeptideStringData_For_ReportedPeptideId )";
+			console.warn( msg, reportedPeptideStringData )
+			throw Error( msg );
+		}
+		if ( ! ( Number.isInteger( reportedPeptideId ) ) ) {
+			const msg = "add_reportedPeptideStringData_KeyReportedPeptideId: ! ( Number.isInteger( reportedPeptideId )";
+			console.warn( msg, reportedPeptideId )
+			throw Error( msg );
+		}
 		if ( ! this._reportedPeptideStringData_KeyReportedPeptideId ) {
 			this._reportedPeptideStringData_KeyReportedPeptideId = new Map();
 		}
 		this._reportedPeptideStringData_KeyReportedPeptideId.set( reportedPeptideId, reportedPeptideStringData );
 	}
-	get_reportedPeptideStringData_For_reportedPeptideId( { reportedPeptideId } ) {
+	get_reportedPeptideStringData_For_reportedPeptideId( { reportedPeptideId } : { reportedPeptideId : number } ) : ReportedPeptideStringData_For_ReportedPeptideId {
+		if ( ! ( Number.isInteger( reportedPeptideId ) ) ) {
+			const msg = "get_reportedPeptideStringData_For_reportedPeptideId: ! ( Number.isInteger( reportedPeptideId )";
+			console.warn( msg, reportedPeptideId )
+			throw Error( msg );
+		}
 		if ( ! this._reportedPeptideStringData_KeyReportedPeptideId ) {
 			return undefined;
 		}
@@ -90,20 +129,42 @@ export class ProteinView_LoadedDataCommonHolder {
 
 	//  _peptideSequenceString_KeyPeptideId
 
-	get_peptideSequenceString_KeyPeptideId() {
-		return this._peptideSequenceString_KeyPeptideId;
-	}
-	set_peptideSequenceString_KeyPeptideId( peptideSequenceString_KeyPeptideId ) {
-		this._peptideSequenceString_KeyPeptideId = peptideSequenceString_KeyPeptideId;
-	}
+	//  Not Used
+	// get_peptideSequenceString_KeyPeptideId() : Map<number, string> {
+	// 	return this._peptideSequenceString_KeyPeptideId;
+	// }
+	// set_peptideSequenceString_KeyPeptideId( peptideSequenceString_KeyPeptideId : Map<number, string> ) : void {
+	// 	this._peptideSequenceString_KeyPeptideId = peptideSequenceString_KeyPeptideId;
+	// }
 
-	add_peptideSequenceString_KeyPeptideId( { peptideSequenceString, peptideId } ) {
+	add_peptideSequenceString_KeyPeptideId( { 
+		peptideSequenceString, 
+		peptideId 
+	} : { 
+		peptideSequenceString : string, 
+		peptideId : number
+	} ) : void {
+		if ( ! limelight__IsVariableAString( peptideSequenceString ) ) {
+			const msg = "add_peptideSequenceString_KeyPeptideId: ! ( limelight__IsVariableAString( peptideSequenceString ) )";
+			console.warn( msg, peptideSequenceString )
+			throw Error( msg );
+		}
+		if ( ! ( Number.isInteger( peptideId ) ) ) {
+			const msg = "add_peptideSequenceString_KeyPeptideId: ! ( Number.isInteger( peptideId )";
+			console.warn( msg, peptideId )
+			throw Error( msg );
+		}
 		if ( ! this._peptideSequenceString_KeyPeptideId ) {
 			this._peptideSequenceString_KeyPeptideId = new Map();
 		}
 		this._peptideSequenceString_KeyPeptideId.set( peptideId, peptideSequenceString );
 	}
-	get_peptideSequenceString_For_peptideId( { peptideId } ) {
+	get_peptideSequenceString_For_peptideId( { peptideId } : { peptideId : number } ) : string {
+		if ( ! ( Number.isInteger( peptideId ) ) ) {
+			const msg = "get_peptideSequenceString_For_peptideId: ! ( Number.isInteger( peptideId )";
+			console.warn( msg, peptideId )
+			throw Error( msg );
+		}
 		if ( ! this._peptideSequenceString_KeyPeptideId ) {
 			return undefined;
 		}

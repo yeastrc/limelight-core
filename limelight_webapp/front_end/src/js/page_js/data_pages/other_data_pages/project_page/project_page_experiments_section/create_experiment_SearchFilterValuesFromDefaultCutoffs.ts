@@ -1,0 +1,208 @@
+/**
+ * create_experiment_SearchFilterValuesFromDefaultCutoffs.ts
+ * 
+ * Put data in conditionGroupsDataContainer
+ * for per search (project search id) 
+ * filter data based on Default Cutoffs
+ * for specified projectSearchIds
+ */
+
+import { ConditionGroupsDataContainer_PerProjectSearchIdData, ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
+
+ /**
+ * 
+ * 
+ * @param projectSearchIds
+ * @param searchDataMap_KeyProjectSearchId
+ * @param searchesData
+ * @param conditionGroupsDataContainer
+ */
+export const create_experiment_SearchFilterValuesFromDefaultCutoffs = ({ 
+    projectSearchIds, 
+    searchDataMap_KeyProjectSearchId,
+    searchesData, 
+    conditionGroupsDataContainer }) => {
+
+    const searchesSubData = searchesData.searchesSubData;
+    const dataMap_KeyProjectSearchId = searchesSubData.dataMap_KeyProjectSearchId;
+
+    for ( const projectSearchId of projectSearchIds ) {
+        const searchDataEntry = searchDataMap_KeyProjectSearchId.get( projectSearchId );
+        if ( ! searchDataEntry ) {
+            console.log("WARN: No entry in searchDataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
+            continue; // EARLY CONTINUE
+        }
+
+        const dataForProjectSearchId = dataMap_KeyProjectSearchId.get( projectSearchId );
+
+        if ( ! dataForProjectSearchId ) {
+            console.log("create_experiment_SearchFilterValuesFromDefaultCutoffs: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
+            throw Error("create_experiment_SearchFilterValuesFromDefaultCutoffs: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
+        }
+
+        const data_conditionGroupsDataContainer_EmptyCheck = conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId });
+    
+        if ( ! data_conditionGroupsDataContainer_EmptyCheck ) {
+
+            const data_conditionGroupsDataContainer = conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId, createIfNotFound : true });
+        
+            //  Entries for Search
+            _create_SearchFilterValues_SingleSearchContents({ dataForProjectSearchId, data_conditionGroupsDataContainer });
+        }
+    }
+}
+
+/**
+ * Contents for 1 Search
+ * 
+ */
+const _create_SearchFilterValues_SingleSearchContents = ({ 
+    dataForProjectSearchId,
+    data_conditionGroupsDataContainer //  output
+}) => {
+
+    const searchAnnotationTypesData = dataForProjectSearchId.searchAnnotationTypesData;
+
+    //  Map key ann type id
+    const psmFilterableAnnotationTypes = searchAnnotationTypesData.psmFilterableAnnotationTypes;
+    const reportedPeptideFilterableAnnotationTypes = searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes;
+
+    //   matchedProteinFilters not currently processed
+    // const matchedProteinFilters = searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes;
+
+    //   Default Search Filters/Cutoffs
+
+    // Process PSM filters
+    if ( psmFilterableAnnotationTypes ) { 
+        const psmFilterData : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({ 
+            filterableAnnotationTypes : psmFilterableAnnotationTypes
+        });
+        data_conditionGroupsDataContainer.set_psmFilters_PerProjectSearchId( psmFilterData );
+    }
+    // Process Reported Peptide filters
+    if ( reportedPeptideFilterableAnnotationTypes ) {
+        const reportedPeptideFilterData : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({ 
+            filterableAnnotationTypes : reportedPeptideFilterableAnnotationTypes
+        });
+        data_conditionGroupsDataContainer.set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilterData );
+    }
+
+    //   Default Annotation Type Ids to display
+
+    // Process PSM filters
+    if ( searchAnnotationTypesData.psmFilterableAnnotationTypes || searchAnnotationTypesData.psmDescriptiveAnnotationTypes ) {
+        const psmAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({ 
+            param_FilterableAnnotationTypes : searchAnnotationTypesData.psmFilterableAnnotationTypes, 
+            param_DescriptiveAnnotationTypes : searchAnnotationTypesData.psmDescriptiveAnnotationTypes
+        });
+        data_conditionGroupsDataContainer.set_psmAnnTypeDisplay_PerProjectSearchId( psmAnnTypeDisplay );
+    }
+    // Process PSM filters
+    if ( searchAnnotationTypesData.psmFilterableAnnotationTypes || searchAnnotationTypesData.psmDescriptiveAnnotationTypes ) {
+        const reportedPeptideAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({ 
+            param_FilterableAnnotationTypes : searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes, 
+            param_DescriptiveAnnotationTypes : searchAnnotationTypesData.reportedPeptideDescriptiveAnnotationTypes
+        });
+        data_conditionGroupsDataContainer.set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( reportedPeptideAnnTypeDisplay );
+    }
+}
+
+/**
+ * Contents for 1 Search for single type (PSM, Reported Petide, Protein)
+ * 
+ */
+const _create_SearchFilterValues_SingleFilterableType = ({ 
+    filterableAnnotationTypes
+}) : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> => {
+
+    const resultArray : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = [];
+
+    for ( const entry of filterableAnnotationTypes ) {
+
+        const filterableAnnotationType = entry[ 1 ];
+        const annotationTypeId = filterableAnnotationType.annotationTypeId;
+        const defaultFilter = filterableAnnotationType.defaultFilter;
+
+        if ( defaultFilter ) {
+            // const annotationTypeName = filterableAnnotationType.name;
+            const filterValue = filterableAnnotationType.defaultFilterValue;
+            // const defaultFilterValueString = filterableAnnotationType.defaultFilterValueString;
+            const result = new ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data(); 
+            result.set_annTypeId( annotationTypeId );
+            result.set_value( filterValue );
+            resultArray.push( result );
+        }
+    }
+
+    return resultArray;
+}
+
+
+/**
+ * 
+ */
+const _getDefaultsAnnTypeDisplayForType = ({ param_FilterableAnnotationTypes, param_DescriptiveAnnotationTypes }) => {
+
+    if ( ( ! param_FilterableAnnotationTypes ) && ( ! param_DescriptiveAnnotationTypes )  ) {
+        return [];
+    }
+    
+
+    const searchDetails_AnnTypeDisplayDefaultDisplayItems = [];
+
+    _getDefaultsAnnTypeDisplayForType_Add_Filterable_Or_Descriptive({ param_AnnotationTypes : param_FilterableAnnotationTypes, searchDetails_AnnTypeDisplayDefaultDisplayItems });
+    
+    _getDefaultsAnnTypeDisplayForType_Add_Filterable_Or_Descriptive({ param_AnnotationTypes : param_DescriptiveAnnotationTypes, searchDetails_AnnTypeDisplayDefaultDisplayItems });
+
+    if ( searchDetails_AnnTypeDisplayDefaultDisplayItems.length === 0 ) {
+        return [];
+    }
+
+    //  Sort array on Display Order
+    
+    searchDetails_AnnTypeDisplayDefaultDisplayItems.sort( function( a, b ) {
+        if ( ( a.displayOrder === undefined || a.displayOrder === null ) && ( b.displayOrder === undefined || b.displayOrder === null ) ) {
+            return a.name.localeCompare( b.name );
+        }
+        if ( a.displayOrder === undefined || a.displayOrder === null ) {
+            return 1;  // sort a after b 
+        }
+        if ( b.displayOrder === undefined || b.displayOrder === null ) {
+            return -1;  // sort a before b 
+        }
+        return a.displayOrder - b.displayOrder;
+    })
+    
+    //  Create final array of annotation type ids
+    
+    const searchDetails_AnnTypeDisplayDefaultDisplayFinal = [];
+    
+    for ( const item of searchDetails_AnnTypeDisplayDefaultDisplayItems ) {
+        searchDetails_AnnTypeDisplayDefaultDisplayFinal.push( item.annotationTypeId );
+    }
+    
+    return searchDetails_AnnTypeDisplayDefaultDisplayFinal;
+};
+
+
+/**
+ * @param param_AnnotationTypes - Map
+ * @param searchDetails_AnnTypeDisplayDefaultDisplayItems - Array to add to
+ */
+const _getDefaultsAnnTypeDisplayForType_Add_Filterable_Or_Descriptive = ({ param_AnnotationTypes, searchDetails_AnnTypeDisplayDefaultDisplayItems } ) => {
+
+    if ( ! param_AnnotationTypes ) {
+        return;
+    }
+
+    for ( const entry of param_AnnotationTypes.entries() ) {
+
+        const mapKey = entry[ 0 ];
+        const mapValue = entry[ 1 ];
+
+        if ( mapValue.defaultVisible ) {
+            // Is Default Visible so add to array
+            searchDetails_AnnTypeDisplayDefaultDisplayItems.push( mapValue );
+        }
+    }
+}

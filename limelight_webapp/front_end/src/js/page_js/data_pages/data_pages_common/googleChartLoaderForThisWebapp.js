@@ -74,12 +74,12 @@ class Deferred_Local_GoogleChartLoader {
 		return this.promise;
 	}
 	resolvePromise() {
-		this.resolve();
+		this.resolve({ google : window.google });
 	}
 	rejectPromise() {
 		this.reject();
 	}
-};
+}
 
 
 
@@ -176,7 +176,13 @@ let _loadGoogleChartPackages = function( { chartPackagesToLoad } ) {
 let loadGoogleChart_CoreChart = function() {	
 
 	if ( googleChartCoreCharts_Loaded === GOOGLE_CHART_LOADER_LOADED_YES ) {
-		return { isLoaded: true };
+
+		if ( ! window.google ) {
+			const msg = "loadGoogleChart_CoreChart: googleChartCoreCharts_Loaded === GOOGLE_CHART_LOADER_LOADED_YES but window.google not populated";
+			console.warn( msg );
+			throw Error( msg );
+		}
+		return { isLoaded: true, google : window.google };
 	}
 	
 	if ( googleChartCoreCharts_Loaded === GOOGLE_CHART_LOADER_LOADING_IN_PROGRESS ) {
@@ -212,7 +218,8 @@ let loadGoogleChart_CoreChart = function() {
 								}, this)
 							}
 							
-							resolve();
+							resolve({ google : window.google });
+
 						} catch( e ) {
 							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 							throw e;

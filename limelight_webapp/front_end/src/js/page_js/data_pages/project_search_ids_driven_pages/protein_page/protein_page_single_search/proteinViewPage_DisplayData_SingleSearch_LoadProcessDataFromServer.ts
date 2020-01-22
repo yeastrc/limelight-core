@@ -31,57 +31,26 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 	/**
 	 * 
 	 */
-	constructor({
-		loadedDataPerProjectSearchIdHolder,
-		searchDetailsBlockDataMgmtProcessing
+	constructor( {
+		loadedDataPerProjectSearchIdHolder
 	} : {
-		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 	}) {
 		this._loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
-		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 	}
 	
 
 	/**
 	 * Get Data from Server for Single Project Search Id and Cutoffs/Filters
 	 */
-	getDataFromServer( { projectSearchId } ) {
+	getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } ) {
 
 		let objectThis = this;
 
-		let searchDetails_Filters_AnnTypeDisplayRootObject = 
-			objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
-		
-		let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
-
-		//  filtersAnnTypeDisplayPerProjectSearchIds is an array in the same order as projectSearchIds
-		let filtersAnnTypeDisplayPerProjectSearchIds = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
-
-		let filtersAnnTypeDisplay_For_ProjectSearchId = undefined;
-		
-		for ( let filtersAnnTypeDisplay_For_Single_ProjectSearchId of filtersAnnTypeDisplayPerProjectSearchIds ) {
-			
-			if ( projectSearchId === filtersAnnTypeDisplay_For_Single_ProjectSearchId.projectSearchId ) {
-				filtersAnnTypeDisplay_For_ProjectSearchId = filtersAnnTypeDisplay_For_Single_ProjectSearchId;
-				break;
-			}
-		}
-		
-		if ( ! filtersAnnTypeDisplay_For_ProjectSearchId ) {
-			const msg = "No entry found in filtersAnnTypeDisplayPerProjectSearchIds for projectSearchId: " + projectSearchId;
-			console.log( msg );
-			throw Error( msg );
-		}
-		
 		//  Outer Promise for getting data from server for projectSearchId
 
 		return new Promise( function(resolve, reject) {
 			try {
-				let searchDataLookupParams_For_Single_ProjectSearchId = 
-					objectThis._searchDetailsBlockDataMgmtProcessing.
-					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined } );
-
 				//  First get Reported Peptide Ids for current cutoffs/filters
 				
 				const promise_getReportedPeptideIdList = ProteinViewDataLoader.getReportedPeptideIdList( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } )
@@ -139,12 +108,12 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 						promiseAllArray.push( promise_get_ProteinCoverage_FromReportedPeptideIds );
 						
 						const promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter =
-							objectThis._get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId } );
+							objectThis._get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId: searchDataLookupParams_For_Single_ProjectSearchId } );
 							
 						promiseAllArray.push( promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter );
 						
 						const promise_get_BestPsmFilterableAnnTypeDataForCurrentFilter =
-							objectThis._get_BestPsmFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId } );
+							objectThis._get_BestPsmFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId: searchDataLookupParams_For_Single_ProjectSearchId } );
 						
 						promiseAllArray.push( promise_get_BestPsmFilterableAnnTypeDataForCurrentFilter );
 

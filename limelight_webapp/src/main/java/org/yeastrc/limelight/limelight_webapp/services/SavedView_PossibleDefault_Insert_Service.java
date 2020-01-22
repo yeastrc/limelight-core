@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.SavedView_PossibleDefault_Insert_UsingDBTransactionService;
+import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewDTO;
 
@@ -32,18 +33,18 @@ public class SavedView_PossibleDefault_Insert_Service implements SavedView_Possi
 	
 	/**
 	 * @param item
-	 * @param children
+	 * @param childrenProjectSearchIds
 	 * @throws SQLException 
 	 */
 	@Override
-	public void addDataPageSavedView_UpdateDefaultIfSet( DataPageSavedViewDTO item, List<DataPageSavedViewAssocProjectSearchIdDTO> children ) throws SQLException {  
+	public void addDataPageSavedView_UpdateDefaultIfSet( DataPageSavedViewDTO item, List<DataPageSavedViewAssocProjectSearchIdDTO> childrenProjectSearchIds, DataPageSavedViewAssocExperimentIdDTO childExperimentId ) throws SQLException {  
 		
 		int retryCount = 0;
 		
 		while ( true ) { //  Exit method inside loop, in multiple places
 			
 			try {
-				savedView_PossibleDefault_Insert_UsingDBTransactionService.addDataPageSavedView_UpdateDefaultIfSet( item, children );
+				savedView_PossibleDefault_Insert_UsingDBTransactionService.addDataPageSavedView_UpdateDefaultIfSet( item, childrenProjectSearchIds, childExperimentId );
 				
 				return; // Exit method
 				

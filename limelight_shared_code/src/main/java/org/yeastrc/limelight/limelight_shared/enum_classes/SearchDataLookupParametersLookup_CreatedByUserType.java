@@ -74,7 +74,7 @@ public enum SearchDataLookupParametersLookup_CreatedByUserType {
                 return c;
             }
         }
-        throw new IllegalArgumentException( "PsmPeptideProteinAnnotationType not valid for value: " + value_ );
+        throw new IllegalArgumentException( "SearchDataLookupParametersLookup_CreatedByUserType not valid for value: " + value_ );
     }
 
 }

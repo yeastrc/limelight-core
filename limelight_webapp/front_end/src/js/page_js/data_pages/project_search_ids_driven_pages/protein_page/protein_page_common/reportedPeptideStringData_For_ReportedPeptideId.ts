@@ -16,7 +16,7 @@ export class ReportedPeptideStringData_For_ReportedPeptideId {
 	/**
 	 * 
 	 */
-	constructor( { reportedPeptideString } ) {
+	constructor( { reportedPeptideString } : { reportedPeptideString : string } ) {
 		
 		this._reportedPeptideString = reportedPeptideString;
 		
@@ -27,7 +27,7 @@ export class ReportedPeptideStringData_For_ReportedPeptideId {
 	/**
 	 * 
 	 */
-	getReportedPeptideString() {
+	getReportedPeptideString()  : string {
 		return this._reportedPeptideString;
 	}
 

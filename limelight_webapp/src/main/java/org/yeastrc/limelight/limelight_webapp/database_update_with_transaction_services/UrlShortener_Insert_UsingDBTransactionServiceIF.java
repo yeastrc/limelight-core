@@ -22,6 +22,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO.LogDuplicateSQLException;
+import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerDTO;
 
@@ -36,10 +37,11 @@ public interface UrlShortener_Insert_UsingDBTransactionServiceIF {
 	 * 
 	 * 
 	 * @param item
-	 * @param children
+	 * @param childrenProjectSearchIds
+	 * @param childExperimentId TODO
 	 */
 
-	void addUrlShortener(UrlShortenerDTO item, List<UrlShortenerAssocProjectSearchIdDTO> children,
-			LogDuplicateSQLException logDuplicateSQLException);
+	void addUrlShortener(UrlShortenerDTO item, List<UrlShortenerAssocProjectSearchIdDTO> childrenProjectSearchIds,
+			UrlShortenerAssocExperimentIdDTO childExperimentId, LogDuplicateSQLException logDuplicateSQLException);
 
 }

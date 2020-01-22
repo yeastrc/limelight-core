@@ -3,7 +3,10 @@
  * 
  * Javascript:  A "State Manager" where all page state not stored in the searchDataLookupParametersCode will be stored.
  * 
- * This Reads from and updates the URL in the address bar, updating the 'page_state_string' 
+ * This Reads from and updates the URL in the address bar, updating the 'page_state_string'.
+ * 
+ * 
+ * For Project Search Id based Data pages:
  * 
  *    ..pagename/searchDataLookupParametersCode/q/page_state_string
  *    
@@ -12,6 +15,23 @@
  *    
  *    Nav from other page:
  *       ...pagename/searchDataLookupParametersCode/q/page_state_string/r
+ * 
+ * For Experiment Id based Data Pages
+ * 
+ *     ..pagename/e/{experimentId}/q/page_state_string
+ * 
+ *    User changed Search Filters or Annotation Types to Desplay:
+ *        ..pagename/e/{experimentId}/c/{searchDataLookupParametersCode}/q/page_state_string
+ * 
+ *    Nav from project page:
+ *         ..pagename/e/{experimentId}/r
+ * 
+ *    Nav from other page:
+ *         ..pagename/e/{experimentId}/q/page_state_string/r
+ *       or
+ *         ..pagename/e/{experimentId}/c/{searchDataLookupParametersCode}/q/page_state_string/r
+ * 
+ * 
  * 
  * What is stored in searchDataLookupParametersCode:
  *    Project Search Ids, in chosen display order
@@ -32,12 +52,13 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
+import { controller_path_prefix_ProjectSearchId_Based_FromDOM, controller_path_prefix_ExperimentId_Based_FromDOM } from 'page_js/data_pages/data_pages_common/controllerPath_Prefixes_FromDOM.js';
 
 import { StringCompressDecompress }  from 'page_js/data_pages/data_pages_common/compressDecompressString.js';
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
-import { NewURL_Build_PerProjectSearchIds }  from 'page_js/data_pages/data_pages_common/newURL_Build_PerProjectSearchIds.js';
+import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from 'page_js/data_pages/data_pages_common/newURL_Build_PerProjectSearchIds_Or_ExperimentId.js';
 
 import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
 
@@ -66,6 +87,8 @@ export class CentralPageStateManager {
 	getInitialStateFromURL() {
 
 		const pageStatePartsFromURL = this._parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
+
+		const experimentId = pageStatePartsFromURL.experimentId;
 		const searchDataLookupParametersCode = pageStatePartsFromURL.searchDataLookupParametersCode;
 		const pageStateIdentifier = pageStatePartsFromURL.pageStateIdentifier;
 		const pageStateString = pageStatePartsFromURL.pageStateString;
@@ -201,7 +224,26 @@ export class CentralPageStateManager {
 
 		window.history.replaceState( null, null, newURL );
 
-		navigation_dataPages_Maint_Instance._updateNavLinks();
+		const controller_path_prefix_ProjectSearchId_Based = controller_path_prefix_ProjectSearchId_Based_FromDOM();
+		const controller_path_prefix_ExperimentId_Based = controller_path_prefix_ExperimentId_Based_FromDOM();
+
+		if ( newURL.includes( controller_path_prefix_ProjectSearchId_Based ) ) {
+
+			//  Update Navigation Links for Project Search Id Based URLs
+
+			navigation_dataPages_Maint_Instance._updateNavLinks();
+
+		} else if ( newURL.includes( controller_path_prefix_ExperimentId_Based ) ) {
+
+			//  Update Navigation Links for Experiment Id Based URLs
+
+
+
+		} else {
+			const msg = "ERROR: _updateURL(): newURL does not contain '" + controller_path_prefix_ProjectSearchId_Based + "' or '" + controller_path_prefix_ExperimentId_Based + "'.  newURL: " + newURL;
+			console.warn( msg );
+			throw Error( msg );
+		}
 	}
 
 	/**
@@ -241,6 +283,8 @@ export class CentralPageStateManager {
 		// Current URL contents
 		const pageStatePartsFromURL = this._parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
 
+		const experimentId = pageStatePartsFromURL.experimentId;
+
 		const searchDataLookupParametersCode = pageStatePartsFromURL.searchDataLookupParametersCode;
 
 		//  Not used
@@ -259,15 +303,14 @@ export class CentralPageStateManager {
 
 		let pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
 
-		let newURL =
-			NewURL_Build_PerProjectSearchIds.newURL_Build_PerProjectSearchIds(
-				{
-					pageControllerPath,
-					searchDataLookupParamsCode: searchDataLookupParametersCode,
-					pageStateIdentifier: _STANDARD_PAGE_STATE_IDENTIFIER,
-					pageStateString: stateAsJSON_Compressed,
-					referrer: undefined
-				});
+		let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
+			pageControllerPath,
+			experimentId,
+			searchDataLookupParamsCode: searchDataLookupParametersCode,
+			pageStateIdentifier: _STANDARD_PAGE_STATE_IDENTIFIER,
+			pageStateString: stateAsJSON_Compressed,
+			referrer: undefined
+		});
 
 		return newURL;
 	}

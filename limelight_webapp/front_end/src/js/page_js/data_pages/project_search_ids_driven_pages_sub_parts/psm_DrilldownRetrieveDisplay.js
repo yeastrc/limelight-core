@@ -101,7 +101,7 @@ export class Psm_DrilldownRetrieveDisplay {
 			projectSearchId : projectSearchId,
 			reportedPeptideId : reportedPeptideId
 		} );
-	};
+	}
 	
 	/**
 	 * 
@@ -481,29 +481,44 @@ export class Psm_DrilldownRetrieveDisplay {
 			throw Error("No annotation type data for projectSearchId: " + projectSearchId );
 		}
 
-		let psmFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
-		if ( ! psmFilterableAnnotationTypes ) {
+		const psmFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
+		const psmDescriptiveAnnotationTypes = annotationTypeDataForProjectSearchId.psmDescriptiveAnnotationTypes;
+
+		if ( ( ! psmFilterableAnnotationTypes ) && ( ! psmDescriptiveAnnotationTypes ) ) {
 			//  No data so return empty array
 			return []; //  EARLY RETURN
 		}
 		
 		//  Get AnnotationType Records where sortOrder is populated
 		
-		let psmFilterableAnnotationTypes_SortOrderPopulated = [];
+		let psmAnnotationTypes_SortOrderPopulated = [];
 		
-		let psmFilterableAnnotationTypes_Keys = Object.keys ( psmFilterableAnnotationTypes );
-		
-		psmFilterableAnnotationTypes_Keys.forEach( function( psmFilterableAnnotationTypesKeyItem, index, array ) {
-			let annotationTypeEntryForKey = psmFilterableAnnotationTypes[ psmFilterableAnnotationTypesKeyItem ];
-			if ( annotationTypeEntryForKey.sortOrder ) {
-				psmFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
-			}
-		}, this );
+		{
+			let psmFilterableAnnotationTypes_Keys = Object.keys ( psmFilterableAnnotationTypes );
+			
+			psmFilterableAnnotationTypes_Keys.forEach( function( psmFilterableAnnotationTypesKeyItem, index, array ) {
+				let annotationTypeEntryForKey = psmFilterableAnnotationTypes[ psmFilterableAnnotationTypesKeyItem ];
+				if ( annotationTypeEntryForKey.sortOrder ) {
+					psmAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
+				}
+			}, this );
+		}
+
+		{
+			let psmDescriptiveAnnotationTypes_Keys = Object.keys ( psmDescriptiveAnnotationTypes );
+			
+			psmDescriptiveAnnotationTypes_Keys.forEach( function( psmDescriptiveAnnotationTypesKeyItem, index, array ) {
+				let annotationTypeEntryForKey = psmDescriptiveAnnotationTypes[ psmDescriptiveAnnotationTypesKeyItem ];
+				if ( annotationTypeEntryForKey.sortOrder ) {
+					psmAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
+				}
+			}, this );
+		}
 
 		
 		//  Sort on sort order
 		
-		psmFilterableAnnotationTypes_SortOrderPopulated.sort(function(a, b) {
+		psmAnnotationTypes_SortOrderPopulated.sort(function(a, b) {
 			if ( a.sortOrder < b.sortOrder ) {
 				return -1;
 			}
@@ -513,8 +528,8 @@ export class Psm_DrilldownRetrieveDisplay {
 			return 0;
 		})
 		
-		return psmFilterableAnnotationTypes_SortOrderPopulated;
-	};
+		return psmAnnotationTypes_SortOrderPopulated;
+	}
 	
 	/**
 	 * 
@@ -546,7 +561,7 @@ export class Psm_DrilldownRetrieveDisplay {
 		} else {
 			this._addPsmChartsActual( { psmList, container } );
 		}
-	};
+	}
 
 	/**
 	 * 
@@ -600,7 +615,7 @@ export class Psm_DrilldownRetrieveDisplay {
 		if ( window.linkInfoOverlayWidthResizer ) {
 			window.linkInfoOverlayWidthResizer();
 		}
-	};
+	}
 
 	/**
 	 * 
@@ -700,7 +715,7 @@ export class Psm_DrilldownRetrieveDisplay {
 		let data = google.visualization.arrayToDataTable( chartData );
 		let chartFullsize = new google.visualization.ColumnChart( $psm_qc_charge_chart_container_jq[0] );
 		chartFullsize.draw(data, optionsFullsize);
-	};
+	}
 
 	/**
 	 * 
@@ -715,7 +730,7 @@ export class Psm_DrilldownRetrieveDisplay {
 			return tickMarks;
 		}
 		return undefined; //  Use defaults
-	};
+	}
 
 	/**
 	 * 
@@ -906,7 +921,7 @@ export class Psm_DrilldownRetrieveDisplay {
 //			  
 //			  let z = 0;
 //		});
-	};
+	}
 
 	/**
 	 * 
@@ -922,7 +937,7 @@ export class Psm_DrilldownRetrieveDisplay {
 			( maxValueMinusMinValue * 0.75 ) + minValue,
 			maxValue ];
 		return tickMarks;
-	};
+	}
 
 	/**
 	 * 
@@ -937,7 +952,7 @@ export class Psm_DrilldownRetrieveDisplay {
 			return tickMarks;
 		}
 		return undefined; //  Use defaults
-	};
+	}
 	
 	/**
 	 * 
@@ -945,77 +960,79 @@ export class Psm_DrilldownRetrieveDisplay {
 	_downloadChart( params ) {
 		alert("Not Currently Supported")
 		throw Error("Download Not Currently Supported");
-		try {
-			let clickedThis = params.clickedThis;
+		// try {
+		// 	let clickedThis = params.clickedThis;
 
-			let $clickedThis = $( clickedThis );
-			let download_type = $clickedThis.attr("data-download_type");
-			let $psm_qc_either_chart_outer_container_jq = $clickedThis.closest(".psm_qc_either_chart_outer_container_jq");
-			let chart_type = $psm_qc_either_chart_outer_container_jq.attr("data-chart_type");
+		// 	let $clickedThis = $( clickedThis );
+		// 	let download_type = $clickedThis.attr("data-download_type");
+		// 	let $psm_qc_either_chart_outer_container_jq = $clickedThis.closest(".psm_qc_either_chart_outer_container_jq");
+		// 	let chart_type = $psm_qc_either_chart_outer_container_jq.attr("data-chart_type");
 
-			let getSVGContentsAsStringResult = this._getSVGContentsAsString( $psm_qc_either_chart_outer_container_jq );
+		// 	let getSVGContentsAsStringResult = this._getSVGContentsAsString( $psm_qc_either_chart_outer_container_jq );
 			
-			if ( getSVGContentsAsStringResult.errorException ) {
-				throw errorException;
-			}
+		// 	if ( getSVGContentsAsStringResult.errorException ) {
+		// 		throw errorException;
+		// 	}
 			
-			let fullSVG_String = getSVGContentsAsStringResult.fullSVG_String;
+		// 	let fullSVG_String = getSVGContentsAsStringResult.fullSVG_String;
 			
-			let form = document.createElement( "form" );
-			$( form ).hide();
-			form.setAttribute( "method", "post" );
-			form.setAttribute( "action", "convertAndDownloadSVG/" + getWebserviceSyncTrackingCode() );
+		// 	let form = document.createElement( "form" );
+		// 	$( form ).hide();
+		// 	form.setAttribute( "method", "post" );
+		// 	form.setAttribute( "action", "convertAndDownloadSVG/" + getWebserviceSyncTrackingCode() );
 
-			let svgStringField = document.createElement( "input" );
-			svgStringField.setAttribute("name", "svgString");
-			svgStringField.setAttribute("value", fullSVG_String );
-			let fileTypeField = document.createElement( "input" );
-			fileTypeField.setAttribute("name", "fileType");
-			fileTypeField.setAttribute("value", download_type);
-			form.appendChild( svgStringField );
-			form.appendChild( fileTypeField );
-			document.body.appendChild(form);    // Not entirely sure if this is necessary			
-			form.submit();
-			document.body.removeChild( form );
+		// 	let svgStringField = document.createElement( "input" );
+		// 	svgStringField.setAttribute("name", "svgString");
+		// 	svgStringField.setAttribute("value", fullSVG_String );
+		// 	let fileTypeField = document.createElement( "input" );
+		// 	fileTypeField.setAttribute("name", "fileType");
+		// 	fileTypeField.setAttribute("value", download_type);
+		// 	form.appendChild( svgStringField );
+		// 	form.appendChild( fileTypeField );
+		// 	document.body.appendChild(form);    // Not entirely sure if this is necessary			
+		// 	form.submit();
+		// 	document.body.removeChild( form );
 
-		} catch( e ) {
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		}
+		// } catch( e ) {
+		// 	reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+		// 	throw e;
+		// }
 		
-	};
+	}
+
+	//  Usage of _getSVGContentsAsString is commented out
 	
-	/**
-	 * 
-	 */
-	_getSVGContentsAsString ( $psm_qc_either_chart_outer_container_jq ) {
-		try {
-			let $psm_qc_either_chart_container_jq = $psm_qc_either_chart_outer_container_jq.find(".psm_qc_either_chart_container_jq");
-			if ( $psm_qc_either_chart_container_jq.length === 0 ) {
-				// No element found with class psm_qc_either_chart_container_jq
-				return { noPageElement : true };
-			}
-			let $svgRoot = $psm_qc_either_chart_container_jq.find("svg");
-			if ( $svgRoot.length === 0 ) {
-				// No <svg> element found
-				return { noPageElement : true };
-			}
+	// /**
+	//  * 
+	//  */
+	// _getSVGContentsAsString ( $psm_qc_either_chart_outer_container_jq ) {
+	// 	try {
+	// 		let $psm_qc_either_chart_container_jq = $psm_qc_either_chart_outer_container_jq.find(".psm_qc_either_chart_container_jq");
+	// 		if ( $psm_qc_either_chart_container_jq.length === 0 ) {
+	// 			// No element found with class psm_qc_either_chart_container_jq
+	// 			return { noPageElement : true };
+	// 		}
+	// 		let $svgRoot = $psm_qc_either_chart_container_jq.find("svg");
+	// 		if ( $svgRoot.length === 0 ) {
+	// 			// No <svg> element found
+	// 			return { noPageElement : true };
+	// 		}
 
-			let svgContents = $svgRoot.html();
-			let fullSVG_String = "<?xml version=\"1.0\" standalone=\"no\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">";
-			fullSVG_String += "<svg id=\"svg\" ";
-			fullSVG_String += "width=\"" + $svgRoot.attr( "width" ) + "\" ";
-			fullSVG_String += "height=\"" + $svgRoot.attr( "height" ) + "\" ";
-			fullSVG_String += "xmlns=\"http://www.w3.org/2000/svg\">" + svgContents + "</svg>";
-			// fix the URL that google charts is putting into the SVG. Breaks parsing.
-			fullSVG_String = fullSVG_String.replace( /url\(.+\#_ABSTRACT_RENDERER_ID_(\d+)\)/g, "url(#_ABSTRACT_RENDERER_ID_$1)" );	
+	// 		let svgContents = $svgRoot.html();
+	// 		let fullSVG_String = "<?xml version=\"1.0\" standalone=\"no\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">";
+	// 		fullSVG_String += "<svg id=\"svg\" ";
+	// 		fullSVG_String += "width=\"" + $svgRoot.attr( "width" ) + "\" ";
+	// 		fullSVG_String += "height=\"" + $svgRoot.attr( "height" ) + "\" ";
+	// 		fullSVG_String += "xmlns=\"http://www.w3.org/2000/svg\">" + svgContents + "</svg>";
+	// 		// fix the URL that google charts is putting into the SVG. Breaks parsing.
+	// 		fullSVG_String = fullSVG_String.replace( /url\(.+\#_ABSTRACT_RENDERER_ID_(\d+)\)/g, "url(#_ABSTRACT_RENDERER_ID_$1)" );	
 
-			return { fullSVG_String : fullSVG_String};
-		} catch( e ) {
-			//  Not all browsers have svgElement.innerHTML which .html() tries to use, causing an exception
-			return { errorException : e };
-		}
-	};
+	// 		return { fullSVG_String : fullSVG_String};
+	// 	} catch( e ) {
+	// 		//  Not all browsers have svgElement.innerHTML which .html() tries to use, causing an exception
+	// 		return { errorException : e };
+	// 	}
+	// }
 
 	/**
 	 * 
@@ -1031,5 +1048,5 @@ export class Psm_DrilldownRetrieveDisplay {
 
 		// this._spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_InOverlay( { psmId, projectSearchId } );
 	}	
-};
+}
 

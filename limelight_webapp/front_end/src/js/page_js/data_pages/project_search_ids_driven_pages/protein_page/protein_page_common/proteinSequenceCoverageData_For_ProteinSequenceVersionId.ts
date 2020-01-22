@@ -82,7 +82,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	/**
 	 * Get Reported Peptide Ids as Set For Protein Coverage At Position
 	 */
-	getReportedPeptidesForProteinCoverageAtPosition( { position } ) {
+	getReportedPeptidesForProteinCoverageAtPosition( { position } ) : Set<number> {
 		
 		const booleanArrayOfProteinCoverage = this.getBooleanArrayOfProteinCoverage();
 		
@@ -101,7 +101,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 			return new Set();
 		}
 		
-		const reportedPeptideIds = new Set();
+		const reportedPeptideIds : Set<number> = new Set();
 		
 		const proteinCoverageDataItems = proteinCoverageMergedRanges_element.proteinCoverageDataItems;
 		

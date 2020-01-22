@@ -85,7 +85,6 @@ export class ProjectPage_UploadData_ListExistingUploads {
 		this.prevCompleteSuccessTrackingIdList = undefined;
 		this.autoRefreshTimerId = undefined;
 
-
 		if (!_project_page_upload_data_section_project_owner_user_interaction_template.file_import_item_row_details_template) {
 			throw Error("Nothing in _project_page_upload_data_section_project_owner_user_interaction_template.file_import_item_row_details_template");
 		}
@@ -108,7 +107,6 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			new ProjectPage_UploadData_UpdateExistingUploads( { projectPage_UploadData_ListExistingUploads : this } );
 		this._projectPage_UploadData_UpdateExistingUploads.initialize();
 
-		
 		
 		try {
 			$("#upload_data_expand_show_data").click(function(eventObject) {
@@ -781,8 +779,6 @@ export class ProjectPage_UploadData_ListExistingUploads {
 			$import_item_collapse_row_icon_jq.hide();
 			$import_item_expand_row_icon_jq.show();
 		}
-
-
 	}
 
 	
@@ -801,7 +797,9 @@ export class ProjectPage_UploadData_ListExistingUploads {
 
 			let foundNewTrackingId = false;
 
-			while (true) {
+			const whileLoopControl = true;
+
+			while (whileLoopControl) {
 
 				let completeSuccessTrackingIdItem = completeSuccessTrackingIdList[completeSuccessTrackingIdItemIndex];
 				let prevCompleteSuccessTrackingIdItem = this.prevCompleteSuccessTrackingIdList[prevCompleteSuccessTrackingIdItemIndex];

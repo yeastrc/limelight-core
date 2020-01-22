@@ -31,6 +31,7 @@ export class SharePage_dataPages {
 
     //  Set in initialize
     private _projectSearchIds : Array<number>;
+    private _experimentId : number;
 
     private _modalOverlay : any;
 
@@ -54,16 +55,21 @@ export class SharePage_dataPages {
 
 	/**
      * @param projectSearchIds
+     * @param experimentId - optional
 	 * @param container_DOM_Element - optional
 	 */
 	initialize(
-        { projectSearchIds, container_DOM_Element = undefined } : 
-        { projectSearchIds : Array<number>, container_DOM_Element : any }
+        { projectSearchIds, experimentId, container_DOM_Element = undefined } : 
+        { 
+            projectSearchIds : Array<number> 
+            experimentId? : number
+            container_DOM_Element : any }
     ) : void {
 
         const objectThis = this;
 
         this._projectSearchIds = projectSearchIds;
+        this._experimentId = experimentId;
 
         //  Populate Button for Save View
 
@@ -99,6 +105,30 @@ export class SharePage_dataPages {
     }
 
 	/**
+     * @param projectSearchIds
+	 * @param container_DOM_Element - optional
+	 */
+	initializeFrom_SharePage_Component_React(
+        { projectSearchIds, experimentId } : 
+        { 
+            projectSearchIds : Array<number>
+            experimentId? : number
+        }
+    ) : void {
+
+        this._projectSearchIds = projectSearchIds;
+        this._experimentId = experimentId;
+    }
+
+	/**
+	 * 
+	 */
+	public sharePage_MainPage_ButtonClicked_SharePage_Component_React() : void {
+
+        this._sharePage_MainPage_ButtonClicked();
+    }
+
+	/**
 	 * 
 	 */
 	private _sharePage_MainPage_ButtonClicked() : void {
@@ -123,7 +153,7 @@ export class SharePage_dataPages {
 		const referrer = pageStatePartsFromURL.referrer;
 
         const promise_sharePageToServer =
-            this._sharePageToServer({ pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds : this._projectSearchIds })
+            this._sharePageToServer({ pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds : this._projectSearchIds, experimentId : this._experimentId })
 
         promise_sharePageToServer.catch(() => {
             try {
@@ -150,12 +180,13 @@ export class SharePage_dataPages {
 	/**
      * Send Share Page to the server
 	 */
-	private _sharePageToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds } ) : Promise<any> {
+	private _sharePageToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds, experimentId } ) : Promise<any> {
 
 		let promise = new Promise( function( resolve, reject ) {
 		  try {
 			let requestObject = {
                     projectSearchIds,
+                    experimentId,
                     pageControllerPath,
                     pageCurrentURL_StartAtPageController,
                     searchDataLookupParametersCode

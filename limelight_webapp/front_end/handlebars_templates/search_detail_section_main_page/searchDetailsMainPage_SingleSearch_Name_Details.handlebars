@@ -5,7 +5,10 @@
 
 	A Row of "Search:" label and a <td> for the actual search name and details to display
  --}}
-  	<div>
+  		{{!-- Add  'word-break: break-word;' to keep search name on overlay in single protein overlay.
+					  'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
+		--}}
+  	<div style=" word-break: break-word; ">
   		{{ searchName }} ({{ searchId }})
   	</div>
   

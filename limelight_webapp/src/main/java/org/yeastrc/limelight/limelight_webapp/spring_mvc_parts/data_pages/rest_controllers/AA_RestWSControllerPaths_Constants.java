@@ -267,7 +267,26 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String INSERT_SAVED_VIEW_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/insert-saved-view";
 	
+
+	////////////
 	
+	//   Experiment driven pages
+
+	public static final String LIST_EXPERIMENT_REST_WEBSERVICE_CONTROLLER = // Non Draft 
+			"d/rws/for-page/experiment/experiment-list";
+	
+	public static final String LIST_DRAFTS_EXPERIMENT_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/experiment/experiment-list-drafts";
+
+	public static final String ADD_SAVE_EXPERIMENT_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/experiment/add-save-experiment";
+
+	public static final String EXPERIMENT_GET_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/experiment/experiment-get";
+	
+	public static final String DELETE_EXPERIMENT_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/experiment/experiment-delete";
+
 	////////////
 	
 	//   Project Search Ids driven pages

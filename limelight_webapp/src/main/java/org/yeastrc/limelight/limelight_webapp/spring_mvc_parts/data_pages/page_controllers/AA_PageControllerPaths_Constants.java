@@ -54,8 +54,10 @@ public class AA_PageControllerPaths_Constants {
 	
 	//  All Data Pages start with "/d/pg/" for data/page
 
-	//  All Data Pages for Project Search Ids start with "/d/pg/psb/" for data/page ('psb' for project search based)
+	//  All Data Pages for Experiment Ids start with "/d/pg/exp/" for data/page ('exp' for experiment based)
 	
+	//  All Data Pages for Project Search Ids start with "/d/pg/psb/" for data/page ('psb' for project search based)
+
 	/**
 	 * List the projects
 	 */
@@ -84,6 +86,23 @@ public class AA_PageControllerPaths_Constants {
 	 * Page to show Lorikeet in
 	 */
 	public static final String LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER = "d/pg/spectrum-viewer";
+
+	///////////////
+	
+	/**
+	 * All paths for Experiment Id based pages will start with this string
+	 */
+	public static final String EXPERIMENT_ID_BASED_PAGE_CONTROLLER_START = "d/pg/exp/";
+	
+
+	///////////////
+	
+	//  Start of Experiment Id based pages paths.  Always put trailing '/'.
+
+	/**
+	 * View Proteins for 1 experiment ids
+	 */
+	public static final String EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER = "d/pg/exp/protein/";
 
 	
 
@@ -119,12 +138,41 @@ public class AA_PageControllerPaths_Constants {
 	/**
 	 * testMikeWebservices for 1 or multiple project search ids
 	 */
-	public static final String TEST_MIKE_WEBSERVICES_PAGE_CONTROLLER = "d/pg/psb/testMikeWebservices/";
-
+//	public static final String TEST_MIKE_WEBSERVICES_PAGE_CONTROLLER = "d/pg/psb/testMikeWebservices/";
+	
 
 	///////////////
 	
-	//  Project Search Id based pages paths after each page type (ie: '/peptide/').
+	//  Experiment Id "ONLY" based pages paths after each page type (ie: '/exp/protein/').
+
+	/**
+	 * identifies the Experiment Id
+	 */
+	public static final String PATH_PARAMETER_EXPERIMENT_ID = "e/";
+	
+	/**
+	 * Experiment id parameter data, next after PATH_PARAMETER_EXPERIMENT_ID
+	 */
+	public static final String PATH_PARAMETER_EXPERIMENT_ID__DATA = "experimentIdData";
+
+	/**
+	 * Experiment id parameter data.  Spring MVC format for path parameter
+	 */
+	public static final String PATH_PARAMETER_EXPERIMENT_ID__DATA__PATH_ADDITION =
+			"{" + PATH_PARAMETER_EXPERIMENT_ID__DATA + "}";
+
+	
+
+	/**
+	 * identifies the Search Params Lookup Code (the code immediately after the page label for the Project Search Id based pages)
+	 */
+	public static final String PATH_PARAMETER_SEARCH_PARAMS_LOOKUP_CODE = "/c/";
+	
+	//  !!!!!!  For value after '/c/' use PATH_PARAMETER_LABEL_SEARCH_DATA_LOOKUP_PARAMETERS_CODE from below
+
+	///////////////
+	
+	//  Experiment Id and Project Search Id based pages paths after each page type (ie: '/peptide/').
 	
 	//  These strings (except for '{', '}', '/') are arbitrary and just have to be unique within a controller
 	
@@ -158,7 +206,7 @@ public class AA_PageControllerPaths_Constants {
 			"{" + PATH_PARAMETER_LABEL_SEARCH_DATA_LOOKUP_PARAMETERS_CODE + "}";
 	
 	/**
-	 * Second optional parameter.  Missing if no
+	 * Second optional parameter.  Missing if none
 	 */
 	public static final String PATH_PARAMETER_LABEL_ADDITONAL_PAGE_STATE_DATA = "additionalPageStateDataData";
 
@@ -176,6 +224,7 @@ public class AA_PageControllerPaths_Constants {
 	 * Only paths allowed for Save View
 	 */
 	public static final String[] PATHS_ALLOWED_FOR_SAVE_VIEW = {
+			EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER,
 			PEPTIDE_VIEW_PAGE_CONTROLLER,
 			PROTEIN_VIEW_PAGE_CONTROLLER,
 			MOD_VIEW_PAGE_CONTROLLER
@@ -187,6 +236,7 @@ public class AA_PageControllerPaths_Constants {
 	 * Only paths allowed for Share Page
 	 */
 	public static final String[] PATHS_ALLOWED_FOR_SHARE_PAGE = {
+			EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER,
 			PEPTIDE_VIEW_PAGE_CONTROLLER,
 			PROTEIN_VIEW_PAGE_CONTROLLER,
 			MOD_VIEW_PAGE_CONTROLLER

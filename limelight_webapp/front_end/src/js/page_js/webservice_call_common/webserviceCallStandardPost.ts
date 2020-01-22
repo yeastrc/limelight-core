@@ -31,7 +31,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
 
 import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallStandardPost_RejectObject_Class.js';
-import { WebserviceCallStandardPost_ApiObject_Class } from './webserviceCallStandardPost_ApiObject_Class';
+import { WebserviceCallStandardPost_ApiObject_Class, WebserviceCallStandardPost_ApiObject_Holder_Class } from './webserviceCallStandardPost_ApiObject_Class';
 
 import { webserviceCallStandardPost_INTERNALONLY } from './webserviceCallStandardPost__InternalJS.js';
 
@@ -47,13 +47,19 @@ import { webserviceCallStandardPost_INTERNALONLY } from './webserviceCallStandar
  * content type of post is assumed _AJAX_POST_JSON_CONTENT_TYPE
  * 
  */
-const webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorResponse = false }) {
+const webserviceCallStandardPost = function ({ dataToSend, url, doNotHandleErrorResponse = false, webserviceCallStandardPost_ApiObject_Holder_Class } : {
+
+    dataToSend, 
+    url : string, 
+    doNotHandleErrorResponse? : boolean,
+    webserviceCallStandardPost_ApiObject_Holder_Class? : WebserviceCallStandardPost_ApiObject_Holder_Class
+}) {
 
     // console.log("webserviceCallStandardPost")
 
     const api = new WebserviceCallStandardPost_ApiObject_Class();
 
-    const promise = webserviceCallStandardPost_INTERNALONLY({ dataToSend, url, doNotHandleErrorResponse, api });
+    const promise = webserviceCallStandardPost_INTERNALONLY({ dataToSend, url, doNotHandleErrorResponse, api, webserviceCallStandardPost_ApiObject_Holder_Class });
 
     return { promise, api };
 };

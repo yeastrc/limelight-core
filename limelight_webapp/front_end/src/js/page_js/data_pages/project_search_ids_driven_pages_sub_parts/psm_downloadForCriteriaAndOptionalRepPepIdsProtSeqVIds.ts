@@ -32,13 +32,18 @@ const downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds = funct
     const requestJSONString = JSON.stringify( requestJSONObject );
 
     //  Create and submit form
+
+    // const formActionURL = "d/dnld/psb/psms-for-project-search-ids-search-criteria";  // Use Original Server Controller Code
+    
+    const formActionURL = "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data";  // Use New Server Controller Code that is used by Experiment pages
+    // window.alert("Using new Server Controller Code URL: " +  formActionURL )
     
     const form = document.createElement( "form" );
 
     $( form ).hide();
 
     form.setAttribute( "method", "post" );
-    form.setAttribute( "action", "d/dnld/psb/psms-for-project-search-ids-search-criteria" );
+    form.setAttribute( "action", formActionURL );
     form.setAttribute( "target", "_blank" );
 
     const requestJSONStringField = document.createElement( "textarea" );

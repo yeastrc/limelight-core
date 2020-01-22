@@ -26,8 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewAssocExperimentIdDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewAssocProjectSearchIdDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewDTO;
 
@@ -48,18 +50,22 @@ public class SavedView_PossibleDefault_Insert_UsingDBTransactionService {
 	@Autowired
 	private DataPageSavedViewAssocProjectSearchIdDAO_IF dataPageSavedViewAssocProjectSearchIdDAO;
 	
+	@Autowired
+	private DataPageSavedViewAssocExperimentIdDAO_IF dataPageSavedViewAssocExperimentIdDAO;
+	
 	/**
 	 * Transactional is private to support retry if timing issue
 	 * 
 	 * 
 	 * @param item
 	 * @param children
+	 * @param childExperimentId TODO
 	 */
 	
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED)  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring DB Transactions
 	
-	public void addDataPageSavedView_UpdateDefaultIfSet( DataPageSavedViewDTO item, List<DataPageSavedViewAssocProjectSearchIdDTO> children ) { //  No 'Throws' allowed due to 
+	public void addDataPageSavedView_UpdateDefaultIfSet( DataPageSavedViewDTO item, List<DataPageSavedViewAssocProjectSearchIdDTO> children, DataPageSavedViewAssocExperimentIdDTO childExperimentId ) { //  No 'Throws' allowed due to 
 		
 		try {
 			if ( item.getSingleProjectSearchIdDefaultView() != null ) {
@@ -76,14 +82,20 @@ public class SavedView_PossibleDefault_Insert_UsingDBTransactionService {
 				child.setAssocMainId( item.getId() );
 				dataPageSavedViewAssocProjectSearchIdDAO.save( child );
 			}
+			
+			if ( childExperimentId != null ) { // childExperimentId only populated for Experiment
+			
+				childExperimentId.setAssocMainId( item.getId() );
+				dataPageSavedViewAssocExperimentIdDAO.save( childExperimentId );
+			}
 						
 		} catch ( RuntimeException e ) {
-			String msg = "fail addDataPageSavedView(...)";
+			String msg = "fail addDataPageSavedView_UpdateDefaultIfSet(...)";
 			log.error( msg, e );
 			throw e;
 
 		} catch (Exception e ) {
-			String msg = "fail addDataPageSavedView(...)";
+			String msg = "fail addDataPageSavedView_UpdateDefaultIfSet(...)";
 			log.error( msg, e );
 			throw new RuntimeException( e );
 		}

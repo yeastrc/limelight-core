@@ -324,7 +324,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	 */
     _deleteSavedView_Clicked({ clickThis, id }) {
 
-        if ( ! window.confirm("Delete Shared View?") ) {
+        if ( ! window.confirm("Delete Saved View?") ) {
             return;  // EARLY EXIT
         }
 

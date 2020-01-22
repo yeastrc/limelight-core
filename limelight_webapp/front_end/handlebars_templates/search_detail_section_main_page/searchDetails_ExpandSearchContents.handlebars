@@ -8,7 +8,10 @@
                 <td style="vertical-align: top;">
                     Path:
                 </td>
-                <td style="vertical-align: top;">
+                {{!-- Add  'word-break: break-word;' to keep path on overlay in single protein overlay.
+					  'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
+		        --}}
+                <td style="vertical-align: top; word-break: break-word;">
                     {{ path }}
                 </td>
             </tr>
@@ -42,7 +45,10 @@
                 <td style="vertical-align: top; white-space: nowrap;">
                     FASTA file:
                 </td>
-                <td style="vertical-align: top;">
+                {{!-- Add  'word-break: break-word;' to keep fasta name on overlay in single protein overlay.
+					  'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
+		        --}}
+                <td style="vertical-align: top; word-break: break-word;">
                     {{ fastaFilename }}
                 </td>
             </tr>

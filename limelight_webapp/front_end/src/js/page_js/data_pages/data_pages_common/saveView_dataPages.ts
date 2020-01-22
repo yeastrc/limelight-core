@@ -29,6 +29,7 @@ export class SaveView_dataPages {
 
     //  Set in initialize
     private _projectSearchIds : Array<number>;
+    private _experimentId : number;
     private _enableSetDefault : boolean;
     private _canSetDefault  : boolean;
     private _userIsProjectOwner : boolean;
@@ -58,12 +59,16 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-	public initialize(
-        { projectSearchIds, container_DOM_Element, enableSetDefault } :
-        { projectSearchIds : Array<number>, container_DOM_Element : any, enableSetDefault : boolean }
-    ) : void {
+	public initialize({ projectSearchIds, experimentId, container_DOM_Element, enableSetDefault } : { 
+        
+        projectSearchIds : Array<number>, 
+        experimentId? : number
+        container_DOM_Element : any, 
+        enableSetDefault : boolean 
+    }) : void {
 
         this._projectSearchIds = projectSearchIds;
+        this._experimentId = experimentId;
 
         if ( enableSetDefault !== false ) {
             //  this._enableSetDefault - Present to user the "Set Default" Checkbox and pass to server the value
@@ -114,6 +119,37 @@ export class SaveView_dataPages {
 				throw e;
 			}
 		});
+    }
+
+	/**
+     * @param projectSearchIds
+	 * @param container_DOM_Element - optional
+	 */
+	initializeFrom_SaveView_Component_React(
+        { projectSearchIds, experimentId, enableSetDefault } : 
+        { 
+            projectSearchIds : Array<number>
+            experimentId? : number
+            enableSetDefault : boolean 
+        }
+    ) : void {
+
+        this._projectSearchIds = projectSearchIds;
+        this._experimentId = experimentId;
+
+        if ( enableSetDefault !== false ) {
+            //  this._enableSetDefault - Present to user the "Set Default" Checkbox and pass to server the value
+            this._enableSetDefault = true;  // Default to true if method param is undefined (not set)
+        }
+
+    }
+
+	/**
+	 * 
+	 */
+	public saveView_MainPage_ButtonClicked_SaveView_Component_React() : void {
+
+        this._saveView_MainPage_ButtonClicked();
     }
 
 	/**
@@ -281,7 +317,7 @@ export class SaveView_dataPages {
 		const pageStateString = pageStatePartsFromURL.pageStateString;
 		const referrer = pageStatePartsFromURL.referrer;
 
-        const promise__saveViewToServer = this._saveViewToServer({ viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds : this._projectSearchIds })
+        const promise__saveViewToServer = this._saveViewToServer({ viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds : this._projectSearchIds, experimentId : this._experimentId })
 
         promise__saveViewToServer.catch( () => {  });
 
@@ -298,12 +334,13 @@ export class SaveView_dataPages {
 	/**
      * Save the view to the server
 	 */
-	private _saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds } ) : any {
+	private _saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds, experimentId } ) : any {
 
 		let promise = new Promise( function( resolve, reject ) {
             try {
                 let requestObject = {
                         projectSearchIds,
+                        experimentId,
                         label : viewLabel,
                         pageControllerPath,
                         pageCurrentURL_StartAtPageController,

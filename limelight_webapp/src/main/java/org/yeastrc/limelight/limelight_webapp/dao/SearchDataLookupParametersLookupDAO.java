@@ -180,6 +180,7 @@ public class SearchDataLookupParametersLookupDAO extends Limelight_JDBC_Base imp
 		}
 		result.setLookupParametersJSONMainData( rs.getString( "lookup_parameters_json__main_data" ) );
 		result.setVersionNumber(  rs.getInt( "version_number_main_json" ) );
+		result.setRootIdsOnlyJSON( rs.getString( "root_ids_only_json" ) );
 		return result;
 	}
 

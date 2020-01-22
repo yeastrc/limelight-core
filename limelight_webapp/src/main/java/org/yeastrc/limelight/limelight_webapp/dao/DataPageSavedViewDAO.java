@@ -262,10 +262,12 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 	
 	private static final String INSERT_SQL = 
 			"INSERT INTO data_page_saved_view_tbl "
-			+ " ( project_id, page_controller_path, single_project_search_id__default_view,"
+			+ " ( project_id, page_controller_path, "
+			+ " experiment_id, experiment_id_default_view, "
+			+ " single_project_search_id__default_view,"
 			+ " label, url_start_at_page_controller_path, srch_data_lkp_params_string,"
 			+ " user_id_created_record, user_id_last_updated_record ) "
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -293,6 +295,18 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 							pstmt.setInt( counter, item.getProjectId() );
 							counter++;
 							pstmt.setString( counter, item.getPageControllerPath() );
+							counter++;
+							if ( item.getExperimentId() != null ) {
+								pstmt.setInt( counter, item.getExperimentId() );
+							} else {
+								pstmt.setNull( counter, java.sql.Types.INTEGER );
+							}
+							counter++;
+							if ( item.getExperimentIdDefaultView() != null ) {
+								pstmt.setInt( counter, item.getExperimentIdDefaultView() );
+							} else {
+								pstmt.setNull( counter, java.sql.Types.INTEGER );
+							}
 							counter++;
 							if ( item.getSingleProjectSearchIdDefaultView() != null ) {
 								pstmt.setInt( counter, item.getSingleProjectSearchIdDefaultView() );

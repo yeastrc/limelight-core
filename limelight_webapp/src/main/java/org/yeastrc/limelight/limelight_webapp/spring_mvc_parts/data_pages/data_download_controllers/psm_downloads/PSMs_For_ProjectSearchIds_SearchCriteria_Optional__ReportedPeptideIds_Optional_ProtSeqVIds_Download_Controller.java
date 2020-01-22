@@ -86,6 +86,9 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 
 /**
+ * Original Download controller - Eventually will NOT be used.  At that point see (in this package) PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Optional__ReportedPeptideIds_Optional_ProtSeqVIds_Download_Controller
+ * 
+ * 
  * Download PSMs for Project Search Ids And Search Criteria (searchDataLookupParams_For_Single_ProjectSearchId)
  * 
  * Optional Reported Peptide Ids per Project Search Id - Use Provided reported Peptide Ids and not query for them 

@@ -26,9 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerAssocExperimentIdDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerAssocProjectSearchIdDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO.LogDuplicateSQLException;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerDTO;
 
@@ -49,31 +51,37 @@ public class UrlShortener_Insert_UsingDBTransactionService implements UrlShorten
 	@Autowired
 	private UrlShortenerAssocProjectSearchIdDAO_IF urlShortenerAssocProjectSearchIdDAO;
 	
+	@Autowired
+	private UrlShortenerAssocExperimentIdDAO_IF urlShortenerAssocExperimentIdDAO;
+	
 	/**
 	 * Transactional is private to support retry if timing issue
 	 * 
 	 * 
 	 * @param item
-	 * @param children
+	 * @param childrenProjectSearchIds
 	 */
 	
 	@Override
 	//  Spring DB Transactions
-	@Transactional( propagation = Propagation.REQUIRED)  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring DB Transactions
 	
 	public void addUrlShortener( 
 			UrlShortenerDTO item, 
-			List<UrlShortenerAssocProjectSearchIdDTO> children,
-			LogDuplicateSQLException logDuplicateSQLException ) { //  No 'Throws' allowed due to 
+			List<UrlShortenerAssocProjectSearchIdDTO> childrenProjectSearchIds,
+			UrlShortenerAssocExperimentIdDTO childExperimentId, LogDuplicateSQLException logDuplicateSQLException ) { //  No 'Throws' allowed due to 
 		
 		try {
 			urlShortenerDAO.save( item, null );
 			
-			for ( UrlShortenerAssocProjectSearchIdDTO child : children ) {
+			for ( UrlShortenerAssocProjectSearchIdDTO child : childrenProjectSearchIds ) {
 				
 				child.setUrlShortenerId( item.getId() );
 				urlShortenerAssocProjectSearchIdDAO.save( child );
 			}
+			
+			childExperimentId.setUrlShortenerId( item.getId() );
+			urlShortenerAssocExperimentIdDAO.save( childExperimentId );
 
 		} catch ( org.springframework.dao.DuplicateKeyException e ) {
 

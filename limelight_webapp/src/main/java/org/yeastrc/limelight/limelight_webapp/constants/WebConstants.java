@@ -75,14 +75,22 @@ public class WebConstants {
 	 */
 	public static final String REQUEST_PROJECT_ENTRIES = "projectEntries";
 	
-	//  Search Data for Project Search Id Based Pages.
-	//  From DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor
+	//  Search Data for Project Search Id Based Pages AND some for Experiment Pages
+	//  From DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor and Experiment_Set_HTTPRequest_ForJSP
 	
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_CODE = "searchDataLookupParametersCode";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_RECORD = "searchDataLookupParametersRecord";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS = "searchDataLookupParameters";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_JSON = "searchDataLookupParametersJSON";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_ROOT_IDS_JSON = "searchDataLookupParametersRootIdsJSON";
+	
+	//  Experiment Only
+
+	public static final String REQUEST_EXPERIMENT_ID_STRING = "experimentIdString";
+	public static final String REQUEST_EXPERIMENT_NAME = "experimentName";
+	public static final String REQUEST_EXPERIMENT_DATA_MAIN_JSON = "experimentJSONMainDataJSON";
+	public static final String REQUEST_EXPERIMENT_PROJECT_SEARCH_IDS_JSON = "experimentProjectSearchIdsJSON";
+	
 	
 	//  Default URL for Project Search Id Based Pages.
 	//  From Page_UserDefault_SetForJSP

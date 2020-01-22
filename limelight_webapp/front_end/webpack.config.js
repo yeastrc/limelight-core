@@ -55,6 +55,7 @@ const mainConfig = {
 
 		//  Data Pages
 		//  
+		
 		'data_pages/projectsListPage' : './src/js/page_js/data_pages/other_data_pages/projectsListPage.js',
 		
 		//  Project Page:
@@ -80,19 +81,31 @@ const mainConfig = {
 		
 		'data_pages/modViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_LoggedInUsers.js',
 		'data_pages/modViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_PublicUser.js',
-					
+
+		//  Experiment Data pages
+
+		'data_pages/proteinExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_LoggedInUsers.js',
+		'data_pages/proteinExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_PublicUser.js',
+		
+		///////////////
+		
 		//  User Pages
+		
 		'user_pages/userLoginPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userLoginPage_Root.js',
 		'user_pages/userInvitePage_Root' : './src/js/page_js/user_account_page_js/root_parts/userInvitePage_Root.js',
 		'user_pages/userResetPasswordPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userResetPasswordPage_Root.js',
 		'user_pages/userAccountManagementPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userAccountManagementPage_Root.js',
 
+		///////////////
+		
 		//  Webapp Configure Page
 		'webapp_admin/configurePage_Root' : './src/js/page_js/webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Root.js',
 
 		//  Webapp Manage Users Page
 		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.js',
 
+		///////////////
+		
 		// SASS files
 		'styles' : './src/styles/global.scss',
 	},

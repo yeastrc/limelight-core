@@ -19,7 +19,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
-import { NewURL_Build_PerProjectSearchIds }  from 'page_js/data_pages/data_pages_common/newURL_Build_PerProjectSearchIds.js';
+import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from './newURL_Build_PerProjectSearchIds_Or_ExperimentId.js';
 
 
 import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
@@ -121,14 +121,13 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 		
 		let pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
 				
-		let newURL = 
-			NewURL_Build_PerProjectSearchIds.newURL_Build_PerProjectSearchIds(
-					{ 
-						pageControllerPath, 
-						searchDataLookupParamsCode : searchDataLookupParamsCode_New, 
-						pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
-						pageStateString : pageStatePartsFromURL.pageStateString, 
-						referrer : pageStatePartsFromURL.referrer } );
+		let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({ 
+			pageControllerPath, 
+			searchDataLookupParamsCode : searchDataLookupParamsCode_New, 
+			pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
+			pageStateString : pageStatePartsFromURL.pageStateString, 
+			referrer : pageStatePartsFromURL.referrer 
+		} );
 		
 		window.history.replaceState( null, null, newURL );
 
@@ -183,7 +182,7 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 				throw e;
 			}
 		});
-	};
+	}
 
 }
 		

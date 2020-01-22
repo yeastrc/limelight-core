@@ -149,6 +149,8 @@ export class LoadCoreData_ProjectSearchIds_Based{
 						});
 			}
 		} catch( e ) {
+			console.warn("Exception LoadCoreData_ProjectSearchIds_Based._processRequestAsPromise(...). Exception listed next logging.  Exception as String: " + e );
+			console.warn( e );
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}

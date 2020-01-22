@@ -6,6 +6,7 @@
  * Companion file to proteinViewPage_DisplayData_SingleSearch.js
  * 
  * 
+ * !!!!!!!!!!   Also used in Multiple Search page, with flags like 'retrieveForMultipleSearches'   !!!!!!!!!!!!!!
  * 
  */
 
@@ -37,13 +38,15 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	private _proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer;
 
 	/**
-	 * 
+	 * @param searchDetailsBlockDataMgmtProcessing 
+	 * 		- Used in loadDataAfterInitialOverlayShow(...) if Single Search
+	 * 		- Used in loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch(...) if param is not passed
 	 */
 	constructor({
 		loadedDataPerProjectSearchIdHolder,
 		loadedDataCommonHolder,
 		dataPageStateManager_DataFrom_Server,
-		searchDetailsBlockDataMgmtProcessing,
+		searchDetailsBlockDataMgmtProcessing, //  Used in loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch(...) if param is not passed
 		proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer
 	} : {
 		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
@@ -75,7 +78,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 		{
 			//  class ProteinSequenceData_For_ProteinSequenceVersionId
-			const proteinSequenceData = this._loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } );
+			const proteinSequenceData : ProteinSequenceData_For_ProteinSequenceVersionId = this._loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } );
 		
 			if ( proteinSequenceData !== undefined ) {
 
@@ -232,9 +235,21 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 	/**
 	 * For this proteinSequenceVersionId, get the PSM Reporter Ion Masses for the Reported Peptide Ids
+	 * 
+	 * @param searchDataLookupParams_For_Single_ProjectSearchId - Optional.  If not populated, retrieved from this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId(...)
+	 * 
 	 * @returns Promise or null
 	 */
-	loadDataFor_PSM_ReporterIonMasses_Per_ReportedPeptideId_For_ProteinSequenceVersionId( { proteinSequenceVersionId, projectSearchId } ) {
+	loadDataFor_PSM_ReporterIonMasses_Per_ReportedPeptideId_For_ProteinSequenceVersionId({ 
+		
+		proteinSequenceVersionId, 
+		projectSearchId, 
+		searchDataLookupParams_For_Single_ProjectSearchId 
+	} : { 
+		proteinSequenceVersionId, 
+		projectSearchId, 
+		searchDataLookupParams_For_Single_ProjectSearchId?  // Optional
+	}  ) {
 
 		// console.log( "loadDataFor_PSM_ReporterIonMasses_Per_ReportedPeptideId_For_ProteinSequenceVersionId")
 
@@ -296,15 +311,19 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 		return new Promise( (resolve, reject) => {
 			try {
 
-				const searchDataLookupParams_For_Single_ProjectSearchId = 
-				objectThis._searchDetailsBlockDataMgmtProcessing.
-				getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
+				let searchDataLookupParams_For_Single_ProjectSearchId_Local = searchDataLookupParams_For_Single_ProjectSearchId;
+				if ( ! searchDataLookupParams_For_Single_ProjectSearchId_Local ) {
 
-				const promise = 
-					ProteinViewDataLoader.getPsmsReporterIonMassesForReportedPeptideIdsCutoffs( 
-							{ projectSearchId : projectSearchId, 
-								reportedPeptideIds : reportedPeptideIdsToLoadDataFor,
-								searchDataLookupParams_For_Single_ProjectSearchId } );
+					searchDataLookupParams_For_Single_ProjectSearchId_Local = 
+					this._searchDetailsBlockDataMgmtProcessing.
+					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
+				}
+
+				const promise = ProteinViewDataLoader.getPsmsReporterIonMassesForReportedPeptideIdsCutoffs({ 
+					projectSearchId : projectSearchId, 
+					reportedPeptideIds : reportedPeptideIdsToLoadDataFor,
+					searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId_Local 
+				});
 
 				promise.then( ( { reportedPeptideId_psmReporterIonMassesList_List } ) => {
 					try {
@@ -334,21 +353,26 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 							const psmReporterIonMassesList = reportedPeptideId_psmReporterIonMassesList_Entry.psmReporterIonMassesList;
 
 							let psmReporterIonMassesPerPSM_ForPsmIdMap = undefined;
-							let psmReporterIonMassesPerPSM_ForPsmIdMap_Object = psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
-							if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_Object ) {
-								psmReporterIonMassesPerPSM_ForPsmIdMap = new Map();
-								psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, { reportedPeptideId, psmReporterIonMassesPerPSM_ForPsmIdMap } );
-							} else {
-								psmReporterIonMassesPerPSM_ForPsmIdMap = psmReporterIonMassesPerPSM_ForPsmIdMap_Object.psmReporterIonMassesPerPSM_ForPsmIdMap;
+							{
+								let psmReporterIonMassesPerPSM_ForPsmIdMap_Object = psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
+								if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_Object ) {
+									psmReporterIonMassesPerPSM_ForPsmIdMap = new Map();
+									psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, { reportedPeptideId, psmReporterIonMassesPerPSM_ForPsmIdMap } );
+								} else {
+									psmReporterIonMassesPerPSM_ForPsmIdMap = psmReporterIonMassesPerPSM_ForPsmIdMap_Object.psmReporterIonMassesPerPSM_ForPsmIdMap;
+								}
 							}
 
-							let psmReporterIonMassesUnique_PerReportedPeptideId = undefined;
-							let psmReporterIonMassesUnique_PerReportedPeptideId_Object = psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
-							if ( ! psmReporterIonMassesUnique_PerReportedPeptideId_Object ) {
-								psmReporterIonMassesUnique_PerReportedPeptideId = new Set();
-								psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, { reportedPeptideId, reporterIonMasses : psmReporterIonMassesUnique_PerReportedPeptideId } );
-							} else {
-								psmReporterIonMassesUnique_PerReportedPeptideId = psmReporterIonMassesUnique_PerReportedPeptideId_Object.reporterIonMasses;
+							let psmReporterIonMassesUnique_PerReportedPeptideId : Set<number> = undefined;
+							{
+								let psmReporterIonMassesUnique_PerReportedPeptideId_Object = psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
+								if ( ! psmReporterIonMassesUnique_PerReportedPeptideId_Object ) {
+									psmReporterIonMassesUnique_PerReportedPeptideId = new Set();
+									psmReporterIonMassesUnique_PerReportedPeptideId_Object = { reportedPeptideId, reporterIonMasses : psmReporterIonMassesUnique_PerReportedPeptideId }
+									psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, psmReporterIonMassesUnique_PerReportedPeptideId_Object );
+								} else {
+									psmReporterIonMassesUnique_PerReportedPeptideId = psmReporterIonMassesUnique_PerReportedPeptideId_Object.reporterIonMasses;
+								}
 							}
 
 							for ( const psmReporterIonMassEntry of psmReporterIonMassesList ) {
@@ -439,10 +463,24 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 					if ( promise_loadReportedPeptideStringsIfNeeded ) {
 						promises_LoadData_Array.push( promise_loadReportedPeptideStringsIfNeeded );
 					}
-				
-					const promise_loadReportedPeptideAnnotationDataIfNeeded = objectThis._loadReportedPeptideAnnotationDataIfNeeded( { reportedPeptideIds, projectSearchId } );
-					if ( promise_loadReportedPeptideAnnotationDataIfNeeded ) {
-						promises_LoadData_Array.push( promise_loadReportedPeptideAnnotationDataIfNeeded );
+
+					//  Get Ann Type Ids for Ann Types that are to be displayed, Default or User chosen
+
+					const searchDataLookupParams_For_Single_ProjectSearchId = 
+					objectThis._searchDetailsBlockDataMgmtProcessing.
+					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
+
+					//  Array of Ann Type Ids
+					const reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId = searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay;
+
+					if ( ( ! reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId ) || reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId.length === 0 ) {
+						//  No Ann Type Ids to display Data for so Skip
+						
+					} else {
+						const promise_loadReportedPeptideAnnotationDataIfNeeded = objectThis._loadReportedPeptideAnnotationDataIfNeeded( { reportedPeptideIds, reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId, projectSearchId } );
+						if ( promise_loadReportedPeptideAnnotationDataIfNeeded ) {
+							promises_LoadData_Array.push( promise_loadReportedPeptideAnnotationDataIfNeeded );
+						}
 					}
 				}
 
@@ -486,30 +524,64 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 	////////////////////////
 	/**
+	 * 
+	 * @param reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param - Optional.  If not passed, reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId retrieved from this._searchDetailsBlockDataMgmtProcessing
+	 *             value: { reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId }
 	 */
-	loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch( { reportedPeptideIds, projectSearchId } ) {
+	loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch( { reportedPeptideIds, reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param, projectSearchId } ) {
 
-		const objectThis = this;
-
-		return new Promise(function( resolve, reject) {
+		return new Promise( ( resolve, reject) => {
 			try {
 				const promises_LoadData_Array = [];
 
-				const promise_loadReportedPeptideStringsIfNeeded = objectThis._loadReportedPeptideStringsIfNeeded( { reportedPeptideIds, projectSearchId } );
+				const promise_loadReportedPeptideStringsIfNeeded = this._loadReportedPeptideStringsIfNeeded( { reportedPeptideIds, projectSearchId } );
 				if ( promise_loadReportedPeptideStringsIfNeeded ) {
 					promises_LoadData_Array.push( promise_loadReportedPeptideStringsIfNeeded );
 				}
-			
-				const promise_loadReportedPeptideAnnotationDataIfNeeded = objectThis._loadReportedPeptideAnnotationDataIfNeeded( { reportedPeptideIds, projectSearchId } );
-				if ( promise_loadReportedPeptideAnnotationDataIfNeeded ) {
-					promises_LoadData_Array.push( promise_loadReportedPeptideAnnotationDataIfNeeded );
+		
+				//  Get Ann Type Ids for Ann Types that are to be displayed, Default or User chosen
+
+				let reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId = undefined;
+
+				if ( reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param ) {
+
+					//  Get reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId from function param reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param
+
+					reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId = reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param.reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId;
+				
+				} else if ( this._searchDetailsBlockDataMgmtProcessing ) {
+
+					//  Get reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId from this._searchDetailsBlockDataMgmtProcessing...
+
+					const searchDataLookupParams_For_Single_ProjectSearchId = (
+						this._searchDetailsBlockDataMgmtProcessing.
+						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } )
+					);
+
+					//  Array of Ann Type Ids
+					reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId = searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay;
+					
+				} else {
+					const msg = "ERROR: loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch(...): Neither is populated reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param or this._searchDetailsBlockDataMgmtProcessing";
+					console.warn( msg );
+					throw Error( msg );
+				}
+
+				if ( ( ! reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId ) || reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId.length === 0 ) {
+					//  No Ann Type Ids to display Data for so Skip
+					
+				} else {
+					const promise_loadReportedPeptideAnnotationDataIfNeeded = this._loadReportedPeptideAnnotationDataIfNeeded( { reportedPeptideIds, reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId, projectSearchId } );
+					if ( promise_loadReportedPeptideAnnotationDataIfNeeded ) {
+						promises_LoadData_Array.push( promise_loadReportedPeptideAnnotationDataIfNeeded );
+					}
 				}
 
 				if ( promises_LoadData_Array.length !== 0 ) {
 
 					const promisesAll = Promise.all( promises_LoadData_Array );
 
-					promisesAll.catch(function(reason) {
+					promisesAll.catch( (reason) => {
 						try {
 							reject( reason );
 						} catch( e ) {
@@ -518,7 +590,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 						}
 					})
 
-					promisesAll.then(function(value) {
+					promisesAll.then( (value) => {
 						try {
 							resolve( value );
 						} catch( e ) {
@@ -565,7 +637,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 		const staticModificationMassesByProteinPosition = new Map();
 
-		const staticModsForSearch = this._loadedDataPerProjectSearchIdHolder.get_staticMods();
+		const staticModsForSearch: {
+			residue: string;
+			mass: number;
+		}[] = this._loadedDataPerProjectSearchIdHolder.get_staticMods();
 
 		if ( ( ! staticModsForSearch ) || staticModsForSearch.length === 0 ) {
 			//  No Static Modifications so Exit
@@ -713,7 +788,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 			for ( const reportedPeptideId of reportedPeptideIds ) {
 
-				const reportedPeptideStringData = loadedDataCommonHolder.get_reportedPeptideStringData_For_reportedPeptideId( { reportedPeptideId } );
+				const reportedPeptideStringData : ReportedPeptideStringData_For_ReportedPeptideId = loadedDataCommonHolder.get_reportedPeptideStringData_For_reportedPeptideId( { reportedPeptideId } );
 
 				if ( ! reportedPeptideStringData ) {
 					reportedPeptideIdsToLoadReportedPeptideStringsFor.push( reportedPeptideId );
@@ -773,7 +848,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	/**
 	 * Load Reported Peptide Annotation Data If Not Already Loaded, based on defaultVisible
 	 */
-	_loadReportedPeptideAnnotationDataIfNeeded( { reportedPeptideIds, projectSearchId } ) {
+	_loadReportedPeptideAnnotationDataIfNeeded( { reportedPeptideIds, reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId, projectSearchId } ) {
 
 		const objectThis = this;
 
@@ -802,21 +877,6 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 		const reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId =
 			this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId();
 
-
-		//  Get Ann Type Ids for Ann Types that are to be displayed, Default or User chosen
-
-		const searchDataLookupParams_For_Single_ProjectSearchId = 
-			objectThis._searchDetailsBlockDataMgmtProcessing.
-			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
-
-		//  Array of Ann Type Ids
-		const reportedPeptideAnnTypeIdsDisplay = searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay;
-
-		if ( ( ! reportedPeptideAnnTypeIdsDisplay ) || reportedPeptideAnnTypeIdsDisplay.length === 0 ) {
-			//  No Ann Type Ids to display Data for so Exit
-			return null;   // EARLY EXIT
-		}
-
 		const promiseAll_Array = [];
 
 		{
@@ -826,7 +886,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 			const dataToLoad =
 				this._getReportedPeptideIdsAnnotationTypeIdsThatNeedLoading( 
 						{ reportedPeptideIds : reportedPeptideIds,
-							reportedPeptideAnnTypeIdsDisplay,
+							reportedPeptideAnnTypeIdsDisplay: reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId,
 							annotationTypes : reportedPeptideFilterableAnnotationTypes, 
 							reportedPeptideAnnData_annData_KeyAnnTypeId_KeyReportedPeptideId : reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId } );
 
@@ -851,7 +911,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 			const dataToLoad =
 				this._getReportedPeptideIdsAnnotationTypeIdsThatNeedLoading( 
 						{ reportedPeptideIds : reportedPeptideIds,
-							reportedPeptideAnnTypeIdsDisplay,
+							reportedPeptideAnnTypeIdsDisplay: reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId,
 							annotationTypes : reportedPeptideDescriptiveAnnotationTypes, 
 							reportedPeptideAnnData_annData_KeyAnnTypeId_KeyReportedPeptideId : reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId } );
 

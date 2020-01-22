@@ -15,6 +15,9 @@ import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay'
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
+import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+
 import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants';
 
 
@@ -74,8 +77,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
     private _rootDisplayJquerySelector;
     private _projectSearchIds;
     private _proteinSequenceVersionId;
-    private _loadedDataCommonHolder;
-    private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
+    private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
+    private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
     private _callbackMethodForSelectedChange;
 
     // From common template:
@@ -126,8 +129,8 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
         rootDisplayJquerySelector, 
         projectSearchIds, 
         proteinSequenceVersionId, 
-        loadedDataCommonHolder, 
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder, 
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
         callbackMethodForSelectedChange 
     } ) {
 
@@ -1364,7 +1367,7 @@ export class ProteinViewPage_DisplayData_SingleProtein_ModsDisplayAndSelect {
 	_create_staticModificationsUniqueResidueLettersMassesMapSet() {
 
 		//  Unique Static Mod Residue Letter/ masses for the Searches:  Map<Residue Letter, <Set<Mod Mass>>
-        const staticModificationsUniqueResidueLettersMassesMapSet = new Map(); 
+        const staticModificationsUniqueResidueLettersMassesMapSet : Map<string, Set<number>> = new Map(); 
 
         for ( const projectSearchId of this._projectSearchIds ) {
 

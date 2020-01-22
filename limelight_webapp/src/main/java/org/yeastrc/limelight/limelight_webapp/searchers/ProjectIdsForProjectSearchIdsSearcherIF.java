@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author danj
+ * Get the project id for project search ids
  *
  */
 public interface ProjectIdsForProjectSearchIdsSearcherIF {

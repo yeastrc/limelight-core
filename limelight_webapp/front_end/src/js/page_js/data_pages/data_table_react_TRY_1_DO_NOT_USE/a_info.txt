@@ -1,0 +1,6 @@
+This is Try 1 of Data Table using React.
+
+This is not to be used for any further development.
+
+This is currently used on the Single Search Protein List Page.
+

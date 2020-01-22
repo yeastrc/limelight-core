@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO.LogDuplicateSQLException;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.UrlShortener_Insert_UsingDBTransactionServiceIF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UrlShortenerDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -178,6 +179,7 @@ public class Share_Page_Insert_RestWebserviceController {
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
     		
     		List<Integer> projectSearchIds = webserviceRequest.getProjectSearchIds();
+    		Integer experimentId = webserviceRequest.getExperimentId();
         	final String pageControllerPathFromWebserviceRequest = webserviceRequest.getPageControllerPath();
         	final String pageCurrentURL_StartAtPageController = webserviceRequest.getPageCurrentURL_StartAtPageController();
         	final String searchDataLookupParametersCode = webserviceRequest.getSearchDataLookupParametersCode();
@@ -201,8 +203,10 @@ public class Share_Page_Insert_RestWebserviceController {
     			log.warn( "No pageCurrentURL_StartAtPageController" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
         	}
-        	if ( StringUtils.isEmpty( searchDataLookupParametersCode ) ) {
-    			log.warn( "No searchDataLookupParametersCode" );
+        	
+        	//  Must have searchDataLookupParametersCode or experimentId.  May have both
+        	if ( StringUtils.isEmpty( searchDataLookupParametersCode ) && ( experimentId == null ) ) {
+    			log.warn( "No searchDataLookupParametersCode or experimentId.  Must have at least one.  May have both." );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
         	}
 
@@ -239,7 +243,7 @@ public class Share_Page_Insert_RestWebserviceController {
 
 			if ( shortenedUrlKey == null ) {
 				// Not already in the database so add it.
-	    		shortenedUrlKey = createDBRecordsAndSave(httpServletRequest, projectSearchIds, pageCurrentURL_StartAtPageController,
+	    		shortenedUrlKey = createDBRecordsAndSave(httpServletRequest, projectSearchIds, experimentId, pageCurrentURL_StartAtPageController,
 						searchDataLookupParametersCode, pageControllerPathInURL, shortenedUrlKey);
 			}
 			
@@ -289,6 +293,7 @@ public class Share_Page_Insert_RestWebserviceController {
 	private String createDBRecordsAndSave(
 			HttpServletRequest httpServletRequest, 
 			List<Integer> projectSearchIds,
+			Integer experimentId,
 			final String pageCurrentURL_StartAtPageController, 
 			final String searchDataLookupParametersCode,
 			String pageControllerPathInURL, 
@@ -317,13 +322,19 @@ public class Share_Page_Insert_RestWebserviceController {
 		int saveAttemptCounter = 0;
 		
 
-		List<UrlShortenerAssocProjectSearchIdDTO> children = new ArrayList<>( projectSearchIds.size() );
+		List<UrlShortenerAssocProjectSearchIdDTO> childrenProjectSearchIds = new ArrayList<>( projectSearchIds.size() );
 		for ( Integer projectSearchId : projectSearchIds ) {
 			UrlShortenerAssocProjectSearchIdDTO child = new UrlShortenerAssocProjectSearchIdDTO();
 			child.setProjectSearchId( projectSearchId );
-			children.add( child );
+			childrenProjectSearchIds.add( child );
 		}
 		
+		UrlShortenerAssocExperimentIdDTO childExperimentId = null;
+		if ( experimentId != null ) {
+			childExperimentId = new UrlShortenerAssocExperimentIdDTO();
+			childExperimentId.setExperimentId( experimentId );
+		}
+				
 		//  Loop to do retries since may create shortenedUrlKey that collides with existing records
 		while ( ( ! saveSuccessful ) ) {
 			saveAttemptCounter++;
@@ -336,7 +347,7 @@ public class Share_Page_Insert_RestWebserviceController {
 					logDuplicateSQLException = LogDuplicateSQLException.TRUE;
 				}
 
-				urlShortener_Insert_UsingDBTransactionService.addUrlShortener( item, children, logDuplicateSQLException );
+				urlShortener_Insert_UsingDBTransactionService.addUrlShortener( item, childrenProjectSearchIds, childExperimentId, logDuplicateSQLException );
 
 				saveSuccessful = true;
 
@@ -414,6 +425,7 @@ public class Share_Page_Insert_RestWebserviceController {
     public static class WebserviceRequest {
     	
     	private List<Integer> projectSearchIds;
+    	private Integer experimentId;  //  Only for experiment pages
     	private String pageControllerPath;
     	private String pageCurrentURL_StartAtPageController;
     	private String searchDataLookupParametersCode;
@@ -441,6 +453,12 @@ public class Share_Page_Insert_RestWebserviceController {
 		}
 		public void setSearchDataLookupParametersCode(String searchDataLookupParametersCode) {
 			this.searchDataLookupParametersCode = searchDataLookupParametersCode;
+		}
+		public Integer getExperimentId() {
+			return experimentId;
+		}
+		public void setExperimentId(Integer experimentId) {
+			this.experimentId = experimentId;
 		}
 
     }

@@ -232,9 +232,7 @@ export class ProteinViewPage_RootClass_Common {
 
 				});
 		
-		
 	}
-
 
 	/**
 	 * If the filtering data does not exist in dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
@@ -250,8 +248,6 @@ export class ProteinViewPage_RootClass_Common {
 		this._proteinViewPage_DisplayDataOnPage.populateSearchDetailsBlock();
 		
 		this._proteinViewPage_DisplayDataOnPage.populateProteinListBlock();
-
 	}
-	
 }
 

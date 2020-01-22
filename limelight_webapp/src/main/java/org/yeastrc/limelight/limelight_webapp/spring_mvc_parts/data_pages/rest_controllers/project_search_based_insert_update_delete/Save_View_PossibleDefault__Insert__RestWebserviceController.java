@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -65,6 +67,9 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+	
+	@Autowired
+	private ExperimentDAO_IF experimentDAO;
 	
 	@Autowired
 	private SavedView_PossibleDefault_Insert_ServiceIF savedView_PossibleDefault_Insert_Service;
@@ -133,6 +138,7 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
     		
     		List<Integer> projectSearchIds = webserviceRequest.getProjectSearchIds();
+    		Integer experimentId = webserviceRequest.getExperimentId();
     		final String viewLabelFromWebserviceRequest = webserviceRequest.getLabel();
         	final String pageControllerPathFromWebserviceRequest = webserviceRequest.getPageControllerPath();
         	final String pageCurrentURL_StartAtPageController = webserviceRequest.getPageCurrentURL_StartAtPageController();
@@ -162,8 +168,8 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     			log.warn( "No pageCurrentURL_StartAtPageController" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
         	}
-        	if ( StringUtils.isEmpty( searchDataLookupParametersCode ) ) {
-    			log.warn( "No searchDataLookupParametersCode" );
+        	if ( StringUtils.isEmpty( searchDataLookupParametersCode ) && experimentId == null ) {
+    			log.warn( "No searchDataLookupParametersCode or experimentId.  At 1 is required.  Both allowed to be populated at the same time." );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
         	}
     		if ( setDefault && projectSearchIds.size() != 1 ) {
@@ -195,8 +201,38 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     		if ( pageControllerPathInURL == null ) {
     			log.warn( "pageCurrentURL_StartAtPageController does not start an allowed controller path.  pageCurrentURL_StartAtPageController: "
     					+ pageCurrentURL_StartAtPageController
-    					+ ". projectSearchIds: " + projectSearchIds );
+    					+ ". projectSearchIds: " + StringUtils.join( projectSearchIds ) );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+
+    		//  If experimentId, then must be experiment page.  If No experimentId, then must NOT be experiment page
+    	
+    		if ( experimentId != null ) {
+	    		if ( ! pageCurrentURL_StartAtPageController.startsWith( AA_PageControllerPaths_Constants.EXPERIMENT_ID_BASED_PAGE_CONTROLLER_START ) ) {
+	    			log.warn( "pageCurrentURL_StartAtPageController does not start with Experiment ID Based Path and Experiment Id is populated.  pageCurrentURL_StartAtPageController: "
+	    					+ pageCurrentURL_StartAtPageController
+	    					+ ". experimentId: " + experimentId
+	    					+ ". projectSearchIds: " + StringUtils.join( projectSearchIds ) );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+	    		}
+    		} else {
+	    		if ( pageCurrentURL_StartAtPageController.startsWith( AA_PageControllerPaths_Constants.EXPERIMENT_ID_BASED_PAGE_CONTROLLER_START ) ) {
+	    			log.warn( "pageCurrentURL_StartAtPageController does start with Experiment ID Based Path and Experiment Id is NOT populated.  pageCurrentURL_StartAtPageController: "
+	    					+ pageCurrentURL_StartAtPageController
+	    					+ ". projectSearchIds: " + StringUtils.join( projectSearchIds ) );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+	    		}
+    		}
+    		
+    		//  Temp validation that if Experiment that SetDefault is not allowed since not supported yet.
+    		
+    		if ( experimentId != null
+    				&& setDefault
+    				&& pageCurrentURL_StartAtPageController.startsWith( AA_PageControllerPaths_Constants.EXPERIMENT_ID_BASED_PAGE_CONTROLLER_START ) ) {
+	    			log.warn( "setDefault true not currently supported for Experiment pages: pageCurrentURL_StartAtPageController: "
+	    					+ pageCurrentURL_StartAtPageController
+	    					+ ". experimentId: " + experimentId );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
     		
@@ -216,13 +252,19 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 
 
     		if ( projectIdsForProjectSearchIds.isEmpty() ) {
-    			String msg = "Project Search Ids resulted in No Project Id.  projectIdsForProjectSearchIds: " + projectIdsForProjectSearchIds;
+    			String msg = "Project Search Ids resulted in No Project Id.  projectIdsForProjectSearchIds: " 
+    					+ StringUtils.join( projectIdsForProjectSearchIds )
+    					+ " , projectSearchIds: "
+    					+ StringUtils.join( projectSearchIds );
     			log.error( msg );
     			throw new LimelightInternalErrorException( msg );
     		}
     		
     		if ( projectIdsForProjectSearchIds.size() > 1 ) {
-    			String msg = "Project Search Ids resulted in > 1 Project Id.  projectIdsForProjectSearchIds: " + projectIdsForProjectSearchIds;
+    			String msg = "Project Search Ids resulted in > 1 Project Id.  projectIdsForProjectSearchIds: " 
+    					+ StringUtils.join( projectIdsForProjectSearchIds )
+    					+ " ; projectSearchIds: "
+    					+ StringUtils.join( projectSearchIds );
     			log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
@@ -238,6 +280,32 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     			throw new LimelightInternalErrorException( "userId == null and passed access check" );
     		}
     		
+    		if ( experimentId != null ) {
+    			//  Validate that same Project Id for experimentId as for projectSearchIds
+    			Integer projectId_For_experimentId = experimentDAO.getProjectIdForId( experimentId );
+    			if ( projectId_For_experimentId == null ) {
+    				String msg = "No Project Id for Experiment ID.  experimentId: " + experimentId;
+        			log.warn( msg );
+        			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    			if ( projectId_For_experimentId.intValue() != projectId.intValue() ) {
+    				String msg = "Project Id for Experiment ID Not same as for Project Search Ids.  experimentId: " 
+    						+ experimentId
+    						+ ", projectId_For_experimentId: "
+    						+ projectId_For_experimentId
+    						+ " ; projectSearchIds: "
+        					+ StringUtils.join( projectSearchIds )
+        					+ " ; projectId for projectSearchIds: "
+        					+ projectId;
+        			log.warn( msg );
+        			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    		}
+    		
+    		//   End Auth
+    		
+    		///////////
+    		
     		DataPageSavedViewDTO item = new DataPageSavedViewDTO();
     		
     		item.setProjectId( projectId );
@@ -246,11 +314,21 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     		
     		item.setPageControllerPath( pageControllerPathInURL );
     		
+    		item.setExperimentId( experimentId );  // Only populated for Experiment
+    		
     		if ( setDefault ) {
     			if ( ! webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
     				log.warn( "Set Default True but user not Project Owner. userId: " + userId + ", projectSearchIds: " + projectSearchIds );
     				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     			}
+    			
+    			if ( experimentId != null ) {
+    				String msg = "Not tested yet to have set default for experimentId";
+    				log.error(msg);
+    				throw new LimelightInternalErrorException(msg);
+    			}
+    			item.setExperimentIdDefaultView( experimentId );  // Only populated for Experiment
+    			
     			Integer projectSearchIdSingle = projectSearchIds.get( 0 );
         		item.setSingleProjectSearchIdDefaultView( projectSearchIdSingle );
     		}
@@ -259,14 +337,20 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     		item.setUrlStartAtPageControllerPath( pageCurrentURL_StartAtPageController );
     		item.setSearchDataLookupParamsString( searchDataLookupParametersCode );
     		
-    		List<DataPageSavedViewAssocProjectSearchIdDTO> children = new ArrayList<>( projectSearchIds.size() );
+    		List<DataPageSavedViewAssocProjectSearchIdDTO> childrenProjectSearchIds = new ArrayList<>( projectSearchIds.size() );
     		for ( Integer projectSearchId : projectSearchIds ) {
     			DataPageSavedViewAssocProjectSearchIdDTO child = new DataPageSavedViewAssocProjectSearchIdDTO();
     			child.setProjectSearchId( projectSearchId );
-    			children.add( child );
+    			childrenProjectSearchIds.add( child );
     		}
     		
-    		savedView_PossibleDefault_Insert_Service.addDataPageSavedView_UpdateDefaultIfSet( item, children );
+    		DataPageSavedViewAssocExperimentIdDTO childExperimentId = null;
+    		if ( experimentId != null ) {
+    			childExperimentId = new DataPageSavedViewAssocExperimentIdDTO();
+    			childExperimentId.setExperimentId( experimentId );
+    		}
+    		
+    		savedView_PossibleDefault_Insert_Service.addDataPageSavedView_UpdateDefaultIfSet( item, childrenProjectSearchIds, childExperimentId );
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.status = true; // value ignored in Javascript code
@@ -295,6 +379,7 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     public static class WebserviceRequest {
     	
     	private List<Integer> projectSearchIds;
+    	private Integer experimentId;
     	private String label; // view label
     	private String pageControllerPath;
     	private String pageCurrentURL_StartAtPageController;
@@ -336,6 +421,12 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 		}
 		public void setLabel(String label) {
 			this.label = label;
+		}
+		public Integer getExperimentId() {
+			return experimentId;
+		}
+		public void setExperimentId(Integer experimentId) {
+			this.experimentId = experimentId;
 		}
 
     }

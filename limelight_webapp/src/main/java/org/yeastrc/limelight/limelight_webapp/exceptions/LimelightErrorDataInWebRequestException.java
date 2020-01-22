@@ -24,6 +24,9 @@ package org.yeastrc.limelight.limelight_webapp.exceptions;
 public class LimelightErrorDataInWebRequestException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
+	
+	private boolean projectIdnotfound;
+	private boolean projectIdNotEnabledOrMarkedforDeletion;
 
 	/**
 	 * 
@@ -68,6 +71,22 @@ public class LimelightErrorDataInWebRequestException extends RuntimeException {
 	public LimelightErrorDataInWebRequestException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isProjectIdnotfound() {
+		return projectIdnotfound;
+	}
+
+	public void setProjectIdnotfound(boolean projectIdnotfound) {
+		this.projectIdnotfound = projectIdnotfound;
+	}
+
+	public boolean isProjectIdNotEnabledOrMarkedforDeletion() {
+		return projectIdNotEnabledOrMarkedforDeletion;
+	}
+
+	public void setProjectIdNotEnabledOrMarkedforDeletion(boolean projectIdNotEnabledOrMarkedforDeletion) {
+		this.projectIdNotEnabledOrMarkedforDeletion = projectIdNotEnabledOrMarkedforDeletion;
 	}
 
 }

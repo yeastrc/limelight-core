@@ -58,3 +58,12 @@ export class WebserviceCallStandardPost_ApiObject_Class {
 	}
 }
 
+
+/**
+ * 
+ */
+export class WebserviceCallStandardPost_ApiObject_Holder_Class {
+
+	webserviceCallStandardPost_ApiObject_Class : WebserviceCallStandardPost_ApiObject_Class
+
+}

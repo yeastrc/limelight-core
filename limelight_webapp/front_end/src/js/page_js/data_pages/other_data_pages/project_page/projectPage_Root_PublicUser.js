@@ -25,22 +25,26 @@ Handlebars.templates = _dummy_template_template_bundle;
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
+import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
+import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
-import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collapsableSection_StandardProcessing.js';
+import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collapsableSection_StandardProcessing';
 
 
 //  Local Imports
 
-import { ProjectPage_CommonOverall } from './projectPage_CommonOverall.js';
+import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
-import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction.js';
-import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction.js';
-import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction.js'
+import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
+
+//  Comment out Experiment Code
+// import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
+
+import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction';
+import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
 /**
  * 
@@ -76,6 +80,12 @@ class ProjectViewPage_Root_PublicUser {
 		this._projectPage_ProjectSection_AllUsersInteraction = 
 			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
 		
+		//  Comment out Experiment Code
+		// this._projectPage_ExperimentsSection_AllUsersInteraction = 
+		// 	new ProjectPage_ExperimentsSection_AllUsersInteraction( { 
+		// 		projectIdentifierFromURL : this._projectIdentifierFromURL 
+		// 	} );
+
 		this._projectPage_SearchesSection_AllUsersInteraction = 
 			new ProjectPage_SearchesSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
 
@@ -84,6 +94,10 @@ class ProjectViewPage_Root_PublicUser {
 
 		
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
+
+		//  Comment out Experiment Code
+		// this._projectPage_ExperimentsSection_AllUsersInteraction.initialize();
+		
 		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 
@@ -101,7 +115,7 @@ class ProjectViewPage_Root_PublicUser {
 		this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
 		
 		this._initializeCalled = true;
-	};
+	}
 	
 
 	/**
@@ -120,9 +134,9 @@ class ProjectViewPage_Root_PublicUser {
 		let projectIdentifier = windowPath.substring( lastIndexOfSlash + 1 );
 
 		return projectIdentifier;
-	};
+	}
 
-};
+}
 
 
 ///////////////

@@ -235,3 +235,20 @@ input {
   .clickable {
     cursor: pointer;
   }
+
+//  Standard border colors,  Applying will display a border with the Browser default border style and width
+.standard-border-color-very-dark {
+  border-color: $site-color-very-dark
+}
+.standard-border-color-dark {
+  border-color: $site-color-dark
+}
+.standard-border-color-medium {
+  border-color: $site-color-medium
+}
+.standard-border-color-light {
+  border-color: $site-color-light
+}
+.standard-border-color-gray {
+  border-color: $site-color-gray
+}

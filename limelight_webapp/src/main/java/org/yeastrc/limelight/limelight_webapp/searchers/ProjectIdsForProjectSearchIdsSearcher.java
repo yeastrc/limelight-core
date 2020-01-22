@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 
 /**
- * Get the search id for project search ids
+ * Get the project id for project search ids
  *
  */
 @Component

@@ -15,6 +15,8 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
@@ -32,11 +34,10 @@ import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } fr
 
 import { ProteinViewPage_Display_MultipleSearches_SingleProtein } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein';
 
-import { SingleProtein_CentralStateManagerObjectClass }
-	from '../protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
+import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
 
-	
-	//  Applied to the element containing the protein name so it can be selected
+//  Applied to the element containing the protein name so it can be selected
 const _CSS_CLASS_SELECTOR_PROTEIN_NAME = "selector_protein_name";
 	
 /**
@@ -57,7 +58,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	
 	//   private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is shared with private _proteinViewPage_Display_SingleProtein_...
 
-	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds; // : Map;
+	private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>; // : Map;
 
 	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 
@@ -65,9 +66,9 @@ export class ProteinViewPage_Display_MultipleSearches {
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
-	private _centralPageStateManager;
-	private _singleProtein_CentralStateManagerObject;
-	private _proteinList_CentralStateManagerObjectClass;
+	private _centralPageStateManager : CentralPageStateManager;
+	private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass;
+	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	
 	private _annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes;
 
@@ -114,9 +115,9 @@ export class ProteinViewPage_Display_MultipleSearches {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager,
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
-		centralPageStateManager,
-		singleProtein_CentralStateManagerObject,
-		proteinList_CentralStateManagerObjectClass
+		centralPageStateManager : CentralPageStateManager,
+		singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass,
+		proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
 	}) {
 
 		//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
@@ -192,7 +193,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		let objectThis = this;
 
-		{
+		if ( this._singleProtein_CentralStateManagerObject ) {
 			//  If Have Single Protein to display in URL, Immediately hide the Main Display <div id="data_page_overall_enclosing_block_div" >
 
 			const proteinSequenceVersionId_FromURL = this._singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
@@ -278,15 +279,25 @@ export class ProteinViewPage_Display_MultipleSearches {
 		for ( const projectSearchId of projectSearchIds ) {
 
 			const loadedDataPerProjectSearchIdHolder = new ProteinViewPage_LoadedDataPerProjectSearchIdHolder();
-			this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set( projectSearchId, loadedDataPerProjectSearchIdHolder )
-			
-			this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer =
-				new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-					loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder,
-					searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing
-				});
+			this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set( projectSearchId, loadedDataPerProjectSearchIdHolder );
 
-			const promise_getDataFromServer = this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId } );
+
+			let searchDataLookupParams_For_Single_ProjectSearchId = this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined } );
+			
+			if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+				const msg = "No entry found in searchDetailsBlockDataMgmtProcessing for projectSearchId: " + projectSearchId;
+				console.log( msg );
+				throw Error( msg );
+			}
+			
+			
+			this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = (
+				new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
+					loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
+				})
+			);
+
+			const promise_getDataFromServer = this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } );
 
 			getDataFromServer_AllPromises.push( promise_getDataFromServer );
 		}
@@ -975,8 +986,10 @@ export class ProteinViewPage_Display_MultipleSearches {
 		//  Create URL for new Window about to open
 
 		//  Create to override the value of proteinSequenceVersionId from the URL
-		const singleProtein_CentralStateManagerObjectClass_ForNewWindow =
-			new SingleProtein_CentralStateManagerObjectClass({ initialProteinSequenceVersionId: proteinSequenceVersionId, centralPageStateManager : undefined });
+		const singleProtein_CentralStateManagerObjectClass_ForNewWindow = new SingleProtein_CentralStateManagerObjectClass({ 
+			initialProteinSequenceVersionId: proteinSequenceVersionId, 
+			centralPageStateManager : undefined 
+		});
 
 		const newWindowURL = this._centralPageStateManager.getURL_ForCurrentState({ componentOverridesAdditions: [ singleProtein_CentralStateManagerObjectClass_ForNewWindow ] })
 
@@ -1067,7 +1080,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			//  Show Main Div inside of header/footer
 			const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-			// console.log("running $data_page_overall_enclosing_block_div.show();")
 			$data_page_overall_enclosing_block_div.show();
 
 			if ( currentWindowScrollY ) {
