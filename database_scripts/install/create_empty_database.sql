@@ -1828,6 +1828,7 @@ CREATE TABLE  experiment_tbl (
   project_search_ids_only_json MEDIUMTEXT NULL COMMENT 'Just Project Search Ids, in ARRAY JSON',
   experiment_json__main_data MEDIUMTEXT NULL COMMENT 'Main Data - JSON',
   version_number_main_json INT UNSIGNED NOT NULL COMMENT 'Version number in JSON',
+  experiment_revision_number INT NOT NULL DEFAULT 0 COMMENT 'Incremented for each save when not draft',
   created_by_user_id INT UNSIGNED NULL,
   created_by_user_type ENUM('web-user', 'web-non-user', 'importer-user', 'importer-no-user') NOT NULL,
   created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
