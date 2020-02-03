@@ -15,17 +15,24 @@ import java.util.Map;
 
 @Component
 public class ReportedPeptideHasMods_Searcher extends Limelight_JDBC_Base implements ReportedPeptideHasMods_SearcherIF {
-    private static final Logger log = LoggerFactory.getLogger( ReportedPeptideHasMods_Searcher.class );
+    
+	private static final Logger log = LoggerFactory.getLogger( ReportedPeptideHasMods_Searcher.class );
 
-    String QUERY_SQL = "SELECT reported_peptide_id, has_dynamic_modifictions FROM search__rep_pept__lookup_tbl " +
+    private static final String QUERY_SQL = "SELECT reported_peptide_id, has_dynamic_modifictions FROM search__rep_pept__lookup_tbl " +
             "WHERE reported_peptide_id IN ";
 
     @Override
     public Map<Integer, Boolean> getReportedPeptideHasMods(Collection<Integer> reportedPeptideIds) throws Exception {
 
-        final String querySQL = getQuerySQL( reportedPeptideIds );
         Map<Integer, Boolean> resultMap = new HashMap<>();
+        
+        if ( reportedPeptideIds.isEmpty() ) {
+        	//  No reportedPeptideIds to search for so return empty Map
+        	return resultMap; // EARLY RETURN
+        }
 
+        final String querySQL = getQuerySQL( reportedPeptideIds );
+        
         try (Connection connection = super.getDBConnection();
              PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
 
@@ -45,8 +52,11 @@ public class ReportedPeptideHasMods_Searcher extends Limelight_JDBC_Base impleme
             throw e;
         }
 
-        if( resultMap.keySet().size() != reportedPeptideIds.size() ) {
-            String msg = "did not get dynamic mod status for right number peptides...";
+        if ( resultMap.keySet().size() != reportedPeptideIds.size() ) {
+            String msg = "did not get dynamic mod status for right number peptides.  resultMap.keySet().size() : " 
+            		+ resultMap.keySet().size() 
+            		+ ", reportedPeptideIds.size(): "
+            		+ reportedPeptideIds.size();
             log.error(msg);
             throw new Exception(msg);
         }
