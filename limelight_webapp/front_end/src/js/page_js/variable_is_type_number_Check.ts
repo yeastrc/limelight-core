@@ -3,7 +3,7 @@
  * 
  * Javascript To Check if a variable is type number 
  * 
- * 
+ * Also have page_js/common_all_pages/limelight__IsVariableAString.ts
  */
 
 

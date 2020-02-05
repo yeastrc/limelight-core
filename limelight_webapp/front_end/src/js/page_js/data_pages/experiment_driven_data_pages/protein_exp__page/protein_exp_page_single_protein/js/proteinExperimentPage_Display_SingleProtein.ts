@@ -316,7 +316,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	private _showAfterIntialLoad() {
 
         //  For getting search info for projectSearchIds
-        const searchNamesKeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames();
+        const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
 
         //  Render to page:
 
@@ -349,7 +349,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ,
 			loadedDataCommonHolder : this._loadedDataCommonHolder ,
 			dataPageStateManager : this._dataPageStateManager_DataFrom_Server,
-			searchNamesMap_KeyProjectSearchId : searchNamesKeyProjectSearchId ,
+			searchNamesMap_KeyProjectSearchId : searchNamesMap_KeyProjectSearchId ,
 			searchDataLookupParamsRoot : this._searchDataLookupParamsRoot ,
 			singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass,
 			modificationMass_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject ,

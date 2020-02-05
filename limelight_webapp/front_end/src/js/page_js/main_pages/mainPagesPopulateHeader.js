@@ -14,7 +14,7 @@
 
 ///////////////////////////////////////////
 
-import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/data_pages/common_all_pages/genericToolTip.js';
+import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/common_all_pages/genericToolTip';
 
 
 //  Relative import - works

@@ -17,11 +17,13 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data
 
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
-import { peptideSequence_CreateCommonDisplayString } from 'page_js/data_pages/peptide_sequence_display_string_common/peptideSequence_CreateCommonDisplayString';
+import { reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches } from 'page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches';
+
+import { create_reportedPeptide_CommonValue_EncodedString } from 'page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptide_CommonValue_AcrossSearches';
 
 
 //   Modification Mass Rounding to provide some level of commonality between searches
@@ -268,7 +270,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 
 		//  For getting search info for projectSearchIds
-		const searchNamesKeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames();
+		const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
 
 
 		//  Array of Arrays of reportLineParts
@@ -282,7 +284,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			
 			for ( const projectSearchId of projectSearchIds ) {
 			
-				const searchNameObject = searchNamesKeyProjectSearchId[ projectSearchId ];
+				const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
 				if ( ! searchNameObject ) {
 					throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
 				}
@@ -354,8 +356,18 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	_createReportedPeptideDisplayData( { 
 		
 		reportedPeptideIdsForDisplay_Map_KeyProjectSearchId, reporterIonMassesSelected, variableModificationMassesToFilterOn, staticModificationMassesToFilterOn, proteinSequenceVersionId, projectSearchIds 
+	} : {
+		reportedPeptideIdsForDisplay_Map_KeyProjectSearchId, 
+		reporterIonMassesSelected, 
+		variableModificationMassesToFilterOn, 
+		staticModificationMassesToFilterOn, 
+		proteinSequenceVersionId, 
+		projectSearchIds 
 	} ) : {
-		peptideList, peptideItems_Map_Key_peptideSequenceDisplayString, numberOfReportedPeptides, numberOfPsmsForReportedPeptides
+		peptideList, 
+		peptideItems_Map_Key_peptideSequenceDisplayString, 
+		numberOfReportedPeptides, 
+		numberOfPsmsForReportedPeptides
 	} {
 
 		const peptideItems_Map_Key_peptideSequenceDisplayString = new Map();
@@ -381,7 +393,9 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			}
 
 			//  Map<(reported peptide), Map<(position),Array<(mod mass rounded strings)>>
-			const variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId = this._getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId({ loadedDataPerProjectSearchIdHolder, reportedPeptideIdsForDisplay, proteinSequenceVersionId, projectSearchId });
+			const variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId : Map<number, Map<number, Array<string>>> = (
+				this._getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId({ loadedDataPerProjectSearchIdHolder, reportedPeptideIdsForDisplay, proteinSequenceVersionId, projectSearchId })
+			);
 
 			//   The selected static modifications, filtered for this project search id
 			const selectedStaticModificationsForProjectSearchId = this._get_selectedStaticModificationsForProjectSearchId({ staticModificationMassesToFilterOn, loadedDataPerProjectSearchIdHolder });
@@ -472,7 +486,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 				const staticModificationsRounded_KeyPosition = this._get_staticModificationsRounded_KeyPosition_ForSelectedStaticModsAndPeptideSequence({ peptideSequenceString, selectedStaticModificationsForProjectSearchId });
 
 				//   Call external function
-				const peptideSequenceDisplay = peptideSequence_CreateCommonDisplayString({ peptideSequence : peptideSequenceString, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition });
+				const peptideSequenceDisplay = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches({ peptideSequence : peptideSequenceString, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition });
 
 				let peptideItemInMap = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
 				if ( peptideItemInMap ) {
@@ -597,7 +611,13 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	 * 
 	 * @returns  Map<(reported peptide), Map<(position),Array<(mod mass rounded strings sorted)>>
 	 */	
-	_getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId({ loadedDataPerProjectSearchIdHolder, reportedPeptideIdsForDisplay, proteinSequenceVersionId, projectSearchId }) {
+	_getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId({ loadedDataPerProjectSearchIdHolder, reportedPeptideIdsForDisplay, proteinSequenceVersionId, projectSearchId } : { 
+		
+		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder 
+		reportedPeptideIdsForDisplay : Array<number> 
+		proteinSequenceVersionId : number 
+		projectSearchId : number
+	}) : Map<number, Map<number, Array<string>>> {
 
 				//  Dynamic/Variable Modifications Per Reported Peptide Id.   position is int, mass is double
 				// Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, position, mass }]>>
@@ -627,7 +647,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			return new Map(); //  EARLY RETURN
 		}
 
-		const modsRoundedSet_KeyPosition_KeyReportedPeptideId = new Map();
+		const modsRoundedSet_KeyPosition_KeyReportedPeptideId : Map<number, Map<number, Set<number>>> = new Map();
         
 		for ( const proteinCoverageEntries_PerReportedPeptideId_Entry of proteinCoverageEntries_PerReportedPeptideId_Array ) {
 
@@ -645,7 +665,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			}
 			
 			const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
-			if ( dynamicModificationsOnReportedPeptideArray ) {
+			if ( dynamicModificationsOnReportedPeptideArray && dynamicModificationsOnReportedPeptideArray.length > 0 ) {
 				
 				//  Have Mods for this reportedPeptideId
 				for ( const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray ) {
@@ -653,10 +673,14 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 					const mass = dynamicModificationOnReportedPeptide.mass;
 					const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
 
-					//   Currently ignoring is_C_Terminal and is_N_Terminal
+					//  N and C terminal mods are placed at the first and last positions of the peptides.
+
+					//    Since some search programs report those mods at the first and last positions, 
+					//    always place the mods at first and last positions for more matches of Generated Reported Peptide across Search Programs.
+
+					//   Currently Not Using is_C_Terminal and is_N_Terminal (See comment immediately above)
 					// const is_C_Terminal = dynamicModificationOnReportedPeptide.is_C_Terminal;
 					// const is_N_Terminal = dynamicModificationOnReportedPeptide.is_N_Terminal;
-					
 					// if (  entry.is_N_Terminal !== undefined || entry.is_C_Terminal !== undefined ) {
 					// 	const msg = "ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList: ERROR: entry.is_N_Terminal or entry.is_C_Terminal exists.  This code does not handle those properties being true.";
 					// 	console.log( msg );
@@ -675,13 +699,13 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 			}
 		}
 
-		const modsRoundedArray_KeyPosition_KeyReportedPeptideId = new Map(); // Map<(reported peptide), Map<(position),Set<(mod mass rounded sorted, to strings )>>
+		const modsRoundedArray_KeyPosition_KeyReportedPeptideId : Map<number, Map<number, Array<string>>> = new Map(); // Map<(reported peptide), Map<(position),Set<(mod mass rounded sorted, to strings )>>
 
 		for ( const modsRoundedSet_KeyPosition_KeyReportedPeptideId_Entry of modsRoundedSet_KeyPosition_KeyReportedPeptideId.entries() ) {
 			const modsRoundedSet_KeyPosition_KeyReportedPeptideId_EntryKey = modsRoundedSet_KeyPosition_KeyReportedPeptideId_Entry[ 0 ];
 			const modsRoundedSet_KeyPosition = modsRoundedSet_KeyPosition_KeyReportedPeptideId_Entry[ 1 ];
 
-			const modsRoundedArray_KeyPosition_KeyReportedPeptideId_Entry = new Map();
+			const modsRoundedArray_KeyPosition_KeyReportedPeptideId_Entry : Map<number, Array<string>> = new Map();
 			modsRoundedArray_KeyPosition_KeyReportedPeptideId.set( modsRoundedSet_KeyPosition_KeyReportedPeptideId_EntryKey, modsRoundedArray_KeyPosition_KeyReportedPeptideId_Entry );
 
 			for ( const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries() ) {
@@ -698,7 +722,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 						return 0;
 					}
 				});
-				const modsRoundedStringsArray = [];
+				const modsRoundedStringsArray : Array<string> = [];
 				for ( const modRounded of modsRoundedArray ) {
 					const modRoundedString = modRounded.toString();
 					modsRoundedStringsArray.push( modRoundedString );
@@ -725,7 +749,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	// 			// Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, position, mass }]>>
 	// 	const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
-	// 	if ( ! dynamicModificationsOnReportedPeptide_KeyReportedPeptideId ) {
+	// 	if ( ! dynamicModificationsOnReportedPeptide_KeyReportedPeptideId && dynamicModificationsOnReportedPeptide_KeyReportedPeptideId < 1 ) {
 
 	// 		return new Map(); //  EARLY RETURN
 	// 	}
@@ -1051,8 +1075,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	_getReportedPeptideDataTableColumns( { projectSearchIds } ) {
 
 		//  For getting search info for projectSearchIds
-		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.get_searchNames();
+		const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
 
 
 		let columns = [ ];
@@ -1072,7 +1095,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 
 		for ( const projectSearchId of projectSearchIds ) {
 			
-			const searchNameObject = searchNamesKeyProjectSearchId[ projectSearchId ];
+			const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
 			if ( ! searchNameObject ) {
 				throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
 			}

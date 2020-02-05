@@ -15,7 +15,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 

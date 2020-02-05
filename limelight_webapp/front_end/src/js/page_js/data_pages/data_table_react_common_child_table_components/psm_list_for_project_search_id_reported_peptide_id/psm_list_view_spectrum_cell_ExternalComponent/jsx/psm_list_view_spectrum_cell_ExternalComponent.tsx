@@ -76,8 +76,8 @@ export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Compo
         
         const spectrumRetrieveAndDisplay_Use_lorikeet = new SpectrumRetrieveAndDisplay_Use_lorikeet();
 
-		spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_NewWindow( { 
-			psmId, projectSearchId
+        spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_NewWindow( { 
+          psmId, projectSearchId
         } );
 
   

@@ -17,7 +17,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
@@ -229,8 +229,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
 	_createList_For_PerSearch_DataTable( { peptideItem, projectSearchIds } ) {
 
 		//  For getting search info for projectSearchIds
-		const searchNamesKeyProjectSearchId = 
-			this._dataPageStateManager_DataFrom_Server.get_searchNames();
+		const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
 
         const resultList_ForDataTable = [];
 
@@ -246,7 +245,7 @@ export class ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_Reported
                 continue; // EARLY CONTINUE
             }
                 
-			const searchNameObject = searchNamesKeyProjectSearchId[ projectSearchId ];
+			const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
 			if ( ! searchNameObject ) {
 				throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
             }

@@ -26,7 +26,7 @@
 
 import React from 'react'
 
-import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/data_pages/common_all_pages/tooltip_LimelightLocal_ReactBased';
+import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/common_all_pages/tooltip_LimelightLocal_ReactBased';
 
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer, ConditionGroupsDataContainer_DataEntry } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class'

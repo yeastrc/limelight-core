@@ -18,8 +18,8 @@ import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataP
 
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
 
 import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
@@ -54,6 +54,7 @@ import { ProteinViewPage_DisplayData_SingleProtein_PeptideSequenceSelect } from 
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from './proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
 import { ProteinViewPage_Display_SingleSearch } from './proteinViewPage_DisplayData_SingleSearch';
 import { Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId } from '../protein_page_single_protein_common/protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId';
+import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 
 //  Constants
@@ -2022,7 +2023,7 @@ export class ProteinViewPage_Display_SingleProtein_SingleSearch {
 	 */
 	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } ) {
 		
-		const searchDataLookupParamsRoot = (
+		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = (
 			this._searchDetailsBlockDataMgmtProcessing.
 			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
 		);

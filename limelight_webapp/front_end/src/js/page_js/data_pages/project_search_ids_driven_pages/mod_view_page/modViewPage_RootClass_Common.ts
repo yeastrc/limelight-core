@@ -14,31 +14,25 @@
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
-import {catchAndReportGlobalOnError} from 'page_js/catchAndReportGlobalOnError.js';
+import {catchAndReportGlobalOnError} from 'page_js/catchAndReportGlobalOnError';
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
-import {_REFERRER_PATH_STRING} from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
+import {_REFERRER_PATH_STRING} from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
-import {Page_UserDefault_processing} from 'page_js/data_pages/data_pages_common/page_UserDefault_processing.js';
+import {Page_UserDefault_processing} from 'page_js/data_pages/data_pages_common/page_UserDefault_processing';
 
 import { GetSearchDataLookupParametersFromPage, GetSearchDataLookupParametersFromPage_Result } from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage';
-import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import {LoadCoreData_ProjectSearchIds_Based} from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based';
 
-import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
+import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint';
 
-import {CentralPageStateManager} from '../../central_page_state_manager/centralPageStateManager.js';
+import {CentralPageStateManager} from '../../central_page_state_manager/centralPageStateManager';
 
 import {SharePage_dataPages} from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
-
-import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
-
-import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
-
-import { SearchColorManager }	from 'page_js/data_pages/color_manager/searchColorManager.js';
 
 
 //  From main_pages
@@ -47,7 +41,7 @@ import { SearchColorManager }	from 'page_js/data_pages/color_manager/searchColor
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
 
-import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader.js';
+import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader';
 //  From local dir
 import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
 
@@ -63,9 +57,6 @@ export class ModViewPage_RootClass_Common {
 
 	_page_UserDefault_processing : Page_UserDefault_processing;
 	_centralPageStateManager : CentralPageStateManager;
-	_singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
-	_proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
-	_searchColors_CentralStateManagerObject : SearchColorManager;
 
 	_dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	_dataPageStateManager_DataFrom_Server : DataPageStateManager;

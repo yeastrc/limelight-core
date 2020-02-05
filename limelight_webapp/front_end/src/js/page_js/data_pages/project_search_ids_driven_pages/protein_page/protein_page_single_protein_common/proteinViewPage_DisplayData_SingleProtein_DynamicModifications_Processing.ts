@@ -65,9 +65,9 @@ const _getDynamicModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = funct
     proteinSequenceVersionId, 
     projectSearchId
 } : { 
-    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
-    proteinSequenceVersionId, 
-    projectSearchId
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+    proteinSequenceVersionId : number
+    projectSearchId : number
 }) {
 
     const promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId = getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId({ loadedDataPerProjectSearchIdHolder, proteinSequenceVersionId, projectSearchId });

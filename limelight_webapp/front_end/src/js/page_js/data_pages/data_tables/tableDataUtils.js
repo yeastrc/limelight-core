@@ -29,22 +29,31 @@ export class TableDataUtils {
     static getAllPossibleOrderedPeptideAnnotations( { dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
         let annotationList = [ ];
-        let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData()[ projectSearchId ];
 
-        for (let annoId of Object.keys( annotationTypeData.reportedPeptideFilterableAnnotationTypes ) ) {
+		let annotationTypeDataLoaded_Root = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
-            let anno = annotationTypeData.reportedPeptideFilterableAnnotationTypes[ annoId ];
-            //  anno.sorttype = 'number';  Set in AnnotationTypeDataRetrieval on retrieval
-
-            annotationList.push( anno );
+		let annotationTypeDataForProjectSearchId = annotationTypeDataLoaded_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
+			throw Error("No annotation type data for projectSearchId: " + projectSearchId );
         }
-
-        for (let annoId of Object.keys( annotationTypeData.reportedPeptideDescriptiveAnnotationTypes ) ) {
-
-            let anno = annotationTypeData.reportedPeptideDescriptiveAnnotationTypes[ annoId ];
-            // anno.sorttype = 'string';  Set in AnnotationTypeDataRetrieval on retrieval
-
-            annotationList.push( anno );
+        
+        {
+            let reportedPeptideFilterableAnnotationTypes_Map = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes;
+            
+            for ( const annotationTypes_Map_Entry of reportedPeptideFilterableAnnotationTypes_Map.entries() ) {
+                const annotationTypeEntry = annotationTypes_Map_Entry[ 1 ]; // value of map entry
+      
+                annotationList.push( annotationTypeEntry );
+            }
+        }
+        {
+            let reportedPeptideDescriptiveAnnotationTypes_Map = annotationTypeDataForProjectSearchId.reportedPeptideDescriptiveAnnotationTypes;
+            
+            for ( const annotationTypes_Map_Entry of reportedPeptideDescriptiveAnnotationTypes_Map.entries() ) {
+                const annotationTypeEntry = annotationTypes_Map_Entry[ 1 ]; // value of map entry
+      
+                annotationList.push( annotationTypeEntry );
+            }
         }
 
         annotationList.sort( function(a,b) {
@@ -95,24 +104,33 @@ export class TableDataUtils {
     static getAllPossibleOrderedPSMAnnotations( { dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
         let annotationList = [ ];
-        let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData()[ projectSearchId ];
 
-        for (let annoId of Object.keys( annotationTypeData.psmFilterableAnnotationTypes ) ) {
+		let annotationTypeDataLoaded_Root = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
-            let anno = annotationTypeData.psmFilterableAnnotationTypes[ annoId ];
-            // anno.sorttype = 'number';  Set in AnnotationTypeDataRetrieval on retrieval
-
-            annotationList.push( anno );
+		let annotationTypeDataForProjectSearchId = annotationTypeDataLoaded_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
+			throw Error("No annotation type data for projectSearchId: " + projectSearchId );
         }
-
-        for (let annoId of Object.keys( annotationTypeData.psmDescriptiveAnnotationTypes ) ) {
-
-            let anno = annotationTypeData.psmDescriptiveAnnotationTypes[ annoId ];
-            // anno.sorttype = 'string';  Set in AnnotationTypeDataRetrieval on retrieval
-
-            annotationList.push( anno );
+        
+        {
+            let psmFilterableAnnotationTypes_Map = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
+            
+            for ( const annotationTypes_Map_Entry of psmFilterableAnnotationTypes_Map.entries() ) {
+                const annotationTypeEntry = annotationTypes_Map_Entry[ 1 ]; // value of map entry
+      
+                annotationList.push( annotationTypeEntry );
+            }
         }
-
+        {
+            let psmDescriptiveAnnotationTypes_Map = annotationTypeDataForProjectSearchId.psmDescriptiveAnnotationTypes;
+            
+            for ( const annotationTypes_Map_Entry of psmDescriptiveAnnotationTypes_Map.entries() ) {
+                const annotationTypeEntry = annotationTypes_Map_Entry[ 1 ]; // value of map entry
+      
+                annotationList.push( annotationTypeEntry );
+            }
+        }
+        
         annotationList.sort( function(a,b) {
 
             // always place something with a display order before something without one

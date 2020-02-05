@@ -747,7 +747,7 @@ export class ProteinViewDataLoader {
 	/**
 	 * Get Dynamic Modification Data From Reported Peptide Ids
 	 */
-	static getDynamicModificationsForReportedPeptideids( { projectSearchId, reportedPeptideIds } ) {
+	static getDynamicModificationsForReportedPeptideids( { projectSearchId, reportedPeptideIds } ) : Promise<unknown> {
 
 		let promise = new Promise( function( resolve, reject ) {
 		  try {

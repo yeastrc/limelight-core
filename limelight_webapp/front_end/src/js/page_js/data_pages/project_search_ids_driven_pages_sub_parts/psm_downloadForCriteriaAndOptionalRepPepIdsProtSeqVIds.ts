@@ -8,6 +8,8 @@
 //  JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
+import { SearchDataLookupParameters_Root } from "../data_pages__common_data_classes/searchDataLookupParameters";
+
 ///////////////////////////////////////////
 
 /**
@@ -21,7 +23,12 @@
  */
 const downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds = function( { 
 	
-	searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds } ) {
+    searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds
+} :  { 
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+    projectSearchIdsReportedPeptideIdsPsmIds, 
+    proteinSequenceVersionIds
+} ) : void {
     
     const requestJSONObject = {
         projectSearchIdsReportedPeptideIdsPsmIds,

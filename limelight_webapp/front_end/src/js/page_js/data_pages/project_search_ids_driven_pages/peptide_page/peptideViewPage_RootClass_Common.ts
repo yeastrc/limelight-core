@@ -14,37 +14,31 @@
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
+import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 //  From data_pages_common
 
-import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
+import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
-import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing.js';
+import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing';
 
 import { GetSearchDataLookupParametersFromPage, GetSearchDataLookupParametersFromPage_Result }  from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage';
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import { LoadCoreData_ProjectSearchIds_Based } from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based';
 
-import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
+import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint';
 
-import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager.js';
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
 import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 
-import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
-
-import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
-
-import { SearchColorManager }	from 'page_js/data_pages/color_manager/searchColorManager.js';
-
 //  From main_pages
-import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
+import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
 //  Import for typing only
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
@@ -56,9 +50,9 @@ import { PeptideViewPage_DisplayDataOnPage }
 
 //  From Testing
 	
-// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent.js';
+// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent';
 
-// import { Peptide_Fake_CentralStateManagerObjectClass } from './peptide_Fake_CentralStateManagerObjectClass.js';
+// import { Peptide_Fake_CentralStateManagerObjectClass } from './peptide_Fake_CentralStateManagerObjectClass';
 	
 /**
  * 
@@ -70,9 +64,6 @@ export class PeptideViewPage_RootClass_Common {
 
 	private _page_UserDefault_processing : Page_UserDefault_processing;
 	private _centralPageStateManager : CentralPageStateManager;
-	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
-	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
-	private _searchColors_CentralStateManagerObject : SearchColorManager;
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;

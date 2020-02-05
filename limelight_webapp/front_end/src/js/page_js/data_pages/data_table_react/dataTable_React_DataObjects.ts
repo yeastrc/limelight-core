@@ -158,13 +158,15 @@ class DataTable_SortColumnsInfoEntry {
  */
 class DataTable_RootTableDataObject {
 
+    //  Update shallowClone if add properties
+
     dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
     dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
     columns : Array<DataTable_Column>
 
     constructor({ columns, dataTable_DataRowEntries, dataTable_DataGroupRowEntries } : {
-        dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>,
-        dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>,
+        dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
+        dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
         columns : Array<DataTable_Column>
     }) {
         if ( ! columns ) {
@@ -187,6 +189,12 @@ class DataTable_RootTableDataObject {
         this.dataTable_DataRowEntries = dataTable_DataRowEntries;
         this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
     }
+
+    shallowClone() : DataTable_RootTableDataObject {
+
+        const clone = new DataTable_RootTableDataObject({ columns : this.columns, dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries });
+        return clone;
+    }
 }
 
 /**
@@ -197,6 +205,11 @@ class DataTable_Column {
     //  Dimensions of cells for this column, excluding padding around cell contents:
     width : number;      //  width (set as width and max-width on DOM element style property) of column
     heightInitial? : number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
+
+    //  If want graph in the cell, uses value from valueSort which must be a number
+    showHorizontalGraph? : boolean;
+    graphMaxValue? : number; //  Min Value assumed to be zero
+    graphWidth? : number;
 
     cssClassNameAdditions_HeaderRowCell? : string;  //  css classes to add to Header Row Cell entry HTML
     cssClassNameAdditions_DataRowCell? : string;  //  css classes to add to Data Row Cell entry HTML
@@ -229,16 +242,29 @@ class DataTable_Column {
 
     
     constructor({ 
-        id, displayName, width, 
-        heightInitial, cssClassNameAdditions_HeaderRowCell, cssClassNameAdditions_DataRowCell, style_override_DataRowCell_React, 
+        id, displayName, width, heightInitial, 
+
+        //  If want graph in the cell
+        showHorizontalGraph,  //  Show single horizontal rectangle where the value from valueSort is a fraction of graphMaxValue
+        graphMaxValue, //  Min Value assumed to be zero
+        graphWidth,   // width of 'outer' rectangle to represent graphMaxValue
+
+        cssClassNameAdditions_HeaderRowCell, cssClassNameAdditions_DataRowCell, style_override_DataRowCell_React, 
         cellMgmt_External, cellMgmt_ExternalReactComponent, 
+
+        //  For Header
         sortable, hideColumnHeader, style_override_HeaderRowCell_React
     } : { 
         id : DataTable_ColumnId, 
-        displayName : string, 
+        displayName : string
         width : number
 
         heightInitial? : number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
+
+        //  If want graph in the cell
+        showHorizontalGraph? : boolean;
+        graphMaxValue? : number; //  Min Value assumed to be zero
+        graphWidth? : number;
 
         cssClassNameAdditions_HeaderRowCell? : string;  //  css classes to add to Header Row Cell entry HTML
         cssClassNameAdditions_DataRowCell? : string;  //  css classes to add to Data Row Cell entry HTML
@@ -286,12 +312,31 @@ class DataTable_Column {
             console.warn( msg )
             throw Error( msg );
         }
+        if ( showHorizontalGraph ) {
+            if ( ! graphMaxValue ) {
+                const msg = "DataTable_Column.constructor: showHorizontalGraph is true and graphMaxValue is not set or is zero";
+                console.warn( msg )
+                throw Error( msg );
+            }
+            if ( ! graphWidth ) {
+                const msg = "DataTable_Column.constructor: showHorizontalGraph is true and graphWidth is not set or is zero";
+                console.warn( msg )
+                throw Error( msg );
+            }
+        }
 
         this.id = id;
         this.displayName = displayName;
         this.width = width;
 
         this.heightInitial = heightInitial;
+
+        //  If want graph in the cell
+        this.showHorizontalGraph = showHorizontalGraph;
+        this.graphMaxValue = graphMaxValue;
+        this.graphWidth = graphWidth
+
+
         this.cssClassNameAdditions_HeaderRowCell = cssClassNameAdditions_HeaderRowCell;
         this.cssClassNameAdditions_DataRowCell = cssClassNameAdditions_DataRowCell;
         this.style_override_DataRowCell_React = style_override_DataRowCell_React;
@@ -362,6 +407,7 @@ class DataTable_DataRowEntry {
 
     uniqueId : DataTable_UniqueId
     sortOrder_OnEquals : any    //  Must be sortable using Javascript < > comparators
+    greyOutRow? : boolean;  //  Grey out the row.  Appy CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
     columnEntries : Array<DataTable_DataRow_ColumnEntry>
 
     tableRowClickHandlerParameter? : any  //  Data passed to DataTable_TableOptions.dataRowClickHandler
@@ -380,9 +426,10 @@ class DataTable_DataRowEntry {
 
     /////////
     
-    constructor({ uniqueId, sortOrder_OnEquals, columnEntries, tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter } : {   
+    constructor({ uniqueId, sortOrder_OnEquals, greyOutRow, columnEntries, tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter } : {   
         uniqueId : DataTable_UniqueId,
         sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
+        greyOutRow? : boolean;  //  Grey out the row.  Appy CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
         columnEntries : Array<DataTable_DataRow_ColumnEntry>,
         tableRowClickHandlerParameter? : any,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
         dataRow_GetChildTableDataParameter? : any,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
@@ -416,6 +463,7 @@ class DataTable_DataRowEntry {
 
         this.uniqueId = uniqueId; 
         this.sortOrder_OnEquals = sortOrder_OnEquals;
+        this.greyOutRow = greyOutRow;
         this.columnEntries = columnEntries;
         this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
         this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter

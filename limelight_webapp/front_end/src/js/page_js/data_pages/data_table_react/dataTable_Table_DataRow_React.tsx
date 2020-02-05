@@ -457,13 +457,20 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             })
         );
 
+        let className_innerContainingDiv_GreyOut = "";
+
+        if ( this.props.dataObject.greyOutRow ) {
+            className_innerContainingDiv_GreyOut = " grey-out-row ";
+        }
+
+        const className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut;
 
         return (
             <div className=" data-table-data-rows-outer-containing-div ">
 
                 { childTableShowHideIcon }
 
-                <div className=" data-table-data-rows-inner-containing-div ">
+                <div className={ className_innerContainingDiv }>
                     
                     <table className=" data-table-data-rows-table ">
                         <tbody>

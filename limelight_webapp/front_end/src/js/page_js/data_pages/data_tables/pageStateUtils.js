@@ -30,15 +30,15 @@ export class PageStateUtils {
 
 		//   Get all Reported Peptide annotation type records with sortOrder set
 
-		let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData();
+		let annotationTypeDataLoaded_Root = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
-		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
+		let annotationTypeDataForProjectSearchId = annotationTypeDataLoaded_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
 			throw Error("No annotation type data for projectSearchId: " + projectSearchId );
 		}
 
-		let reportedPeptideFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes;
-		if ( ! reportedPeptideFilterableAnnotationTypes ) {
+		let reportedPeptideFilterableAnnotationTypes_Map = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes;
+		if ( ! reportedPeptideFilterableAnnotationTypes_Map ) {
 			//  No data so return empty array
 			return []; //  EARLY RETURN
 		}
@@ -47,14 +47,12 @@ export class PageStateUtils {
 		
 		let reportedPeptideFilterableAnnotationTypes_SortOrderPopulated = [];
 		
-		let reportedPeptideFilterableAnnotationTypes_Keys = Object.keys ( reportedPeptideFilterableAnnotationTypes );
-		
-		reportedPeptideFilterableAnnotationTypes_Keys.forEach( function( reportedPeptideFilterableAnnotationTypesKeyItem, index, array ) {
-			let annotationTypeEntryForKey = reportedPeptideFilterableAnnotationTypes[ reportedPeptideFilterableAnnotationTypesKeyItem ];
-			if ( annotationTypeEntryForKey.sortOrder ) {
-				reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
+		for ( const annotationTypes_Map_Entry of reportedPeptideFilterableAnnotationTypes_Map.entries() ) {
+            const annotationTypeEntry = annotationTypes_Map_Entry[ 1 ]; // value of map entry
+			if ( annotationTypeEntry.sortOrder ) {
+				reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntry );
 			}
-		}, this );
+		}
 		
 		//  Sort on sort order
 		reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.sort(function(a, b) {
@@ -68,7 +66,7 @@ export class PageStateUtils {
 		})
 		
 		return reportedPeptideFilterableAnnotationTypes_SortOrderPopulated;
-	};
+	}
 
 	static getPsmAnnotationTypeIdsWhereSortOrderPopulated( { dataPageStateManager_DataFrom_Server, projectSearchId } ) {
 
@@ -91,15 +89,15 @@ export class PageStateUtils {
 
 		//   Get all Psm annotation type records with sortOrder set
 
-		let annotationTypeData = dataPageStateManager_DataFrom_Server.get_annotationTypeData();
+		let annotationTypeDataLoaded_Root = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
-		let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
+		let annotationTypeDataForProjectSearchId = annotationTypeDataLoaded_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
 		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
 			throw Error("No annotation type data for projectSearchId: " + projectSearchId );
 		}
 
-		let psmFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
-		if ( ! psmFilterableAnnotationTypes ) {
+		let psmFilterableAnnotationTypes_Map = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
+		if ( ! psmFilterableAnnotationTypes_Map ) {
 			//  No data so return empty array
 			return []; //  EARLY RETURN
 		}
@@ -108,14 +106,12 @@ export class PageStateUtils {
 		
 		let psmFilterableAnnotationTypes_SortOrderPopulated = [];
 		
-		let psmFilterableAnnotationTypes_Keys = Object.keys ( psmFilterableAnnotationTypes );
-		
-		psmFilterableAnnotationTypes_Keys.forEach( function( psmFilterableAnnotationTypesKeyItem, index, array ) {
-			let annotationTypeEntryForKey = psmFilterableAnnotationTypes[ psmFilterableAnnotationTypesKeyItem ];
-			if ( annotationTypeEntryForKey.sortOrder ) {
-				psmFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
+		for ( const annotationTypes_Map_Entry of psmFilterableAnnotationTypes_Map.entries() ) {
+            const annotationTypeEntry = annotationTypes_Map_Entry[ 1 ]; // value of map entry
+			if ( annotationTypeEntry.sortOrder ) {
+				psmFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntry );
 			}
-		}, this );
+		}
 
 		
 		//  Sort on sort order
@@ -131,7 +127,7 @@ export class PageStateUtils {
 		})
 		
 		return psmFilterableAnnotationTypes_SortOrderPopulated;
-	};
+	}
 
 
 }

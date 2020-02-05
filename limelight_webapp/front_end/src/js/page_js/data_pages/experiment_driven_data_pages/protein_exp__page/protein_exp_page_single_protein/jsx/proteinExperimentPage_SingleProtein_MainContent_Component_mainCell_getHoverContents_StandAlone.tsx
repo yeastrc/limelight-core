@@ -18,6 +18,7 @@ import React from 'react'
 
 import { Experiment_ConditionGroupsContainer, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 
 /**
@@ -32,7 +33,7 @@ const mainCell_getHoverContents_StandAlone = function({
     conditionIdPath : Array<number>, 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     conditionGroupsDataContainer : ConditionGroupsDataContainer;
-    searchNamesMap_KeyProjectSearchId 
+    searchNamesMap_KeyProjectSearchId  : SearchNames_AsMap
 }) {
     // console.log("_mainCell_getHoverContents_StandAlone")
 
@@ -110,10 +111,10 @@ const mainCell_getHoverContents_StandAlone = function({
 
                         const projectSearchId = (projectSearchIdsArray_Entry as number);
 
-                        //  searchNamesMap_KeyProjectSearchId is Object with projectSearchId as properties
-                        const searchDataEntry = searchNamesMap_KeyProjectSearchId[ projectSearchId ];
+                        //  searchNamesMap_KeyProjectSearchId is Map with projectSearchId as keys
+                        const searchDataEntry = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
                         if ( ! searchDataEntry ) {
-                            console.log("WARN: No entry in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
+                            console.log("WARN: No entry in searchNamesMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
                             continue; // EARLY CONTINUE
                         }
                         searchDataEntries.push( searchDataEntry );

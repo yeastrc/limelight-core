@@ -7,9 +7,9 @@
  * 
  */
 
-import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils.js';
+import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils';
 
-import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
+import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
 
 //   !!!  Constants visible in this file/module

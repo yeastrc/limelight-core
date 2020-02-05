@@ -12,6 +12,9 @@ import { DataTable_RootTableObject, DataTable_ColumnId, DataTable_TableOptions, 
 
 import { DataTable_Table_HeaderRowEntry }  from './dataTable_Table_HeaderRowEntry_React';
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
+import { DataTable_Table_DataRow_Group } from './dataTable_Table_DataRow_Group_React';
+
+import { sort_dataRows_on_sortColumnsInfo } from './dataTable_SortDataRows';
 
 /**
  * 
@@ -43,14 +46,46 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     constructor(props : DataTable_TableRoot_Props) {
         super(props);
 
-        this.state = {
-            tableDataObject: props.tableObject.tableDataObject,
-            tableOptions : props.tableObject.tableOptions,
-            tableDataObject_FromProps: props.tableObject.tableDataObject,
-            tableOptions_FromProps : props.tableObject.tableOptions,
-            sortColumnsInfo : undefined
-        };
+        this.state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({ tableObject : props.tableObject });
     }
+
+    /**
+     * 
+     */
+    private static _createStateObjectFrom_DataTable_RootTableObject({ tableObject } : { tableObject : DataTable_RootTableObject }) : DataTable_TableRoot_State {
+
+        const state = {
+            tableDataObject: tableObject.tableDataObject,
+            tableOptions : tableObject.tableOptions,
+            tableDataObject_FromProps: tableObject.tableDataObject,
+            tableOptions_FromProps : tableObject.tableOptions,
+            sortColumnsInfo : null
+        };
+
+        return state;
+    }
+
+    //  method update_tableObject(...) Is Incorrect.  It does NOT work correctly with getDerivedStateFromProps and shouldComponentUpdate
+
+    //      Remove rather than try to fix.  Can just re-render 
+
+    // /**
+    //  * 
+    //  */
+    // update_tableObject({ tableObject } : { tableObject : DataTable_RootTableObject }) {
+
+    //     this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
+
+    //         // Important: read `existingState` instead of `this.state` when updating.
+
+    //         const state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({ tableObject : tableObject });
+
+    //         //  WAS:
+    //         // const state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({ tableObject : props.tableObject });
+
+    //         return state;
+    //     });
+    // }
 
     /**
      * Must be Static
@@ -72,13 +107,9 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         }
 
         //  Props changed so reset sorting
-        return {
-            tableDataObject: props.tableObject.tableDataObject,
-            tableOptions : props.tableObject.tableOptions,
-            tableDataObject_FromProps: props.tableObject.tableDataObject,
-            tableOptions_FromProps : props.tableObject.tableOptions,
-            sortColumnsInfo : null
-        };
+        const new_state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({ tableObject : props.tableObject });
+
+        return new_state;
     }
 
     /**
@@ -199,131 +230,37 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         const columns = tableObject.columns;
 
-        //  Get Index in data row entry arrays for sortColumnsInfo entries
+        if ( tableObject.dataTable_DataRowEntries ) {
 
-        const dataRowEntrySortDataEntries = []; 
+            sort_dataRows_on_sortColumnsInfo({ dataToSort : tableObject.dataTable_DataRowEntries, columns, sortColumnsInfo });
 
-        for ( const sortColumnsInfoEntry of sortColumnsInfo ) {
-            
-            let columnIndex = 0;
-            let columnInfo = undefined;
-            for ( const columnsEntry of columns ) {
-                if ( sortColumnsInfoEntry.columnId === columnsEntry.id ) {
-                    columnInfo = columnsEntry;
-                    break;
-                }
-                columnIndex++;
-            }
-            if ( columnInfo === undefined ) {
-                throw Error("No entry in tableObject.columns for columnId: " + sortColumnsInfoEntry.columnId );
-            }
-
-            const dataRowEntrySortDataEntry = {
-                columnIndex,
-                columnInfo,
-                sortColumnsInfoEntry
-            };
-
-            dataRowEntrySortDataEntries.push( dataRowEntrySortDataEntry );
-        }
-
-        let dataToSort : Array<DataTable_DataRowEntry> | Array<DataTable_DataGroupRowEntry> = tableObject.dataTable_DataRowEntries;
-
-        if ( tableObject.dataTable_DataGroupRowEntries ) {
+        } else if ( tableObject.dataTable_DataGroupRowEntries ) {
 
             //  Sort the groups
-            dataToSort = tableObject.dataTable_DataGroupRowEntries;
 
-            const msg = "_sort_tableObject_on_sortColumnsInfo: Not Tested with Groups and Probably requires changes.";
+            //  First sort the contents of each group.  This will also update what the group returns for sorting the groups
+
+            for ( const dataTable_DataGroupRowEntry of tableObject.dataTable_DataGroupRowEntries ) {
+
+                sort_dataRows_on_sortColumnsInfo({ dataToSort : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, columns, sortColumnsInfo });
+
+                //  Update columnEntries to first row in group
+
+                dataTable_DataGroupRowEntry.columnEntries = dataTable_DataGroupRowEntry.dataTable_DataRowEntries[ 0 ].columnEntries;
+            }
+
+            //  Sort the groups
+
+            sort_dataRows_on_sortColumnsInfo({ dataToSort : tableObject.dataTable_DataGroupRowEntries, columns, sortColumnsInfo });
+
+        } else {
+
+            const msg = "_sort_tableObject_on_sortColumnsInfo: Neither are populated: tableObject.dataTable_DataRowEntries, tableObject.dataTable_DataGroupRowEntries";
             console.warn( msg );
             throw Error( msg );
         }
 
-        dataToSort.sort( ( dataObject_A : DataTable_DataRowEntry | DataTable_DataGroupRowEntry, dataObject_B : DataTable_DataRowEntry | DataTable_DataGroupRowEntry ) => {
-
-            //  Sort each selected columnId.   Sort undefined and null before other values
-
-            for ( const dataRowEntrySortDataEntry of dataRowEntrySortDataEntries ) {
-
-                // const columnId = dataRowEntrySortDataEntry.sortColumnsInfoEntry.columnId;
-                const column_sortDirection = dataRowEntrySortDataEntry.sortColumnsInfoEntry.sortDirection;
-
-                let a_ColumnValue = undefined;
-                let b_ColumnValue = undefined;
-
-                const a_ColumnEntry = dataObject_A.columnEntries[ dataRowEntrySortDataEntry.columnIndex ];
-                const b_ColumnEntry = dataObject_B.columnEntries[ dataRowEntrySortDataEntry.columnIndex ];
-
-                if ( a_ColumnEntry ) {
-                    a_ColumnValue = a_ColumnEntry.valueSort;
-                }
-                if ( b_ColumnEntry ) {
-                    b_ColumnValue = b_ColumnEntry.valueSort;
-                }
-                
-                if ( ( a_ColumnValue === undefined || a_ColumnValue === null ) && ( b_ColumnValue === undefined || b_ColumnValue === null ) ) {
-                    continue;  // EARLY CONTINUE
-                }
-
-                if ( ( a_ColumnValue === undefined || a_ColumnValue === null ) && ( b_ColumnValue !== undefined && b_ColumnValue !== null ) ) {
-                     // Sort (undefined or null) before (not undefined and not null)
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return -1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return 1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-                if ( ( a_ColumnValue !== undefined && a_ColumnValue !== null ) && ( b_ColumnValue === undefined || b_ColumnValue === null ) ) {
-                    // Sort (undefined or null) before (not undefined and not null)
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return 1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return -1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-
-                if ( a_ColumnValue < b_ColumnValue ) {
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return -1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return 1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-                if ( a_ColumnValue > b_ColumnValue ) {
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return 1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return -1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-            }
-            //  All sort columns match so sort on sortOrder_OnEquals
-
-            if ( dataObject_A.sortOrder_OnEquals < dataObject_B.sortOrder_OnEquals ) {
-                return -1;
-            }
-
-            if ( dataObject_A.sortOrder_OnEquals > dataObject_B.sortOrder_OnEquals ) {
-                return 1;
-            }
-              
-            //  sortOrder_OnEquals match so sort on uniqueId
-
-            if ( dataObject_A.uniqueId < dataObject_B.uniqueId ) {
-                return -1;
-            }
-
-            if ( dataObject_A.uniqueId > dataObject_B.uniqueId ) {
-                return 1;
-            }
-            return 0;
-        });
-
-        let tableObject_New = Object.assign( {}, tableObject ); // make copy of tableObject
+        let tableObject_New = tableObject.shallowClone(); // make copy of tableObject
 
         //  Return updated object
         return { tableObject : tableObject_New };
@@ -335,6 +272,13 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     render () {
 
         // console.log("DataTable_TableRoot: render()")
+
+        let have_DataGroups = false;
+
+        if ( this.state.tableDataObject.dataTable_DataGroupRowEntries ) {
+
+            have_DataGroups = true;
+        }
 
         //  Validate incoming data
         {
@@ -415,65 +359,53 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         let header = headerMain;
 
-        //  tableGroups handling needs rewrite
+        if ( have_DataGroups ) {
 
-        
-        // if ( this.state.tableOptions.tableGroups ) {
-
-        //     header = (
-        //         <div className=" data-table-header-row-groups-container selector_group_container " >
+            header = (
+                <div className=" data-table-header-row-groups-container  " >  {/* selector_group_container */}
+                        { headerMain }
                     
-        //                 { headerMain }
-                    
-        //         </div>
-        //     )
-        // }
+                </div>
+            )
+        }
 
         let dataRows = undefined;
 
-
-        //  tableGroups handling needs rewrite
-
-
-        // if ( this.state.tableOptions.tableGroups ) {
+        if ( have_DataGroups ) {
             
-        //     //  Display Groups, with each group entry containing dataTable_DataRowEntries
+            //  Display Groups, with each group entry containing dataTable_DataRowEntries
 
-        //     if ( this.state.tableDataObject.dataTable_DataGroupRowEntries === undefined || this.state.tableDataObject.dataTable_DataGroupRowEntries === null ) {
-        //         throw Error(" ( this.state.tableOptions.tableGroups ) is true and ( this.state.tableDataObject.dataTable_DataGroupRowEntries === undefined || this.state.tableDataObject.dataTable_DataGroupRowEntries === null )")
-        //     }
+            //  Convert this.state.tableDataObject.dataTable_DataGroupRowEntries into React components
 
-        //     //  Convert this.state.tableDataObject.dataTable_DataGroupRowEntries into React components
+            const dataGroupRowsReactComponents = [];
 
-        //     const dataGroupRowsReactComponents = [];
-
-        //     let highlightRow = false;
-        //     for ( const dataGroupObject of this.state.tableDataObject.dataTable_DataGroupRowEntries ) {
-        //         const reactRowElement = (
-        //             <DataTable_Table_DataRow_Group 
-        //                 dataGroupObject={ dataGroupObject }
-        //                 tableObject={ this.state.tableDataObject } 
-        //                 tableOptions={ this.state.tableOptions }
-        //                 highlightRow={ highlightRow }
-        //                 key={ dataGroupObject.uniqueId } />
-        //         );
+            let highlightRow = false; // Alternate highlighting Table Group Rows
+            for ( const dataTable_DataGroupRowEntry of this.state.tableDataObject.dataTable_DataGroupRowEntries ) {
+                const reactRowElement = (
+                    <DataTable_Table_DataRow_Group 
+                        dataTable_DataGroupRowEntry={ dataTable_DataGroupRowEntry }
+                        columns={ this.state.tableDataObject.columns }
+                        tableOptions={ this.state.tableOptions }
+                        highlightRow={ highlightRow }
+                        key={ dataTable_DataGroupRowEntry.uniqueId } />
+                );
         
-        //         dataGroupRowsReactComponents.push( reactRowElement );
+                dataGroupRowsReactComponents.push( reactRowElement );
 
-        //         if ( highlightRow ) {
-        //             highlightRow = false;
-        //         } else {
-        //             highlightRow = true;
-        //         }
-        //     }
+                if ( highlightRow ) {
+                    highlightRow = false;
+                } else {
+                    highlightRow = true;
+                }
+            }
         
-        //     dataRows = (
-        //         <div className="table-rows-container selector_table_rows_container" >
+            dataRows = (
+                <div className="table-rows-container selector_table_rows_container" data-component="div in 'have_DataGroups' in <DataTable_TableRoot>" >
 
-        //             { dataGroupRowsReactComponents }
-        //         </div>
-        //     );
-        // } else {
+                    { dataGroupRowsReactComponents }
+                </div>
+            );
+        } else {
 
             //  No Groups so display the Data Rows
 
@@ -505,7 +437,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             
 
             dataRows = dataRowsReactComponents ;
-        // }
+        }
 
         let divCssClass = " data-table-container-react ";
 
@@ -518,12 +450,15 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         }
 
         return (
-            <div className={ divCssClass }>
-              
-                { header }
-                { dataRows }
-              
-            </div>
+            <React.Fragment>
+                <div className={ divCssClass } data-react-component="DataTable_TableRoot">
+                
+                    { header }
+                    { dataRows }
+                
+                </div>
+                <br />  {/* <br/> Added since <div> before it has 'display: inline-block' in CSS class data-table-container-react */}
+            </React.Fragment>
         )
     }
 }

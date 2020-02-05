@@ -7,7 +7,7 @@
  */
 
 
-import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/data_pages/common_all_pages/tooltip_LimelightLocal_ReactBased';
+import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/common_all_pages/tooltip_LimelightLocal_ReactBased';
 
 /**
  * Class to manage tooltip for Main Cell

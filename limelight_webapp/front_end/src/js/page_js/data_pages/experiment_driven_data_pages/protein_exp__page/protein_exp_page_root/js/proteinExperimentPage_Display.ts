@@ -185,7 +185,7 @@ export class ProteinExperimentPage_Display {
 	initialize() {
 
         //  For getting search info for projectSearchIds.  Object with property name being project search id
-        const searchNamesKeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames();
+        const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
 
         //  Render to page:
 
@@ -214,7 +214,7 @@ export class ProteinExperimentPage_Display {
             // proteinListDataTable : proteinListDataTable ,
             conditionGroupsContainer : this._conditionGroupsContainer ,
             conditionGroupsDataContainer : this._conditionGroupsDataContainer ,
-            searchNamesMap_KeyProjectSearchId : searchNamesKeyProjectSearchId,
+            searchNamesMap_KeyProjectSearchId : searchNamesMap_KeyProjectSearchId,
             experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory
         }
 		
@@ -394,20 +394,23 @@ export class ProteinExperimentPage_Display {
 
         //  Add Protein List Data to page:
 
-		const tableDataObject : DataTable_RootTableDataObject = { 
+		const tableDataObject : DataTable_RootTableDataObject = new DataTable_RootTableDataObject({ 
 			columns,
 			dataTable_DataRowEntries : proteinList_ForDataTable
-		}
+		});
 
-        const tableOptions = {
+        const tableOptions = new DataTable_TableOptions({
             dataRowClickHandler : this._proteinListTable_dataRow_ClickHandler_BindThis //  Called when a data row is clicked
-        };
+        });
 
-        const proteinListDataTable : DataTable_RootTableObject = { dataTableId : "Experiment Protein List", tableDataObject, tableOptions };
+        const proteinListDataTable : DataTable_RootTableObject = new DataTable_RootTableObject({ 
+            dataTableId : "Experiment Protein List", 
+            tableDataObject, tableOptions 
+        });
 
         const proteinListData : ProteinExperimentPage_Root_Component_ProteinListData_Param = {
             proteinCount, proteinListDataTable
-        }
+        };
 
         this._renderedReactComponent_ProteinExperimentPage_Root_Component.set_proteinListDataTable({ proteinListData });
     }

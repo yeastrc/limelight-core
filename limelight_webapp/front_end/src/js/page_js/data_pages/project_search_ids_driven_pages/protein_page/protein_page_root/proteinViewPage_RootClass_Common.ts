@@ -21,34 +21,34 @@
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError.js';
+import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
-import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
+import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
-import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing.js';
+import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing';
 
 import { GetSearchDataLookupParametersFromPage, GetSearchDataLookupParametersFromPage_Result }  from 'page_js/data_pages/data_pages_common/getSearchDataLookupParametersFromPage';
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import { LoadCoreData_ProjectSearchIds_Based } from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based';
 
-import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
+import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint';
 
-import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager.js';
+import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
 import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 
-import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass.js';
+import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
 
-import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass.js';
-
+import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
+import { ProteinGrouping_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
 
 //  From main_pages
-import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader.js';
+import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
 //  Import for typing only
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
@@ -59,7 +59,7 @@ import { ProteinViewPage_DisplayDataOnPage }  from './proteinViewPage_DisplayDat
 	
 //  From Testing
 	
-// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent.js';
+// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent';
 	
 /**
  * 
@@ -78,6 +78,7 @@ export class ProteinViewPage_RootClass_Common {
 	private _centralPageStateManager : CentralPageStateManager;
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
+	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
@@ -106,7 +107,8 @@ export class ProteinViewPage_RootClass_Common {
 		this._centralPageStateManager = new CentralPageStateManager();
 
 		this._singleProtein_CentralStateManagerObject = new SingleProtein_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined } );
-		this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined } );
+		this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
+		this._proteinGrouping_CentralStateManagerObjectClass = new ProteinGrouping_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager, proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass });
 
 		//  Instances of class DataPageStateManager
 		
@@ -134,7 +136,8 @@ export class ProteinViewPage_RootClass_Common {
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager : this._centralPageStateManager,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
-			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass
+			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
@@ -148,8 +151,6 @@ export class ProteinViewPage_RootClass_Common {
 	 */
 	initialize() {
 		
-		let objectThis = this;
-		
 		catchAndReportGlobalOnError.init();
 
 		this._page_UserDefault_processing.page_UserDefault_processing();
@@ -158,6 +159,7 @@ export class ProteinViewPage_RootClass_Common {
 
 		this._singleProtein_CentralStateManagerObject.initialize();
 		this._proteinList_CentralStateManagerObjectClass.initialize();
+		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
 		
 		let referrerFromURL = initialStateFromURL.referrer;
 		
@@ -216,22 +218,21 @@ export class ProteinViewPage_RootClass_Common {
 				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
 			});
 		
-		let _loadCoreData_ProjectSearchIds_Based_Promise =
-			this._loadCoreData_ProjectSearchIds_Based.loadCoreDataFor_ProjectSearchIds();
+		let loadCoreData_ProjectSearchIds_Based_Promise = this._loadCoreData_ProjectSearchIds_Based.loadCoreDataFor_ProjectSearchIds();
 
-		_loadCoreData_ProjectSearchIds_Based_Promise.then(  // onFulfilled
-				function( value ) {
-					try {
-						//  Continue processing
-						objectThis._createFilterData_In_dataPageStateManager_ForInitialLoad ();
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				}, function(reason) { // onRejected
+		loadCoreData_ProjectSearchIds_Based_Promise.catch( (reason) => { 
+			throw Error(reason)
+		} );
 
-				});
-		
+		loadCoreData_ProjectSearchIds_Based_Promise.then( ( value ) => {
+			try {
+				//  Continue processing
+				this._createFilterData_In_dataPageStateManager_ForInitialLoad ();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
 	}
 
 	/**
@@ -246,6 +247,8 @@ export class ProteinViewPage_RootClass_Common {
 		//  Have all data in page variables to render the page
 
 		this._proteinViewPage_DisplayDataOnPage.populateSearchDetailsBlock();
+
+		this._proteinViewPage_DisplayDataOnPage.populateOtherFiltersInFilterBlock();
 		
 		this._proteinViewPage_DisplayDataOnPage.populateProteinListBlock();
 	}

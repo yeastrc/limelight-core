@@ -17,7 +17,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	
 	//  Computed in this class and cached
 	
-	private _proteinCoverageRatio;
+	private _proteinCoverageRatio : number;
 	private _coveredPositionCount;
 
 	private _booleanArrayOfProteinCoverage;
@@ -53,7 +53,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	/**
 	 * Protein Coverage as ratio: (number of covered positions) / (protein length)
 	 */
-	getProteinSequenceCoverageRatio() {
+	getProteinSequenceCoverageRatio() : number {
 		
 		if ( this._proteinCoverageRatio !== undefined ) {
 			return this._proteinCoverageRatio;
@@ -75,6 +75,10 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 		}
 		
 		this._proteinCoverageRatio = this._coveredPositionCount / this._proteinLength;
+
+		if ( Number.isNaN( this._proteinCoverageRatio ) ) {
+			throw Error("ProteinSequenceCoverageData_For_ProteinSequenceVersionId: Computed this._proteinCoverageRatio is NaN, this._coveredPositionCount: " + this._coveredPositionCount + ", this._proteinLength: " + this._proteinLength )
+		}
 		
 		return this._proteinCoverageRatio;
 	}

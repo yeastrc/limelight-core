@@ -23,16 +23,16 @@
 
 //  module import 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+// import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+// import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes.js';
+// import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
-import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils.js';
-import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
+// import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils';
+// import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils';
 
-import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
+import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL'
 
 
 //   !!!  Constants visible in this file/module

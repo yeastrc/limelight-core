@@ -5,6 +5,8 @@
  */
 import React from 'react'
 
+import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+
 import { DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 /**
@@ -136,32 +138,46 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
         }
       }
 
-      // let horizontalGraph = undefined;
-      // let horizontalGraph_SpaceAfter = undefined;
+      let horizontalGraph = undefined;
+      let horizontalGraph_SpaceAfter = undefined;
 
-      //  showHorizontalGraph not currently supported
-      // if ( column.showHorizontalGraph ) {
+       
+      if ( column.showHorizontalGraph ) {
 
-      //   if ( this.props.dataObject.graphWidths === undefined || this.props.dataObject.graphWidths === null ) {
+        if ( dataObject_columnEntry.valueSort == undefined || dataObject_columnEntry.valueSort === null ) {
+          const msg = "DataTable_Table_DataRowEntry: column.showHorizontalGraph is true and is true if ( dataObject_columnEntry.valueSort == undefined || dataObject_columnEntry.valueSort === null )";
+          console.warn( msg );
+          throw Error( msg );
+        }
 
-      //     console.log("column.showHorizontalGraph true but this.props.dataObject.graphWidths undefined or null. column.id: " + column.id );
-      //   }  else {
-      //     const dataObject_GraphWidth = this.props.dataObject.graphWidths[ column.id ];
-      //     if ( dataObject_GraphWidth === undefined ) {
-      //       throw Error("No value found in this.props.dataObject.graphWidths for column.id: " + column.id );
-      //     }
+        if ( ! variable_is_type_number_Check( dataObject_columnEntry.valueSort ) ) {
+          const msg = "DataTable_Table_DataRowEntry: column.showHorizontalGraph is true and dataObject_columnEntry.valueSort is not a number.  dataObject_columnEntry.valueSort: " + dataObject_columnEntry.valueSort;
+          console.warn( msg );
+          throw Error( msg );
+        }
 
-      //     horizontalGraph = (
-      //       <svg width={ column.graphWidth + "px" } height="14px" preserveAspectRatio="none">
-      //         <rect x="0" y="0" width={ column.graphWidth + "px" } height="100%" 
-      //           style={ { fillOpacity : 0.0, fill:"rgb(255,255,255)", strokeWidth : 2, stroke : "#d3d3d3"} } />
-      //         <rect x="0" y="0" width={ dataObject_GraphWidth + "px" } height="100%" 
-      //           style={ { fillOpacity:1.0, fill: "#32cd32", strokeWidth: 1 ,stroke : "#d3d3d3" } } />
-      //       </svg>
-      //     );
-      //     horizontalGraph_SpaceAfter = " ";
-      //   }
-      // }
+        let fractionOfMaxValue = dataObject_columnEntry.valueSort / column.graphMaxValue;
+        if ( fractionOfMaxValue > 1 ) {
+          fractionOfMaxValue = 1; // limit to max of 1
+        }
+
+        const widthForValue = Math.round( fractionOfMaxValue * column.graphWidth );
+
+        if ( Number.isNaN( widthForValue ) ) {
+          throw Error("DataTable_Table_DataRowEntry: widthForValue is NaN. dataObject_columnEntry.valueSort: " + dataObject_columnEntry.valueSort + ", column.graphMaxValue: " + column.graphMaxValue + ", column.graphWidth: " + column.graphWidth )
+        }
+
+        horizontalGraph = (
+          <svg width={ column.graphWidth + "px" } height="14px" preserveAspectRatio="none">
+            <rect x="0" y="0" width={ column.graphWidth + "px" } height="100%" 
+              style={ { fillOpacity : 0.0, fill:"rgb(255,255,255)", strokeWidth : 2, stroke : "#d3d3d3"} } />
+            <rect x="0" y="0" width={ widthForValue + "px" } height="100%" 
+              style={ { fillOpacity:1.0, fill: "#32cd32", strokeWidth: 1 ,stroke : "#d3d3d3" } } />
+          </svg>
+        );
+        horizontalGraph_SpaceAfter = " ";
+      
+      }
 
       const valueDisplay = dataObject_columnEntry.valueDisplay;
 
@@ -195,8 +211,8 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
                 {/* Removed since property not set: data-row-id={ columnEntry.uniqueId } */}
 
             <div style={ styleContainerDiv } title={ tooltipText }>
-              {/* { horizontalGraph }
-              { horizontalGraph_SpaceAfter } */}
+              { horizontalGraph }
+              { horizontalGraph_SpaceAfter }
               <span className=" table-data-cell-property-value ">{ valueDisplay }</span>
             </div>
           </td>

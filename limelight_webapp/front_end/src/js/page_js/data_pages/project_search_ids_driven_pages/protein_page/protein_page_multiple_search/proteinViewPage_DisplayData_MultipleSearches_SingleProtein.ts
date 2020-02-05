@@ -17,8 +17,8 @@ import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downlo
 
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/data_pages_common/searchDetailsBlockDataMgmtProcessing';
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/data_pages_common/searchDetailsAndFilterBlock_MainPage';
+import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
+import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
 
 import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
@@ -74,6 +74,7 @@ import { Protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearc
 
 import { ProteinViewPage_Display_MultipleSearches } from './proteinViewPage_DisplayData_MultipleSearches';
 import { ProteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein_ReportedPeptideList';
+import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 //  Constants
 
@@ -2503,7 +2504,7 @@ export class ProteinViewPage_Display_MultipleSearches_SingleProtein {
 	 */
 	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } ) {
 		
-		const searchDataLookupParamsRoot = (
+		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = (
 			this._searchDetailsBlockDataMgmtProcessing.
 			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
 		);

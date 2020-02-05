@@ -11,7 +11,7 @@ import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_C
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 //   From data_pages_common
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
@@ -499,7 +499,7 @@ const _sort_reportedPeptideList = function({
     /**
      * Return array ann type entries, sorted on sortOrder
      */
-    let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated = _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
+    let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated : Array<AnnotationTypeItem> = _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
 
     let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Length = reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated.length;
 
@@ -561,36 +561,33 @@ const _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated = funct
 } : { 
     projectSearchId : number, 
     dataPageStateManager : DataPageStateManager 
-}) {
+}) : Array<AnnotationTypeItem> {
 
     //   Get all ReportedPeptide annotation type records with sortOrder set
 
-    let annotationTypeData = dataPageStateManager.get_annotationTypeData();
+    let annotationTypeData_Root : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
 
-    let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
+    let annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
     if ( ( ! annotationTypeDataForProjectSearchId ) ) {
         throw Error("No annotation type data for projectSearchId: " + projectSearchId );
     }
 
-    let reportedPeptideFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes;
-    if ( ! reportedPeptideFilterableAnnotationTypes ) {
+    let reportedPeptideFilterableAnnotationTypes_Map : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes;
+    if ( ! reportedPeptideFilterableAnnotationTypes_Map ) {
         //  No data so return empty array
         return []; //  EARLY RETURN
     }
     
     //  Get AnnotationType Records where sortOrder is populated
     
-    let reportedPeptideFilterableAnnotationTypes_SortOrderPopulated = [];
+    let reportedPeptideFilterableAnnotationTypes_SortOrderPopulated : Array<AnnotationTypeItem> = [];
     
-    let reportedPeptideFilterableAnnotationTypes_Keys = Object.keys ( reportedPeptideFilterableAnnotationTypes );
-    
-    reportedPeptideFilterableAnnotationTypes_Keys.forEach( function( reportedPeptideFilterableAnnotationTypesKeyItem, index, array ) {
-        let annotationTypeEntryForKey = reportedPeptideFilterableAnnotationTypes[ reportedPeptideFilterableAnnotationTypesKeyItem ];
-        if ( annotationTypeEntryForKey.sortOrder ) {
-            reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
+    for ( const reportedPeptideFilterableAnnotationTypes_MapEntry of reportedPeptideFilterableAnnotationTypes_Map.entries() ) {
+        let annotationTypeEntry = reportedPeptideFilterableAnnotationTypes_MapEntry[ 1 ]; // Map Entry Value
+        if ( annotationTypeEntry.sortOrder ) {
+            reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntry );
         }
-    }, this );
-
+    }
     
     //  Sort on sort order
     
@@ -606,109 +603,3 @@ const _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated = funct
     
     return reportedPeptideFilterableAnnotationTypes_SortOrderPopulated;
 };
-
-/////////////////////////////////////////////////
-
-
-/**
- * 
- */
-const _getAnnotationTypeRecords_DisplayOrder = function({ 
-    
-    reportedPeptideList, 
-    projectSearchId,
-    dataPageStateManager
-} : { 
-    reportedPeptideList : Array<any>, 
-    projectSearchId : number,
-    dataPageStateManager : DataPageStateManager
-} ) {
-
-    //   Get all annotation type ids returned in all entries and produce a list of them to put in columns
-    
-    let annotationTypeData = dataPageStateManager.get_annotationTypeData();
-
-    let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
-    if ( ( ! annotationTypeDataForProjectSearchId ) ) {
-        throw Error("No annotation type data for projectSearchId: " + projectSearchId );
-    }
-    
-    let allReportedPeptideAnnotationTypeIds_InReportedPeptideList = {};
-
-    reportedPeptideList.forEach( function( reportedPeptideListItem, index, array ) {
-        let reportedPeptideAnnotationMap = reportedPeptideListItem.reportedPeptideAnnotationMap;
-        if ( reportedPeptideAnnotationMap ) {
-            Object.keys ( reportedPeptideAnnotationMap ).forEach( function( reportedPeptideAnnotationMapKeyItem, index, array ) {
-                let reportedPeptideAnnotationDTOItem = reportedPeptideAnnotationMap[ reportedPeptideAnnotationMapKeyItem ];
-                allReportedPeptideAnnotationTypeIds_InReportedPeptideList[ reportedPeptideAnnotationDTOItem.annotationTypeId ] = reportedPeptideAnnotationDTOItem.annotationTypeId;
-            }, this );
-        }
-    }, this );
-    
-    //  Pull AnnotationType records for found AnnotationTypeIds to Get AnnotationType Names
-    
-    let reportedPeptideAnnotationTypesForReportedPeptideListEntries = [];
-    
-    //  ReportedPeptide
-    
-    let allReportedPeptideAnnotationTypeIds_InReportedPeptideListKeys = Object.keys ( allReportedPeptideAnnotationTypeIds_InReportedPeptideList );
-    if ( allReportedPeptideAnnotationTypeIds_InReportedPeptideListKeys.length > 0 ) {
-        //  Have ReportedPeptide AnnotationType entries in Peptide list so must have ReportedPeptide AnnotationType records
-        let reportedPeptideFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes
-        let reportedPeptideDescriptiveAnnotationTypes = annotationTypeDataForProjectSearchId.reportedPeptideDescriptiveAnnotationTypes
-        if ( ( ! reportedPeptideFilterableAnnotationTypes ) && ( ! reportedPeptideDescriptiveAnnotationTypes ) ) {
-            throw Error("No reportedPeptideFilterableAnnotationTypes or reportedPeptideDescriptiveAnnotationTypes but have allReportedPeptideAnnotationTypeIds_InReportedPeptideList entries");
-        }
-        //  Get AnnotationTypeRecords for AnnotationTypeIds
-        Object.keys ( allReportedPeptideAnnotationTypeIds_InReportedPeptideList ).forEach( function( allReportedPeptideAnnotationTypeIds_InReportedPeptideListKeyItem, index, array ) {
-            let annotationTypeEntryForKey = reportedPeptideFilterableAnnotationTypes[ allReportedPeptideAnnotationTypeIds_InReportedPeptideListKeyItem ];
-            if ( ! annotationTypeEntryForKey ) {
-                annotationTypeEntryForKey = reportedPeptideDescriptiveAnnotationTypes[ allReportedPeptideAnnotationTypeIds_InReportedPeptideListKeyItem ];
-                if ( ! annotationTypeEntryForKey ) {
-                    throw Error( "No reportedPeptideFilterableAnnotationTypes or reportedPeptideDescriptiveAnnotationTypes entry for key: " + allReportedPeptideAnnotationTypeIds_InReportedPeptideListKeyItem );
-                }
-            }
-            reportedPeptideAnnotationTypesForReportedPeptideListEntries.push( annotationTypeEntryForKey );
-        }, this );
-    }
-
-    //  Sort this result array, on display order, then by ann type name
-    
-    _sort_AnnotationTypes_OnDisplayOrderAnnTypeName( { annTypesArray : reportedPeptideAnnotationTypesForReportedPeptideListEntries } );
-    
-    return {
-        reportedPeptideAnnotationTypesForReportedPeptideListEntries : reportedPeptideAnnotationTypesForReportedPeptideListEntries
-    };
-}
-
-
-/**
- * 
- */
-const _sort_AnnotationTypes_OnDisplayOrderAnnTypeName = function( { annTypesArray } ) {
-
-    annTypesArray.sort( function( a, b ) {
-        if ( a.displayOrder && b.displayOrder ) {
-            //  both a and b have display order so order them
-            if ( a.displayOrder < b.displayOrder ) {
-                return -1;
-            }
-            if ( a.displayOrder > b.displayOrder ) {
-                return 1;
-            }
-            return 0;
-        }
-        if ( a.displayOrder ) {
-            //  Only a has display order so order it first
-            return -1;
-        }
-        if ( b.displayOrder ) {
-            //  Only b has display order so order it first
-            return 1;
-        }
-        //  Order on ann type name
-        let nameCompare = a.name.localeCompare( b.name );
-        return nameCompare;
-    });
-}
-

@@ -22,7 +22,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 
 //   From data_pages_common
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { DataPageStateManager, SearchNames_AsMap }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
 
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';
@@ -164,7 +164,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
-    searchNamesMap_KeyProjectSearchId;
+    searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
     searchDataLookupParamsRoot;
     
     singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
@@ -572,8 +572,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } = this._getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId_ForPSMDownloads();
 
         //  For getting search info for projectSearchIds
-        //   searchNamesKeyProjectSearchId is Object with property names are projectSearchId as type number
-		const searchNamesKeyProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchNames();
+        //   searchNamesKeyProjectSearchId is Map with key are projectSearchId as type number
+		const searchNamesMap_KeyProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchNames_AsMap();
 
 
 		//  Array of Arrays of reportLineParts
@@ -602,7 +602,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 const projectSearchId = mapEntry[ 0 ];
                 const psmCount = mapEntry[ 1 ];
 
-                const searchNameEntry = searchNamesKeyProjectSearchId[ projectSearchId ]; //   searchNamesKeyProjectSearchId is Object with property names are projectSearchId as type number
+                const searchNameEntry = searchNamesMap_KeyProjectSearchId.get( projectSearchId ); //   searchNamesKeyProjectSearchId is Object with property names are projectSearchId as type number
                 if ( ! searchNameEntry ) {
                     const msg = "createReportedPeptideDisplayDownloadDataAsString: No value in searchNamesKeyProjectSearchId for projectSearchId: " + projectSearchId;
                     console.warn( msg );

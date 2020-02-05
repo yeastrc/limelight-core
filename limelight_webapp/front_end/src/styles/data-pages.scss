@@ -40,6 +40,9 @@
 
     div.data-table-container-react {
 
+        display: inline-block;  //  Added so background color and border of Group rows does not extend to right past width of table.
+                                //     Added here since adding to individual rows was causing more than one data row to be on the same visual row
+
         //  These are used when add icon to left of row for show/hide child table
 
         $data-table-container--div-padding-for-room-for-child-table-show-hide-icon : 24px;
@@ -66,7 +69,6 @@
 
         div.table-row-group-outer-container { // Table Group Outer Container for a group of Data Rows
             position: relative;
-            display: inline-block;
             padding-left: $table-group-border-or-filler;
             padding-right: $table-group-border-or-filler;
             padding-top: $table-group-border-or-filler;
@@ -87,10 +89,11 @@
                 padding-bottom: 0px;
             }
 
-            div.table-row-group-inner-container { // Table Group Inner Container for a group of Data Rows
-                display: inline-block;
-                margin-bottom: -3px;  // hide stray 3 pixels at bottom of this div
-            }
+            // div.table-row-group-inner-container { // Table Group Inner Container for a group of Data Rows
+                
+                // display: inline-block;   //  Remove since limit width to table width by setting 'display: inline-block;' on CSS class data-table-container-react
+                // margin-bottom: -3px;  // hide stray 3 pixels at bottom of this div   //  Not needed since removed  display: inline-block;
+            // }
 
             div.table-row-group-inner-container-highlighted-row { // Table Group Inner Container for a group of Data Rows - highlighted
 
@@ -166,6 +169,10 @@
 
             div.data-table-data-rows-inner-containing-div {
 
+                &.grey-out-row {  //  grey out the row
+                    opacity: 0.5;
+                }
+
                 table.data-table-data-rows-table {
 
 
@@ -204,7 +211,7 @@
     //  Data Table: Start
 
     div.hoveredTableRow {
-        background-color:$site-color-light;
+        background-color:$site-color-medium;
     }
 
     div.div-table-container {

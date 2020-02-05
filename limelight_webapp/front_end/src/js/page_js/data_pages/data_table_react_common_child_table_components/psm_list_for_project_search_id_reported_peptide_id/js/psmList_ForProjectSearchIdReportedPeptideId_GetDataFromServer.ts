@@ -16,7 +16,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import { WebserviceCallStandardPost_ApiObject_Class, WebserviceCallStandardPost_ApiObject_Holder_Class } from 'page_js/webservice_call_common/webserviceCallStandardPost_ApiObject_Class';
 
 //   From data_pages_common
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
 
 /**
@@ -44,7 +44,7 @@ export const getPSMDataFromServer = function({
 
             let searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId = _getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId({ projectSearchId, searchDataLookupParamsRoot });
 
-            let psmAnnotationTypeIdsForSorting =_get_Psm_AnnotationTypeIds_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
+            let psmAnnotationTypeIdsForSorting : Array<number> = _get_Psm_AnnotationTypeIds_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
             
             let requestObject = {
                     projectSearchId,
@@ -105,11 +105,11 @@ const _get_Psm_AnnotationTypeIds_WhereSortOrderPopulated = function({
 } : { 
     projectSearchId : number, 
     dataPageStateManager : DataPageStateManager 
-}) {
+}) : Array<number> {
 
-    let psmFilterableAnnotationTypes_WhereSortOrderPopulated = _get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
+    let psmFilterableAnnotationTypes_WhereSortOrderPopulated : Array<AnnotationTypeItem> = _get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
     
-    let result = [];
+    let result : Array<number> = [];
     
     for ( const element of psmFilterableAnnotationTypes_WhereSortOrderPopulated ) {
         result.push( element.annotationTypeId );
@@ -128,33 +128,31 @@ const _get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated = function({
 } : { 
     projectSearchId : number, 
     dataPageStateManager : DataPageStateManager 
-}) {
+}) : Array<AnnotationTypeItem> {
 
     //   Get all Psm annotation type records with sortOrder set
 
-    let annotationTypeData = dataPageStateManager.get_annotationTypeData();
+    let annotationTypeData : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
 
-    let annotationTypeDataForProjectSearchId = annotationTypeData[ projectSearchId ];
+    let annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
     if ( ( ! annotationTypeDataForProjectSearchId ) ) {
         throw Error("No annotation type data for projectSearchId: " + projectSearchId );
     }
 
-    let psmFilterableAnnotationTypes = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
-    if ( ! psmFilterableAnnotationTypes ) {
+    let psmFilterableAnnotationTypes_Map : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
+    if ( ! psmFilterableAnnotationTypes_Map ) {
         //  No data so return empty array
         return []; //  EARLY RETURN
     }
     
     //  Get AnnotationType Records where sortOrder is populated
     
-    let psmFilterableAnnotationTypes_SortOrderPopulated = [];
+    let psmFilterableAnnotationTypes_SortOrderPopulated : Array<AnnotationTypeItem> = [];
     
-    let psmFilterableAnnotationTypes_Keys = Object.keys ( psmFilterableAnnotationTypes );
-    
-    for ( const psmFilterableAnnotationTypesKeyItem of psmFilterableAnnotationTypes_Keys ) {
-        let annotationTypeEntryForKey = psmFilterableAnnotationTypes[ psmFilterableAnnotationTypesKeyItem ];
-        if ( annotationTypeEntryForKey.sortOrder ) {
-            psmFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntryForKey );
+    for ( const psmFilterableAnnotationTypes_MapEntry of psmFilterableAnnotationTypes_Map.entries() ) {
+        let annotationTypeEntry = psmFilterableAnnotationTypes_MapEntry[ 1 ]; // map entry value
+        if ( annotationTypeEntry.sortOrder ) {
+            psmFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntry );
         }
     }
 

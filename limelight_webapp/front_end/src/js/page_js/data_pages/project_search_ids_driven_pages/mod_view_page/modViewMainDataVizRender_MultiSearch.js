@@ -773,7 +773,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     static getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
         const maxLength = 30;
 
-        const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames()[projectSearchId].name;
+        const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId ).name;
         const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
 
         const retName = "(" + searchId + ") " + searchName;
@@ -784,7 +784,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     static getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
 
         const maxLength = 30;
-        let searchId = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames()[projectSearchId].searchId;
+        let searchId = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId ).searchId;
 
         return searchId;
     }

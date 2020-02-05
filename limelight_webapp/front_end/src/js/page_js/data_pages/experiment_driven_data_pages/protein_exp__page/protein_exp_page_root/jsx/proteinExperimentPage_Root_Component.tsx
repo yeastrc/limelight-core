@@ -30,6 +30,7 @@ import { SharePage_Component } from 'page_js/data_pages/sharePage_React/sharePag
 
 import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
+import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 
 /**
@@ -49,7 +50,7 @@ export interface ProteinExperimentPage_Root_Component_Props {
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     conditionGroupsDataContainer : ConditionGroupsDataContainer;
-    searchNamesMap_KeyProjectSearchId; // Object with property name being project search id
+    searchNamesMap_KeyProjectSearchId : SearchNames_AsMap; // Map with key being project search id
     experimentId : number;
     experimentName : string;
     projectSearchIds : Array<number>;
@@ -278,7 +279,7 @@ const _mainCell_getHoverContents_StandAlone = function({
     conditionIdPath : Array<number>, 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     conditionGroupsDataContainer : ConditionGroupsDataContainer;
-    searchNamesMap_KeyProjectSearchId 
+    searchNamesMap_KeyProjectSearchId  : SearchNames_AsMap
 }) {
     // console.log("_mainCell_getHoverContents_StandAlone")
 
@@ -356,8 +357,8 @@ const _mainCell_getHoverContents_StandAlone = function({
 
                         const projectSearchId = (projectSearchIdsArray_Entry as number);
 
-                        //  searchNamesMap_KeyProjectSearchId is Object with projectSearchId as properties
-                        const searchDataEntry = searchNamesMap_KeyProjectSearchId[ projectSearchId ];
+                        //  searchNamesMap_KeyProjectSearchId is Map with projectSearchId as keys
+                        const searchDataEntry = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
                         if ( ! searchDataEntry ) {
                             console.log("WARN: No entry in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
                             continue; // EARLY CONTINUE

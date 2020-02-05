@@ -3,11 +3,15 @@
  * 
  * Table Group Row - renders 1 or more Data Rows inside
  */
+
+
 import React from 'react'
 
 import { DataTable_TableOptions, DataTable_Column, DataTable_DataGroupRowEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
+
+import { sort_dataRows_on_sortColumnsInfo } from './dataTable_SortDataRows';
 
 
 /**
@@ -15,7 +19,7 @@ import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
  */
 export interface DataTable_Table_DataRow_Group_Props {
 
-  dataGroupObject : DataTable_DataGroupRowEntry
+  dataTable_DataGroupRowEntry : DataTable_DataGroupRowEntry
   columns : Array<DataTable_Column>
   tableOptions : DataTable_TableOptions
   highlightRow : boolean
@@ -38,14 +42,13 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
     super(props);
   }
 
-
   render () {
 
     const reactRowElements = [];
     {
-      const dataTable_DataRowEntries_Length = this.props.dataGroupObject.dataTable_DataRowEntries.length;
+      const dataTable_DataRowEntries_Length = this.props.dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length;
       let counter = 0;
-      for ( const dataTable_DataRowEntry of this.props.dataGroupObject.dataTable_DataRowEntries ) {
+      for ( const dataTable_DataRowEntry of this.props.dataTable_DataGroupRowEntry.dataTable_DataRowEntries ) {
         counter++;
         const isLastRow = dataTable_DataRowEntries_Length === counter;
         const reactRowElement = (

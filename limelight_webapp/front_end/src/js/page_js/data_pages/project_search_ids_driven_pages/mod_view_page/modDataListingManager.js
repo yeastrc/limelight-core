@@ -386,7 +386,7 @@ export class ModDataListingManager {
 
 	getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
 
-		const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames()[projectSearchId].name;
+		const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId ).name;
 
 		return searchName;
 	}

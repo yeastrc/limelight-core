@@ -48,7 +48,8 @@
 	
 	<h4>Filters:</h4>
 		
-	<table class=" selector_filter_section " style="border-width:0px;" >
+	<table class=" selector_filter_section " id="protein_main_page_filter_section" style="border-width:0px;" >
+		<tbody></tbody>
 	</table>
 	
 	<!-- Outer Container for Save View Button and other buttons  -->
@@ -59,10 +60,8 @@
 		<div class=" selector_share_page_root_container share-page-root-container " ></div>
 	</div>
 
-	<h3>
-		Protein List:
-	</h3>
-		
+	<h3> Protein List:</h3>
+
 	<div id="protein_counts_download_assoc_psms_block" style=" margin-bottom: 10px; display: none;">
 	
 		<span id="protein_group_list_size_section_display" style="padding-right: 10px; white-space: nowrap; display: none;">Protein Group Count: 
@@ -83,7 +82,7 @@
 		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="show_status_link" class=" fake-link " >Show Stats</span>
 	</div>
 	
-	<div id="stats_data_container">
+	<div id="stats_data_container" style=" display: none;">
 
 	</div>
 	
@@ -92,9 +91,20 @@
 	
 	<%--  Proteins are displayed here --%>
 	
-  	<div id="protein_list_container">
-	</div>
-	
+	<div id="protein_list_outer_container" style="position: relative; display: inline-block;"> <%--  display: inline-block; so overlay doesn't extend right past the table right edge --%>
+	  	
+	  	<div id="protein_list_container" style="display: inline-block;">
+		</div>
+
+		<%--  Cover over protein list when updating --%>
+		<div id="protein_list_updating_message"
+			style="display: none; border-color: grey; border-width: 3px; border-style: solid; background-color: white; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px">
+			<div style=" margin-top: 4px; text-align: center;">
+				Updating Protein List
+			</div>
+		</div>
+		
+	</div>   <%-- Close:   everything main after <h3> Protein List:</h3> --%>
      
    </div> <%--  close <div id="protein_page_outermost_block"  --%>
    

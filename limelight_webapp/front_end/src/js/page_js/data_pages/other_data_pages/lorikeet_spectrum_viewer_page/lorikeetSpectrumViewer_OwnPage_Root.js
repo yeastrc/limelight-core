@@ -22,14 +22,14 @@ const _lorikeet_page_bundle =
 	require("../../../../../../handlebars_templates_precompiled/lorikeet_page/lorikeet_page_template-bundle.js" );
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
+import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { LorikeetSpectrumViewer_LoadDataFromServer } from './lorikeetSpectrumViewer_LoadDataFromServer.js';
+import { LorikeetSpectrumViewer_LoadDataFromServer } from './lorikeetSpectrumViewer_LoadDataFromServer';
 
-import { CreatePsmPeptideTable_HeadersAndData } from "./lorikeetSpectrumViewer_createDataFor_PsmPeptideTable.js";
-import { LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded } from './lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.js';
+import { CreatePsmPeptideTable_HeadersAndData } from "./lorikeetSpectrumViewer_createDataFor_PsmPeptideTable";
+import { LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded } from './lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded';
 
 
 /**

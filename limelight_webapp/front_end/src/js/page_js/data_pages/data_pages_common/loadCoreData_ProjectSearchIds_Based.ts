@@ -8,14 +8,14 @@
  * 
  * 
  */
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { SearchNameRetrieval }  from './searchNameRetrieval.js';
-import { SearchProgramsPerSearchDataRetrieval }  from './searchProgramsPerSearchDataRetrieval.js';
-import { AnnotationTypeDataRetrieval } from './annotationTypeDataRetrieval.js';
+import { SearchNameRetrieval }  from './searchNameRetrieval';
+import { SearchProgramsPerSearchDataRetrieval }  from './searchProgramsPerSearchDataRetrieval';
+import { AnnotationTypeDataRetrieval } from './annotationTypeDataRetrieval';
 
 
 /**
@@ -74,17 +74,15 @@ export class LoadCoreData_ProjectSearchIds_Based{
 	
 	_processRequestAsPromise( resolve, reject ) {
 		try {
-			let objectThis = this;
 			
 			let promisesToWaitFor = []; //  'sub' promises
 
 			{
 				//  Retrieval of search names from server for project search ids
-				let retrieveSearchNames_Promise =
-					this._searchNameRetrieval.retrieveSearchNames( {
-						dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-						dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
-					} );
+				let retrieveSearchNames_Promise = this._searchNameRetrieval.retrieveSearchNames( {
+					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
+				} );
 
 				if ( retrieveSearchNames_Promise ) {
 					promisesToWaitFor.push( retrieveSearchNames_Promise );
@@ -114,7 +112,7 @@ export class LoadCoreData_ProjectSearchIds_Based{
 			
 			if ( promisesToWaitFor.length === 0 ) {
 				
-				window.setTimeout(function() {
+				window.setTimeout( () => {
 					try {
 						resolve();
 					} catch( e ) {
@@ -125,28 +123,28 @@ export class LoadCoreData_ProjectSearchIds_Based{
 				
 			} else {
 				
-				Promise.all( promisesToWaitFor ).then( // onFulfilled
-						function( resolvedPromisesArray ) { 
-							try {
-								//  All loads complete
-								resolve();
+				const promisesToWaitFor_Promise_all = Promise.all( promisesToWaitFor );
 
-								// console.log("onFulfilled Promise.all")
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}
+				promisesToWaitFor_Promise_all.catch( ( rejectionReason) => {
+					try {
+						reject();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+				
+				promisesToWaitFor_Promise_all.then( ( resolvedPromisesArray ) => { 
+					try {
+						//  All loads complete
+						resolve();
 
-						}),( function( rejectionReason) { // onRejected
-							try {
-								reject();
-							
-								// console.log("onRejected Promise.all")
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}
-						});
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+
+				});
 			}
 		} catch( e ) {
 			console.warn("Exception LoadCoreData_ProjectSearchIds_Based._processRequestAsPromise(...). Exception listed next logging.  Exception as String: " + e );

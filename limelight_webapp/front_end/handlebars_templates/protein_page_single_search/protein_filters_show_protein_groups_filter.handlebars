@@ -1,14 +1,28 @@
- {{!-- A comment:  protein_filters_show_protein_groups_filter.handlebarssearchDetailsMainPage_DisplayPerTypeRow.handlebars 
+ {{!-- A comment:  protein_filters_show_protein_groups_filter.handlebars
  
 	A Row under "Filters:" at top of page
  --}}
 
- <tr >
-    <td style="vertical-align: top; padding-bottom: 4px;">Show Protein Groups:</td>
+ {{!-- <input margin-left: 0px;> so radio button left aligns with other content above and below it.  Browser default has > 0px for margin-left. --}}
+
+ <tr class=" selector_protein_grouping_filter_root ">
+    <td style="vertical-align: top; padding-bottom: 4px; padding-right: 6px; white-space: nowrap;">Protein Grouping:</td>
     <td colspan="5" style=" vertical-align: top;  padding-bottom: 4px;">
-        <label><input type="radio" name="filter_show_protein_groups" class=" selector_filter_show_protein_groups_yes " style="margin-left: 0px;"
-            {{#if groupProteins}} checked {{/if}}/> Yes</label> 
-        <label><input type="radio" name="filter_show_protein_groups" class=" selector_filter_show_protein_groups_no "
-            {{#if groupProteins}} {{else}} checked {{/if}} /> No</label>
+        <span style="white-space: nowrap; padding-right: 3px;">
+            <label><input type="radio" name="filter_show_protein_groups" class=" selector_filter_show_protein_groups_no " style="margin-left: 0px;"
+                {{#if proteinGroupNone }} checked {{/if}} /> No Grouping</label></span>  {{!--  <span>, </span> --}}
+        <span style="white-space: nowrap; padding-right: 3px;">
+            <label><input type="radio" name="filter_show_protein_groups" class=" selector_filter_show_protein_groups_do_protein_groups " style="margin-left: 0px;"
+                {{#if proteinGroup_GroupProteins }} checked {{/if}}/> All Groups</label></span>  {{!--  <span>, </span> --}}
+        <span style="white-space: nowrap; padding-right: 3px;">
+            <label><input type="radio" name="filter_show_protein_groups" class=" selector_filter_show_protein_groups_do_protein_groups_non_subset " style="margin-left: 0px;"
+                {{#if proteinGroup_GroupProteins_NonSubset }} checked {{/if}}/> Non-Subset Groups</label></span>  {{!--  <span>, </span> --}}
+         
+        {{!-- Comment out since not currently supported
+
+        <span style="white-space: nowrap;">
+            <label><input type="radio" name="filter_show_protein_groups" class=" selector_filter_show_protein_groups_do_protein_groups_parsimonious " style="margin-left: 0px;"
+                {{#if proteinGroup_GroupProteins_Parsimonious }} checked {{/if}}/> Parsimonious Groups</label></span>
+        --}}
     </td>
  </tr>

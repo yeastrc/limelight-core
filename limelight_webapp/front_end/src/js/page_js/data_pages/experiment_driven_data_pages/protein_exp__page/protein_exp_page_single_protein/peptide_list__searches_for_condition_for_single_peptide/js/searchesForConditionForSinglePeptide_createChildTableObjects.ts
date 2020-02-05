@@ -59,7 +59,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
 
     const projectSearchIds = dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchIds;
     const createReportedPeptideDisplayData_Result_Entry_ForParentRow : CreateReportedPeptideDisplayData_Result_Entry = dataRow_GetChildTable_ReturnReactComponent_Parameter.createReportedPeptideDisplayData_Result_Entry_ForParentRow;
-    const searchNames = dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager.get_searchNames(); // Object with property name is projectSearchId as number
+    const searchNamesMap_KeyProjectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager.get_searchNames_AsMap(); // Map with key is projectSearchId as number
 
     const dataTable_Columns : Array<DataTable_Column> = [];
 
@@ -96,7 +96,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
 
             //  searchNames // Object with property name is projectSearchId as number
 
-            const searchNameObj = searchNames[ projectSearchId ];
+            const searchNameObj = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
             if ( ! searchNameObj ) {
                 const msg = "searchesForSinglePeptide_createChildTableObjects(...): No value in searchNames for projectSearchId: " + projectSearchId;
                 console.warn( msg );

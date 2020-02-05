@@ -34,7 +34,7 @@ import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_s
 
 import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
 
-import { peptideSequence_CreateCommonDisplayString } from 'page_js/data_pages/peptide_sequence_display_string_common/peptideSequence_CreateCommonDisplayString';
+import { reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches } from 'page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches';
 
 //  Child Data Searches for Single Peptide show/hide
 
@@ -224,7 +224,7 @@ export const create_GeneratedReportedPeptideListData = function( {
             const staticModificationsRounded_KeyPosition = _get_staticModificationsRounded_KeyPosition_ForSelectedStaticModsAndPeptideSequence({ peptideSequenceString, selectedStaticModificationsForProjectSearchId });
 
             //   Call external function
-            const peptideSequenceDisplay = peptideSequence_CreateCommonDisplayString({ peptideSequence : peptideSequenceString, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition });
+            const peptideSequenceDisplay = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches({ peptideSequence : peptideSequenceString, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition });
 
             let peptideItemInMap : CreateReportedPeptideDisplayData_Result_Entry = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
             if ( peptideItemInMap ) {
