@@ -52,7 +52,8 @@
 		--%>
 	</div>
 	
-	<table class=" selector_filter_section " style="border-width:0px;" >
+	<table class=" selector_filter_section " id="main_page_filter_section" style="border-width:0px;" >
+		<tbody></tbody>
 	</table>
 	
 	<%-- 

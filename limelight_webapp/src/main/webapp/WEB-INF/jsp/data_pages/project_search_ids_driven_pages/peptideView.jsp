@@ -44,7 +44,8 @@
 	
 	<h4>Filters:</h4>
 	
-	<table class=" selector_filter_section " style="border-width:0px;" >
+	<table class=" selector_filter_section " id="main_page_filter_section" style="border-width:0px;" >
+		<tbody></tbody>
 	</table>
 
 	<!-- Outer Container for Save View Button and other buttons  -->

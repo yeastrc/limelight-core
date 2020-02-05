@@ -249,13 +249,13 @@ export class SearchDetailsAndFilterBlock_MainPage {
 				throw Error("No DOM element with name 'tbody' under DOM element with class 'selector_filter_section' under DOM element using selector '" + this._rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto + "'");
 			}
 		} else {
-			const $protein_main_page_filter_section = $("#protein_main_page_filter_section");
-			if ( $protein_main_page_filter_section.length === 0 ) {
-				throw Error("No DOM element with id 'protein_main_page_filter_section'");
+			const $main_page_filter_section = $("#main_page_filter_section");
+			if ( $main_page_filter_section.length === 0 ) {
+				throw Error("No DOM element with id 'main_page_filter_section'");
 			}
-			$filter_section = $protein_main_page_filter_section.children("tbody");
+			$filter_section = $main_page_filter_section.children("tbody");
 			if ( $filter_section.length === 0 ) {
-				throw Error("No DOM element with name 'tbody' under DOM element with id 'protein_main_page_filter_section'");
+				throw Error("No DOM element with name 'tbody' under DOM element with id 'main_page_filter_section'");
 			}
 		}
 		// $filter_section.empty();  Cannot use .empty() since other entries

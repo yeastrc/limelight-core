@@ -219,9 +219,9 @@ export class ProteinViewPage_Display_SingleSearch {
 	_add_GroupProteins_UserSelections() {
 
 		{  //  Add to "Filters:"  "Group Proteins:" with radio buttons
-			const $protein_main_page_filter_section = $("#protein_main_page_filter_section");
-			if ( $protein_main_page_filter_section.length === 0 ) {
-				throw Error("NO DOM element with id 'protein_main_page_filter_section'");
+			const $main_page_filter_section = $("#main_page_filter_section");
+			if ( $main_page_filter_section.length === 0 ) {
+				throw Error("NO DOM element with id 'main_page_filter_section'");
 			}
 
 			//  Convert groupProteins value into booleans for handlebars template
@@ -256,7 +256,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 			const show_protein_groups_filterHTML = this._protein_filters_show_protein_groups_filter_Template({ proteinGroupNone, proteinGroup_GroupProteins, proteinGroup_GroupProteins_NonSubset, proteinGroup_GroupProteins_Parsimonious });
 			const $show_protein_groups_filter = $( show_protein_groups_filterHTML );
-			$show_protein_groups_filter.appendTo( $protein_main_page_filter_section );
+			$show_protein_groups_filter.appendTo( $main_page_filter_section );
 			
 			{  //  selector_filter_show_protein_groups_no
 				const $selector_filter_show_protein_groups_no = $show_protein_groups_filter.find(".selector_filter_show_protein_groups_no");
