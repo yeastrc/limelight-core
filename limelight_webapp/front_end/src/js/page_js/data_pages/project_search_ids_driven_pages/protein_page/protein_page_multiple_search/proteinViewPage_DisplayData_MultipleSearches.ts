@@ -939,6 +939,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 			//  Map< proteinSequenceVersionId, Map< generatedReportedPeptide, Map< projectSearchId, Set< reportedPeptideIds >
 			const proteinSequenceVersionId_generatedReportedPeptide_projectSearchId_reportedPeptideIds_Map : Map<string,Map<number,Set<number>>> = new Map();
 
+			//  Cached reportedPeptide_CommonValue_EncodedString : Map<projectSearchId, Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>>
+			const  cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId_Key_projectSearchId : Map<number, Map<number, string>> = new Map();
 
 			//  Process Map Key proteinSequenceVersionId first
 
@@ -956,6 +958,15 @@ export class ProteinViewPage_Display_MultipleSearches {
 					if ( ! proteinItemRecord ) {
 						//  No protein item for this project search id
 						continue;
+					}
+
+					//  Cached reportedPeptide_CommonValue_EncodedString : Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>
+					let cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId : Map<number, string> = (
+						cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId_Key_projectSearchId.get( projectSearchId )
+					);
+					if ( ! cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId ) {
+						cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId = new Map();
+						cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId_Key_projectSearchId.set( projectSearchId, cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId );
 					}
 
 					const loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
@@ -978,69 +989,80 @@ export class ProteinViewPage_Display_MultipleSearches {
 		
 					const reportedPeptideIds = proteinItemRecord.reportedPeptideIds;
 
-					let modsRoundedSet_KeyPosition: Map<number, Set<number>> = new Map();
-
 					for ( const reportedPeptideId of reportedPeptideIds ) {
 						
-						const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
-						if ( dynamicModificationsOnReportedPeptideArray ) {
-							
-							//  Have Mods for this reportedPeptideId
-							for ( const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray ) {
-							
-								const mass = dynamicModificationOnReportedPeptide.mass;
-								const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+						//  Cached reportedPeptide_CommonValue_EncodedString : Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>
+						let reportedPeptide_CommonValue_EncodedString = cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId.get( reportedPeptideId );
 
-								let modsRoundedSet = modsRoundedSet_KeyPosition.get( positionOnReportedPeptide );
-								if ( ! modsRoundedSet ) {
-									modsRoundedSet = new Set();
-									modsRoundedSet_KeyPosition.set( positionOnReportedPeptide, modsRoundedSet );
+						if ( ! reportedPeptide_CommonValue_EncodedString ) {
+
+							//  Not in cache so compute:
+
+							let modsRoundedSet_KeyPosition: Map<number, Set<number>> = new Map();
+
+							const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
+							if ( dynamicModificationsOnReportedPeptideArray ) {
+								
+								//  Have Mods for this reportedPeptideId
+								for ( const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray ) {
+								
+									const mass = dynamicModificationOnReportedPeptide.mass;
+									const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+
+									let modsRoundedSet = modsRoundedSet_KeyPosition.get( positionOnReportedPeptide );
+									if ( ! modsRoundedSet ) {
+										modsRoundedSet = new Set();
+										modsRoundedSet_KeyPosition.set( positionOnReportedPeptide, modsRoundedSet );
+									}
+
+									const massRounded = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+									modsRoundedSet.add( massRounded );
 								}
-
-								const massRounded = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
-								modsRoundedSet.add( massRounded );
 							}
-						}
-						
+							
 
-						const variableMmodificationsRoundedArray_Map_KeyPosition : Map<number, Array<string>> = new Map();
+							const variableMmodificationsRoundedArray_Map_KeyPosition : Map<number, Array<string>> = new Map();
 
-						for ( const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries() ) {
-							const positionOfModification = modsRoundedSet_KeyPosition_Entry[ 0 ];
-							const modsRoundedSet = modsRoundedSet_KeyPosition_Entry[ 1 ];
-			
-							const modsRoundedArray = Array.from( modsRoundedSet );
-							modsRoundedArray.sort( (a,b) => {
-								if ( a < b ) {
-									return -1;
-								} else if ( a > b ) {
-									return 1;
-								} else {
-									return 0;
+							for ( const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries() ) {
+								const positionOfModification = modsRoundedSet_KeyPosition_Entry[ 0 ];
+								const modsRoundedSet = modsRoundedSet_KeyPosition_Entry[ 1 ];
+				
+								const modsRoundedArray = Array.from( modsRoundedSet );
+								if ( modsRoundedArray.length > 1 ) {
+									modsRoundedArray.sort( (a,b) => {
+										if ( a < b ) {
+											return -1;
+										} else if ( a > b ) {
+											return 1;
+										} else {
+											return 0;
+										}
+									});
 								}
+								const modsRoundedStringsArray : Array<string> = [];
+								for ( const modRounded of modsRoundedArray ) {
+									const modRoundedString = modRounded.toString();
+									modsRoundedStringsArray.push( modRoundedString );
+								}
+								variableMmodificationsRoundedArray_Map_KeyPosition.set( positionOfModification, modsRoundedStringsArray );
+							}
+
+							const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId });
+
+							if ( peptideId === undefined || peptideId === null ) {
+								const msg = "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': No Peptide Id found for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+								console.warn( msg );
+								throw Error( msg );
+							}
+
+							reportedPeptide_CommonValue_EncodedString = create_reportedPeptide_CommonValue_EncodedString({ 
+								
+								peptideId, variableModifications_Map_KeyPosition : variableMmodificationsRoundedArray_Map_KeyPosition, staticModifications_Map_KeyPosition : undefined 
 							});
-							const modsRoundedStringsArray : Array<string> = [];
-							for ( const modRounded of modsRoundedArray ) {
-								const modRoundedString = modRounded.toString();
-								modsRoundedStringsArray.push( modRoundedString );
-							}
-							variableMmodificationsRoundedArray_Map_KeyPosition.set( positionOfModification, modsRoundedStringsArray );
+
+							//  Cached reportedPeptide_CommonValue_EncodedString : Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>
+							cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId.set( reportedPeptideId, reportedPeptide_CommonValue_EncodedString );
 						}
-
-						const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId });
-
-						if ( peptideId === undefined || peptideId === null ) {
-							const msg = "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': No Peptide Id found for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
-							console.warn( msg );
-							throw Error( msg );
-						}
-
-						const reportedPeptide_CommonValue_EncodedString = create_reportedPeptide_CommonValue_EncodedString({ 
-							
-							peptideId, variableModifications_Map_KeyPosition : variableMmodificationsRoundedArray_Map_KeyPosition, staticModifications_Map_KeyPosition : undefined 
-						});
-
-						// console.log( "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': reportedPeptide_CommonValue_EncodedString: " + reportedPeptide_CommonValue_EncodedString )
 
 						reportedPeptide_CommonValue_EncodedString_ForProtein.add( reportedPeptide_CommonValue_EncodedString );
 					}
@@ -1048,7 +1070,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 				proteinPeptideMap.set( proteinSequenceVersionId, reportedPeptide_CommonValue_EncodedString_ForProtein );
 			}
-
 
 			if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_All_Groups() ) {
 			
@@ -1068,8 +1089,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 				console.warn( msg );
 				throw Error( msg );
 			}
-
-			// console.log( "proteinViewPage_DisplayData_SingleSearch_Create_ProteinList_DataTable_RootTableDataObject.ts:  proteinGroup: ", proteinGroup );
 
 			// for ( const proteinGroupEntry of proteinGroups_ArrayOf_ProteinGroup ) {
 			// 	if ( proteinGroupEntry.proteins.size > 1 ) {
