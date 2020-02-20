@@ -69,7 +69,8 @@ public class UrlShortener_Insert_UsingDBTransactionService implements UrlShorten
 	public void addUrlShortener( 
 			UrlShortenerDTO item, 
 			List<UrlShortenerAssocProjectSearchIdDTO> childrenProjectSearchIds,
-			UrlShortenerAssocExperimentIdDTO childExperimentId, LogDuplicateSQLException logDuplicateSQLException ) { //  No 'Throws' allowed due to 
+			UrlShortenerAssocExperimentIdDTO childAssocExperimentIdDTO, 
+			LogDuplicateSQLException logDuplicateSQLException ) { //  No 'Throws' allowed due to 
 		
 		try {
 			urlShortenerDAO.save( item, null );
@@ -80,9 +81,11 @@ public class UrlShortener_Insert_UsingDBTransactionService implements UrlShorten
 				urlShortenerAssocProjectSearchIdDAO.save( child );
 			}
 			
-			childExperimentId.setUrlShortenerId( item.getId() );
-			urlShortenerAssocExperimentIdDAO.save( childExperimentId );
-
+			if ( childAssocExperimentIdDTO != null ) {
+				childAssocExperimentIdDTO.setUrlShortenerId( item.getId() );
+				urlShortenerAssocExperimentIdDAO.save( childAssocExperimentIdDTO );
+			}
+				
 		} catch ( org.springframework.dao.DuplicateKeyException e ) {
 
 			if ( logDuplicateSQLException == LogDuplicateSQLException.TRUE ) {
