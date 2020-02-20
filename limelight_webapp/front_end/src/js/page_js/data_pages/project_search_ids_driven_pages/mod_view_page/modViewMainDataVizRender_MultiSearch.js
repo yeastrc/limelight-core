@@ -771,9 +771,26 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     static getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
-        const maxLength = 30;
 
-        const searchName = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId ).name;
+        // const maxLength = 30;
+
+		const projectSearchIdInt = Number.parseInt( projectSearchId ); // projectSearchId is number but do this to ensure always a number
+
+		if ( Number.isNaN( projectSearchIdInt ) ) {
+			const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): projectSearchId does not parse to int. projectSearchId: " + projectSearchId;
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );
+		if ( ! searchNameObject ) {
+			const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchIdInt: " + projectSearchIdInt;
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		const searchName = searchNameObject.name;
+
         const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
 
         const retName = "(" + searchId + ") " + searchName;
@@ -783,8 +800,24 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
 
-        const maxLength = 30;
-        let searchId = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId ).searchId;
+        // const maxLength = 30;
+
+		const projectSearchIdInt = Number.parseInt( projectSearchId ); // projectSearchId is number but do this to ensure always a number
+
+		if ( Number.isNaN( projectSearchIdInt ) ) {
+			const msg = "getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): projectSearchId does not parse to int. projectSearchId: " + projectSearchId;
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );
+		if ( ! searchNameObject ) {
+			const msg = "getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchIdInt: " + projectSearchIdInt;
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+        let searchId = searchNameObject.searchId;
 
         return searchId;
     }
