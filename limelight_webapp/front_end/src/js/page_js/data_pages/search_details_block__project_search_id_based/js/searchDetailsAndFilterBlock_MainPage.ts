@@ -573,25 +573,25 @@ export class SearchDetailsAndFilterBlock_MainPage {
 					throw e;
 				}
 			});
+		
+			if ( showingAll ) {
+				const $selector_showing_all = $searchCutoffForTypeRow_entry.find(".selector_showing_all");
+				$selector_showing_all.click( (eventObject) => {
+					try {
+						eventObject.preventDefault();
+						this._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay({ 
+							projectSearchId_UserClickedIn : projectSearchId, 
+							userClickedInTypeIdentifier : typeIdentifierForOpenOverlay,
+							userClickedOnAnnTypeId : undefined
+						});
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			}
 		}
 		
-		if ( showingAll ) {
-			const $selector_showing_all = $searchCutoffForTypeRow_entry.find(".selector_showing_all");
-			$selector_showing_all.click( (eventObject) => {
-				try {
-					eventObject.preventDefault();
-					this._searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay({ 
-						projectSearchId_UserClickedIn : projectSearchId, 
-						userClickedInTypeIdentifier : typeIdentifierForOpenOverlay,
-						userClickedOnAnnTypeId : undefined
-					});
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			});
-		}
-
 		const $per_type_cutoffs_entries_jq = $searchCutoffForTypeRow_entry.find(".per_type_cutoffs_entries_jq");
 
 		for ( const cutoffItem of cutoffs_ForType ) {
