@@ -85,7 +85,7 @@ export const createReportedPeptideDisplayData = function({
 
             //  For Multiple Searches Page.
             //  Need to round Reporter Ion Masses to match selection
-            reporterIonMassTransformer = { //  Transform Reporter Ion Mass function passed to ProteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect
+            reporterIonMassTransformer = { //  Transform Reporter Ion Mass function passed to psm_ReporterIonMasses_FilterOnSelectedValues
                 transformMass_ReturnNumber : function({ mass }) {
                     return reporterIonMass_CommonRounding_ReturnNumber( mass );  // Call external function
                 }

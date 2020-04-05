@@ -9,11 +9,9 @@
  * 
  */
 
-import { Handlebars, _common_template_bundle, _protein_table_template_bundle } from './proteinViewPage_DisplayData_MultipleSearches_ImportHandlebarsTemplates';
+import { Handlebars, _protein_table_template_bundle } from './proteinViewPage_DisplayData_MultipleSearches_ImportHandlebarsTemplates';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
@@ -32,7 +30,7 @@ import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data
 
 import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
 
-import { ProteinViewPage_Display_MultipleSearches_SingleProtein } from './proteinViewPage_DisplayData_MultipleSearches_SingleProtein';
+import { ProteinPage_Display_MultipleSearches_SingleProtein } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein'
 
 import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
 import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
@@ -49,9 +47,7 @@ import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTab
 import { create_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM';
 import { ProteinRow_tableRowClickHandlerParameter_MultipleSearches, renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject } from './proteinViewPage_DisplayData_MultipleSearches_Create_ProteinList_DataTable_RootTableDataObject';
 import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES } from './proteinViewPage_DisplayData_MultipleSearches_Constants';
-
-//  Applied to the element containing the protein name so it can be selected
-const _CSS_CLASS_SELECTOR_PROTEIN_NAME = "selector_protein_name";
+import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 /**
  * Entry in proteinList
@@ -111,9 +107,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 	
 	private _annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes;
 
-	// From common template:
-	private _common_template_dataTable_Template = _common_template_bundle.dataTable;
-	
 	//  From Protein Template:
 	private _protein_page_protein_tooltip_Template = _protein_table_template_bundle.protein_page_protein_tooltip;
 		
@@ -136,7 +129,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		numPsms : number
 	}> = undefined;
 
-	private _proteinViewPage_Display_MultipleSearches_SingleProtein : ProteinViewPage_Display_MultipleSearches_SingleProtein;
+	private _proteinViewPage_Display_MultipleSearches_SingleProtein : ProteinPage_Display_MultipleSearches_SingleProtein;
 	
 	private _downloadProteinsClickHandlerAttached = true;
 	private currentProteinListDisplayTableData = undefined
@@ -199,12 +192,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server 
 		} );
 
-		// From common template:
-
-		if ( ! _common_template_bundle.dataTable ) {
-			throw Error("Nothing in _common_template_bundle.dataTable");
-		}
-		
 		//  From Protein Template:
 		
 		if ( ! _protein_table_template_bundle.protein_page_protein_tooltip ) {
@@ -458,7 +445,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 				data_page_overall_enclosing_block_divDOM.style.display = "none";
 				
 				if ( ! this._proteinViewPage_Display_MultipleSearches_SingleProtein ) {
-					this._instantiateObject_Class__ProteinViewPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY : undefined });
+					this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY : undefined });
 				}
 				this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay_OnlyLoadingMessage();
 			}
@@ -1512,12 +1499,11 @@ export class ProteinViewPage_Display_MultipleSearches {
 		$data_page_overall_enclosing_block_div.hide();
 
 		if ( ! this._proteinViewPage_Display_MultipleSearches_SingleProtein ) {
-			this._instantiateObject_Class__ProteinViewPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY });
+			this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY });
 		}
 
 		this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({ 
 			proteinSequenceVersionId, 
-			projectSearchIds : this._projectSearchIds, 
 			proteinNameDescription : proteinNameDescriptionParam
 		} );
 	}
@@ -1525,7 +1511,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
 	 */
-	private _instantiateObject_Class__ProteinViewPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY }) {
+	private _instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY }) {
 		
 		//  Create callback function to call on single protein close
 		
@@ -1548,17 +1534,49 @@ export class ProteinViewPage_Display_MultipleSearches {
 			}
 		}
 
-		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinViewPage_Display_MultipleSearches_SingleProtein( {
-			proteinViewPage_Display_MultipleSearch : this,
+		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = (
+			this._searchDetailsBlockDataMgmtProcessing.
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
+		);
+		
+		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinPage_Display_MultipleSearches_SingleProtein( {
+
+			proteinSequenceVersionId : undefined,
+			proteinListItem : undefined,
+
+			projectSearchIds : this._projectSearchIds,
+			searchDataLookupParamsRoot,
+
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+
 			loadedDataCommonHolder : this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			singleProteinCloseCallback
 		} );
+
+        // projectSearchIds,
+        // searchDataLookupParamsRoot,
+
+		//////
+		// proteinSequenceVersionId,
+        // proteinListItem, 
+
+		// singleProteinCloseCallback,
+		
+		// loadedDataCommonHolder,
+		// loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+
+		// dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+		// dataPageStateManager_DataFrom_Server,
+		// searchDetailsBlockDataMgmtProcessing, 
+        // projectSearchIds,
+        // searchDataLookupParamsRoot,
+		// singleProtein_CentralStateManagerObject,
+		// dataPages_LoggedInUser_CommonObjectsFactory
 	}
 	
 	/**
@@ -1739,7 +1757,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	// 		return; // EARLY RETURN
 	// 	}
 
-	// 	const proteinDisplayDataAsString = this._downloadProteinList_GenerateDownloadString();
+	// 	const proteinDisplayDataAsString = call code in DataTable React Folder to generate string from Table data
 
 	// 	//  For getting search info for projectSearchIds
 	// 	const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
@@ -1763,50 +1781,5 @@ export class ProteinViewPage_Display_MultipleSearches {
     //     StringDownloadUtils.downloadStringAsFile( { stringToDownload : proteinDisplayDataAsString, filename: filename } );
 	// }
 
-	// /**
-	//  * Download Protein List - Generate download String
-	//  */
-	// private _downloadProteinList_GenerateDownloadString() {
-
-	// 	//  Create String that will be dowloaded from browser
-
-	// 	const columns = this.currentProteinListDisplayTableData.columns;
-	// 	const tableObjects = this.currentProteinListDisplayTableData.tableObjects;
-
-	// 	const outputLines = [];
-
-	// 	{
-	// 		//  Add Header row
-	// 		const outputColumns = [];
-				
-	// 		for ( const column of columns ) {
-	// 			const columnText = column.displayName;
-	// 			outputColumns.push( columnText );
-	// 		}
-	// 		const headerRow = outputColumns.join("\t");
-	// 		outputLines.push( headerRow );
-	// 	}
-
-	// 	if ( tableObjects ) {
-	// 		//  Add Data rows
-	// 		for ( const tableObject of tableObjects ) {
-	// 			const outputColumns = [];
-	// 			for ( const column of columns ) {
-	// 				const dataProperty = column.dataProperty;
-	// 				const dataPropertyValue = tableObject[ dataProperty ];
-	// 				outputColumns.push( dataPropertyValue );
-	// 			}
-	// 			const dataRow = outputColumns.join("\t");
-	// 			outputLines.push( dataRow );
-	// 		}
-	// 	}
-
-	// 	//  Add end of line for last line since next "join" will not add end of line on last line
-	// 	outputLines.push("\n");
-
-	// 	const outputLinesJoined = outputLines.join("\n");
-
-	// 	return outputLinesJoined;
-	// }
 
 }

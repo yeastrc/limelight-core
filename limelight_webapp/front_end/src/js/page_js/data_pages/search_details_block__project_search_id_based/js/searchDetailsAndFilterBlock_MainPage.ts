@@ -35,6 +35,14 @@ import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__
 /**
  * 
  */
+export class SearchDetailsAndFilterBlock_MainPage__PopulatePage_Params {
+
+	filter_section_HTMLElement? : HTMLElement
+}
+
+/**
+ * 
+ */
 export class SearchDetailsAndFilterBlock_MainPage {
 
 	private _displayOnly : boolean;
@@ -195,11 +203,43 @@ export class SearchDetailsAndFilterBlock_MainPage {
 			this._rerenderPageForUpdatedFilterCutoffs_Callback( { projectSearchIdsForCutoffsChanged } );
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
-	populatePage() {
+	populatePage( params? : SearchDetailsAndFilterBlock_MainPage__PopulatePage_Params ) {
+
+		let filter_section_HTMLElement : HTMLElement = undefined;
+
+		if ( params ) {
+
+			filter_section_HTMLElement = params.filter_section_HTMLElement;
+
+			//  Test that element pasased is <tbody>
+
+			try {
+
+				if ( filter_section_HTMLElement ) {
+
+					const filter_section_HTMLElement_nodeName =  filter_section_HTMLElement.nodeName;
+
+					if ( "TBODY" !== filter_section_HTMLElement_nodeName  ) {
+						//  Case insensitive compare
+						if ( "TBODY".localeCompare( filter_section_HTMLElement_nodeName  ) !== 0 ) {
+							const msg = '!!! populatePage:: if ( "TBODY".localeCompare( filter_section_HTMLElement.nodeName ) !== 0 ) {.  filter_section_HTMLElement: ' 
+							console.warn( msg, filter_section_HTMLElement )
+							// throw Error( msg );
+						}
+					}
+				}
+			} catch (e) {
+
+				console.warn("'!!! populatePage:: test filter_section_HTMLElement.nodeName throw Exception: ", e );
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+
+				//  Eat Exception
+			}
+		}
 
 		const objectThis = this;
 		
@@ -235,7 +275,13 @@ export class SearchDetailsAndFilterBlock_MainPage {
 
 		let $filter_section : JQuery<HTMLElement> = undefined;
 
-		if ( this._rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto ) {
+		if ( filter_section_HTMLElement ) {
+
+			$filter_section = $( filter_section_HTMLElement );
+
+
+		} else if ( this._rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto ) {
+
 			const $rootElementSearch = $( this._rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto );
 			if ( $rootElementSearch.length === 0 ) {
 				throw Error("Failed to find DOM element using selector '" + this._rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto + "'");

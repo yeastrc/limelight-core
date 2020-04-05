@@ -15,7 +15,7 @@
 import { 
     reporterIonMass_CommonRounding_ReturnNumber_Function,
     reporterIonMass_CommonRounding_ReturnString_Function,
-    reporterIonMass_CommonRounding_ReturnNumber, 
+    // reporterIonMass_CommonRounding_ReturnNumber, 
     reporterIonMass_CommonRounding_ReturnString, 
     _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
 } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
@@ -133,9 +133,14 @@ const _create_reporterIonsUniqueMassesSet = function({
         if ( reporterIonMasses_ForSearch ) {
 
             for ( const reporterIonMass of reporterIonMasses_ForSearch) {
+
+                let mass = reporterIonMass;
              
-                //  Used in multiple searches to round the reporterIon mass
-                const mass = reporterIonMass_CommonRounding_ReturnNumber( reporterIonMass );  // Call external function
+                if ( reporterIonMass_CommonRounding_ReturnNumber ) {
+
+                    //  Used in multiple searches to round the reporterIon mass
+                    mass = reporterIonMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                }
 
                 reporterIonsUniqueMassesSet.add( mass );
             }

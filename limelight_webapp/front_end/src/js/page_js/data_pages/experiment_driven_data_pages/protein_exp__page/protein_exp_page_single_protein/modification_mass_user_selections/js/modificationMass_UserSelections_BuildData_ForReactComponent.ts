@@ -15,7 +15,7 @@
 import { 
     modificationMass_CommonRounding_ReturnNumber_Function,
     modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
+    // modificationMass_CommonRounding_ReturnNumber, 
     modificationMass_CommonRounding_ReturnString 
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
@@ -107,8 +107,10 @@ const _create_staticModificationsUniqueResidueLettersMassesMapSet = function({
 
                 let mass = staticModEntry.mass;
 
-                //  Used in multiple searches to round the modification mass
-                mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                if ( modificationMass_CommonRounding_ReturnNumber ) {
+                    //  Used in multiple searches to round the modification mass
+                    mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                }
 
                 massesSet.add( mass );
             }
@@ -313,9 +315,12 @@ const _create_variableModificationsUniqueMassesSet = function({
                     let mass = modificationOnProtein.mass;
                     // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-                    //  Used in multiple searches to round the modification mass
-                    mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                    if ( modificationMass_CommonRounding_ReturnNumber ) {
 
+                        //  Used in multiple searches to round the modification mass
+                        mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                    }
+                    
                     variableModificationsUniqueMassesSet.add( mass );
                 }
             }

@@ -428,7 +428,10 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	 * @param retrieveForSingleSearch : boolean, true if retrieving for use with Single Search
 	 * @param retrieveForMultipleSearches : boolean, true if retrieving for use with Multiple Searches
 	 */
-	loadDataAfterInitialOverlayShow( { retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId } ) {
+	loadDataAfterInitialOverlayShow( { retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId, searchDataLookupParamsRoot } :  { 
+		
+		retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId, searchDataLookupParamsRoot? 
+	} ) {
 
 		//  Get Reported Peptide Ids
 
@@ -465,9 +468,33 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 
 					//  Get Ann Type Ids for Ann Types that are to be displayed, Default or User chosen
 
-					const searchDataLookupParams_For_Single_ProjectSearchId = 
-					this._searchDetailsBlockDataMgmtProcessing.
-					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
+					let searchDataLookupParams_For_Single_ProjectSearchId = undefined;
+
+
+					if ( searchDataLookupParamsRoot ) {
+
+						const paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
+						const paramsForProjectSearchIdsList = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
+
+						for ( const paramsForProjectSearchId of paramsForProjectSearchIdsList ) {
+							if ( paramsForProjectSearchId.projectSearchId === projectSearchId ) {
+
+								searchDataLookupParams_For_Single_ProjectSearchId = paramsForProjectSearchId;
+								break;
+							}
+						}
+						if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+							const msg = "No entry in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
+							console.warn( msg )
+							throw Error( msg )
+						}
+
+					} else {
+
+						searchDataLookupParams_For_Single_ProjectSearchId = 
+						this._searchDetailsBlockDataMgmtProcessing.
+						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
+					}
 
 					//  Array of Ann Type Ids
 					const reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId = searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay;

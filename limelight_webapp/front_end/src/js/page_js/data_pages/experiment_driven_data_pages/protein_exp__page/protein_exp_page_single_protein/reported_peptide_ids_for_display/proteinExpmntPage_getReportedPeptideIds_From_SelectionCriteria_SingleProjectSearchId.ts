@@ -47,8 +47,8 @@ import { UserSearchString_LocationsOn_ProteinSequence_Root, UserSearchString_Loc
  */
 export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId {
 
-    private _forSingleSearch = false;  //  Hard coded for Experiment
-	private _forMultipleSearch = true; //  Hard coded for Experiment
+    private _forSingleSearch = false; 
+	private _forMultipleSearch = false;
 
 	private _proteinSequenceVersionId : number;
 	private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
@@ -61,6 +61,10 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
 	 * 
 	 */
 	constructor({ 
+
+		//  First 2 params (for...) are mutually exclusive.  Exactly 1 must be true.
+		forSingleSearch,
+		forMultipleSearch,
 		proteinSequenceVersionId,
 		loadedDataCommonHolder,
 		proteinSequenceWidget_StateObject, 
@@ -68,6 +72,8 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
 		reporterIonMass_UserSelections_StateObject,
 		userSearchString_LocationsOn_ProteinSequence_Root
 	} : { 
+		forSingleSearch : boolean
+		forMultipleSearch : boolean
 		proteinSequenceVersionId : number,
 		loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
 		proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject, 
@@ -75,7 +81,19 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
 		reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
 		userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root
 	}) {
+		if ( forSingleSearch && forMultipleSearch ) {
+			const msg = "ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId::constructor:  forSingleSearch & forMultipleSearch cannot both be true"
+			console.warn( msg );
+			throw Error( msg )
+		}
+		if ( ( ! forSingleSearch ) && ( ! forMultipleSearch ) ) {
+			const msg = "ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId::constructor:  forSingleSearch & forMultipleSearch cannot both be false (or not set)"
+			console.warn( msg );
+			throw Error( msg )
+		}
 
+		this._forSingleSearch = forSingleSearch;
+		this._forMultipleSearch = forMultipleSearch;
 		this._proteinSequenceVersionId = proteinSequenceVersionId;
 		this._loadedDataCommonHolder = loadedDataCommonHolder;
 		this._proteinSequenceWidget_StateObject = proteinSequenceWidget_StateObject;

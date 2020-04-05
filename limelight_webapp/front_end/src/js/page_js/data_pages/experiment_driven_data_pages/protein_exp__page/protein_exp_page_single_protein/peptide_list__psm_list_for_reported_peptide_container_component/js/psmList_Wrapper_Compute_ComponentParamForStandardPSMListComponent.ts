@@ -116,7 +116,7 @@ export const psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent =
 
         if ( forMultipleSearchesPage ) {
 
-            reporterIonMassTransformer = { //  Transform Reporter Ion Mass function passed to ProteinViewPage_DisplayData_SingleProtein_ReporterIonMasses_DisplayAndSelect
+            reporterIonMassTransformer = { //  Transform Reporter Ion Mass function passed to psm_ReporterIonMasses_FilterOnSelectedValues
                 transformMass_ReturnNumber : function({ mass }) {
                     return reporterIonMass_CommonRounding_ReturnNumber( mass );  // Call external function
                 }

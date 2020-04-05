@@ -1,7 +1,7 @@
 /**
- * dataTable_React_dataTable_DataRowEntries.ts
+ * dataTable_React_DataObjects.ts
  * 
- * interface for the Data Objects used in Data Table React
+ * Classes and types for the Data Objects used in Data Table React
 */
 
 type DataTable_UniqueId = string | number;

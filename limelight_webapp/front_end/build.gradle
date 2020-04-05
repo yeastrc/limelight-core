@@ -119,9 +119,6 @@ task createHandlebarsOutputDirs {
   	  dirToCreate = rootDir + "share_page"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
-  	  dirToCreate = rootDir + "protein_sequence_formatted_display"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
   	  dirToCreate = rootDir + "search_detail_section_main_page"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -311,30 +308,6 @@ task handlebarsPrecompile_share_page(type: NodeTask) {
 
   def precompile_Input_Directory = "handlebars_templates/share_page"
   def precompile_Output_File = "handlebars_templates_precompiled/share_page/share_page_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
-//  Handlebars Precompile for input handlebars_templates/protein_sequence_formatted_display
-
-task handlebarsPrecompile_protein_sequence_formatted_display(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/protein_sequence_formatted_display"
-  def precompile_Output_File = "handlebars_templates_precompiled/protein_sequence_formatted_display/protein_sequence_formatted_display_template-bundle.js"
   
   // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
   inputs.dir( precompile_Input_Directory )
@@ -900,7 +873,6 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_common',
      'handlebarsPrecompile_save_view',
      'handlebarsPrecompile_share_page',
-     'handlebarsPrecompile_protein_sequence_formatted_display',
      'handlebarsPrecompile_search_detail_section_main_page',
      'handlebarsPrecompile_search_detail_section_main_page_logged_in_users',
      'handlebarsPrecompile_search_detail_section_user_input_section',

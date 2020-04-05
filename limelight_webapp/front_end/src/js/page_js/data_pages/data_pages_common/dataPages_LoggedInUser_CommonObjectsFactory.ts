@@ -14,6 +14,9 @@
 
  import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers';
  
+import { SaveView_Create_Component_React_Type } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
+import { saveView_Create_Component_React } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React';
+
 
 /**
  * 
@@ -35,6 +38,14 @@ export class DataPages_LoggedInUser_CommonObjectsFactory {
 
     }
 
+    /**
+     * Create object of class SaveView_dataPages
+     * 
+     */
+    getFunctionToGet_SaveView_dataPages_ComponentAndProps() : SaveView_Create_Component_React_Type {
+
+        return saveView_Create_Component_React;
+    }
 
     /**
      * Create object of class SaveView_dataPages

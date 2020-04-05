@@ -336,13 +336,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
                 childTableShowHideIcon = (
                     <div className=" child-table-show-hide-icon-container ">
-                        <img src="static/images/pointer-down.png" className=" child-table-show-hide-icon "/>
+                        <img src="static/images/pointer-down.png" className=" clickable child-table-show-hide-icon " onClick={ rowClickHandler }/>
                     </div>
                 );
             } else {
                 childTableShowHideIcon = (
                     <div className=" child-table-show-hide-icon-container ">
-                        <img src="static/images/pointer-right.png" className=" child-table-show-hide-icon "/>
+                        <img src="static/images/pointer-right.png" className=" clickable child-table-show-hide-icon " onClick={ rowClickHandler }/>
                     </div>
                 );
             }

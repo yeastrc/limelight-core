@@ -71,6 +71,8 @@ export const getReportedPeptideIdsForDisplay_AllProjectSearchIds = function( {
     const reportedPeptideIdsForDisplay_Map_KeyProjectSearchId : Map<number, Array<number>> = new Map();
 
     const proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId = new ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId({
+        forMultipleSearch : true,
+        forSingleSearch : false,
         proteinSequenceVersionId,
 		loadedDataCommonHolder,
 		proteinSequenceWidget_StateObject, 
