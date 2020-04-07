@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectIdForProjectShortNameSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 
 @Controller
 //@RequestMapping("/")
@@ -53,6 +54,9 @@ public class ProjectShortName_RedirectTo_ProjectView_Controller {
 
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
+
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 	
     /**
 	 * 
@@ -122,6 +126,8 @@ public class ProjectShortName_RedirectTo_ProjectView_Controller {
 			
 			String msg = "Exception: ";
 			log.error( msg, e );
+			
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
 			
 			throw new RuntimeException( e ); //  TODO forward to error page
 		}

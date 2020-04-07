@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
@@ -56,6 +57,9 @@ public class LogBrowserJavascriptError_RestWebserviceController {
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
 
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
 
 	//  Convert result object graph to JSON in byte[] in the controller body so can cache it
 
@@ -134,6 +138,9 @@ public class LogBrowserJavascriptError_RestWebserviceController {
     	} catch ( Exception e ) {
     		String msg = "Failed in controller: ";
 			log.error( msg, e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
     }

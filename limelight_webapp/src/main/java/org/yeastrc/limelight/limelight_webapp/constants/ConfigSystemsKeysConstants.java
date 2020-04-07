@@ -58,7 +58,15 @@ public class ConfigSystemsKeysConstants {
 	public static final String ADMIN_EMAIL_ADDRESS_KEY = "admin_email_address";
 	public static final String EMAIL_SMTP_SERVER_HOST_KEY = "email_smtp_server_host";
 	public static final String EMAIL_FROM_ADDRESS_KEY = "email_from_address";
+
+	/////////   Send Email on Server or JS Error - Emails Config
 	
+	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_TO_SEND_TO_KEY = "server_or_javascript_error_emails_to_send_to";
+
+	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_FROM_ADDRESS_KEY = "server_or_javascript_error_emails_from_address";
+	
+	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER_KEY = "server_or_javascript_error_emails_server_identifier";
+
 
 	/////////   Run Importer Status Emails Config
 	

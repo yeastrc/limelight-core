@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.Validate_Access_Page_ExperimentDataPage.Validate_Access_Page_ExperimentDataPage_Result;
 import org.yeastrc.limelight.limelight_webapp.experiment.main.Experiment_Set_HTTPRequest_ForJSP_IF;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.Validate_Access_Page_ExperimentDataPageIF;
 
 @Controller
@@ -45,6 +46,9 @@ public class Experiment__ProteinView_Controller {
 	@Autowired
 	private Experiment_Set_HTTPRequest_ForJSP_IF experiment_Set_HTTPRequest_ForJSP;
 
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
     /**
 	 * 
 	 */
@@ -324,6 +328,9 @@ public class Experiment__ProteinView_Controller {
 					.validatePublicAccessCodeReadAccessLevel( experimentId, searchDataLookupParametersCode, httpServletRequest, httpServletResponse );
 		} catch (Exception e) {
 			log.error( "Error in controller calling validate_Access_Page_ExperimentDataPage.validatePublicAccessCodeReadAccessLevel(...) experimentId: " + experimentId, e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+
 			throw new RuntimeException( e );
 		}
 		
@@ -336,6 +343,9 @@ public class Experiment__ProteinView_Controller {
 			experiment_Set_HTTPRequest_ForJSP.experiment_Set_HTTPRequest_ForJSP( validate_Access_Page_ExperimentDataPage_Result, httpServletRequest );
 		} catch (Exception e) {
 			log.error( "Error in controller", e );
+			
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
 			throw new RuntimeException( e );
 		}
 		

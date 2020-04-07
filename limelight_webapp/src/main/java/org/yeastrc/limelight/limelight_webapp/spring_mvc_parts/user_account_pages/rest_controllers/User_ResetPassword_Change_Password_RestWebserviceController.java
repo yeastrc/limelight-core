@@ -37,6 +37,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_Service.User_Validate_ResetPassword_Code_Service_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
@@ -65,6 +66,9 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 	@Autowired
 	private UserMgmtCentralWebappWebserviceAccessIF userMgmtCentralWebappWebserviceAccess;
 
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
@@ -119,6 +123,9 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 		} catch ( Exception e ) {
 			String msg = "Failed in controller: ";
 			log.error( msg, e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
 			throw new Limelight_WS_InternalServerError_Exception();
 		}
 	}

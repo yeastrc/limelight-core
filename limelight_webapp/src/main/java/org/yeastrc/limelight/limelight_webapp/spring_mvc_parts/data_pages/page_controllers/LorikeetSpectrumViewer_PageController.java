@@ -32,6 +32,7 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.services.Get_ProjectIds_For_ProjectSearchIds_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.error_pages_controllers.AA_ErrorPageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
@@ -51,6 +52,12 @@ public class LorikeetSpectrumViewer_PageController {
 	@Autowired
 	private Get_ProjectIds_For_ProjectSearchIds_ServiceIF get_ProjectIds_For_ProjectSearchIds_Service;
 
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+
+	/**
+	 * 
+	 */
 	public LorikeetSpectrumViewer_PageController() {
 		log.warn( "INFO: PRIMARY_CONTROLLER_PATH: " + PRIMARY_CONTROLLER_PATH );
 	}
@@ -165,6 +172,9 @@ public class LorikeetSpectrumViewer_PageController {
 		} catch (Exception e) {
 
 			log.error( "Error in controller", e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
 			throw new RuntimeException( e );
 		}
 		

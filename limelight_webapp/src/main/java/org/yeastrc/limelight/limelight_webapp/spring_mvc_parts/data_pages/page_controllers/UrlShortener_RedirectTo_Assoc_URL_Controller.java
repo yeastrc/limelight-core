@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 
 @Controller
 //@RequestMapping("/")
@@ -42,6 +43,9 @@ public class UrlShortener_RedirectTo_Assoc_URL_Controller {
 
 	@Autowired
 	private UrlShortenerDAO_IF urlShortenerDAO;
+	
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 	
 	
     /**
@@ -99,7 +103,9 @@ public class UrlShortener_RedirectTo_Assoc_URL_Controller {
 			
 			String msg = "Exception: ";
 			log.error( msg, e );
-			
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+
 			throw new RuntimeException( e ); //  TODO forward to error page
 		}
     }

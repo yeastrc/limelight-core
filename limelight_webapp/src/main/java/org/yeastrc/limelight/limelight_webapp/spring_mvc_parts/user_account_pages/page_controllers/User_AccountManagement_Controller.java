@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.searchers.User_IsAny_ProjectOwner_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSessionKeyAliveResponse;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSessionKeyAliveWebserviceRequest;
@@ -58,6 +59,9 @@ public class User_AccountManagement_Controller {
 	
 	@Autowired
 	private User_IsAny_ProjectOwner_SearcherIF user_IsAny_ProjectOwner_Searcher;
+
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 	
     /**
 	 * 
@@ -145,7 +149,9 @@ public class User_AccountManagement_Controller {
 			
 			String msg = "Exception: ";
 			log.error( msg, e );
-			
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+		
 			throw new RuntimeException( e ); //  TODO forward to error page
 		}
     }

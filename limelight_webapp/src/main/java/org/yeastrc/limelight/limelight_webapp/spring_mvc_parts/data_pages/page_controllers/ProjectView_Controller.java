@@ -37,7 +37,7 @@ import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
-import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -73,6 +73,9 @@ public class ProjectView_Controller {
 	private PopulatePageHeaderDataIF populatePageHeaderData;
 	
 	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
+	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
 	
     /**
@@ -105,7 +108,7 @@ public class ProjectView_Controller {
     		HttpServletRequest httpServletRequest ) {
 		
 		log.info( "controllerMethod(...) called. projectIdentifier: " + projectIdentifier );
-
+		
 		httpServletRequest.setAttribute( REQUEST_PROJECT_ID_FROM_VIEW_PROJECT_CONTROLLER, projectIdentifier );
 		
 		try {
@@ -207,6 +210,8 @@ public class ProjectView_Controller {
 			
 			String msg = "Exception: ";
 			log.error( msg, e );
+			
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
 			
 			throw new RuntimeException( e ); //  TODO forward to error page
 		}

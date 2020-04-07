@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 
@@ -43,6 +44,9 @@ public class Logout_Controller {
 	@Autowired
 	private UserSessionManager userSessionManager;
 
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
     /**
 	 * 
 	 */
@@ -70,13 +74,23 @@ public class Logout_Controller {
 		
 		log.info( "controllerMethod(...) called" );
 		
-		userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
-				
-		return new RedirectView(
-				AA_UserAccount_PageControllerPaths_Constants.PATH_START_ALL 
-				+ AA_PageControllerPaths_Constants.ROOT_CONTROLLER, 
-				true // True: Relative to Servlet Context
-				);
+		try {
+			userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+					
+			return new RedirectView(
+					AA_UserAccount_PageControllerPaths_Constants.PATH_START_ALL 
+					+ AA_PageControllerPaths_Constants.ROOT_CONTROLLER, 
+					true // True: Relative to Servlet Context
+					);
+			
+		} catch ( Throwable t ) {
+			
+			log.error( "Exceptioin: ", t );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
+			throw t;
+		}
     }
 
 }

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_Service.User_Validate_ResetPassword_Code_Service_Result;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
@@ -72,6 +73,9 @@ public class ResetPassword_ProcessCode_Controller {
 
 	@Autowired
 	private User_Validate_ResetPassword_Code_ServiceIF user_Validate_ResetPassword_Code_Service;
+
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 	
     /**
 	 * 
@@ -125,6 +129,8 @@ public class ResetPassword_ProcessCode_Controller {
 			
 			String msg2 = "No Failure Page to Display Yet.";
 			log.error(msg2);
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
 			
 			throw new LimelightInternalErrorException(msg2);
 		}

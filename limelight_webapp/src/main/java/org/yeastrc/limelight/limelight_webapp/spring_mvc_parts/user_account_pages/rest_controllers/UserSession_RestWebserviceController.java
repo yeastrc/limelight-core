@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -47,6 +48,9 @@ public class UserSession_RestWebserviceController {
 	@Autowired
 	private UserSessionManager userSessionManager;
 
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
 	@Autowired
 	private UnmarshalJSON_ToObject unmarshalJSON_ToObject;
 
@@ -111,6 +115,9 @@ public class UserSession_RestWebserviceController {
 		} catch ( Exception e ) {
 			String msg = "Failed in controller: ";
 			log.error( msg, e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+		
 			throw e;
 		}
 	}

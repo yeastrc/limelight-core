@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.services.Page_UserDefault_SetForJSP_IF;
 
 @Controller
@@ -37,6 +38,9 @@ public class ModView_Controller {
 
 	@Autowired
 	private Page_UserDefault_SetForJSP_IF page_UserDefault_SetForJSP;
+
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 
     /**
 	 * 
@@ -152,6 +156,9 @@ public class ModView_Controller {
 		} catch (SQLException e) {
 
 			log.error( "Error in controller", e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
 			throw new RuntimeException( e );
 		}
 		
