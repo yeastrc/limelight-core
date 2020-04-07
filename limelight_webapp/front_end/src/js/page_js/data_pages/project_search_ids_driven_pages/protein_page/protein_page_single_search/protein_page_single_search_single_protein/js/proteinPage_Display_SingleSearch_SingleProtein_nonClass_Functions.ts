@@ -218,9 +218,11 @@ const _loadDataForInitialOverlayShow_SingleSearch_SingleProtein = function ({
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 }) {
 
-	if ( loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) !== undefined ) {
-		return null;
-	}
+	//  NOT valid test to determine if skip loading. Broken if user changes PSM/Peptide FIlters and thus loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is cleared
+
+	// if ( loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) !== undefined ) {
+	// 	return null;
+	// }
 	
 	if ( projectSearchIds.length === undefined ) {
 		throw Error("_loadDataForInitialOverlayShow_SingleSearch_SingleProtein: projectSearchIds.length === undefined");
@@ -341,9 +343,11 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 }) {
 
-	if ( loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) !== undefined ) {
-		return null;
-	}
+	//  NOT valid test to determine if skip loading. Broken if user changes PSM/Peptide FIlters and thus loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is cleared
+
+	// if ( loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) !== undefined ) {
+	// 	return null;
+	// }
 
 	// console.log("Experiment: Single Protein: _loadDataForInitialOverlayShow_FirstRetrieval(...)")
 
