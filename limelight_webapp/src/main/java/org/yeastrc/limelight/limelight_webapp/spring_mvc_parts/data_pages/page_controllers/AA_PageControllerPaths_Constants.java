@@ -134,13 +134,6 @@ public class AA_PageControllerPaths_Constants {
 	public static final String MOD_VIEW_PAGE_CONTROLLER = "d/pg/psb/mod-view/";
 	
 
-
-	/**
-	 * testMikeWebservices for 1 or multiple project search ids
-	 */
-//	public static final String TEST_MIKE_WEBSERVICES_PAGE_CONTROLLER = "d/pg/psb/testMikeWebservices/";
-	
-
 	///////////////
 	
 	//  Experiment Id "ONLY" based pages paths after each page type (ie: '/exp/protein/').

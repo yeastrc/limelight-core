@@ -63,6 +63,12 @@
 		Reported Peptide List:
 	</h3>
 	
+		<%--  Peptides Loading Text --%>
+	<div id="peptide_table_loading_text_display">Loading Data</div>
+			
+			<%--  No Peptides Text --%>
+	<div id="peptide_table_empty_text_display" style="display: none;">No peptides meet the current filtering criteria.</div>
+	
 	<%--  Peptides are displayed here --%>
 	
   <div id="peptide_list_container">
@@ -70,8 +76,6 @@
   	
   </div>
   
-  	<script id="peptide_table_loading_text"  type="text/text">Loading Data</script>
-
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>

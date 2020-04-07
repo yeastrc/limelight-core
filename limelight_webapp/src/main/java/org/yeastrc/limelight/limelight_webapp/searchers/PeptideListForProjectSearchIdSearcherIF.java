@@ -26,6 +26,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideB
 /**
  * Old Searcher for getting Reported Peptides from Search Criteria including Cutoffs
  *
+ * !!!   NOT used for Peptide Page   !!!!
  */
 @Deprecated
 public interface PeptideListForProjectSearchIdSearcherIF {

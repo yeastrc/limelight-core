@@ -5,7 +5,7 @@
  * 
  * Companion file to proteinViewPage_DisplayData_SingleSearch.ts
  * 
- * 
+ * !!!  Also used for Peptide page with parameter forPeptidePage set  !!!
  * 
  */
 
@@ -18,6 +18,8 @@ import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data
 
 import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
 import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId } from '../protein_page_common/proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId';
+import { SearchDataLookupParams_For_Single_ProjectSearchId } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
+import { get_DynamicModificationsForReportedPeptideIds } from '../protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides';
 
 
 /**
@@ -26,8 +28,7 @@ import { ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionI
 export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer {
 
 	private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
-	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
-
+	
 	/**
 	 * 
 	 */
@@ -43,7 +44,13 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 	/**
 	 * Get Data from Server for Single Project Search Id and Cutoffs/Filters
 	 */
-	getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } ) {
+	getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, forPeptidePage } : { 
+		
+		projectSearchId : number
+		searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
+		forPeptidePage?  : boolean
+	
+	} ) : Promise<any> {
 
 		let objectThis = this;
 
@@ -66,7 +73,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 				
 				//  Get all the data based on the getReportedPeptideIdList(...) result
 				
-				const promise_get_Data_From_ReportedPeptideIdList = promise_getReportedPeptideIdList.then( function( reportedPeptideCoreDataArray ) {
+				const promise_get_Data_From_ReportedPeptideIdList = promise_getReportedPeptideIdList.then( ( reportedPeptideCoreDataArray ) => {
 					try {
 						const promiseAllArray = [];
 
@@ -82,6 +89,21 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 							//  No Unique Reporter Ion Masses for the Search so load them
 							const promise = objectThis._getAndProcess_ReporterIonsUnique_ForSearch_forProjectSearchId( { projectSearchId } );
 							promiseAllArray.push( promise );
+						}
+
+						//   Peptide Page Only
+						if ( forPeptidePage ) {
+
+							const reportedPeptideIds = [];
+							for ( const reportedPeptideCoreDataEntry of ( reportedPeptideCoreDataArray as any ) ) {
+								const reportedPeptideId = reportedPeptideCoreDataEntry.reportedPeptideId;
+								reportedPeptideIds.push( reportedPeptideId );
+							}
+							const promise_get__ = get_DynamicModificationsForReportedPeptideIds({ loadedDataPerProjectSearchIdHolder : objectThis._loadedDataPerProjectSearchIdHolder, projectSearchId, reportedPeptideIds });
+
+							if ( promise_get__ ) { //  May return null so test before add to array
+								promiseAllArray.push( promise_get__ );
+							}
 						}
 
 						objectThis._processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
@@ -102,10 +124,13 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 						
 						promiseAllArray.push( promise_get_ProteinData_Including_ProteinSequenceVersionIds );
 
-						const promise_get_ProteinCoverage_FromReportedPeptideIds =
-							objectThis._get_ProteinCoverage_FromReportedPeptideIds( { projectSearchId } );
+						if ( ! forPeptidePage ) {
 
-						promiseAllArray.push( promise_get_ProteinCoverage_FromReportedPeptideIds );
+							const promise_get_ProteinCoverage_FromReportedPeptideIds =
+								objectThis._get_ProteinCoverage_FromReportedPeptideIds( { projectSearchId } );
+
+							promiseAllArray.push( promise_get_ProteinCoverage_FromReportedPeptideIds );
+						}
 						
 						const promise_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter =
 							objectThis._get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter( { projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId: searchDataLookupParams_For_Single_ProjectSearchId } );
@@ -139,13 +164,16 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 						//    Since all calls to resolve() don't pass a value, in this case it is an array of elements each containing undefined 
 
 						//  Processing that requires all data to be loaded
+
+						if ( ! forPeptidePage ) {
 						
-						//  Take proteinSequenceCoverage Per Reported Peptide Ids and create proteinSequenceCoverage Per proteinSequenceVersionId
-						objectThis._proteinSequenceCoverage_MapPer_proteinSequenceVersionId();
-						
+							//  Take proteinSequenceCoverage Per Reported Peptide Ids and create proteinSequenceCoverage Per proteinSequenceVersionId
+							objectThis._proteinSequenceCoverage_MapPer_proteinSequenceVersionId();
+						}						
 						//  All Data is loaded and all post load processing of loaded data is complete
 						
 						resolve(); // Resolve outer promise in this containing function
+						
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 						throw e;

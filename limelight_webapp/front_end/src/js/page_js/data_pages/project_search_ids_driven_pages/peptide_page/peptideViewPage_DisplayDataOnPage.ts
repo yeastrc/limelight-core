@@ -124,7 +124,7 @@ export class PeptideViewPage_DisplayDataOnPage {
 
 		if ( projectSearchIds.length === 1 ) {
 			let projectSearchId = projectSearchIds[ 0 ];
-			this._peptideViewPage_Display_SingleSearch.getPeptideList( { projectSearchId } );
+			this._peptideViewPage_Display_SingleSearch.populatePeptideList( { projectSearchId } );
 			
 		} else {
 			alert("More than one Search is not supported" );

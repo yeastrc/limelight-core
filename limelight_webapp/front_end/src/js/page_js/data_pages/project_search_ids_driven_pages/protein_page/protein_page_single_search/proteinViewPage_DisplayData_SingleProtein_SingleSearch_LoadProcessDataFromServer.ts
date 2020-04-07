@@ -428,30 +428,48 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 	 * @param retrieveForSingleSearch : boolean, true if retrieving for use with Single Search
 	 * @param retrieveForMultipleSearches : boolean, true if retrieving for use with Multiple Searches
 	 */
-	loadDataAfterInitialOverlayShow( { retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId, searchDataLookupParamsRoot } :  { 
+	loadDataAfterInitialOverlayShow( { 
 		
-		retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId, searchDataLookupParamsRoot? 
+		retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId, 
+		// Optional
+		searchDataLookupParamsRoot, reportedPeptideIds_Override 
+	} :  { 
+		
+		retrieveForSingleSearch, retrieveForMultipleSearches, proteinSequenceVersionId, projectSearchId, 
+		// Optional
+		searchDataLookupParamsRoot? 
+		reportedPeptideIds_Override? : Array<number>
 	} ) {
 
-		//  Get Reported Peptide Ids
+		let reportedPeptideIds : Array<number> = undefined;
 
-		const reportedPeptideIdsKeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();
+		if ( reportedPeptideIds_Override ) {
 
-		const reportedPeptideIds = reportedPeptideIdsKeyProteinSequenceVersionId.get( proteinSequenceVersionId );
-		if ( reportedPeptideIds === undefined || reportedPeptideIds.length === 0 ) {
+			//  Use parameter since populated
+			reportedPeptideIds = reportedPeptideIds_Override;
+		
+		} else {
 
-			// No Reported Peptide Ids so skip
-			
-			return new Promise( ( resolve, reject) => {
-				try {
-					resolve();
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			});
-			
-			// EARLY RETURN
+			//  Get Reported Peptide Ids
+
+			const reportedPeptideIdsKeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();
+
+			reportedPeptideIds = reportedPeptideIdsKeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+			if ( reportedPeptideIds === undefined || reportedPeptideIds.length === 0 ) {
+
+				// No Reported Peptide Ids so skip
+				
+				return new Promise( ( resolve, reject) => {
+					try {
+						resolve();
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+				
+				// EARLY RETURN
+			}
 		}
 
 		return new Promise( ( resolve, reject) => {

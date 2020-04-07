@@ -48,12 +48,6 @@ import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveVie
 import { PeptideViewPage_DisplayDataOnPage }  
 	from 'page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_DisplayDataOnPage';
 
-//  From Testing
-	
-// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent';
-
-// import { Peptide_Fake_CentralStateManagerObjectClass } from './peptide_Fake_CentralStateManagerObjectClass';
-	
 /**
  * 
  */
@@ -90,8 +84,6 @@ export class PeptideViewPage_RootClass_Common {
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
 
 		this._centralPageStateManager = new CentralPageStateManager();
-
-		// this._peptide_Fake_CentralStateManagerObjectClass = new Peptide_Fake_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 
 		//  Instances of class DataPageStateManager
 		
@@ -151,16 +143,6 @@ export class PeptideViewPage_RootClass_Common {
 		//  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
 		
-		// let testPageComponent = new TestPageComponent( { centralPageStateManager : this._centralPageStateManager, initialKey : 'd', initialValue : 'mmm' } );
-		// testPageComponent.initialize();
-
-		// const urlWithTestPageComponent = this._centralPageStateManager.getURL_ForCurrentState();
-		
-		// testPageComponent.setValue( { key : 'b', value : 'rtw' } );
-
-		// this._centralPageStateManager.unregister( testPageComponent.getUniqueId() );
-
-
 
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		mainPagesPopulateHeader.initialize();
@@ -212,10 +194,6 @@ export class PeptideViewPage_RootClass_Common {
 
 				});
 		
-		
-				//  TODO  FAKE
-		// this._peptide_Fake_CentralStateManagerObjectClass.setFakeData({ fakeData : 8888 });
-
 	}
 
 

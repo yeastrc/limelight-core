@@ -15,7 +15,7 @@
 
 //   From data_pages_common
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
-import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
+import { SearchDataLookupParameters_Root, SearchDataLookupParams_For_Single_ProjectSearchId } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 
 /**
@@ -111,7 +111,7 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( 
 		{ projectSearchId, dataPageStateManager }  : 
 		{ projectSearchId : number, dataPageStateManager : DataPageStateManager }
-	) {
+	) : SearchDataLookupParams_For_Single_ProjectSearchId {
 
 		let dataPageStateManager_Local : DataPageStateManager = dataPageStateManager;
 		if ( ! dataPageStateManager_Local ) {
@@ -131,7 +131,7 @@ export class SearchDetailsBlockDataMgmtProcessing {
 			throw Error("No value for filtersAnnTypeDisplayPerProjectSearchIds");
 		}
 		
-		let filtersAnnTypeDisplay_SingleProjectSearchId = undefined;
+		let filtersAnnTypeDisplay_SingleProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId = undefined;
 		filtersAnnTypeDisplayPerProjectSearchIds.forEach(function( filtersAnnTypeDisplayPerProjectSearchIdsItem, index, array) {
 			if ( filtersAnnTypeDisplayPerProjectSearchIdsItem.projectSearchId === projectSearchId ) {
 				filtersAnnTypeDisplay_SingleProjectSearchId = filtersAnnTypeDisplayPerProjectSearchIdsItem;

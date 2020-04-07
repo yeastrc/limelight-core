@@ -356,10 +356,6 @@ public class AA_RestWSControllerPaths_Constants {
 			"d/rws/for-page/psb/psm-best-filtrbl-ann-data-list-rep-pept-ids-ann-type-ids-single-project-search-id";
 
 	
-	//  Currently only used on Peptide Page
-	public static final String PEPTIDE_VIEW_PAGE_PEPTIDE_LIST_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/peptide-view-page-peptide-list-single-project-search-id";
-
 	 /*               
 	 *  Used by JS files:
 	 *  
