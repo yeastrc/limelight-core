@@ -45,6 +45,8 @@ export interface ProteinPage_Display_SingleSearch_SingleProtein_Root_Component_P
 interface ProteinPage_Display_SingleSearch_SingleProtein_Root_Component_State {
 
     proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_Props_Prop? : ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_Props_Prop
+    
+    component_SubTree_Has_Error? : boolean
 }
 
 /**
@@ -98,6 +100,23 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_Root_Component exten
         });
     }
     
+    /**
+     * 
+     */ 
+    static getDerivedStateFromError( error : any ) : ProteinPage_Display_SingleSearch_SingleProtein_Root_Component_State {
+        // Update state so the next render will show the fallback UI.
+        return { component_SubTree_Has_Error: true };
+    }
+
+    /**
+     * 
+     */ 
+    componentDidCatch( error : any, errorInfo : any ) {
+        // You can also log the error to an error reporting service
+
+        console.warn("react Component 'ProteinPage_Display_SingleSearch_SingleProtein_Root_Component'. componentDidCatch: ", error, errorInfo );
+        // logErrorToMyService(error, errorInfo);
+    }
 
     /**
      * 
@@ -223,8 +242,20 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_Root_Component exten
             closeOverlayClickHandler = this._closeOverlayClickHandler_BindThis
         }
 
-        let mainContent = undefined;
-        if ( this.state.proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_Props_Prop ) {
+        
+        let component_SubTree_ErrorMessage : JSX.Element = undefined;
+
+        let mainContent : JSX.Element = undefined;
+
+
+        if ( this.state.component_SubTree_Has_Error ) {
+
+            component_SubTree_ErrorMessage = (
+
+                <div >An Error has Occurred.  Please reload the page and try again.</div>
+            );
+
+        } else if ( this.state.proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_Props_Prop ) {
 
             mainContent = (
                 <ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Component
@@ -265,6 +296,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_Root_Component exten
                         </div>
                         <div id="view_single_protein_overlay_body" className="view-single-protein-overlay-body" ref={ this._view_single_protein_overlay_body_Ref } >
 
+                            { component_SubTree_ErrorMessage }
                             { mainContent }
                         </div>
                     </div>
