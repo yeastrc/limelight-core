@@ -327,7 +327,7 @@
 	<div id="import_limelight_xml_file_choose_file_error_message_filename_already_chosen" style="display: none;">
 	 <div >
 		The selected filename <span class=" chosen_file_jq " style="font-weight: bold"></span>
-		has already been selected for this upload.
+		has already been selected for this upload <span  class=" chosen_file_without_suffix_error_submessage_jq " >(when comparing filenames without the suffix)</span>.
 	 </div>
 	</div>
 

@@ -17,14 +17,13 @@
 */
 package org.yeastrc.limelight.limelight_importer.scan_file_processing_validating;
 
-import java.util.Map;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.dao.SearchScanFileDAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchScanFileImporterDAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_shared.dto.ScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ScanFileSourceFirstImportDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
@@ -45,12 +44,12 @@ public class ScanFiles_UpdateDB_WithSpectralStorageService_API_Key {
 	 * @param searchScanFileEntry_KeyScanFilename
 	 * @throws Exception 
 	 */
-	public void updateDB_WithSpectralStorageService_API_Key( Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws Exception {
+	public void updateDB_WithSpectralStorageService_API_Key( SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws Exception {
 
-		for ( Map.Entry<String, SearchScanFileEntry> entry : searchScanFileEntry_KeyScanFilename.entrySet() ) {
+		for ( SearchScanFileEntry searchScanFileEntry : searchScanFileEntry_AllEntries.allEntries_AsList() ) {
 
-			SearchScanFileEntry searchScanFileEntry = entry.getValue();
 			SearchScanFileImporterDTO searchScanFileImporterDTO = searchScanFileEntry.getSearchScanFileImporterDTO();
+			
 			if ( searchScanFileImporterDTO != null ) {
 				
 				SearchScanFileDTO searchScanFileDTO = searchScanFileEntry.getSearchScanFileDTO();

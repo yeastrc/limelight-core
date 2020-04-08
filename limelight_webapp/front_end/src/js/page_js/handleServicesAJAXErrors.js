@@ -219,7 +219,7 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 	
 	
 	
-};
+}
 
 
 function showAjaxErrorMsg( params ) {

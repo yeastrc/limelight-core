@@ -40,6 +40,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -520,7 +521,12 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		}
 		//  use filenamesSet to find duplicate filenames
 		Set<String> filenamesSet = new HashSet<>();
+		
+		//  use filenames_NoSuffixes_Set to find duplicate filenames (without their suffixes)
+		Set<String> filenames_NoSuffixes_Set = new HashSet<>();
+		
 		boolean foundLimelightXMLFile = false;
+		
 		for ( SubmitImport_FinalSubmit_SingleFileItem requestFileItem : requestFileItemList ) {
 			if ( requestFileItem.getFileIndex() == null ) {
 				String msg = "requestFileItem.fileIndex == null";
@@ -559,6 +565,17 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 				String msg = "Duplicate filename: " + requestFileItem.getUploadedFilename();
 				log.warn( msg );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			{
+				String filename_NoSuffix = FilenameUtils.removeExtension( requestFileItem.getUploadedFilename() );
+				if ( ! filenames_NoSuffixes_Set.add( filename_NoSuffix ) ) {
+					String msg = "Duplicate filename (checking without filename suffix): " 
+							+ requestFileItem.getUploadedFilename()
+							+ ", filename without suffix: "
+							+ filename_NoSuffix;
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
 			}
 		}
 		//  Determine search name, starting with search name in Submit request

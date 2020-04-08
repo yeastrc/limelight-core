@@ -28,10 +28,14 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dt
 public class ScanFileFileContainer {
 
 	private File scanFile;
+	
+	/**
+	 * Populated when scan file specified on command line
+	 */
 	private String scanFilename;
 
 	/**
-	 * When running the Import from the Run Importer Process
+	 * Populated when running the Import from the Run Importer Process
 	 */
 	private FileImportTrackingSingleFileDTO scanFileDBRecord;
 	
@@ -44,6 +48,10 @@ public class ScanFileFileContainer {
 		this.scanFile = scanFile;
 	}
 
+	/**
+	 * Populated when scan file specified on command line
+	 * @return
+	 */
 	public String getScanFilename() {
 		return scanFilename;
 	}
@@ -52,6 +60,10 @@ public class ScanFileFileContainer {
 		this.scanFilename = scanFilename;
 	}
 
+	/**
+	 * Populated when running the Import from the Run Importer Process
+	 * @return
+	 */
 	public FileImportTrackingSingleFileDTO getScanFileDBRecord() {
 		return scanFileDBRecord;
 	}

@@ -23,10 +23,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -357,6 +360,8 @@ public class LimelightImporterProgram {
 				if ( inputScanFileStringVector != null && ( ! inputScanFileStringVector.isEmpty() ) ) {
 
 					scanFileFileContainer_KeyFilename = new HashMap<>();
+					
+					Set<String> scanFilenames_NoSuffixes = new HashSet<>();
 
 					//  For return result
 					scanFileList = new ArrayList<>( inputScanFileStringVector.size() );
@@ -414,7 +419,23 @@ public class LimelightImporterProgram {
 							importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
 							return importResults;  //  EARLY EXIT
 						}
-
+						
+						{
+							String scanFilename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
+							
+							if ( ! scanFilenames_NoSuffixes.add( scanFilename_NoSuffix ) ) {
+								System.err.println( "scan filename (without Suffix) listed more than once: " 
+										+ scanFilename
+										+ ", scanFilename without Suffix: "
+										+ scanFilename_NoSuffix );
+								System.err.println( "" );
+								System.err.println( FOR_HELP_STRING );
+								importResults.setImportSuccessStatus( false) ;
+								importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+								return importResults;  //  EARLY EXIT
+							}
+						}
+						
 						ScanFileFileContainer scanFileFileContainer = new ScanFileFileContainer();
 						scanFileFileContainer.setScanFile( scanFile );
 						scanFileFileContainer.setScanFilename( scanFilename );

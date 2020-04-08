@@ -20,13 +20,13 @@ package org.yeastrc.limelight.limelight_importer.scan_file_processing_validating
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.spectral_storage_service_interface.ScanFileToSpectralStorageService_GetAllScanNumbersForAPIKey;
 import org.yeastrc.limelight.limelight_shared.dto.ScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
@@ -53,9 +53,9 @@ public class PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles {
 	 * @param searchScanFileEntry_KeyScanFilename
 	 * @throws Exception
 	 */
-	public void validateAllScanNumbersOnPSMsInScanFiles( Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws Exception {
+	public void validateAllScanNumbersOnPSMsInScanFiles( SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws Exception {
 		
-		if ( searchScanFileEntry_KeyScanFilename == null ) {
+		if ( searchScanFileEntry_AllEntries == null ) {
 			return; // EARLY EXIT
 		}
 		
@@ -64,9 +64,7 @@ public class PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles {
 		PostProcess_ValidateScanNumbersForSingleScanFile postProcess_ValidateScanNumbersForSingleScanFile = 
 				PostProcess_ValidateScanNumbersForSingleScanFile.getInstance();
 		
-		for ( Map.Entry<String, SearchScanFileEntry> entry : searchScanFileEntry_KeyScanFilename.entrySet() ) {
-			
-			SearchScanFileEntry searchScanFileEntry = entry.getValue();
+		for ( SearchScanFileEntry searchScanFileEntry : searchScanFileEntry_AllEntries.allEntries_AsList() ) {
 			
 			ScanFileDTO scanFileDTO = searchScanFileEntry.getScanFileDTO();
 			

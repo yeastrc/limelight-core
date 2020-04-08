@@ -26,6 +26,7 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchSc
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.spectral_storage_service_interface.ScanFileToSpectralStorageService_SendFile;
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
 import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileImporterDTO;
@@ -50,16 +51,16 @@ public class ScanFiles_SendToSpectralStorageService {
 	 */
 	public void sendScanFilesToSpectralStorageService(
 			Map<String, ScanFileFileContainer> scanFileFileContainer_KeyFilename,
-			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws Exception {
+			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws Exception {
 		
 		for ( Map.Entry<String, ScanFileFileContainer> scanFileFileContainerEntry : scanFileFileContainer_KeyFilename.entrySet() ) {
 			
 			String scanFilename = scanFileFileContainerEntry.getKey();
 			ScanFileFileContainer scanFileFileContainer = scanFileFileContainerEntry.getValue();
 			
-			SearchScanFileEntry searchScanFileEntry = searchScanFileEntry_KeyScanFilename.get( scanFilename );
+			SearchScanFileEntry searchScanFileEntry = searchScanFileEntry_AllEntries.get_From_ScanFilename( scanFilename );
 			if ( searchScanFileEntry == null ) {
-				String msg = "No entry in searchScanFileEntry_KeyScanFilename for scanFilename: " + scanFilename;
+				String msg = "No entry in searchScanFileEntry_AllEntries.get_From_ScanFilename(...) for scanFilename: " + scanFilename;
 				log.error( msg );
 				throw new LimelightImporterInternalException( msg );
 			}

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.slf4j.Logger;
 
 /**
@@ -38,17 +39,17 @@ public class ScanFiles_UpdateForSpectralStorageService_API_Key {
 	 * @param searchScanFileEntry_KeyScanFilename
 	 * @throws Exception
 	 */
-	public void scanFiles_UpdateForSpectralStorageService_API_Key( Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws Exception {
+	public void scanFiles_UpdateForSpectralStorageService_API_Key( SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws Exception {
 		
-		if ( searchScanFileEntry_KeyScanFilename == null ) {
+		if ( searchScanFileEntry_AllEntries == null ) {
 			return;  // EARLY RETURN
 		}
 		
 		ScanFiles_Populate_SpectralStorageService_API_Key.getInstance()
-		.populate_SpectralStorageService_API_Key( searchScanFileEntry_KeyScanFilename );
+		.populate_SpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
 		
 		ScanFiles_UpdateDB_WithSpectralStorageService_API_Key.getInstance()
-		.updateDB_WithSpectralStorageService_API_Key( searchScanFileEntry_KeyScanFilename );
+		.updateDB_WithSpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
 	}
 	
 	

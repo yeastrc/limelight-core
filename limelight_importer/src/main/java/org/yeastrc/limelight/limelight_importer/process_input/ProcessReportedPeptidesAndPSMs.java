@@ -47,6 +47,7 @@ import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValu
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessSave_SingleReportedPeptide.ProcessSave_SingleReportedPeptide_Results;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
@@ -83,7 +84,7 @@ public class ProcessReportedPeptidesAndPSMs {
 			SearchDTO_Importer search,
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			ReportedPeptideAndPsmFilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
-			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename
+			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries
 			) throws Exception {
 		
 		int searchId = search.getId();
@@ -157,7 +158,7 @@ public class ProcessReportedPeptidesAndPSMs {
 									savedReportedPeptideDTO, 
 									searchProgramEntryMap,
 									filterablePsmAnnotationTypesOnId,
-									searchScanFileEntry_KeyScanFilename,
+									searchScanFileEntry_AllEntries,
 									uniqueReporterIonMassesForTheReportedPeptide
 									);
 					

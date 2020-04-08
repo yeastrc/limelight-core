@@ -20,9 +20,12 @@ package org.yeastrc.limelight.limelight_importer.process_file_import_submission;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,6 +189,8 @@ public class ProcessFileImportSubmission {
 			
 			scanFileFileContainer_KeyFilename = new HashMap<>();
 			
+			Set<String> scanFilenameInUpload_NoSuffixes = new HashSet<>();
+			
 			for ( FileImportTrackingSingleFileDTO scanFileDBRecord : scanFilesDBRecords ) {
 				if ( StringUtils.isNotEmpty( scanFileDBRecord.getFilenameOnDiskWithPathSubSameMachine() ) ) {
 
@@ -231,6 +236,21 @@ public class ProcessFileImportSubmission {
 						System.err.println( "" );
 						throw new LimelightImporterErrorProcessingRunIdException();
 					}
+
+					{
+						String scanFilenameInUpload_NoSuffix = FilenameUtils.removeExtension( scanFilenameInUpload );
+						
+						if ( ! scanFilenameInUpload_NoSuffixes.add( scanFilenameInUpload_NoSuffix ) ) {
+							System.err.println( "scan filename (without Suffix) listed more than once: " 
+									+ scanFilenameInUpload
+									+ ", scanFilename in upload without Suffix: "
+									+ scanFilenameInUpload_NoSuffix );
+							System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
+							System.err.println( "" );
+							throw new LimelightImporterErrorProcessingRunIdException();
+						}
+					}
+					
 					File scanFile = new File( scanFilenameOnDisk_String );
 					if( ! scanFile.exists() ) {
 						System.err.println( "Could not find scan file: " + scanFile.getAbsolutePath() );

@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
-import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_SendToSpectralStorageService;
 import org.slf4j.Logger;
 
@@ -41,10 +41,12 @@ public class Process_ScanFilenames_ScanFiles {
 	 * @param searchId
 	 * @param scanFilenamesLimelightXMLInputList
 	 * @param scanFileFileContainer_KeyFilename
-	 * @return
+	 * 
+	 * @return null - if ( scanFilenamesLimelightXMLInputList == null || scanFilenamesLimelightXMLInputList.isEmpty() ) {
+	 * 
 	 * @throws Exception
 	 */
-	public Map<String, SearchScanFileEntry>  process_ScanFilenames_ScanFiles( 
+	public SearchScanFileEntry_AllEntries process_ScanFilenames_ScanFiles( 
 			int searchId,
 			Set<String> scanFilenamesLimelightXMLInputList, 
 			Map<String, ScanFileFileContainer> scanFileFileContainer_KeyFilename ) throws Exception {
@@ -53,19 +55,19 @@ public class Process_ScanFilenames_ScanFiles {
 			return null;  // EARLY RETURN
 		}
 		
-		Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename = 
+		SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries = 
 				CreateSaveSearchScanFileEntries.getInstance()
 				.createSaveSearchScanFileEntries( searchId, scanFilenamesLimelightXMLInputList );
 		
 		if ( scanFileFileContainer_KeyFilename != null && ( ! scanFileFileContainer_KeyFilename.isEmpty() ) ) {
 			
 			ScanFiles_SendToSpectralStorageService.getInstance()
-			.sendScanFilesToSpectralStorageService( scanFileFileContainer_KeyFilename, searchScanFileEntry_KeyScanFilename );
+			.sendScanFilesToSpectralStorageService( scanFileFileContainer_KeyFilename, searchScanFileEntry_AllEntries );
 		}
 		
 		log.warn( "INFO:  !!  Finished processing Scan Files.");
 		
-		return searchScanFileEntry_KeyScanFilename;
+		return searchScanFileEntry_AllEntries;
 	}
 	
 }

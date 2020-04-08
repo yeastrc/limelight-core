@@ -41,6 +41,13 @@ public class SearchScanFileEntry {
 	private ScanFileDTO scanFileDTO;
 	
 	/**
+	 * Package Private constructor
+	 */
+	SearchScanFileEntry() {
+		
+	}
+	
+	/**
 	 * @param scanNumber
 	 */
 	public void addScanNumberFromPSM( int scanNumber ) {

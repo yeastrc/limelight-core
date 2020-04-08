@@ -22,8 +22,11 @@ import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,19 +204,54 @@ public class SubmitUploadMain {
 //			}
 
 			if ( scanFiles != null && ( ! scanFiles.isEmpty() ) ) {
+				
+				//  Validate Scan Files:
+				
+				//    valid suffix
+				
+				//    Not duplicate filenames
+				//    Not duplicate filenames when check without filename suffix
+				
+				Set<String> scanFilenames = new HashSet<>();
+				Set<String> scanFilenames_NoSuffixes = new HashSet<>();
 
 				for ( File scanFile : scanFiles ) {
+					
+					String scanFilename = scanFile.getName();
 
-					String errorStringScanSuffixValidation = validateScanFileSuffix( scanFile.getName() );
+					String errorStringScanSuffixValidation = validateScanFileSuffix( scanFilename );
 
 					if ( errorStringScanSuffixValidation != null ) {
 
+						System.err.println( "" );
 						System.err.println( errorStringScanSuffixValidation );
 						System.err.println( "" );
 						System.err.println( FOR_HELP_STRING );
 						submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
 						return submitResult;  //  EARLY EXIT
 					}
+					
+					if ( ! scanFilenames.add( scanFilename ) ) {
+						System.err.println( "" );
+						System.err.println( "Duplicate Scan file submitted: " + scanFilename );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+						return submitResult;  //  EARLY EXIT
+					}				
+					
+					String filename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
+					if ( ! scanFilenames_NoSuffixes.add( filename_NoSuffix ) ) {
+						System.err.println( "" );
+						System.err.println( "Duplicate Scan file (With suffix removed) submitted: " 
+								+ filename_NoSuffix
+								+ ",  scan filename: "
+								+ scanFilename );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+						return submitResult;  //  EARLY EXIT
+					}			
 				}
 			}
 

@@ -43,6 +43,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInte
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.utils.ReporterIonMass_Round_IfNecessary;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
@@ -87,7 +88,7 @@ public class ProcessPSMsForReportedPeptide {
 			ReportedPeptideDTO reportedPeptideDTO, 
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId,
-			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename,
+			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries,
 			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide ) throws LimelightImporterDataException, Exception {
 		
 		String peptideString = reportedPeptide.getSequence();
@@ -132,7 +133,7 @@ public class ProcessPSMsForReportedPeptide {
 							psm,
 							psmHasModifications,
 							psmHasReporterIons,
-							searchScanFileEntry_KeyScanFilename );
+							searchScanFileEntry_AllEntries );
 			
 			DB_Insert_PsmDAO.getInstance().saveToDatabase( psmDTO );
 			

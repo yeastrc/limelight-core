@@ -23,6 +23,8 @@ const _project_page_upload_data_section_project_owner_user_interaction_template 
 //  For AJAX call (non jQuery)
 import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from 'page_js/EveryPageCommon.js';
 
+import { handleAJAXFailure, handleRawAJAXError, handleAJAXError } from 'page_js/handleServicesAJAXErrors'
+
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
@@ -617,6 +619,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let fileElement = $fileElement[0];
 		let file = undefined;
 		let filename = undefined;
+		let filename_NoSuffix = undefined;
 		let fileSize = undefined;
 		try {
 			//  length is zero if no file selected
@@ -629,10 +632,20 @@ export class ProjectPage_UploadData_NewUploadMain {
 			$fileElement.val(""); // clear the input field after get the selected file
 			filename = file.name;
 			fileSize = file.size;
+
 		} catch(e) { 
 			alert( "Javascript File API not supported.  Use a newer browser" );
 			return;
 		}
+
+		{
+			const filename_LastDot_Index = filename.lastIndexOf(".");
+			if ( filename_LastDot_Index < 1 ) {
+				throw Error( "scanFileDialogChanged(...): ( filename_LastDot_Index < 1 ).  filename_LastDot_Index: " + filename_LastDot_Index );
+			}
+			filename_NoSuffix = filename.substring( 0, filename_LastDot_Index );
+		}
+
 //		Did the user already select this filename
 		let allFileData = this.getAllFileData();
 		let fileDataKeys = Object.keys( allFileData );
@@ -651,10 +664,36 @@ export class ProjectPage_UploadData_NewUploadMain {
 					let $errorMessage = $( errorMessage );
 					let $chosen_file_jq = $errorMessage.find(".chosen_file_jq");
 					$chosen_file_jq.text( filename );
+					let $chosen_file_without_suffix_error_submessage_jq = $errorMessage.find(".chosen_file_without_suffix_error_submessage_jq");
+					$chosen_file_without_suffix_error_submessage_jq.hide();
 					$import_limelight_xml_file_choose_file_error_message.append( $errorMessage );
 					$(".import_limelight_xml_choose_file_error_overlay_show_hide_parts_jq").show();
 					return;  //  EARY EXIT
 				}
+
+				{
+					const filenameInFileData_LastDot_Index = filenameInFileData.lastIndexOf(".");
+					if ( filenameInFileData_LastDot_Index < 1 ) {
+						throw Error( "scanFileDialogChanged(...): ( filenameInFileData_LastDot_Index < 1 ).  filenameInFileData_LastDot_Index: " + filenameInFileData_LastDot_Index );
+					}
+					const filenameInFileData_NoSuffix = filenameInFileData.substring( 0, filenameInFileData_LastDot_Index );
+
+					if ( filenameInFileData_NoSuffix === filename_NoSuffix ) {
+						//  Same filename (when suffix removed) already uploaded
+						let $import_limelight_xml_file_choose_file_error_message = $("#import_limelight_xml_file_choose_file_error_message");
+						$import_limelight_xml_file_choose_file_error_message.empty();
+						let errorMessage = $("#import_limelight_xml_file_choose_file_error_message_filename_already_chosen").html();
+						let $errorMessage = $( errorMessage );
+						let $chosen_file_jq = $errorMessage.find(".chosen_file_jq");
+						$chosen_file_jq.text( filename );
+						let $chosen_file_without_suffix_error_submessage_jq = $errorMessage.find(".chosen_file_without_suffix_error_submessage_jq");
+						$chosen_file_without_suffix_error_submessage_jq.show();
+						$import_limelight_xml_file_choose_file_error_message.append( $errorMessage );
+						$(".import_limelight_xml_choose_file_error_overlay_show_hide_parts_jq").show();
+						return;  //  EARY EXIT
+					}
+				}
+
 			}
 		}
 		let fileType = $fileElement.attr("data-file_type");

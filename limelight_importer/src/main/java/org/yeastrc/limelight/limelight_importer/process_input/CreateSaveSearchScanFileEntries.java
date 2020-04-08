@@ -17,14 +17,12 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchScanFileDAO;
-import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 
 /**
@@ -44,9 +42,9 @@ public class CreateSaveSearchScanFileEntries {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Map<String, SearchScanFileEntry> createSaveSearchScanFileEntries( int searchId, Set<String> scanFilenamesLimelightXMLInputList ) throws Exception {
+	public SearchScanFileEntry_AllEntries createSaveSearchScanFileEntries( int searchId, Set<String> scanFilenamesLimelightXMLInputList ) throws Exception {
 		
-		Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename = new HashMap<>();
+		SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries = new SearchScanFileEntry_AllEntries();
 		
 		DB_Insert_SearchScanFileDAO db_Insert_SearchScanFileDAO = DB_Insert_SearchScanFileDAO.getInstance();
 		
@@ -57,14 +55,10 @@ public class CreateSaveSearchScanFileEntries {
 			searchScanFileDTO.setSearchId( searchId );
 
 			db_Insert_SearchScanFileDAO.saveToDatabase( searchScanFileDTO );
-
-			SearchScanFileEntry searchScanFileEntry = new SearchScanFileEntry();
-			searchScanFileEntry.setSearchScanFileId( searchScanFileDTO.getId() );
-			searchScanFileEntry.setSearchScanFileDTO( searchScanFileDTO );
-
-			searchScanFileEntry_KeyScanFilename.put( scanFilename, searchScanFileEntry );
+			
+			searchScanFileEntry_AllEntries.addEntry( searchScanFileDTO );
 		}
 		
-		return searchScanFileEntry_KeyScanFilename;
+		return searchScanFileEntry_AllEntries;
 	}
 }

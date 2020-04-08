@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -59,6 +60,7 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 			LimelightInput limelightInput, 
 			Map<String, ScanFileFileContainer> scanFileFileContainer_KeyFilename ) throws LimelightImporterDataException {
 		
+		//  Result from this method:
 		Set<String> scanFilenamesLimelightXMLInputSet = new HashSet<>();
 		
 		String scanFilenameFromScanFileToImport_SingleScanFileToImport = null;
@@ -66,6 +68,22 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 		if ( scanFileFileContainer_KeyFilename != null && scanFileFileContainer_KeyFilename.size() == 1 ) {
 			scanFilenameFromScanFileToImport_SingleScanFileToImport = scanFileFileContainer_KeyFilename.keySet().iterator().next();
 		}
+		
+		//  Create lookup Sets of scanFileFiles from scanFileFileContainer_KeyFilename
+		
+		Set<String> scanFilenames_From_scanFileFileContainer = new HashSet<>();
+		Set<String> scanFilenames_From_scanFileFileContainer_No_FilenameSuffix = new HashSet<>();
+		
+		for ( String scanFilename : scanFileFileContainer_KeyFilename.keySet() ) {
+			
+			scanFilenames_From_scanFileFileContainer.add( scanFilename );
+			
+			String scanFilename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
+			
+			scanFilenames_From_scanFileFileContainer_No_FilenameSuffix.add( scanFilename_NoSuffix );
+		}
+
+		//  Process PSMs
 				
 		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
 		if ( reportedPeptides != null ) {
@@ -97,11 +115,15 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 									}
 								} else {
 									if ( scanFileFileContainer_KeyFilename != null && ( ! scanFileFileContainer_KeyFilename.isEmpty() ) ) {
-										if ( ! scanFileFileContainer_KeyFilename.containsKey( scanFileNameLimelightXMLInput ) ) {
+										if ( ( ! scanFilenames_From_scanFileFileContainer.contains( scanFileNameLimelightXMLInput ) 
+												&& ( ! scanFilenames_From_scanFileFileContainer_No_FilenameSuffix.contains( scanFileNameLimelightXMLInput ) ) ) ) {
 											String msg = "Scan Filename on PSM is not in list of Scan Files to be imported."
 													+ "  Scan Filename on PSM: " + scanFileNameLimelightXMLInput
 													+ ".  List of Scan Filenames to be imported: " 
-													+ StringUtils.join( scanFileFileContainer_KeyFilename.keySet(), ", " );
+													+ StringUtils.join( scanFilenames_From_scanFileFileContainer, ", " )
+													+ ".  List of Scan Filenames to be imported with suffixes removed: " 
+													+ StringUtils.join( scanFilenames_From_scanFileFileContainer_No_FilenameSuffix, ", " );
+											
 											log.error( msg );
 											throw new LimelightImporterDataException(msg);
 										}

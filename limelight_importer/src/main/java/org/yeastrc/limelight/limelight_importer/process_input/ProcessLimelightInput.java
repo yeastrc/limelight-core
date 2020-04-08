@@ -42,6 +42,7 @@ import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFil
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.post_insert_search_processing.PerformPostInsertSearchProcessing;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PreprocessValidate_ScanFiles_ScanFilenames;
@@ -167,7 +168,7 @@ public class ProcessLimelightInput {
 			//  Insert scan file data for search into database.
 			//  If have scan files, send scan file(s) to spectral storage service for insert
 			
-			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename = 
+			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries = 
 					Process_ScanFilenames_ScanFiles.getInstance()
 					.process_ScanFilenames_ScanFiles( searchId, scanFilenamesLimelightXMLInputSet, scanFileFileContainer_KeyFilename );
 			
@@ -221,7 +222,7 @@ public class ProcessLimelightInput {
 					searchDTO, 
 					searchProgramEntryMap,
 					reportedPeptideAndPsmFilterableAnnotationTypesOnId,
-					searchScanFileEntry_KeyScanFilename
+					searchScanFileEntry_AllEntries
 					);
 			
 
@@ -251,10 +252,10 @@ public class ProcessLimelightInput {
 		    }
 			
 			ScanFiles_UpdateForSpectralStorageService_API_Key.getInstance()
-			.scanFiles_UpdateForSpectralStorageService_API_Key( searchScanFileEntry_KeyScanFilename );
+			.scanFiles_UpdateForSpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
 			
 			PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles.getInstance()
-			.validateAllScanNumbersOnPSMsInScanFiles( searchScanFileEntry_KeyScanFilename );
+			.validateAllScanNumbersOnPSMsInScanFiles( searchScanFileEntry_AllEntries );
 			
 		} catch ( Exception e ) {
 			throw e;

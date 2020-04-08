@@ -17,8 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
-import java.util.Map;
-
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -26,6 +25,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 
@@ -62,7 +62,7 @@ public class PopulatePsmDTO {
 			Psm psm,
 			boolean psmHasModifications,
 			boolean psmHasReporterIons,
-			Map<String, SearchScanFileEntry> searchScanFileEntry_KeyScanFilename ) throws LimelightImporterDataException, Exception {
+			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws LimelightImporterDataException, Exception {
 		
 		PsmDTO psmDTO = new PsmDTO();
 		psmDTO.setSearchId( searchId );
@@ -90,16 +90,24 @@ public class PopulatePsmDTO {
 		
 		if ( StringUtils.isNotEmpty( psmScanFileName ) ) {
 			
-			if ( searchScanFileEntry_KeyScanFilename == null ) {
-				String msg = "searchScanFileEntry_KeyScanFilename == null when psmScanFileName has a value, for psmScanFileName: " + psmScanFileName;
+			if ( searchScanFileEntry_AllEntries == null ) {
+				String msg = "searchScanFileEntry_AllEntries == null when psmScanFileName has a value, for psmScanFileName: " + psmScanFileName;
 				log.error( msg );
 				throw new LimelightImporterInternalException(msg);
 			}
+
+			SearchScanFileEntry searchScanFileEntry = searchScanFileEntry_AllEntries.get_From_ScanFilename( psmScanFileName );
+
+			if ( searchScanFileEntry == null ) {
+				
+				//  Try search without ScanFilename Suffix
 			
-			SearchScanFileEntry searchScanFileEntry = searchScanFileEntry_KeyScanFilename.get( psmScanFileName );
+				searchScanFileEntry = searchScanFileEntry_AllEntries.get_From_ScanFilename_NoSuffix( psmScanFileName );
+			}
 			
 			if ( searchScanFileEntry == null ) {
-				String msg = "No entry found in searchScanFileEntry_KeyScanFilename for psmScanFileName: " + psmScanFileName;
+				String msg = "No entry found in searchScanFileEntry_AllEntries.get_From_ScanFilename( psmScanFileName ) or in searchScanFileEntry_AllEntries.get_From_ScanFilename_NoSuffix( psmScanFileName ) for psmScanFileName: " 
+						+ psmScanFileName;
 				log.error( msg );
 				throw new LimelightImporterInternalException(msg);
 			}
