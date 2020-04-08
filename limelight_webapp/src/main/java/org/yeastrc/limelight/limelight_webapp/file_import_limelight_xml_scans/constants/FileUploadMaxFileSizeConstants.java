@@ -24,7 +24,10 @@ package org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.c
 public class FileUploadMaxFileSizeConstants {
 
 
-	public static final long MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE = ( 350 * ( (long) ( 1000 * 1000 ) ) ); // 350MB max
+	//  Must Keep these ..._SIZE in sync with following ..._SIZE_FORMATTED 
+	
+	
+	public static final long MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE = ( 1 * ( (long) ( 1000 * 1000 * 1000 ) ) ); // 1GB max
 
 
 	// Must cast some part to long. 
@@ -36,7 +39,7 @@ public class FileUploadMaxFileSizeConstants {
 
 	//  !!!!   Must keep these in sync with the numbers above
 	
-	public static final String MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED = "350MB";
+	public static final String MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED = "1GB";
 
 	
 	public static final String MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED = "10GB";
