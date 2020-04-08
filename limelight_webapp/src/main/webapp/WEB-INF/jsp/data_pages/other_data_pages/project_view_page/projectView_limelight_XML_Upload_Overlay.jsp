@@ -4,8 +4,8 @@
 		Overlay for Uploading a Limelight XML file and assoc Scan Files
 --%>
 
+<%@page import="org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadMaxFileSizeConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_submit_import_client_connector.enum_classes.LimelightSubmit_FileImportFileType"%>
-<%@page import="org.yeastrc.limelight.limelight_webapp.constants.LimelightXMLFileUploadMaxFileSizeConstants"%>
 <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
 
 
@@ -16,12 +16,12 @@
 
 </c:if>
   
-<input type="hidden" id="limelight_xml_file_max_file_upload_size" value="<%=LimelightXMLFileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_AS_STRING()%>">
-<input type="hidden" id="limelight_xml_file_max_file_upload_size_formatted" value="<%=LimelightXMLFileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>">
+<input type="hidden" id="limelight_xml_file_max_file_upload_size" value="<%=FileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_AS_STRING()%>">
+<input type="hidden" id="limelight_xml_file_max_file_upload_size_formatted" value="<%=FileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>">
 
 <c:if test="${ configSystemValues.scanFileImportAllowedViaWebSubmit }" >
-  <input type="hidden" id="limelight_import_scan_file_max_file_upload_size" value="<%=LimelightXMLFileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_AS_STRING()%>">
-  <input type="hidden" id="limelight_import_scan_file_max_file_upload_size_formatted" value="<%=LimelightXMLFileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED()%>">
+  <input type="hidden" id="limelight_import_scan_file_max_file_upload_size" value="<%=FileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_AS_STRING()%>">
+  <input type="hidden" id="limelight_import_scan_file_max_file_upload_size_formatted" value="<%=FileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED()%>">
 </c:if>
 
 
@@ -104,7 +104,7 @@
 		    		 >+Add Limelight XML File</a>
 		    </div>
 			<div style="font-size: 80%;">
-				(Max filesize: <%=LimelightXMLFileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>)
+				(Max filesize: <%=FileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>)
 			</div>
 		    		 <%-- Hidden input file element --%>
 			<input type="file" accept=".xml"
@@ -185,7 +185,7 @@
 			    		 >+Add Scan File</a>
 				</div>
 				<div style="font-size: 80%;">
-						(Max filesize: <%=LimelightXMLFileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED()%>)
+						(Max filesize: <%=FileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED()%>)
 			    		 
 					<input type="file" accept=".mzML,.mzXML"  
 						id="import_limelight_xml_scan_file_field" style="display: none;"
