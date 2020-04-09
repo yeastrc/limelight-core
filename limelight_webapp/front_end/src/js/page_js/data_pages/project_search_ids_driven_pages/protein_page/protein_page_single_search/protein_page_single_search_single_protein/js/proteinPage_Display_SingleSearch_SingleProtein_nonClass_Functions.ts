@@ -384,13 +384,16 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 
 	//  Get Protein Sequence String
 	
-	const promise_GetProteinSequence = new Promise( (resolve, reject) => {
-		_loadDataForInitialOverlayShow_GetProteinSequence({ 
-			proteinSequenceVersionId, projectSearchId_Contains_proteinSequenceVersionId, loadedDataCommonHolder, resolve, reject 
-		});
-	});
+	if ( loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) === undefined ) {
 
-	promises.push( promise_GetProteinSequence );
+		const promise_GetProteinSequence = new Promise( (resolve, reject) => {
+			_loadDataForInitialOverlayShow_GetProteinSequence({ 
+				proteinSequenceVersionId, projectSearchId_Contains_proteinSequenceVersionId, loadedDataCommonHolder, resolve, reject 
+			});
+		});
+
+		promises.push( promise_GetProteinSequence );
+	}
 
 	//  Get data per projectSearchId
 

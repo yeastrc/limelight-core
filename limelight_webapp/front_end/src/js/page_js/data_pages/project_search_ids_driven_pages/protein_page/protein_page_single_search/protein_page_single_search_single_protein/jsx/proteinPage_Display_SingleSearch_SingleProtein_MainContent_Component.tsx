@@ -1732,14 +1732,14 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
         if ( this.state.updating_Next_reportedPeptideIdsForDisplay_Map_KeyProjectSearchId_ForPeptideList ) {
 
             updatingMessage = (
-                <div style={ {  fontSize : 18, color: "red", backgroundColor: "#DDDDDD", minHeight: 100, textAlign: "center", paddingTop: 30, position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } >
+                <div className=" block-updating-overlay-container " >
                     Updating Peptide List
                 </div>
             )
         } else if ( this.state.gettingDataFor_Filtering_reportedPeptideIdsForDisplay ) {
 
             gettingDataMessage = (
-                <div style={ {  fontSize : 18, color: "red", backgroundColor: "#DDDDDD", minHeight: 100, textAlign: "center", paddingTop: 30, position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } >
+                <div className=" block-updating-overlay-container " >
                     Loading Data to show Peptides
                 </div>
             )

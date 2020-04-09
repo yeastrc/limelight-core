@@ -364,7 +364,14 @@ export class PeptideViewPage_Display_SingleSearch {
 
 		const reportedPeptideIdsForDisplay = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
 
-		let peptideListLength = reportedPeptideIdsForDisplay.length;
+		let peptideListLength = reportedPeptideIdsForDisplay.length.toString();
+
+		try {
+			peptideListLength = reportedPeptideIdsForDisplay.length.toLocaleString();
+
+		} catch(e) {
+			//  eat exception
+		}
 	
 
 		let $peptide_list_size = $("#peptide_list_size");

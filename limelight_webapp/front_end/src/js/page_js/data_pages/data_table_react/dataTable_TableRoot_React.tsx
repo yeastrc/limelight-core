@@ -33,7 +33,9 @@ interface DataTable_TableRoot_State {
 
     tableDataObject? : DataTable_RootTableDataObject
     tableOptions? : DataTable_TableOptions
+
     sortColumnsInfo? : Array<DataTable_SortColumnsInfoEntry>
+    show_updatingTableOrder_Message? : boolean
 }
 
 /**
@@ -123,6 +125,10 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         if ( this.state.tableOptions !== nextState.tableOptions ) {
             return true;
         }
+        if ( this.state.show_updatingTableOrder_Message !== nextState.show_updatingTableOrder_Message ) {
+            return true;
+        }
+        
         return false;
     }
 
@@ -139,13 +145,73 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
      * 
      */
     _headerColumnClicked({ shiftKeyDown, columnId } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId }) : void {
+
+        let displayUpdatingMsg = false;
+
+        const displayUpdatingMsg_TriggerMinLength = 300;
+
+        if ( this.props.tableObject.tableDataObject.dataTable_DataRowEntries && this.props.tableObject.tableDataObject.dataTable_DataRowEntries.length > displayUpdatingMsg_TriggerMinLength ) {
+
+            displayUpdatingMsg = true;
+        }
+
+        if ( this.props.tableObject.tableDataObject.dataTable_DataGroupRowEntries && this.props.tableObject.tableDataObject.dataTable_DataGroupRowEntries.length > 0 ) {
+
+            //  Get Total count of dataTable_DataRowEntries
+            
+            let dataTable_DataRowEntries_TotalCount = 0;
+
+            for ( const dataTable_DataGroupRowEntry of this.props.tableObject.tableDataObject.dataTable_DataGroupRowEntries ) {
+                if ( dataTable_DataGroupRowEntry.dataTable_DataRowEntries && dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length > 0 ) {
+
+                    dataTable_DataRowEntries_TotalCount += dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length;
+                }
+            }
+            if ( dataTable_DataRowEntries_TotalCount > displayUpdatingMsg_TriggerMinLength ) {
         
-        this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
+                displayUpdatingMsg = true;
+            }
+        }
 
-            // Important: read `existingState` instead of `this.state` when updating.
+        if ( displayUpdatingMsg ) {
 
-            return this._headerColumnClicked_CreateNewState({ existingState, shiftKeyDown, columnId });
-        });
+            //  Update differed until after displaying updating message
+
+            this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
+
+                // Important: read `existingState` instead of `this.state` when updating.
+
+                return { show_updatingTableOrder_Message : true };
+            });
+
+            window.setTimeout(() => {
+                    
+                this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
+
+                    // Important: read `existingState` instead of `this.state` when updating.
+
+                    return { show_updatingTableOrder_Message : false };
+                });
+
+                this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
+
+                    // Important: read `existingState` instead of `this.state` when updating.
+
+                    return this._headerColumnClicked_CreateNewState({ existingState, shiftKeyDown, columnId });
+                });
+            }, 10 );
+
+        } else {
+
+            //  Update immediately
+            
+            this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
+
+                // Important: read `existingState` instead of `this.state` when updating.
+
+                return this._headerColumnClicked_CreateNewState({ existingState, shiftKeyDown, columnId });
+            });
+        }
     }
 
     /**
@@ -449,12 +515,25 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             divCssClass += " padding-for-room-for-child-table-show-hide-icon ";
         }
 
+        let updatingTableOrder_Message : JSX.Element = undefined;
+
+        if ( this.state.show_updatingTableOrder_Message ) {
+
+            updatingTableOrder_Message = (
+
+                <div className=" block-updating-overlay-container " >
+                    Updating Table Order
+                </div>
+            )
+        }
+
         return (
             <React.Fragment>
-                <div className={ divCssClass } data-react-component="DataTable_TableRoot">
+                <div className={ divCssClass }  style={ { position: "relative" }} data-react-component="DataTable_TableRoot">
                 
                     { header }
                     { dataRows }
+                    { updatingTableOrder_Message }
                 
                 </div>
                 <br />  {/* <br/> Added since <div> before it has 'display: inline-block' in CSS class data-table-container-react */}
