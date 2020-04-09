@@ -535,8 +535,8 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
 
         //  event cannot be passed through a setTimeout
 
-        let variableModificationsDisplay = undefined;
-        let staticModificationsDisplay = undefined;
+        let variableModificationsDisplay : JSX.Element = undefined;
+        let staticModificationsDisplay : JSX.Element = undefined;
 
         if ( this.props.data_At_SequencePosition.variableModifications && this.props.data_At_SequencePosition.variableModifications.length > 0 ) {
 

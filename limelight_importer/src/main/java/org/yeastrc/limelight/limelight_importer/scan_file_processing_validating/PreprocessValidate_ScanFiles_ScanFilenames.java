@@ -74,13 +74,16 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 		Set<String> scanFilenames_From_scanFileFileContainer = new HashSet<>();
 		Set<String> scanFilenames_From_scanFileFileContainer_No_FilenameSuffix = new HashSet<>();
 		
-		for ( String scanFilename : scanFileFileContainer_KeyFilename.keySet() ) {
-			
-			scanFilenames_From_scanFileFileContainer.add( scanFilename );
-			
-			String scanFilename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
-			
-			scanFilenames_From_scanFileFileContainer_No_FilenameSuffix.add( scanFilename_NoSuffix );
+		if ( scanFileFileContainer_KeyFilename != null ) {
+
+			for ( String scanFilename : scanFileFileContainer_KeyFilename.keySet() ) {
+
+				scanFilenames_From_scanFileFileContainer.add( scanFilename );
+
+				String scanFilename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
+
+				scanFilenames_From_scanFileFileContainer_No_FilenameSuffix.add( scanFilename_NoSuffix );
+			}
 		}
 
 		//  Process PSMs

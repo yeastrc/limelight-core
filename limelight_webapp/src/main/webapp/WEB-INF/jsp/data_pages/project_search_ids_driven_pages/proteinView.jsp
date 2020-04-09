@@ -98,7 +98,7 @@
 
 		<%--  Cover over protein list when updating --%>
 		<div id="protein_list_updating_message"
-			style="display: none; border-color: grey; border-width: 3px; border-style: solid; background-color: white; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px">
+			style="display: none; " class=" block-updating-overlay-container ">
 			<div style=" margin-top: 4px; text-align: center;">
 				Updating Protein List
 			</div>

@@ -20,7 +20,7 @@ export class Tooltip_Limelight_Created_Tooltip {
 
     private _tooltip_addedDivElementDOM : HTMLElement
 
-    constructor({ tooltip_addedDivElementDOM }) {
+    constructor({ tooltip_addedDivElementDOM } : { tooltip_addedDivElementDOM : HTMLElement }) {
         this._tooltip_addedDivElementDOM = tooltip_addedDivElementDOM;
     }
 
@@ -36,51 +36,59 @@ export class Tooltip_Limelight_Created_Tooltip {
             return; // EARLY RETURN
         }
 
-        const addedDivElementDOM_Local = this._tooltip_addedDivElementDOM;
+        try {
 
-        this._tooltip_addedDivElementDOM = undefined;
+            const addedDivElementDOM_Local = this._tooltip_addedDivElementDOM;
 
-        addedDivElementDOM_Local.style.display = "none"; // Hide Tooltip from view
+            this._tooltip_addedDivElementDOM = undefined;
 
-        //  Defer Removal from DOM so can draw anything else immediately as needed, like another tooltip
+            addedDivElementDOM_Local.style.display = "none"; // Hide Tooltip from view
 
-        const cleanupCallback = () => {
-            try {
-                // console.log("removeTooltip(): cleanupCallback() called " );
+            //  Defer Removal from DOM so can draw anything else immediately as needed, like another tooltip
 
-                //  React Unmount 
-                
-                ReactDOM.unmountComponentAtNode( addedDivElementDOM_Local );
+            const cleanupCallback = () => {
+                try {
+                    // console.log("removeTooltip(): cleanupCallback() called " );
 
-                //  Remove containing <div> from DOM
+                    //  React Unmount 
+                    
+                    ReactDOM.unmountComponentAtNode( addedDivElementDOM_Local );
 
-                addedDivElementDOM_Local.remove();
+                    //  Remove containing <div> from DOM
 
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
+                    addedDivElementDOM_Local.remove();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
             }
-        }
 
-        //  Not in all browsers: window.requestIdleCallback
-        //  window.requestIdleCallback not in Typescript declaration since is experimental
-        // @ts-ignore comment suppresses all errors in following line.  
-        if ( window.requestIdleCallback ) {
-            try {
-                //  Not in all browsers: window.requestIdleCallback
-                //  window.requestIdleCallback not in Typescript declaration since is experimental
-                // @ts-ignore comment suppresses all errors in following line.  
-                window.requestIdleCallback( cleanupCallback );
+            //  Not in all browsers: window.requestIdleCallback
+            //  window.requestIdleCallback not in Typescript declaration since is experimental
+            // @ts-ignore comment suppresses all errors in following line.  
+            if ( window.requestIdleCallback ) {
+                try {
+                    //  Not in all browsers: window.requestIdleCallback
+                    //  window.requestIdleCallback not in Typescript declaration since is experimental
+                    // @ts-ignore comment suppresses all errors in following line.  
+                    window.requestIdleCallback( cleanupCallback );
 
-            } catch ( e ) {
+                } catch ( e ) {
+                    //  fall back to window.setTimeout
+                    // console.log("removeTooltip(): Exception caught: Falling back to calling window.setTimeout( cleanupCallback, 1000 ); e: ", e );
+                    window.setTimeout( cleanupCallback, 1000 );
+                }
+            } else {
                 //  fall back to window.setTimeout
-                // console.log("removeTooltip(): Exception caught: Falling back to calling window.setTimeout( cleanupCallback, 1000 ); e: ", e );
+                // console.log("removeTooltip(): No value for window.requestIdleCallback: Falling back to calling window.setTimeout( cleanupCallback, 1000 );" );
                 window.setTimeout( cleanupCallback, 1000 );
             }
-        } else {
-            //  fall back to window.setTimeout
-            // console.log("removeTooltip(): No value for window.requestIdleCallback: Falling back to calling window.setTimeout( cleanupCallback, 1000 );" );
-            window.setTimeout( cleanupCallback, 1000 );
+
+        } catch( e ) {
+            console.warn("class Tooltip_Limelight_Created_Tooltip::removeTooltip: Exception: ", e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
         }
     }
 }
@@ -97,6 +105,11 @@ export const tooltip_Limelight_Create_Tooltip = function({
 
     tooltip_target_DOM_Element,
     tooltipContents
+
+} : {
+
+    tooltip_target_DOM_Element : HTMLElement,
+    tooltipContents : JSX.Element
 
 }) : Tooltip_Limelight_Created_Tooltip {
 
@@ -294,18 +307,14 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         
         const tooltip = (
             <div ref={ this.tooltip_outer_Ref }
-                className=" standard-border-color-very-dark "
+                className=" tooltip-limelight-react-based-outer-container "
                 style={ { 
                     position: "absolute", 
                     zIndex: 1000, 
                     top: tooltip_Top,
-                    left: tooltip_Left, 
-                    backgroundColor: "white" ,
+                    left: tooltip_Left,
                     minWidth: 50, 
                     maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
-                    padding: 5,
-                    borderWidth: 2, 
-                    borderStyle: "solid"
                 }}
             >
                 <span style={ { overflowWrap : "break-word"  /* Force single words to break to wrap if exceed max width */ 

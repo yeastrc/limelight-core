@@ -27,12 +27,18 @@ export class ProteinSequenceWidgetDisplay_SequencePosition_TooltipDisplayManager
         tooltipContents 
     } : {
         event: React.MouseEvent<HTMLElement, MouseEvent>
-        tooltipContents
+        tooltipContents : JSX.Element
     }) {
 
         // console.log("mouseEnter_SequencePosition(...): entered")
 
-        const mouseEnter_target_DOM_Element = event.target;
+        const mouseEnter_target_DOM_Element : HTMLElement = event.target as HTMLElement;
+
+        if ( ! ( mouseEnter_target_DOM_Element instanceof HTMLElement ) ) {
+            const msg = "ouseEnter_SequencePosition(...): ( ! ( mouseEnter_target_DOM_Element instanceof HTMLElement ) )"
+            console.warn( msg );
+            throw Error( msg )
+        }
         
         // this._tooltip_TimeoutId = window.setTimeout( ( ) => {
 

@@ -102,6 +102,63 @@ img.icon-large, input[type="image"].icon-large {
 .error-text { color: #A55353 }
 
 
+//  Standard border colors,  Applying will display a border with the Browser default border style and width
+.standard-border-color-very-dark {
+  border-color: $site-color-very-dark
+}
+.standard-border-color-dark {
+  border-color: $site-color-dark
+}
+.standard-border-color-medium {
+  border-color: $site-color-medium
+}
+.standard-border-color-light {
+  border-color: $site-color-light
+}
+.standard-border-color-gray {
+  border-color: $site-color-gray
+}
+
+//   Div that is displayed over a block to display a message, typically updating or loading data
+
+.block-updating-overlay-container {
+  font-size : 18px; 
+  // color: $site-color-dark; // red; 
+  background-color: #DDDDDD; 
+  min-height: 100px; 
+  text-align: center; 
+  padding-top: 30px; 
+  padding-bottom: 30px;
+  position: absolute; 
+  left: 0px; 
+  right: 0px; 
+  top: 0px; 
+  bottom: 0px;
+
+  //  Layout from another example: From Single Search Protein List
+  //  border-color: grey; border-width: 3px; border-style: solid; background-color: white; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px
+}
+
+//  Tooltip developed in Limelight:  tooltip_LimelightLocal_ReactBased.tsx
+
+.tooltip-limelight-react-based-outer-container {
+  position: absolute; 
+  background-color: white;
+  padding: 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: $site-color-very-dark
+
+  //  Set in the code: See code for current values
+
+  // z-index: 1000, 
+  // top: tooltip_Top,
+  // left: tooltip_Left, 
+  // minWidth: 50, 
+  // maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
+}
+
+
 /*  CSS styling for qtip2 tool tips  */
 
 /*  Values in the qtip2 css file:
@@ -235,20 +292,3 @@ input {
   .clickable {
     cursor: pointer;
   }
-
-//  Standard border colors,  Applying will display a border with the Browser default border style and width
-.standard-border-color-very-dark {
-  border-color: $site-color-very-dark
-}
-.standard-border-color-dark {
-  border-color: $site-color-dark
-}
-.standard-border-color-medium {
-  border-color: $site-color-medium
-}
-.standard-border-color-light {
-  border-color: $site-color-light
-}
-.standard-border-color-gray {
-  border-color: $site-color-gray
-}
