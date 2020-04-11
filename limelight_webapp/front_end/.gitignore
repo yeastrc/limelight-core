@@ -2,9 +2,14 @@
 /handlebars_templates_precompiled/
 /webpack_build_output/
 /.gradle/
+
+.idea
+# Eclipse
 /.settings/
 .project
+# VS Code
 VS_Code_Workspace.code-workspace
+#  File for ant_buildFrontEnd_CopyToTomcat.xml configured for local system 
 ant_buildFrontEnd_CopyToTomcat.settings.properties
 
 #  removed from .gitignore
