@@ -1,8 +1,9 @@
 /**
  * dataTable_React_DataObjects.ts
- * 
+ *
  * Classes and types for the Data Objects used in Data Table React
 */
+import React from "react";
 
 type DataTable_UniqueId = string | number;
 
@@ -407,7 +408,9 @@ class DataTable_DataRowEntry {
 
     uniqueId : DataTable_UniqueId
     sortOrder_OnEquals : any    //  Must be sortable using Javascript < > comparators
-    greyOutRow? : boolean;  //  Grey out the row.  Appy CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+    greyOutRow? : boolean;  //  Grey out the row.  Apply CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+    highlightRow? : boolean //  Highlight the row.  Apply CSS class 'table-row-highlight' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+    row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
     columnEntries : Array<DataTable_DataRow_ColumnEntry>
 
     tableRowClickHandlerParameter? : any  //  Data passed to DataTable_TableOptions.dataRowClickHandler
@@ -426,10 +429,12 @@ class DataTable_DataRowEntry {
 
     /////////
     
-    constructor({ uniqueId, sortOrder_OnEquals, greyOutRow, columnEntries, tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter } : {   
+    constructor({ uniqueId, sortOrder_OnEquals, greyOutRow, highlightRow, row_CSS_Additions, columnEntries, tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter } : {
         uniqueId : DataTable_UniqueId,
         sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
-        greyOutRow? : boolean;  //  Grey out the row.  Appy CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+        greyOutRow? : boolean;  //  Grey out the row.  Apply CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+        highlightRow? : boolean //  Highlight the row.  Apply CSS class 'table-row-highlight' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+        row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
         columnEntries : Array<DataTable_DataRow_ColumnEntry>,
         tableRowClickHandlerParameter? : any,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
         dataRow_GetChildTableDataParameter? : any,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
@@ -464,6 +469,8 @@ class DataTable_DataRowEntry {
         this.uniqueId = uniqueId; 
         this.sortOrder_OnEquals = sortOrder_OnEquals;
         this.greyOutRow = greyOutRow;
+        this.highlightRow = highlightRow;
+        this.row_CSS_Additions = row_CSS_Additions;
         this.columnEntries = columnEntries;
         this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
         this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter

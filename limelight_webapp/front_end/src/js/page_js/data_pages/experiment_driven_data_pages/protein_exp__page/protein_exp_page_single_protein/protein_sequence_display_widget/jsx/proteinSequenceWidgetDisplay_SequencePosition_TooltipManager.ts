@@ -8,6 +8,7 @@
 
 
 import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/common_all_pages/tooltip_LimelightLocal_ReactBased';
+import React from "react";
 
 /**
  * Class to manage tooltip for Main Cell

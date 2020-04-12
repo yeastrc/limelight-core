@@ -7,18 +7,6 @@
  * 
  */
 
-import { Handlebars, _common_template_bundle, _protein_table_template_bundle } from './modificationMass_UserSelections_DisplayMassSelectionOverlay_ImportHandlebarsTemplates';
-
-
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-
-import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
-
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
-
-import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants';
-
-
 //   Modification Mass Rounding to provide some level of commonality between searches
 import { 
     modificationMass_CommonRounding_ReturnNumber_Function,
@@ -32,6 +20,15 @@ import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data
 
 
 import { ModificationMass_UserSelections_StateObject } from './modificationMass_UserSelections_StateObject';
+import {
+    get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout,
+    ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/jsx/modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout";
+import {
+    limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
+    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder
+} from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
 
 //  Modal Dialog for selecting mod masses when count > _MAX_MODS_DISPLAY_NON_SELECTED
@@ -39,29 +36,16 @@ import { ModificationMass_UserSelections_StateObject } from './modificationMass_
 const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH = 800;
 const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT = 700;
 
-const _MOD_MASS_ENTRY_SELECTION_DIALOG_ALL_ROWS_CSS_CLASS = "mod-mass-dialog-row-incl-header";
-
-const _MOD_MASS_ENTRY_SELECTION_DIALOG_CSS_CLASS = "mod-mass-dialog-entry";
-
-const _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS = "mod-mass-dialog-selected";
-
-
-
+/**
+ *
+ */
 export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
-    // From common template:
+    private _remove_ModalOverlay_BindThis = this._remove_ModalOverlay.bind(this);
+    private _updateSelectedMods_BindThis = this._updateSelectedMods.bind(this);
 
-    private _common_template_dataTable_Template = _common_template_bundle.dataTable;
-    
-    //  Template Bundle _protein_table_template_bundle
-    
-    //      Selection Dialog
-
-    private _protein_mods_selection_dialog_root_Template = _protein_table_template_bundle.protein_mods_selection_dialog_root;
-
-    private _selectModsOverlay;
-
-    private _proteinNameDescription
+    private _proteinNames : string
+    private _proteinDescriptions : string
 
     private _modificationSelectionChanged_Callback : () => void;
 
@@ -72,12 +56,15 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     private _modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
 
+    private _modMassOverlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder;
+
 	/**
 	 * 
 	 */
 	constructor({ 
         modificationMass_UserSelections_StateObject,
-        proteinNameDescription,
+        proteinNames,
+        proteinDescriptions,
         proteinSequenceVersionId, 
         projectSearchIds, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -85,8 +72,9 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
         modificationSelectionChanged_Callback
     } : { 
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
-        proteinNameDescription,
-        proteinSequenceVersionId : number, 
+        proteinNames : string
+        proteinDescriptions : string
+        proteinSequenceVersionId : number,
         projectSearchIds : Array<number>, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
         modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
@@ -98,7 +86,8 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             throw Error( msg );
         }
         this._modificationMass_UserSelections_StateObject = modificationMass_UserSelections_StateObject;
-        this._proteinNameDescription = proteinNameDescription;
+        this._proteinNames = proteinNames;
+        this._proteinDescriptions = proteinDescriptions;
         this._modificationSelectionChanged_Callback = modificationSelectionChanged_Callback;
 
         this._proteinSequenceVersionId = proteinSequenceVersionId
@@ -113,27 +102,9 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 	 */
     showVariableModificationMassSelectionDialog() {
 
-        // Map<mass, {mass, psmCount}>
-        const modUniqueMassesWithTheirPsmCountsMap = this._createModsAndPsmCountsMap();
+        const modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> = this._createModsAndPsmCountsList();
 
-        const modUniqueMassesWithTheirPsmCountsArray = []; // {mass, psmCount}
-
-        for ( const entry of modUniqueMassesWithTheirPsmCountsMap.entries() ) {
-            modUniqueMassesWithTheirPsmCountsArray.push( entry[ 1 ] );  // Put 'value' of Map entry into Array
-        }
-
-        //  Sort on masses
-        modUniqueMassesWithTheirPsmCountsArray.sort( function(a, b) {
-            if ( a.mass < b.mass ) {
-                return -1;
-            }
-            if ( a.mass > b.mass ) {
-                return 1;
-            }
-            return 0;
-        });
-
-        this._selectModsOverlay = this._createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray } );
+        this._createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray } );
     }
 
     /**
@@ -141,329 +112,71 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
      * 
      * @param {*} param0 
      */
-    _createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray } ) {
+    _createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray }  : { modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> } ) {
 
-        const objectThis = this;
+        let modMassOverlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder = undefined;
 
-        let props = { width : undefined, height : undefined, title : undefined, $containerDiv : undefined, $contentDiv : undefined, callbackOnClickedHide : undefined, hideOnBackgroundClick : undefined };
-        props.width = _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH.toString();
-        props.height = _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT.toString();
-        props.title = 'Change Modification Selection';
-        props.$containerDiv = $('body' );
-
-        let $contentDiv = undefined;
-
-        try {
-            
-            $contentDiv = this._createModalOverlayContentDiv();
-            props.$contentDiv = $contentDiv;
-            
-            props.callbackOnClickedHide = function() {
-                
-                objectThis._mod_mass_select__cancel_button_Click();
-            }
-
-            const $selector_mod_mass_select_table_container = $contentDiv.find(".selector_mod_mass_select_table_container");
-
-            this._addTableToSelectionDialog({ modUniqueMassesWithTheirPsmCountsArray, $tableContainer : $selector_mod_mass_select_table_container });
-
-            let $selector_mod_mass_select_update_button = $contentDiv.find(".selector_mod_mass_select_update_button");
-            let $selector_mod_mass_select_cancel_button = $contentDiv.find(".selector_mod_mass_select_cancel_button");
-
-            if ( $selector_mod_mass_select_update_button.length === 0 ) {
-                throw Error("No element with id 'selector_mod_mass_select_update_button'");
-            }
-            if ( $selector_mod_mass_select_cancel_button.length === 0 ) {
-                throw Error("No element with id 'selector_mod_mass_select_cancel_button'");
-            }
-            
-            $selector_mod_mass_select_update_button.click( function(eventObject) {
-                try {
-                    eventObject.preventDefault();
-                    const clickThis = this;
-                    objectThis._selectionDialog_UpdateSelectedMods_fromMarkedSelectedMods_Clicked({ clickThis, eventObject });
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-            $selector_mod_mass_select_cancel_button.click( function(eventObject) {
-                try {
-                    eventObject.preventDefault();
-                    objectThis._mod_mass_select__cancel_button_Click();
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-
-            let overlay = new ModalOverlay( props );
-
-            overlay.show();
-
-            //  Adjust scrollable div max-height
-
-            const $selector_mods_selection_dialog_above_mod_list_block = $contentDiv.find(".selector_mods_selection_dialog_above_mod_list_block");
-            if ( $selector_mods_selection_dialog_above_mod_list_block.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_mods_selection_dialog_above_mod_list_block'")
-            }
-            const aboveListBlockHeight = $selector_mods_selection_dialog_above_mod_list_block.outerHeight();
-            if ( aboveListBlockHeight === undefined || Number.isNaN( aboveListBlockHeight ) ) {
-                throw Error("aboveListBlockHeight is undefined || isNAN");
-            }
-
-            const scrollableDivMaxHeight = _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT - 125 - aboveListBlockHeight;
-            const scrollableDivMaxHeightPxString = scrollableDivMaxHeight + "px";
-
-            const $selector_mods_selection_dialog_list_bounding_box = $contentDiv.find(".selector_mods_selection_dialog_list_bounding_box");
-            if ( $selector_mods_selection_dialog_list_bounding_box.length === 0 ) {
-                throw Error("Failed to find DOM element with class 'selector_mods_selection_dialog_list_bounding_box'")
-            }
-            $selector_mods_selection_dialog_list_bounding_box.css("max-height", scrollableDivMaxHeightPxString );
-
-            return overlay;
-
-        } catch( e ) {
-            if ( $contentDiv ) {
-                try {
-                    $contentDiv.remove();
-                } catch( e2 ) {
-                    const znothing = 0;
-                }
-            }
-            throw e;
-        }
-
-    }
-
-
-
-	/**
-	 * 
-	 */
-    _createModalOverlayContentDiv() {
-        
-        const protein_mods_selection_dialog_root_Context = { proteinData : this._proteinNameDescription };
-        let contentDivHTML = this._protein_mods_selection_dialog_root_Template( protein_mods_selection_dialog_root_Context );
-        let $contentDiv = $( contentDivHTML );
-        return $contentDiv;
-    }
-    
-	/**
-	 * Add Table To: Display Dialog for "Change Mods"
-	 */
-    _addTableToSelectionDialog({ modUniqueMassesWithTheirPsmCountsArray, $tableContainer }) {
-
-		//  Create Data Table and insert on page
-
-		const tableDisplayHandler = new TableDisplayHandler();
-
-		// the columns for the data being shown on the page
-		const columns = [ ];
-
-            //  constants for property 'sort': _SORT_TYPE_NUMBER, _SORT_TYPE_STRING
-            {
-			const column = {
-				id :           'mod_mass',
-				width :        '160px',
-				displayName :  'Modification Mass',
-				dataProperty : 'mass', 
-                sort : _SORT_TYPE_NUMBER,
-                style_override : 'font-size:12px;', 
-			};
-
-			columns.push( column );
-        }
-		{
-			const column = {
-				id :           'psms',
-				width :        '70px',
-				displayName :  'PSMs',
-				dataProperty : 'psmCount', 
-                sort : _SORT_TYPE_NUMBER,
-                style_override : 'font-size:12px;',
-			};
-
-			columns.push( column );
-        }
-        columns[ columns.length - 1 ].lastItem = true;
-
-
-		// the data we're showing on the page
-		const tableObjects = modUniqueMassesWithTheirPsmCountsArray;
-
-		// add the table to the page
-
-		const tableObject = { columns, dataObjects : tableObjects, expandableRows : undefined };
-
-		const dataTableWithContainer_HTML = this._common_template_dataTable_Template( { tableObject } );
-		const $tableContainerDiv = $( dataTableWithContainer_HTML );
-		$tableContainer.append( $tableContainerDiv );
-
-		// add in the click handlers for sorting the table
-		tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );
-
-		// add in the hover handler for the rows
-		tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
-        
-        this._selectionDialog_AddCssClassesToRows({ $tableContainerDiv });
-
-        this._selectionDialog_markSelectedMods_AsSelected({ $tableContainerDiv });
-
-        this._selectionDialog_selectedMods_AddSelectClickHandler({ $tableContainerDiv });
-    }
-
-	/**
-	 * 
-	 */
-    _selectionDialog_AddCssClassesToRows({ $tableContainerDiv }) {
-
-        const objectThis = this;
-
-        //  Add to all rows
-        let $selector_data_table_container = $tableContainerDiv;
-        if ( ! $selector_data_table_container.hasClass("selector_data_table_container") ) {
-            $selector_data_table_container = $tableContainerDiv.find(".selector_data_table_container");
-        }
-        const $headerRow = $selector_data_table_container.children(".div-table-header-row");
-        $headerRow.addClass( _MOD_MASS_ENTRY_SELECTION_DIALOG_ALL_ROWS_CSS_CLASS );
-
-        //  Add to Data Rows
-        const $selector_data_table_row_All = $tableContainerDiv.find(".selector_data_table_row");
-        $selector_data_table_row_All.each( function(index, element) {
-            const $row = $( this );
-            $row.addClass( _MOD_MASS_ENTRY_SELECTION_DIALOG_ALL_ROWS_CSS_CLASS );
-            $row.addClass( _MOD_MASS_ENTRY_SELECTION_DIALOG_CSS_CLASS );
-        });
-    }
-
-	/**
-	 * 
-	 */
-    _selectionDialog_markSelectedMods_AsSelected({ $tableContainerDiv }) {
-
-        const objectThis = this;
-
-        if ( this._modificationMass_UserSelections_StateObject.is_Any_VariableModification_Selected() ) {
-
-            const $selector_data_table_row_All = $tableContainerDiv.find(".selector_data_table_row");
-            $selector_data_table_row_All.each( function(index, element) {
-                const $row = $( this );
-                const modMassNumber = objectThis._selectionDialog_ModRow_GetModMassNumber({ $row });
-                if ( objectThis._modificationMass_UserSelections_StateObject.is_VariableModification_Selected( modMassNumber ) ) {
-                    $row.addClass( _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS );
-                }
-            });
-        }
-    }
-
-	/**
-	 * 
-	 */
-    _selectionDialog_selectedMods_AddSelectClickHandler({ $tableContainerDiv }) {
-
-        const objectThis = this;
-
-        const $selector_data_table_row_All = $tableContainerDiv.find(".selector_data_table_row");
-        $selector_data_table_row_All.click( function(eventObject) {
-            try {
-                eventObject.preventDefault();
-                const clickThis = this;
-                objectThis._selectionDialog_ModRow_Clicked({ clickThis, eventObject });
-                return false;
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });	
-    }
-
-	/**
-	 * 
-	 */
-    _selectionDialog_ModRow_Clicked({ clickThis, eventObject }) {
-        const $row = $( clickThis );
-        if ( $row.hasClass( _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS ) ) {
-            $row.removeClass( _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS );
-        } else {
-            $row.addClass( _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS );
-        }
-    }
-
-	/**
-	 * 
-	 */
-    _selectionDialog_UpdateSelectedMods_fromMarkedSelectedMods_Clicked({ clickThis, eventObject }) {
-
-        const objectThis = this;
-
-        const $clickThis = $( clickThis );
-
-        //  Up DOM tree to Container
-        const $selector_mods_selection_dialog_root = $clickThis.closest(".selector_mods_selection_dialog_root");
-        if ( $selector_mods_selection_dialog_root.length === 0 ) {
-            throw Error("_selectionDialog_UpdateSelectedMods_fromMarkedSelectedMods_Clicked(...): Failed to find DOM element with class 'selector_mods_selection_dialog_root'");
-        }
-        //  Find Mass Select List
-        const $selector_mod_mass_select_table_container = $selector_mods_selection_dialog_root.find(".selector_mod_mass_select_table_container");
-        if ( $selector_mod_mass_select_table_container.length === 0 ) {
-            throw Error("_selectionDialog_UpdateSelectedMods_fromMarkedSelectedMods_Clicked(...): Failed to find DOM element with class 'selector_mod_mass_select_table_container'");
-        }
-
-        const modificationsSelectedInDialog : Set<number> = new Set();
-
-        const $selector_data_table_row_All = $selector_mod_mass_select_table_container.find(".selector_data_table_row");
-        $selector_data_table_row_All.each( function(index, element) {
-            const $row = $( this );
-            if ( $row.hasClass( _MOD_MASS_SELECTED_SELECTION_DIALOG_CSS_CLASS ) ) {
-                const modMassNumber = objectThis._selectionDialog_ModRow_GetModMassNumber({ $row });
-                modificationsSelectedInDialog.add( modMassNumber );
-            }
+        const overlayComponent = get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout({
+            width : _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH,
+            height : _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT,
+            title : 'Change Modification Selection',
+            proteinName : this._proteinNames,
+            modUniqueMassesWithTheirPsmCountsArray,
+            modificationMasses_Selected : this._modificationMass_UserSelections_StateObject.get_VariableModificationsSelected_ExcludingNoModificationOption(),
+            callbackOn_Cancel_Close_Clicked : this._remove_ModalOverlay_BindThis,
+            callback_updateSelectedMods : this._updateSelectedMods_BindThis
         });
 
-        this._hide_remove_ModalOverlay();
+        this._modMassOverlay_AddedTo_DocumentBody_Holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
+    }
+
+    ////////////////////////
+
+    /**
+     *
+     */
+    _remove_ModalOverlay() {
+
+        this._modMassOverlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();
+
+        this._modMassOverlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();
+
+        this._modMassOverlay_AddedTo_DocumentBody_Holder = undefined;
+    }
+
+	/**
+	 * 
+	 */
+    _updateSelectedMods( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) {
+
+        const updated_selectedModificationMasses = params.updated_selectedModificationMasses
+
+        this._remove_ModalOverlay();
 
 
         //  Clear main mod mass selections
         this._modificationMass_UserSelections_StateObject.clear_selectedVariableModifications();
 
         //  Add in newly selected mod masses
-        for ( const modSelected of modificationsSelectedInDialog ) {
+        for ( const modSelected of updated_selectedModificationMasses ) {
             this._modificationMass_UserSelections_StateObject.add_VariableModification_Selected( modSelected );
         }
 
         this._modificationSelectionChanged_Callback();
     }
 
-
     ////////////
 
 	/**
-	 * 
-	 */
-    _selectionDialog_ModRow_GetModMassNumber({ $row }) {
-        const rowIdString = $row.attr("data-id");
-        if ( rowIdString === undefined || rowIdString === null || rowIdString === "" ) {
-            throw Error('Mod Selection Dialog. $row.attr("data-id") returned undefined, null, or "" ');
-        }
-        const rowIdNumber = Number.parseFloat( rowIdString );
-        if ( Number.isNaN( rowIdNumber ) ) {
-            throw Error('Mod Selection Dialog. $row.attr("data-id") not parse to Float.  String: ' + rowIdString );
-        }
-        return rowIdNumber;
-    }
-
-
-	/**
-	 * Create Variable Mods and PSM Counts Map for whole protein or for selected protein positions
+	 * Create Variable Mods and PSM Counts List
      * 
-     * @returns Map<mass, {id, mass, psmCount}>   id === mass
+     * @returns Array<{mass : number, psmCount: number}>
 	 */
-	_createModsAndPsmCountsMap() {
+	_createModsAndPsmCountsList() : Array<{mass : number, psmCount: number}> {
 
         //    For Overlay
 		//  Unique Mod masses And their PSM Counts for the protein or selected positions 
-		const modUniqueMassesWithTheirPsmCountsMap = new Map(); // <mass, {id, mass, psmCount}>  id === mass
+		const modUniqueMassesWithTheirPsmCountsMap : Map<number, {mass : number, psmCount: number}> = new Map(); // <mass, {mass, psmCount}>
 
         for ( const projectSearchId of this._projectSearchIds ) {
 
@@ -486,6 +199,12 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                         const position = modificationOnProtein.position;
                         let mass = modificationOnProtein.mass;
 
+                        if ( ! variable_is_type_number_Check( mass ) ) {
+                            const msg = "Modification mass from loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId(); is not a number.  is: " + mass;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
+
                         if ( this._modificationMass_CommonRounding_ReturnNumber ) {  //  Transform Modification masses before using
             
                             //  Used in multiple searches to round the modification mass
@@ -501,9 +220,7 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
                         let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
                         if ( ! modMassPsmCount ) {
-                            modMassPsmCount = { 
-                                uniqueId : mass, // Set for Data Table to identify the entry in the table
-                                mass: mass, psmCount : 0 }; 
+                            modMassPsmCount = { mass: mass, psmCount : 0 };
                             modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
                         }
                         modMassPsmCount.psmCount += numPsmsForReportedPeptideId;
@@ -513,31 +230,25 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             }
         }
 
-        return modUniqueMassesWithTheirPsmCountsMap;
+        const modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> = []; // {mass, psmCount}
+
+        for ( const entry of modUniqueMassesWithTheirPsmCountsMap.entries() ) {
+            modUniqueMassesWithTheirPsmCountsArray.push( entry[ 1 ] );  // Put 'value' of Map entry into Array
+        }
+
+        //  Sort on masses
+        modUniqueMassesWithTheirPsmCountsArray.sort( function(a, b) {
+            if ( a.mass < b.mass ) {
+                return -1;
+            }
+            if ( a.mass > b.mass ) {
+                return 1;
+            }
+            return 0;
+        });
+
+        return modUniqueMassesWithTheirPsmCountsArray;
     }
 
-    ////////////////////////
-    
-	/**
-	 * 
-	 */
-	_hide_remove_ModalOverlay() {
-	
-		this._selectModsOverlay.hide();
-		
-		this._selectModsOverlay.remove();
-		
-		this._selectModsOverlay = undefined;
-	}
-	
-	////////////////////////
-	
-	/**
-	 * 
-	 */
-	_mod_mass_select__cancel_button_Click() {
-		
-		this._hide_remove_ModalOverlay();
-	}
 	
 }

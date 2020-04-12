@@ -35,8 +35,10 @@ export interface ModificationMass_UserSelections_VariableModifications_Props {
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;  //  Called when need to update other checkboxes or when updates from overlay
     //  For Selection in Overlay
     proteinSequenceVersionId : number, 
-    projectSearchIds : Array<number>, 
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
+    projectSearchIds : Array<number>,
+    proteinNames : string
+    proteinDescriptions : string
+    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
 }
 
@@ -135,7 +137,7 @@ export class ModificationMass_UserSelections_VariableModifications extends React
      */
     _onClick_addModificationsLink( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
-        console.log("ModificationMass_UserSelections_VariableModifications: _onClick_addModificationsLink");
+        // console.log("ModificationMass_UserSelections_VariableModifications: _onClick_addModificationsLink");
 
         this._open_OverlaySelectionChanges();
     }
@@ -145,7 +147,7 @@ export class ModificationMass_UserSelections_VariableModifications extends React
      */
     _onClick_changeSelectionLink( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
-        console.log("ModificationMass_UserSelections_VariableModifications: _onClick_changeSelectionLink");
+        // console.log("ModificationMass_UserSelections_VariableModifications: _onClick_changeSelectionLink");
 
         this._open_OverlaySelectionChanges();
     }
@@ -166,7 +168,8 @@ export class ModificationMass_UserSelections_VariableModifications extends React
         const modificationMass_UserSelections_DisplayMassSelectionOverlay = new ModificationMass_UserSelections_DisplayMassSelectionOverlay({
 
             modificationMass_UserSelections_StateObject,
-            proteinNameDescription : undefined,
+            proteinNames : this.props.proteinNames,
+            proteinDescriptions : this.props.proteinDescriptions,
             proteinSequenceVersionId, 
             projectSearchIds, 
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -175,15 +178,6 @@ export class ModificationMass_UserSelections_VariableModifications extends React
         });
 
         modificationMass_UserSelections_DisplayMassSelectionOverlay.showVariableModificationMassSelectionDialog();
-
-        // modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
-        // proteinNameDescription,
-        // proteinSequenceVersionId : number, 
-        // projectSearchIds : Array<number>, 
-        // loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-        // modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
-        // modificationSelectionChanged_Callback : () => void
-
     }
 
     /**

@@ -173,6 +173,22 @@
                     opacity: 0.5;
                 }
 
+                //&.table-row-highlight {
+                //    background-color:$site-color-dark;
+
+                  //  Following does not work to override :hover below which has: background-color:$site-color-medium;
+                  //table.data-table-data-rows-table {
+                  //  tr.data-table-data-row {
+                  //    table-row-hovered-highlight:hover {
+                  //
+                  //      background-color:$site-color-very-dark;
+                  //    }
+                  //  }
+                  //}
+                //}
+
+
+
                 table.data-table-data-rows-table {
 
 
@@ -180,6 +196,16 @@
 
                         &.table-row-hovered-highlight:hover {
                             background-color:$site-color-medium;
+                        }
+
+                        &.table-row-highlight {
+                            color: white;
+                            background-color: $site-color-dark;
+
+                            &:hover {
+
+                                background-color: $site-color-very-dark;
+                            }
                         }
 
                         //  Cells inside a row of the table
@@ -955,41 +981,6 @@
     //  Modification Mass Selection - Modal Dialog
 
     .mod-mass-select-dialog-bounding-box { border-width: 1px; border-style: solid; border-color: $site-color-medium; }
-    
-    //  Modification Mass Selection - main page (or single protein)
-    .mod-mass-select-dialog-mass-list-block {
-
-        .mod-mass-dialog-row-incl-header {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-        
-        .mod-mass-dialog-entry {
-
-            padding-top: 3px;
-            padding-bottom: 3px;
-
-            border-style: solid;
-            border-width: 1px;
-            border-color: $site-color-gray;
-
-            &:hover {
-                border-color: black;
-                background-color: $site-color-medium;
-            }
-
-            &.mod-mass-dialog-selected {
-                color: white;
-                background-color: $site-color-dark;
-
-                &:hover {
-                    background-color: $site-color-dark; // repeat background color since otherwise background  color from the hover of .mod-mass-dialog-entry is used
-                }
-            }
-        }
-
-    } // end .mod-mass-select-dialog-mass-list-block
-
 
     //  Reporter Ion Mass Selection - main page (or single protein)
 

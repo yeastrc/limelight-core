@@ -301,9 +301,20 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             className_Row_classNameClickable = " clickable " 
         }
 
+
+
+        let className_innerContainingDiv_HighlightRow = "";
+
+        if ( this.props.dataObject.highlightRow ) {
+            className_innerContainingDiv_HighlightRow = " table-row-highlight ";
+        }
+
+
+
         const className_Row = ( 
             " data-table-data-row  table-row-hovered-highlight   " 
-            + className_Row_classNameClickable 
+            + className_Row_classNameClickable
+            + className_innerContainingDiv_HighlightRow
         );
 
         //   expandable-table-row
@@ -463,7 +474,20 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             className_innerContainingDiv_GreyOut = " grey-out-row ";
         }
 
-        const className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut;
+
+        // let className_innerContainingDiv_HighlightRow = "";
+        //
+        // if ( this.props.dataObject.highlightRow ) {
+        //     className_innerContainingDiv_HighlightRow = " table-row-highlight ";
+        // }
+
+        let className_innerContainingDiv_row_CSS_Additions = "";
+
+        if ( this.props.dataObject.row_CSS_Additions ) {
+            className_innerContainingDiv_row_CSS_Additions = this.props.dataObject.row_CSS_Additions;
+        }
+
+        const className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut + className_innerContainingDiv_HighlightRow + className_innerContainingDiv_row_CSS_Additions;
 
         return (
             <div className=" data-table-data-rows-outer-containing-div ">

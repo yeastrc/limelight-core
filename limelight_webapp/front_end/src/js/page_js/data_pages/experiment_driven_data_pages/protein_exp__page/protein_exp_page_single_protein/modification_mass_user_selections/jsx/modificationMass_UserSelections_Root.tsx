@@ -33,7 +33,9 @@ export interface ModificationMass_UserSelections_Root_Props {
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData;
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     proteinSequenceVersionId : number, 
-    projectSearchIds : Array<number>, 
+    projectSearchIds : Array<number>,
+    proteinNames : string
+    proteinDescriptions : string
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
@@ -161,6 +163,8 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     //  For Selection in Overlay
                     proteinSequenceVersionId={ this.props.proteinSequenceVersionId }
                     projectSearchIds={ this.props.projectSearchIds }
+                    proteinNames={ this.props.proteinNames }
+                    proteinDescriptions={ this.props.proteinDescriptions }
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                     modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
                 />

@@ -1905,6 +1905,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                                 proteinSequenceVersionId={ this.props.propsValue.proteinSequenceVersionId }
                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
+	                            proteinNames={ this.props.propsValue.proteinNames }
+	                            proteinDescriptions={ this.props.propsValue.proteinDescriptions }
                                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                                 modificationMass_CommonRounding_ReturnNumber={ modificationMass_CommonRounding_ReturnNumber } // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
                                 updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this._modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback_BindThis } // this.props.propsValue.modificationMass_UserSelections_StateObject has been updated.
