@@ -26,7 +26,7 @@ import {
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/jsx/modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
-    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder
+    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
@@ -56,7 +56,7 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     private _modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
 
-    private _modMassOverlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder;
+    private _modMassOverlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF;
 
 	/**
 	 * 
@@ -113,8 +113,6 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
      * @param {*} param0 
      */
     _createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray }  : { modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> } ) {
-
-        let modMassOverlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder = undefined;
 
         const overlayComponent = get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout({
             width : _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH,
@@ -187,7 +185,7 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
             const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
-            let modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+            const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
 
             if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
 
@@ -196,14 +194,8 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                 if ( modificationsOnProtein ) {
                     for ( const modificationOnProtein of modificationsOnProtein) {
                         //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-                        const position = modificationOnProtein.position;
+                        // const position = modificationOnProtein.position;
                         let mass = modificationOnProtein.mass;
-
-                        if ( ! variable_is_type_number_Check( mass ) ) {
-                            const msg = "Modification mass from loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId(); is not a number.  is: " + mass;
-                            console.warn( msg );
-                            throw Error( msg );
-                        }
 
                         if ( this._modificationMass_CommonRounding_ReturnNumber ) {  //  Transform Modification masses before using
             

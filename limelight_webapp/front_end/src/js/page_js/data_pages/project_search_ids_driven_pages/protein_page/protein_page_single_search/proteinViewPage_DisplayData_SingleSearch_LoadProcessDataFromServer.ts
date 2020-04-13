@@ -827,7 +827,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 				const annTypeIdInt = Number.parseInt( annTypeIdString );
 				const annData_FromServer = annData_KeyAnnTypeId_FromServer[ annTypeIdString ];
 				
-				const annData = { valueDouble : annData_FromServer.valueDouble, valueString : annData_FromServer.valueString };
+				const annData = { valueString : annData_FromServer.valueString, valueDouble : annData_FromServer.valueDouble }; //  Not applicable to Descriptive Annotation values: valueDouble : annData_FromServer.valueDouble,
 				
 				annData_KeyAnnTypeId.set( annTypeIdInt, annData );
 			}

@@ -1,0 +1,9 @@
+
+When see this message:
+
+	Browserslist: caniuse-lite is outdated. Please run next command `npm update`
+
+Run this command to update just caniuse-lite:
+
+	npm i caniuse-lite@latest
+

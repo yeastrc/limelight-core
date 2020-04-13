@@ -121,7 +121,7 @@ class UserResetPasswordPage {
 
 		const url = "user/rws/for-page/reset-password-change-password";
 
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, url, doNotHandleErrorResponse : true }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

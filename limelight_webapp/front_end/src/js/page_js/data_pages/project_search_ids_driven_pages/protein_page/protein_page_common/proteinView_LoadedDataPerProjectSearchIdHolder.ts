@@ -311,7 +311,7 @@ class Data__NOT__AtCurrentCutoffs_Or_DisplayData {
 
 		//  	Reported Peptide Level Descriptive Annotation Data Per Reported Peptide Id
 		// 					- Map <integer,<integer,Object>> <reportedPeptideId,<<annTypeId,{ valueDouble, valueString }>>
-		_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId // : Map<number,Map<number,{valueDouble : number, valueString : string}>>;
+		_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId : Map<number,Map<number,{valueDouble: number, valueString : string}>>;
 
 		//  	PSM Best Annotation Data at Reported Peptide Level Per Reported Peptide Id - Current Cutoffs/
 		// 					- Map <integer,<integer,Object>> <reportedPeptideId,<<annTypeId,{ valueDouble, valueString }>>
@@ -380,7 +380,7 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 	_proteinSequenceVersionIdsKeyReportedPeptideId : Map<number, Array<number>>; // - Map<integer,[integer]> : Map <ReportedPeptideId,[proteinSequenceVersionIds]>
 
 	//  Dynamic/Variable Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. Can have multiple entries with same position and mass with diff reportedPeptideId
-	_dynamicModificationsOnProtein_KeyProteinSequenceVersionId; // - Map <integer,Object> <proteinSequenceVersionId,<{ reportedPeptideId, position, mass }>>
+	_dynamicModificationsOnProtein_KeyProteinSequenceVersionId: Map<number, Array<{ mass : number, position : number, reportedPeptideId : number }>>; // - Map <integer,Object> <proteinSequenceVersionId,<{ reportedPeptideId, position, mass }>>
 
 	//  Static Modifications Per ProteinSequenceVersion Id.   position is int, mass is double. 
 	// 		- Map <integer, Map<integer, Object> <proteinSequenceVersionId, Map < position 1 based (integer) : { Object: residue  (string), massesSet: Set< mass (number) > } >>

@@ -21,7 +21,7 @@ export const limelight_add_ReactComponent_JSX_Element_To_DocumentBody = function
 
     componentToAdd : JSX.Element
 
-}) : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder {
+}) : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
 
     const addedDivElementDOM = document.createElement("div");
 
@@ -47,10 +47,24 @@ export const limelight_add_ReactComponent_JSX_Element_To_DocumentBody = function
 
 
 /**
+ * interface of class returned from limelight_add_ReactComponent_JSX_Element_To_DocumentBody
+ *
+ */
+export interface Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
+
+    /**
+     * Remove the React Component / JSX Element  rendered on page by limelight_add_ReactComponent_JSX_Element_To_DocumentBody
+     *
+     */
+    removeContents_AndContainer_FromDOM();
+}
+
+
+/**
  * class returned from tooltip_Limelight_Create_Tooltip
  *
  */
-export class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder {
+class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder implements Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
 
     private _addedDivElementDOM : HTMLElement
 
@@ -82,7 +96,7 @@ export class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder {
 
             const cleanupCallback = () => {
                 try {
-                    // console.log("removeTooltip(): cleanupCallback() called " );
+                    // console.log("removeContents_AndContainer_FromDOM(): cleanupCallback() called " );
 
                     //  React Unmount
 
@@ -110,17 +124,17 @@ export class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder {
 
                 } catch ( e ) {
                     //  fall back to window.setTimeout
-                    // console.log("removeTooltip(): Exception caught: Falling back to calling window.setTimeout( cleanupCallback, 1000 ); e: ", e );
+                    // console.log("removeContents_AndContainer_FromDOM(): Exception caught: Falling back to calling window.setTimeout( cleanupCallback, 1000 ); e: ", e );
                     window.setTimeout( cleanupCallback, 1000 );
                 }
             } else {
                 //  fall back to window.setTimeout
-                // console.log("removeTooltip(): No value for window.requestIdleCallback: Falling back to calling window.setTimeout( cleanupCallback, 1000 );" );
+                // console.log("removeContents_AndContainer_FromDOM(): No value for window.requestIdleCallback: Falling back to calling window.setTimeout( cleanupCallback, 1000 );" );
                 window.setTimeout( cleanupCallback, 1000 );
             }
 
         } catch( e ) {
-            console.warn("class Tooltip_Limelight_Created_Tooltip::removeTooltip: Exception: ", e );
+            console.warn("class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder::removeContents_AndContainer_FromDOM: Exception: ", e );
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }

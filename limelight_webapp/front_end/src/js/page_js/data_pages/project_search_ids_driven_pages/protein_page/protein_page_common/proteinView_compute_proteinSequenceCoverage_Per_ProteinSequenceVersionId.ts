@@ -36,20 +36,27 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	 *  Protein Sequence Coverage Per Reported Peptide Id
 	 *  proteinInfoMapKeyProteinSequenceVersionId - for protein lengths
 	 */
-	static compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId( 
-			{ reportedPeptideIds, proteinCoverage_KeyReportedPeptideId, proteinInfoMapKeyProteinSequenceVersionId } ) {
+	static compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId({ reportedPeptideIds, proteinCoverage_KeyReportedPeptideId, proteinInfoMapKeyProteinSequenceVersionId } : {
+
+		reportedPeptideIds : Array<number>
+		proteinCoverage_KeyReportedPeptideId :  Map<number, {reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}[]>
+		proteinInfoMapKeyProteinSequenceVersionId : Map<number, {proteinLength: number, annotations: {name: string, description: string, taxonomy: number}[]}>
+
+	} ) :  { proteinCoverage_KeyProteinSequenceVersionId : Map<number, ProteinSequenceCoverageData_For_ProteinSequenceVersionId> } {
 
 		const instance = new ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId();
 		
-		const proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId = 
-			instance._create_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } );
+		const proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId : Map<number, Array<{reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}> >   = (
+			instance._create_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } )
+		);
 
-		const proteinCoverageMergedRanges_KeyProteinSequenceVersionId =
-			instance._proteinSequenceCoverage_MergeRanges_Per_proteinSequenceVersionId( { proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId } );
+		const proteinCoverageMergedRanges_KeyProteinSequenceVersionId : Map<number, {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[]> = (
+			instance._proteinSequenceCoverage_MergeRanges_Per_proteinSequenceVersionId( { proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId } )
+		);
 		
 		//  Create Map of objects of class ProteinSequenceCoverageData_For_ProteinSequenceVersionId to return as the result
 		
-		const proteinCoverageEntries_Result_Map = new Map();
+		const proteinCoverageEntries_Result_Map : Map<number, ProteinSequenceCoverageData_For_ProteinSequenceVersionId> = new Map();
 		
 		for ( const proteinCoverageEntries_PerReportedPeptideId_MapEntry of proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId ) {
 
@@ -67,9 +74,9 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 			}
 			const proteinLength = proteinInfo.proteinLength;
 			
-			const proteinSequenceCoverageData_For_ProteinSequenceVersionId = 
-				new ProteinSequenceCoverageData_For_ProteinSequenceVersionId( 
-						{ proteinLength, proteinCoverageEntries_PerReportedPeptideId_Array, proteinCoverageMergedRanges : proteinCoverageMergedRanges_Entry } );		
+			const proteinSequenceCoverageData_For_ProteinSequenceVersionId = new ProteinSequenceCoverageData_For_ProteinSequenceVersionId({
+				proteinLength, proteinCoverageEntries_PerReportedPeptideId_Array, proteinCoverageMergedRanges : proteinCoverageMergedRanges_Entry
+			} );
 
 			proteinCoverageEntries_Result_Map.set( proteinSequenceVersionId, proteinSequenceCoverageData_For_ProteinSequenceVersionId );
 		}
@@ -81,9 +88,14 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	/**
 	 * Map the protein sequence coverage to be per proteinSequenceVersionId
 	 */
-	_create_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } ) {
+	_create_proteinSequenceCoverage_MapPer_proteinSequenceVersionId( { reportedPeptideIds, proteinCoverage_KeyReportedPeptideId } : {
 
-		const proteinCoverage_KeyProteinSequenceVersionId = new Map()
+		reportedPeptideIds: Array<number>
+		proteinCoverage_KeyReportedPeptideId: Map<number, { reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number }[]>
+
+	}) : Map<number, Array<{reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}> > {
+
+		const proteinCoverage_KeyProteinSequenceVersionId : Map<number, Array<{reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}> > = new Map()
 
 		for ( const reportedPeptideId of reportedPeptideIds ) {
 
@@ -141,9 +153,11 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	 * 
 	 * Merge the overlapping ranges into adjacent ranges with combined proteinCoverageDataItems (reported peptide ids)
 	 */
-	_proteinSequenceCoverage_MergeRanges_Per_proteinSequenceVersionId( { proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId } ) {
+	_proteinSequenceCoverage_MergeRanges_Per_proteinSequenceVersionId( { proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId } : {
+		proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId : Map<number, Array<{reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}> >
+	}) : Map<number, {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[]> {
 
-		const proteinCoverageMergedRanges_KeyProteinSequenceVersionId = new Map()
+		const proteinCoverageMergedRanges_KeyProteinSequenceVersionId : Map<number, {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[]> = new Map()
 
 		for ( const proteinCoverageEntries_PerReportedPeptideId_MapEntry of proteinCoverageEntries_PerReportedPeptideId_KeyProteinSequenceVersionId ) {
 
@@ -152,7 +166,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 			
 			//  Clone proteinCoverageEntries_PerReportedPeptideId_Array to proteinCoverageMergeRanges_Array
 			
-			const proteinCoverageMergeRanges_Array = [];
+			const proteinCoverageMergeRanges_Array : Array<{ proteinStartPosition : number, proteinEndPosition: number, proteinSequenceVersionId : number, proteinCoverageDataItems : Array<{ reportedPeptideId : number }> }> = [];
 			for ( const proteinCoverageEntries_PerReportedPeptideId_Item of proteinCoverageEntries_PerReportedPeptideId_Array ) {
 				const proteinCoverage_Item_ForMerging = {
 						proteinStartPosition : proteinCoverageEntries_PerReportedPeptideId_Item.proteinStartPosition, 
@@ -165,7 +179,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 
 			const combineOverlapsResult = this._combineOverlapsProteinPositionBased( proteinCoverageMergeRanges_Array );
 			
-			const splitAnyEntries = combineOverlapsResult.splitAnyEntries;
+			// const splitAnyEntries = combineOverlapsResult.splitAnyEntries;
 			const outputList = combineOverlapsResult.outputList;
 			
 			proteinCoverageMergedRanges_KeyProteinSequenceVersionId.set( proteinSequenceVersionId, outputList );
@@ -179,10 +193,24 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	/*
 	 * Combine for single ProteinSequenceVersionId
 	 */
-	_combineOverlapsProteinPositionBased( proteinCoverageItemsInputParam ) {
+	_combineOverlapsProteinPositionBased( proteinCoverageItemsInputParam : Array<{ proteinStartPosition : number, proteinEndPosition: number, proteinSequenceVersionId : number, proteinCoverageDataItems : Array<{ reportedPeptideId : number }> }> )
+	: { splitAnyEntries: boolean, outputList: {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[]  }
+	{
 
 		//  Sanity check to prevent infinite loop since have complicated loop exit control
-		const MAX__numTimesSplitAnEntryLoop = 300; 
+		const MAX__numTimesSplitAnEntryLoop = 300;
+
+		{
+			//  Confirm all entries in proteinCoverageItemsInputParam have same value for proteinSequenceVersionId
+			if ( proteinCoverageItemsInputParam && proteinCoverageItemsInputParam.length > 0 ) {
+				const proteinSequenceVersionId_FirstEntry: number = proteinCoverageItemsInputParam[0].proteinSequenceVersionId;
+				for (const proteinCoverageItemsInputParam_Entry of proteinCoverageItemsInputParam) {
+					if (proteinSequenceVersionId_FirstEntry !== proteinCoverageItemsInputParam_Entry.proteinSequenceVersionId) {
+						throw Error("_combineOverlapsProteinPositionBased(...): if ( proteinSequenceVersionId_FirstEntry !== proteinCoverageItemsInputParam_Entry.proteinSequenceVersionId ) {");
+					}
+				}
+			}
+		}
 		
 		let splitAnyEntries = false;
 
@@ -191,10 +219,10 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 		let numTimesSplitAnEntryLoop = 0;
 
 		//  Input is null since will be copied from Output in each iteration of the loop
-		let proteinCoverageItemListInput = null;
+		let proteinCoverageItemListInput : {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[] = null;
 
 		// Combine entries with same start and end positions - combine entries first to simplify later processing
-		let proteinCoverageItemListOutput = this._combineEntriesProteinPositionBased( numTimesSplitAnEntryLoop, proteinCoverageItemsInputParam );
+		let proteinCoverageItemListOutput : {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[] = this._combineEntriesProteinPositionBased( numTimesSplitAnEntryLoop, proteinCoverageItemsInputParam );
 
 		
 		//   While ( entries have been split inside the loop )
@@ -264,14 +292,16 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 
 							//  Split current entry to before next next entry and starts at next entry
 							let proteinCoverageItemSplitBefore = {
-									proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
-									proteinStartPosition: proteinCoverageItem.proteinStartPosition,
-									proteinEndPosition: proteinCoverageItemNext.proteinEndPosition
+								proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
+								proteinStartPosition: proteinCoverageItem.proteinStartPosition,
+								proteinEndPosition: proteinCoverageItemNext.proteinEndPosition,
+								proteinSequenceVersionId : proteinCoverageItemNext.proteinSequenceVersionId
 							};
 							let proteinCoverageItemSplitAfter = {
-									proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
-									proteinStartPosition: proteinCoverageItemNext.proteinEndPosition + 1,
-									proteinEndPosition: proteinCoverageItem.proteinEndPosition
+								proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
+								proteinStartPosition: proteinCoverageItemNext.proteinEndPosition + 1,
+								proteinEndPosition: proteinCoverageItem.proteinEndPosition,
+								proteinSequenceVersionId : proteinCoverageItemNext.proteinSequenceVersionId
 							};
 
 							proteinCoverageItemListOutput.push( proteinCoverageItemSplitBefore );
@@ -281,14 +311,16 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 							//  Split current entry to before next entry and starts at next entry
 
 							let proteinCoverageItemSplitBefore = {
-									proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
-									proteinStartPosition: proteinCoverageItem.proteinStartPosition,
-									proteinEndPosition: ( proteinCoverageItemNext.proteinStartPosition - 1 )
+								proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
+								proteinStartPosition: proteinCoverageItem.proteinStartPosition,
+								proteinEndPosition: ( proteinCoverageItemNext.proteinStartPosition - 1 ),
+								proteinSequenceVersionId : proteinCoverageItemNext.proteinSequenceVersionId
 							};
 							let proteinCoverageItemSplitAfter = {
-									proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
-									proteinStartPosition: proteinCoverageItemNext.proteinStartPosition,
-									proteinEndPosition: proteinCoverageItem.proteinEndPosition
+								proteinCoverageDataItems: this._copyArray( proteinCoverageItem.proteinCoverageDataItems ),
+								proteinStartPosition: proteinCoverageItemNext.proteinStartPosition,
+								proteinEndPosition: proteinCoverageItem.proteinEndPosition,
+								proteinSequenceVersionId : proteinCoverageItemNext.proteinSequenceVersionId
 							};
 							proteinCoverageItemListOutput.push( proteinCoverageItemSplitBefore );
 							proteinCoverageItemListOutput.push( proteinCoverageItemSplitAfter );
@@ -299,26 +331,24 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 			// Combine entries with same start and end positions
 			proteinCoverageItemListOutput = this._combineEntriesProteinPositionBased( numTimesSplitAnEntryLoop, proteinCoverageItemListOutput);
 		}
-		let finalOutput = { splitAnyEntries: splitAnyEntries, outputList: proteinCoverageItemListOutput };
-
-		return finalOutput;
+		return { splitAnyEntries: splitAnyEntries, outputList: proteinCoverageItemListOutput };
 	};
 
 	/*
 	 * Combine entries with same start and end positions
 	 */
-	_combineEntriesProteinPositionBased( numTimesSplitAnEntryLoop, proteinCoverageItemListInput ) {
+	_combineEntriesProteinPositionBased( numTimesSplitAnEntryLoop : number, proteinCoverageItemListInput  : Array<{ proteinStartPosition : number, proteinEndPosition: number, proteinSequenceVersionId : number, proteinCoverageDataItems : Array<{ reportedPeptideId : number }> }> )
+		: Array<{proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}> {
 
-		let proteinCoverageItemListOutput = [];
-		let index;
+		let proteinCoverageItemListOutput : Array<{proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}> = [];
 
 		proteinCoverageItemListInput.sort( this._combineOverlaps_Z_compareForSortBlocks );
 
-		index = -1; //  Incremented in outer and inner while loops
+		let index = -1; //  Incremented in outer and inner while loops
 		
 		while ( ( ++index ) < proteinCoverageItemListInput.length ) {
 
-			let proteinCoverageItem = proteinCoverageItemListInput[ index ];
+			let proteinCoverageItem : {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]} = proteinCoverageItemListInput[ index ];
 
 			if ( index === ( proteinCoverageItemListInput.length - 1 ) ) {
 
@@ -360,7 +390,10 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	 * 
 	 * called by array.sort( this._combineOverlaps_Z_compareForSortBlocks )
 	 */
-	_combineOverlaps_Z_compareForSortBlocks( a, b ) {
+	_combineOverlaps_Z_compareForSortBlocks(
+		a : { proteinStartPosition : number, proteinEndPosition: number, proteinSequenceVersionId : number, proteinCoverageDataItems : Array<{ reportedPeptideId : number }> },
+		b : { proteinStartPosition : number, proteinEndPosition: number, proteinSequenceVersionId : number, proteinCoverageDataItems : Array<{ reportedPeptideId : number }> }
+	) {
 		
 		// StartPosition ascending
 		if ( a.proteinStartPosition < b.proteinStartPosition ) {
@@ -385,7 +418,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	/*
 	 * Shallow Copy Array
 	 */
-	_copyArray( inputArray ) {
+	_copyArray( inputArray :  {reportedPeptideId: number}[] ) : {reportedPeptideId: number}[] {
 
 		return inputArray.concat();
 	}
@@ -393,7 +426,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 	/*
 	 * Shallow Concat Two Arrays
 	 */
-	_concatArrays( inputArray1, inputArray2 ) {
+	_concatArrays( inputArray1 :  {reportedPeptideId: number}[], inputArray2 :  {reportedPeptideId: number}[] ) : {reportedPeptideId: number}[] {
 
 		return inputArray1.concat( inputArray2 );
 	}

@@ -11,9 +11,9 @@
  */
 export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 
-	private _proteinLength;
-	private _proteinCoverageEntries_PerReportedPeptideId_Array;
-	private _proteinCoverageMergedRanges;
+	private _proteinLength : number;
+	private _proteinCoverageEntries_PerReportedPeptideId_Array : {reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}[];
+	private _proteinCoverageMergedRanges : {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[];
 	
 	//  Computed in this class and cached
 	
@@ -25,16 +25,15 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	/**
 	 * 
 	 */
-	constructor( { proteinLength, proteinCoverageEntries_PerReportedPeptideId_Array, proteinCoverageMergedRanges } ) {
+	constructor( { proteinLength, proteinCoverageEntries_PerReportedPeptideId_Array, proteinCoverageMergedRanges } : {
+		proteinLength : number
+		proteinCoverageEntries_PerReportedPeptideId_Array : {reportedPeptideId: number, proteinSequenceVersionId: number, proteinStartPosition: number, proteinEndPosition: number}[]
+		proteinCoverageMergedRanges : {proteinStartPosition: number, proteinEndPosition: number, proteinSequenceVersionId: number, proteinCoverageDataItems: {reportedPeptideId: number}[]}[]
+	} ) {
 		
 		this._proteinLength = proteinLength;
 		this._proteinCoverageEntries_PerReportedPeptideId_Array = proteinCoverageEntries_PerReportedPeptideId_Array;
 		this._proteinCoverageMergedRanges = proteinCoverageMergedRanges;
-		
-		//  Computed in this class and cached
-		
-		this._proteinCoverageRatio = undefined;
-		this._coveredPositionCount = undefined;
 	}
 
 	/**
