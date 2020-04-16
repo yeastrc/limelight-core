@@ -11,8 +11,9 @@ WARNING:  This is Pre-release software and is not supported yet.
 Run ant script ant__build_all_limelight.xml to build all.
 (requires first to copy file aa_ant__build_all_limelight_config.properties_Sample to aa_ant__build_all_limelight_config.properties and set it's properties)
 
-Building requires the software:
+Building requires the software: 
+Java (1.8 or newer)
 ant (recent version)
-gradle (version 4.x, more recent is better)
 npm (recent version)
+gradle is using gradle wrapper so will download the version of gradle it needs when it is run
 
