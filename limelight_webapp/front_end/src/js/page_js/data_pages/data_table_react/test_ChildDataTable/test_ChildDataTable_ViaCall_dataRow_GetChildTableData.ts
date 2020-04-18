@@ -43,7 +43,8 @@ class FAKE_DataRow_GetChildTableDataParameter_FakeChildTableTesting {
     shallowClone() {
 
         const clone = new FAKE_DataRow_GetChildTableDataParameter_FakeChildTableTesting();
-        Object.assign( clone, this );
+        // Object.assign( clone, this );
+        clone.fakedata = this.fakedata;
         return clone;
     }
 }

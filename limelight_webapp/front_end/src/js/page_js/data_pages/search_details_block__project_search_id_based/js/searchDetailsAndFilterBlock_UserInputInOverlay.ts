@@ -463,7 +463,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 				perTypeLabel: typeDispayLabel,
 				searchId : searchNameObject.searchId,
 				projectSearchId : searchNameObject.projectSearchId,
-				highlightThisSectionClass : undefined
+				highlightThisSectionClass : ""
 		};
 		
 		if ( highlightThisSection ) {

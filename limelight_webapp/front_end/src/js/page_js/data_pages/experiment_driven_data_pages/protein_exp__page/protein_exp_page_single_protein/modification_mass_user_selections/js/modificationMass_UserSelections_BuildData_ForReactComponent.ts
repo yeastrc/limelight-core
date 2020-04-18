@@ -212,7 +212,18 @@ const _variable_modificationMass_UserSelections_BuildData_ForReactComponent = fu
     //   Set
     const variableModificationsSelected_ExcludingNoModificationOption = modificationMass_UserSelections_StateObject.get_VariableModificationsSelected_ExcludingNoModificationOption()
 
-    const result = { 
+    const result : {
+        is_NO_VariableModification_AKA_Unmodified_Selected : boolean
+        showAddVariableModificationsSelectionLink : boolean
+        variableModificationEntries : Array<{modMass : number, selected : boolean }>
+        showChangeVariableModificationsSelectionLink : boolean
+
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
+        proteinSequenceVersionId : number
+        projectSearchIds : number[]
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds :  Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+        modificationMass_CommonRounding_ReturnNumber :  (modificationMass: number) => number
+    } = {
         is_NO_VariableModification_AKA_Unmodified_Selected,
         showAddVariableModificationsSelectionLink : false,
         variableModificationEntries : undefined,
@@ -252,7 +263,7 @@ const _variable_modificationMass_UserSelections_BuildData_ForReactComponent = fu
         return 0;
     });
 
-    const variableModificationEntries = [];  // mass with checked flag
+    const variableModificationEntries : Array<{modMass : number, selected : boolean }> = [];  // mass with checked flag
 
     for ( const modUniqueMassEntry of modUniqueMassesArray ) {
 
@@ -290,7 +301,7 @@ const _create_variableModificationsUniqueMassesSet = function({
     projectSearchIds : Array<number>, 
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
-}) : Set<any> {
+}) : Set<number> {
 
     //  Unique Variable Mod masses for the protein or selected positions
     const variableModificationsUniqueMassesSet : Set<any> = new Set(); 

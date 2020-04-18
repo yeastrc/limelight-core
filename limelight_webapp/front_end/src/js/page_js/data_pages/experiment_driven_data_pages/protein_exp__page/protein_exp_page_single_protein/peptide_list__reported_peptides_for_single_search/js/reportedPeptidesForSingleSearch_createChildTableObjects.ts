@@ -405,6 +405,11 @@ const _create_dataTable_RootTableObject = function({
                 {  //  Reported Peptide Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
+                        if ( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null ) {
+                            const msg = "( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null )"
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
                         const annotationEntry = peptideEntry.peptideAnnotationMap[ annotationType.annotationTypeId ];
                         let valueSort = annotationEntry.valueDouble;
                         if ( valueSort === undefined || valueSort === null ) {
@@ -420,6 +425,11 @@ const _create_dataTable_RootTableObject = function({
                 {  //  PSM Best Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
+                        if ( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null ) {
+                            const msg = "( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null )"
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
                         const annotationEntry = peptideEntry.psmAnnotationMap[ annotationType.annotationTypeId ];
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
                             valueDisplay : annotationEntry.valueString,
@@ -568,7 +578,7 @@ const _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated = funct
     let annotationTypeData_Root : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
 
     let annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
-    if ( ( ! annotationTypeDataForProjectSearchId ) ) {
+    if ( annotationTypeDataForProjectSearchId === undefined || annotationTypeDataForProjectSearchId === null ) {
         throw Error("No annotation type data for projectSearchId: " + projectSearchId );
     }
 

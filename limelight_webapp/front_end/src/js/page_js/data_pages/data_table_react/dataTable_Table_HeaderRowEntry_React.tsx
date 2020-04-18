@@ -123,7 +123,7 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
       const cellOuterContainerDivStyle = { width: column.width, minWidth: column.width, maxWidth: column.width };
 
-      const cellInnerContainerDivStyle = { display: "grid", gridTemplateColumns : undefined };
+      const cellInnerContainerDivStyle : React.CSSProperties = { display: "grid" };
 
       let classNameSortable = " non-sortable-header ";
       

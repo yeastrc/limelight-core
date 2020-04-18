@@ -45,7 +45,8 @@ class FAKE_dataRow_GetChildTable_ReturnReactComponent_Parameter_FakeChildTableTe
     shallowClone() {
 
         const clone = new FAKE_dataRow_GetChildTable_ReturnReactComponent_Parameter_FakeChildTableTesting();
-        Object.assign( clone, this );
+        // Object.assign( clone, this );
+        clone.fakedata = this.fakedata;
         return clone;
     }
 }

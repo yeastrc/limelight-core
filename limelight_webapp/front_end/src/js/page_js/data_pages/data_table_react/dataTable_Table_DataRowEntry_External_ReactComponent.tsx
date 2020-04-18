@@ -114,7 +114,7 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
             + classesAdditions
         );
 
-        const styleContainerDiv = { width: column.width, minWidth: column.width, maxWidth: column.width, height : undefined };
+        const styleContainerDiv : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
 
          //  Height not restricted to column.heightInitial
          

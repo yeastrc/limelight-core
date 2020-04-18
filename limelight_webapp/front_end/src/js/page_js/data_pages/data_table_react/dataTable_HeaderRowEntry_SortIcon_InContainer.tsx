@@ -133,7 +133,7 @@ export class DataTable_Table_HeaderRowEntry_SortIcon_InContainer extends React.C
         sortIcon = sortIcon_NotCurrentLyForSorting;
       }
 
-      const sortIconStyle = { display: "flex", alignItems: "flex-end", paddingLeft: "1px", paddingRight : undefined };
+      const sortIconStyle : React.CSSProperties = { display: "flex", alignItems: "flex-end", paddingLeft: "1px" };
       if ( this.props.lastColumn ) {
         sortIconStyle.paddingRight = "3px";
       }
