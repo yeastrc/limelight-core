@@ -3,6 +3,9 @@
 /webpack_build_output/
 /.gradle/
 
+#  In Case Typscript is somehow run to output .js and .js.map files, they are output to here and ignored
+/typescript_compile_output/
+
 .idea
 # Eclipse
 /.settings/
