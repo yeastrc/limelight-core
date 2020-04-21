@@ -92,6 +92,13 @@ img.icon-small, input[type="image"].icon-small  {
   max-width:12px;
 }
 
+//  For pointer-right.png and pointer-down.png icons used with icon-small, A containing <div> to create standard padding to right
+//    (This is not used where the icon is positioned to the left of the primary block using CSS class child-table-show-hide-icon-container with CSS class child-table-show-hide-icon
+div.pointer-right-down-icon-small-container {
+  padding-right: 4px;
+  display: inline-block;
+}
+
 img.icon-large, input[type="image"].icon-large {
     max-width: 20px;
     max-height: 20px;
@@ -99,7 +106,7 @@ img.icon-large, input[type="image"].icon-large {
   
     
 //  Basic error text color
-.error-text { color: #A55353 }
+.error-text { color: $error-text-color }
 
 
 //  Standard border colors,  Applying will display a border with the Browser default border style and width
@@ -123,20 +130,19 @@ img.icon-large, input[type="image"].icon-large {
 
 .block-updating-overlay-container {
   font-size : 18px; 
-  // color: $site-color-dark; // red; 
-  background-color: #DDDDDD; 
   min-height: 100px; 
   text-align: center; 
   padding-top: 30px; 
   padding-bottom: 30px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: grey;
+  background-color: white;
   position: absolute; 
   left: 0px; 
   right: 0px; 
   top: 0px; 
   bottom: 0px;
-
-  //  Layout from another example: From Single Search Protein List
-  //  border-color: grey; border-width: 3px; border-style: solid; background-color: white; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px
 }
 
 //  Tooltip developed in Limelight:  tooltip_LimelightLocal_ReactBased.tsx

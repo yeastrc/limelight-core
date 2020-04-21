@@ -13,12 +13,18 @@ $site-color-dark: #32cd32;
 $site-color-medium: #e4f9e4;
 $site-color-light: #f0f7f0;
 
+$site-color-dark-alt: #CDCD32;
+
 $site-color-gray: #d3d3d3;
 
 $link-color-unvisited: #005606;
 $link-color-visited: #005606;
 $link-color-hover: $site-color-dark;
 $link-color-active: $site-color-dark;
+
+//  Error Text
+
+$error-text-color: #A55353;
 
 // our fonts
 $theme-font: arial, sans-serif;
