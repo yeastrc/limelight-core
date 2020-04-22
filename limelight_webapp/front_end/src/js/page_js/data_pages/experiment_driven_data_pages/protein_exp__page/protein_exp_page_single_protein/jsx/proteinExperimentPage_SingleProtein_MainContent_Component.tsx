@@ -329,10 +329,17 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject
         };
 
-        let protein_percentageCovered_Unfiltered_Rounded = ( protein_fractionCovered_Unfiltered * 100 ).toFixed( 1 );
+        let protein_percentageCovered_Unfiltered_Rounded = "";
 
-        if ( protein_percentageCovered_Unfiltered_Rounded.endsWith(".0" ) ) {
-            protein_percentageCovered_Unfiltered_Rounded = protein_fractionCovered_Unfiltered.toString();
+        {
+            console.warn( "protein_percentageCovered_Unfiltered_Rounded = (protein_fractionCovered_Unfiltered * 100).toFixed(1);" )
+            protein_percentageCovered_Unfiltered_Rounded = (protein_fractionCovered_Unfiltered * 100).toFixed(1);
+
+            const endingToRemoveIfPresent = ".0";
+            if (protein_percentageCovered_Unfiltered_Rounded.endsWith( endingToRemoveIfPresent ) ) {
+                const newLastCharacterPosition = protein_percentageCovered_Unfiltered_Rounded.length - endingToRemoveIfPresent.length
+                protein_percentageCovered_Unfiltered_Rounded = protein_percentageCovered_Unfiltered_Rounded.substring( 0, newLastCharacterPosition );
+            }
         }
 
         const psmCountForUnfilteredDisplay = psmCountForUnfiltered.toLocaleString();
