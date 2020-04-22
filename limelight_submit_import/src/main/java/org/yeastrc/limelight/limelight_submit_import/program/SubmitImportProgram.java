@@ -149,6 +149,18 @@ public class SubmitImportProgram {
 					System.exit( PROGRAM_EXIT_CODE_HELP );
 				}
 			}
+
+			//  Show an error if there is anything on the command line not associated with a parameter
+			String[] remainingArgs = cmdLineParser.getRemainingArgs();
+			if( remainingArgs.length > 0 ) {
+				System.out.println( "Unexpected command line parameters:");
+				for ( String remainingArg : remainingArgs ) {
+					System.out.println( remainingArg );
+				}
+				System.err.println( "" );
+				System.err.println( FOR_HELP_STRING );
+				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
+			}
 			
 			
 			userSubmitImportProgramKeyFromCommandLine = (String)cmdLineParser.getOptionValue( userSubmitImportProgramKeyCommandLineOpt );

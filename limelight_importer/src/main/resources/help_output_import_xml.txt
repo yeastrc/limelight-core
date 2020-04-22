@@ -5,6 +5,13 @@ Usage: java -jar limelightImporter_XMLFile_ScanFiles.jar -p project_id  \
                                     [ -s scan_file.mzML ]
                                     [ "--search-name=search name" ]  Put whole thing in quotes to deal with spaces in search name
 								  	
+Warning: 
+
+    '*' cannot be used as part of a filename.
+    The shell will expand it to multiple input parameters which are not supported in this program.
+    Each scan filename must have a '-s' before it.
+    In program output, the input parameters are listed, one per line between
+      'Command Line Parameters (START):' and 'Command Line Parameters (END):'
 
 Examples:
 
