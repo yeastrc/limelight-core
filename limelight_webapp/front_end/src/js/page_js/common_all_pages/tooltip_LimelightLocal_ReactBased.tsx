@@ -185,7 +185,7 @@ interface Tooltip_Limelight_Component_State {
  */
 class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Component_Props, Tooltip_Limelight_Component_State > {
 
-    private tooltip_outer_Ref
+    private tooltip_outer_Ref :  React.RefObject<HTMLDivElement>
 
     constructor(props : Tooltip_Limelight_Component_Props) {
         super(props);

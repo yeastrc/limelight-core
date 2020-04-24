@@ -11,6 +11,7 @@ import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component, ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop } from './proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component'
+import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 
 
 
@@ -270,7 +271,12 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
 
             mainContent = (
                 <div style={ { fontSize: 18 }} >
-                    Loading Data
+                    <div>
+                        Loading Data
+                    </div>
+                    <div style={ { marginTop: 40 } }>
+                        <Spinner_Limelight_Component/>
+                    </div>
                 </div>
             )
         }

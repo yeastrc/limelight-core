@@ -27,7 +27,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { createSpinner, destroySpinner, incrementSpinner, decrementSpinner } from 'page_js/common_all_pages/spinner.js';
+import { createSpinner, destroySpinner, incrementSpinner, decrementSpinner } from 'page_js/common_all_pages/spinner';
 
 		
 /**
