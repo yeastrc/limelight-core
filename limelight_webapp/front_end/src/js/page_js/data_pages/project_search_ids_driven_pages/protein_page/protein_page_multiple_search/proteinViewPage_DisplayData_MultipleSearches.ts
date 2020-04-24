@@ -109,10 +109,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 	//  From Protein Template:
 	private _protein_page_protein_tooltip_Template = _protein_table_template_bundle.protein_page_protein_tooltip;
-		
-	private _protein_filters_show_protein_groups_filter_Template = _protein_table_template_bundle.protein_filters_show_protein_groups_filter;
-		
-	
+
+
 	//   projectSearchIds being processed.  Reset All data if receive different projectSearchId
 	private _projectSearchIds : Array<number> = undefined;
 	
@@ -197,9 +195,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		if ( ! _protein_table_template_bundle.protein_page_protein_tooltip ) {
 			throw Error("Nothing in _protein_table_template_bundle.protein_page_protein_tooltip");
 		}
-		if ( ! _protein_table_template_bundle.protein_filters_show_protein_groups_filter ) {
-			throw Error("Nothing in _protein_table_template_bundle.protein_filters_show_protein_groups_filter");
-		}
 	}
 	
 	/////////////////////////////////////////////////
@@ -244,186 +239,18 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._projectSearchIds = projectSearchIds;
 
 		this._data_LoadedFor_ComputedReportedPeptides_AllProteins = false;
-
-		this._add_GroupProteins_UserSelections();
 	}
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
-	
-	/**
-	 * 
-	 */
-	private _add_GroupProteins_UserSelections() {
 
-		{  //  Add to "Filters:"  "Show Protein Groups:" with radio buttons
-			const $main_page_filter_section = $("#main_page_filter_section");
-			if ( $main_page_filter_section.length === 0 ) {
-				throw Error("NO DOM element with id 'main_page_filter_section'");
-			}
-
-			//  Convert groupProteins value into booleans for handlebars template
-
-			let proteinGroupNone = false;
-			let proteinGroup_GroupProteins = false;
-			let proteinGroup_GroupProteins_NonSubset = false;
-			let proteinGroup_GroupProteins_Parsimonious = false;
-
-			if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
-
-				proteinGroupNone = true;
-
-			} else if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_All_Groups() ) {
-
-				proteinGroup_GroupProteins = true;
-
-			} else if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_NonSubset_Groups() ) {
-
-				proteinGroup_GroupProteins_NonSubset = true;
-
-			} else if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_Parsimonious_Groups() ) {
-
-				proteinGroup_GroupProteins_Parsimonious = true;
-
-			} else {
-
-				const msg = "ProteinViewPage_Display_SingleSearch:_displayProteinListOnPage: NO this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_... function returned true ";
-				console.warn( msg );
-				throw Error( msg );
-			}
-
-			const show_protein_groups_filterHTML = this._protein_filters_show_protein_groups_filter_Template({ proteinGroupNone, proteinGroup_GroupProteins, proteinGroup_GroupProteins_NonSubset, proteinGroup_GroupProteins_Parsimonious });
-			const $show_protein_groups_filter = $( show_protein_groups_filterHTML );
-			$show_protein_groups_filter.appendTo( $main_page_filter_section );
-
-			{  //  selector_filter_show_protein_groups_no
-				const $selector_filter_show_protein_groups_no = $show_protein_groups_filter.find(".selector_filter_show_protein_groups_no");
-				if ( $selector_filter_show_protein_groups_no.length === 0 ) {
-					throw Error("NO DOM element with class 'selector_filter_show_protein_groups_no'");
-				}
-				$selector_filter_show_protein_groups_no.click( ( eventObject ) => {
-					try {
-						if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
-							//  Already this value
-							return;  // EARLY RETURN
-						}
-						window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-							try {
-								this._proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_No_Grouping();  // Update state in URL
-	
-								this._displayProteinListOnPage( { projectSearchIds : this._projectSearchIds } );
-
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}	
-						}, 10 );
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}	
-				});
-			}
-			{   //  selector_filter_show_protein_groups_do_protein_groups
-				const $selector_filter_show_protein_groups_do_protein_groups = $show_protein_groups_filter.find(".selector_filter_show_protein_groups_do_protein_groups");
-				if ( $selector_filter_show_protein_groups_do_protein_groups.length === 0 ) {
-					throw Error("NO DOM element with class 'selector_filter_show_protein_groups_do_protein_groups'");
-				}
-				$selector_filter_show_protein_groups_do_protein_groups.click( ( eventObject ) => {
-					try {
-						if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_All_Groups() ) {
-							//  Already this value
-							return;  //  EARLY RETURN
-						}
-						window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-							try {
-								this._proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_All_Groups();  // Update state in URL
-
-								this._displayProteinListOnPage( { projectSearchIds : this._projectSearchIds } );
-
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}	
-						}, 10 );
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}	
-				});
-			}
-			{  //  selector_filter_show_protein_groups_do_protein_groups_non_subset
-				const $selector_filter_show_protein_groups_do_protein_groups_non_subset = $show_protein_groups_filter.find(".selector_filter_show_protein_groups_do_protein_groups_non_subset");
-				if ( $selector_filter_show_protein_groups_do_protein_groups_non_subset.length === 0 ) {
-					throw Error("NO DOM element with class 'selector_filter_show_protein_groups_do_protein_groups_non_subset'");
-				}
-				$selector_filter_show_protein_groups_do_protein_groups_non_subset.click( ( eventObject ) => {
-					try {
-						if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_NonSubset_Groups()  ) {
-							//  Already this value
-							return;  //  EARLY RETURN
-						}
-						window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-							try {
-								this._proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_NonSubset_Groups();  // Update state in URL
-
-								this._displayProteinListOnPage( { projectSearchIds : this._projectSearchIds } );
-
-							} catch( e ) {
-								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-								throw e;
-							}	
-						}, 10 );
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}	
-				});
-			}
-			// Comment out since not currently supported
-			// {
-			// 	const $selector_filter_show_protein_groups_do_protein_groups_parsimonious = $show_protein_groups_filter.find(".selector_filter_show_protein_groups_do_protein_groups_parsimonious");
-			// 	if ( $selector_filter_show_protein_groups_do_protein_groups_parsimonious.length === 0 ) {
-			// 		throw Error("NO DOM element with class 'selector_filter_show_protein_groups_do_protein_groups_parsimonious'");
-			// 	}
-			// 	$selector_filter_show_protein_groups_do_protein_groups_parsimonious.click( ( eventObject ) => {
-			// 		try {
-			// 			if ( this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_Parsimonious_Groups() ) {
-			// 				//  Already this value
-			// 				return;  //  EARLY RETURN
-			// 			}
-			// 			window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-			// 				try {
-			// 					this._proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_Parsimonious_Groups();  // Update state in URL
-
-			// 					this._displayProteinListOnPage( { projectSearchIds : this._projectSearchIds } );
-
-			// 				} catch( e ) {
-			// 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			// 					throw e;
-			// 				}	
-			// 			}, 10 );
-			// 		} catch( e ) {
-			// 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			// 			throw e;
-			// 		}	
-			// 	});
-			// }
-		}
-
-
-	}
-	
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-	
-	
 	/**
 	 * Populate Protein List On Page For Multiple Project Search Ids
 	 */
 	populateProteinList( { projectSearchIds } ) {
+
+		this._projectSearchIds = projectSearchIds;
 
 		this._data_LoadedFor_ComputedReportedPeptides_AllProteins = false;
 
@@ -606,6 +433,25 @@ export class ProteinViewPage_Display_MultipleSearches {
 		return promises__get_Array;
 	}
 
+
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+
+	/**
+	 * Update Protein List on Page for change to Protein Group
+	 */
+	updateFor_ProteinGroup_Change_ProteinListOnPage() {
+
+		if (!this._data_LoadedFor_ComputedReportedPeptides_AllProteins) { // = false; // Set to true once "Main Data" Loaded for current project search id.
+			//  Loading Main Data data in progress.
+			//  Group Protein Selection will be evaluated when Loading of Main data is complete
+			//  Will display data when data is loaded.
+			return; // EARLY RETURN
+		}
+
+		this._displayProteinListOnPage({ projectSearchIds : this._projectSearchIds });
+	}
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////

@@ -39,9 +39,8 @@
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
 
-	<table class=" selector_filter_section " id="main_page_filter_section" style="border-width:0px;" >
-		<tbody></tbody>
-	</table>
+	<!--  Search Details and Filters (PSM, Peptide, and Protein) -->
+	<div id="search_details_and_other_filters_outer_block_react_root_container"></div>
 
 	<!-- Outer Container for Save View Button and other buttons  -->
 	<div >

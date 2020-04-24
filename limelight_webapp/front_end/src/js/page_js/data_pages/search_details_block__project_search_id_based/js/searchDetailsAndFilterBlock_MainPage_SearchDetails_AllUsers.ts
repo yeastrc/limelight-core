@@ -153,15 +153,31 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	}
 
 	/**
-	 * 
+	 * clickedThis or domElementToInsertInto Exactly ONE must be populated
+	 * @param clickedThis
+	 * @param domElementToInsertInto
 	 */
-	public showSearchDetailsClicked({ clickedThis, projectSearchId }) {
+	public showSearchDetailsClicked({ clickedThis, domElementToInsertInto, projectSearchId } : {
+
+		clickedThis?, domElementToInsertInto? : HTMLElement, projectSearchId : number
+	}) {
+
+		if ( clickedThis && domElementToInsertInto ) {
+			const msg = "showSearchDetailsClicked(...): Cannot populate both clickedThis && domElementToInsertInto. Exactly ONE must be populated."
+			console.warn( msg )
+			throw Error( msg )
+		}
+		if ( ( ! clickedThis ) && ( ! domElementToInsertInto ) ) {
+			const msg = "showSearchDetailsClicked(...): Neither of clickedThis or domElementToInsertInto is populated. Exactly ONE must be populated"
+			console.warn( msg )
+			throw Error( msg )
+		}
 
 		const objectThis = this;
 
 		if ( this._searchDetailsDataLoaded_ProjectSearchIds.has( projectSearchId ) ) {
 
-			this._displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId, searchDetailsResultsCombined : undefined });
+			this._displaySearchDetails_SingleProjectSearchId({ clickedThis, domElementToInsertInto, projectSearchId, searchDetailsResultsCombined : undefined });
 			return;
 		}
 
@@ -169,7 +185,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 		promise_getSearchDetails.then((searchDetailsResultsCombined) => {
 			try {
-				objectThis._displaySearchDetails_SingleProjectSearchId({ clickedThis, projectSearchId, searchDetailsResultsCombined });
+				objectThis._displaySearchDetails_SingleProjectSearchId({ clickedThis, domElementToInsertInto, projectSearchId, searchDetailsResultsCombined });
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -301,26 +317,45 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	
 	/**
 	 * Called both when load data and when not need to load data
+	 *
+	 * clickedThis or domElementToInsertInto populated, exactly one
 	 * 
 	 * @param clickedThis
+	 * @param domElementToInsertInto
 	 * @param projectSearchId
 	 * @param coreSearchDetailsForProjectSearchId - loaded data. undefined if not loaded data since already have data
 	 */
 	private _displaySearchDetails_SingleProjectSearchId(
-		{ clickedThis, projectSearchId, searchDetailsResultsCombined } :
-		{ clickedThis : any, projectSearchId : number, searchDetailsResultsCombined : any }
+		{ clickedThis, domElementToInsertInto, projectSearchId, searchDetailsResultsCombined } :
+		{ clickedThis : any, domElementToInsertInto : HTMLElement, projectSearchId : number, searchDetailsResultsCombined : any }
 	) {
 
-		const $clickedThis = $( clickedThis );
+		let $selector_search_item_root_container : JQuery<any> = undefined
+		let $selector_search_details_container : JQuery<any> = undefined
 
-		const $selector_search_item_root_container = $clickedThis.closest(".selector_search_item_root_container" );
-		if ( $selector_search_item_root_container.length === 0 ) {
-			throw Error("Failed to find DOM element with class 'selector_search_item_root_container'");
-		}
+		if ( clickedThis ) {
 
-		const $selector_search_details_container = $selector_search_item_root_container.find(".selector_search_details_container");
-		if ( $selector_search_details_container.length === 0 ) {
-			throw Error("Failed to find DOM element with class 'selector_search_details_container'");
+			const $clickedThis = $(clickedThis);
+
+			$selector_search_item_root_container = $clickedThis.closest(".selector_search_item_root_container");
+			if ($selector_search_item_root_container.length === 0) {
+				throw Error("Failed to find DOM element with class 'selector_search_item_root_container'");
+			}
+
+			$selector_search_details_container = $selector_search_item_root_container.find(".selector_search_details_container");
+			if ($selector_search_details_container.length === 0) {
+				throw Error("Failed to find DOM element with class 'selector_search_details_container'");
+			}
+		} else if ( domElementToInsertInto ) {
+
+			const $domElementToInsertInto = $( domElementToInsertInto );
+			$selector_search_details_container = $("<div></div>")
+			$domElementToInsertInto.append( $selector_search_details_container );
+
+		} else {
+			const msg = "Neither of clickedThis or domElementToInsertInto is populated";
+			console.warn( msg )
+			throw Error( msg )
 		}
 
 		if ( searchDetailsResultsCombined ) {
@@ -404,22 +439,25 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 		addToolTips( $selector_search_details_container );  // External Function
 
-		$selector_search_details_container.show();
+		if ( $selector_search_item_root_container ) {
 
-		//  Hide Pointer Right Show Pointer Down 
-		const $selector_search_item_expand = $selector_search_item_root_container.find(".selector_search_item_expand");
-		if ( $selector_search_item_expand.length === 0 ) {
-			throw Error("Failed to find DOM element with class 'selector_search_item_expand'");
+			$selector_search_details_container.show();
+
+			//  Hide Pointer Right Show Pointer Down
+			const $selector_search_item_expand = $selector_search_item_root_container.find(".selector_search_item_expand");
+			if ($selector_search_item_expand.length === 0) {
+				throw Error("Failed to find DOM element with class 'selector_search_item_expand'");
+			}
+			$selector_search_item_expand.hide();
+
+			//  Show Pointer Down
+
+			const $selector_search_item_collapse = $selector_search_item_root_container.find(".selector_search_item_collapse");
+			if ($selector_search_item_collapse.length === 0) {
+				throw Error("Failed to find DOM element with class 'selector_search_item_collapse'");
+			}
+			$selector_search_item_collapse.show();
 		}
-		$selector_search_item_expand.hide();
-
-		//  Show Pointer Down 
-
-		const $selector_search_item_collapse = $selector_search_item_root_container.find(".selector_search_item_collapse");
-		if ( $selector_search_item_collapse.length === 0 ) {
-			throw Error("Failed to find DOM element with class 'selector_search_item_collapse'");
-		}
-		$selector_search_item_collapse.show();
 
 		this._searchDetailsExpanded_ProjectSearchIds.add( projectSearchId );
 	}

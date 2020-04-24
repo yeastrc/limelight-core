@@ -11,8 +11,6 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
-
 import { downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds } from 'page_js/data_pages/project_search_ids_driven_pages_sub_parts/psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds';
 
 //  From local dir
@@ -30,17 +28,32 @@ import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/p
 import { ProteinGrouping_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
+import {create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/js/searchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_AddToDOM";
+import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
+import {
+	ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
+	ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
+import {proteinViewPage_MainPageProteinList_createSearchDetailsSection} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_MainPageProteinList_createSearchAndOtherFiltersSection";
+
+
 /**
  * 
  */
 export class ProteinViewPage_DisplayDataOnPage {
+
+	//  Bind method to 'this' to pass to callback
+	private _search_FilterValues_Changed_Callback_BindThis = this._search_FilterValues_Changed_Callback.bind( this );
+	private _proteinGroup_SelectionValues_Changed_Callback_BindThis = this._proteinGroup_SelectionValues_Changed_Callback.bind(this);
+
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager : CentralPageStateManager;
 
-	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
@@ -72,6 +85,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 		proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
 	 }) {
 
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
+
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
@@ -83,18 +98,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
 
-		//  Bind method to 'this' to pass to callback
-		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
-		
-		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
-			displayOnly : false,
-			dataPages_LoggedInUser_CommonObjectsFactory,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			rerenderPageForUpdatedFilterCutoffs_Callback : rerenderPageForUpdatedFilterCutoffs_BindThis
-		} );
-		
 		this._proteinViewPage_Display_SingleSearch = new ProteinViewPage_Display_SingleSearch( {
 
 			dataPages_LoggedInUser_CommonObjectsFactory,
@@ -124,10 +127,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 	 * 
 	 */
 	initialize({ projectSearchIds } : { projectSearchIds : Array<number> }) {
-		
-		// @param rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto - Root DOM element to search for DOM element to insert the Search Details and Filters in
-
-		this._searchDetailsAndFilterBlock_MainPage.initialize({ rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto : "#data_page_overall_enclosing_block_div" });
 
 		if ( projectSearchIds.length === 1 ) {
 
@@ -142,42 +141,118 @@ export class ProteinViewPage_DisplayDataOnPage {
 	}
 
 	/**
-	 * Called when the user updates the filter cutoffs and the page needs to be re-rendered
+	 * Called by proteinViewPage_Root to populate the search details block at top of page.
+	 *
+	 * Named populateSearchDetailsAndOtherFiltersBlock for consistency with other pages that have other filters in same block
+	 *
 	 */
-	_rerenderPageForUpdatedFilterCutoffs( { projectSearchIdsForCutoffsChanged } ) {
+	populateSearchDetailsAndOtherFiltersBlock() {
 
-		//  TODO  This is a blunt approach.  A better approach needs to be taken that preserves other User Input.
-		
-		this.populateProteinListBlock();
+		const containerDOMElement = document.getElementById("search_details_and_other_filters_outer_block_react_root_container");
+
+		if ( ! containerDOMElement ) {
+			const msg = "Failed to get DOM element by id 'search_details_and_other_filters_outer_block_react_root_container'";
+			console.warn( msg );
+			throw Error( msg )
+		}
+
+		const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = {
+			displayOnly : false,
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			filterValuesChanged_Callback : this._search_FilterValues_Changed_Callback_BindThis
+		}
+
+		const proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue = new ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue({
+			displayOnly : false,
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
+			filterValuesChanged_Callback : this._proteinGroup_SelectionValues_Changed_Callback_BindThis
+		})
+
+		const jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = (
+			proteinViewPage_MainPageProteinList_createSearchDetailsSection({ searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue, proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue })
+		)
+
+		create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer({ jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer, containerDOMElement, renderCompleteCallbackFcn : undefined })
 	}
 
 	/**
-	 * 
+	 * Called when the user updates the search filter cutoffs and the page needs to be re-rendered
 	 */
-	populateSearchDetailsBlock() {
-		
-		this._searchDetailsAndFilterBlock_MainPage.populatePage();
+	_search_FilterValues_Changed_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
+
+		//  This is a blunt approach.  A better approach could be taken that preserves other User Input.
+
+		this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
+
+		window.setTimeout( () => {
+			//  Run in settimeout so Update to FilterBlock paints first so user gets immediate visual feedback
+			this.populateProteinListBlock(); // Update rest of page with new values
+		}, 10 )
 	}
 
 	/**
-	 * 
+	 * Called when the user updates the Protein Group selection and the page needs to be re-rendered
+	 */
+	_proteinGroup_SelectionValues_Changed_Callback( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) {
+
+		//  This is a blunt approach.  A better approach could be taken that preserves other User Input.
+
+		this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
+
+		window.setTimeout( () => {
+			try {
+				//  Run in settimeout so Update to FilterBlock paints first so user gets immediate visual feedback
+
+				// Update rest of page with new values
+
+				var projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+
+				if ( projectSearchIds.length === 0 ) {
+					throw Error( "_proteinGroup_SelectionValues_Changed_Callback(...): projectSearchIds.length === 0 " );
+				}
+
+				if ( projectSearchIds.length === 1 ) {
+
+					this._proteinViewPage_Display_SingleSearch.updateFor_ProteinGroup_Change_ProteinListOnPage();
+
+				} else {
+
+					this._proteinViewPage_Display_MultipleSearches.updateFor_ProteinGroup_Change_ProteinListOnPage();
+				}
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+				throw e;
+			}
+		}, 10 )
+	}
+
+	/**
+	 *
 	 */
 	populateOtherFiltersInFilterBlock() : void {
 
-		var projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+		const msg = "!!! populateOtherFiltersInFilterBlock() contents commented out !!!"
+		console.warn( msg )
+		console.warn( msg )
+		console.warn( msg )
 
-		if ( projectSearchIds.length === 0 ) {
-			throw Error( "populateProteinListBlock(): projectSearchIds.length === 0 " );
-		}
-
-		if ( projectSearchIds.length === 1 ) {
-
-			this._proteinViewPage_Display_SingleSearch.populateOtherFiltersInFilterBlock();
-
-		} else {
-
-			// this._proteinViewPage_Display_MultipleSearches.po
-		}
+		// var projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+		//
+		// if ( projectSearchIds.length === 0 ) {
+		// 	throw Error( "populateProteinListBlock(): projectSearchIds.length === 0 " );
+		// }
+		//
+		// if ( projectSearchIds.length === 1 ) {
+		//
+		// 	this._proteinViewPage_Display_SingleSearch.populateOtherFiltersInFilterBlock();
+		//
+		// } else {
+		//
+		// 	// this._proteinViewPage_Display_MultipleSearches.po
+		// }
 	}
 
 	/**

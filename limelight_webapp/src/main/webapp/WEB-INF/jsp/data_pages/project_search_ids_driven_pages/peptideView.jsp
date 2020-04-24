@@ -36,17 +36,15 @@
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
 	<h3>
-		List search peptides:
+		Peptides View
 	</h3>
 	
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
 	
-	<h4>Filters:</h4>
-	
-	<table class=" selector_filter_section " id="main_page_filter_section" style="border-width:0px;" >
-		<tbody></tbody>
-	</table>
+	<!--  Search Details and Filters (PSM, Peptide, and Protein) -->
+	<div id="search_details_and_other_filters_outer_block_react_root_container"></div>
+
 
 	<!-- Outer Container for Save View Button and other buttons  -->
 	<div >
@@ -57,11 +55,11 @@
 	</div>
 
 	<h3>
-		Reported Peptide Count: <span id="peptide_list_size"></span>
+		Peptide List:
 	</h3>
-	<h3>
-		Reported Peptide List:
-	</h3>
+	<div style="margin-bottom: 10px;">
+		Peptide Count: <span id="peptide_list_size"></span>
+	</div>
 	
 		<%--  Peptides Loading Text --%>
 	<div id="peptide_table_loading_text_display">Loading Data</div>

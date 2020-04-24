@@ -9,7 +9,6 @@
 
 import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
 
-import {SearchDetailsAndFilterBlock_MainPage} from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
 import {ModViewPage_DataLoader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
 import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
 import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager.js';
@@ -21,19 +20,24 @@ import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/da
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import {CentralPageStateManager} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
+import {create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/js/searchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_AddToDOM";
+import {modViewPage_DisplayDataOnPage_createSearchDetailsSection} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DisplayDataOnPage_createSearchDetailsSection";
+import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
 
 /**
  * 
  */
 export class ModViewPage_DisplayDataOnPage {
 
+	//  Bind method to 'this' to pass to callback
+	private _filterValuesChanged_Callback_BindThis = this._filterValuesChanged_Callback.bind( this );
+
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager : CentralPageStateManager;
-
-	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
-
 
 	/**
 	 * 
@@ -52,43 +56,59 @@ export class ModViewPage_DisplayDataOnPage {
 		centralPageStateManager : CentralPageStateManager
 	 }) {
 
+		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 		this._centralPageStateManager = centralPageStateManager;
-
-		//  Bind method to 'this' to pass to callback
-		let rerenderPageForUpdatedFilterCutoffs_BindThis = this._rerenderPageForUpdatedFilterCutoffs.bind( this );
-		
-		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
-			displayOnly : false,
-			dataPages_LoggedInUser_CommonObjectsFactory,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			rerenderPageForUpdatedFilterCutoffs_Callback : rerenderPageForUpdatedFilterCutoffs_BindThis
-		} );
 	}
 	
 	/**
-	 * Called by modViewPage_Root to populate the search details
-	 * block at top of page.
+	 * Called by modViewPage_Root to populate the search details block at top of page.
+	 *
+	 * Named populateSearchDetailsAndOtherFiltersBlock for consistency with other pages that have other filters in same block
 	 * 
 	 */
-	populateSearchDetailsBlock() {
-		
-		this._searchDetailsAndFilterBlock_MainPage.populatePage();
+	populateSearchDetailsAndOtherFiltersBlock() {
+
+		const containerDOMElement = document.getElementById("search_details_and_other_filters_outer_block_react_root_container");
+
+		if ( ! containerDOMElement ) {
+			const msg = "Failed to get DOM element by id 'search_details_and_other_filters_outer_block_react_root_container'";
+			console.warn( msg );
+			throw Error( msg )
+		}
+
+		const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = {
+			displayOnly : false,
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			filterValuesChanged_Callback : this._filterValuesChanged_Callback_BindThis
+		}
+
+		const jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = (
+			modViewPage_DisplayDataOnPage_createSearchDetailsSection({ searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue })
+		)
+
+		create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer({ jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer, containerDOMElement, renderCompleteCallbackFcn : undefined })
 	}
 
 
 	/**
 	 * Called when the user updates the filter cutoffs and the page needs to be re-rendered
 	 */
-	_rerenderPageForUpdatedFilterCutoffs( { projectSearchIdsForCutoffsChanged } ) {
+	_filterValuesChanged_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
 		
-		//  TODO  This is a blunt approach.  A better approach needs to be taken that preserves other User Input.
-		
-		this.populateModDataBlock();
+		//  This is a blunt approach.  A better approach could be taken that preserves other User Input.
+
+		this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
+
+		window.setTimeout( () => {
+			//  Run in settimeout so Update to FilterBlock paints first so user gets immediate visual feedback
+			this.populateModDataBlock(); // Update rest of page with new values
+		}, 10 )
 	}
 	
 	/**
@@ -262,7 +282,7 @@ export class ModViewPage_DisplayDataOnPage {
 	} ) {
 
 		// enable click handler for filtering proteins and positions overlay
-		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager();
+		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager( undefined ); // param unused so pass undefined
 
 		let reportedPeptideModData = {};
 		let proteinPositionResidues = {};
@@ -280,7 +300,7 @@ export class ModViewPage_DisplayDataOnPage {
 		}
 
 
-		let vizOptionsData = { data: { selectedStateObject : undefined, projectSearchIds : undefined }, stateManagementObject : undefined };
+		let vizOptionsData : { data: { selectedStateObject? : any, projectSearchIds? : any }, stateManagementObject? : ModMultiSearch_DataVizPageStateManager } = { data: { } };
 		vizOptionsData.data.selectedStateObject = { data: { } };
 		const stateManagementObject = new ModMultiSearch_DataVizPageStateManager( { centralPageStateManager : this._centralPageStateManager, vizOptionsData } );
 		vizOptionsData.stateManagementObject = stateManagementObject;

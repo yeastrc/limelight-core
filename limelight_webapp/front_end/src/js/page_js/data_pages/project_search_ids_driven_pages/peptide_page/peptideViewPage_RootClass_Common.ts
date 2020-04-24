@@ -208,7 +208,7 @@ export class PeptideViewPage_RootClass_Common {
 
 		//  Have all data in page variables to render the page
 
-		this._peptideViewPage_DisplayDataOnPage.populateSearchDetailsBlock();
+		this._peptideViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFiltersBlock();
 		
 		this._peptideViewPage_DisplayDataOnPage.populatePeptideListBlock();
 

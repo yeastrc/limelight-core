@@ -28,7 +28,6 @@ import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay'
 //  For type 
 import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem, SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItems_PerProjectSearchId }  from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
-import { SearchDetailsAndFilterBlock_MainPage } from './searchDetailsAndFilterBlock_MainPage'
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 //////////////
@@ -45,6 +44,13 @@ const USER_CLICKED_IN_TYPE_PROTEIN = "Protein";
 /////
 
 /**
+ *
+ */
+class SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param {
+	projectSearchIdsForCutoffsChanged : Set<number>
+}
+
+/**
  * 
  */
 class SearchDetailsAndFilterBlock_UserInputInOverlay {
@@ -52,7 +58,8 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
-	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage; // 'Parent class object'
+	private _filterValuesChanged_Callback? : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
+
 	private _updatePageState_URL_With_NewFilterCutoffs_FromUser : UpdatePageState_URL_With_NewFilterCutoffs_FromUser;
 
 	private _type_display_label_psm : string;
@@ -77,18 +84,18 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
-		searchDetailsAndFilterBlock_MainPage
+		filterValuesChanged_Callback
 	} : {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager,
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
-		searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage // 'Parent class object'
+		filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
 	} ) {
 		
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
-		this._searchDetailsAndFilterBlock_MainPage = searchDetailsAndFilterBlock_MainPage; // 'Parent class object'
+		this._filterValuesChanged_Callback = filterValuesChanged_Callback;
 		
 		this._updatePageState_URL_With_NewFilterCutoffs_FromUser = 
 			new UpdatePageState_URL_With_NewFilterCutoffs_FromUser( { searchDetailsBlockDataMgmtProcessing } );
@@ -738,7 +745,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		
 		let anyCutoffsChanged = false; // Track if any cutoffs changed from stored values
 		
-		let projectSearchIdsForCutoffsChanged = new Set();
+		let projectSearchIdsForCutoffsChanged : Set<number> = new Set();
 
 		for ( let filtersAnnTypeDisplayPerProjectSearchIds_Index = 0; filtersAnnTypeDisplayPerProjectSearchIds_Index < filtersAnnTypeDisplayPerProjectSearchIds.length; filtersAnnTypeDisplayPerProjectSearchIds_Index++ ) {
 			
@@ -877,22 +884,22 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 	_applyNewCutoffsToPage( { searchDetails_Filters_AnnTypeDisplay_Root, projectSearchIdsForCutoffsChanged } : { 
 		
 		searchDetails_Filters_AnnTypeDisplay_Root, 
-		projectSearchIdsForCutoffsChanged 
+		projectSearchIdsForCutoffsChanged : Set<number>
 	} ) {
-		
-		let objectThis = this;
 
 		let updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise =
 			this._updatePageState_URL_With_NewFilterCutoffs_FromUser.
 			updatePageState_URL_With_NewFilterCutoffs_FromUser( { searchDetails_Filters_AnnTypeDisplay_Root } );
 		
-		updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise.then( function( value ) { // onFullfilled: resolve called
+		updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise.then( ( value ) => { // onFullfilled: resolve called
 			try {
-				objectThis._searchDetailsAndFilterBlock_MainPage.reRenderForUserChangeFilterCutoffs( { projectSearchIdsForCutoffsChanged } );
-				
-				objectThis._modalOverlay.hide();
-				objectThis._modalOverlay.remove();
-				objectThis._modalOverlay = undefined;
+				if ( this._filterValuesChanged_Callback ) {
+					this._filterValuesChanged_Callback({ projectSearchIdsForCutoffsChanged });
+				}
+
+				this._modalOverlay.hide();
+				this._modalOverlay.remove();
+				this._modalOverlay = undefined;
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -946,5 +953,8 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 }
 
 
-export { SearchDetailsAndFilterBlock_UserInputInOverlay, USER_CLICKED_IN_TYPE_PSM, USER_CLICKED_IN_TYPE_PEPTIDE, USER_CLICKED_IN_TYPE_PROTEIN }
+export {
+	SearchDetailsAndFilterBlock_UserInputInOverlay,
+	SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param,
+	USER_CLICKED_IN_TYPE_PSM, USER_CLICKED_IN_TYPE_PEPTIDE, USER_CLICKED_IN_TYPE_PROTEIN }
 

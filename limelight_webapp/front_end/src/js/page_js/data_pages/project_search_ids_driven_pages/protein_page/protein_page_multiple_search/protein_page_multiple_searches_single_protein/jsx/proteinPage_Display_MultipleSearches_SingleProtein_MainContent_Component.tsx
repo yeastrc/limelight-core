@@ -106,7 +106,11 @@ import {
 import { ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component } from './proteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component';
 
 import { create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein, Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry } from '../js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
-import { SearchDetailsAndFilterBlock_MainPage, SearchDetailsAndFilterBlock_MainPage__PopulatePage_Params } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
+import {
+    SearchDetailsAndFilterBlock_MainPage_Root,
+    SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {SearchDetailsAndOtherFiltersOuterBlock_Layout} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
 
 
 /////////////////////////
@@ -144,7 +148,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
-    searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage
+    searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
     searchDataLookupParamsRoot;
@@ -242,7 +246,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
-    private _tbody_SearchDetailsContainer_Ref : React.RefObject<HTMLTableSectionElement>; //  React.createRef()  for  <div> Contain Search Details
     private _proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
 
     private _proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component>
@@ -262,7 +265,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
 
-        this._tbody_SearchDetailsContainer_Ref = React.createRef<HTMLTableSectionElement>();
         this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
@@ -380,16 +382,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */   
     componentDidMount() {
         try {
-            {
-                this.props.propsValue.searchDetailsAndFilterBlock_MainPage.initialize({ rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto : undefined });
-
-                const params : SearchDetailsAndFilterBlock_MainPage__PopulatePage_Params = {
-                    filter_section_HTMLElement : this._tbody_SearchDetailsContainer_Ref.current
-                }
-
-                this.props.propsValue.searchDetailsAndFilterBlock_MainPage.populatePage( params )
-            }
-
             //  Get width of contained <ProteinSequenceWidgetDisplay_Root_Component_React>  (assumed to not change after this component mounts)
 
             const proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM = this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref.current;
@@ -430,10 +422,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */   
     componentWillUnmount() {
         try {
-            {
-                const $container = $( this._tbody_SearchDetailsContainer_Ref.current )
-                $container.empty()
-            }
             this._resizeWindow_Handler_Remove();
 
             this._remove_MutationObserver_From_reported_peptides_outer_container();
@@ -1692,23 +1680,11 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                     
                         {/* Main Content above Reported Peptides  */}
 
-                        <table>
-                            <tbody ref={ this._tbody_SearchDetailsContainer_Ref }>
-                            </tbody>
-                        </table> 
-
-                        {/* <h3 style={ { fontSize: 24, marginBlockStart: 0, marginBlockEnd: 10 } }>
-                            Experiment: <span style={ { overflowWrap : "break-word" } }>{ this.props.propsValue.experimentName }</span>
-                        </h3>
-
-                        <div style={ { marginBottom: 20, overflowX : "auto" } } >
-                            <Experiment_SingleExperiment_ConditionsGraphicRepresentation 
-                                data={ this.props.propsValue.experimentConditions_GraphicRepresentation_PropsData }
-                                conditionCellClickHandler={ undefined }
-                                mainCellClickHandler={ undefined }
-                                mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
+                        <SearchDetailsAndOtherFiltersOuterBlock_Layout>
+                            <SearchDetailsAndFilterBlock_MainPage_Root
+                                propValue={ this.props.propsValue.searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
                             />
-                        </div> */}
+                        </SearchDetailsAndOtherFiltersOuterBlock_Layout>
 
                         <div style={ { paddingBottom: 15 } }>
 

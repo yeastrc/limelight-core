@@ -30,7 +30,7 @@ import {LoadCoreData_ProjectSearchIds_Based} from 'page_js/data_pages/data_pages
 
 import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint';
 
-import {CentralPageStateManager} from '../../central_page_state_manager/centralPageStateManager';
+import {CentralPageStateManager} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
 import {SharePage_dataPages} from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
 
@@ -101,15 +101,6 @@ export class ModViewPage_RootClass_Common {
 		this._searchDetailsBlockDataMgmtProcessing = new SearchDetailsBlockDataMgmtProcessing({
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
-		});
-
-		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
-			
-			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			centralPageStateManager : this._centralPageStateManager
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
@@ -227,7 +218,17 @@ export class ModViewPage_RootClass_Common {
 
 		//  Have all data in page variables to render the page
 
-		this._modViewPage_DisplayDataOnPage.populateSearchDetailsBlock();
+
+		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
+
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			centralPageStateManager : this._centralPageStateManager
+		});
+
+		this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFiltersBlock();
 		
 		this._modViewPage_DisplayDataOnPage.populateModDataBlock();
 	}

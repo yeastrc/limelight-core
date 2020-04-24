@@ -129,7 +129,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 			}
 			$saved_views_no_entries.show();
 
-			return; // EARY EXIT
+			return; // EARLY EXIT
 		}
 
 		const $saved_views_no_entries = $("#saved_views_no_entries");

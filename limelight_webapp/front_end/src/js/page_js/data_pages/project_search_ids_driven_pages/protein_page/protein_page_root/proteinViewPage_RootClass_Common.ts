@@ -246,10 +246,8 @@ export class ProteinViewPage_RootClass_Common {
 
 		//  Have all data in page variables to render the page
 
-		this._proteinViewPage_DisplayDataOnPage.populateSearchDetailsBlock();
+		this._proteinViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFiltersBlock();
 
-		this._proteinViewPage_DisplayDataOnPage.populateOtherFiltersInFilterBlock();
-		
 		this._proteinViewPage_DisplayDataOnPage.populateProteinListBlock();
 	}
 }

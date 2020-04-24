@@ -21,7 +21,6 @@ import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/
 import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
 
 
-import { SearchDetailsAndFilterBlock_MainPage, SearchDetailsAndFilterBlock_MainPage__PopulatePage_Params } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { dataTable_React_convert_DataTableObjects_with_dataTable_DataRowEntries__To_Tab_Delim_String } from 'page_js/data_pages/data_table_react/dataTable_React_convert_DataTableObjects_with_dataTable_DataRowEntries__To_Tab_Delim_String';
@@ -108,6 +107,11 @@ import {
 } from './proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_nonClass_Functions';
 
 import { reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects, ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result } from '../js/proteinPage_Display_SingleSearch_SingleProtein_ReportedPeptideListSection_Create_TableData'
+import {
+    SearchDetailsAndFilterBlock_MainPage_Root,
+    SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {SearchDetailsAndOtherFiltersOuterBlock_Layout} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
 
 
 
@@ -153,7 +157,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>; // loadedDataPerProjectSearchIdHolder in Map key projectSearchId
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
-    searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage
+    searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
     searchDataLookupParamsRoot;
@@ -256,7 +260,6 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
-    private _div_SearchDetailsContainer_Ref : React.RefObject<HTMLTableSectionElement>; //  React.createRef()  for  <div> Contain Search Details
     private _proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
 
     private _proteinPage_Display_SingleSearch__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display_SingleSearch_SingleProtein_GeneratedReportedPeptideListSection_Component>
@@ -276,7 +279,6 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
 
-        this._div_SearchDetailsContainer_Ref = React.createRef<HTMLTableSectionElement>();
         this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display_SingleSearch__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
@@ -426,16 +428,6 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
      */   
     componentDidMount() {
         try {
-            {
-                this.props.propsValue.searchDetailsAndFilterBlock_MainPage.initialize({ rootElementJQuerySelectorToSearchUnderForDOMElementInsertInto : undefined });
-
-                const params : SearchDetailsAndFilterBlock_MainPage__PopulatePage_Params = {
-                    filter_section_HTMLElement : this._div_SearchDetailsContainer_Ref.current
-                }
-
-                this.props.propsValue.searchDetailsAndFilterBlock_MainPage.populatePage( params )
-            }
-
             //  Get width of contained <ProteinSequenceWidgetDisplay_Root_Component_React>  (assumed to not change after this component mounts)
 
             const proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM = this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref.current;
@@ -476,10 +468,6 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
      */   
     componentWillUnmount() {
         try {
-            {
-                const $container = $( this._div_SearchDetailsContainer_Ref.current )
-                $container.empty()
-            }
             this._resizeWindow_Handler_Remove();
 
             this._remove_MutationObserver_From_reported_peptides_outer_container();
@@ -1774,10 +1762,11 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
                     
                         {/* Main Content above Reported Peptides  */}
 
-                        <table>
-                            <tbody ref={ this._div_SearchDetailsContainer_Ref }>
-                            </tbody>
-                        </table>
+                        <SearchDetailsAndOtherFiltersOuterBlock_Layout>
+                            <SearchDetailsAndFilterBlock_MainPage_Root
+                                propValue={ this.props.propsValue.searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
+                            />
+                        </SearchDetailsAndOtherFiltersOuterBlock_Layout>
 
                         <div style={ { paddingBottom: 15 } }>
 

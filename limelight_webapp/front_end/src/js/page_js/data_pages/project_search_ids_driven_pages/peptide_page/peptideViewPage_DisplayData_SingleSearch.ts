@@ -19,7 +19,6 @@ import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataP
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
-import { SearchDetailsAndFilterBlock_MainPage }  from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage';
 
 import { ProteinView_LoadedDataCommonHolder } from '../protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
@@ -45,8 +44,6 @@ export class PeptideViewPage_Display_SingleSearch {
 	
 	private _annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes;
 	
-	private _searchDetailsAndFilterBlock_MainPage : SearchDetailsAndFilterBlock_MainPage;
-
 
 	//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
 	
@@ -151,16 +148,7 @@ export class PeptideViewPage_Display_SingleSearch {
 		
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
-		
-		this._searchDetailsAndFilterBlock_MainPage = new SearchDetailsAndFilterBlock_MainPage({
-			displayOnly : false,
-			dataPages_LoggedInUser_CommonObjectsFactory : undefined,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			rerenderPageForUpdatedFilterCutoffs_Callback : undefined
-		} );
-		
+
 		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
 			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder
 		});
