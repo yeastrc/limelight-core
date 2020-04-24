@@ -112,6 +112,7 @@ import {
     SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 } from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
 import {SearchDetailsAndOtherFiltersOuterBlock_Layout} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
+import {ProteinPage_Display_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_Display_SingleProtein_ProteinNameDescription_Component";
 
 
 
@@ -1778,14 +1779,10 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
                         </div>
 
                         <div style={ { paddingBottom: 15 } }>
-                            <div style={ { fontSize: 24, fontWeight: "bold" } }>
-                                Name (from FASTA): <span style={ { overflowWrap : "break-word" } }>{ this.props.propsValue.proteinNames }</span>
-                            </div>
-                            { ( ! this.props.propsValue.proteinDescriptions ? null :
-                                <div style={ { fontSize: 14, fontWeight: "bold", paddingTop: 10 } }>
-                                    <span style={ { overflowWrap : "break-word" } }>{ this.props.propsValue.proteinDescriptions }</span>
-                                </div>
-                            ) }
+                            <ProteinPage_Display_SingleProtein_ProteinNameDescription_Component
+                                proteinNames={ this.props.propsValue.proteinNames }
+                                proteinDescriptions={ this.props.propsValue.proteinDescriptions }
+                            />
                         </div>
 
                         <div style={ { marginBottom: 10 } } >

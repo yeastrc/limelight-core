@@ -12,6 +12,7 @@ import React from 'react'
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component, ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop } from './proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component'
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import {ProteinPage_Display_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_Display_SingleProtein_ProteinNameDescription_Component";
 
 
 
@@ -38,6 +39,10 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Compone
 export interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props {
 
     closeOverlayClickHandler : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_closeOverlayClickHandler;
+
+    //  Optional.  Do NOT have when loading URL and directly displaying Single Protein Overlay
+    proteinNames : string
+    proteinDescriptions : string
 }
 
 /**
@@ -270,8 +275,18 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
         } else {
 
             mainContent = (
-                <div style={ { fontSize: 18 }} >
-                    <div>
+                <div>
+                    { ( this.props.proteinNames !== undefined ) ? ( //  Display proteinNames/proteinDescriptions if have them
+
+                        <div style={ { marginBottom: 15 } }>
+                            <ProteinPage_Display_SingleProtein_ProteinNameDescription_Component
+                                proteinNames={ this.props.proteinNames }
+                                proteinDescriptions={ this.props.proteinDescriptions }
+                            />
+                        </div>
+                    ) : null
+                    }
+                    <div style={ { fontSize: 18 }} >
                         Loading Data
                     </div>
                     <div style={ { marginTop: 40 } }>

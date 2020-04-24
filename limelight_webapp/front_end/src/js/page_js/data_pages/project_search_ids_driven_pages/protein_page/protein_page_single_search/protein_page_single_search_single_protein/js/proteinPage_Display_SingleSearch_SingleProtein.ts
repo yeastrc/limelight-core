@@ -55,7 +55,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein {
 
 
 	private _proteinSequenceVersionId : number;
-	private _proteinListItem;
+	private _proteinListItem : {name: string, description: string};
 
 	private _singleProteinCloseCallback : ProteinPage_Display_SingleSearch_SingleProtein_singleProteinCloseCallback;
 	
@@ -187,8 +187,8 @@ export class ProteinPage_Display_SingleSearch_SingleProtein {
 	 */
 	openOverlay( { proteinSequenceVersionId, proteinNameDescription, proteinSummaryStatistics } : { 
 		
-		proteinSequenceVersionId, 
-		proteinNameDescription, 
+		proteinSequenceVersionId
+		proteinNameDescription : {name: string, description: string}
 		proteinSummaryStatistics  : {
 			sequenceCoverageAsPercent: string;
 			peptideCount: number;
@@ -272,7 +272,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein {
 
 				//  Run in next paint cycle
 
-				this._showAfterIntialLoad();		
+				this._showAfterIntialLoad();
 			}, 5 )
 		}
 	}
@@ -330,13 +330,23 @@ export class ProteinPage_Display_SingleSearch_SingleProtein {
             _resize_OverlayHeight_BasedOnViewportHeight_SingleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
 		};
 
+        let proteinNames : string = undefined
+		let proteinDescriptions : string = undefined
+
+		if ( this._proteinListItem ) {
+			proteinNames = this._proteinListItem.name
+			proteinDescriptions = this._proteinListItem.description
+		}
+
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
 		
 		const proteinExperimentPage_SingleProtein_Root_Component = (
 			React.createElement(
 				ProteinPage_Display_SingleSearch_SingleProtein_Root_Component,
 				{
-					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis
+					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
+					proteinNames,
+					proteinDescriptions
 				},
 				null
 			)

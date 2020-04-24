@@ -55,7 +55,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 
 
 	private _proteinSequenceVersionId : number;
-	private _proteinListItem;
+	private _proteinListItem : {name: string, description: string};
 
 	private _singleProteinCloseCallback : ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback;
 	
@@ -301,13 +301,23 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
             _resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
 		};
 
+		let proteinNames : string = undefined
+		let proteinDescriptions : string = undefined
+
+		if ( this._proteinListItem ) {
+			proteinNames = this._proteinListItem.name
+			proteinDescriptions = this._proteinListItem.description
+		}
+
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
 		
 		const proteinExperimentPage_SingleProtein_Root_Component = (
 			React.createElement(
 				ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component,
 				{
-					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis
+					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
+					proteinNames,
+					proteinDescriptions
 				},
 				null
 			)
