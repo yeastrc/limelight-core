@@ -129,7 +129,8 @@ img.icon-large, input[type="image"].icon-large {
 //   Div that is displayed over a block to display a message, typically updating or loading data
 
 .block-updating-overlay-container {
-  font-size : 18px; 
+  font-size : 18px;
+  min-width: 400px;
   min-height: 100px; 
   text-align: center; 
   padding-top: 30px; 
