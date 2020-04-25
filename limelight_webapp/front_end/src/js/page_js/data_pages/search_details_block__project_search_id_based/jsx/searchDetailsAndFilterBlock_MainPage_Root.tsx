@@ -829,7 +829,7 @@ class FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Compone
 
         let cutoffEntryComponents : Array<JSX.Element> = undefined;
 
-        if ( cutoffs_ForType ) {
+        if ( cutoffs_ForType && cutoffs_ForType.length > 0 ) {
 
             cutoffEntryComponents = [];
 
