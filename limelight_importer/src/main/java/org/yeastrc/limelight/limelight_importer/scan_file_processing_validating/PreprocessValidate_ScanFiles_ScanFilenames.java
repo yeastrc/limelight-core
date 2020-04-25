@@ -105,7 +105,7 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 										//   Valid condition, 
 									} else {
 										if ( scanFileFileContainer_KeyFilename.size() != 1 ) {
-											String msg = "ERROR: Scan Filename on PSM is empty when there is more than one scan file on the command line.";
+											String msg = "Scan Filename on PSM is empty when there is more than one scan file to be imported.";
 											log.error(msg);
 											throw new LimelightImporterDataException(msg);
 										} else {
@@ -120,9 +120,10 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 									if ( scanFileFileContainer_KeyFilename != null && ( ! scanFileFileContainer_KeyFilename.isEmpty() ) ) {
 										if ( ( ! scanFilenames_From_scanFileFileContainer.contains( scanFileNameLimelightXMLInput ) 
 												&& ( ! scanFilenames_From_scanFileFileContainer_No_FilenameSuffix.contains( scanFileNameLimelightXMLInput ) ) ) ) {
-											String msg = "Scan Filename on PSM is not in list of Scan Files to be imported."
-													+ "  Scan Filename on PSM: " + scanFileNameLimelightXMLInput
-													+ ".  List of Scan Filenames to be imported: " 
+											String msg = "A scan filename '" 
+													+ scanFileNameLimelightXMLInput
+													+ "' listed on a PSM in the Limelight XML file was not found among the scan files uploaded for import."
+													+ "  List of Scan Filenames to be imported: " 
 													+ StringUtils.join( scanFilenames_From_scanFileFileContainer, ", " )
 													+ ".  List of Scan Filenames to be imported with suffixes removed: " 
 													+ StringUtils.join( scanFilenames_From_scanFileFileContainer_No_FilenameSuffix, ", " );
