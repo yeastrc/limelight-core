@@ -890,7 +890,7 @@ class FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Compone
                             cutoffEntryComponents
                         ) : (
                             <React.Fragment>
-                                <span className=" filter-single-value-display-block  " >Showing All</span>
+                                <span className=" filter-single-value-display-block clickable " >Showing All</span>
                                 <span style={ { fontSize: 1 } }> </span>
                             </React.Fragment>
                             ) }
