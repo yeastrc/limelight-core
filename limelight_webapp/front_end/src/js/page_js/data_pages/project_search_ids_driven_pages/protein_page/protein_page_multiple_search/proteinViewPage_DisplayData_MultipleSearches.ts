@@ -443,13 +443,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 	 */
 	updateFor_ProteinGroup_Change_ProteinListOnPage() {
 
-		if (!this._data_LoadedFor_ComputedReportedPeptides_AllProteins) { // = false; // Set to true once "Main Data" Loaded for current project search id.
-			//  Loading Main Data data in progress.
-			//  Group Protein Selection will be evaluated when Loading of Main data is complete
-			//  Will display data when data is loaded.
-			return; // EARLY RETURN
-		}
-
 		this._displayProteinListOnPage({ projectSearchIds : this._projectSearchIds });
 	}
 
