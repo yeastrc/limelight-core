@@ -109,24 +109,12 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
         const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({ modUniqueMassesWithTheirPsmCountsArray : props.modUniqueMassesWithTheirPsmCountsArray })
 
-        //  bind to 'this' for passing as parameters
-        // this._callbackMethodForSelectedProteinSequenceChange_BindThis = this._callbackMethodForSelectedProteinSequenceChange.bind(this);
-
         this.state = { massDisplay_DataTable_RootTableObject };
     }
 
     componentDidMount(): void {
 
         //  Adjust scrollable div max-height
-
-        // const $selector_mods_selection_dialog_above_mod_list_block = $contentDiv.find(".selector_mods_selection_dialog_above_mod_list_block");
-        // if ( $selector_mods_selection_dialog_above_mod_list_block.length === 0 ) {
-        //     throw Error("Failed to find DOM element with class 'selector_mods_selection_dialog_above_mod_list_block'")
-        // }
-        // const aboveListBlockHeight = $selector_mods_selection_dialog_above_mod_list_block.outerHeight();
-        // if ( aboveListBlockHeight === undefined || Number.isNaN( aboveListBlockHeight ) ) {
-        //     throw Error("aboveListBlockHeight is undefined || isNAN");
-        // }
 
         const aboveListBlockHeight= this._above_mod_list_block_Ref.current.getBoundingClientRect().height
 

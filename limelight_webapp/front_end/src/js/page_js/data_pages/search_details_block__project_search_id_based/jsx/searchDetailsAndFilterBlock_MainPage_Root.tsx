@@ -807,6 +807,14 @@ class FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Compone
      */
     private _filterTypeLabel_ClickHandler( event :  React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) {
         try {
+            {
+                const selectionObj = window.getSelection();
+                const selection = selectionObj.toString()
+                if (selection) {
+                    //  Found a Selection so exit with no further action
+                    return; //  EARLY RETURN
+                }
+            }
             this.props.openUserChangeFiltersOverlay_Callback({
                 projectSearchId_UserClickedIn : this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.projectSearchId,
                 userClickedInTypeIdentifier : this.props.typeIdentifierForOpenOverlay,
@@ -890,7 +898,7 @@ class FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Compone
                             cutoffEntryComponents
                         ) : (
                             <React.Fragment>
-                                <span className=" filter-single-value-display-block clickable " >Showing All</span>
+                                <span className=" filter-single-value-display-block clickable " onClick={ filterTypeLabel_ClickHandler } >Showing All</span>
                                 <span style={ { fontSize: 1 } }> </span>
                             </React.Fragment>
                             ) }
@@ -950,6 +958,14 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
      */
     private _filterValue_ClickHandler( event :  React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) {
         try {
+            {
+                const selectionObj = window.getSelection();
+                const selection = selectionObj.toString()
+                if (selection) {
+                    //  Found a Selection so exit with no further action
+                    return; //  EARLY RETURN
+                }
+            }
             this.props.openUserChangeFiltersOverlay_Callback({
                 projectSearchId_UserClickedIn : this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.projectSearchId,
                 userClickedInTypeIdentifier : this.props.typeIdentifierForOpenOverlay,
