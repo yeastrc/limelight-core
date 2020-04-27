@@ -233,6 +233,7 @@ public class SubmitImportProgram {
 
 					if ( ! (  inputScanFileStringObject instanceof String ) ) {
 
+						System.err.println( "" );
 						System.err.println( "Internal ERROR:  inputScanFileStringObject is not a String object." );
 						System.err.println( "" );
 						System.err.println( FOR_HELP_STRING );
@@ -244,6 +245,7 @@ public class SubmitImportProgram {
 
 					if( inputScanFileString == null || inputScanFileString.equals( "" ) ) {
 
+						System.err.println( "" );
 						System.err.println( "Internal ERROR:  inputScanFileStringObject is empty or null." );
 						System.err.println( "" );
 						System.err.println( FOR_HELP_STRING );
@@ -255,6 +257,7 @@ public class SubmitImportProgram {
 
 					if( ! scanFile.exists() ) {
 
+						System.err.println( "" );
 						System.err.println( "Could not find scan file: " + scanFile.getAbsolutePath() );
 
 						System.err.println( "" );
@@ -268,6 +271,21 @@ public class SubmitImportProgram {
 			}
 
 			String searchName = (String)cmdLineParser.getOptionValue( searchNameFromCommandLineCommandLineOpt );
+			
+			if ( StringUtils.isNotEmpty( searchName ) ) {
+				if ( searchName.contains( USER_SUBMIT_IMPORT_KEY_PARAM_STRING ) ) {
+					
+					System.err.println( "" );
+					System.err.println( "!!!!!!!!!" );
+					System.err.println( "Search name cannot contain '" + USER_SUBMIT_IMPORT_KEY_PARAM_STRING + "'." );
+					System.err.println( "Search Name provided: " + searchName );
+					System.err.println( "!!!!!!!!!" );
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+			}
 
 			Boolean noSearchNameCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noSearchNameCommandLineOpt, Boolean.FALSE);
 			Boolean sendSearchPathCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( sendSearchPathCommandLineOpt, Boolean.FALSE);
