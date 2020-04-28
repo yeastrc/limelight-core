@@ -24,7 +24,7 @@ import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from './newURL_Buil
 
 import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
-import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint';
+import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
 
@@ -148,7 +148,7 @@ const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLook
 	
 	window.history.replaceState( null, null, newURL );
 
-	navigation_dataPages_Maint_Instance._updateNavLinks();
+	navigation_dataPages_Maint_Instance.updateNavLinks();
 }
 
 /**

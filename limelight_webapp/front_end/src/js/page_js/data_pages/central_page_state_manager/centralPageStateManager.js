@@ -62,7 +62,7 @@ import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from 'page_js/data_
 
 import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants.js';
 
-import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint.js';
+import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
 
 /**
  * 
@@ -231,7 +231,7 @@ export class CentralPageStateManager {
 
 			//  Update Navigation Links for Project Search Id Based URLs
 
-			navigation_dataPages_Maint_Instance._updateNavLinks();
+			navigation_dataPages_Maint_Instance.updateNavLinks();
 
 		} else if ( newURL.includes( controller_path_prefix_ExperimentId_Based ) ) {
 

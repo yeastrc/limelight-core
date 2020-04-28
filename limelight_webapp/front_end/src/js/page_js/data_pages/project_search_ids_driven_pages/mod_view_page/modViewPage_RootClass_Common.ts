@@ -28,7 +28,7 @@ import { GetSearchDataLookupParametersFromPage, GetSearchDataLookupParametersFro
 import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import {LoadCoreData_ProjectSearchIds_Based} from 'page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based';
 
-import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_dataPages_Maint';
+import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
 
 import {CentralPageStateManager} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
@@ -152,7 +152,15 @@ export class ModViewPage_RootClass_Common {
 		
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
 
-		navigation_dataPages_Maint_Instance.initializePageOnLoad({ projectSearchIds }); // Initialize
+		let isSingleSearch = false
+		let isMultipleSearches = false
+		if ( projectSearchIds.length > 1 ) {
+			isMultipleSearches = true
+		} else {
+			isSingleSearch = true
+		}
+
+		navigation_dataPages_Maint_Instance.initializePageOnLoad({ isManageNavigationOnPage : true, navigationChange_Callback : undefined, isSingleSearch, isMultipleSearches, isExperimentPage : false }); // Initialize
 
 
 		if ( this._saveView_dataPages ) {

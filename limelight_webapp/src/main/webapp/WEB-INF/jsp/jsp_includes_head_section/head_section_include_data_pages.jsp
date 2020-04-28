@@ -37,9 +37,26 @@
 
 <script type="text/text" id="page_user_default_url">${ defaultURL }</script>
 
-<script type="text/text" id="page_navigation_links_template">
 
-	<%--  Navigation Links --%>
-	<%@ include file="/WEB-INF/jsp/jsp_includes/data_pages_navigation_links.jsp" %>
-	
+<script type="text/text" id="page_navigation_links_data_json"
+>
+{"single_search" :
+	{
+	"nav_entries" : [
+		{
+		"label" : "Peptides View",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER %>"
+		},
+		{
+		"label" : "Proteins View",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %>"
+		},
+		{
+		"label" : "Modifications View",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER %>"
+		}
+	]
+	}
+}
 </script>
+
