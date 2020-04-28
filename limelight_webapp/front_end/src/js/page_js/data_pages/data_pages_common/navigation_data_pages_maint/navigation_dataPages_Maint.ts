@@ -146,6 +146,15 @@ class Navigation_dataPages_Maint {
 	 */
 	public updateNavLinks() {
 
+		if ( ! this._isSingleSearch ) {
+
+			//  Not Single Search so skip
+
+			console.warn( "ONLY Single Search supported for Nav for Now");
+
+			return; // EARLY RETURN
+		}
+
 		const controllerPath_forCurrentPage = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
 
 		//  Create URL Path to append to base page controller paths for links
@@ -169,7 +178,9 @@ class Navigation_dataPages_Maint {
 		if ( this._isSingleSearch ) {
 			perSearchExperimentType = this._page_navigation_links_data.single_search
 		} else {
-			console.warn( "ONLY Single Search supported for Nav for Now");
+			const msg = "ONLY Single Search supported for Nav for Now. Should NOT get here.";
+			console.warn( msg );
+			throw Error( msg )
 		}
 
 
