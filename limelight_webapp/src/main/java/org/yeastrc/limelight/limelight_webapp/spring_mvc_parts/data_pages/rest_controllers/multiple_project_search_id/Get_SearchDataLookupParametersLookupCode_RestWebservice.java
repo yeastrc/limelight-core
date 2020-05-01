@@ -47,6 +47,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_MainProcessingIF;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -156,10 +157,10 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
-    		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null && webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
-    			log.warn( "Cannot specify both ProjectSearchIds_CreateDefault and SearchDataLookupParamsRoot" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
+//    		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null && webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
+//    			log.warn( "Cannot specify both ProjectSearchIds_CreateDefault and SearchDataLookupParamsRoot" );
+//    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//    		}
     		
     		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null ) {
     			
@@ -183,18 +184,11 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
         			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(  
         					SearchDataLookupParametersLookup_CreatedByUserType.WEB_USER );
         		}
-        		
-    			searchDataLookupParamsCode = 
-    					searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds
-    					.create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(
-    							webserviceRequest.getProjectSearchIds_CreateDefault(), 
-    							searchDataLookupParams_CreatedByInfo,
-    							null /* projectSearchIdsToSearchIds */ );
-    		} else {
+    		} 
+    		
+    		if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
 
-    			//  Save and create code
-    			
-    			//  First get Project Search Ids for Auth Check
+    			//  Get Project Search Ids for Auth Check
     			
     			searchDataLookupParamsRoot = webserviceRequest.getSearchDataLookupParamsRoot();
     			
@@ -240,6 +234,45 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
     				throw new LimelightErrorDataInWebRequestException( "Version Number < minimum. versionNumber: " 
     						+ versionNumber + ", minimum: " + SearchDataLookupParams_VersionNumber.MINIMUM_VERSION_NUMBER );
     			}
+    		}
+    		
+    		SearchDataLookupParamsRoot newSearchDataLookupParamsRoot = null;
+    		
+
+    		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null ) {
+    			
+    			if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
+    				
+    				//  Adding to existing SearchDataLookupParamsRoot so Version must match
+
+        			Integer versionNumber = searchDataLookupParamsRoot.getVersionNumber();
+        			
+        			if ( versionNumber == null ) {
+        				throw new LimelightErrorDataInWebRequestException( "No Version Number" );
+        			}
+        			if ( versionNumber != SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER ) {
+        				throw new LimelightErrorDataInWebRequestException( "Version Number Not Match Current. versionNumber: " 
+        						+ versionNumber + ", Current: " + SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER );
+        			}
+    			}
+    			        		
+    			SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result result = 
+    			searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds
+    			.create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(
+    					webserviceRequest.getProjectSearchIds_CreateDefault(), 
+    					searchDataLookupParams_CreatedByInfo,
+    					null /* projectSearchIdsToSearchIds */, 
+    					searchDataLookupParamsRoot );
+
+    			searchDataLookupParamsCode = result.getSearchDataLookupParamsCode();
+    			
+    			newSearchDataLookupParamsRoot = result.getSearchDataLookupParamsRoot();
+    		
+    		} else if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
+    			
+    			newSearchDataLookupParamsRoot = webserviceRequest.getSearchDataLookupParamsRoot();
+
+    			//  Save and create code
     			
     			searchDataLookupParamsCode = 
     					searchDataLookupParams_MainProcessing
@@ -252,7 +285,7 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     	    		
-    		webserviceResult.setSearchDataLookupParamsRoot( searchDataLookupParamsRoot );
+    		webserviceResult.setSearchDataLookupParamsRoot( newSearchDataLookupParamsRoot );
     		webserviceResult.setSearchDataLookupParamsCode( searchDataLookupParamsCode );
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );

@@ -67,7 +67,15 @@ public class WebConstants {
 	public static final String REQUEST_WEB_SESSION_HEADER_PROJECT_INFO = "headerProjectInfo";
 
 //	public static final String REQUEST_LOGGED_IN_USER_ID = "loggedInUserId";
+
+	/**
+	 * Project Search Based Pages
+	 */
+	public static final String REQUEST_CURRENT_PROJECT_ID = "currentProjectId";
 	
+	/**
+	 * Project Page 
+	 */
 	public static final String REQUEST_PROJECT_IDS = "projectIds";
 	
 	/**

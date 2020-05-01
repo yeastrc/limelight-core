@@ -202,8 +202,8 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 						
 						if ( dbItem.getSingleProjectSearchIdDefaultValues() != null ) {
 							
-							if ( searchDataLookupParametersLookupDTO.getSingleProjectSearchIdDefaultValues() 
-									!= dbItem.getSingleProjectSearchIdDefaultValues() ) {
+							if ( ! searchDataLookupParametersLookupDTO.getSingleProjectSearchIdDefaultValues() 
+									.equals( dbItem.getSingleProjectSearchIdDefaultValues() ) ) {
 								//  ERROR: The value of SingleProjectSearchIdDefaultValues is already set in the
 								//         db but is different from the request.
 								String msg = "The value of SingleProjectSearchIdDefaultValues is already set in the db but is different from the request.  dbItem value: "

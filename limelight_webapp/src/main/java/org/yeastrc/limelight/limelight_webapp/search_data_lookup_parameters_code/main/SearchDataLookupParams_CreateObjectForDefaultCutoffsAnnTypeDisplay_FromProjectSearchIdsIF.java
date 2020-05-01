@@ -31,10 +31,11 @@ interface SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_Fro
 
 	/**
 	 * @param projectSearchIds
+	 * @param existingSearchDataLookupParamsRoot TODO
 	 * @return
 	 * @throws SQLException 
 	 */
 	SearchDataLookupParamsRoot createSearchDataLookupParamsRoot_forDefaults(List<Integer> projectSearchIds,
-			Map<Integer, Integer> projectSearchIdsToSearchIds ) throws SQLException;
+			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException;
 
 }

@@ -230,32 +230,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 	}
 
 	/**
-	 *
-	 */
-	populateOtherFiltersInFilterBlock() : void {
-
-		const msg = "!!! populateOtherFiltersInFilterBlock() contents commented out !!!"
-		console.warn( msg )
-		console.warn( msg )
-		console.warn( msg )
-
-		// var projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
-		//
-		// if ( projectSearchIds.length === 0 ) {
-		// 	throw Error( "populateProteinListBlock(): projectSearchIds.length === 0 " );
-		// }
-		//
-		// if ( projectSearchIds.length === 1 ) {
-		//
-		// 	this._proteinViewPage_Display_SingleSearch.populateOtherFiltersInFilterBlock();
-		//
-		// } else {
-		//
-		// 	// this._proteinViewPage_Display_MultipleSearches.po
-		// }
-	}
-
-	/**
 	 * 
 	 */
 	populateProteinListBlock() {

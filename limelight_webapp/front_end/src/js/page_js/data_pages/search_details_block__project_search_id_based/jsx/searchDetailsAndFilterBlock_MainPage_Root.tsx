@@ -32,6 +32,8 @@ import {
     USER_CLICKED_IN_TYPE_PSM
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
 import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
+import {SearchDetailsAndFilterBlock_ChangeSearches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_ChangeSearches";
+import {SearchDetailsAndFilterBlock_Re_Order_Searches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_Re_Order_Searches";
 
 
 /**
@@ -117,6 +119,9 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
 
     private _openUserChangeFiltersOverlay_Callback_BindThis : OpenUserChangeFiltersOverlay_Callback = this._openUserChangeFiltersOverlay_Callback.bind(this);
 
+    private _openUserChangeSearches_Overlay_Callback_BindThis = this._openUserChangeSearches_Overlay_Callback.bind(this);
+    private _openUserChangeSearchesOrder_Overlay_Callback_BindThis = this._openUserChangeSearchesOrder_Overlay_Callback.bind(this);
+
     /**
      *
      */
@@ -163,6 +168,60 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
 
     }
 
+    /**
+     * Called from child components
+     */
+    private _openUserChangeSearches_Overlay_Callback() : void {
+
+        const dataUpdated_Callback = () => {
+
+            //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
+
+            throw Error("No Call to 'dataUpdated_Callback()' Expected.  Inside private _openUserChangeSearches_Overlay_Callback()")
+
+            // const params = new SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param();
+            //
+            // this.props.propValue.filterValuesChanged_Callback( params );
+        }
+
+        const searchDetailsAndFilterBlock_ChangeSearches = new SearchDetailsAndFilterBlock_ChangeSearches({
+            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this.props.propValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+            searchDetailsBlockDataMgmtProcessing : this.props.propValue.searchDetailsBlockDataMgmtProcessing,
+            dataUpdated_Callback
+        })
+
+        searchDetailsAndFilterBlock_ChangeSearches.open_ChangeSearches_Overlay();
+
+    }
+
+    /**
+     * Called from child components
+     */
+    private _openUserChangeSearchesOrder_Overlay_Callback() : void {
+
+        const dataUpdated_Callback = () => {
+
+            //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
+
+            throw Error("No Call to 'dataUpdated_Callback()' Expected.  Inside private _openUserChangeSearches_Overlay_Callback()")
+
+            // const params = new SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param();
+            //
+            // this.props.propValue.filterValuesChanged_Callback( params );
+        }
+
+        const searchDetailsAndFilterBlock_Re_Order_Searches = new SearchDetailsAndFilterBlock_Re_Order_Searches({
+            dataPageStateManager_DataFrom_Server : this.props.propValue.dataPageStateManager_DataFrom_Server,
+            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this.props.propValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+            searchDetailsBlockDataMgmtProcessing : this.props.propValue.searchDetailsBlockDataMgmtProcessing,
+            dataUpdated_Callback
+        })
+
+        searchDetailsAndFilterBlock_Re_Order_Searches.open_Re_Order_Searches_Overlay();
+
+    }
+
+
     ////////////////////////////////////////
 
     /**
@@ -200,6 +259,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
                     key={ multiSearchRootComponent_Key }
                     propValue={ this.props.propValue }
                     openUserChangeFiltersOverlay_Callback={ this._openUserChangeFiltersOverlay_Callback_BindThis }
+                    changeSearchesClickedCallback={ this._openUserChangeSearches_Overlay_Callback_BindThis }
+                    changeSearchesOrderClickedCallback={ this._openUserChangeSearchesOrder_Overlay_Callback_BindThis }
                 />
             );
 
@@ -213,7 +274,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
                 <SingleSearch_Only_Root
                     key={ projectSearchId }
                     propValue={ this.props.propValue }
-                    openUserChangeFiltersOverlay_Callback={this._openUserChangeFiltersOverlay_Callback_BindThis}
+                    openUserChangeFiltersOverlay_Callback={ this._openUserChangeFiltersOverlay_Callback_BindThis }
+                    changeSearchesClickedCallback={ this._openUserChangeSearches_Overlay_Callback_BindThis }
                 />
             )
         } else {
@@ -242,6 +304,7 @@ interface SingleSearch_Only_Root_Props {
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
+    changeSearchesClickedCallback
 }
 
 /**
@@ -303,6 +366,17 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
             throw Error("No searchProgramsPerSearchDataForProjectSearchId for projectSearchId: " + projectSearchId );
         }
 
+        let changeSearchesJSX : JSX.Element = undefined
+
+        if ( ! this.props.propValue.displayOnly ) {
+
+            changeSearchesJSX = (
+                <ChangeSearches
+                    changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
+                />
+            )
+        }
+
         return (
             <React.Fragment>
                 <tr >
@@ -310,6 +384,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                         <div>
                             Search:
                         </div>
+                        { changeSearchesJSX }
                     </td>
                     <SearchNameAndDetails_Root //   Inserts 2 columns in table
                         propValue={ this.props.propValue }
@@ -343,6 +418,8 @@ interface MultipleSearch_Only_Root_Props {
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
+    changeSearchesClickedCallback
+    changeSearchesOrderClickedCallback
 }
 
 /**
@@ -390,7 +467,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
 
             const projectSearchId = filtersAnnTypeDisplayPerProjectSearchId.projectSearchId;
 
-            const searchNamesMap_KeyProjectSearchId = this.props.propValue.dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
+            // const searchNamesMap_KeyProjectSearchId = this.props.propValue.dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
 
             const searchProgramsPerSearchData_Root: SearchProgramsPerSearchData_Root = this.props.propValue.dataPageStateManager_DataFrom_Server.get_searchProgramsPerSearchData_Root();
 
@@ -449,6 +526,24 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
             singleSearchesInsideSearchesBlock.push( singleSearchEntry )
         }
 
+
+        let changeSearchesReorderSearchesJSX : JSX.Element = undefined
+
+        if ( ! this.props.propValue.displayOnly ) {
+
+            changeSearchesReorderSearchesJSX = (
+                <React.Fragment>
+                    <ChangeSearches
+                        changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
+                    />
+                    <ChangeSearchesOrder
+                        changeSearchesOrderClickedCallback={ this.props.changeSearchesOrderClickedCallback }
+                    />
+                </React.Fragment>
+            )
+        }
+
+
         return (
             <React.Fragment>
                 <tr >
@@ -456,6 +551,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                         <div>
                             Searches:
                         </div>
+                        { changeSearchesReorderSearchesJSX }
                     </td>
                     <td style={ { verticalAlign : "top" } }>
                         { singleSearchesInsideSearchesBlock }
@@ -465,6 +561,106 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
         )
     }
 }
+
+////////////////////////////////////////
+
+////   Change searches and Re-order searches components
+
+/**
+ *
+ */
+interface ChangeSearches_Props {
+
+    changeSearchesClickedCallback
+}
+
+/**
+ *
+ */
+class ChangeSearches_State {
+
+    placeholder?
+}
+
+/**
+ *
+ */
+class ChangeSearches extends React.Component< ChangeSearches_Props, ChangeSearches_State > {
+
+    /**
+     *
+     */
+    constructor(props: ChangeSearches_Props) {
+        super(props);
+
+        this.state = {};
+    }
+
+    /**
+     *
+     */
+    render(): React.ReactNode {
+
+        return (
+            <div >
+                <span className={" fake-link "} style={ { fontSize : 12, whiteSpace : "nowrap" } } onClick={ this.props.changeSearchesClickedCallback }>
+                    Change searches
+                </span>
+            </div>
+        )
+    }
+}
+
+///////////
+
+/**
+ *
+ */
+interface ChangeSearchesOrder_Props {
+
+    changeSearchesOrderClickedCallback
+}
+
+/**
+ *
+ */
+class ChangeSearchesOrder_State {
+
+    placeholder?
+}
+
+/**
+ *
+ */
+class ChangeSearchesOrder extends React.Component< ChangeSearchesOrder_Props, ChangeSearchesOrder_State > {
+
+    /**
+     *
+     */
+    constructor(props: ChangeSearchesOrder_Props) {
+        super(props);
+
+        this.state = {};
+    }
+
+    /**
+     *
+     */
+    render(): React.ReactNode {
+
+        return (
+            <div >
+                <span className={" fake-link "} style={ { fontSize : 12, whiteSpace : "nowrap" } } onClick={ this.props.changeSearchesOrderClickedCallback }>
+                    Re-order searches
+                </span>
+            </div>
+        )
+    }
+}
+
+
+
+
 
 ////////////////////////////////////////
 

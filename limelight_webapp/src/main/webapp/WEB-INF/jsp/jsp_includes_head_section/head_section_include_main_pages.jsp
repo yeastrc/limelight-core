@@ -10,6 +10,11 @@
 
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_every_page.jsp" %>
 
+		<%--  Currently only populated in DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor
+				for Project Search Id Based Data Pages
+		 --%>
+ <script id="main_page_current_project_id" type="text/text" ><c:out value="${ currentProjectId }"></c:out></script>
+ 
  <script id="main_page_project_ids" type="text/text" ><c:out value="${ projectIds }"></c:out></script>
  
  <script id="main_page_project_entries" type="text/text" ><c:out value="${ projectEntries }"></c:out></script>

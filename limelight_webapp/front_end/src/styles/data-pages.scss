@@ -400,7 +400,10 @@
     
 	    
 	/*  --------------------------------------------------  */
-	
+
+   //  Lorikeet  modal dialog: Not Currently Used since show Lorikeet in new Window instead.
+
+   //   Still have code and Handlebars Templates for showing Lorikeet in Overlay.
 	
 	/* -----   Lorikeet  modal dialog background ----- */
 	
@@ -484,21 +487,7 @@
 	.view-spectra-overlay-link { margin-right: 20px;  }
 	
 
-    /*  --  PSM List  --- */
-    
-    
-    /*  style strictly so JS can read the color to get the color for the chart bars */
-    div.psm-empty-div-for-chart-bar-color { color: $site-color-dark }
-	
-	/*  Duplicate only using class, not  id.  Currently used for download charts for PSMs.  */
-	/* options for the "Download As" hover dropdown menu */
-	.svg-download-block { position: relative; display: inline-block; }
-	.svg-download-block:hover .svg-download-options-backing-block { display: block; }
-	.svg-download-options-backing-block { font-size: 12px; z-index:7; top: -1px; display: none; position: absolute; width: 160px; height: 40px; }
-	.svg-download-block:hover .svg-download-options-block { display: block; }
-	.svg-download-options-block { font-size: 12px; z-index:10; padding-top:7px; display: none; position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); }
-	.svg-download-option { display:block; margin-left:5px; }
-	
+
     
     /* modal overlay styling */
     div.modal-overlay-page-background {
@@ -606,8 +595,77 @@
     }
 
 
-	    
-	/*  --------------------------------------------------  */
+    /*  --------------------------------------------------  */
+
+    //   Change Searches and Re-Order Searches on Data Pages Project Search Id Based
+
+    //     Both Use Standard Overlay, this is for the contents
+
+    //   Change Searches Overlay Contents
+
+   div.change-searches-overlay-outer-block {
+
+      .folder-container {
+        padding-left: 8px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        clear: both;
+
+        .folder-collapsable-link-container {
+          float: left;
+          padding-top: 0;
+          padding-right: 3px;
+        }
+        .folder-name-display {
+          font-size: 18px;
+          font-weight: bold;
+        }
+
+        .searches-under-folder-block {
+          margin-left: 20px;
+          margin-top: 6px;
+        }
+      }
+
+      div.search-entry-container {
+
+            padding: 4px;
+
+            &:hover {
+                background-color: $site-color-medium;
+            }
+
+            &.selected {
+                color: white;
+                background-color:$site-color-dark;
+
+                &:hover {
+                    background-color: $site-color-very-dark;
+                }
+            }
+        }
+    }
+
+   //   Re-Order Searches Overlay Contents
+
+   div.re-order-searches-overlay-outer-block {
+
+     .searches-container {
+       //padding: 2px;
+       border-width: 2px;
+       border-style: solid;
+       border-color: $site-color-gray;
+
+       .search-single-entry-container {
+         padding: 2px;
+         border-width: 2px;
+         border-style: solid;
+         border-color: $site-color-gray;
+       }
+     }
+   }
+
+   /*  --------------------------------------------------  */
     
     
 	

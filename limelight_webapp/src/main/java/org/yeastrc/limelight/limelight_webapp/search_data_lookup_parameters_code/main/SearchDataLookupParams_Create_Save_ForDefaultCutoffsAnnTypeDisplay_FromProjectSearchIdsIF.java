@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 
 /**
@@ -33,11 +35,12 @@ public interface SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisp
 	 * @param projectSearchIds
 	 * @param searchDataLookupParams_CreatedByInfo
 	 * @param projectSearchIdsToSearchIds
+	 * @param existingSearchDataLookupParamsRoot TODO
 	 * @return
 	 * @throws SQLException
 	 */
-	String create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(List<Integer> projectSearchIds,
+	SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(List<Integer> projectSearchIds,
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo,
-			Map<Integer, Integer> projectSearchIdsToSearchIds) throws SQLException;
+			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot) throws SQLException;
 
 }

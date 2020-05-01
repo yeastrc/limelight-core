@@ -65,21 +65,41 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 	@Override
 	public SearchDataLookupParamsRoot createSearchDataLookupParamsRoot_forDefaults( 
 			List<Integer> projectSearchIds,
-			Map<Integer, Integer> projectSearchIdsToSearchIds ) throws SQLException {
+			Map<Integer, Integer> projectSearchIdsToSearchIds, 
+			SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException {
 	
 		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
 			throw new IllegalArgumentException( "projectSearchIds is null or empty" );
 		}
 		
-		SearchDataLookupParamsRoot result = new SearchDataLookupParamsRoot();
-		
-		result.setVersionNumber( SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER );
-		
-		SearchDataLookupParams_For_ProjectSearchIds paramsForProjectSearchIds = new SearchDataLookupParams_For_ProjectSearchIds();
-		result.setParamsForProjectSearchIds( paramsForProjectSearchIds );
-	
-		List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList = new ArrayList<>( projectSearchIds.size() );
-		paramsForProjectSearchIds.setParamsForProjectSearchIdsList( paramsForProjectSearchIdsList );
+		SearchDataLookupParamsRoot result = null;
+		SearchDataLookupParams_For_ProjectSearchIds paramsForProjectSearchIds = null;
+		List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList = null;
+
+		if ( existingSearchDataLookupParamsRoot != null ) {
+			
+			result = existingSearchDataLookupParamsRoot;
+			if ( result.getVersionNumber() == null ) {
+				throw new LimelightInternalErrorException( "result.getVersionNumber() == null" );
+			}
+			if ( result.getVersionNumber() != SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER ) {
+				throw new LimelightInternalErrorException( "result.getVersionNumber() != SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER. result.getVersionNumber(): " 
+						+ result.getVersionNumber() 
+						+ ", SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER: "
+						+ SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER );
+			}
+			paramsForProjectSearchIds = result.getParamsForProjectSearchIds();
+			paramsForProjectSearchIdsList = paramsForProjectSearchIds.getParamsForProjectSearchIdsList();
+			
+		} else {
+			
+			result = new SearchDataLookupParamsRoot();
+			result.setVersionNumber( SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER );
+			paramsForProjectSearchIds = new SearchDataLookupParams_For_ProjectSearchIds();
+			result.setParamsForProjectSearchIds( paramsForProjectSearchIds );
+			paramsForProjectSearchIdsList = new ArrayList<>( projectSearchIds.size() );
+			paramsForProjectSearchIds.setParamsForProjectSearchIdsList( paramsForProjectSearchIdsList );
+		}
 		
 		for ( Integer projectSearchId : projectSearchIds ) {
 			
@@ -87,7 +107,7 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 					createSearchDataLookupParams_For_Single_ProjectSearchId( projectSearchId, projectSearchIdsToSearchIds );
 			paramsForProjectSearchIdsList.add( searchDataLookupParams_For_Single_ProjectSearchId );
 		}
-		result.setParamsForProjectSearchIds( paramsForProjectSearchIds );
+		
 		return result;
 	}
 	

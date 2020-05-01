@@ -352,6 +352,17 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 
 
 			httpServletRequest.setAttribute( WebConstants.REQUEST_WEB_SESSION_AUTH_ACCESS_LEVEL, webSessionAuthAccessLevel );
+			
+			{
+				if ( projectIds.size() != 1 ) {
+					String msg = "Setting REQUEST_CURRENT_PROJECT_ID and projectIds.size() != 1. projectIds.size(): " + projectIds.size();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				Integer projectId = projectIds.get(0);
+			
+				httpServletRequest.setAttribute( WebConstants.REQUEST_CURRENT_PROJECT_ID, projectId );
+			}
 
     		httpServletRequest.setAttribute( 
     				WebConstants.REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_CODE, searchDataLookupParametersLookupCode );

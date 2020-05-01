@@ -15,9 +15,7 @@ import {
     DataTable_RootTableDataObject, DataTable_RootTableObject,
     DataTable_TableOptions, DataTable_TableOptions_dataRowClickHandler_RequestParm
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import {psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__psm_list_for_reported_peptide_container_component/js/psmList_Wrapper_ReturnChildReactComponent";
 import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
-import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 
 /**
  *
@@ -232,7 +230,6 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     columnEntries,
                     highlightRow,
                     tableRowClickHandlerParameter : { mass : modUniqueMassesWithTheirPsmCountsEntry.mass }
-                    // dataRow_GetChildTable_ReturnReactComponent_Parameter : psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter
                 })
 
                 dataTable_DataRowEntries.push( dataTable_DataRowEntry );
