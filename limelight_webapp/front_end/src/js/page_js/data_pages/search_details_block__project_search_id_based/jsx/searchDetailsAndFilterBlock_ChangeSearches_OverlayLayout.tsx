@@ -14,7 +14,7 @@ import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal
 const _Overlay_Title = "Choose the searches to display"
 
 const _Overlay_Width = 800;
-const _Overlay_Height = 700;
+const _Overlay_Height = 600;
 
 //////
 
@@ -191,6 +191,8 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
             }
         }
 
+        const mainBlockHeight = _Overlay_Height - 120;
+
         return (
             <ModalOverlay_Limelight_Component
                 width={ _Overlay_Width }
@@ -203,7 +205,7 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
 
                     <div className=" change-searches-overlay-outer-block ">
 
-                        <div style={ { height : 580, maxHeight : 580, overflowY: "auto", width: "100%", overflowX: "hidden" } }
+                        <div style={ { height : mainBlockHeight, maxHeight : mainBlockHeight, overflowY: "auto", width: "100%", overflowX: "hidden" } }
                              className=" mod-mass-select-dialog-bounding-box  ">
 
                             <div style={ { padding : 6 } } >
