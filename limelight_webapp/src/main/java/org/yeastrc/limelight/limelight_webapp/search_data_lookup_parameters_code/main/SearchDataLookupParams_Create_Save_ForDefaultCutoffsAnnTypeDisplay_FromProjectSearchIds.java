@@ -75,6 +75,14 @@ public class SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_
 		if ( projectSearchIds.size() == 1 ) {
 			singleProjectSearchIdCreatedDefaultsFor = projectSearchIds.get( 0 );
 		}
+		if ( ( ! projectSearchIds.isEmpty() )
+				&& existingSearchDataLookupParamsRoot != null 
+				&& existingSearchDataLookupParamsRoot.getParamsForProjectSearchIds() != null 
+				&& existingSearchDataLookupParamsRoot.getParamsForProjectSearchIds().getParamsForProjectSearchIdsList() != null
+				&& ( ! existingSearchDataLookupParamsRoot.getParamsForProjectSearchIds().getParamsForProjectSearchIdsList().isEmpty() ) ) {
+			
+			singleProjectSearchIdCreatedDefaultsFor = null;
+		}
 
 		//  Create default for project search ids
 		SearchDataLookupParamsRoot searchDataLookupParamsRoot = 
