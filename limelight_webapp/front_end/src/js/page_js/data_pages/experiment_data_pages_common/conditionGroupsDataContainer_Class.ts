@@ -6,7 +6,10 @@
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
 
 import { ConditionGroupsDataContainer_PerProjectSearchIdData, ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from './conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
-import { Experiment_ConditionGroup } from './experiment_ConditionGroupsContainer_AndChildren_Classes';
+import { Experiment_ConditionGroup, Experiment_ConditionGroupsContainer } from './experiment_ConditionGroupsContainer_AndChildren_Classes';
+import { SearchDataLookupParameters_Root, SearchDataLookupParams_Filter_Per_AnnotationType } from '../data_pages__common_data_classes/searchDataLookupParameters';
+import {ExperimentConditions_GraphicRepresentation_SelectedCells} from "page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections";
+import {ExperimentConditions_GraphicRepresentation_MainCell_Identifier} from "page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers";
 
 const _VERSION = 1;
 
@@ -30,7 +33,7 @@ export class ConditionGroupsDataContainer_DataEntry {
  */
 export class ProcessAllDataEntries_callback_Param {
     data : ConditionGroupsDataContainer_DataEntry
-    conditionIds_Path : Array<number>
+    conditionIds_Path : Set<number>
 }
 
 //////////
@@ -55,13 +58,28 @@ class ConditionData_InternalHolder_PerConditionId_Map_Entry {
     subConditionDataMap? : Map<number, ConditionData_InternalHolder_PerConditionId_Map_Entry>
 }
 
-
 /**
  * 
  */
 class PerSearchData_InternalHolder_Root {
 
     perSearchData_KeyProjectSearchId : Map<number, ConditionGroupsDataContainer_PerProjectSearchIdData>
+}
+
+/////
+
+/**
+ *  Used in _getAllData_ConditionGroupCondition_ProcessSubMaps(...)
+ */
+class DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps {
+
+    conditionId : number
+    conditions : Array<DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps>
+    data: {
+        data: {
+            projectSearchIds: Array<number>
+        }
+    }
 }
 
 /////////////
@@ -86,7 +104,7 @@ export class ConditionGroupsDataContainer {
         searchDataLookupParamsRoot 
     } : { 
         experimentConditionData_Serialized?, 
-        searchDataLookupParamsRoot? 
+        searchDataLookupParamsRoot? : SearchDataLookupParameters_Root
     }) {
 
         // let experimentConditionData_Serialized = experimentConditionData;
@@ -114,9 +132,16 @@ export class ConditionGroupsDataContainer {
      * Construct from data returned from this.getAllData_ForSave_ConditionGroupCondition({ conditionGroups }).
      * 
      */
-    private _construct_from_experimentConditionData_Serialized({ experimentConditionData_Serialized, searchDataLookupParamsRoot }) {
+    private _construct_from_experimentConditionData_Serialized({ experimentConditionData_Serialized, searchDataLookupParamsRoot } : { 
+        
+        experimentConditionData_Serialized, 
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root 
+    }) {
 
-        const result = _construct_from_experimentConditionData_Serialized_Internal({ experimentConditionData_Serialized, searchDataLookupParamsRoot });
+        const result : {
+            _conditionData : ConditionData_InternalHolder_Root
+            _perSearchData : PerSearchData_InternalHolder_Root
+         } = _construct_from_experimentConditionData_Serialized_Internal({ experimentConditionData_Serialized, searchDataLookupParamsRoot });
 
         if ( ! result ) {
 
@@ -265,7 +290,7 @@ export class ConditionGroupsDataContainer {
      *   param filter_id_Condition - Must have this id on a Condition in the path
      * 
      */
-    processAllDataEntries({ callback } : { 
+    processAllDataEntries_ConditionGroupsDataContainer({ callback } : { 
         
         callback( param : ProcessAllDataEntries_callback_Param ) : void
     }) {
@@ -276,7 +301,34 @@ export class ConditionGroupsDataContainer {
 
         const conditionDataCurrent = this._conditionData.conditionData_InternalHolder_PerConditionId_Root_Map_Entry;
 
-        return _processAllDataEntries_ProcessSubMaps ({ callback, conditionDataCurrent, conditionId_Path_PreviousLevels : undefined })
+        return _processAllDataEntries_ProcessSubMaps ({ callback, experimentConditions_GraphicRepresentation_SelectedCells : undefined, conditionDataCurrent, conditionId_Path_PreviousLevels : undefined })
+    }
+
+    /**
+     * Process data Entries, Filtering on Selected Condition Ids, calling callback with parameter ( param : ProcessAllDataEntries_callback_Param )
+     * 
+     * @param callback - function to call with the data
+     * @param selectedConditionIds
+     * @param conditionGroupsContainer - Required to determine which conditions in which condition groups
+     * 
+     */
+    processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({ callback, experimentConditions_GraphicRepresentation_SelectedCells, conditionGroupsContainer  } : {
+        
+        callback( param : ProcessAllDataEntries_callback_Param ) : void
+
+        // Need something different here
+        // selectedConditionIds : Set<number>
+
+        experimentConditions_GraphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells
+
+        conditionGroupsContainer : Experiment_ConditionGroupsContainer //  Required to determine which conditions in which condition groups
+    }) {
+
+        //  Process down through the property 'subConditionDataMap' containing a Map with data in it
+
+        const conditionDataCurrent = this._conditionData.conditionData_InternalHolder_PerConditionId_Root_Map_Entry;
+
+        return _processAllDataEntries_ProcessSubMaps ({ callback, experimentConditions_GraphicRepresentation_SelectedCells, conditionDataCurrent, conditionId_Path_PreviousLevels : undefined })
     }
 
     /**
@@ -478,11 +530,15 @@ const _put_data_UsingConditionIds = function ({ data, conditionIds_Array, _condi
  * @param conditionId_Path_PreviousLevels - Path of conditionId before current function call, or undefined if top level call
  * 
  */
-const _processAllDataEntries_ProcessSubMaps = function ({ callback, conditionDataCurrent, conditionId_Path_PreviousLevels } : {
+const _processAllDataEntries_ProcessSubMaps = function ({ 
+    
+    callback, experimentConditions_GraphicRepresentation_SelectedCells, conditionDataCurrent, conditionId_Path_PreviousLevels
+} : {
     
     callback( param : ProcessAllDataEntries_callback_Param ) : void
-    conditionDataCurrent : ConditionData_InternalHolder_PerConditionId_Map_Entry, 
-    conditionId_Path_PreviousLevels : Array<number> 
+    experimentConditions_GraphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells
+    conditionDataCurrent : ConditionData_InternalHolder_PerConditionId_Map_Entry
+    conditionId_Path_PreviousLevels : Set<number> 
 }) {
 
     // console.log("_processAllDataEntries_ProcessSubMaps(...)")
@@ -505,33 +561,52 @@ const _processAllDataEntries_ProcessSubMaps = function ({ callback, conditionDat
 
         //  Create conditionIds_Path for Current level
 
-        let conditionIds_Path_PreviousLevels_And_CurrentLevel : Array<number> = (
-            undefined
-        );
+        let conditionIds_Path_PreviousLevels_And_CurrentLevel : Set<number> = undefined;
 
         if ( ! conditionId_Path_PreviousLevels ) {
-            conditionIds_Path_PreviousLevels_And_CurrentLevel = [];
+            conditionIds_Path_PreviousLevels_And_CurrentLevel = new Set();
         } else {
-            conditionIds_Path_PreviousLevels_And_CurrentLevel = Array.from( conditionId_Path_PreviousLevels );
+            conditionIds_Path_PreviousLevels_And_CurrentLevel = new Set( conditionId_Path_PreviousLevels );
         }
 
         //  Add in current entry for current Condition
 
-        conditionIds_Path_PreviousLevels_And_CurrentLevel.push( conditionId );
+        conditionIds_Path_PreviousLevels_And_CurrentLevel.add( conditionId );
 
         if ( conditionDataCurrent_MapEntry.data ) {
-            //  Have 'data' property so pass to callback
 
-            callback({ 
-                data : conditionDataCurrent_MapEntry.data, 
-                conditionIds_Path : conditionIds_Path_PreviousLevels_And_CurrentLevel
-            });
+            //  Have 'data' property so pass to callback if call_callback stays true
+
+            let call_callback = true;
+
+            if ( experimentConditions_GraphicRepresentation_SelectedCells && experimentConditions_GraphicRepresentation_SelectedCells.mainCell_Selected_FromConditionLabelSelections_HasAnyEntries() ) {
+
+                const mainCell_Identifier = new ExperimentConditions_GraphicRepresentation_MainCell_Identifier({ cell_ConditionIds_Set : conditionIds_Path_PreviousLevels_And_CurrentLevel });
+
+                if ( ! experimentConditions_GraphicRepresentation_SelectedCells.mainCell_Selected_FromConditionLabelSelections_ContainsEntry( mainCell_Identifier ) ) {
+
+                    //  selectedConditionIds not found in conditionIds_Path so skip
+
+                    call_callback = false;  //  skip Callback
+                }
+            }
+
+            //  Have 'data' property and no selected or is in selected so pass to callback
+
+            if ( call_callback ) {
+
+                callback({ 
+                    data : conditionDataCurrent_MapEntry.data, 
+                    conditionIds_Path : conditionIds_Path_PreviousLevels_And_CurrentLevel
+                });
+            }
 
         } else {
 
             //  Recursive call to process conditionIds_Path_PreviousLevels_And_CurrentLevel
             _processAllDataEntries_ProcessSubMaps ({ 
-                callback, 
+                callback,
+                experimentConditions_GraphicRepresentation_SelectedCells,
                 conditionDataCurrent : conditionDataCurrent_MapEntry,
                 conditionId_Path_PreviousLevels : conditionIds_Path_PreviousLevels_And_CurrentLevel
             });
@@ -651,7 +726,7 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
     all_conditionIds : Set<number>
     conditionDataCurrent : ConditionData_InternalHolder_PerConditionId_Map_Entry
 }) : {
-    dataArrayCurrent : Array<any>
+    dataArrayCurrent : Array<DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps>
 } {
 
     //  Walk the tree of Maps of Maps
@@ -666,7 +741,7 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
         return null;  // EARLY RETURN
     }
 
-    const dataArrayCurrent = [];
+    const dataArrayCurrent : Array<DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps> = [];
 
     for ( const subConditionDataMap_Entry of subConditionDataMap.entries() ) {
 
@@ -681,7 +756,7 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
             continue;  // EARLY CONTINUE
         }
 
-        const dataArrayCurrent_For_condition = {
+        const dataArrayCurrent_For_condition : DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps = {
             conditionId,
             conditions : undefined,
             data : undefined
@@ -696,16 +771,20 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
             //  The contents of conditionDataCurrent.data are managed outside this class/file.
             //     Maybe that should change.
 
-            const data_Innerdata = data.data;
+            const data_InnerData = data.data;
 
-            const projectSearchIds = data_Innerdata.projectSearchIds;
+            const projectSearchIds = data_InnerData.projectSearchIds;
             
-            let projectSearchIdsArray = undefined;
+            let projectSearchIdsArray : Array<number> = undefined;
             if ( projectSearchIds && projectSearchIds.size !== 0 ) {
                 projectSearchIdsArray = Array.from( projectSearchIds );
             }
 
-            const data_result = {
+            const data_result : {
+                data : {
+                    projectSearchIds : Array<number>
+                }
+            } = {
                 data : {
                     projectSearchIds : projectSearchIdsArray
                 }
@@ -743,6 +822,7 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
 
 }
 
+
 ////////////////////////////////
 
 /**
@@ -756,7 +836,14 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
  * 
  * 
  */
-const _construct_from_experimentConditionData_Serialized_Internal = function ({ experimentConditionData_Serialized, searchDataLookupParamsRoot }) {
+const _construct_from_experimentConditionData_Serialized_Internal = function ({ experimentConditionData_Serialized, searchDataLookupParamsRoot } : { 
+    
+    experimentConditionData_Serialized, 
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+}) : {
+    _conditionData : ConditionData_InternalHolder_Root
+    _perSearchData : PerSearchData_InternalHolder_Root
+} {
 
     if ( ! experimentConditionData_Serialized ) {
         return null; // EARLY RETURN
@@ -776,7 +863,7 @@ const _construct_from_experimentConditionData_Serialized_Internal = function ({ 
 
     const _conditionData : ConditionData_InternalHolder_Root = { conditionData_InternalHolder_PerConditionId_Root_Map_Entry };
     
-    const _perSearchData = _construct_from_experimentConditionData_Serialized_Internal_Create_perSearchData({ searchDataLookupParamsRoot });
+    const _perSearchData : PerSearchData_InternalHolder_Root = _construct_from_experimentConditionData_Serialized_Internal_Create_perSearchData({ searchDataLookupParamsRoot });
 
     return { _conditionData, _perSearchData };
 }
@@ -791,18 +878,22 @@ const _construct_from_experimentConditionData_Serialized_Internal = function ({ 
  * 
  * 
  */
-const _construct_from_experimentConditionData_Serialized_Internal_Create_perSearchData = function ({ searchDataLookupParamsRoot }) {
+const _construct_from_experimentConditionData_Serialized_Internal_Create_perSearchData = function ({ searchDataLookupParamsRoot } : { 
+    
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root 
+}) : PerSearchData_InternalHolder_Root {
 
-    const perSearchData_KeyProjectSearchId = new Map();
-
-    // searchDataLookupParamsRoot.versionNumber
+    const perSearchData_KeyProjectSearchId : Map<number, ConditionGroupsDataContainer_PerProjectSearchIdData> = new Map();
 
     if ( searchDataLookupParamsRoot ) {
 
         _construct_from_experimentConditionData_Serialized_Internal_Process_searchDataLookupParamsRoot({ searchDataLookupParamsRoot, perSearchData_KeyProjectSearchId });
     }
 
-    return { perSearchData_KeyProjectSearchId };
+    const result = new PerSearchData_InternalHolder_Root();
+    result.perSearchData_KeyProjectSearchId = perSearchData_KeyProjectSearchId;
+
+    return result;
 }
 
 /**
@@ -812,7 +903,11 @@ const _construct_from_experimentConditionData_Serialized_Internal_Create_perSear
  * 
  * @param searchDataLookupParamsRoot
  */
-const _construct_from_experimentConditionData_Serialized_Internal_Process_searchDataLookupParamsRoot = function ({ searchDataLookupParamsRoot, perSearchData_KeyProjectSearchId }) {
+const _construct_from_experimentConditionData_Serialized_Internal_Process_searchDataLookupParamsRoot = function ({ searchDataLookupParamsRoot, perSearchData_KeyProjectSearchId } : { 
+    
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root 
+    perSearchData_KeyProjectSearchId : Map<number, ConditionGroupsDataContainer_PerProjectSearchIdData>
+}) : void {
 
     if ( ! searchDataLookupParamsRoot.paramsForProjectSearchIds ) {
         return; // EARLY RETURN
@@ -827,34 +922,21 @@ const _construct_from_experimentConditionData_Serialized_Internal_Process_search
 
         const reportedPeptideFilterData = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.reportedPeptideFilters });
         const psmFilterData = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.psmFilters });
+        const matchedProteinFilters = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.matchedProteinFilters });
 
         const perSearchData = new ConditionGroupsDataContainer_PerProjectSearchIdData();
 
         perSearchData.set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilterData );
         perSearchData.set_psmFilters_PerProjectSearchId( psmFilterData );
+        perSearchData.set_matchedProteinFilters_PerProjectSearchId( matchedProteinFilters )
+
         perSearchData.set_psmAnnTypeDisplay_PerProjectSearchId( paramsForProjectSearchId_Entry.psmAnnTypeDisplay );
         perSearchData.set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( paramsForProjectSearchId_Entry.reportedPeptideAnnTypeDisplay );
-            
+        perSearchData.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( paramsForProjectSearchId_Entry.matchedProteinAnnTypeDisplay );
+
         perSearchData_KeyProjectSearchId.set( paramsForProjectSearchId_Entry.projectSearchId, perSearchData );
     }
-        // searchDataLookupParamsRoot:
-        //     paramsForProjectSearchIds:
-        //     paramsForProjectSearchIdsList: Array(2)
-        //     0:
-        //     matchedProteinAnnTypeDisplay: null
-        //     matchedProteinFilters: null
-        //     projectSearchId: 239
-        //     psmAnnTypeDisplay: (3) [3643, 3641, 3642]
-        //     psmFilters: [{…}]
-        //     reportedPeptideAnnTypeDisplay: (2) [3648, 3652]
-        //     reportedPeptideFilters: [{…}]
-        //     __proto__: Object
-        //     1: {projectSearchId: 240, psmFilters: Array(2), reportedPeptideFilters: Array(1), matchedProteinFilters: null, psmAnnTypeDisplay: Array(4), …}
-        //     length: 2
-        //     __proto__: Array(0)
-        //     __proto__: Object
-        //     versionNumber: 1
-        
+
 }
 
 /**
@@ -862,15 +944,18 @@ const _construct_from_experimentConditionData_Serialized_Internal_Process_search
  * 
  * Populate Map from parameter
  * 
- * @param searchDataLookupParamsRoot
  */
-const _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType = function ({ filtersForType_InArray }) {
+const _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType = function ({ filtersForType_InArray } : { 
+    
+    filtersForType_InArray : Array<SearchDataLookupParams_Filter_Per_AnnotationType>
+    
+}) : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> {
 
     if ( ! filtersForType_InArray || filtersForType_InArray.length === 0 ) {
         return undefined;
     }
 
-    const filterDataArray = [];
+    const filterDataArray : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = [];
 
     for ( const entry of filtersForType_InArray ) {
         const resultEntry = new ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data();
@@ -907,19 +992,37 @@ const _construct_from_experimentConditionData_Serialized_Internal_Create_subCond
 
     for ( const subConditionDataInput_Entry of subConditionDataInput ) {
 
+        if ( subConditionDataInput_Entry.conditionId === undefined || subConditionDataInput_Entry.conditionId === null ) {
+            const msg = "_construct_from_experimentConditionData_Serialized_Internal_Create_subConditionDataMap: subConditionDataInput_Entry.conditionId is undefined or null.  subConditionDataInput_Entry: ";
+            console.warn( msg, subConditionDataInput_Entry );
+            throw Error( msg );
+        }
+
         let resultMapKey = subConditionDataInput_Entry.conditionId;
         let resultEntry : ConditionData_InternalHolder_PerConditionId_Map_Entry = undefined;
 
         if ( subConditionDataInput_Entry.data !== undefined && subConditionDataInput_Entry.data !== null ) {
             //  Convert 'data'
 
-            const resultData = { data : undefined };
+            const resultData : ConditionGroupsDataContainer_DataEntry = { data : undefined };
 
             const subData = subConditionDataInput_Entry.data.data;
             if ( subData !== undefined && subData !== null ) {
-                resultData.data = {};
-                const projectSearchIds = subData.projectSearchIds;
+                resultData.data = { projectSearchIds : undefined };
+                const projectSearchIds : Array<number> = subData.projectSearchIds;
                 if ( projectSearchIds ) {
+                    if ( ! ( projectSearchIds instanceof Array ) ) {
+                        const msg = "subData.projectSearchIds is not Array"
+                        console.warn( msg + ". projectSearchIds: ", projectSearchIds )
+                        throw Error( msg )
+                    }
+                    for ( const projectSearchId of projectSearchIds ) {
+                        if ( ! variable_is_type_number_Check( projectSearchId ) ) {
+                            const msg = "subData.projectSearchIds entry is not number."
+                            console.warn( msg + "  Entry: " + projectSearchId )
+                            throw Error( msg )
+                        }
+                    }
                 
                     const projectSearchIdsResult = new Set( projectSearchIds );
                     resultData.data.projectSearchIds = projectSearchIdsResult;
@@ -937,6 +1040,7 @@ const _construct_from_experimentConditionData_Serialized_Internal_Create_subCond
                     _construct_from_experimentConditionData_Serialized_Internal_Create_subConditionDataMap({ subConditionDataInput : child_subConditionDataInput })
                 );
                 resultEntry  = childEntry;
+                resultEntry.conditionId = subConditionDataInput_Entry.conditionId;
             }
         }
 
@@ -1040,4 +1144,5 @@ const _delete_data_For_ConditionGroupCondition_conditionDataCurrent = function (
     subConditionDataMap.delete( conditionId );
     
 }
+
 

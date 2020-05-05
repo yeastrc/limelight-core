@@ -11,11 +11,16 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
+import { ProjectPage_ExperimentsList_SingleExperimentDetails, ProjectPage_ExperimentsList_SingleExperimentDetails_Props } from './projPg_ExpermntsSection_ExpList_SingleExperimentDetails';
+import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './projPg_Expermnts_LoggedInUsersInteraction';
 
-export interface ProjectPage_ExperimentsSectionRoot_Props {
 
-    projectIdentifierFromURL
-    projectPage_ExperimentsSection_LoggedInUsersInteraction
+
+
+export class ProjectPage_ExperimentsSectionRoot_Props {
+
+    projectIdentifierFromURL : string
+    projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction
     editExperimentInvokeHandler
     cloneExperimentInvokeHandler
 }
@@ -23,9 +28,11 @@ export interface ProjectPage_ExperimentsSectionRoot_Props {
 interface ProjectPage_ExperimentsSectionRoot_State {
 
     draftExperiments?
-    experiments_drafts_initialLoading?
+    experiments_drafts_initialLoading? : boolean
     experiments?
-    experiments_initialLoading?
+    experiments_initialLoading? : boolean
+
+    createExperimentButton_Disabled? : boolean
 }
 
 
@@ -51,7 +58,8 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
 
         this.state = {
             experiments_initialLoading : true,
-            experiments_drafts_initialLoading : true
+            experiments_drafts_initialLoading : true,
+            createExperimentButton_Disabled : true  //  Start at true until get data from server to indicate can change to false
         };
     }
 
@@ -63,7 +71,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      * 
      * Return new state (like return from setState(callback)) or null
      */
-    // static getDerivedStateFromProps( props, state ) {
+    // static getDerivedStateFromProps( props : ProjectPage_ExperimentsSectionRoot_Props, state : ProjectPage_ExperimentsSectionRoot_State ) : ProjectPage_ExperimentsSectionRoot_State {
 
     //     // console.log("called: static getDerivedStateFromProps(): " );
 
@@ -80,6 +88,8 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
 
         // console.log("componentDidMount(): this.state.setIn_getDerivedStateFromProps: " + this.state.setIn_getDerivedStateFromProps );
 
+        this._getFromServer_ProjectContainsAtLeastOneActiveSearch();
+
         this._loadExperiments_NonDrafts_IfNeeded();
         this._loadDraftExperiments_IfNeeded();
     }
@@ -94,44 +104,45 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     }
 
     /**
-     * Non Draft
+     * 
      */
-    _loadExperiments_NonDrafts_IfNeeded() {
+    private _show_CreateExperiment_Button_And_DraftExperiments() : boolean {
 
-        //  Load Data
+        if ( this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
 
-        // if ( this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
-
-            //  Load Experiment NON Drafts
-
-            const promise_loadExperiment = _loadExperiments_NonDrafts({ projectIdentifierFromURL : this.props.projectIdentifierFromURL });
-            promise_loadExperiment.catch( (reason) => { } );
-            promise_loadExperiment.then( ({ responseData }) => {
-
-                this._process_loadExperiment_NonDrafts_responseData({ loadExperiments_responseData : responseData });
-            });
-        // }
+            return true;
+        }
+        return false;
     }
 
     /**
-     * 
+     * Non Draft
      */
-    _process_loadExperiment_NonDrafts_responseData({ loadExperiments_responseData }) {
+    private _loadExperiments_NonDrafts_IfNeeded() {
 
-        this.setState( (state, props ) => {
+        //  Load Data
 
-            return _process_loadExperiments_NonDrafts_responseData_SetState({ state, props, loadExperiments_responseData });
+        //  Load Experiment NON Drafts
+
+        const promise_loadExperiment = _loadExperiments_NonDrafts({ projectIdentifierFromURL : this.props.projectIdentifierFromURL });
+        promise_loadExperiment.catch( (reason) => { } );
+        promise_loadExperiment.then( ({ responseData }) => {
+
+            this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
+
+                return _process_loadExperiments_NonDrafts_responseData_SetState({ state, props, loadExperiments_responseData : responseData });
+            });
         });
     }
 
     /**
-     * 
+     * Draft
      */
-    _loadDraftExperiments_IfNeeded() {
+    private _loadDraftExperiments_IfNeeded() {
 
         //  Load Data
 
-        if ( this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
+        if ( this._show_CreateExperiment_Button_And_DraftExperiments() ) {
 
             //  Load Experiment Drafts
 
@@ -139,7 +150,10 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             promise_loadExperimentDrafts.catch( (reason) => { } );
             promise_loadExperimentDrafts.then( ({ responseData }) => {
 
-                this._process_loadExperimentDrafts_responseData({ loadExperimentDrafts_responseData : responseData });
+                this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
+
+                    return _process_loadExperimentDrafts_responseData_SetState({ state, props, loadExperimentDrafts_responseData : responseData });
+                });
             });
         }
     }
@@ -147,18 +161,34 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    _process_loadExperimentDrafts_responseData({ loadExperimentDrafts_responseData }) {
+    private _getFromServer_ProjectContainsAtLeastOneActiveSearch() {
 
-        this.setState( (state, props ) => {
+        if ( ! this._show_CreateExperiment_Button_And_DraftExperiments() ) {
 
-            return _process_loadExperimentDrafts_responseData_SetState({ state, props, loadExperimentDrafts_responseData });
+            //  Not going to show the "Create Experiment Button" so skip this query
+
+            return;  // EARLY RETURN
+        }
+
+        //  Check Project
+
+        const promise = _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall({ projectIdentifierFromURL : this.props.projectIdentifierFromURL });
+        promise.catch( (reason) => { } );
+        promise.then( ({ responseData }) => {
+
+            if ( responseData.projectId_HasAtLeastOneActive_ProjectSearchId ) {
+
+                this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
+
+                    return ({ createExperimentButton_Disabled : false }); // Change to NOT Disabled
+                });
+            }
         });
     }
-
     /**
      * 
      */
-    _createNewExperiment( event ) {
+    private _createNewExperiment( event : React.MouseEvent<HTMLElement, MouseEvent> ) {
 
         if ( ! this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
             throw Error("_createNewExperiment(..): this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction not populated");
@@ -170,7 +200,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    _experimentDraftNameClicked({ id }) {
+    private _experimentDraftNameClicked({ id }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -178,7 +208,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    _experimentDraftEditClicked({ id }) {
+    private _experimentDraftEditClicked({ id }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -187,7 +217,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      * @param id - experiment id
      * @param name - experiment name
      */
-    _experimentDraftDeleteClicked({ id, name }) {
+    private _experimentDraftDeleteClicked({ id, name }) {
 
         if ( window.confirm("Delete Experiment " + name + "?" ) ) {
 
@@ -203,10 +233,13 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
         }
     }
 
+    ////  Non-Draft Experiments
+    
+
     /**
      * 
      */
-    _experimentNameClicked({ id }) {
+    private _experimentNameClicked({ id }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -214,7 +247,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    _experimentEditClicked({ id }) {
+    private _experimentEditClicked({ id }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -222,7 +255,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    _experimentCloneClicked({ id }) {
+    private _experimentCloneClicked({ id }) {
 
         this.props.cloneExperimentInvokeHandler({ experimentId : id })
     }
@@ -231,7 +264,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      * @param id - experiment id
      * @param name - experiment name
      */
-    _experimentDeleteClicked({ id, name }) {
+    private _experimentDeleteClicked({ id, name }) {
 
         if ( window.confirm("Delete Experiment " + name + "?" ) ) {
 
@@ -252,16 +285,18 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     render () {
 
-        let createNewExperimentButton = undefined;
+        let createNewExperimentButton_WithContainingDiv = undefined;
 
         let draftExperiments = undefined;
 
         let experimentsNonDraft_Label = undefined;
 
-        if ( this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
+        if ( this._show_CreateExperiment_Button_And_DraftExperiments() ) {
 
-            createNewExperimentButton = (
-                <input type="button" onClick={ this._createNewExperiment_BindThis } value="Create New Experiment" />
+            createNewExperimentButton_WithContainingDiv = (
+                <div >
+                    <input type="button" onClick={ this._createNewExperiment_BindThis } value="Create New Experiment" disabled={ this.state.createExperimentButton_Disabled } />
+                </div>
             );
 
             let draftExperimentsList = undefined;
@@ -269,7 +304,13 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             if ( this.state.experiments_drafts_initialLoading ) {
 
                 draftExperimentsList = (
-                    <div >Loading</div>
+
+                    <React.Fragment>
+                        {/* CSS Grid 2 Columns - Column 1 Item */}
+                        <div ></div>
+                        {/* CSS Grid 2 Columns - Column 2 Item */}
+                        <div >Loading</div>
+                    </React.Fragment>
                 );
             } else if ( this.state.draftExperiments ) {
 
@@ -277,6 +318,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
                     <ExperimentDraftList 
                         draftExperiments={ this.state.draftExperiments } 
                         experimentDraftNameClicked={ this._experimentDraftNameClicked_BindThis }
+                        experimentDraftEditClicked={ this._experimentDraftEditClicked_BindThis }
                         experimentDraftDeleteClicked={ this._experimentDraftDeleteClicked_BindThis }
                     />
                 );
@@ -288,24 +330,43 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             }
 
             if ( draftExperimentsList ) {
+
                 draftExperiments = (
-                    <div >
-                        <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 10, marginBottom : 10 } }
-                            title="Experiments that are in Draft status."
-                        >Experiment Drafts</div>
-                        <div >
-                            { draftExperimentsList }
+                    
+                    <React.Fragment>
+                        {/* CSS Grid 2 Columns - Column 1 Item */}
+                        <div ></div>
+                        {/* CSS Grid 2 Columns - Column 2 Item */}
+                        <div > {/* Containing <div> since child <div> has "display: inline-block" to limit tooltip area */}
+                            <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 2, marginBottom : 10, display: "inline-block" } }
+                                title="Experiments that are in Draft status."
+                            >
+                                Experiment Drafts
+                            </div>
                         </div>
-                    </div>
+                        
+                        { draftExperimentsList }
+                        
+                    </React.Fragment>
                 );
             }
 
             if ( this.state.experiments_drafts_initialLoading || this.state.draftExperiments ) {
+                
                 experimentsNonDraft_Label = (
 
-                    <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 10 } }
-                        title="Published Experiments that all users can see and use."
-                    >Experiments</div>
+                    <React.Fragment>
+                        {/* CSS Grid 2 Columns - Column 1 Item */}
+                        <div ></div>
+                        {/* CSS Grid 2 Columns - Column 2 Item */}
+                        <div > {/* Containing <div> since child <div> has "display: inline-block" to limit tooltip area */}
+                            <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 10, marginBottom: 10, display: "inline-block" } }
+                                title="Published Experiments that all users can see and use."
+                            >
+                                Experiments
+                            </div>
+                        </div>
+                    </React.Fragment>
                 );
             }
         }
@@ -314,36 +375,62 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
 
         if ( this.state.experiments_initialLoading ) {
             experimentsListSection = (
-                <div >Loading</div>
+
+                <React.Fragment>
+                    {/* CSS Grid 2 Columns - Column 1 Item */}
+                    <div ></div>
+                    {/* CSS Grid 2 Columns - Column 2 Item */}
+                    <div >Loading</div>
+                </React.Fragment>
             );
         } else if ( this.state.experiments ) {
+
             experimentsListSection = (
+
                 <ExperimentList 
-                        experiments={ this.state.experiments } 
-                        experimentNameClicked={ this._experimentNameClicked_BindThis }
-                        experimentEditClicked={ this._experimentEditClicked_BindThis }
-                        experimentCloneClicked={ this._experimentCloneClicked_BindThis }
-                        experimentDeleteClicked={ this._experimentDeleteClicked_BindThis }
-                    />
+                    experiments={ this.state.experiments } 
+                    experimentNameClicked={ this._experimentNameClicked_BindThis }
+                    experimentEditClicked={ this._experimentEditClicked_BindThis }
+                    experimentCloneClicked={ this._experimentCloneClicked_BindThis }
+                    experimentDeleteClicked={ this._experimentDeleteClicked_BindThis }
+                    projectIdentifierFromURL={ this.props.projectIdentifierFromURL }
+                />
             );
         } else {
-            experimentsListSection = (
-                <div >No Experiments</div>
+            experimentsListSection = ( // No Experiments
+
+                <React.Fragment>
+                    {/* CSS Grid 2 Columns - Column 1 Item */}
+                    <div ></div>
+                    {/* CSS Grid 2 Columns - Column 2 Item */}
+
+                    <div >No Experiments</div>
+
+                </React.Fragment>
             );
         }
 
-        const experimentsListSectionContainer = (
-            <div style={ { marginTop : 10 } }>
-                { experimentsListSection }
-            </div>
-        )
+        let experimentsListSection_Draft_NonDraft : JSX.Element = undefined;
+        if ( draftExperiments || experimentsNonDraft_Label || experimentsListSection ) {
+
+            experimentsListSection_Draft_NonDraft = (
+
+                <div style={ {
+                    display: "grid", gridTemplateColumns: "min-content auto",
+                    marginTop: 10
+                } }>
+
+                    { draftExperiments }
+                    { experimentsNonDraft_Label }
+                    { experimentsListSection }
+                </div>
+            )
+        }
 
         return (
             <div >
-                { createNewExperimentButton }
-                { draftExperiments }
-                { experimentsNonDraft_Label }
-                { experimentsListSectionContainer }
+                { createNewExperimentButton_WithContainingDiv }
+                { experimentsListSection_Draft_NonDraft }
             </div>
         );
     }
@@ -393,20 +480,26 @@ interface ExperimentDraftList_Props {
 
     draftExperiments
     experimentDraftNameClicked
+    experimentDraftEditClicked
     experimentDraftDeleteClicked
+}
+
+interface ExperimentDraftList_State {
+
+    _placeholder
 }
 
 /**
  * 
  */
-class ExperimentDraftList extends React.Component< ExperimentDraftList_Props, {} > {
+class ExperimentDraftList extends React.Component< ExperimentDraftList_Props, ExperimentDraftList_State > {
 
     constructor(props : ExperimentDraftList_Props) {
         super(props);
 
-        this.state = {
+        // this.state = {
             
-        };
+        // };
     }
 
     /**
@@ -424,6 +517,7 @@ class ExperimentDraftList extends React.Component< ExperimentDraftList_Props, {}
                         key={ index } 
                         experiment={ experiment } 
                         experimentDraftNameClicked={ this.props.experimentDraftNameClicked } 
+                        experimentDraftEditClicked={ this.props.experimentDraftEditClicked }
                         experimentDraftDeleteClicked={ this.props.experimentDraftDeleteClicked }
                     />
                 )
@@ -447,12 +541,19 @@ interface ExperimentDraft_Props {
     
     experiment
     experimentDraftNameClicked
+    experimentDraftEditClicked
     experimentDraftDeleteClicked
+}
+
+interface ExperimentDraftList_State {
+
+    _placeholder
 }
 
 class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
 
-    private _experimentDraftNameClicked_BindThis = this._experimentDraftNameClicked.bind(this);
+    // private _experimentDraftNameClicked_BindThis = this._experimentDraftNameClicked.bind(this);
+    private _experimentDraftEditClicked_BindThis = this._experimentDraftEditClicked.bind(this);
     private _experimentDraftDeleteClicked_BindThis = this._experimentDraftDeleteClicked.bind(this);
 
 
@@ -464,10 +565,16 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
         };
     }
 
-    _experimentDraftNameClicked( event ) {
+    // _experimentDraftNameClicked( event ) {
+    //     event.stopPropagation();
+
+    //     this.props.experimentDraftNameClicked({ id : this.props.experiment.id });
+    // }
+
+    _experimentDraftEditClicked( event ) {
         event.stopPropagation();
 
-        this.props.experimentDraftNameClicked({ id : this.props.experiment.id });
+        this.props.experimentDraftEditClicked({ id : this.props.experiment.id });
     }
 
     _experimentDraftDeleteClicked( event ) {
@@ -490,15 +597,15 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
         let editIcon = undefined;
 
         if ( this.props.experiment.canEdit ) {
-            name_title = "Click to Edit Experiment"
-            name_className += " fake-link ";
-            name_onClick = this._experimentDraftNameClicked_BindThis;
+            // name_title = "Click to Edit Experiment"  //  Now show/hide Experiment details (Not on Draft)
+            // name_className += " fake-link ";
+            // name_onClick = this._experimentDraftNameClicked_BindThis;
 
             editIcon = (
                 <React.Fragment>
                     <span > </span>
                     <img className=" fake-link-image icon-small " title="Edit Experiment" src="static/images/icon-edit.png"
-                        onClick={ this._experimentDraftNameClicked_BindThis }
+                        onClick={ this._experimentDraftEditClicked_BindThis }
                     ></img>
                 </React.Fragment>
             );
@@ -517,13 +624,18 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
         }
 
         return (
-            <div style={ { marginBottom: 5 } }>
-                <span className={ name_className } onClick={ name_onClick } title={ name_title }>
-                    { this.props.experiment.name }
-                </span>
-                { editIcon }
-                { deleteIcon }
-            </div>
+            <React.Fragment>
+                {/* CSS Grid 2 Columns - Column 1 Item */}
+                <div ></div>
+                {/* CSS Grid 2 Columns - Column 2 Item */}
+                <div style={ { marginBottom: 5 } }>
+                    <span className={ name_className } onClick={ name_onClick } title={ name_title }>
+                        { this.props.experiment.name }
+                    </span>
+                    { editIcon }
+                    { deleteIcon }
+                </div>
+            </React.Fragment>
         );
     }
 
@@ -539,19 +651,26 @@ interface ExperimentList_Props {
     experimentEditClicked
     experimentCloneClicked
     experimentDeleteClicked
+
+    projectIdentifierFromURL
+}
+
+interface ExperimentList_State {
+
+    _placeholder
 }
 
 /**
  * 
  */
-class ExperimentList extends React.Component< ExperimentList_Props, {} > {
+class ExperimentList extends React.Component< ExperimentList_Props, ExperimentList_State > {
 
     constructor(props : ExperimentList_Props) {
         super(props);
 
-        this.state = {
+        // this.state = {
             
-        };
+        // };
     }
 
     /**
@@ -572,6 +691,8 @@ class ExperimentList extends React.Component< ExperimentList_Props, {} > {
                         experimentEditClicked={ this.props.experimentEditClicked }
                         experimentCloneClicked={ this.props.experimentCloneClicked }
                         experimentDeleteClicked={ this.props.experimentDeleteClicked }
+
+                        projectIdentifierFromURL={ this.props.projectIdentifierFromURL }
                     />
                 )
                 experiments_Components.push( experiment_Component );
@@ -580,9 +701,9 @@ class ExperimentList extends React.Component< ExperimentList_Props, {} > {
         }
 
         return (
-            <div >
+            <React.Fragment>
                 { experiments_Components }
-            </div>
+            </React.Fragment>
         );
     }
 
@@ -597,13 +718,23 @@ interface Experiment_Props {
     experimentEditClicked
     experimentCloneClicked
     experimentDeleteClicked
+
+    projectIdentifierFromURL
+}
+
+interface Experiment_State {
+    
+    showExperimentDetails? : boolean
+
+    prev_experiment?;
 }
 
 /**
  * 
  */
-class Experiment extends React.Component< Experiment_Props, {} > {
+class Experiment extends React.Component< Experiment_Props, Experiment_State > {
 
+    private _experimentShowDetailsClicked_BindThis = this._experimentShowDetailsClicked.bind(this);
     private _experimentNameClicked_BindThis = this._experimentNameClicked.bind(this);
     private _experimentEditClicked_BindThis = this._experimentEditClicked.bind(this);
     private _experimentCloneClicked_BindThis = this._experimentCloneClicked.bind(this);
@@ -614,31 +745,83 @@ class Experiment extends React.Component< Experiment_Props, {} > {
         super(props);
 
         this.state = {
-            
+            showExperimentDetails : false,
+            prev_experiment : props.experiment
         };
     }
 
-    _experimentNameClicked( event ) {
-        event.stopPropagation();
+    
+    /**
+     * 
+     * Must be Static
+     * Called before 
+     *   Initial render: 'render()'
+     *   Rerender : 'shouldComponentUpdate()'
+     * 
+     * Return new state (like return from setState(callback)) or null
+     */
+    static getDerivedStateFromProps( props : Experiment_Props, state : Experiment_State ) : Experiment_State {
 
-        if ( this.props.experimentNameClicked ) {
-            this.props.experimentNameClicked({ id : this.props.experiment.id });
+        // console.log("Experiment::getDerivedStateFromProps() called")
+        
+        if ( state.prev_experiment !== props.experiment ) {
+            
+            return {
+                showExperimentDetails : false,
+                prev_experiment : props.experiment
+            };
         }
+
+        return null;  //
     }
 
-    _experimentEditClicked( event ) {
+
+    _experimentShowDetailsClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
+        event.stopPropagation();
+
+        this.setState( ( state: Experiment_State , props: Readonly<Experiment_Props> ) : Experiment_State => {
+            return { 
+                showExperimentDetails : true 
+            }
+        })
+    }
+
+
+    _experimentNameClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
+        event.stopPropagation();
+
+		{
+			//  Exit if user selected content on the page
+			const selectedContent = window.getSelection().toString();
+			if( selectedContent ){
+				//  user selected content on the page
+				return false; //  EARLY RETURN
+			}
+		}
+		
+        this.setState( ( state: Experiment_State , props: Readonly<Experiment_Props> ) : Experiment_State => {
+            return { 
+                showExperimentDetails : ! state.showExperimentDetails 
+            }
+        })
+        // if ( this.props.experimentNameClicked ) {
+        //     this.props.experimentNameClicked({ id : this.props.experiment.id });
+        // }
+    }
+
+    _experimentEditClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
         event.stopPropagation();
 
         this.props.experimentEditClicked({ id : this.props.experiment.id });
     }
 
-    _experimentCloneClicked( event ) {
+    _experimentCloneClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
         event.stopPropagation();
 
         this.props.experimentCloneClicked({ id : this.props.experiment.id });
     }
 
-    _experimentDeleteClicked( event ) {
+    _experimentDeleteClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
         event.stopPropagation();
 
         this.props.experimentDeleteClicked({ id : this.props.experiment.id, name :  this.props.experiment.name });
@@ -657,7 +840,7 @@ class Experiment extends React.Component< Experiment_Props, {} > {
         let cloneIcon : JSX.Element = undefined;
 
         if ( this.props.experiment.canEdit && this.props.experimentEditClicked ) {
-            name_title = "Click to Edit Experiment"
+            // name_title = "Click to Edit Experiment"  //  Now show/hide Experiment details (Not on Draft)
             name_className += " fake-link ";
             name_onClick = this._experimentNameClicked_BindThis;
 
@@ -678,7 +861,7 @@ class Experiment extends React.Component< Experiment_Props, {} > {
                     <span > </span>
                     <span className=" fake-link " title="Clone Experiment" 
                         onClick={ this._experimentCloneClicked_BindThis }
-                    >clone experiment</span>
+                    >[clone experiment]</span>
                     {/* <img className=" fake-link-image icon-small " title="Clone Experiment" src="static/images/icon-edit.png"
                         onClick={ this._experimentCloneClicked_BindThis }
                     ></img> */}
@@ -700,21 +883,70 @@ class Experiment extends React.Component< Experiment_Props, {} > {
 
         const proteinLink = "d/pg/exp/protein/e/" + this.props.experiment.id + "/r";
 
-        return (
-            <div >
-                <div className=" hovered-div-highlight ">
-                    <div style={ { float: "right", paddingLeft: 10 } }>
-                        <a href={ proteinLink }>[Proteins]</a>
-                        { deleteIcon }
-                    </div>
-                    <span className={ name_className } onClick={ name_onClick } title={ name_title }>
-                        { this.props.experiment.name }
-                    </span>
-                    { editIcon }
-                    { cloneIcon }
+        const pointerRightOrDownOnClick = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) : void => {
+            this.setState( ( state: Experiment_State , props: Readonly<Experiment_Props> ) : Experiment_State => {
+                return { showExperimentDetails : ! state.showExperimentDetails }
+            })
+        }
+
+        //  Experiment Details:
+
+        let expandCollapsePointerIcon : JSX.Element = undefined;
+
+        let experimentDetailsComponentContainer : JSX.Element = undefined;
+
+        if ( ! this.state.showExperimentDetails ) {
+
+            //  NO: showing Experiment Details 
+
+            expandCollapsePointerIcon = (
+                <img className="icon-small fake-link " src="static/images/pointer-right.png"
+                    onClick={ this._experimentShowDetailsClicked_BindThis }
+                />
+            );
+        } else {
+
+            //  YES: showing Experiment Details 
+
+            expandCollapsePointerIcon = (
+                <img className="icon-small fake-link " src="static/images/pointer-down.png"
+                    onClick={ pointerRightOrDownOnClick }
+                />
+            );
+
+            experimentDetailsComponentContainer = (
+                <div >
+                    <ProjectPage_ExperimentsList_SingleExperimentDetails
+                        experimentItemFromExperimentList={ this.props.experiment }
+                        projectIdentifierFromURL={ this.props.projectIdentifierFromURL }
+                    />
                 </div>
-                <div style={ { marginTop: 7, marginBottom: 8 } } className="searches-block-item-bottom-border"></div>
-            </div>
+            );
+        }
+
+        return (
+            <React.Fragment>
+                {/* CSS Grid 2 Columns - Column 1 Item */}
+                <div className=" pointer-right-down-icon-small-container ">
+                    { expandCollapsePointerIcon }
+                </div>
+                {/* CSS Grid 2 Columns - Column 2 Item */}
+                <div >
+                    <div className=" hovered-div-highlight ">
+                        <div style={ { float: "right", paddingLeft: 10 } }>
+                            <a href={ proteinLink }>[Proteins]</a>
+                            { deleteIcon }
+                        </div>
+                        <span className={ name_className } onClick={ name_onClick } title={ name_title }>
+                            { this.props.experiment.name }
+                        </span>
+                        { editIcon }
+                        { cloneIcon }
+                    </div>
+                    { experimentDetailsComponentContainer }
+                    <div style={ { marginTop: 7, marginBottom: 8 } } className="searches-block-item-bottom-border"></div>
+                </div>
+            </React.Fragment>
         );
     }
 
@@ -725,6 +957,42 @@ class Experiment extends React.Component< Experiment_Props, {} > {
 ////////////////////////////
 
 //  Functions NOT in a class
+
+const _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall = ({ projectIdentifierFromURL }) => {
+
+    return new Promise( (resolve, reject) => {
+        try {
+            const requestObj = {
+                projectIdentifier : projectIdentifierFromURL
+            };
+            
+            const url = "d/rws/for-page/project-has-at-least-one-active-search";
+
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+
+            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    resolve({ responseData });
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({
+                        errorException : e
+                    });
+                    throw e;
+                }
+            });
+        } catch (e) {
+            reportWebErrorToServer.reportErrorObjectToServer({
+                errorException : e
+            });
+            throw e;
+        }
+    });
+}
+
 
 
 /**

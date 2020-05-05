@@ -1,7 +1,7 @@
 /**
  * generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_CreateListData.ts
  * 
- * Get Peptide List for Data Table - For Last Condition Group
+ * Get Peptide List for Data Table - For Last Condition Group Shown (Which is the First Condition Group)
  * 
  */
 
@@ -62,7 +62,7 @@ const dataTableId_ThisTable = "Single Protein Peptide List Last Condition Group 
 /**
  * Result from createReportedPeptideDisplayData call
  */
-export class GetDataTableDataObjects_Result {
+export class GetDataTableDataObjects_Result_Last_ConditionGroup {
     dataTable_RootTableObject : DataTable_RootTableObject;
 }
 
@@ -71,21 +71,22 @@ export class GetDataTableDataObjects_Result {
  * 
  * Reported Peptide List Data Table Root
  */
-export const createReportedPeptideDisplayData_DataTableDataObjects = function( { 
+export const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup = function( { 
     
     forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
 
 } : {
     forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter : ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter,
 
-} ) : GetDataTableDataObjects_Result {
+} ) : GetDataTableDataObjects_Result_Last_ConditionGroup {
 
-    const getDataTableDataObjects_Result = new GetDataTableDataObjects_Result();
+    const getDataTableDataObjects_Result = new GetDataTableDataObjects_Result_Last_ConditionGroup();
 
     //  Row in Top Level table that this is under (direct or indirect)
     const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
 
-    //  Empty array if at top group
+    //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
+    //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
     const conditionIds_ParentPath : Array<number> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionIds_ParentPath;
 
     const conditionGroupsContainer : Experiment_ConditionGroupsContainer = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsContainer;
@@ -101,11 +102,11 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
 
     const conditionGroups = conditionGroupsContainer.conditionGroups;
 
-    //  Validate that at bottom Condition Group
+    //  Validate that at bottom Condition Group Shown
 
     if ( conditionIds_ParentPath.length !== ( conditionGroups.length - 1 ) ) {
         const msg = ( 
-            "Not at 'Last Condition Group' when pass data to ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent:  conditionIds_ParentPath.length !== ( conditionGroups.length - 1 ). conditionIds_ParentPath.length: " 
+            "Not at 'Last Condition Group Shown' when pass data to ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent:  conditionIds_ParentPath.length !== ( conditionGroups.length - 1 ). conditionIds_ParentPath.length: " 
             + conditionIds_ParentPath.length
             + ", conditionGroups.length: "
             + conditionGroups.length
@@ -114,15 +115,15 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
         throw Error( msg );
     }
 
-    const last_conditionGroup = conditionGroups[ conditionGroups.length - 1 ];
+    const current_conditionGroup = conditionGroups[ 0 ];
 
     //  Accumulate by conditionIds_ParentPath each condition.id
 
     const projectSearchIds_By_conditionId = new Map<number,Set<number>>();
 
-    const last_id_ConditionGroup = last_conditionGroup.id;
+    const current_id_ConditionGroup = current_conditionGroup.id;
 
-    const last_conditionGroup_Conditions = last_conditionGroup.conditions;
+    const current_conditionGroup_Conditions = current_conditionGroup.conditions;
 
 
     const processAllDataEntries_Callback = ( params : ProcessAllDataEntries_callback_Param ) => {
@@ -144,7 +145,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
             return; //  EARLY RETURN
         }
 
-        let condition_id_For_last_ConditionGroup = undefined;
+        let condition_id_For_current_ConditionGroup = undefined;
 
         const conditionIds_Path = params.conditionIds_Path;
 
@@ -175,26 +176,26 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
         }
 
         for ( const conditionIds_Path_Entry of conditionIds_Path ) {
-            for ( const condition of last_conditionGroup_Conditions ) {
+            for ( const condition of current_conditionGroup_Conditions ) {
                 if ( conditionIds_Path_Entry === condition.id ) {
-                    condition_id_For_last_ConditionGroup = conditionIds_Path_Entry;
+                    condition_id_For_current_ConditionGroup = conditionIds_Path_Entry;
                     break;
                 }
             }
-            if ( condition_id_For_last_ConditionGroup !== undefined ) {
+            if ( condition_id_For_current_ConditionGroup !== undefined ) {
                 break;
             }
         }
-        if ( condition_id_For_last_ConditionGroup === undefined ) {
-            const msg = "No entry found in conditionIds_Path for condtions in last_id_ConditionGroup: " + last_id_ConditionGroup;
+        if ( condition_id_For_current_ConditionGroup === undefined ) {
+            const msg = "No entry found in conditionIds_Path for condtions in current_id_ConditionGroup: " + current_id_ConditionGroup;
             console.warn( msg );
             throw Error( msg );
         }
 
-        let projectSearchIds_For_conditionId = projectSearchIds_By_conditionId.get( condition_id_For_last_ConditionGroup );
+        let projectSearchIds_For_conditionId = projectSearchIds_By_conditionId.get( condition_id_For_current_ConditionGroup );
         if ( ! projectSearchIds_For_conditionId ) {
             projectSearchIds_For_conditionId = new Set<number>();
-            projectSearchIds_By_conditionId.set( condition_id_For_last_ConditionGroup, projectSearchIds_For_conditionId );
+            projectSearchIds_By_conditionId.set( condition_id_For_current_ConditionGroup, projectSearchIds_For_conditionId );
         }
 
         for ( const projectSearchId of projectSearchIds ) {
@@ -202,7 +203,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
         }
     }
 
-    conditionGroupsDataContainer.processAllDataEntries({ callback : processAllDataEntries_Callback });
+    conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
 
     ////////////////////
 
@@ -244,7 +245,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
     {
         let listCounter = 0;
 
-        for ( const condition of last_conditionGroup_Conditions ) {
+        for ( const condition of current_conditionGroup_Conditions ) {
             
             listCounter++;
 

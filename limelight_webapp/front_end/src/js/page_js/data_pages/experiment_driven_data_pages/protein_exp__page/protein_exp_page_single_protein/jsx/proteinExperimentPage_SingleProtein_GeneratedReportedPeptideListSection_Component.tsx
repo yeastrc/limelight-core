@@ -54,7 +54,7 @@ import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data
 
 import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from '../js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
-import { createReportedPeptideDisplayData_DataTableDataObjects, GetDataTableDataObjects_Result } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData';
+import { createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection, GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData';
 
 /**
  * 
@@ -303,7 +303,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
      */    
     render() {
 
-        const getDataTableDataObjects_Result : GetDataTableDataObjects_Result = createReportedPeptideDisplayData_DataTableDataObjects({ //  External Function
+        const getDataTableDataObjects_Result : GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result = createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection({ //  External Function
 
             create_GeneratedReportedPeptideListData_Result : this.props.create_GeneratedReportedPeptideListData_Result, 
 

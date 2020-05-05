@@ -35,7 +35,10 @@ import { ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows_Comp
 class ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter {
     
     createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry //  Row in Top Level table that this is under (direct or indirect)
-    conditionIds_ParentPath : Array<number>; //  Empty array if at top group
+    
+    //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
+    //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
+    conditionIds_ParentPath : Array<number>;
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
     conditionGroupsDataContainer : ConditionGroupsDataContainer

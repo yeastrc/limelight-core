@@ -83,7 +83,7 @@ const dataTableId_ThisTable = "Single Protein Peptide List Root Table";
 /**
  * Result from createReportedPeptideDisplayData call
  */
-export class GetDataTableDataObjects_Result {
+export class GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result {
     dataTable_RootTableObject : DataTable_RootTableObject;
 }
 
@@ -92,7 +92,7 @@ export class GetDataTableDataObjects_Result {
  * 
  * Reported Peptide List Data Table Root
  */
-export const createReportedPeptideDisplayData_DataTableDataObjects = function( { 
+export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection = function( { 
     
     create_GeneratedReportedPeptideListData_Result, 
     
@@ -122,9 +122,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
     dataPageStateManager : DataPageStateManager
 
-} ) : GetDataTableDataObjects_Result {
+} ) : GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result {
 
-    const getDataTableDataObjects_Result = new GetDataTableDataObjects_Result();
+    const getDataTableDataObjects_Result = new GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result();
 
     const peptideList : Array<CreateReportedPeptideDisplayData_Result_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
 
@@ -199,7 +199,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
         }
     }
 
-    conditionGroupsDataContainer.processAllDataEntries({ callback : processAllDataEntries_Callback });
+    conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
 
     /////////////
 

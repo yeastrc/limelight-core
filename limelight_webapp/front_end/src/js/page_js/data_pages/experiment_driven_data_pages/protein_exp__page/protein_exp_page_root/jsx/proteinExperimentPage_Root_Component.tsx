@@ -21,7 +21,8 @@ import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/
 
 import { SaveView_Create_Component_React_Type, SaveView_Create_Component_React_Result } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
 
-import { Experiment_SingleExperiment_ConditionsGraphicRepresentation } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
+import { ExperimentConditions_GraphicRepresentation_SelectedCells, create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass, ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_CallbackParams, ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections';
+import { Experiment_SingleExperiment_ConditionsGraphicRepresentation, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents, ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler, ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
 import { Experiment_ConditionGroupsContainer, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 import { create_experimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
@@ -32,6 +33,17 @@ import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/d
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
+import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
+import {SearchDetailsAndOtherFiltersOuterBlock_Layout} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
+import {SearchDetailsAndFilterBlock_MainPage_Root} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {
+    ProteinPage_ProteinGroupingFilterSelection_Component_Root,
+    ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
+    ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
+import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+
 
 /**
  * Used Externally
@@ -40,6 +52,7 @@ import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPage
 export interface ProteinExperimentPage_Root_Component_ProteinListData_Param {
 
     proteinCount : number
+    proteinGroupCount : number
     proteinListDataTable : DataTable_RootTableObject
 }
 
@@ -56,7 +69,14 @@ export interface ProteinExperimentPage_Root_Component_Props {
     projectSearchIds : Array<number>;
     experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData
     
+    experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+    proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
+
+
     experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
+
+    selectedConditionIdsUpdated_Callback
+    proteinGroup_SelectionValues_Changed_Callback
 }
 
 /**
@@ -65,10 +85,16 @@ export interface ProteinExperimentPage_Root_Component_Props {
 interface ProteinExperimentPage_Root_Component_State {
 
     proteinListData? : ProteinExperimentPage_Root_Component_ProteinListData_Param;
-    proteinListData_Loaded? : boolean;  // Has data been loaded
+    proteinListData_DisplayLoadedMessage? : boolean;  // Has data been loaded
+    proteinList_Updating? : boolean;    // Updating Protein List
 
     saveView_Component_React? //  React Component for Save View
     saveView_Component_Props_Prop? //  Object passed to saveView_Component_React as property propsValue
+
+    //  Selected cells in Experiment_SingleExperiment_ConditionsGraphicRepresentation
+    graphicRepresentation_SelectedCells? : ExperimentConditions_GraphicRepresentation_SelectedCells
+
+    proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue? : ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue
 }
 
 /**
@@ -77,7 +103,22 @@ interface ProteinExperimentPage_Root_Component_State {
 export class ProteinExperimentPage_Root_Component extends React.Component< ProteinExperimentPage_Root_Component_Props, ProteinExperimentPage_Root_Component_State > {
 
     //  bind to 'this' for passing as parameters
+
+    //  For class methods that are '.bind(this)' and cast to a function type:
+    //     Add a cast to same function type without the '.bind(this)' in the constructor to local variable to validate that the local function properly implements the function type
+    //        (missing or mis-typed parameters will error.  extra properties in a object in the parameters will not error)
+
+    private _proteinGroup_SelectionValues_Changed_Callback_BindThis = this._proteinGroup_SelectionValues_Changed_Callback.bind(this);
+    private _CAST_TEST_ONLY_proteinGroup_SelectionValues_Changed_Callback : ( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) => void = this._proteinGroup_SelectionValues_Changed_Callback;
+
+    private _selectedConditionsChanged_Callback_BindThis : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition = this._selectedConditionsChanged_Callback.bind(this);
+    private _CAST_TEST_ONLY_selectedConditionsChanged_Callback : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition = this._selectedConditionsChanged_Callback;
+
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
+    private _CAST_TEST_ONLY_mainCell_getHoverContents : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = this._mainCell_getHoverContents;
+
+
+    //  bind to 'this' for passing as parameters
 
     /**
      * 
@@ -102,26 +143,122 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
                 saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
             }
         }
+        
+        //  Set object used by Experiment_SingleExperiment_ConditionsGraphicRepresentation
 
-        this.state = { proteinListData : null, proteinListData_Loaded : false, saveView_Component_React, saveView_Component_Props_Prop };
+        const graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells = (
+            create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ // External Function
+
+                //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells_IF
+                // Will be Updated for changes in Selected Conditions
+                experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this.props.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                conditionGroupsContainer : this.props.conditionGroupsContainer,
+                selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis
+            })
+        );
+
+
+        const proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue = new ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue({
+            displayOnly : false,
+            proteinGrouping_CentralStateManagerObjectClass : this.props.proteinGrouping_CentralStateManagerObjectClass,
+            filterValuesChanged_Callback : this._proteinGroup_SelectionValues_Changed_Callback_BindThis
+        })
+
+        //  In filterValuesChanged_Callback:
+        //     create new object of ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue and put back in page
+        //      Trigger update to load additional data for Protein Grouping if needed. proteinListData_DisplayLoadedMessage as needed.
+        //     after setTimeout, update proteinListData, proteinList_Updating : true,
+
+        this.state = { 
+            proteinListData : null, 
+            proteinListData_DisplayLoadedMessage : false, 
+            proteinList_Updating : false,
+            graphicRepresentation_SelectedCells,
+            proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
+            saveView_Component_React, 
+            saveView_Component_Props_Prop
+         };
     }
 
     /**
-     * 
+     * Called for updates to graphicRepresentation_SelectedCells from close of Single Protein
+     */
+    rebuild_graphicRepresentation_SelectedCells() {
+
+        const graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells = (
+            create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ // External Function
+
+                //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells_IF
+                // Will be Updated for changes in Selected Conditions
+                experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this.props.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                conditionGroupsContainer : this.props.conditionGroupsContainer,
+                selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis
+            })
+        );
+
+        this.setState( (state: ProteinExperimentPage_Root_Component_State, props: ProteinExperimentPage_Root_Component_Props ) : ProteinExperimentPage_Root_Component_State => {
+
+            return { graphicRepresentation_SelectedCells };
+        });
+    }
+
+
+    /**
+     * Called to clear proteinListData since loading new data
+     */
+    clear_proteinListDataTable() : void {
+
+        this.setState((state: ProteinExperimentPage_Root_Component_State, props: ProteinExperimentPage_Root_Component_Props): ProteinExperimentPage_Root_Component_State => {
+
+            return {proteinListData: null, proteinListData_DisplayLoadedMessage: false};
+        });
+    }
+
+    /**
+     * Called for initial setting of proteinListData and for changes based on changed filtering (selection on experiment graphic and maybe change search filtering in future)
      */    
     set_proteinListDataTable({ proteinListData } : { proteinListData : ProteinExperimentPage_Root_Component_ProteinListData_Param }) {
         
         this.setState( (state: ProteinExperimentPage_Root_Component_State, props: ProteinExperimentPage_Root_Component_Props ) : ProteinExperimentPage_Root_Component_State => {
 
-            return { proteinListData_Loaded : true };
+            return { proteinListData_DisplayLoadedMessage : true };
         });
+        if (  this.state.proteinListData && ( this.state.proteinListData.proteinCount > 20 || proteinListData.proteinCount > 20 ) ) {
+            // Have existing protein list so display "Updating List" message
+
+            this.setState( (state: ProteinExperimentPage_Root_Component_State, props: ProteinExperimentPage_Root_Component_Props ) : ProteinExperimentPage_Root_Component_State => {
+
+                return { proteinList_Updating : true };
+            });
+        }
 
         window.setTimeout( ( ) => {
             this.setState( (state: ProteinExperimentPage_Root_Component_State, props: ProteinExperimentPage_Root_Component_Props ) : ProteinExperimentPage_Root_Component_State => {
 
-                return { proteinListData, proteinListData_Loaded : false };
+                return { proteinListData, proteinListData_DisplayLoadedMessage : false, proteinList_Updating : false };
             });
         }, 10)
+    }
+
+    /**
+     *
+     */
+    private _proteinGroup_SelectionValues_Changed_Callback( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) {
+
+        const proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue = new ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue({
+            displayOnly : false,
+            proteinGrouping_CentralStateManagerObjectClass : this.props.proteinGrouping_CentralStateManagerObjectClass,
+            filterValuesChanged_Callback : this._proteinGroup_SelectionValues_Changed_Callback_BindThis
+        })
+
+        this.setState((state: ProteinExperimentPage_Root_Component_State, props: ProteinExperimentPage_Root_Component_Props): ProteinExperimentPage_Root_Component_State => {
+
+            return { proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue };
+        });
+
+        // Update rest of page with new values
+
+        this.props.proteinGroup_SelectionValues_Changed_Callback( params );
     }
 
     /**
@@ -138,9 +275,73 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
 
     /**
      * 
-     */    
-    _mainCell_getHoverContents({ conditionIdPath } : { conditionIdPath : Array<number> }) {
+     */
+    // componentDidUpdate() {
 
+
+    // }
+
+    /**
+     * 
+     */
+    // _conditionCellClickHandler( params : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params ) {
+
+        // const event : React.MouseEvent<HTMLElement, MouseEvent> = params.event;
+        // const condition_Id : number = params.condition_Id
+        // const conditionGroup_Id : number = params.conditionGroup_Id;
+        // // entryCell_onMouseLeaveHandler : ({ event } : { event : React.MouseEvent<HTMLElement, MouseEvent> }) => void
+
+        // //  Update Page State Object
+
+        // let selectedConditionIds = this.props.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.get_selectedConditionIds();
+        // if ( ! selectedConditionIds ) {
+        //     selectedConditionIds = new Set();
+        // }
+
+        // if ( event.metaKey || event.ctrlKey ) {
+        //     if ( selectedConditionIds.has( condition_Id ) ) {
+        //         selectedConditionIds.delete( condition_Id );
+        //     } else {
+        //         selectedConditionIds.add( condition_Id );
+        //     }
+        // } else {
+        //     selectedConditionIds.clear();
+        //     selectedConditionIds.add( condition_Id );
+        // }
+
+        // this.props.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.set_selectedConditionIds( selectedConditionIds );
+
+        // //  Update object used by Experiment_SingleExperiment_ConditionsGraphicRepresentation
+
+        // let graphicRepresentation_SelectedCells_Local : ExperimentConditions_GraphicRepresentation_SelectedCells_IF = undefined;
+        // if ( this.state.graphicRepresentation_SelectedCells ) {
+
+        //     graphicRepresentation_SelectedCells_Local = this.state.graphicRepresentation_SelectedCells.shallowClone();
+        // } else {
+        //     graphicRepresentation_SelectedCells_Local = new ExperimentConditions_GraphicRepresentation_SelectedCells_IF();
+        // }
+
+        // graphicRepresentation_SelectedCells_Local.set_Selection_ConditionIds( selectedConditionIds );
+
+        // this.setState({ graphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells_Local });
+
+    /**
+     * 
+     */
+    _selectedConditionsChanged_Callback( params : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_CallbackParams ) : void {
+
+        // Trigger update of protein list
+
+        this.props.selectedConditionIdsUpdated_Callback();
+    }
+
+    /**
+     * 
+     */    
+    _mainCell_getHoverContents( params : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params ) {
+
+        const conditionIdPath = params.conditionIdPath;
+        
         const conditionGroupsContainer = this.props.conditionGroupsContainer;
         const conditionGroupsDataContainer = this.props.conditionGroupsDataContainer;
         const searchNamesMap_KeyProjectSearchId = this.props.searchNamesMap_KeyProjectSearchId;
@@ -185,30 +386,72 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
 
                     </React.Fragment>
                 )
-                
-
             }
+            {
+                let proteinData_LoadingCover : JSX.Element = undefined;
 
-            const proteinListData = this.state.proteinListData;
+                if ( this.state.proteinList_Updating ) {
 
-            const proteinCount = proteinListData.proteinCount;
-            const proteinListDataTable = proteinListData.proteinListDataTable;
+                    // Overlay Protein Count and List with "Updating" message
 
-            proteinData = (
+                    proteinData_LoadingCover = (
 
-                <div >
-                    <div style={ { marginBottom: 10 } }>
-                        <span >Protein Count: </span>
-                        <span >{ proteinCount }</span>
+                        <div className=" block-updating-overlay-container " >
+                            Updating Protein List
+                        </div>
+                    )
+                }
+
+                const proteinListData = this.state.proteinListData;
+
+                const proteinCount = proteinListData.proteinCount;
+                const proteinGroupCount = proteinListData.proteinGroupCount;
+                const proteinListDataTable = proteinListData.proteinListDataTable;
+
+                let proteinCount_String = proteinCount.toString();
+                try {
+                    proteinCount_String = proteinCount.toLocaleString();
+                } catch(e) {
+
+                }
+
+                let proteinGroupCount_String = undefined;
+                if ( proteinGroupCount ) {
+                    proteinGroupCount_String = proteinGroupCount.toString();
+                    try {
+                        proteinGroupCount_String = proteinGroupCount.toLocaleString();
+                    } catch(e) {
+
+                    }
+                }
+
+                proteinData = (
+
+                    <div >
+                        <div style={ { position : "relative", display: "inline-block" } }> {/* display: "inline-block"  so overlay message only as wide as table */}
+                            <div style={ { marginBottom: 10 } }>
+                                { ( proteinGroupCount_String ) ? (
+                                    <span style={ { paddingRight: 15, whiteSpace: "nowrap" } }>
+                                        <span>Protein Group Count: </span>
+                                        <span>{ proteinGroupCount_String }</span>
+                                    </span>
+                                ) : null }
+                                <span >Protein Count: </span>
+                                <span >{ proteinCount_String }</span>
+                            </div>
+
+                            <DataTable_TableRoot
+                                tableObject={ proteinListDataTable }
+                            />
+
+                            { proteinData_LoadingCover }
+                        </div>
+                        <br /> {/* since prev <div> is display: "inline-block" */}
                     </div>
+                );
+        }
 
-                    <DataTable_TableRoot
-                        tableObject={ proteinListDataTable }
-                    />
-                </div>
-            );
-
-        } else if ( this.state.proteinListData_Loaded ) {
+        } else if ( this.state.proteinListData_DisplayLoadedMessage ) {
 
             proteinData = (
                 <div >Loaded, Display Next</div>
@@ -229,12 +472,25 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
                     Experiment: <span id="experiment_name">{ this.props.experimentName }</span>
                 </h3>
 
-                <Experiment_SingleExperiment_ConditionsGraphicRepresentation 
-                    data={ this.props.experimentConditions_GraphicRepresentation_PropsData }
-                    conditionCellClickHandler={ undefined }
-                    mainCellClickHandler={ undefined }
-                    mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
-                />
+                <div>
+                    <Experiment_SingleExperiment_ConditionsGraphicRepresentation
+                        data={ this.props.experimentConditions_GraphicRepresentation_PropsData }
+                        selectedCells={ this.state.graphicRepresentation_SelectedCells }
+                        conditionGroupsContainer={ this.props.conditionGroupsContainer }
+                        manage_SelectedCells_ConditionCell_Selection_UserClick_Updates={ true }
+                        conditionCellClickHandler={ undefined /* this._conditionCellClickHandler_BindThis */ }
+                        mainCellClickHandler={ undefined }
+                        mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
+                    />
+                </div>
+
+                <div style={ { marginTop: 10 } }>
+                    <SearchDetailsAndOtherFiltersOuterBlock_Layout >
+                        <ProteinPage_ProteinGroupingFilterSelection_Component_Root
+                            propValue={ this.state.proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue }
+                        />
+                    </SearchDetailsAndOtherFiltersOuterBlock_Layout>
+                </div>
 
                 <div style={ { marginTop: 10 } }>
 

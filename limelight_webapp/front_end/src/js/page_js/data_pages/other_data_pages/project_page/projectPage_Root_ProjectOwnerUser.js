@@ -112,9 +112,9 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 		} );
 		
 		//  Comment out Experiment Code
-		//  this._projectPage_ExperimentsSection_AllUsersInteraction = new ProjectPage_ExperimentsSection_AllUsersInteraction( { 
+		//  this._projectPage_ExperimentsSection_AllUsersInteraction = new ProjectPage_ExperimentsSection_AllUsersInteraction( {
 		//  		projectIdentifierFromURL : this._projectIdentifierFromURL,
-		//  		projectPage_ExperimentsSection_LoggedInUsersInteraction : this._projectPage_ExperimentsSection_LoggedInUsersInteraction 
+		//  		projectPage_ExperimentsSection_LoggedInUsersInteraction : this._projectPage_ExperimentsSection_LoggedInUsersInteraction
 		//  } );
 
 

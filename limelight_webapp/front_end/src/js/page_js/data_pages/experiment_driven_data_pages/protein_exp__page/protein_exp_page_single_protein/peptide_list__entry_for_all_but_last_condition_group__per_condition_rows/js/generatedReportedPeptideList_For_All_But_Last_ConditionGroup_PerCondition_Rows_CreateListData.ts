@@ -1,7 +1,7 @@
 /**
  * generatedReportedPeptideList_For_All_But_Last_ConditionGroup_PerCondition_Rows_CreateListData.ts
  * 
- * Get Peptide List for Data Table - For All BUT Last Condition Group
+ * Get Peptide List for Data Table - For All BUT Last Condition Group Shown (Now  the LAST condition Group where conditions are listed is the FIRST Condition Group )
  * 
  * Experiment Protein Page: Single Protein: for Single Peptide in Peptide List, All BUT "Bottom condition Group" before show Searches
  * 
@@ -54,9 +54,9 @@ import {
 //  Child Data Searches for Single Peptide show/hide
 
 
-//  Used when Child is NOT Last Condition Group:  ...For_All_But_Last_ConditionGroup...
+//  Used when Child is NOT Last Condition Group Shown:  ...For_All_But_Last_ConditionGroup...
 
-//  Used when Child is Last Condition Group:  ...For_Last_ConditionGroup...
+//  Used when Child is Last Condition Group Shown:  ...For_Last_ConditionGroup...
 
 //  returns React Component to insert below current data row
 
@@ -79,7 +79,7 @@ const dataTableId_ThisTable = "Single Protein Peptide List Last Condition Group 
 /**
  * Result from createReportedPeptideDisplayData call
  */
-export class GetDataTableDataObjects_Result {
+export class GetDataTableDataObjects_All_But_Last_ConditionGroup_Result {
     dataTable_RootTableObject : DataTable_RootTableObject;
 }
 
@@ -88,21 +88,22 @@ export class GetDataTableDataObjects_Result {
  * 
  * Reported Peptide List Data Table Root
  */
-export const createReportedPeptideDisplayData_DataTableDataObjects = function( { 
+export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup = function( { 
     
     forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
 
 } : {
     forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter : ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter,
 
-} ) : GetDataTableDataObjects_Result {
+} ) : GetDataTableDataObjects_All_But_Last_ConditionGroup_Result {
 
-    const getDataTableDataObjects_Result = new GetDataTableDataObjects_Result();
+    const getDataTableDataObjects_Result = new GetDataTableDataObjects_All_But_Last_ConditionGroup_Result();
 
     //  Row in Top Level table that this is under (direct or indirect)
     const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
 
-    //  Empty array if at top group
+    //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
+    //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
     const conditionIds_ParentPath : Array<number> = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionIds_ParentPath;
 
     const conditionGroupsContainer : Experiment_ConditionGroupsContainer = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsContainer;
@@ -118,7 +119,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
 
     const conditionGroups = conditionGroupsContainer.conditionGroups;
 
-    //  Validate that NOT at bottom Condition Group
+    //  Validate that NOT at bottom Condition Group to Show (correct comparison since skip first Condition Group initially and show it last)
 
     if ( conditionIds_ParentPath.length === ( conditionGroups.length ) ) {
         const msg = ( 
@@ -131,12 +132,18 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
         throw Error( msg );
     }
 
+    const current_conditionGroup_Index = conditionIds_ParentPath.length + 1;  // Skipping over the first condition group as that will be shown last
 
-    const current_conditionGroup = conditionGroups[ conditionIds_ParentPath.length ];
+    const current_conditionGroup = conditionGroups[ current_conditionGroup_Index ];
+
+    const first_conditionGroup = conditionGroups[ 0 ];
+
 
     //  Accumulate by conditionIds_ParentPath each condition.id
 
-    const projectSearchIds_By_conditionId = new Map<number,Set<number>>();
+    //   Map< Current Condition Group: condition.id,Map< First Condition Group: condition.id,<Set<number>>>();
+
+    const projectSearchIds_By_conditionId_FirstConditionGroupConditionId = new Map<number,Map<number,Set<number>>>();
 
     const current_id_ConditionGroup = current_conditionGroup.id;
 
@@ -145,7 +152,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
 
     const processAllDataEntries_Callback = ( params : ProcessAllDataEntries_callback_Param ) => {
 
+        const conditionIds_Path = params.conditionIds_Path; //  Condition Ids in an order that should not be depended on
         const data = params.data
+
         const innerData = data.data;
       
         if ( ! innerData ) {
@@ -164,63 +173,100 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
 
         let condition_id_For_current_ConditionGroup = undefined;
 
-        const conditionIds_Path = params.conditionIds_Path;
+        {
+            //  If not contain conditionIds_ParentPath skip
 
-        //  If not contain conditionIds_ParentPath skip
+            if ( conditionIds_ParentPath && conditionIds_ParentPath.length > 0 ) {
 
-        if ( conditionIds_ParentPath && conditionIds_ParentPath.length > 0 ) {
+                //  Data to Process 'Current Path' (conditionIds_Path) must contain all entries in Display 'Parent Path' (conditionIds_ParentPath)
 
-            let foundAll = true;
+                let foundAll = true;
 
-            for ( const conditionIds_ParentPath_Entry of conditionIds_ParentPath ) {
-                let foundEntry = false;
-                for ( const conditionIds_Path_Entry of conditionIds_Path ) {
-                    if ( conditionIds_Path_Entry === conditionIds_ParentPath_Entry ) {
-                        foundEntry = true;
+                for ( const conditionIds_ParentPath_Entry of conditionIds_ParentPath ) {
+                    
+                    let foundEntry = false;
+
+                    for ( const conditionIds_Path_Entry of conditionIds_Path ) {
+                        if ( conditionIds_Path_Entry === conditionIds_ParentPath_Entry ) {
+                            foundEntry = true;
+                            break;
+                        }
+                    }
+                    if ( ! foundEntry ) {
+                        foundAll = false;
                         break;
                     }
                 }
-                if ( ! foundEntry ) {
-                    foundAll = false;
+                if ( ! foundAll ) {
+                    // not contain conditionIds_ParentPath so skip
+
+                    return;  // EARLY RETURN
+                }
+            }
+
+            for ( const conditionIds_Path_Entry of conditionIds_Path ) {
+                for ( const condition of current_conditionGroup_Conditions ) {
+                    if ( conditionIds_Path_Entry === condition.id ) {
+                        condition_id_For_current_ConditionGroup = conditionIds_Path_Entry;
+                        break;
+                    }
+                }
+                if ( condition_id_For_current_ConditionGroup !== undefined ) {
                     break;
                 }
             }
-            if ( ! foundAll ) {
-                // not contain conditionIds_ParentPath so skip
-
-                return;  // EARLY RETURN
+            if ( condition_id_For_current_ConditionGroup === undefined ) {
+                const msg = "No entry found in conditionIds_Path for condtions in current_id_ConditionGroup: " + current_id_ConditionGroup;
+                console.warn( msg );
+                throw Error( msg );
             }
         }
 
+        let projectSearchIds_For_conditionId = projectSearchIds_By_conditionId_FirstConditionGroupConditionId.get( condition_id_For_current_ConditionGroup );
+        if ( ! projectSearchIds_For_conditionId ) {
+            projectSearchIds_For_conditionId = new Map<number, Set<number>>();
+            projectSearchIds_By_conditionId_FirstConditionGroupConditionId.set( condition_id_For_current_ConditionGroup, projectSearchIds_For_conditionId );
+        }
+
+        //  Find correct condition in first condition group to add to:
+
+        let first_conditionGroup_conditionId : number = undefined;
+
         for ( const conditionIds_Path_Entry of conditionIds_Path ) {
-            for ( const condition of current_conditionGroup_Conditions ) {
-                if ( conditionIds_Path_Entry === condition.id ) {
-                    condition_id_For_current_ConditionGroup = conditionIds_Path_Entry;
+            for ( const first_conditionGroup_condition of first_conditionGroup.conditions ) {
+                if ( conditionIds_Path_Entry === first_conditionGroup_condition.id ) {
+                    first_conditionGroup_conditionId = conditionIds_Path_Entry;
                     break;
                 }
             }
-            if ( condition_id_For_current_ConditionGroup !== undefined ) {
+            if ( first_conditionGroup_conditionId !== undefined ) {
                 break;
             }
         }
-        if ( condition_id_For_current_ConditionGroup === undefined ) {
-            const msg = "No entry found in conditionIds_Path for condtions in current_id_ConditionGroup: " + current_id_ConditionGroup;
+        if ( first_conditionGroup_conditionId === undefined ) {
+            let errorMsg_conditionIds_PathString = "";
+            try {
+                const conditionIds_Path_Array = Array.from( conditionIds_Path );
+                errorMsg_conditionIds_PathString = "  conditionIds_Path: " + conditionIds_Path_Array.join(", ");
+            } catch(e) {}
+
+            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup: No entry in conditionIds_Path found in first_conditionGroup.conditions." + errorMsg_conditionIds_PathString;
             console.warn( msg );
             throw Error( msg );
         }
 
-        let projectSearchIds_For_conditionId = projectSearchIds_By_conditionId.get( condition_id_For_current_ConditionGroup );
-        if ( ! projectSearchIds_For_conditionId ) {
-            projectSearchIds_For_conditionId = new Set<number>();
-            projectSearchIds_By_conditionId.set( condition_id_For_current_ConditionGroup, projectSearchIds_For_conditionId );
+        let projectSearchIds_For_conditionId_first_conditionGroup_conditionId = projectSearchIds_For_conditionId.get( first_conditionGroup_conditionId );
+        if ( ! projectSearchIds_For_conditionId_first_conditionGroup_conditionId ) {
+            projectSearchIds_For_conditionId_first_conditionGroup_conditionId = new Set();
+            projectSearchIds_For_conditionId.set( first_conditionGroup_conditionId, projectSearchIds_For_conditionId_first_conditionGroup_conditionId );
         }
 
         for ( const projectSearchId of projectSearchIds ) {
-            projectSearchIds_For_conditionId.add( projectSearchId );
+            projectSearchIds_For_conditionId_first_conditionGroup_conditionId.add( projectSearchId );
         }
     }
 
-    conditionGroupsDataContainer.processAllDataEntries({ callback : processAllDataEntries_Callback });
+    conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
 
     ////////////////////
 
@@ -243,12 +289,12 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
         dataTable_Columns.push( dataTable_Column );
     }
 
-    //  PSM counts for each ...
-    // for ( const  of  ) {
-    {
+    //  PSM counts for each condition in first condition group
+    for ( const first_conditionGroup_condition of first_conditionGroup.conditions ) {
+        const first_conditionGroup_conditionId = first_conditionGroup_condition.id;
         const dataTable_Column = new DataTable_Column({
-            id : "psmCountTotal",
-            displayName : "PSM Count",
+            id : "psmCountTotal_" + first_conditionGroup_conditionId,
+            displayName : "PSM Count (" + first_conditionGroup_condition.label + ")",
             width : 70,
             sortable : true
         });
@@ -266,29 +312,53 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
             
             listCounter++;
 
+            const projectSearchIds_By_FirstConditionGroupConditionId = projectSearchIds_By_conditionId_FirstConditionGroupConditionId.get( condition.id );
+
+            if ( ! projectSearchIds_By_FirstConditionGroupConditionId ) {
+                //  No data for this condition.id
+
+                continue;  // EARLY CONTINUE
+            }
+
             const projectSearchIds_ThatHavePsmCountsGtZero : Array<number> = [];
 
-            //  Sum up PSM counts for condition
+            //  Sum up PSM counts for condition and First ConditionGroup Condition
 
-            let psmCountAll = 0;
+            const psmCount_TotalsPer_FirstConditionGroupConditionId : Map<number,number> = new Map();  //  Map< First ConditionGroup Condition.id, count>
+
             {
-                const projectSearchIds = projectSearchIds_By_conditionId.get( condition.id );
-                if ( projectSearchIds ) {
-                    for ( const projectSearchId of projectSearchIds ) {
-                        const psmCount = createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow.psmCountsMap_KeyProjectSearchId.get( projectSearchId );
-                        if ( psmCount ) {
-                            psmCountAll += psmCount;
+                let psmCount_ForRow = 0;
 
-                        //  Data for child tables
-                            projectSearchIds_ThatHavePsmCountsGtZero.push( projectSearchId );
+                for (const first_conditionGroup_condition of first_conditionGroup.conditions) {
+                    const first_conditionGroup_conditionId = first_conditionGroup_condition.id;
+
+                    let psmCount_For_first_conditionGroup_condition_Entry = 0;
+
+                    const projectSearchIds = projectSearchIds_By_FirstConditionGroupConditionId.get(first_conditionGroup_conditionId);
+                    if (projectSearchIds) {
+
+                        for (const projectSearchId of projectSearchIds) {
+                            
+                            const psmCount = createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow.psmCountsMap_KeyProjectSearchId.get(projectSearchId);
+                            if (psmCount) {
+
+                                psmCount_For_first_conditionGroup_condition_Entry += psmCount;
+
+                                //  Data for child tables
+                                projectSearchIds_ThatHavePsmCountsGtZero.push(projectSearchId);
+
+                                psmCount_ForRow += psmCount;
+                            }
                         }
                     }
-                }
-            }
-            if ( psmCountAll === 0 ) {
-                //  No PSMs so skip this row
 
-                continue; //  EARLY CONTINUE
+                    psmCount_TotalsPer_FirstConditionGroupConditionId.set(first_conditionGroup_conditionId, psmCount_For_first_conditionGroup_condition_Entry);
+                }
+                if ( psmCount_ForRow === 0 ) {
+                    //  No PSMs for the row so skip this row
+
+                    continue; //  EARLY CONTINUE
+                }
             }
 
             const dataTable_DataRow_ColumnEntries : Array<DataTable_DataRow_ColumnEntry> = [];
@@ -301,7 +371,16 @@ export const createReportedPeptideDisplayData_DataTableDataObjects = function( {
                 });
                 dataTable_DataRow_ColumnEntries.push( dataTable_DataRow_ColumnEntry );
             }
-            {
+            
+            //  PSM counts for each condition in first condition group
+            for ( const first_conditionGroup_condition of first_conditionGroup.conditions ) {
+                const first_conditionGroup_conditionId = first_conditionGroup_condition.id;
+
+                let psmCountAll = psmCount_TotalsPer_FirstConditionGroupConditionId.get( first_conditionGroup_conditionId );
+                if ( ! psmCountAll ) {
+                    psmCountAll = 0;
+                }
+
                 const psmCountDisplay = psmCountAll.toLocaleString();
 
                 const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({

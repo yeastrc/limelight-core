@@ -68,6 +68,10 @@
         }
 
         div.table-row-group-outer-container { // Table Group Outer Container for a group of Data Rows
+
+            // If CSS Class 'table-row-group-outer-container' is changed to 'display: inline-block'
+            //       Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line 
+
             position: relative;
             padding-left: $table-group-border-or-filler;
             padding-right: $table-group-border-or-filler;
@@ -150,7 +154,10 @@
         
         //  Data Rows - Either all or in a group
 
-        div.data-table-data-rows-outer-containing-div {
+        div.data-table-data-rows-outer-containing-div {  
+
+            //  If CSS Class 'data-table-data-rows-outer-containing-div' is changed to 'display: inline-block'
+            //         Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line 
 
             position: relative;
 
@@ -1133,14 +1140,29 @@
             border-style: solid;
             padding: 0px;
 
-            &.main-condition-cell {
+            &.condition-label-cell { //  Contains a Condition Label
 
                 &:hover {
-                    background-color: $site-color-dark;
+                    background-color: $site-color-medium;
                 }
 
                 &.selected {
                     background-color: $site-color-dark;
+                }
+            }
+
+            &.main-condition-cell { //  Main Data Cell, for each combination of conditions.  Main block of cells below and to right of condition label cells
+
+                &:hover {
+                    background-color: $site-color-medium;
+                }
+
+                &.selected-directly {
+                  background-color: $site-color-dark;
+                }
+
+                &.selected-indirectly {
+                    background-color: $site-color-dark-alt;
                 }
             }
 

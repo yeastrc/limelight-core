@@ -51,11 +51,35 @@ public class SearcherCutoffValues_Factory {
 
 	@Autowired
 	private AnnotationTypeListForSearchIdSearcherIF annotationTypeListForSearchIdSearcher;
+	
+	public enum SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId { NO, YES }
 
 
+	/**
+	 * @param projectSearchIdMapToSearchId
+	 * @param searchDataLookupParamsRoot
+	 * @return
+	 * @throws SQLException
+	 */
 	public SearcherCutoffValuesRootLevel createSearcherCutoffValuesRootLevel_From_WebserviceRequestCutoffs(
 			Map<Integer,Integer> projectSearchIdMapToSearchId,
 			SearchDataLookupParamsRoot searchDataLookupParamsRoot ) throws SQLException {
+		
+		return createSearcherCutoffValuesRootLevel_From_WebserviceRequestCutoffs( 
+				projectSearchIdMapToSearchId, searchDataLookupParamsRoot, SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.NO );
+	}
+
+	/**
+	 * @param projectSearchIdMapToSearchId
+	 * @param searchDataLookupParamsRoot
+	 * @param skipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId
+	 * @return
+	 * @throws SQLException
+	 */
+	public SearcherCutoffValuesRootLevel createSearcherCutoffValuesRootLevel_From_WebserviceRequestCutoffs(
+			Map<Integer,Integer> projectSearchIdMapToSearchId,
+			SearchDataLookupParamsRoot searchDataLookupParamsRoot,
+			SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId skipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId ) throws SQLException {
 
 		SearchDataLookupParams_For_ProjectSearchIds paramsForProjectSearchIds = searchDataLookupParamsRoot.getParamsForProjectSearchIds();
 		if ( paramsForProjectSearchIds == null ) {
@@ -71,8 +95,25 @@ public class SearcherCutoffValues_Factory {
 
 		for ( SearchDataLookupParams_For_Single_ProjectSearchId paramsForProjectSearchId : paramsForProjectSearchIdsList ) {
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel =
-					createSearcherCutoffValuesSearchLevel( projectSearchIdMapToSearchId, paramsForProjectSearchId );
-			searcherCutoffValuesRootLevel.addPerSearchCutoffs( searcherCutoffValuesSearchLevel );
+					createSearcherCutoffValuesSearchLevel( projectSearchIdMapToSearchId, paramsForProjectSearchId, skipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId );
+			if ( searcherCutoffValuesSearchLevel != null ) {
+				searcherCutoffValuesRootLevel.addPerSearchCutoffs( searcherCutoffValuesSearchLevel );
+			}
+		}
+		
+		if ( searcherCutoffValuesRootLevel.getPerSearchCutoffsList() == null || searcherCutoffValuesRootLevel.getPerSearchCutoffsList().isEmpty() ) {
+			
+			String projectSearchIds = null;
+			for ( Integer projectSearchId : projectSearchIdMapToSearchId.keySet() ) {
+				if ( projectSearchIds == null ) {
+					projectSearchIds = projectSearchId.toString();
+				} else {
+					projectSearchIds += ", " + projectSearchId;
+				}
+			}
+			String msg = "None of projectSearchId in cutoff not in map of projectSearchIds.   map of projectSearchIds: " + projectSearchIds;
+			log.warn( msg );
+			throw new LimelightErrorDataInWebRequestException( msg );
 		}
 		return searcherCutoffValuesRootLevel;
 	}
@@ -87,10 +128,28 @@ public class SearcherCutoffValues_Factory {
 			Map<Integer,Integer> projectSearchIdMapToSearchId,
 			SearchDataLookupParams_For_Single_ProjectSearchId inputItem ) throws SQLException {
 
+		return createSearcherCutoffValuesSearchLevel( projectSearchIdMapToSearchId, inputItem, SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.NO );
+	}
+
+	/**
+	 * @param inputItem
+	 * @return null if inputItem.getProjectSearchId(); not in projectSearchIdMapToSearchId
+	 * @throws SQLException 
+	 * @throws Exception
+	 */
+	public SearcherCutoffValuesSearchLevel createSearcherCutoffValuesSearchLevel(
+			Map<Integer,Integer> projectSearchIdMapToSearchId,
+			SearchDataLookupParams_For_Single_ProjectSearchId inputItem,
+			SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId skipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId ) throws SQLException {
+
 		Integer projectSearchId = inputItem.getProjectSearchId();
 		
 		Integer searchId = projectSearchIdMapToSearchId.get( projectSearchId );
 		if ( searchId == null ) {
+			if ( skipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId == SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.YES  ) {
+				
+				return null;  // EARLY RETURN
+			}
 			String msg = "projectSearchId in cutoff not in map of projectSearchIds: " + projectSearchId;
 			log.warn( msg );
 			throw new LimelightErrorDataInWebRequestException( msg );

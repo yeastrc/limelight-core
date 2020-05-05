@@ -101,24 +101,12 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
     private _proteinGroupNone_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
         try {
-            if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
-                //  Already this value
-                return;  // EARLY RETURN
+            this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_No_Grouping();  // Update state in URL
+
+            if (  this.props.propValue.filterValuesChanged_Callback ) {
+                const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
+                this.props.propValue.filterValuesChanged_Callback( param );
             }
-            window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-                try {
-                    this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_No_Grouping();  // Update state in URL
-
-                    if (  this.props.propValue.filterValuesChanged_Callback ) {
-                        const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
-                        this.props.propValue.filterValuesChanged_Callback( param );
-                    }
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 10 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -126,24 +114,12 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
     }
     private _proteinGroup_GroupProteins_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
         try {
-            if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_All_Groups() ) {
-                //  Already this value
-                return;  // EARLY RETURN
+            this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_All_Groups();  // Update state in URL
+
+            if (  this.props.propValue.filterValuesChanged_Callback ) {
+                const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
+                this.props.propValue.filterValuesChanged_Callback( param );
             }
-            window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-                try {
-                    this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_All_Groups();  // Update state in URL
-
-                    if (  this.props.propValue.filterValuesChanged_Callback ) {
-                        const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
-                        this.props.propValue.filterValuesChanged_Callback( param );
-                    }
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 10 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -151,24 +127,12 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
     }
     private _proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
         try {
-            if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_NonSubset_Groups() ) {
-                //  Already this value
-                return;  // EARLY RETURN
+            this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_NonSubset_Groups();  // Update state in URL
+
+            if (  this.props.propValue.filterValuesChanged_Callback ) {
+                const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
+                this.props.propValue.filterValuesChanged_Callback( param );
             }
-            window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-                try {
-                    this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_NonSubset_Groups();  // Update state in URL
-
-                    if (  this.props.propValue.filterValuesChanged_Callback ) {
-                        const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
-                        this.props.propValue.filterValuesChanged_Callback( param );
-                    }
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 10 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -177,24 +141,12 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
     // Comment out since not currently supported
     // private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
     //     try {
-    //         if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_Parsimonious_Groups() ) {
-    //             //  Already this value
-    //             return;  // EARLY RETURN
-    //         }
-    //         window.setTimeout( ( ) => { // Run in setTimeout so radio button updates immediately
-    //             try {
-    //                 this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_Parsimonious_Groups();  // Update state in URL
+    //             this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_Parsimonious_Groups();  // Update state in URL
     //
-    //                 if (  this.props.propValue.filterValuesChanged_Callback ) {
-    //                     const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
-    //                     this.props.propValue.filterValuesChanged_Callback( param );
-    //                 }
-    //
-    //             } catch( e ) {
-    //                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    //                 throw e;
+    //             if (  this.props.propValue.filterValuesChanged_Callback ) {
+    //                 const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
+    //                 this.props.propValue.filterValuesChanged_Callback( param );
     //             }
-    //         }, 10 );
     //     } catch( e ) {
     //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
     //         throw e;

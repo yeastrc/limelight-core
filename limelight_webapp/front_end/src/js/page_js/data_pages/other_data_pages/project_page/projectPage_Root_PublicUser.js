@@ -40,7 +40,7 @@ import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
 
-//  Comment out Experiment Code
+//  Comment out Experiment Code 
 // import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
 
 import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction';
@@ -81,9 +81,9 @@ class ProjectViewPage_Root_PublicUser {
 			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
 		
 		//  Comment out Experiment Code
-		// this._projectPage_ExperimentsSection_AllUsersInteraction = 
-		// 	new ProjectPage_ExperimentsSection_AllUsersInteraction( { 
-		// 		projectIdentifierFromURL : this._projectIdentifierFromURL 
+		// this._projectPage_ExperimentsSection_AllUsersInteraction =
+		// 	new ProjectPage_ExperimentsSection_AllUsersInteraction( {
+		// 		projectIdentifierFromURL : this._projectIdentifierFromURL
 		// 	} );
 
 		this._projectPage_SearchesSection_AllUsersInteraction = 

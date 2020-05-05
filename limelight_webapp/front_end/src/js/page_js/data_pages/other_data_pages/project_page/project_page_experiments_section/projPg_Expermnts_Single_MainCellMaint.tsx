@@ -20,8 +20,7 @@ import React from 'react'
 import { Experiment_User_Set_Searches_Filters } from './experiment_User_Set_Searches_Filters';
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
-import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
-
+import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
@@ -336,7 +335,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
                     <div style={ { fontWeight: "bold", marginBottom: 3 } }>
                         Assigned Searches
                     </div>
-                    <div >
+                    <div style={ { paddingRight: 10 } }>
                         { searches_Assigned_ToCell }
                         { no_searches_Assigned_ToCell_msg }
                     </div>
@@ -444,7 +443,7 @@ const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, 
     const reportedPeptideFilters = conditionGroupsData_PerProjectSearchIdData.get_reportedPeptideFilters_PerProjectSearchId();
     // const matchedProteinFilters = conditionGroupsData_PerProjectSearchIdData.get_matchedProteinFilters_PerProjectSearchId();
 
-    const result_searchSelectedEntry = { searchContainer, psmFilters : undefined, reportedPeptideFilters : undefined };
+    const result_searchSelectedEntry : { searchContainer, psmFilters? : any, reportedPeptideFilters? : any } = { searchContainer };
 
     if ( psmFilters ) {
 

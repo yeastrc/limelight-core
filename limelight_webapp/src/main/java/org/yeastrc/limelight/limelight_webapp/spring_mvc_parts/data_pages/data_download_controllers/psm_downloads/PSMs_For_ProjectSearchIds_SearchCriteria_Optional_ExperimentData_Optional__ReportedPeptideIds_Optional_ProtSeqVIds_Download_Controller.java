@@ -406,11 +406,15 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	    		searchHasScanDataMap_Key_projectSearchId.put( projectSearchId, searchHasScanData );
     		}
     		
+    		//  SearcherCutoffValues_Factory.SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.YES
+    		//     since user may filter to limit to less than all the searches in the experiment.
+    		
     		SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel =
     				searcherCutoffValuesRootLevel_Factory
     				.createSearcherCutoffValuesRootLevel_From_WebserviceRequestCutoffs(
     						projectSearchIdMapToSearchId, 
-    						searchDataLookupParamsRoot );
+    						searchDataLookupParamsRoot,
+    						SearcherCutoffValues_Factory.SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.YES );
     						
     		//  Validate that Project Search Ids provided are in searcherCutoffValuesRootLevel
 

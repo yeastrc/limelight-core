@@ -191,7 +191,10 @@ public class AA_RestWSControllerPaths_Constants {
 	//   Searches for Project
 
 	public static final String PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-search-list";
-
+	
+	//        Project_HasAtLeastOneActive_ProjectSearchId_RestWebserviceController
+	public static final String PROJECT_HAS_AT_LEAST_ONE_ACTIVE_SEARCH_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-has-at-least-one-active-search";
+	
 	//   Organize Searches for Project
 
 	public static final String PROJECT_ORGANIZE_SEARCHES_GET_DATA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-get-data";

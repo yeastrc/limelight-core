@@ -117,10 +117,14 @@ class Experiment_ConditionGroup_Flags {
 
 //  Exported Items
 
+export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_Save_FunctionType_Params {
+    conditionGroup : Experiment_ConditionGroup
+    isTimePoints : boolean
+}
 
-export type ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_FunctionType = ({ conditionGroup, isTimePoints } : { conditionGroup : Experiment_ConditionGroup, isTimePoints : boolean } ) => void;
+export type ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_FunctionType = ( params : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_Save_FunctionType_Params ) => void;
 
-export type ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Save_FunctionType = ({ conditionGroup, isTimePoints } : { conditionGroup : Experiment_ConditionGroup, isTimePoints : boolean } ) => void;
+export type ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Save_FunctionType = ( params : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_Save_FunctionType_Params ) => void;
 
 export type ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Cancel_FunctionType = () => void;
 

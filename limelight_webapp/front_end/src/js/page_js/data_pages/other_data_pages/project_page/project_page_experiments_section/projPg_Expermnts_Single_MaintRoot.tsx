@@ -23,24 +23,28 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 
 import { create_experimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
-import { Experiment_SingleExperiment_ConditionsGraphicRepresentation, ExperimentConditions_GraphicRepresentation_SelectedCells, ExperimentConditions_GraphicRepresentation_MainCellClickHandler, ExperimentConditions_GraphicRepresentation_MainCell_Identifier, ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
+
+import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
+import { ExperimentConditions_GraphicRepresentation_SelectedCells, create_ExperimentConditions_GraphicRepresentation_SelectedCells__NO__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections'
+import { Experiment_SingleExperiment_ConditionsGraphicRepresentation, ExperimentConditions_GraphicRepresentation_MainCellClickHandler, ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell, ExperimentConditions_GraphicRepresentation_MainCellClickHandler_Params, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
 
 import { ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupList } from './projPg_Expermnts_Single_MaintRoot_ConditionGroupList';
 
-import { 
-    ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint, 
+import {
+    ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint,
     ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Props_Data_Property,
     ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_FunctionType,
     ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Save_FunctionType,
-    ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Cancel_FunctionType
+    ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Cancel_FunctionType,
+    ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_Save_FunctionType_Params
 } from './projPg_Expermnts_Single_ConditionGroupMaint';
 
 import { ProjectPage_Experiments_SingleExperiment_MainCellMaint, Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint } from './projPg_Expermnts_Single_MainCellMaint';
 
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition, create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { 
-    ConditionGroupsDataContainer, 
-    ConditionGroupsDataContainer_DataEntry, 
+import {
+    ConditionGroupsDataContainer,
+    ConditionGroupsDataContainer_DataEntry,
     ProcessAllDataEntries_callback_Param
 } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 
@@ -79,7 +83,7 @@ const _CONDITION_GROUP_ID_TECHNICAL_REPLICATES  = -3;
 const _CONDITION_GROUP_ID_TIME_POINTS  = -4;
 
 /**
- * 
+ *
  */
 export interface ProjectPage_Experiments_SingleExperimentMaintRoot_Props {
 
@@ -92,7 +96,7 @@ export interface ProjectPage_Experiments_SingleExperimentMaintRoot_Props {
 }
 
 /**
- * 
+ *
  */
 interface ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 
@@ -121,9 +125,30 @@ interface ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 }
 
 /**
- * 
+ *
  */
 export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Component< ProjectPage_Experiments_SingleExperimentMaintRoot_Props, ProjectPage_Experiments_SingleExperimentMaintRoot_State > {
+
+    //  For class methods that are '.bind(this)' and cast to a function type:
+    //     Add a cast to same function type without the '.bind(this)' in the constructor to local variable to validate that the local function properly implements the function type
+    //        (missing or mis-typed parameters will error.  extra properties in a object in the parameters will not error)
+
+    private _add_singleConditionGroup_Maint_Overlay_BindThis : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_FunctionType = this._add_singleConditionGroup_Maint_Overlay.bind(this);
+    private _CAST_TEST_ONLY_add_singleConditionGroup_Maint_Overlay : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_FunctionType = this._add_singleConditionGroup_Maint_Overlay;
+
+    private _save_singleConditionGroup_Maint_Overlay_BindThis : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Save_FunctionType = this._save_singleConditionGroupChanges.bind(this);
+    private _CAST_TEST_ONLY_save_singleConditionGroup_Maint_Overlay : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Save_FunctionType = this._save_singleConditionGroupChanges;
+
+    private _cancel_singleConditionGroup_Maint_BindThis : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Cancel_FunctionType = this._cancel_singleConditionGroup_Maint.bind(this);
+    private _CAST_TEST_ONLY_cancel_singleConditionGroup_Maint : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Cancel_FunctionType = this._cancel_singleConditionGroup_Maint;
+
+    private _mainCellClickHandler_BindThis : ExperimentConditions_GraphicRepresentation_MainCellClickHandler = this._mainCellClickHandler.bind(this);
+    private _CAST_TEST_ONLY_mainCellClickHandler : ExperimentConditions_GraphicRepresentation_MainCellClickHandler = this._mainCellClickHandler;
+
+    private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
+    private _CAST_TEST_ONLY_mainCell_getHoverContents : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = this._mainCell_getHoverContents;
+
+    //  class methods that are '.bind(this)' and NOT cast to a function type:
 
     private _save_Experiment_Clicked_BindThis = this._save_Experiment_Clicked.bind(this);
     private _save_Experiment_AsDraft_Clicked_BindThis = this._save_Experiment_AsDraft_Clicked.bind(this);
@@ -132,7 +157,6 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
     private _gotoStep_1_ButtonClicked_BindThis = this._gotoStep_1_ButtonClicked.bind(this);
     private _gotoStep_2_ButtonClicked_BindThis = this._gotoStep_2_ButtonClicked.bind(this);
-    // this._gotoStep_3_Add_Filters_for_Searches_ButtonClicked_BindThis = this._gotoStep_3_User_Set_Filters_for_Searches_ButtonClicked.bind(this);
 
     private _experimentNameChanged_BindThis = this._experimentNameChanged.bind(this);
 
@@ -157,7 +181,6 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
     //      Add New Condition Group
     private _add_conditionGroup_InConditionGroupList_ClickHandler_BindThis = this._add_conditionGroup_InConditionGroupList_ClickHandler.bind(this);
-    private _add_singleConditionGroup_Maint_Overlay_BindThis : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_FunctionType = this._add_singleConditionGroup_Maint_Overlay.bind(this);
 
     //      Maint of Existing Condition Group
     //              Condition Group in Condition Group List Click Handler
@@ -167,20 +190,12 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     //              Condition in Condition Matrix Graphic (Component Experiment_SingleExperiment_ConditionsGraphicRepresentation) Click Handler
     // private _condition_InConditionMatrixGraphic_ClickHandler_BindThis = this._condition_InConditionMatrixGraphic_ClickHandler.bind(this);
 
-    private _save_singleConditionGroup_Maint_Overlay_BindThis : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Save_FunctionType = this._save_singleConditionGroupChanges.bind(this);
     private _delete_conditionGroup_ClickHandler_BindThis = this._delete_conditionGroup_ClickHandler.bind(this);
-
-    //      Cancel
-    private _cancel_singleConditionGroup_Maint_BindThis : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Cancel_FunctionType = this._cancel_singleConditionGroup_Maint.bind(this);
-
-
-    private _mainCellClickHandler_BindThis : ExperimentConditions_GraphicRepresentation_MainCellClickHandler = this._mainCellClickHandler.bind(this);
 
     //  Not Used
     // private _mainCell_onMouseEnterHandler_BindThis = this._mainCell_onMouseEnterHandler.bind(this);
     // private _mainCell_onMouseLeaveHandler_BindThis = this._mainCell_onMouseLeaveHandler.bind(this);
 
-    private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
     private _save_ProjectSearchIds_ForMainCell_BindThis = this._save_ProjectSearchIds_ForMainCell.bind(this);
     private _save_updated_conditionGroupsDataContainer_BindThis = this._save_updated_conditionGroupsDataContainer.bind(this);
 
@@ -195,7 +210,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
 
     /**
-     * 
+     *
      */
     constructor( props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) {
         super(props);
@@ -228,7 +243,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         let experimentId = undefined;
         let experimentName = undefined;
 
-        
+
         let conditionGroupsContainer : Experiment_ConditionGroupsContainer = undefined;
         let conditionGroupsDataContainer : ConditionGroupsDataContainer = undefined;
 
@@ -247,7 +262,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Update from Saved Experiment Data
 
             if ( props.experimentData.experimentJSONMainData ) {
-                
+
                 const experimentMainData = JSON.parse( props.experimentData.experimentJSONMainData );
 
                 let searchDataLookupParamsRoot = undefined;
@@ -309,8 +324,8 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             conditionGroupsDataContainer = _conditionGroupsDataContainer_InitialValue();
         }
 
-        
-        const experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData = ( 
+
+        const experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData = (
             create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer, conditionGroupsDataContainer }) // Call External Function
         );
 
@@ -345,10 +360,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
     /**
      * Must be Static
-     * Called before 
+     * Called before
      *   Initial render: 'render()'
      *   Rerender : 'shouldComponentUpdate()'
-     * 
+     *
      * Return new state (like return from setState(callback)) or null
      */
     // static getDerivedStateFromProps( props, state ) {
@@ -365,10 +380,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     ////////
 
     /**
-     * 
+     *
      */
-    _saveAsDraft_Button_UpdateEnabled_NewState({ state } : { 
-        
+    _saveAsDraft_Button_UpdateEnabled_NewState({ state } : {
+
         state : ProjectPage_Experiments_SingleExperimentMaintRoot_State
     }) : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 
@@ -381,10 +396,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
-    _save_Button_UpdateEnabled_NewState({ state } : { 
-        
+    _save_Button_UpdateEnabled_NewState({ state } : {
+
         state : ProjectPage_Experiments_SingleExperimentMaintRoot_State
     }) : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 
@@ -398,11 +413,11 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         return { saveButtonEnabled };
     }
 
-    
+
 
 
     /**
-     * 
+     *
      */
     _populateDefaultFilters_ForUnassignedFilters({ conditionGroupsContainer, conditionGroupsDataContainer } : {
 
@@ -423,11 +438,11 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const searchesData = this.props.searchesData;
 
         {
-            //  Populate conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId }) 
+            //  Populate conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId })
             //          properties 'psmFilterDataMap_KeyAnnTypeId', 'reportedPeptideFilterDataMap_KeyAnnTypeId'
 
             const projectSearchIds_All = new Set();
-                
+
             const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
 
                 const data = param.data;
@@ -444,7 +459,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                     }
                 }
             }
-            conditionGroupsDataContainer.processAllDataEntries({ callback : processAllDataEntries_Callback });
+            conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
 
             create_experiment_SearchFilterValuesFromDefaultCutoffs({ projectSearchIds : projectSearchIds_All, searchDataMap_KeyProjectSearchId, searchesData, conditionGroupsDataContainer });
         }
@@ -457,7 +472,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         // console.log("_save_Experiment_AsDraft_Clicked() called");
 
         const promise_saveExperimentToServer = _save_Experiment({ // call function in this file, not in this class
-            projectIdentifier : this.props.projectIdentifierFromURL, 
+            projectIdentifier : this.props.projectIdentifierFromURL,
             experimentId : this.state.experimentId,
             experimentName : this.state.experimentName,
             conditionGroupsContainer : this.state.conditionGroupsContainer,
@@ -477,14 +492,14 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
     _save_Experiment_AsDraft_Clicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
 
         // console.log("_save_Experiment_AsDraft_Clicked() called");
 
         const promise_saveExperimentToServer = _save_Experiment_AsDraft({ // call function in this file, not in this class
-            projectIdentifier : this.props.projectIdentifierFromURL, 
+            projectIdentifier : this.props.projectIdentifierFromURL,
             experimentId : this.state.experimentId,
             experimentName : this.state.experimentName,
             conditionGroupsContainer : this.state.conditionGroupsContainer,
@@ -504,7 +519,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
     _cancel_Experiment_Clicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
 
@@ -514,7 +529,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     ////////////
 
     /**
-     * 
+     *
      */
     _experimentNameChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent>  ) {
 
@@ -539,7 +554,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
     _numberBiologicalReplicates_Changed( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
@@ -557,7 +572,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         //     Possible improved user experience
         //  If changed from/to zero, need to delete all condition group data.
-        //  If reduced in value, need to remove condition group data 
+        //  If reduced in value, need to remove condition group data
 
         //  Not quite valid to use this.state for this check but don't want it running inside setState
 
@@ -569,33 +584,33 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
 
-            return this.__number_Of_BiologicalReplicates_Changed_SetStateValues({ 
-                state, props, newNumber 
+            return this.__number_Of_BiologicalReplicates_Changed_SetStateValues({
+                state, props, newNumber
             });
         });
     }
 
     /**
-     * 
+     *
      */
-    __number_Of_BiologicalReplicates_Changed_SetStateValues({ state, props, newNumber } : { 
-        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, 
-        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props, 
+    __number_Of_BiologicalReplicates_Changed_SetStateValues({ state, props, newNumber } : {
+        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State,
+        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props,
         newNumber : number
     }) : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
-        
+
         const conditionGroupsContainer = state.conditionGroupsContainer;
 
-        const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object 
+        const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object
 
-        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object 
+        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object
 
         const conditionGroups_Old = conditionGroupsContainerNew.conditionGroups;
-  
+
         //     Possible improved user experience
         //  If changed from/to zero, need to delete all condition group data.
-        //  If reduced in value, need to remove condition group data 
-        conditionGroupsDataContainerNew.clearConditionData(); //  Clear all conditions Data 
+        //  If reduced in value, need to remove condition group data
+        conditionGroupsDataContainerNew.clearConditionData(); //  Clear all conditions Data
 
         const resultState : {
             conditionGroupsContainer : Experiment_ConditionGroupsContainer
@@ -667,7 +682,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                 for ( let conditionIndex = 0; conditionIndex < newNumber; conditionIndex++ ) {
                     const counter = conditionIndex + 1;
                     const label = _BIOLOGICAL_REPLICATE_CONDITION_LABEL_PREFIX + counter;
-                    const condition = new Experiment_Condition({ 
+                    const condition = new Experiment_Condition({
                         label,
                         id : conditionGroupsContainerNew.conditionId_GetNextValue(),
                         labelSuffixInitiallyAssigned : counter
@@ -689,7 +704,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
                     //  Empty Old Array, so just assign to array containing new entry
                     conditionGroupsNew = [ conditionGroup_Add ];
-                
+
                 } else {
 
                     //  conditionGroup_TechnicalReplicates is always last entry in array conditionGroups
@@ -742,7 +757,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                 if ( ! conditionGroup_Update ) {
                     throw Error("Update Number of conditions: No Condition Group for typeBiologicalReplicate");
                 }
-    
+
                 const conditions = conditionGroup_Update.conditions;
 
                 if ( newNumber > state.numberBiologicalReplicates ) {
@@ -758,7 +773,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                         });
                         conditions.push( condition );
                     }
-                } else { 
+                } else {
                     //  Count Decreased so remove conditions
 
                     const conditions_New = [];
@@ -772,7 +787,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                             conditions_New.push( condition );
                         } else {
                             // conditionIndex >= newNumber so delete
-                            conditionGroupsDataContainerNew.delete_data_For_ConditionId ({ 
+                            conditionGroupsDataContainerNew.delete_data_For_ConditionId ({
                                 conditionId : condition.id
                             });
                         }
@@ -784,7 +799,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         resultState.numberBiologicalReplicates = newNumber;
 
-        const experimentConditions_GraphicRepresentation_PropsData = ( 
+        const experimentConditions_GraphicRepresentation_PropsData = (
             create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew })
         );
 
@@ -795,7 +810,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
 
     /**
-     * 
+     *
      */
     _numberTechnicalReplicates_Changed( event: React.MouseEvent<HTMLInputElement, MouseEvent>  ) : void {
 
@@ -813,7 +828,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         //     Possible improved user experience
         //  If changed from/to zero, need to delete all condition group data.
-        //  If reduced in value, need to remove condition group data 
+        //  If reduced in value, need to remove condition group data
 
         //  Not quite valid to use this.state for this check but don't want it running inside setState
 
@@ -825,39 +840,42 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
 
-            return this._numberTechnicalReplicates_Changed_SetStateValues({ 
-                state, props, newNumber 
+            return this._numberTechnicalReplicates_Changed_SetStateValues({
+                state, props, newNumber
             });
         });
     }
 
     /**
-     * 
+     *
      */
-    _numberTechnicalReplicates_Changed_SetStateValues({ state, props, newNumber } : { 
-        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, 
-        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props, 
+    _numberTechnicalReplicates_Changed_SetStateValues({ state, props, newNumber } : {
+        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State,
+        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props,
         newNumber : number
     }) : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
-        
+
         const conditionGroupsContainer = state.conditionGroupsContainer;
 
-        const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object 
+        const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object
 
-        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object 
+        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object
 
         const conditionGroups_Old = conditionGroupsContainerNew.conditionGroups;
-  
+
         //     Possible improved user experience
         //  If changed from/to zero, need to delete all condition group data.
-        //  If reduced in value, need to remove condition group data 
-        conditionGroupsDataContainerNew.clearConditionData(); //  Clear all conditions Data 
+        //  If reduced in value, need to remove condition group data
+        conditionGroupsDataContainerNew.clearConditionData(); //  Clear all conditions Data
 
-        const resultState = {
+        const resultState : {
+            conditionGroupsContainer : Experiment_ConditionGroupsContainer
+            conditionGroupsDataContainer : ConditionGroupsDataContainer
+            numberTechnicalReplicates? : number
+            experimentConditions_GraphicRepresentation_PropsData? : ExperimentConditions_GraphicRepresentation_PropsData
+        } = {
             conditionGroupsContainer : conditionGroupsContainerNew,
-            conditionGroupsDataContainer : conditionGroupsDataContainerNew,
-            numberTechnicalReplicates : undefined,
-            experimentConditions_GraphicRepresentation_PropsData : undefined
+            conditionGroupsDataContainer : conditionGroupsDataContainerNew
         };
 
         if ( newNumber === 0 ) {
@@ -918,7 +936,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                 for ( let conditionIndex = 0; conditionIndex < newNumber; conditionIndex++ ) {
                     const counter = conditionIndex + 1;
                     const label = _TECHNICAL_REPLICATE_CONDITION_LABEL_PREFIX + counter;
-                    const condition = new Experiment_Condition({ 
+                    const condition = new Experiment_Condition({
                         label,
                         id : conditionGroupsContainerNew.conditionId_GetNextValue(),
                         labelSuffixInitiallyAssigned : counter
@@ -940,7 +958,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
                     //  Empty Old Array, so just assign to array containing new entry
                     conditionGroupsNew = [ conditionGroup_Add ];
-                
+
                 } else {
 
                     //  conditionGroup_TechnicalReplicates is always last entry in array conditionGroups
@@ -980,7 +998,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                 if ( ! conditionGroup_Update ) {
                     throw Error("Update Number of conditions: No Condition Group for typeTechnicalReplicate");
                 }
-    
+
                 const conditions = conditionGroup_Update.conditions;
 
                 if ( newNumber > state.numberTechnicalReplicates ) {
@@ -996,7 +1014,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                         });
                         conditions.push( condition );
                     }
-                } else { 
+                } else {
                     //  Count Decreased so remove conditions
 
                     const conditions_New = [];
@@ -1010,7 +1028,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                             conditions_New.push( condition );
                         } else {
                             // conditionIndex >= newNumber so delete
-                            conditionGroupsDataContainerNew.delete_data_For_ConditionId ({ 
+                            conditionGroupsDataContainerNew.delete_data_For_ConditionId ({
                                 conditionId : condition.id
                             });
                         }
@@ -1022,7 +1040,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         resultState.numberTechnicalReplicates = newNumber;
 
-        const experimentConditions_GraphicRepresentation_PropsData = ( 
+        const experimentConditions_GraphicRepresentation_PropsData = (
             create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew })
         );
 
@@ -1033,7 +1051,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
 
     /**
-     * 
+     *
      */
     _any_projectSearchIdsAssigned_To_Conditions({ state } : {
 
@@ -1042,7 +1060,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         let any_projectSearchIdsAssigned_To_Conditions = false;
 
-        
+
         const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
 
             const data = param.data;
@@ -1061,19 +1079,19 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             }
         }
 
-        state.conditionGroupsDataContainer.processAllDataEntries({ callback : processAllDataEntries_Callback })
+        state.conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback })
 
         return any_projectSearchIdsAssigned_To_Conditions;
     }
 
-    
+
     /**
-     * 
+     *
      */
     _conditionGroups_ChangeOrder({ sourceIndex, destinationIndex }) {
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
-            
+
             const conditionGroupsContainer = state.conditionGroupsContainer;
 
             const conditionGroups = conditionGroupsContainer.conditionGroups;
@@ -1084,7 +1102,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             }
 
             //  Remove Source Index
-     
+
             const conditionGroups_BeforeSource = conditionGroups.slice( 0, sourceIndex );
             const conditionGroups_AfterSource = conditionGroups.slice( sourceIndex + 1 );
             const conditionGroups_SourceRemoved = conditionGroups_BeforeSource.concat( conditionGroups_AfterSource );
@@ -1105,16 +1123,16 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             const conditionGroupsNew = conditionGroups_BeforeDestination.concat( conditionGroupToMove, conditionGroups_AtDestinationAndRest );
 
-            const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object 
+            const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object
             conditionGroupsContainerNew.conditionGroups = conditionGroupsNew;
 
-            const experimentConditions_GraphicRepresentation_PropsData = ( 
-                create_experimentConditions_GraphicRepresentation_PropsData({ 
-                    conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : state.conditionGroupsDataContainer 
+            const experimentConditions_GraphicRepresentation_PropsData = (
+                create_experimentConditions_GraphicRepresentation_PropsData({
+                    conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : state.conditionGroupsDataContainer
                 })
             );
 
-            return ({ 
+            return ({
                 conditionGroupsContainer : conditionGroupsContainerNew,
                 experimentConditions_GraphicRepresentation_PropsData
             });
@@ -1124,7 +1142,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     //  Time Points Maint
 
     /**
-     * 
+     *
      */
     _add_timePoints_ClickHandler( event ) {
 
@@ -1149,7 +1167,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
     _update_timePoints_ClickHandler( event ) {
 
@@ -1193,7 +1211,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
     _delete_timePoints_ClickHandler( event ) {
 
@@ -1227,32 +1245,32 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             const conditionGroups_Before = conditionGroups.slice( 0, conditionGroupIndex );
             const conditionGroups_After = conditionGroups.slice( conditionGroupIndex + 1 );
-     
+
             const conditionGroupsNew = conditionGroups_Before.concat( conditionGroups_After ); // create new array with item removed
 
-            const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object 
+            const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object
             conditionGroupsContainerNew.conditionGroups = conditionGroupsNew;
 
-            const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object 
-            conditionGroupsDataContainerNew.clearConditionData(); //  Clear conditions Data 
+            const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object
+            conditionGroupsDataContainerNew.clearConditionData(); //  Clear conditions Data
 
-            const experimentConditions_GraphicRepresentation_PropsData = ( 
+            const experimentConditions_GraphicRepresentation_PropsData = (
                 create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew })
             );
 
-            return ({ 
+            return ({
                 numberTimePoints : 0,
                 conditionGroupsContainer : conditionGroupsContainerNew,
                 conditionGroupsDataContainer : conditionGroupsDataContainerNew,
                 experimentConditions_GraphicRepresentation_PropsData
             });
-        });        
+        });
     }
 
     //  Condition Group Maint
 
     /**
-     * 
+     *
      */
     _add_conditionGroup_InConditionGroupList_ClickHandler(  ) {
 
@@ -1274,11 +1292,14 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         });
 
     }
-    
+
     /**
-     * 
+     *
      */
-    _add_singleConditionGroup_Maint_Overlay({ conditionGroup, isTimePoints } : { conditionGroup : Experiment_ConditionGroup, isTimePoints : boolean }) {
+    _add_singleConditionGroup_Maint_Overlay( params : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_Save_FunctionType_Params ) {
+
+        const conditionGroup : Experiment_ConditionGroup = params.conditionGroup;
+        const isTimePoints : boolean = params.isTimePoints;
 
         if ( ! ( conditionGroup instanceof Experiment_ConditionGroup ) ) {
             const msg = "ERROR: _add_singleConditionGroup_Maint_Overlay({ conditionGroup, isTimePoints }}: if () ! ( conditionGroup instanceof Experiment_ConditionGroup ) )";
@@ -1316,7 +1337,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     // /**
     //  * Condition in Condition Matrix Graphic (Component Experiment_SingleExperiment_ConditionsGraphicRepresentation) Click Handler
     //  */
-    // _condition_InConditionMatrixGraphic_ClickHandler({ event, conditionId }) {
+    // _condition_InConditionMatrixGraphic_ClickHandler( params : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params ) {
 
     //     let conditionGroup = undefined;
 
@@ -1350,15 +1371,15 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     // }
 
     /**
-     * 
+     *
      */
-    _save_singleConditionGroupChanges({ conditionGroup, isTimePoints } : { 
-        conditionGroup : Experiment_ConditionGroup, 
-        isTimePoints  : boolean
-    }) {
+    _save_singleConditionGroupChanges( params : ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Add_Save_FunctionType_Params ) {
+
+        const conditionGroup : Experiment_ConditionGroup = params.conditionGroup;
+        const isTimePoints : boolean = params.isTimePoints;
 
         this.setState({ data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint : null });
-        
+
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
 
             return this._save_singleConditionGroupChanges_SetStateValues({ state, props, conditionGroup, isTimePoints });
@@ -1368,10 +1389,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      * @param conditionGroup - Built in save from prev value
      */
-    _save_singleConditionGroupChanges_SetStateValues({ state, props, conditionGroup, isTimePoints } : { 
-        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, 
-        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props, 
-        conditionGroup : Experiment_ConditionGroup, 
+    _save_singleConditionGroupChanges_SetStateValues({ state, props, conditionGroup, isTimePoints } : {
+        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State,
+        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props,
+        conditionGroup : Experiment_ConditionGroup,
         isTimePoints  : boolean
     }) : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 
@@ -1398,10 +1419,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Entry not found
             return {}; // EARLY RETURN
         }
-        const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object 
+        const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object
 
-        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object 
-        
+        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object
+
         //  remove any ConditionGroupCondition from conditionGroupsDataContainerNew that are in old conditions but not new conditions
 
         {
@@ -1419,7 +1440,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                         }
                     }
                     if ( ! matchingConditionNew ) {
-                        conditionGroupsDataContainerNew.delete_data_For_ConditionId ({ 
+                        conditionGroupsDataContainerNew.delete_data_For_ConditionId ({
                             conditionId : conditionOld.id
                         });
                     }
@@ -1462,14 +1483,14 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             conditionGroups_MatchingEntry.label = conditionGroup.label;
         }
 
-        const experimentConditions_GraphicRepresentation_PropsData = ( 
+        const experimentConditions_GraphicRepresentation_PropsData = (
             create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew })
         );
 
         //  Maybe not needed here
         this._populateDefaultFilters_ForUnassignedFilters({ conditionGroupsContainer, conditionGroupsDataContainer : conditionGroupsDataContainerNew });
 
-        const newState : ProjectPage_Experiments_SingleExperimentMaintRoot_State = { 
+        const newState : ProjectPage_Experiments_SingleExperimentMaintRoot_State = {
             conditionGroupsContainer : conditionGroupsContainerNew,
             conditionGroupsDataContainer : conditionGroupsDataContainerNew,
             experimentConditions_GraphicRepresentation_PropsData,
@@ -1512,25 +1533,25 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             const conditionGroups_Before = conditionGroups.slice( 0, conditionGroupIndex );
             const conditionGroups_After = conditionGroups.slice( conditionGroupIndex + 1 );
-     
+
             const conditionGroupsNew = conditionGroups_Before.concat( conditionGroups_After ); // create new array with item removed
 
-            const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object 
+            const conditionGroupsContainerNew = conditionGroupsContainer.cloneShallow(); // create new object
             conditionGroupsContainerNew.conditionGroups = conditionGroupsNew;
 
-            const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object 
-            conditionGroupsDataContainerNew.clearConditionData(); //  Clear conditions Data 
+            const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object
+            conditionGroupsDataContainerNew.clearConditionData(); //  Clear conditions Data
 
-            const experimentConditions_GraphicRepresentation_PropsData = ( 
+            const experimentConditions_GraphicRepresentation_PropsData = (
                 create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew })
             );
 
-            return ({ 
+            return ({
                 conditionGroupsContainer : conditionGroupsContainerNew,
                 conditionGroupsDataContainer : conditionGroupsDataContainerNew,
                 experimentConditions_GraphicRepresentation_PropsData
             });
-        });        
+        });
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
 
@@ -1548,7 +1569,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
     _add_conditionGroup_ToState({ conditionGroup, isTimePoints } : { conditionGroup : Experiment_ConditionGroup, isTimePoints : boolean }) {
 
@@ -1565,13 +1586,13 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * 
+     *
      */
-    _add_conditionGroup_SetState({ state, props, conditionGroup, isTimePoints } : { 
-        
-        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, 
-        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props, 
-        conditionGroup : Experiment_ConditionGroup, 
+    _add_conditionGroup_SetState({ state, props, conditionGroup, isTimePoints } : {
+
+        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State,
+        props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props,
+        conditionGroup : Experiment_ConditionGroup,
         isTimePoints  : boolean
     }) : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 
@@ -1590,9 +1611,9 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             conditionGroup.typeTimePoint = true;
             conditionGroup.specialConditionGroup = true;
             conditionGroup.id = _CONDITION_GROUP_ID_TIME_POINTS;
-        
+
         } else {
-        
+
             conditionGroup.id = conditionGroupsContainerNew.conditionGroupId_GetNextValue();
         }
 
@@ -1610,7 +1631,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         if ( isTimePoints ) {
             //  Always insert Time Points at the Start
             index_InsertBefore = 0;
-        
+
         } else {
 
             //  Keep typeBiologicalReplicate and typeTechnicalReplicate at end of array, if present
@@ -1637,20 +1658,20 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             conditionGroupsNew = conditionGroups_Old.concat( conditionGroup ); // create new array with item added to it
         }
- 
+
         conditionGroupsContainerNew.conditionGroups = conditionGroupsNew;
 
-        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object 
-        conditionGroupsDataContainerNew.clearConditionData(); //  Clear conditions Data 
+        const conditionGroupsDataContainerNew = state.conditionGroupsDataContainer.cloneShallow(); // create new object
+        conditionGroupsDataContainerNew.clearConditionData(); //  Clear conditions Data
 
         //  May not be needed here, since no searches added yet
         this._populateDefaultFilters_ForUnassignedFilters({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew });
 
-        const experimentConditions_GraphicRepresentation_PropsData = ( 
+        const experimentConditions_GraphicRepresentation_PropsData = (
             create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer : conditionGroupsContainerNew, conditionGroupsDataContainer : conditionGroupsDataContainerNew })
         );
 
-        const newState : ProjectPage_Experiments_SingleExperimentMaintRoot_State = { 
+        const newState : ProjectPage_Experiments_SingleExperimentMaintRoot_State = {
             conditionGroupsContainer : conditionGroupsContainerNew,
             conditionGroupsDataContainer : conditionGroupsDataContainerNew,
             experimentConditions_GraphicRepresentation_PropsData,
@@ -1675,8 +1696,8 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     _gotoStep_1_ButtonClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
-            return { 
-                current_Step : _CURRENT_STEP__1__DEFINE_EXPERIMENT, 
+            return {
+                current_Step : _CURRENT_STEP__1__DEFINE_EXPERIMENT,
                 data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : null,
                 graphicRep_SelectedCells : null
             };
@@ -1686,8 +1707,8 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     _gotoStep_2_ButtonClicked( event: React.MouseEvent<HTMLElement, MouseEvent>  ) {
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
-            return { 
-                current_Step : _CURRENT_STEP__2__ADD_SEARCHES_TO_CONDITIONS, 
+            return {
+                current_Step : _CURRENT_STEP__2__ADD_SEARCHES_TO_CONDITIONS,
                 data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : null,
                 graphicRep_SelectedCells : null
             };
@@ -1715,13 +1736,13 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                     for ( const projectSearchId of projectSearchIds ) {
                         projectSearchIds_ContainedInAllOtherCells.add( projectSearchId );
                     }
-                }   
+                }
             }
         }
 
-        _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier({ 
-            mainCellIdentifier_ToExclude : mainCellIdentifier, 
-            conditionGroupsContainer, 
+        _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier({
+            mainCellIdentifier_ToExclude : mainCellIdentifier,
+            conditionGroupsContainer,
             conditionGroupsDataContainer,
             callbackForEach_conditionGroupsDataContainer_Entry_Data
         });
@@ -1740,7 +1761,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                     const searchContainer : { search, setOnOtherCell? } = { search };
 
                     if ( projectSearchIds_ContainedInAllOtherCells.has( search.projectSearchId ) ) {
-                        //  Search selected for other cells so set 
+                        //  Search selected for other cells so set
 
                         searchContainer.setOnOtherCell = true;
                     } else {
@@ -1760,12 +1781,11 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      * callback: Called from click handler in class Experiment_SingleExperiment_ConditionsGraphicRepresentation
      */
-    _mainCellClickHandler({ event, mainCellIdentifier, entryCell_onMouseLeaveHandler } : { 
-        
-        event: React.MouseEvent<HTMLElement, MouseEvent>;
-        mainCellIdentifier: ExperimentConditions_GraphicRepresentation_MainCell_Identifier;
-        entryCell_onMouseLeaveHandler: any;
-    }) {
+    _mainCellClickHandler( params : ExperimentConditions_GraphicRepresentation_MainCellClickHandler_Params ) {
+
+        const event = params.event;
+        const mainCellIdentifier = params.mainCellIdentifier;
+        const entryCell_onMouseLeaveHandler = params.entryCell_onMouseLeaveHandler;
 
         //  When in doubt, call entryCell_onMouseLeaveHandler({ event });
 
@@ -1774,7 +1794,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             entryCell_onMouseLeaveHandler({ event });
         }
 
-        //  Get data for Main Cell Clicked to pass to 
+        //  Get data for Main Cell Clicked to pass to
 
         this.setState( (state: ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
             return this._get_ForState__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint({ state, mainCellIdentifier });
@@ -1783,11 +1803,11 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
 
     /**
-     * 
+     *
      */
-    _get_ForState__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint({ state, mainCellIdentifier } : { 
-        
-        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, 
+    _get_ForState__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint({ state, mainCellIdentifier } : {
+
+        state : ProjectPage_Experiments_SingleExperimentMaintRoot_State,
         mainCellIdentifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier;
     })  : ProjectPage_Experiments_SingleExperimentMaintRoot_State {
 
@@ -1795,7 +1815,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         const conditionGroupsDataContainer = state.conditionGroupsDataContainer;
 
-        const conditionGroupsDataContainer_Entry = conditionGroupsDataContainer.get_data ({ 
+        const conditionGroupsDataContainer_Entry = conditionGroupsDataContainer.get_data ({
             conditionIds_Array
         });
 
@@ -1813,7 +1833,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const searchesList = getSearchesListForSpecificEntryCell_Result.searchesList;
 
         const conditionGroupsContainer = state.conditionGroupsContainer;
-        
+
         const data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint = {
             projectSearchIds,
             conditionGroupsContainer,
@@ -1830,10 +1850,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             graphicRep_SelectedCells_Local = state.graphicRep_SelectedCells;
         } else {
-            graphicRep_SelectedCells_Local = new ExperimentConditions_GraphicRepresentation_SelectedCells();
+            graphicRep_SelectedCells_Local = create_ExperimentConditions_GraphicRepresentation_SelectedCells__NO__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ conditionGroupsContainer });
         }
 
-        graphicRep_SelectedCells_Local.clearEntries();
+        graphicRep_SelectedCells_Local.clear_MainCell_Selection_Entries();
 
         graphicRep_SelectedCells_Local.add_MainCell_Entry( mainCellIdentifier );
 
@@ -1844,8 +1864,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      * 
      */
-    _mainCell_getHoverContents({ conditionIdPath } : { conditionIdPath : Array<number> }) {
+    _mainCell_getHoverContents( params : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params ) {
 
+        const conditionIdPath = params.conditionIdPath;
+        
         const conditionGroupsDisplay = [];
 
         if ( conditionIdPath ) {
@@ -2230,7 +2252,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             </div>
         );
 
-        if ( this.state.numberTimePoints === 0 ) {
+        if ( this.state.numberTimePoints ===  undefined || this.state.numberTimePoints === null || this.state.numberTimePoints === 0 ) {
             //  Add Time Points Link
             timePointsAddLinkBlock = (
                 <div style={ { marginTop: 5 }}>
@@ -2309,6 +2331,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                     // mainCell_onMouseEnterHandler={ this._mainCell_onMouseEnterHandler_BindThis }
                     // mainCell_onMouseLeaveHandler={ this._mainCell_onMouseLeaveHandler_BindThis }
                     mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
+                    conditionGroupsContainer={ this.state.conditionGroupsContainer }
                 />
             );
 
@@ -2510,6 +2533,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                 <Experiment_SingleExperiment_ConditionsGraphicRepresentation 
                     data={ this.state.experimentConditions_GraphicRepresentation_PropsData }
                     selectedCells={ this.state.graphicRep_SelectedCells }
+                    conditionGroupsContainer={ this.state.conditionGroupsContainer }
                     conditionCellClickHandler={ undefined }
                     mainCellClickHandler={ mainCellClickHandler }
                     // mainCell_onMouseEnterHandler={ this._mainCell_onMouseEnterHandler_BindThis }
@@ -2722,15 +2746,16 @@ const _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier
     const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
 
         const conditionGroupsDataContainer_DataEntry : ConditionGroupsDataContainer_DataEntry = param.data;
-        const conditionIds_Path : Array<number> = param.conditionIds_Path;
+        const conditionIds_Path : Set<number> = param.conditionIds_Path;
 
-        if ( conditionIds_Path.length === cell_ConditionIds_Set.size ) {
+        if ( conditionIds_Path.size === cell_ConditionIds_Set.size ) {
 
-            const conditionIds_Path_Set = new Set( conditionIds_Path );
-            if ( conditionIds_Path_Set.size === cell_ConditionIds_Set.size ) { // retest after put in set since may remove dups
+            //  No longer need to create new Set since already a Set
+            // const conditionIds_Path_Set = new Set( conditionIds_Path );
+            // if ( conditionIds_Path_Set.size === cell_ConditionIds_Set.size ) { // retest after put in set since may remove dups
                 let foundAll = true;
-                for ( const conditionIds_Path_Set_Entry of conditionIds_Path_Set ) {
-                    if ( ! cell_ConditionIds_Set.has( conditionIds_Path_Set_Entry ) ) {
+                for ( const conditionIds_Path_Entry of conditionIds_Path ) {
+                    if ( ! cell_ConditionIds_Set.has( conditionIds_Path_Entry ) ) {
                         foundAll = false;
                         break;
                     }
@@ -2739,13 +2764,13 @@ const _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier
                     //  This entry matches identifier to exclude so return from processing this entry
                     return;  //  EARLY RETURN
                 }
-            } else {
-                const msg = "ERROR: _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier: else of if ( conditionIds_Path_Set.size === cell_ConditionIds_Set.size )";
-                console.warn( msg );
-                throw Error( msg );
-            }
+            // } else {
+            //     const msg = "ERROR: _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier: else of if ( conditionIds_Path_Set.size === cell_ConditionIds_Set.size )";
+            //     console.warn( msg );
+            //     throw Error( msg );
+            // }
         } else {
-            const msg = "ERROR: _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier: else of if ( conditionIds_Path.length === cell_ConditionIds_Set.size )";
+            const msg = "ERROR: _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier: else of if ( conditionIds_Path.size === cell_ConditionIds_Set.size )";
             console.warn( msg );
             throw Error( msg );
         }
@@ -2755,7 +2780,7 @@ const _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier
         callbackForEach_conditionGroupsDataContainer_Entry_Data({ conditionGroupsDataContainer_Entry_Data : conditionGroupsDataContainer_DataEntry });        
     }
 
-    conditionGroupsDataContainer.processAllDataEntries({ callback : processAllDataEntries_Callback });
+    conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

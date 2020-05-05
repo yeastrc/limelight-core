@@ -109,10 +109,12 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 		}
 
 		if ( ! this._value.groupProteins ) {
-			const OLD_V1_GroupProteins = this._proteinList_CentralStateManagerObjectClass.get_OLD_V1_GroupProteins();
-			if ( OLD_V1_GroupProteins ) {
-				// Value not set and V1 value is true so set to ALL
-				this._value.groupProteins = _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_ALL;
+			if ( this._proteinList_CentralStateManagerObjectClass ) {
+				const OLD_V1_GroupProteins = this._proteinList_CentralStateManagerObjectClass.get_OLD_V1_GroupProteins();
+				if (OLD_V1_GroupProteins) {
+					// Value not set and V1 value is true so set to ALL
+					this._value.groupProteins = _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_ALL;
+				}
 			}
 		}
 

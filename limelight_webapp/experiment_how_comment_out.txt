@@ -1,0 +1,9 @@
+
+Search for this in JSP and Javascript/Typescript:
+
+"Comment out Experiment Code"
+
+This will remove experiment from display on Project page.
+
+An experiment can be displayed directly for protein page using URL:
+<context>/d/pg/exp/protein/e/<experiment id>

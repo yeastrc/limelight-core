@@ -73,11 +73,19 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
 
     return (
 
-      <div className=" table-row-group-outer-container ">
-        <div className={ innerClassName } >
-              { reactRowElements }
+      <React.Fragment>
+
+        <div className=" table-row-group-outer-container ">
+          <div className={ innerClassName } >
+                { reactRowElements }
+          </div>
         </div>
-      </div>
+
+        {/* If CSS Class 'table-row-group-outer-container' is changed to 'display: inline-block'
+              Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line 
+        */}
+
+      </React.Fragment>
     )
   }
 

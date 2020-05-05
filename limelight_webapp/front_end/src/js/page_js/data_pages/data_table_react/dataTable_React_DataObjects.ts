@@ -555,13 +555,17 @@ class DataTable_cellMgmt_External_PopulateRequest {
     cellMgmt_External : DataTable_cellMgmt_External
 }
 
+class DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params {
+    cellMgmt_External_Data : any
+}
+
 /**
  * Response frpm DataTable_cellMgmt_External.populateCellDOMObject_Initial
  */
 class DataTable_cellMgmt_External_PopulateResponse {
 
     domObjectInCell_RemoveContents_Callback : () => void;
-    cellMgmt_External_Data_NewValue_Callback : ({ cellMgmt_External_Data } : { cellMgmt_External_Data : any }) => void;
+    cellMgmt_External_Data_NewValue_Callback : ( params : DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params ) => void;
 }
 
 /////
@@ -598,6 +602,7 @@ export {
     DataTable_cellMgmt_External,
     DataTable_cellMgmt_External_PopulateRequest,
     DataTable_cellMgmt_External_PopulateResponse,
+    DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params,
     DataTable_cellMgmt_ExternalReactComponent
 }
 

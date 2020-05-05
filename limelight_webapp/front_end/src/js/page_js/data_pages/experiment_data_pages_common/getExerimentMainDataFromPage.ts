@@ -15,6 +15,7 @@
 
 import { Experiment_ConditionGroupsContainer, create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { SearchDataLookupParameters_Root } from '../data_pages__common_data_classes/searchDataLookupParameters';
 
 const _ROOT_VERSION_NUMBER_SUPPORTED = 1;
 
@@ -35,7 +36,7 @@ export class GetExerimentMainDataFromPage {
 	/**
 	 * @return ExerimentMainData from Page DOM
 	 */
-	getExerimentMainDataFromPage({ searchDataLookupParamsRoot }) {
+	getExerimentMainDataFromPage({ searchDataLookupParamsRoot } : { searchDataLookupParamsRoot : SearchDataLookupParameters_Root } ) {
 
 		// console.log("getExerimentMainDataFromPage()")
 		

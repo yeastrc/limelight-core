@@ -7,7 +7,7 @@
  */
 import React from 'react'
 
-import { DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import { DataTable_Column, DataTable_DataRow_ColumnEntry, DataTable_cellMgmt_External_PopulateResponse, DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 /**
  * 
@@ -28,7 +28,7 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
     private cellContainingDiv
 
     private onUnmountCallback;
-    private dataObject_columnEntry_NewValue_Callback;
+    private dataObject_columnEntry_NewValue_Callback :  ( params: DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params ) => void;
 
 
     constructor(props : DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_Props ) {
@@ -54,7 +54,7 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
 
             if ( column.cellMgmt_External && column.cellMgmt_External.populateCellDOMObject_Initial ) {
 
-                const cellMgmt_ExternalFunction_Response = column.cellMgmt_External.populateCellDOMObject_Initial({ 
+                const cellMgmt_ExternalFunction_Response : DataTable_cellMgmt_External_PopulateResponse = column.cellMgmt_External.populateCellDOMObject_Initial({ 
                     cellMgmt_External_Data : this.props.dataObject_columnEntry.cellMgmt_External_Data, 
                     domObjectInCell : this.cellContainingDiv.current, 
                     columnWidth : column.width,
@@ -138,7 +138,7 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
     // console.log("DataTable_Table_DataRowEntry_External_Cell_Mgmt_React: componentDidUpdate")
 
     if ( this.dataObject_columnEntry_NewValue_Callback ) {
-        this.dataObject_columnEntry_NewValue_Callback({ dataObject_columnEntry : this.props.dataObject_columnEntry });
+        this.dataObject_columnEntry_NewValue_Callback({ cellMgmt_External_Data : this.props.dataObject_columnEntry.cellMgmt_External_Data });
     }
   }
 

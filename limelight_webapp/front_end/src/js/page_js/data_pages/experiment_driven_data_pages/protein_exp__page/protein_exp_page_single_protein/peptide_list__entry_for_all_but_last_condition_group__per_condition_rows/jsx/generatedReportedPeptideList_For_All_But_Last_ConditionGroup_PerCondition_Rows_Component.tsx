@@ -15,7 +15,7 @@ import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTab
 
 import { ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter } from '../js/generatedReportedPeptideList_For_All_But_Last_ConditionGroup_PerCondition_Rows_ReturnChildReactComponent';
 
-import { createReportedPeptideDisplayData_DataTableDataObjects, GetDataTableDataObjects_Result } from '../js/generatedReportedPeptideList_For_All_But_Last_ConditionGroup_PerCondition_Rows_CreateListData';
+import { createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup, GetDataTableDataObjects_All_But_Last_ConditionGroup_Result } from '../js/generatedReportedPeptideList_For_All_But_Last_ConditionGroup_PerCondition_Rows_CreateListData';
 
 
 /**
@@ -171,7 +171,7 @@ export class ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows_
             throw Error( msg )
         }
 
-        const getDataTableDataObjects_Result : GetDataTableDataObjects_Result = createReportedPeptideDisplayData_DataTableDataObjects({ 
+        const getDataTableDataObjects_Result : GetDataTableDataObjects_All_But_Last_ConditionGroup_Result = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup({ 
             forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter : this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter
         });
 

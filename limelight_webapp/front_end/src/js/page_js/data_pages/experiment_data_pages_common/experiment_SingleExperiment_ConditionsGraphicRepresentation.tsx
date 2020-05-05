@@ -24,12 +24,20 @@
 
 
 
-import React from 'react'
+import React, {CSSProperties} from 'react'
+
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
 
 import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/common_all_pages/tooltip_LimelightLocal_ReactBased';
 
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer, ConditionGroupsDataContainer_DataEntry } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class'
+// import { ConditionGroupsDataContainer, ConditionGroupsDataContainer_DataEntry } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class'
+
+
+import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier, ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
+
+import { ExperimentConditions_GraphicRepresentation_SelectedCells } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections';
+
 
 // const tableStyle_Default = { borderCollapse : "collapse", borderSpacing: "0px", padding: "0px", width: "100%" }; // borderCollapse : "collapse", 
 
@@ -45,14 +53,49 @@ import { ConditionGroupsDataContainer, ConditionGroupsDataContainer_DataEntry } 
 
 //  Other classes at bottom for managing the tooltips
 
-export type ExperimentConditions_GraphicRepresentation_MainCellClickHandler = ({ 
-    
-    event, mainCellIdentifier, entryCell_onMouseLeaveHandler 
-} : {
-    event: React.MouseEvent<HTMLElement, MouseEvent>
+/**
+ * 
+ */
+export class ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params {
+    conditionIdPath : Array<number>
+}
+
+/**
+ * 
+ */
+export type ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = ( params : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params ) => void
+
+
+/**
+ * 
+ */
+export class ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params {
+    event : React.MouseEvent<HTMLElement, MouseEvent>
+    condition_Id : number
+    conditionGroup_Id : number
+    entryCell_onMouseLeaveHandler : ({ event } : { event : React.MouseEvent<HTMLElement, MouseEvent> }) => void
+}
+
+/**
+ * 
+ */
+export type ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler = ( params : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params ) => void
+
+
+
+/**
+ * 
+ */
+export class ExperimentConditions_GraphicRepresentation_MainCellClickHandler_Params {
+    event : React.MouseEvent<HTMLElement, MouseEvent>
     mainCellIdentifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier
-    entryCell_onMouseLeaveHandler 
-}) => void
+    entryCell_onMouseLeaveHandler : ({ event } : { event : React.MouseEvent<HTMLElement, MouseEvent> }) => void
+}
+
+/**
+ * 
+ */
+export type ExperimentConditions_GraphicRepresentation_MainCellClickHandler = ( params : ExperimentConditions_GraphicRepresentation_MainCellClickHandler_Params ) => void
 
 
 /**
@@ -70,6 +113,8 @@ export class ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCe
     conditionIdPath? : Array<number>
     condition? : Experiment_Condition
     conditionGroup? : Experiment_ConditionGroup 
+    conditionGroupIndex? : number // index in conditionGroup array so have relative position within condition groups
+    experimentConditions_GraphicRepresentation_ConditionCell_Identifier : ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier
 }
 
 /**
@@ -78,139 +123,22 @@ export class ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCe
 export class ExperimentConditions_GraphicRepresentation_PropsData {
 
     displayTableCells : Array<Array<ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell>>
-}
 
+    experiment_ConditionGroupsContainer : Experiment_ConditionGroupsContainer
 
-/**
- * An "Identifier" for a "Main Cell".  The set of Condition Ids that uniquely identify this "Main Cell"
- * 
- * A "Main Cell" contains things like Searches assigned to that cell
- */
-export class ExperimentConditions_GraphicRepresentation_MainCell_Identifier {
+    constructor({ displayTableCells, experiment_ConditionGroupsContainer } : {
 
-    cell_ConditionIds_Set : Set<number>;
+        displayTableCells : Array<Array<ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell>>
 
-    constructor( { cell_ConditionIds_Set } : { cell_ConditionIds_Set : Set<number> } ) {
+        experiment_ConditionGroupsContainer : Experiment_ConditionGroupsContainer
 
-        this.cell_ConditionIds_Set = cell_ConditionIds_Set;
-    }
-
-    /**
-     * @returns true if selectedCell_ConditionIds_Set same contents as otherObject.selectedCell_ConditionIds_Set
-     */
-    equals( otherObject : ExperimentConditions_GraphicRepresentation_MainCell_Identifier ) : boolean {
-        if ( ! ( otherObject instanceof ExperimentConditions_GraphicRepresentation_MainCell_Identifier ) ) {
-            const msg = "ERORR: ExperimentConditions_GraphicRepresentation_PropsData_SelectedCellEntry::equals. if ( ! ( otherObject instanceof ExperimentConditions_GraphicRepresentation_PropsData_SelectedCellEntry ) )";
-            console.warn( msg );
-            throw Error( msg );
-        }
-        if ( this.cell_ConditionIds_Set.size !== otherObject.cell_ConditionIds_Set.size ) {
-            return false; // EARLY RETURN
-        }
-        for ( const entry of this.cell_ConditionIds_Set ) {
-            if ( ! otherObject.cell_ConditionIds_Set.has( entry ) ){
-                return false; // EARLY RETURN
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @returns cell_ConditionIds_Set copied to Array
-     */
-    get_cell_ConditionIds_AsArray(): Array<number> {
-        const result = Array.from( this.cell_ConditionIds_Set );
-        return result;
+    }) {
+        this.displayTableCells = displayTableCells;
+        this.experiment_ConditionGroupsContainer = experiment_ConditionGroupsContainer;
     }
 }
 
-/**
- * 
- */
-export class ExperimentConditions_GraphicRepresentation_SelectedCells {
-
-    private selected_MainCell_Entries : Array<ExperimentConditions_GraphicRepresentation_MainCell_Identifier> = [];
-
-    /**
-     * 
-     */
-    shallowClone() : ExperimentConditions_GraphicRepresentation_SelectedCells {
-
-        const clone = new ExperimentConditions_GraphicRepresentation_SelectedCells();
-        clone.selected_MainCell_Entries = this.selected_MainCell_Entries;
-        return clone;
-    }
-
-    /**
-     * 
-     */
-    contains_MainCell_Entry( entryDoesContain : ExperimentConditions_GraphicRepresentation_MainCell_Identifier ) : boolean {
-
-        if ( ! entryDoesContain ) {
-            throw Error("ExperimentConditions_GraphicRepresentation_SelectedCells::contains_MainCell_Entry:  No parameter provided");
-        }
-        const entryToAdd_FoundIn_ExistingEntries = this.selected_MainCell_Entries.find( ( entry_selectedCellEntries ) => {  
-
-            if ( entry_selectedCellEntries.equals( entryDoesContain ) ) {
-                return entry_selectedCellEntries; // Is a Match
-            }
-            return undefined;  // Not a Match
-        }, this );
-
-        if ( entryToAdd_FoundIn_ExistingEntries ) {
-            // Entry already in existing entries so exit
-            return true //  EARLY EXIT
-        }
-        return false;
-    }
-
-    /**
-     * 
-     */
-    add_MainCell_Entry( entryToAdd : ExperimentConditions_GraphicRepresentation_MainCell_Identifier ) : void {
-
-        if ( ! entryToAdd ) {
-            throw Error("ExperimentConditions_GraphicRepresentation_SelectedCells::add_MainCell_Entry:  No parameter provided");
-        }
-        const entryToAdd_FoundIn_ExistingEntries = this.selected_MainCell_Entries.find( ( entry_selectedCellEntries ) => {  
-
-            if ( entry_selectedCellEntries.equals( entryToAdd ) ) {
-                return entry_selectedCellEntries; // Is a Match
-            }
-            return undefined;  // Not a Match
-        }, this );
-
-        if ( entryToAdd_FoundIn_ExistingEntries ) {
-            // Entry already in existing entries so exit
-            return //  EARLY EXIT
-        }
-        
-        this.selected_MainCell_Entries.push( entryToAdd );
-    }
-
-    /**
-     * 
-     */
-    remove_MainCell_Entry( entryToRemove : ExperimentConditions_GraphicRepresentation_MainCell_Identifier ) : void {
-
-        throw Error("remove_MainCell_Entry untested")
-
-        this.selected_MainCell_Entries = this.selected_MainCell_Entries.filter( ( entry_selectedCellEntries, indexOptional ) => { 
-            
-            const returnValue = ! entry_selectedCellEntries.equals( entryToRemove ) ;
-            return returnValue;  // return true to add to resulting Array
-        }, this );
-    }
-
-    /**
-     * 
-     */
-    clearEntries() : void {
-        
-        this.selected_MainCell_Entries = [];
-    }
-
-}
+/////////////////////////////////////////////////////////////////////////////
 
 /**
  * 
@@ -219,7 +147,9 @@ export interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_Pro
 
     data : ExperimentConditions_GraphicRepresentation_PropsData;
     selectedCells? : ExperimentConditions_GraphicRepresentation_SelectedCells
-    conditionCellClickHandler?
+    conditionGroupsContainer : Experiment_ConditionGroupsContainer
+    manage_SelectedCells_ConditionCell_Selection_UserClick_Updates? : boolean
+    conditionCellClickHandler? : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler
     mainCellClickHandler? : ExperimentConditions_GraphicRepresentation_MainCellClickHandler
     mainCell_getHoverContents?
 }
@@ -235,6 +165,8 @@ interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_State {
 export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends React.Component< Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props, Experiment_SingleExperiment_ConditionsGraphicRepresentation_State > {
 
     private _mainCellTooltipDisplayManager : MainCellTooltipDisplayManager;
+
+    private  _clearSelectionClickHandler_BindThis = this._clearSelectionClickHandler.bind(this);
 
     /**
      * 
@@ -256,6 +188,16 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
     //     // console.log("class Experiment_SingleExperiment_ConditionsGraphicRepresentation: componentWillUnmount()");
     // }
 
+    private _clearSelectionClickHandler( event: React.MouseEvent<HTMLDivElement, MouseEvent> ) {
+        try {
+            this.props.selectedCells.clear_All_ConditionSelection_Entries();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
     /**
      * 
      */
@@ -264,6 +206,7 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
         const data = this.props.data;
 
         const displayTableCells = data.displayTableCells;
+        const experiment_ConditionGroupsContainer = data.experiment_ConditionGroupsContainer;
 
         if ( ( ! displayTableCells ) || displayTableCells.length === 0 ) {
             return null;
@@ -272,6 +215,13 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
         const rowsDisplay = [];
 
         {
+            // const conditionGroups = experiment_ConditionGroupsContainer.conditionGroups
+            // const conditionGroups_Length = conditionGroups.length;
+
+            const leftSide_AnyConditionsSelected_ForConditionGroupIndex = []; // Index is conditionGroupIndex
+
+            const leftSide_CurrentConditionSelected_ForConditionGroupIndex = []; // Index is conditionGroupIndex
+
             let counter_Row = 0;
             for ( const row of displayTableCells ) {
 
@@ -279,6 +229,7 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
                 {
                     let counter_Cell = 0;
                     for ( const cell of row ) {
+
     
                         const cellDisplay = (
                             <TableCell key={ counter_Cell }
@@ -303,6 +254,13 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
        
         }
 
+        let clearSelectionLinkClickHandler = undefined;
+
+        if ( this.props.manage_SelectedCells_ConditionCell_Selection_UserClick_Updates ) {
+
+            clearSelectionLinkClickHandler = this._clearSelectionClickHandler_BindThis;
+        }
+
         return (
             <div className=" experiment-display-container ">
                 <table className=" root-table ">
@@ -310,6 +268,12 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
                         { rowsDisplay }
                     </tbody>
                 </table>
+                { ( clearSelectionLinkClickHandler ? (
+
+                    <div >
+                        <span className=" fake-link " onClick={ clearSelectionLinkClickHandler }>Clear selection</span>
+                    </div>
+                ) : undefined )}
             </div>
         );
     }
@@ -338,8 +302,8 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
     private _cell_onMouseEnterHandler_BindThis = this._cell_onMouseEnterHandler.bind(this);
     private _cell_onMouseLeaveHandler_BindThis = this._cell_onMouseLeaveHandler.bind(this);
 
-    private paddingTop_Set
-    private td_Ref
+    private paddingTop_Set: boolean
+    private readonly td_Ref: React.RefObject<HTMLTableCellElement>
     
     
     /**
@@ -439,50 +403,102 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
     // }
 
     _cellClickHandler( event : React.MouseEvent<HTMLElement, MouseEvent> ) {
-        
-        event.preventDefault();
-        event.stopPropagation(); //  
+        try {
+            // event.preventDefault();
+            // event.stopPropagation(); //
 
-        if ( this.props.cell.conditionLabelCell ) {
-
-            if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.conditionCellClickHandler ) {
-                const conditionGroup = this.props.cell.conditionGroup;
-                const conditionGroup_Id = conditionGroup.id;
-                const condition = this.props.cell.condition;
-                const condition_Id = condition.id;
-                this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.conditionCellClickHandler({ event, conditionGroup_Id,  condition_Id });
-            }
-        }
-
-        if ( this.props.cell.mainDataCell ) {
-
-            if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler ) {
-
-                // console.warn( "Ignoring value for this.props.mainCellClickHandler")
+            if ( this.props.cell.conditionLabelCell ) {
 
                 let entryCell_onMouseLeaveHandler = undefined;
-                
-                if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCell_getHoverContents ) {
-                    entryCell_onMouseLeaveHandler = this._cell_onMouseLeaveHandler_BindThis;
+
+                //  Update this when add Mouse Tooltip to Condition Label Cell
+
+                // if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props. ) {
+                //     entryCell_onMouseLeaveHandler = this._cell_onMouseLeaveHandler_BindThis;
+                // }
+
+                if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.conditionCellClickHandler ) {
+                    const conditionGroup = this.props.cell.conditionGroup;
+                    const conditionGroup_Id = conditionGroup.id;
+                    const condition = this.props.cell.condition;
+                    const condition_Id = condition.id;
+                    this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.conditionCellClickHandler({ event, conditionGroup_Id,  condition_Id, entryCell_onMouseLeaveHandler });
                 }
 
-                const conditionIdPath = this.props.cell.conditionIdPath;
-                if ( ! conditionIdPath ) {
-                    const msg = "No value for cell.conditionIdPath:  In if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler ) {"
-                    console.warn( msg );
-                    throw Error( msg );
+                if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.manage_SelectedCells_ConditionCell_Selection_UserClick_Updates ) {
+                    //  Select/Deselect Condition Cells Here
+
+                    //  Different rules/code for condition labels at top vs on the left
+
+                    if ( this.props.cell.conditionGroupIndex === 0 ) {
+
+                        // condition labels at top / First Condition Group
+
+                        const condition = this.props.cell.condition;
+                        const condition_Id = condition.id;
+
+                        if ( event.ctrlKey || event.metaKey ) {
+                            //  CTRL key or Meta key (Command on Mac) so Toggle
+                            this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.
+                            get_selected_ConditionCells_First_ConditionGroup().toggle_ConditionCell_Entry( condition_Id );
+                        } else {
+                            //  Clear all then add clicked
+                            this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.clear_All_ConditionSelection_Entries();
+                            this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.
+                            get_selected_ConditionCells_First_ConditionGroup().add_ConditionCell_Entry( condition_Id );
+                        }
+                    } else {
+
+                        // condition labels on left / Second and After Condition Groups
+
+                        if ( event.ctrlKey || event.metaKey ) {
+                            //  CTRL key or Meta key (Command on Mac) so Toggle
+                            this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.
+                            get_selected_ConditionCells_OtherThanFirst_ConditionGroup().toggle_ConditionCell_Entry( this.props.cell.experimentConditions_GraphicRepresentation_ConditionCell_Identifier );
+                        } else {
+                            //  Clear all then add clicked
+                            this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.clear_All_ConditionSelection_Entries();
+                            this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.
+                            get_selected_ConditionCells_OtherThanFirst_ConditionGroup().add_ConditionCell_Entry( this.props.cell.experimentConditions_GraphicRepresentation_ConditionCell_Identifier );
+                        }
+                    }
                 }
-                const conditionIdPath_Set = new Set( conditionIdPath );
-                
-                const experimentConditions_GraphicRepresentation_MainCell_Identifier = (
-                    new ExperimentConditions_GraphicRepresentation_MainCell_Identifier({ cell_ConditionIds_Set : conditionIdPath_Set })
-                );
-                this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler({ 
-                    event, 
-                    mainCellIdentifier : experimentConditions_GraphicRepresentation_MainCell_Identifier, 
-                    entryCell_onMouseLeaveHandler 
-                });
             }
+
+            if ( this.props.cell.mainDataCell ) {
+
+                if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler ) {
+
+                    // console.warn( "Ignoring value for this.props.mainCellClickHandler")
+
+                    let entryCell_onMouseLeaveHandler = undefined;
+
+                    if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCell_getHoverContents ) {
+                        entryCell_onMouseLeaveHandler = this._cell_onMouseLeaveHandler_BindThis;
+                    }
+
+                    const conditionIdPath = this.props.cell.conditionIdPath;
+                    if ( ! conditionIdPath ) {
+                        const msg = "No value for cell.conditionIdPath:  In if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler ) {"
+                        console.warn( msg );
+                        throw Error( msg );
+                    }
+                    const conditionIdPath_Set = new Set( conditionIdPath );
+
+                    const experimentConditions_GraphicRepresentation_MainCell_Identifier = (
+                        new ExperimentConditions_GraphicRepresentation_MainCell_Identifier({ cell_ConditionIds_Set : conditionIdPath_Set })
+                    );
+                    this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler({
+                        event,
+                        mainCellIdentifier : experimentConditions_GraphicRepresentation_MainCell_Identifier,
+                        entryCell_onMouseLeaveHandler
+                    });
+                }
+            }
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
         }
     }
 
@@ -503,10 +519,13 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
         this.props.mainCellTooltipDisplayManager.mainCellMouseLeave({ event });
     }
 
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
     /**
      * 
      */
-    render () {
+    render() {
 
         let entryCell_ClickHandler = undefined;
         let entryCell_onMouseEnterHandler = undefined;
@@ -514,7 +533,8 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
 
         if ( this.props.cell.conditionLabelCell ) {
 
-            if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.conditionCellClickHandler ) {
+            if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.conditionCellClickHandler ||
+                this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.manage_SelectedCells_ConditionCell_Selection_UserClick_Updates ) {
 
                 entryCell_ClickHandler = this._cellClickHandler_BindThis;
             }
@@ -536,11 +556,55 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
         
         let classNames_Clickable = "";
         if ( entryCell_ClickHandler ) {
+
             classNames_Clickable = " clickable "
         }
+        
+        let classNames_ConditionLabelCell = "";
+        let classNames_ConditionLabelCell_Selected = "";
+
         let classNames_MainDataCell = "";
         let classNames_MainDataCell_Selected = "";
+
+        
+
+        if ( this.props.cell.conditionLabelCell ) {
+            
+            classNames_ConditionLabelCell = " condition-label-cell ";
+
+            //  Determine if current cell is a selected cell.  If selected cell, variable 'found' is true and CSS class name is added
+
+            if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells ) {
+                
+                //  Different rules/code for condition labels at top vs on the left
+
+                if ( this.props.cell.conditionGroupIndex === 0 ) {
+
+                    // condition labels at top
+
+                    const condition = this.props.cell.condition;
+                    const condition_Id = condition.id;
+
+                    if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.get_selected_ConditionCells_First_ConditionGroup().contains_ConditionCell_Entry( condition_Id ) ) {
+
+                        classNames_ConditionLabelCell_Selected = " selected ";
+                    }
+
+                } else {
+
+                    // condition labels on left
+
+                    if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.get_selected_ConditionCells_OtherThanFirst_ConditionGroup().
+                        contains_ConditionCell_Entry( this.props.cell.experimentConditions_GraphicRepresentation_ConditionCell_Identifier ) ) {
+
+                        classNames_ConditionLabelCell_Selected = " selected ";
+                    }
+                }
+            }
+        }
+
         if ( this.props.cell.mainDataCell ) {
+
             classNames_MainDataCell = " main-condition-cell ";
 
             //  Determine if current cell is a selected cell.  If selected cell, variable 'found' is true and CSS class name is added
@@ -552,11 +616,37 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
 
                 const found = this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.contains_MainCell_Entry( selected_MainCell_Entry_ForLookup );
                 if ( found ) {
-                    classNames_MainDataCell_Selected = " selected ";
+                    classNames_MainDataCell_Selected = " selected-directly ";
+                }
+
+                if ( ! found ) {
+
+                    //  Main Cell NOT Selected Directly
+
+                    let mainCellSelected = false;
+
+                    if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells ) {
+
+                        //  Check if Main Cell is selected from Selected Condition Label Cells
+
+                        const conditionIdPath = this.props.cell.conditionIdPath;
+                        const cell_ConditionIds_Set = new Set( conditionIdPath );
+                        const mainCell_Identifier: ExperimentConditions_GraphicRepresentation_MainCell_Identifier = new ExperimentConditions_GraphicRepresentation_MainCell_Identifier({ cell_ConditionIds_Set });
+
+                        if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.selectedCells.mainCell_Selected_FromConditionLabelSelections_ContainsEntry( mainCell_Identifier ) ) {
+                            mainCellSelected = true;
+                        }
+
+                    }
+
+                    if ( mainCellSelected ) {
+                        classNames_MainDataCell_Selected = " selected-indirectly ";
+                    }
                 }
             } 
         } 
-        const className = " cell " + classNames_Clickable + classNames_MainDataCell + classNames_MainDataCell_Selected;
+
+        const className = " cell " + classNames_Clickable + classNames_ConditionLabelCell + classNames_ConditionLabelCell_Selected + classNames_MainDataCell + classNames_MainDataCell_Selected;
         
         let style = getDefaultCellStyle();
 
@@ -574,7 +664,8 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
                 onMouseLeave={ entryCell_onMouseLeaveHandler }
                 className={ className }
                 style={ style }
-                rowSpan={ this.props.cell.rowSpan } >
+                rowSpan={ this.props.cell.rowSpan }
+                data-component="TableCell" >
                 <div className=" cell-contents-container ">
                     { this.props.cell.label }
                 </div>
@@ -587,7 +678,7 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
 /**
  * Object with default cell style
  */
-const getDefaultCellStyle = function() {
+const getDefaultCellStyle = function() : CSSProperties {
     
     return {
         borderTopWidth : 0, 

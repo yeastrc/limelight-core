@@ -19,9 +19,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
+
 //  Local imports
 
-import { ProjectPage_ExperimentsSectionRoot } from './projPg_ExpermntsSectionRoot';
+import { ProjectPage_ExperimentsSectionRoot, ProjectPage_ExperimentsSectionRoot_Props } from './projPg_ExpermntsSectionRoot';
+import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './projPg_Expermnts_LoggedInUsersInteraction';
 
 /**
  * 
@@ -30,14 +33,14 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
+	private _projectIdentifierFromURL : string;
 
-	private _projectPage_ExperimentsSection_LoggedInUsersInteraction;
+	private _projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction;
 
 	private _editExperimentInvokeHandler_BindThis = this._editExperimentInvokeHandler.bind(this);
 	private _cloneExperimentInvokeHandler_BindThis = this._cloneExperimentInvokeHandler.bind(this)
 
-	private _renderedReactComponent;
+	private _renderedReactComponent : ProjectPage_ExperimentsSectionRoot;
 
 	/**
 	 * searchSelectionChangeCallback - function called when the search selection changes
@@ -46,10 +49,23 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 		projectIdentifierFromURL, 
 		projectPage_ExperimentsSection_LoggedInUsersInteraction, // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
 	} : { 
-		projectIdentifierFromURL, 
-		projectPage_ExperimentsSection_LoggedInUsersInteraction, // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
+		projectIdentifierFromURL : any 
+		projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
 	}) {
 
+		if ( ! limelight__IsVariableAString( projectIdentifierFromURL ) ) {
+			const msg = "ProjectPage_ExperimentsSection_AllUsersInteraction:constructor: not a string: projectIdentifierFromURL: " + projectIdentifierFromURL;
+			console.warn( msg );
+			throw Error( msg );
+		}
+		if ( projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
+			if ( ! ( projectPage_ExperimentsSection_LoggedInUsersInteraction instanceof ProjectPage_ExperimentsSection_LoggedInUsersInteraction ) ) {
+				const msg = "ProjectPage_ExperimentsSection_AllUsersInteraction:constructor: ! ( projectPage_ExperimentsSection_LoggedInUsersInteraction instanceof ProjectPage_ExperimentsSection_LoggedInUsersInteraction )";
+				console.warn( msg );
+				throw Error( msg );
+			}
+		}
+		
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 
 		this._projectPage_ExperimentsSection_LoggedInUsersInteraction = projectPage_ExperimentsSection_LoggedInUsersInteraction;
@@ -119,17 +135,19 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 			cloneExperimentInvokeHandler_BindThis = this._cloneExperimentInvokeHandler_BindThis;
 		}
 
+		const projectPage_ExperimentsSectionRoot_Props = new ProjectPage_ExperimentsSectionRoot_Props();
+
+		projectPage_ExperimentsSectionRoot_Props.projectPage_ExperimentsSection_LoggedInUsersInteraction = projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent ,
+		projectPage_ExperimentsSectionRoot_Props.projectIdentifierFromURL = this._projectIdentifierFromURL,
+		projectPage_ExperimentsSectionRoot_Props.editExperimentInvokeHandler = editExperimentInvokeHandler_BindThis,
+		projectPage_ExperimentsSectionRoot_Props.cloneExperimentInvokeHandler = cloneExperimentInvokeHandler_BindThis
+
 		const renderCompletecallbackFcn = ( ) => { };
 
 		const projectPage_ExperimentsSectionRoot_Component = (
 			React.createElement(
 				ProjectPage_ExperimentsSectionRoot,
-				{
-					projectPage_ExperimentsSection_LoggedInUsersInteraction : projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent ,
-					projectIdentifierFromURL : this._projectIdentifierFromURL,
-					editExperimentInvokeHandler : editExperimentInvokeHandler_BindThis,
-					cloneExperimentInvokeHandler : cloneExperimentInvokeHandler_BindThis
-				},
+				projectPage_ExperimentsSectionRoot_Props,
 				null
 			)
 		);

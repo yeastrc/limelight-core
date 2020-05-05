@@ -18,6 +18,9 @@ import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { ProteinExperimentPage_SingleProtein_MainContent_Component, ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop } from './proteinExperimentPage_SingleProtein_MainContent_Component'
+import {ProteinExperimentPage_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_SingleProtein_ProteinNameDescription_Component";
+import {ProteinPage_Display_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_Display_SingleProtein_ProteinNameDescription_Component";
+import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 
 
 
@@ -44,6 +47,10 @@ export interface ProteinExperimentPage_SingleProtein_Root_Component_closeOverlay
 export interface ProteinExperimentPage_SingleProtein_Root_Component_Props {
 
     closeOverlayClickHandler : ProteinExperimentPage_SingleProtein_Root_Component_closeOverlayClickHandler;
+
+    //  Optional.  Do NOT have when loading URL and directly displaying Single Protein Overlay
+    proteinNames : string
+    proteinDescriptions : string
 }
 
 /**
@@ -52,6 +59,8 @@ export interface ProteinExperimentPage_SingleProtein_Root_Component_Props {
 interface ProteinExperimentPage_SingleProtein_Root_Component_State {
 
     proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop? : ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop
+
+    component_SubTree_Has_Error? : boolean
 }
 
 /**
@@ -105,7 +114,25 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
             return { proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop }
         });
     }
-    
+
+
+    /**
+     *
+     */
+    static getDerivedStateFromError( error : any ) : ProteinExperimentPage_SingleProtein_Root_Component_State {
+        // Update state so the next render will show the fallback UI.
+        return { component_SubTree_Has_Error : true };
+    }
+
+    /**
+     *
+     */
+    componentDidCatch( error : any, errorInfo : any ) {
+        // You can also log the error to an error reporting service
+
+        console.warn("react Component 'ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component'. componentDidCatch: ", error, errorInfo );
+        // logErrorToMyService(error, errorInfo);
+    }
 
     /**
      * 
@@ -231,8 +258,19 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
             closeOverlayClickHandler = this._closeOverlayClickHandler_BindThis
         }
 
-        let mainContent = undefined;
-        if ( this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop ) {
+        let component_SubTree_ErrorMessage : JSX.Element = undefined;
+
+        let mainContent : JSX.Element = undefined;
+
+
+        if ( this.state.component_SubTree_Has_Error ) {
+
+            component_SubTree_ErrorMessage = (
+
+                <div >An Error has Occurred.  Please reload the page and try again.</div>
+            );
+
+        } else if ( this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop ) {
 
             mainContent = (
                 <ProteinExperimentPage_SingleProtein_MainContent_Component
@@ -247,8 +285,23 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
         } else {
 
             mainContent = (
-                <div style={ { fontSize: 18 }} >
-                    Loading Data
+                <div>
+                    { ( this.props.proteinNames !== undefined ) ? ( //  Display proteinNames/proteinDescriptions if have them
+
+                        <div style={ { marginBottom: 15 } }>
+                            <ProteinExperimentPage_SingleProtein_ProteinNameDescription_Component
+                                proteinNames={ this.props.proteinNames }
+                                proteinDescriptions={ this.props.proteinDescriptions }
+                            />
+                        </div>
+                    ) : null
+                    }
+                    <div style={ { fontSize: 18 }} >
+                        Loading Data
+                    </div>
+                    <div style={ { marginTop: 40 } }>
+                        <Spinner_Limelight_Component/>
+                    </div>
                 </div>
             )
         }
@@ -273,6 +326,7 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
                         </div>
                         <div id="view_single_protein_overlay_body" className="view-single-protein-overlay-body" ref={ this._view_single_protein_overlay_body_Ref } >
 
+                            { component_SubTree_ErrorMessage }
                             { mainContent }
                         </div>
                     </div>

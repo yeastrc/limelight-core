@@ -22,15 +22,15 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
 
     //     Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data
 
-    private psmFilters = undefined;
-    private reportedPeptideFilters = undefined;
-    private matchedProteinFilters = undefined;
+    private psmFilters : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
+    private reportedPeptideFilters : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
+    private matchedProteinFilters : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
 
     //    Array of Integer of Annotation Type Id values
 
-    private psmAnnTypeDisplay = undefined;
-    private reportedPeptideAnnTypeDisplay = undefined;
-    private matchedProteinAnnTypeDisplay = undefined;
+    private psmAnnTypeDisplay : Array<number> = undefined;
+    private reportedPeptideAnnTypeDisplay : Array<number> = undefined;
+    private matchedProteinAnnTypeDisplay : Array<number> = undefined;
 
     //  Matching Java classes:
     // class SearchDataLookupParams_For_Single_ProjectSearchId {
@@ -58,7 +58,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    get_psmFilters_PerProjectSearchId() {
+    get_psmFilters_PerProjectSearchId() : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> {
 
         return this.psmFilters;
     }
@@ -66,7 +66,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    set_psmFilters_PerProjectSearchId( psmFilters ) {
+    set_psmFilters_PerProjectSearchId( psmFilters : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> ) {
 
         if ( psmFilters ) {
             if ( ! ( psmFilters instanceof Array ) ) {
@@ -82,7 +82,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    get_reportedPeptideFilters_PerProjectSearchId() {
+    get_reportedPeptideFilters_PerProjectSearchId() : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> {
 
         return this.reportedPeptideFilters;
     }
@@ -90,7 +90,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param reportedPeptideFilters - Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilters ) {
+    set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilters : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> ) {
 
         if ( reportedPeptideFilters ) {
             if ( ! ( reportedPeptideFilters instanceof Array ) ) {
@@ -106,7 +106,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    get_matchedProteinFilters_PerProjectSearchId() {
+    get_matchedProteinFilters_PerProjectSearchId() : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> {
 
         return this.matchedProteinFilters;
     }
@@ -114,7 +114,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    set_matchedProteinFilters_PerProjectSearchId( matchedProteinFilters ) {
+    set_matchedProteinFilters_PerProjectSearchId( matchedProteinFilters : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> ) {
 
         if ( matchedProteinFilters ) {
             if ( ! ( matchedProteinFilters instanceof Array ) ) {
@@ -130,7 +130,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    get_psmAnnTypeDisplay_PerProjectSearchId() {
+    get_psmAnnTypeDisplay_PerProjectSearchId() : Array<number> {
 
         return this.psmAnnTypeDisplay;
     }
@@ -138,7 +138,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    set_psmAnnTypeDisplay_PerProjectSearchId( psmAnnTypeDisplay ) {
+    set_psmAnnTypeDisplay_PerProjectSearchId( psmAnnTypeDisplay : Array<number> ) {
 
         if ( psmAnnTypeDisplay ) {
             if ( ! ( psmAnnTypeDisplay instanceof Array ) ) {
@@ -153,7 +153,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    get_reportedPeptideAnnTypeDisplay_PerProjectSearchId() {
+    get_reportedPeptideAnnTypeDisplay_PerProjectSearchId() : Array<number> {
 
         return this.reportedPeptideAnnTypeDisplay;
     }
@@ -161,7 +161,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( reportedPeptideAnnTypeDisplay ) {
+    set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( reportedPeptideAnnTypeDisplay : Array<number> ) {
 
         if ( reportedPeptideAnnTypeDisplay ) {
             if ( ! ( reportedPeptideAnnTypeDisplay instanceof Array ) ) {
@@ -176,7 +176,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    get_matchedProteinAnnTypeDisplay_PerProjectSearchId() {
+    get_matchedProteinAnnTypeDisplay_PerProjectSearchId() : Array<number> {
 
         return this.matchedProteinAnnTypeDisplay;
     }
@@ -184,7 +184,7 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
      */
-    set_matchedProteinAnnTypeDisplay_PerProjectSearchId( matchedProteinAnnTypeDisplay ) {
+    set_matchedProteinAnnTypeDisplay_PerProjectSearchId( matchedProteinAnnTypeDisplay : Array<number> ) {
 
         if ( matchedProteinAnnTypeDisplay ) {
             if ( ! ( matchedProteinAnnTypeDisplay instanceof Array ) ) {

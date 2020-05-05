@@ -169,13 +169,6 @@ export class SearchNameRetrieval {
 		if ( ! searchNames_AsMap ) {
 			searchNames_AsMap = new Map();
 		}
-
-		// let searchNamesLoaded = dataPageStateManager_DataFrom_Server.get_searchNames();
-
-		// if ( ! searchNamesLoaded ) {
-		// 	searchNamesLoaded = {};
-		// }
-
 		for ( const searchListItem of searchList ) {
 			//  Validate searchListItem
 			if ( ! limelight__IsVariableAString( searchListItem.name ) ) {

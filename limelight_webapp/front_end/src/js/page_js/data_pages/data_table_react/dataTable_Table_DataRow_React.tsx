@@ -490,31 +490,39 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         const className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut + className_innerContainingDiv_HighlightRow + className_innerContainingDiv_row_CSS_Additions;
 
         return (
-            <div className=" data-table-data-rows-outer-containing-div ">
+            <React.Fragment>
 
-                { childTableShowHideIcon }
+                <div className=" data-table-data-rows-outer-containing-div ">
 
-                <div className={ className_innerContainingDiv }>
-                    
-                    <table className=" data-table-data-rows-table ">
-                        <tbody>
+                    { childTableShowHideIcon }
 
-                            <tr 
-                                style={ { position: "relative" } } 
-                                className={ className_Row } 
-                                onClick={ rowClickHandler }
-                                data-id={ this.props.dataObject.uniqueId }
-                            >
+                    <div className={ className_innerContainingDiv }>
+                        
+                        <table className=" data-table-data-rows-table ">
+                            <tbody>
 
-                                {/* Render columns */}
-                                { columnComponents }
+                                <tr 
+                                    style={ { position: "relative" } } 
+                                    className={ className_Row } 
+                                    onClick={ rowClickHandler }
+                                    data-id={ this.props.dataObject.uniqueId }
+                                >
 
-                            </tr>
-                        </tbody>
-                    </table>
+                                    {/* Render columns */}
+                                    { columnComponents }
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    { childTableAndContainer }
                 </div>
-                { childTableAndContainer }
-            </div>
+
+                {/* If CSS Class 'data-table-data-rows-outer-containing-div' is changed to 'display: inline-block'
+                        Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line 
+                */}
+
+            </React.Fragment>
         )
     }
 

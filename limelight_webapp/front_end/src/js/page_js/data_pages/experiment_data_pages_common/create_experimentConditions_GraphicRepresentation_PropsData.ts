@@ -12,6 +12,7 @@ import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experim
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 
 import { ExperimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation'
+import {ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier} from "page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers";
 
 
 /**
@@ -70,7 +71,9 @@ const create_experimentConditions_GraphicRepresentation_PropsData = ({
         return null;
     }
 
-    return { displayTableCells };
+    const result = new ExperimentConditions_GraphicRepresentation_PropsData({ displayTableCells, experiment_ConditionGroupsContainer : conditionGroupsContainer });
+
+    return result;
 }
 
 /**
@@ -108,6 +111,12 @@ const _addFirstRowCells = ({
         const first_conditionGroup = conditionGroups[ 0 ];
         const conditions = first_conditionGroup.conditions;
         for ( const condition of conditions ) {
+
+            const cell_ConditionIds_Path_Array = [ condition.id ]
+
+            const experimentConditions_GraphicRepresentation_ConditionCell_Identifier : ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier = (
+                new ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier({ cell_ConditionIds_Path_Array })
+            )
             const displayTableCell : ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell = { 
                 conditionLabelCell : true,
                 label : condition.label, 
@@ -115,9 +124,11 @@ const _addFirstRowCells = ({
                     textAlign : "center"
                 },
                 conditionId : condition.id, 
-                conditionIdPath : [ condition.id ], 
+                conditionIdPath : cell_ConditionIds_Path_Array,
                 condition, 
-                conditionGroup : first_conditionGroup 
+                conditionGroup : first_conditionGroup,
+                conditionGroupIndex : 0,
+                experimentConditions_GraphicRepresentation_ConditionCell_Identifier
             };
             firstRowCells.push( displayTableCell );
         }
@@ -224,7 +235,7 @@ const _add_AfterFirst_ProcessRows = ({
 
                     if ( index > 1 ) {
 
-                        //  Only after first (outermost) condition group (first column of conditon labels)
+                        //  Only after first (outermost) condition group (first column of condition labels)
 
                         styleOverrides = { borderLeftWidth : 2 };
 
@@ -297,6 +308,17 @@ const _add_AfterFirst_ProcessRows = ({
 
                     }
 
+                    const cell_ConditionIds_Path_Array : Array<number> = []; // Path starting from 'Left Most' condition in Graphic, so skipping the first condition group which is placed across the top of the grid.
+
+                    for ( let index_ids_Condition_ForCurrentConditionGroupIndexes = 1; index_ids_Condition_ForCurrentConditionGroupIndexes <= index ; index_ids_Condition_ForCurrentConditionGroupIndexes++ ) {
+                        const conditionId_In_Ids = ids_Condition_ForCurrentConditionGroupIndexes[ index_ids_Condition_ForCurrentConditionGroupIndexes ];
+                        cell_ConditionIds_Path_Array.push( conditionId_In_Ids );
+                    }
+
+                    const experimentConditions_GraphicRepresentation_ConditionCell_Identifier : ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier = (
+                        new ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier({ cell_ConditionIds_Path_Array })
+                    )
+
                     const displayTableCell : ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell = { 
                         conditionLabelCell : true,
                         label : condition.label,
@@ -304,7 +326,11 @@ const _add_AfterFirst_ProcessRows = ({
                         tableRowIndex,
                         rowSpan,
                         condition, 
-                        conditionGroup 
+                        conditionId : condition.id,
+                        conditionIdPath : cell_ConditionIds_Path_Array, // See comment at variable declaration
+                        conditionGroup,
+                        conditionGroupIndex : index,
+                        experimentConditions_GraphicRepresentation_ConditionCell_Identifier
                     };
 
                     row_TableCells.push( displayTableCell );
@@ -385,7 +411,8 @@ const _add_AfterFirst_ProcessRows = ({
                             borderBottomWidth : mainCells_borderBottomWidth, 
                             borderLeftWidth : 2, 
                             borderRightWidth : 2
-                        }
+                        },
+                        experimentConditions_GraphicRepresentation_ConditionCell_Identifier : undefined //  Not applicable to Main Data Cells
                     };
                     row_TableCells.push( displayTableCell );
                 }

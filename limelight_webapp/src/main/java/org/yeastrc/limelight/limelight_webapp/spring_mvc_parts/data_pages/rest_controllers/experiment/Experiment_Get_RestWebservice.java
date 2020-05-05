@@ -158,7 +158,7 @@ public class Experiment_Get_RestWebservice {
     		
     		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
     				validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-    				.validateAssistantProjectOwnerAllowed( projectIds, httpServletRequest ); // ( webserviceRequest.getProjectSearchIds_CreateDefault(), httpServletRequest );
+    				.validatePublicAccessCodeReadAllowed( projectIds, httpServletRequest ); // ( webserviceRequest.getProjectSearchIds_CreateDefault(), httpServletRequest );
 
     		////////////////
    		

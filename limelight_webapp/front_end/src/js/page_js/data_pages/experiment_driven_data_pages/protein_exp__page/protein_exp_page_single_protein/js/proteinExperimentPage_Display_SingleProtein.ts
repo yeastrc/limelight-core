@@ -43,6 +43,7 @@ import {
 	_resize_OverlayHeight_BasedOnViewportHeight, 
 	_update_Overlay_OnWindowResize 
 } from './proteinExperimentPage_Display_SingleProtein_nonClass_Functions';
+import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 
 
 /**
@@ -84,6 +85,9 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
 
+	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+
+
 
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
@@ -91,7 +95,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
 
-	//     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transfered to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
+	//     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transferred to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
 	
 	private _proteinSequenceWidget_StateObject = new ProteinSequenceWidget_StateObject();
 
@@ -133,7 +137,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
         conditionGroupsDataContainer,
 		experimentConditions_GraphicRepresentation_PropsData, 
 		singleProtein_ExpPage_CentralStateManagerObjectClass,
-		experiment_DataPages_LoggedInUser_CommonObjectsFactory
+		experiment_DataPages_LoggedInUser_CommonObjectsFactory,
+		experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
      } : { 
         proteinSequenceVersionId : number,
         proteinListItem, 
@@ -153,6 +158,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData, 
 		singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass,
 		experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
+		experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
      }) {
 
         this._proteinSequenceVersionId = proteinSequenceVersionId;
@@ -180,6 +186,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass = singleProtein_ExpPage_CentralStateManagerObjectClass;
 
 		this._experiment_DataPages_LoggedInUser_CommonObjectsFactory = experiment_DataPages_LoggedInUser_CommonObjectsFactory;
+
+		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
     }
 	
 
@@ -290,13 +298,23 @@ export class ProteinExperimentPage_Display_SingleProtein {
             _resize_OverlayHeight_BasedOnViewportHeight({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
 		};
 
+		let proteinNames : string = undefined
+		let proteinDescriptions : string = undefined
+
+		if ( this._proteinListItem ) {
+			proteinNames = this._proteinListItem.proteinNames
+			proteinDescriptions = this._proteinListItem.proteinDescriptions
+		}
+
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
 		
 		const proteinExperimentPage_SingleProtein_Root_Component = (
 			React.createElement(
 				ProteinExperimentPage_SingleProtein_Root_Component,
 				{
-					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis
+					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
+					proteinNames,
+					proteinDescriptions
 				},
 				null
 			)
@@ -356,7 +374,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject ,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
-			experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory
+			experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,
+			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
 		};
 
 		this._renderedReactComponent_ProteinExperimentPage_Root_Component.add_ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop({
