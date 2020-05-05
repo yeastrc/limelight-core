@@ -71,8 +71,8 @@
 	</div>
 --%>	
 <%--   //  Comment out Experiment Code
-	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_ExperimentList.jsp" %>
 --%>	
+	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_ExperimentList.jsp" %>
 
 
 	<%--  Search List --%>
