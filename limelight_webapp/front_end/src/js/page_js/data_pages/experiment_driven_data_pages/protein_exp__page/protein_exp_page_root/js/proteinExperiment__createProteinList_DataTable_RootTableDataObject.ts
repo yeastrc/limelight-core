@@ -345,9 +345,21 @@ const _createProteinItem_DataTableEntry = function( { greyOutRow, proteinListIte
     }
 
     //  Show chart with psm counts for conditions in first condition group
+    // if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
+    //     const columnEntry = {
+    //         cellMgmt_External_Data : {
+    //             proteinName_ForDiv : proteinName,
+    //             psmCountsPerCondition
+    //         }
+    //     };
+    //
+    //     columnEntries.push( columnEntry );
+    // }
+
+    //  Show chart with psm counts for conditions in first condition group
     if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
         const columnEntry = {
-            cellMgmt_External_Data : {
+            cellMgmt_ExternalReactComponent_Data : {
                 proteinName_ForDiv : proteinName,
                 psmCountsPerCondition
             }

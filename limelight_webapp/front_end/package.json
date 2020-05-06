@@ -47,6 +47,7 @@
     "jstat": "^1.9.1",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^11.0.5",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "victory": "^34.1.3"
   }
 }

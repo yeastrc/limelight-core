@@ -47,8 +47,6 @@ import {
 
 import { ProteinExperimentPage_Root_Component, ProteinExperimentPage_Root_Component_Props, ProteinExperimentPage_Root_Component_ProteinListData_Param } from '../jsx/proteinExperimentPage_Root_Component';
 
-import { ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_WIDTH as _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT as _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } from '../jsx/proteinExperimentPage_PSMs_Per_Condition_Component';
-
 import { ProteinExperimentPage_Display_SingleProtein } from '../../protein_exp_page_single_protein/js/proteinExperimentPage_Display_SingleProtein';
 
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';

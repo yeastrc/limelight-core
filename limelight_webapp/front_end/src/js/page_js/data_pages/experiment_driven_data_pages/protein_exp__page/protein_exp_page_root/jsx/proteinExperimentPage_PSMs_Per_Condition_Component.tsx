@@ -18,11 +18,12 @@
 
 
 import React from 'react'
+import { VictoryChart, VictoryContainer, VictoryTooltip, VictoryAxis, VictoryLabel, VictoryBar } from 'victory';
 
-const _SVG_WIDTH = 400;
-const _SVG_HEIGHT = 100;
+const _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component = 400;
+const _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component = 120;
 
-export { _SVG_WIDTH, _SVG_HEIGHT }
+export { _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }
 
 
 /**
@@ -133,85 +134,162 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Component extends React.Co
             );
         }
 
+
         const psmCountsPerCondition = this.props.cellMgmt_ExternalReactComponent_Data.psmCountsPerCondition;
 
-
-        let maxPsmCount = 0;
+        const chartData = [];
 
         for ( const psmCountsPerConditionEntry of psmCountsPerCondition ) {
-            if ( psmCountsPerConditionEntry.numPsms > maxPsmCount ) {
-                maxPsmCount = psmCountsPerConditionEntry.numPsms;
-            }
+            const chartEntry = {
+                x: psmCountsPerConditionEntry.condition.label,
+                y: psmCountsPerConditionEntry.numPsms,
+                label: "condition label: " + psmCountsPerConditionEntry.condition.label + "\n" + "numPsms: " + psmCountsPerConditionEntry.numPsms
+            };
+            chartData.push(chartEntry)
         }
 
-        const maxPsmCountString = maxPsmCount.toLocaleString();
+        return  (
 
-        // const psmCountsPerConditionEntry = {
-        //     condition,
-        //     projectSearchIds,
-        //     numPsms
+            <VictoryChart
+                // domainPadding will add space to each side of VictoryBar to
+                // prevent it from overlapping the axis
+                domainPadding={ { x: 100, y: 0 } }
+                containerComponent={<VictoryContainer responsive={false}/>}
+                padding={ { top: 10, bottom: 40, left: 80, right: 10 } }
+                width={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component }
+                height={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }
+            >
+                <VictoryAxis
+                    // tickValues specifies both the number of ticks and where
+                    // they are placed on the axis
+                    // axisComponent={
+                    //     <VictoryLabel y={250} style={{ fontSize: 8 }}
+                    //     verticalAnchor={"end"} />
+                    // }
+                    fixLabelOverlap={true}
+                    style={{
+                        // axisLabel: {
+                        //     fontFamily: "inherit",
+                        //     // fontWeight: 100,
+                        //     // letterSpacing: "1px",
+                        //     // stroke: "white",
+                        //     fontSize: 10
+                        // },
+                        tickLabels: { angle: -60, fontSize: 8 }
+                    }}
+                    // tickValues={[1, 2, 3, 4]}
+                    // tickFormat={["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"]}
+                />
+                <VictoryAxis
+                    dependentAxis
+                    crossAxis={false} //  Show Zero tick mark
+                    fixLabelOverlap={true}
+                    style={{
+                        // axisLabel: {
+                        //     fontFamily: "inherit",
+                        //     // fontWeight: 100,
+                        //     // letterSpacing: "1px",
+                        //     // stroke: "white",
+                        //     fontSize: 10
+                        // },
+                        tickLabels: {
+
+                            fontSize: 9
+                        }
+                    }}
+                    // tickFormat specifies how ticks should be displayed
+                    // tickFormat={(x) => (`$${x / 1000}k`)}
+                />
+                <VictoryBar
+                    data={ chartData }
+                    containerComponent={<VictoryContainer responsive={false}/>}
+                    labelComponent={<VictoryTooltip/>}
+                    width={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component }
+                    height={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }
+                />
+            </VictoryChart>
+        )
+
+
+        // const psmCountsPerCondition = this.props.cellMgmt_ExternalReactComponent_Data.psmCountsPerCondition;
+        //
+        //
+        // let maxPsmCount = 0;
+        //
+        // for ( const psmCountsPerConditionEntry of psmCountsPerCondition ) {
+        //     if ( psmCountsPerConditionEntry.numPsms > maxPsmCount ) {
+        //         maxPsmCount = psmCountsPerConditionEntry.numPsms;
+        //     }
+        // }
+        //
+        // const maxPsmCountString = maxPsmCount.toLocaleString();
+        //
+        // // const psmCountsPerConditionEntry = {
+        // //     condition,
+        // //     projectSearchIds,
+        // //     numPsms
+        // // }
+        //
+        // const conditions_singleBarRects = [];
+        //
+        // const conditions_labels = [];
+        //
+        // {
+        //     let index = 0;
+        //     for ( const psmCountsPerConditionEntry of psmCountsPerCondition ) {
+        //
+        //         if ( index > 2 ) {
+        //             break;  // EARLY BREAK LOOP
+        //         }
+        //
+        //         let x = 66;
+        //         if ( index === 1 ) {
+        //             x = 168;
+        //         }
+        //         if ( index === 2 ) {
+        //             x = 271;
+        //         }
+        //
+        //         const heightFraction = psmCountsPerConditionEntry.numPsms / maxPsmCount;
+        //
+        //         const singleBarRect = (
+        //
+        //             <SingleBarRect
+        //                 x={ x }
+        //                 heightFraction={ heightFraction }
+        //             />
+        //         );
+        //
+        //         conditions_singleBarRects.push( singleBarRect );
+        //
+        //         conditions_labels.push( psmCountsPerConditionEntry.condition.label );
+        //
+        //         index++;
+        //     }
         // }
 
-        const conditions_singleBarRects = [];
-
-        const conditions_labels = [];
-
-        {
-            let index = 0;
-            for ( const psmCountsPerConditionEntry of psmCountsPerCondition ) {
-                
-                if ( index > 2 ) {
-                    break;  // EARLY BREAK LOOP
-                }
-                
-                let x = 66;
-                if ( index === 1 ) {
-                    x = 168;
-                }
-                if ( index === 2 ) {
-                    x = 271;
-                }
-
-                const heightFraction = psmCountsPerConditionEntry.numPsms / maxPsmCount;
-
-                const singleBarRect = (
-
-                    <SingleBarRect 
-                        x={ x }
-                        heightFraction={ heightFraction }
-                    />
-                );
-
-                conditions_singleBarRects.push( singleBarRect );
-
-                conditions_labels.push( psmCountsPerConditionEntry.condition.label );
-
-                index++;
-            }
-        }
-
-        return (
-<svg width={ _SVG_WIDTH } height={ _SVG_HEIGHT } aria-label="A chart." style={ { overflow: "hidden" } }>
-	<rect x="0" y="0" width="400" height="100" stroke="none" strokeWidth="0" fill="#ffffff"></rect>
-	<rect x="46" y="19" width="308" height="62" stroke="none" strokeWidth="0" fillOpacity="0" fill="#ffffff"></rect>
-	<rect x="46" y="80" width="308" height="1" stroke="none" strokeWidth="0" fill="#cccccc"></rect>
-    <rect x="46" y="19" width="308" height="1" stroke="none" strokeWidth="0" fill="#cccccc"></rect>
-    
-        { conditions_singleBarRects[ 0 ] }
-        { conditions_singleBarRects[ 1 ] }
-        { conditions_singleBarRects[ 2 ] }
-
-	<rect x="46" y="80" width="308" height="1" stroke="none" strokeWidth="0" fill="#333333"></rect>
-
-	<text textAnchor="middle" x="97.66666666666666" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 0 ]}</text>
-	<text textAnchor="middle" x="200" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 1 ] }</text>
-	<text textAnchor="middle" x="302.3333333333333" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 2 ] }</text>
-	<text textAnchor="end" x="38" y="84.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">0</text>
-	<text textAnchor="end" x="38" y="23.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">{ maxPsmCountString }</text>
-
-</svg>
-
-        );
+//         return (
+// <svg width={ _SVG_WIDTH } height={ _SVG_HEIGHT } aria-label="A chart." style={ { overflow: "hidden" } }>
+// 	<rect x="0" y="0" width="400" height="100" stroke="none" strokeWidth="0" fill="#ffffff"></rect>
+// 	<rect x="46" y="19" width="308" height="62" stroke="none" strokeWidth="0" fillOpacity="0" fill="#ffffff"></rect>
+// 	<rect x="46" y="80" width="308" height="1" stroke="none" strokeWidth="0" fill="#cccccc"></rect>
+//     <rect x="46" y="19" width="308" height="1" stroke="none" strokeWidth="0" fill="#cccccc"></rect>
+//
+//         { conditions_singleBarRects[ 0 ] }
+//         { conditions_singleBarRects[ 1 ] }
+//         { conditions_singleBarRects[ 2 ] }
+//
+// 	<rect x="46" y="80" width="308" height="1" stroke="none" strokeWidth="0" fill="#333333"></rect>
+//
+// 	<text textAnchor="middle" x="97.66666666666666" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 0 ]}</text>
+// 	<text textAnchor="middle" x="200" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 1 ] }</text>
+// 	<text textAnchor="middle" x="302.3333333333333" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 2 ] }</text>
+// 	<text textAnchor="end" x="38" y="84.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">0</text>
+// 	<text textAnchor="end" x="38" y="23.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">{ maxPsmCountString }</text>
+//
+// </svg>
+//
+//         );
     }
 
 }
