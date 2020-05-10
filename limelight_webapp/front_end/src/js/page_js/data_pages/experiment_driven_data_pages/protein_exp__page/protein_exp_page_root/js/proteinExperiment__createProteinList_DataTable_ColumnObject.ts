@@ -15,6 +15,11 @@ import {
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_Display";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component,
+    _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component,
+    ProteinExperimentPage_PSMs_Per_Condition_Chart_Component
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Chart_Component";
 
 
 /**
@@ -125,59 +130,57 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
             columns.push(column);
         }
 
-        if (conditions_for_condition_group_with_their_project_search_ids.length > 0) {
-            const column: DataTable_Column = {
-                id: 'extFun', //  Short string that is unique for each column
-                displayName: 'PSMs per Condition',
+        // if (conditions_for_condition_group_with_their_project_search_ids.length > 0) {
+        //     const column: DataTable_Column = {
+        //         id: 'extFun', //  Short string that is unique for each column
+        //         displayName: 'PSMs per Condition',
+        //         // sortable: true, // Will sort using Javascript < > on the 'value' property
+        //
+        //         width: 400, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
+        //         heightInitial: 100, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
+        //
+        //         //  prevent line breaks and elippsis if too long
+        //         style_override_DataRowCell_React: {
+        //             whiteSpace: "nowrap",
+        //             overflow: "hidden",
+        //             textOverflow: "ellipsis",
+        //             fontSize: "12px"
+        //         }, // React format Style overrides
+        //         style_override_HeaderRowCell_React: {fontSize: "12px"}, //  React format Style Overrides for Header Row Cells
+        //         // css_class : ' clickable ' // + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' '
+        //
+        //         cellMgmt_External: {
+        //             //  Function called to populate the DOM element on DOM element Mount (React calls componentDidMount())
+        //             populateCellDOMObject_Initial: this._PSMs_per_Condition_populateCellDOMObject_Initial_BindThis
+        //         }
+        //     };
+        //
+        //     columns.push(column);
+        // }
+
+        if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
+            const column : DataTable_Column = {
+                id : 'extFun', //  Short string that is unique for each column
+                displayName :  'PSMs per Condition',
+                // displayName :  'PSMs per Condition - React Component - Only Up to 3 Conditions For Initial Testing',
                 // sortable: true, // Will sort using Javascript < > on the 'value' property
 
-                width: 400, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
-                heightInitial: 100, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
+                width :             _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
+                heightInitial :     _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
 
-                //  prevent line breaks and elippsis if too long
-                style_override_DataRowCell_React: {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    fontSize: "12px"
-                }, // React format Style overrides
-                style_override_HeaderRowCell_React: {fontSize: "12px"}, //  React format Style Overrides for Header Row Cells
+                //  prevent line breaks and ellipsis if too long
+                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "12px" }, // React format Style overrides
+                style_override_HeaderRowCell_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
                 // css_class : ' clickable ' // + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' '
 
-                cellMgmt_External: {
-                    //  Function called to populate the DOM element on DOM element Mount (React calls componentDidMount())
-                    populateCellDOMObject_Initial: this._PSMs_per_Condition_populateCellDOMObject_Initial_BindThis
+                cellMgmt_ExternalReactComponent : {
+                    //  React component to embed inside the <div> for the cell
+                    reactComponent : ProteinExperimentPage_PSMs_Per_Condition_Chart_Component
                 }
             };
 
-            columns.push(column);
+            columns.push( column );
         }
-
-        // if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
-        //     const column : DataTable_Column = {
-        //         id : 'extFun', //  Short string that is unique for each column
-        //         displayName :  'PSMs per Condition - React Component - Only Up to 3 Conditions For Initial Testing',
-        //         // sortable: true, // Will sort using Javascript < > on the 'value' property
-
-        //         width :             _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
-        //         heightInitial :     _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
-
-        //         //  prevent line breaks and elippsis if too long
-        //         style_override_React : { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "12px" }, // React format Style overrides
-        //         style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
-        //         // css_class : ' clickable ' // + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' '
-
-        //         cellMgmt_ExternalReactComponent : {
-        //             //  React component to embed inside the <div> for the cell
-        //             reactComponent : ProteinExperimentPage_PSMs_Per_Condition_Component
-        //         }
-        //     };
-
-        //     columns.push( column );
-        // }
-
-        // import { ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_WIDTH as _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT as _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } from '../jsx/proteinExperimentPage_PSMs_Per_Condition_Component';
-
 
         return columns;
     };

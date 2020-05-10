@@ -114,16 +114,8 @@ export const tooltip_Limelight_Create_Tooltip = function({
 }) : Tooltip_Limelight_Created_Tooltip {
 
 
-    const tooltip_addedDivElementDOM = document.createElement("div");
-
-    var documentBody = document.querySelector('body');
-
-    documentBody.appendChild( tooltip_addedDivElementDOM );
-
     // console.log( "mainCellMouseEnter: this._tooltip_addedDivElementDOM:" );
     // console.log( this._tooltip_addedDivElementDOM );
-    
-    const renderCompletecallbackFcn = ( ) => { };
 
     //   Data for positioning tooltip at target
 
@@ -133,20 +125,55 @@ export const tooltip_Limelight_Create_Tooltip = function({
 
     /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
 
-    const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-    const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-    const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-    const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+    const elementLeft = targetDOMElement_domRect.left;
+    const elementRight = targetDOMElement_domRect.right;
+    const elementTop = targetDOMElement_domRect.top;
+    const elementBottom = targetDOMElement_domRect.bottom;
+
+    return  tooltip_Limelight_Create_Tooltip_PassElementPositions({ elementLeft, elementRight, elementTop, elementBottom, tooltipContents })
+}
+
+/**
+ * Creates the tooltip and returns object of class tooltip_Limelight_Create_Tooltip
+ *
+ * @param elementLeft, elementRight, elementTop, elementBottom - Element left, right, top, bottom relative to viewport
+ * @param tooltipContents - React Component that contains what to put in the tooltip
+ *
+ * @returns object of class tooltip_Limelight_Create_Tooltip
+ */
+export const tooltip_Limelight_Create_Tooltip_PassElementPositions = function({
+
+                                                             elementLeft, elementRight, elementTop, elementBottom,
+                                                             tooltipContents
+
+                                                         } : {
+
+    elementLeft : number
+    elementRight : number
+    elementTop : number
+    elementBottom : number
+    tooltipContents : JSX.Element
+
+}) : Tooltip_Limelight_Created_Tooltip {
+
+
+    const tooltip_addedDivElementDOM = document.createElement("div");
+
+    var documentBody = document.querySelector('body');
+
+    documentBody.appendChild( tooltip_addedDivElementDOM );
 
     const tooltip = (
         <Tooltip_Limelight_Component 
             tooltipContents={ tooltipContents }
-            targetDOMElement_domRect_Left={ targetDOMElement_domRect_Left }
-            targetDOMElement_domRect_Right={ targetDOMElement_domRect_Right }
-            targetDOMElement_domRect_Top={ targetDOMElement_domRect_Top }
-            targetDOMElement_domRect_Bottom={ targetDOMElement_domRect_Bottom }
+            targetDOMElement_domRect_Left={ elementLeft }
+            targetDOMElement_domRect_Right={ elementRight }
+            targetDOMElement_domRect_Top={ elementTop }
+            targetDOMElement_domRect_Bottom={ elementBottom }
         />
     );
+
+    const renderCompletecallbackFcn = ( ) => { };
 
     const renderedReactComponent = ReactDOM.render( 
         tooltip, 

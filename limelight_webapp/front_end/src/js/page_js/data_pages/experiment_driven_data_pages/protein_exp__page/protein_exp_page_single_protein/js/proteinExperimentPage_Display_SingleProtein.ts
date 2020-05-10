@@ -32,8 +32,6 @@ import { ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop } 
 
 import { ProteinExperimentPage_SingleProtein_Root_Component } from '../jsx/proteinExperimentPage_SingleProtein_Root_Component';
 
-// import { ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_WIDTH as _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT as _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } from '../../protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Component';
-
 
 import { SingleProtein_ExpPage_CentralStateManagerObjectClass }	from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass';
 

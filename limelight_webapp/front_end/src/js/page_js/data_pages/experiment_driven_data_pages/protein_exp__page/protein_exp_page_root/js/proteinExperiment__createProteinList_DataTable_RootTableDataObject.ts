@@ -21,6 +21,10 @@ import {ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry} from
 import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {ProteinDataDisplay_ProteinListItem_MultipleSearch} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props_PropsValue,
+    ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props_PsmCounts_Entry
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Chart_Component";
 
 
 
@@ -302,7 +306,7 @@ const _createProteinItem_DataTableEntry = function( { greyOutRow, proteinListIte
         }
     ];
 
-    const psmCountsPerCondition = [];
+    const psmCountsPerCondition : Array<ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props_PsmCounts_Entry> = [];
 
 
     for ( const  condition_for_condition_group_with_its_project_search_ids of conditions_for_condition_group_with_their_project_search_ids ) {
@@ -336,21 +340,36 @@ const _createProteinItem_DataTableEntry = function( { greyOutRow, proteinListIte
 
         columnEntries.push( columnEntry );
 
-        const psmCountsPerConditionEntry = {
+        const psmCountsPerConditionEntry = new ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props_PsmCounts_Entry({
             condition,
             projectSearchIds,
             numPsms
-        }
+        })
         psmCountsPerCondition.push( psmCountsPerConditionEntry );
     }
 
     //  Show chart with psm counts for conditions in first condition group
+    // if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
+    //     const columnEntry = {
+    //         cellMgmt_External_Data : {
+    //             proteinName_ForDiv : proteinName,
+    //             psmCountsPerCondition
+    //         }
+    //     };
+    //
+    //     columnEntries.push( columnEntry );
+    // }
+
+    //  Show chart with psm counts for conditions in first condition group
     if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
+
+        const cellMgmt_ExternalReactComponent_Data = new ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props_PropsValue({
+            // proteinName_ForDiv : proteinName,
+            psmCountsPerCondition
+        })
+
         const columnEntry = {
-            cellMgmt_External_Data : {
-                proteinName_ForDiv : proteinName,
-                psmCountsPerCondition
-            }
+            cellMgmt_ExternalReactComponent_Data
         };
 
         columnEntries.push( columnEntry );
