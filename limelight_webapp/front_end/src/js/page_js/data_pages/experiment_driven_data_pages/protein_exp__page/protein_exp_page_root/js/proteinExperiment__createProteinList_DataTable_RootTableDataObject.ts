@@ -37,21 +37,25 @@ class GroupedProtein_Entry {
 /**
  * Create Data Object Array for Protein List Data Table
  */
-export const proteinExperiment__createProteinList_DataTable_RootTableDataObject = function( {
+export const proteinExperiment__createProteinList_DataTable_RootTableDataObject = function(
+    {
+        proteinList, conditionGroupLabel,
+        conditions_for_condition_group_with_their_project_search_ids, proteinGroups_ArrayOf_ProteinGroup, proteinGrouping_CentralStateManagerObjectClass, proteinExperiment__CreateProteinDataTableColumns_Class
+    } : {
 
-    proteinList, conditions_for_condition_group_with_their_project_search_ids, proteinGroups_ArrayOf_ProteinGroup, proteinGrouping_CentralStateManagerObjectClass, proteinExperiment__CreateProteinDataTableColumns_Class } : {
+        proteinList :  ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry[]
 
-    proteinList :  ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry[]
-    conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
-    proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup> //  Populated when grouping
-    proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
+        conditionGroupLabel : string
+        conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
+        proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup> //  Populated when grouping
+        proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
 
-    proteinExperiment__CreateProteinDataTableColumns_Class : ProteinExperiment__CreateProteinDataTableColumns_Class
+        proteinExperiment__CreateProteinDataTableColumns_Class : ProteinExperiment__CreateProteinDataTableColumns_Class
 
-} ) : DataTable_RootTableDataObject {
+    } ) : DataTable_RootTableDataObject {
 
     // the columns for the data being shown on the page
-    const columns :  DataTable_Column[] = proteinExperiment__CreateProteinDataTableColumns_Class.proteinExperiment__getProteinDataTableColumns( { conditions_for_condition_group_with_their_project_search_ids } ); // External Function Call
+    const columns :  DataTable_Column[] = proteinExperiment__CreateProteinDataTableColumns_Class.proteinExperiment__getProteinDataTableColumns( { conditions_for_condition_group_with_their_project_search_ids, conditionGroupLabel } ); // External Function Call
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
     let dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = undefined;

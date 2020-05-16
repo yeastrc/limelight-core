@@ -472,9 +472,12 @@ export class ProteinExperimentPage_Display {
 
         //  Get for First Condition Group - Hard Code to First Condition Group for now
         let conditions_for_condition_group_with_their_project_search_ids : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry> = undefined;
+        let conditionGroupLabel : string = undefined;
         {
             const conditionGroups = this._conditionGroupsContainer.conditionGroups;
             const conditionGroup = conditionGroups[ 0 ];
+
+            conditionGroupLabel = conditionGroup.label;
         
             conditions_for_condition_group_with_their_project_search_ids = _create_conditions_with_their_project_search_ids_for_condition_group({ 
                 conditionGroup, 
@@ -512,7 +515,8 @@ export class ProteinExperimentPage_Display {
 
         //    DataTable_RootTableDataObject Object from Protein List
         const rootTableDataObject: DataTable_RootTableDataObject = proteinExperiment__createProteinList_DataTable_RootTableDataObject( {
-            proteinList, 
+            proteinList,
+            conditionGroupLabel,
             conditions_for_condition_group_with_their_project_search_ids,
             proteinGroups_ArrayOf_ProteinGroup : createProteinDisplayData_Result.proteinGroups_ArrayOf_ProteinGroup,
             proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,

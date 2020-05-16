@@ -44,12 +44,15 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
     /**
      * Create Table Columns
      */
-    proteinExperiment__getProteinDataTableColumns({
-                                                      conditions_for_condition_group_with_their_project_search_ids
-                                                      /*, projectSearchIds, searchNamesKeyProjectSearchId */
-                                                  }: {
-        conditions_for_condition_group_with_their_project_search_ids: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
-    }): Array<DataTable_Column> {
+    proteinExperiment__getProteinDataTableColumns(
+        {
+            conditions_for_condition_group_with_their_project_search_ids,
+            conditionGroupLabel
+            /*, projectSearchIds, searchNamesKeyProjectSearchId */
+        }: {
+            conditions_for_condition_group_with_their_project_search_ids: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
+            conditionGroupLabel : string
+        }): Array<DataTable_Column> {
 
         let columns: Array<DataTable_Column> = [];
 
@@ -159,9 +162,12 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
         // }
 
         if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
+
+            const columnDisplayName = 'PSMs per ' + conditionGroupLabel
+
             const column : DataTable_Column = {
                 id : 'extFun', //  Short string that is unique for each column
-                displayName :  'PSMs per Condition',
+                displayName :  columnDisplayName,
                 // displayName :  'PSMs per Condition - React Component - Only Up to 3 Conditions For Initial Testing',
                 // sortable: true, // Will sort using Javascript < > on the 'value' property
 
