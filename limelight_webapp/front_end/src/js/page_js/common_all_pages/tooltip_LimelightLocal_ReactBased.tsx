@@ -204,6 +204,7 @@ interface Tooltip_Limelight_Component_Props {
 interface Tooltip_Limelight_Component_State {
 
     tooltip_Left? : number;
+    tooltip_Width? : number
     tooltip_Top_PositionAbsolute? : number;  // tooltip_Top when use position absolute
     tootooltip_BottomltipTop?
 }
@@ -246,7 +247,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         const minimumHorizontal_FromRightEdge = 30;
 
         const targetDOMElement_domRect_Left = this.props.targetDOMElement_domRect_Left;
-        // const targetDOMElement_domRect_Right = this.props.targetDOMElement_domRect_Right;
+        const targetDOMElement_domRect_Right = this.props.targetDOMElement_domRect_Right;
         const targetDOMElement_domRect_Top = this.props.targetDOMElement_domRect_Top;
         const targetDOMElement_domRect_Bottom = this.props.targetDOMElement_domRect_Bottom;
 
@@ -283,6 +284,8 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
             //  Tooltip does not fit in viewport with that left so adjust left to the left so tooltip fits in viewport
             tooltip_Left = windowWidth - tooltipDiv_domRect_Width - minimumHorizontal_FromRightEdge;
         }
+
+        tooltip_Left += windowScrollX;  // adjust for horizontal scroll
 
         //  Compute Tooltip vertical position
 
@@ -339,7 +342,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
         let tooltip_Top_PositionAbsolute = tooltip_Top_FromTopOfViewport + windowScrollY;
 
-        this.setState({ tooltip_Left, tooltip_Top_PositionAbsolute });
+        this.setState({ tooltip_Left, tooltip_Top_PositionAbsolute, tooltip_Width : tooltipDiv_domRect_Width });
     }
 
     // componentWillUnmount() {
@@ -352,6 +355,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
     render () {
 
         const tooltip_Left = this.state.tooltip_Left;
+        const tooltip_Width = this.state.tooltip_Width;  //  Have to set width for when set left to push to right past what viewport would be without scroll to right
         const tooltip_Top = this.state.tooltip_Top_PositionAbsolute;
         
         const tooltip = (
@@ -362,6 +366,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
                     zIndex: 1000, 
                     top: tooltip_Top,
                     left: tooltip_Left,
+                    width: tooltip_Width,
                     minWidth: 50, 
                     maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
                 }}
