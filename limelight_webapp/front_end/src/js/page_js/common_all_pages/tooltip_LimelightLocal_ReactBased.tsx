@@ -141,20 +141,20 @@ export const tooltip_Limelight_Create_Tooltip = function({
  *
  * @returns object of class tooltip_Limelight_Create_Tooltip
  */
-export const tooltip_Limelight_Create_Tooltip_PassElementPositions = function({
+export const tooltip_Limelight_Create_Tooltip_PassElementPositions = function(
+    {
+        preferRenderAbove,
+        elementLeft, elementRight, elementTop, elementBottom,
+        tooltipContents
+    } : {
+        preferRenderAbove? : boolean
+        elementLeft : number
+        elementRight : number
+        elementTop : number
+        elementBottom : number
+        tooltipContents : JSX.Element
 
-                                                             elementLeft, elementRight, elementTop, elementBottom,
-                                                             tooltipContents
-
-                                                         } : {
-
-    elementLeft : number
-    elementRight : number
-    elementTop : number
-    elementBottom : number
-    tooltipContents : JSX.Element
-
-}) : Tooltip_Limelight_Created_Tooltip {
+    }) : Tooltip_Limelight_Created_Tooltip {
 
 
     const tooltip_addedDivElementDOM = document.createElement("div");
@@ -164,7 +164,8 @@ export const tooltip_Limelight_Create_Tooltip_PassElementPositions = function({
     documentBody.appendChild( tooltip_addedDivElementDOM );
 
     const tooltip = (
-        <Tooltip_Limelight_Component 
+        <Tooltip_Limelight_Component
+            preferRenderAbove={ preferRenderAbove }
             tooltipContents={ tooltipContents }
             targetDOMElement_domRect_Left={ elementLeft }
             targetDOMElement_domRect_Right={ elementRight }
@@ -192,6 +193,7 @@ export const tooltip_Limelight_Create_Tooltip_PassElementPositions = function({
 
 interface Tooltip_Limelight_Component_Props {
 
+    preferRenderAbove : boolean
     targetDOMElement_domRect_Left : number;
     targetDOMElement_domRect_Right : number;
     targetDOMElement_domRect_Top : number;
@@ -284,21 +286,11 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
         //  Compute Tooltip vertical position
 
-        //  First position below DOM element
-
-        //  tooltip_Top  is based on position from top of viewport
+        //  tooltip_Top_FromTopOfViewport  is based on position from top of viewport
 
         let tooltip_Top_FromTopOfViewport = undefined;
 
-        const tooltip_Top_FromTopOfViewport_Fit_Below_DOMElement = targetDOMElement_domRect_Bottom + vertical_FromCell;
-
-        tooltip_Top_FromTopOfViewport = tooltip_Top_FromTopOfViewport_Fit_Below_DOMElement;  // Try this first
-
-        const tooltipBottomPosition_Plus_MinVerticalDistance = targetDOMElement_domRect_Bottom + vertical_FromCell + tooltipDiv_domRect_Height + minimumVertical_FromBottom;
-
-        if ( tooltipBottomPosition_Plus_MinVerticalDistance > windowHeight ) {
-            
-            //  Tooltip does not fit in viewport below the Cell
+        if ( this.props.preferRenderAbove ) {
 
             //   Compute tooltip bottom to position above cell
 
@@ -308,10 +300,40 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
             const tooltip_Top_Compute = ( /* bottom of tooltip from top of viewport */ windowHeight - tooltip_Bottom_FromBottom_Compute ) - tooltipDiv_domRect_Height;
 
             if ( tooltip_Top_Compute > 1 ) {
-                
+
                 //  Tooltip top fits in viewport
 
                 tooltip_Top_FromTopOfViewport = tooltip_Top_Compute;
+            }
+        }
+
+        if ( tooltip_Top_FromTopOfViewport === undefined ) {
+
+            //  First position below DOM element
+
+            const tooltip_Top_FromTopOfViewport_Fit_Below_DOMElement = targetDOMElement_domRect_Bottom + vertical_FromCell;
+
+            tooltip_Top_FromTopOfViewport = tooltip_Top_FromTopOfViewport_Fit_Below_DOMElement;  // Try this first
+
+            const tooltipBottomPosition_Plus_MinVerticalDistance = targetDOMElement_domRect_Bottom + vertical_FromCell + tooltipDiv_domRect_Height + minimumVertical_FromBottom;
+
+            if (tooltipBottomPosition_Plus_MinVerticalDistance > windowHeight) {
+
+                //  Tooltip does not fit in viewport below the Cell
+
+                //   Compute tooltip bottom to position above cell
+
+                const tooltip_Bottom_FromBottom_Compute = windowHeight - (targetDOMElement_domRect_Top - vertical_FromCell);  // From bottom of viewport
+
+                //   Compute tooltip top when position above cell
+                const tooltip_Top_Compute = ( /* bottom of tooltip from top of viewport */ windowHeight - tooltip_Bottom_FromBottom_Compute) - tooltipDiv_domRect_Height;
+
+                if (tooltip_Top_Compute > 1) {
+
+                    //  Tooltip top fits in viewport
+
+                    tooltip_Top_FromTopOfViewport = tooltip_Top_Compute;
+                }
             }
         }
 

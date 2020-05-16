@@ -18,8 +18,9 @@
 
 
 import React from 'react'
-import {ProteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager";
+import {ProteinExperimentPage_PSMs_Per_Condition_Chart_SingleBar_TooltipManager} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Chart_SingleBar_TooltipManager";
 import {Experiment_Condition} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes";
+import {ProteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager";
 
 const _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component = 400;
 const _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component = 100;
@@ -27,6 +28,7 @@ const _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component = 100;
 export { _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }
 
 
+const _Chart_Container_Data_Attr_Value = "true";
 
 
 /**
@@ -78,7 +80,8 @@ export interface ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props 
  */
 interface ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_State {
 
-    displayChart
+    // displayChart,
+    _placeholder?
 }
 
 /**
@@ -87,6 +90,11 @@ interface ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_State {
 export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends React.Component< ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props, ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_State > {
 
     private _displayTimeout;
+
+    private _onMouseEnter_ChartContainerDiv_BindThis = this._onMouseEnter_ChartContainerDiv.bind(this);
+    private _onMouseLeave_ChartContainerDiv_BindThis = this._onMouseLeave_ChartContainerDiv.bind(this);
+
+    private _proteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager = new ProteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager();
 
     /**
      * 
@@ -102,7 +110,9 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
             throw Error( msg )
         }
 
-        this.state = { displayChart : undefined };
+        this.state = {
+            // displayChart : undefined
+        };
     }
 
 
@@ -130,9 +140,9 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
         if ( this.props.cellMgmt_ExternalReactComponent_Data !== nextProps.cellMgmt_ExternalReactComponent_Data ) {
             return true;
         }
-        if ( this.state.displayChart !== nextState.displayChart ) {
-            return true;
-        }
+        // if ( this.state.displayChart !== nextState.displayChart ) {
+        //     return true;
+        // }
         return false;
 
         //  If Comment out prev code, uncomment this:
@@ -156,6 +166,53 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
         //         return { displayChart : true };
         //     });
         // }, 0 );
+    }
+
+
+    /**
+     * Mouse Enter Main <div> surrounding chart <svg>
+     */
+    _onMouseEnter_ChartContainerDiv(event :  React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        console.warn("onMouseEnter: <div> around SVG Container. event.target: " , event.target )
+
+        const eventTarget = event.target as HTMLElement;
+
+        let desiredTarget = eventTarget;
+
+        let counter = 0;
+
+        // @ts-ignore
+        while ( counter < 10 && desiredTarget.dataset.chart_container !== _Chart_Container_Data_Attr_Value ) {
+
+            if ( ! desiredTarget.parentElement ) {
+                const msg = "desiredTarget.parentElement is not set "
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            desiredTarget = desiredTarget.parentElement  // Walk up DOM tree to Parent
+
+            counter++
+        }
+
+        // data-chart_container
+
+
+        const mouseEnter_target_DOM_Element : HTMLElement = desiredTarget;
+
+
+        const tooltipContents = (
+            <div>STUFF How Now Car far</div>
+        )
+        this._proteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager.mouseEnter_ChartOverallArea({ mouseEnter_target_DOM_Element, tooltipContents })
+    }
+    /**
+     * Mouse Leave Main <div> surrounding chart <svg>
+     */
+    _onMouseLeave_ChartContainerDiv(event :  React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        // console.warn("onMouseLeave: <div> around SVG Container")
+
+        this._proteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager.mouseLeave_ChartOverallArea({ event })
     }
 
     /**
@@ -238,7 +295,14 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
         }
 
         return (
-<svg width={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component } height={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } aria-label="A chart." style={ { overflow: "hidden" } }>
+
+<div style={ { position: "relative", width : _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, height : _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }}
+
+     onMouseEnter={ this._onMouseEnter_ChartContainerDiv_BindThis }
+     onMouseLeave={ this._onMouseLeave_ChartContainerDiv_BindThis }
+     data-chart_container={ _Chart_Container_Data_Attr_Value }
+>
+  <svg width={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component } height={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } aria-label="A chart." style={ { overflow: "hidden" } }>
     {/*rect under whole SVG*/}
 	{/*<rect x="0" y="0" width="400" height="100" stroke="none" strokeWidth="0" fill="#ffffff"></rect>*/}
 	{/*rect under chart area*/}
@@ -263,8 +327,8 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
 	{/*<text textAnchor="end" x="38" y="84.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">0</text>*/}
 	{/*<text textAnchor="end" x="38" y="23.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">{ maxPsmCountString }</text>*/}
 
-</svg>
-
+  </svg>
+</div>
         );
     }
 
@@ -297,7 +361,7 @@ class SingleBarRect extends React.Component< SingleBarRect_Props, SingleBarRect_
     private _onMouseEnter_BindThis = this._onMouseEnter.bind(this);
     private _onMouseLeave_BindThis = this._onMouseLeave.bind(this);
 
-    private _proteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager = new ProteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager()
+    private _proteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager = new ProteinExperimentPage_PSMs_Per_Condition_Chart_SingleBar_TooltipManager()
 
     /**
      * 

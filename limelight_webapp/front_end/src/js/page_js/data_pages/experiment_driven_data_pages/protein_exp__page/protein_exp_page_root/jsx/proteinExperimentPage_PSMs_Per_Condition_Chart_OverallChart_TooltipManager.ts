@@ -1,7 +1,7 @@
 /**
- * proteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager.ts
+ * proteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager.ts
  *
- * PSM Count Chart - Tooltip Manager for Tooltip on Chart Elements
+ * PSM Count Chart - Tooltip Manager for Tooltip on Overall Chart
  *
  *
  */
@@ -15,31 +15,27 @@ import {
 import React from "react";
 
 /**
- * Class to manage tooltip for Main Cell
+ * Class to manage tooltip for ...
  */
-export class ProteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager {
+export class ProteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager {
 
     private _tooltip_CurrentTooltip : Tooltip_Limelight_Created_Tooltip
 
     private _tooltip_TimeoutId;
 
     /**
-     * Called when onMouseEnter of Chart Bar
+     * Called when onMouseEnter of Overall Chart Containing <div>
      */
-    mouseEnter_ChartBar({
+    mouseEnter_ChartOverallArea({
 
-                                    event,
+                                    mouseEnter_target_DOM_Element,
                                     tooltipContents
                                 } : {
-        event: React.MouseEvent<SVGRectElement, MouseEvent>
+        mouseEnter_target_DOM_Element : HTMLElement
         tooltipContents : JSX.Element
     }) {
 
         // console.log("mouseEnter_ChartBar(...): entered")
-
-        const eventTarget = event.target as unknown;
-
-        const mouseEnter_target_DOM_Element : SVGRectElement = eventTarget as SVGRectElement;
 
         // if ( ! ( mouseEnter_target_DOM_Element instanceof rect ) ) {
         //     const msg = "mouseEnter_ChartBar(...): ( ! ( mouseEnter_target_DOM_Element instanceof rect ) )"
@@ -71,7 +67,9 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager {
             this._tooltip_CurrentTooltip = undefined;
         }
 
-        const tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip_PassElementPositions({ elementLeft, elementRight, elementTop, elementBottom, tooltipContents });
+        const tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip_PassElementPositions({
+            preferRenderAbove : true, elementLeft, elementRight, elementTop, elementBottom, tooltipContents
+        });
 
         this._tooltip_CurrentTooltip = tooltip_Limelight_Created_Tooltip;
 
@@ -82,7 +80,7 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_TooltipManager {
     /**
      * Called when onMouseLeave of Sequence Position
      */
-    mouseLeave_ChartBar({
+    mouseLeave_ChartOverallArea({
 
                                     event
                                 } : {
