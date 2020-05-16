@@ -1141,7 +1141,7 @@ let addFlotMainToJquery = function( $ ) {
                         format.push({ y: true, number: true, required: false, defaultValue: 0, autoscale: autoscale });
                         if (s.bars.horizontal) {
                             delete format[format.length - 1].y;
-                            format[format.length - 1].x = true;
+                            format[format.length - 1].leftXOfEachBar = true;
                         }
                     }
 

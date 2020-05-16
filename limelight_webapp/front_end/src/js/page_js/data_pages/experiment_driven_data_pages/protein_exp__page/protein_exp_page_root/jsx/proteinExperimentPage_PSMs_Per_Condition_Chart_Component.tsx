@@ -22,11 +22,19 @@ import {ProteinExperimentPage_PSMs_Per_Condition_Chart_SingleBar_TooltipManager}
 import {Experiment_Condition} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes";
 import {ProteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_Chart_OverallChart_TooltipManager";
 
-const _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component = 400;
-const _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component = 100;
+const _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component = 300;
+const _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component = 80;
 
 export { _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }
 
+const _Padding_Above_Below_Chart = 10;
+const _Padding_Left_Right_Chart = 20;
+
+const _Chart_Bar_Standard_Padding_Each_Side_Fraction = 0.1;
+
+// const _Chart_Bar_Max_Width = 65;
+// const _Chart_Bar_Max_Width_Plus_Standard_Padding = Math.ceil( _Chart_Bar_Max_Width / ( 1 - ( _Chart_Bar_Standard_Padding_Each_Side_Fraction * 2 ) ) );
+const _Chart_Bar_Min_Width_At_80_Percent = 5;
 
 /**
  *
@@ -233,7 +241,16 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
         // }
 
         const psmCountsPerCondition = this.props.cellMgmt_ExternalReactComponent_Data.psmCountsPerCondition;
+        const numberOfBars = psmCountsPerCondition.length;
 
+        let widthOfEachBar_PlusPadding = ( _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Left_Right_Chart * 2 ) ) / numberOfBars;
+        let paddingOnEachSideOfBar = widthOfEachBar_PlusPadding * _Chart_Bar_Standard_Padding_Each_Side_Fraction;
+        let widthOfEachBar = widthOfEachBar_PlusPadding - ( paddingOnEachSideOfBar * 2 );
+
+        if ( widthOfEachBar < _Chart_Bar_Min_Width_At_80_Percent ) {
+            widthOfEachBar = widthOfEachBar_PlusPadding;
+            paddingOnEachSideOfBar = 0;
+        }
 
         let maxPsmCount = 0;
 
@@ -258,25 +275,16 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
         {
             let index = 0;
             for ( const psmCountsPerConditionEntry of psmCountsPerCondition ) {
-                
-                if ( index > 2 ) {
-                    break;  // EARLY BREAK LOOP
-                }
-                
-                let x = 66;
-                if ( index === 1 ) {
-                    x = 168;
-                }
-                if ( index === 2 ) {
-                    x = 271;
-                }
+
+                const leftXOfEachBar = ( widthOfEachBar_PlusPadding * index ) + paddingOnEachSideOfBar + _Padding_Left_Right_Chart;
 
                 const heightFraction = psmCountsPerConditionEntry.numPsms / maxPsmCount;
 
                 const singleBarRect = (
 
-                    <SingleBarRect 
-                        x={ x }
+                    <SingleBarRect key={ index }
+                        leftXOfEachBar={ leftXOfEachBar }
+                        widthOfBar={ widthOfEachBar }
                         heightFraction={ heightFraction }
                         psmCountsPerConditionEntry={ psmCountsPerConditionEntry }
                         numPsms={ psmCountsPerConditionEntry.numPsms }
@@ -309,14 +317,18 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
 	{/* Top Line as rect*/}
     {/*<rect x="46" y="19" width="308" height="1" stroke="none" strokeWidth="0" fill="#cccccc"></rect>*/}
 
-        { conditions_singleBarRects[ 0 ] }
-        { conditions_singleBarRects[ 1 ] }
-        { conditions_singleBarRects[ 2 ] }
+        { conditions_singleBarRects }
 
     {/* Base Line as rect*/}
 	{/*<rect x="46" y="80" width="308" height="1" stroke="none" strokeWidth="0" fill="#333333"></rect>*/}
     {/*Base Line as line*/}
-    <line x1={ 46 } y1={ 80 } x2={ 46 + 308 } y2={ 80 } width={ 1 } stroke={ "#000000" } />
+    <line
+        x1={ _Padding_Left_Right_Chart }
+        y1={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - _Padding_Above_Below_Chart }
+        x2={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component - _Padding_Left_Right_Chart }
+        y2={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - _Padding_Above_Below_Chart }
+        width={ 1 } stroke={ "#000000" }
+    />
 
 	{/*<text textAnchor="middle" x="97.66666666666666" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 0 ]}</text>*/}
 	{/*<text textAnchor="middle" x="200" y="94.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#222222">{ conditions_labels[ 1 ] }</text>*/}
@@ -338,7 +350,8 @@ const _VALUE_RECT_COLOR_DEFAULT = "#3366cc";
 
 interface SingleBarRect_Props {
     
-    x : number
+    leftXOfEachBar : number
+    widthOfBar : number
     heightFraction : number
     psmCountsPerConditionEntry : ProteinExperimentPage_PSMs_Per_Condition_Chart_Component_Props_PsmCounts_Entry
     numPsms : number
@@ -427,17 +440,17 @@ class SingleBarRect extends React.Component< SingleBarRect_Props, SingleBarRect_
      */    
     render() {
 
-        const _FULL_HEIGHT_Y = 20; //  Y position of full height rect
+        const _FULL_HEIGHT_Y = _Padding_Above_Below_Chart; //  Y position of full height rect
 
-        const _MAX_HEIGHT = 60;   //  Max height of rect
+        const _MAX_HEIGHT = _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Above_Below_Chart * 2 );   //  Max height of rect
 
         const height = Math.floor( _MAX_HEIGHT * this.props.heightFraction );
 
         const y = _FULL_HEIGHT_Y + ( _MAX_HEIGHT - height );
 
         return (
-            <rect x={ this.props.x } y={ y } width="63" height={ height } stroke="none" strokeWidth="0" fill={ this.state.color }
-                onMouseEnter={ this._onMouseEnter_BindThis } onMouseLeave={ this._onMouseLeave_BindThis }
+            <rect x={ this.props.leftXOfEachBar } y={ y } width={ this.props.widthOfBar } height={ height } stroke="none" strokeWidth="0" fill={ this.state.color }
+                  onMouseEnter={ this._onMouseEnter_BindThis } onMouseLeave={ this._onMouseLeave_BindThis }
             >
             </rect>
         );
