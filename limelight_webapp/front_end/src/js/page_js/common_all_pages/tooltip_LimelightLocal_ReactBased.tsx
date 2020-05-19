@@ -217,6 +217,8 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
     private tooltip_outer_Ref :  React.RefObject<HTMLDivElement>
 
+    private _onMouseEnter_Handler_BindThis = this._onMouseEnter_Handler.bind(this)
+
     constructor(props : Tooltip_Limelight_Component_Props) {
         super(props);
 
@@ -350,6 +352,15 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
     // }
 
     /**
+     *
+     */
+    private _onMouseEnter_Handler() {
+
+        //  Hide on Mouse Enter
+        this.tooltip_outer_Ref.current.style.display = "none"
+    }
+
+    /**
      * 
      */
     render () {
@@ -360,6 +371,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         
         const tooltip = (
             <div ref={ this.tooltip_outer_Ref }
+                 onMouseEnter={ this._onMouseEnter_Handler_BindThis }
                 className=" tooltip-limelight-react-based-outer-container "
                 style={ { 
                     position: "absolute", 
