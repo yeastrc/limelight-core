@@ -276,7 +276,7 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
             let index = 0;
             for ( const psmCountsPerConditionEntry of psmCountsPerCondition ) {
 
-                const leftXOfEachBar = ( widthOfEachBar_PlusPadding * index ) + paddingOnEachSideOfBar + _Padding_Left_Right_Chart;
+                const leftXOfEachBar = ( widthOfEachBar_PlusPadding * index ) + paddingOnEachSideOfBar;
 
                 const heightFraction = psmCountsPerConditionEntry.numPsms / maxPsmCount;
 
@@ -301,13 +301,24 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
 
         return (
 
-<div style={ { position: "relative", width : _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, height : _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component }}
+<div style={ {
+    position: "relative",
+    width : _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, height : _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component,
+    paddingTop: _Padding_Above_Below_Chart, paddingBottom : _Padding_Above_Below_Chart,
+    paddingLeft : _Padding_Left_Right_Chart, paddingRight : _Padding_Left_Right_Chart
+} }
 
+>
+ <div
      onMouseEnter={ this._onMouseEnter_ChartContainerDiv_BindThis }
      onMouseLeave={ this._onMouseLeave_ChartContainerDiv_BindThis }
      ref={ this._svg_container_Ref }
->
-  <svg width={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component } height={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } aria-label="A chart." style={ { overflow: "hidden" } }>
+ >
+  <svg
+      width={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Left_Right_Chart * 2 ) }
+      height={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Above_Below_Chart * 2 ) }
+      aria-label="A chart." style={ { overflow: "hidden" } }
+  >
     {/*rect under whole SVG*/}
 	{/*<rect x="0" y="0" width="400" height="100" stroke="none" strokeWidth="0" fill="#ffffff"></rect>*/}
 	{/*rect under chart area*/}
@@ -323,10 +334,10 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
 	{/*<rect x="46" y="80" width="308" height="1" stroke="none" strokeWidth="0" fill="#333333"></rect>*/}
     {/*Base Line as line*/}
     <line
-        x1={ _Padding_Left_Right_Chart }
-        y1={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - _Padding_Above_Below_Chart }
-        x2={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component - _Padding_Left_Right_Chart }
-        y2={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - _Padding_Above_Below_Chart }
+        x1={ 0 }
+        y1={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Above_Below_Chart * 2 ) }
+        x2={ _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Left_Right_Chart * 2 ) }
+        y2={ _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Above_Below_Chart * 2 ) }
         width={ 1 } stroke={ "#000000" }
     />
 
@@ -337,6 +348,8 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
 	{/*<text textAnchor="end" x="38" y="23.7" fontFamily="Arial" fontSize="12" stroke="none" strokeWidth="0" fill="#444444">{ maxPsmCountString }</text>*/}
 
   </svg>
+
+ </div>
 </div>
         );
     }
@@ -440,7 +453,7 @@ class SingleBarRect extends React.Component< SingleBarRect_Props, SingleBarRect_
      */    
     render() {
 
-        const _FULL_HEIGHT_Y = _Padding_Above_Below_Chart; //  Y position of full height rect
+        const _FULL_HEIGHT_Y = 0; //  Y position of full height rect
 
         const _MAX_HEIGHT = _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component - ( _Padding_Above_Below_Chart * 2 );   //  Max height of rect
 
