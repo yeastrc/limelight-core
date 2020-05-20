@@ -202,7 +202,7 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Chart_Component extends Re
 
             tooltipContents =
             (
-                <div>
+                <div style={ { color : "black" } }>
                     { entriesJSX }
                 </div>
             )
