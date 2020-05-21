@@ -375,7 +375,8 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
                 className=" tooltip-limelight-react-based-outer-container "
                 style={ { 
                     position: "absolute", 
-                    zIndex: 1000, 
+                    zIndex: 1000,
+                    pointerEvents: "none",
                     top: tooltip_Top,
                     left: tooltip_Left,
                     width: tooltip_Width,
