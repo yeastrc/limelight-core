@@ -70,7 +70,7 @@ const mainConfig = {
 		'data_pages/projectViewPage_ProjectLocked_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ProjectOwnerUser.js',
 		
 		//  Lorikeet Own Page
-		'data_pages/lorikeetSpectrumViewPage_Root' : './src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.js',
+		'data_pages/lorikeetSpectrumViewPage_Root' : './src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.ts',
 
 		//  ProjectSearchId Driven pages
 

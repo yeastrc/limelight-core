@@ -1,11 +1,11 @@
 /**
- * lorikeetSpectrumViewer_OwnPage_Root.js
+ * lorikeetSpectrumViewer_OwnPage_Root.ts
  * 
  * Javascript for  page lorikeetSpectrumViewerView.jsp 
  * 
  * Lorikeet Spectrum Viewer on it's own page
  * 
- * Root Javascript file
+ * !!!!   Root Javascript file for page so remains as '.js' file  !!!
  */
 
 
@@ -15,21 +15,15 @@
 
 "use strict";
 
-const Handlebars = require('handlebars/runtime');
-
-
-const _lorikeet_page_bundle =
-	require("../../../../../../handlebars_templates_precompiled/lorikeet_page/lorikeet_page_template-bundle.js" );
-
-
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { LorikeetSpectrumViewer_LoadDataFromServer } from './lorikeetSpectrumViewer_LoadDataFromServer';
 
-import { CreatePsmPeptideTable_HeadersAndData } from "./lorikeetSpectrumViewer_createDataFor_PsmPeptideTable";
+import { lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData } from "./lorikeetSpectrumViewer_createDataFor_PsmPeptideTable";
 import { LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded } from './lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded';
+import {DataTable_RootTableDataObject} from "../../data_table_react/dataTable_React_DataObjects";
 
 
 /**
@@ -43,13 +37,6 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 	constructor() {
 
 		// console.log( "LorikeetSpectrumViewer_OwnPage_Root: contructor called")
-
-		if ( ! _lorikeet_page_bundle.search_name_display ) {
-			throw Error("Not found: _lorikeet_page_bundle.search_name_display");
-		}
-		if ( ! _lorikeet_page_bundle.project_title_url ) {
-			throw Error("Not found: _lorikeet_page_bundle.project_title_url");
-		}
 
 	}
 
@@ -97,14 +84,13 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 
 		promise_lorikeetSpectrumViewer_LoadDataFromServer.then( ({ loadedDataFromServer }) => {
 			try {
-				const createPsmPeptideTable_HeadersAndData = new CreatePsmPeptideTable_HeadersAndData();
 
-				const psmPeptideTable_HeadersAndData = 
-					createPsmPeptideTable_HeadersAndData.createPsmPeptideTable_HeadersAndData( { psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
+				const dataTable_RootTableDataObject : DataTable_RootTableDataObject =
+					lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData( { psmId_Selection : psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
 
 				const lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded = new LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded({ projectSearchId, psmId });
 				lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.initialize();
-				lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.addLorikeetToPage({ loadedDataFromServer, psmPeptideTable_HeadersAndData });
+				lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.addLorikeetToPage({ loadedDataFromServer, dataTable_RootTableDataObject });
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -137,15 +123,24 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 					}
 					const searchName = searchData.name;
 					const searchId = searchData.searchId;
-					const searchNameContext = { searchName, searchId }
 
-					const searchNameHTML = _lorikeet_page_bundle.search_name_display( searchNameContext );
+					const $search_name_span = $("#search_name_span");
+					if ( $search_name_span.length === 0 ) {
+						throw Error("No DOM element with id 'search_name_span'");
+					}
+					$search_name_span.text( searchName )
+
+					const $search_id_span = $("#search_id_span");
+					if ( $search_id_span.length === 0 ) {
+						throw Error("No DOM element with id 'search_id_span'");
+					}
+					$search_id_span.text( searchId )
 
 					const $search_name_container = $("#search_name_container");
 					if ( $search_name_container.length === 0 ) {
 						throw Error("No DOM element with id 'search_name_container'");
 					}
-					$search_name_container.html( searchNameHTML );
+					$search_name_container.show()
 
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -177,15 +172,23 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 				try {
 					const projectTitle = responseData.projectTitle;
 
-					const projectContext = { projectURL, projectTitle }
-	
-					const projectHTML = _lorikeet_page_bundle.project_title_url( projectContext );
-	
+					const $project_title_link = $("#project_title_link");
+					if ( $project_title_link.length === 0 ) {
+						throw Error("No DOM element with id 'project_title_link'");
+					}
+					$project_title_link.attr( "href", projectURL );
+
+					const $project_title_span = $("#project_title_span");
+					if ( $project_title_span.length === 0 ) {
+						throw Error("No DOM element with id 'project_title_span'");
+					}
+					$project_title_span.text( projectTitle );
+
 					const $project_link_container = $("#project_link_container");
 					if ( $project_link_container.length === 0 ) {
 						throw Error("No DOM element with id 'project_link_container'");
 					}
-					$project_link_container.html( projectHTML );
+					$project_link_container.show()
 
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

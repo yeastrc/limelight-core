@@ -1,5 +1,5 @@
 /**
- * lorikeetSpectrumViewer_CreateURL.js
+ * lorikeetSpectrumViewer_CreateURL.ts
  * 
  * Javascript for Creating the URL to open Lorikeet Viewer in it's own window
  * 

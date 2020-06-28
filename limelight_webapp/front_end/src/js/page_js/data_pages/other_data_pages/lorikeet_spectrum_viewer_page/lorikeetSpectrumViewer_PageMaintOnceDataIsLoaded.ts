@@ -1,5 +1,5 @@
 /**
- * lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.js
+ * lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.ts
  * 
  * Javascript for  page lorikeetSpectrumViewerView.jsp 
  * 
@@ -16,28 +16,26 @@
 
 "use strict";
 
-
-const Handlebars = require('handlebars/runtime');
-
-//  for DataTable
-const _common_template_bundle =
-	require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
-
-
 //  module import
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
-import {addFlotToJquery} from 'libs/Lorikeet/jquery.flot.js';
-import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection.js';
+import {addFlotToJquery} from 'libs/Lorikeet/jquery.flot';
+import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection';
 
-import {addLorikeetToJquery} from 'libs/Lorikeet/specview.js';
-
-
-import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import {addLorikeetToJquery} from 'libs/Lorikeet/specview';
 
 
-import {lorikeetSpectrumViewer_CreateURL} from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL.js'
+import {lorikeetSpectrumViewer_CreateURL} from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL'
+import {
+	DataTable_DataRow_ColumnEntry,
+	DataTable_DataRowEntry,
+	DataTable_RootTableDataObject,
+	DataTable_RootTableObject,
+	DataTable_TableOptions,
+	DataTable_TableOptions_dataRowClickHandler_RequestParm
+} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
+import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
 
 
 //  Overrides for LorikeetOptions:
@@ -60,6 +58,17 @@ let itemsAddedTo_jQuery = false;
  */
 export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
+	private _projectSearchId
+	private _psmId_Displayed
+
+	private _dataTable_RootTableDataObject_PutOnDOM : DataTable_RootTableDataObject
+
+	private _storedPsmPeptideData_Map_Key_PsmId = undefined;
+
+	private lastUsed_lorikeetOptions = undefined;
+
+	private _lorikeet_ScanData_RetentionTime_PrecursorMZ = undefined;
+
 	/**
 	 * 
 	 */
@@ -72,6 +81,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		
 		if ( ! itemsAddedTo_jQuery ) {
 			
+			// @ts-ignore
 			let jquery = window.jQuery;
 			
 			addFlotToJquery( jquery );
@@ -81,13 +91,6 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			itemsAddedTo_jQuery = true;
 		}
 
-		// From common template:
-
-		if ( ! _common_template_bundle.dataTable ) {
-			throw Error("Nothing in _common_template_bundle.dataTable");
-		}
-		this._common_template_dataTable_Template = _common_template_bundle.dataTable;
-		
 		// Stored data
 		
 		this._storedPsmPeptideData_Map_Key_PsmId = undefined;
@@ -109,7 +112,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Single parameter, JSON string
 	 */
-	addLorikeetToPage({ loadedDataFromServer, psmPeptideTable_HeadersAndData } ) {
+	addLorikeetToPage({ loadedDataFromServer, dataTable_RootTableDataObject } : { loadedDataFromServer, dataTable_RootTableDataObject : DataTable_RootTableDataObject } ) {
 		try {
 			const lorikeetOptions = loadedDataFromServer.primaryLorikeetData.data;
 
@@ -124,11 +127,11 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			console.log(lorikeetOptions);
 
 
-			if ( psmPeptideTable_HeadersAndData ) {
+			if ( dataTable_RootTableDataObject ) {
 
 				this._savePsmPeptideDataToLocalVariableForLookup( { loadedDataFromServer } );
 
-				this._addPsmPeptideListToPage( { psmPeptideTable_HeadersAndData, loadedDataFromServer } );
+				this._addPsmPeptideListToPage( { dataTable_RootTableDataObject, loadedDataFromServer } );
 			}
 
 		} catch( e ) {
@@ -184,6 +187,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 //		lorikeetOptions.height = LORIKEET_VIEWER_IN_OVERLAY_HEIGHT_PARAM;
 //		lorikeetOptions.width = LORIKEET_VIEWER_IN_OVERLAY_WIDTH_PARAM;
 
+		// @ts-ignore
 		$newDivInHolder.specview( lorikeetOptions );
 
 	}
@@ -191,10 +195,8 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Create Data Table and insert on page
 	 */
-	_addPsmPeptideListToPage( { psmPeptideTable_HeadersAndData, loadedDataFromServer } ) {
+	_addPsmPeptideListToPage( { dataTable_RootTableDataObject, loadedDataFromServer } : { dataTable_RootTableDataObject : DataTable_RootTableDataObject, loadedDataFromServer } ) {
 
-		const objectThis = this;
-		
 		const $psm_list_outer_container = $("#psm_list_outer_container");
 		$psm_list_outer_container.show();
 		
@@ -224,73 +226,47 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		$scan_filename.text( fileName );
 		
 		////  Add main table
-		
-		const tableDisplayHandler = new TableDisplayHandler();
 
-		// the columns for the data being shown on the page
-		const columns = psmPeptideTable_HeadersAndData.dataTableColumns;
+		this._insertPsmTableOnPage({ dataTable_RootTableDataObject })
+	}
 
-		// the data we're showing on the page
-		const tableObjects = psmPeptideTable_HeadersAndData.dataTableDataObjectArray;
-		tableDisplayHandler.addGraphWidths( { dataObjects : tableObjects, columns } );
+	/**
+	 * Insert Data Table on page - New or update
+	 */
+	private _insertPsmTableOnPage({ dataTable_RootTableDataObject } : { dataTable_RootTableDataObject : DataTable_RootTableDataObject }) : void {
 
-		// add the table to the page
+		const containerDOMElement = document.getElementById("psms_peptides_for_scan_number")
+		if ( ! containerDOMElement ) {
+			const msg = "Failed to get DOM element with id 'psms_peptides_for_scan_number'"
+			console.warn( msg )
+			throw Error( msg )
+		}
 
-		const tableObject = { };
-		tableObject.columns = columns;
-		tableObject.dataObjects = tableObjects;
-		tableObject.expandableRows = false;
+		const dataRowClickHandler = (param: DataTable_TableOptions_dataRowClickHandler_RequestParm) => {
 
-		const dataTableContainer_HTML = this._common_template_dataTable_Template( { tableObject } );
-		
-		const $tableHolder = $( "#psms_peptides_for_scan_number" );
-		$tableHolder.empty();
-		$tableHolder.append( dataTableContainer_HTML );
-		
-		
-		const $tableContainerDiv = $tableHolder.find(".selector_data_table_container");
+			// console.warn("dataRowClickHandler in lorikeet code called. param: ", param )
+			// console.warn("dataRowClickHandler in lorikeet code called. param.tableRowClickHandlerParameter: ", param.tableRowClickHandlerParameter )
 
-		// add in the click handlers for sorting the table
-		tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );
+			const tableRowClickHandlerParameter = param.tableRowClickHandlerParameter
 
-		// add in the click and over handlers for the rows
-		tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
+			this._handlePsmLinkClick({ psmIdOfClicked : tableRowClickHandlerParameter.psmId })
+		}
 
-		tableDisplayHandler.addNoExpansionHandlerToRows( { $tableContainerDiv } );
-		
-		const initialPsmId = psmPeptideTable_HeadersAndData.initialPsmId;
-		
-		const $selector_table_rows_container = $tableContainerDiv.find(".selector_table_rows_container");
-		
-		this._markPsmRowSelected( { psmId : initialPsmId, $selector_table_rows_container } );
-		
-		const $selector_data_table_row_All = $tableContainerDiv.find(".selector_data_table_row");
-		$selector_data_table_row_All.addClass("clickable");
-        $selector_data_table_row_All.click( function(eventObject) {
-            try {
-                eventObject.preventDefault();
-                const clickThis = this;
-                objectThis._handlePsmLinkClick({ clickThis, eventObject });
-                return false;
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });	
+		this._dataTable_RootTableDataObject_PutOnDOM = dataTable_RootTableDataObject
+
+		const dataTable_TableOptions = new DataTable_TableOptions({
+			dataRowClickHandler
+		})
+
+		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List", tableOptions : dataTable_TableOptions })
+
+		const dataTable = create_dataTable_Root_React({ tableObject : dataTable_RootTableObject, containerDOMElement, renderCompleteCallbackFcn : undefined })
 	}
 
 	/**
 	 * Create Data Table and insert on page
 	 */
-	_handlePsmLinkClick( { clickThis, eventObject } ) {
-	
-		const $clickedElement = $(clickThis);
-
-		const psmIdOfClicked = $clickedElement.data( 'id' );
-
-		if ( ! psmIdOfClicked ) {
-			throw Error("psmIdOfClicked is null or undefined");
-		}
+	_handlePsmLinkClick( { psmIdOfClicked } : { psmIdOfClicked : number } ) : void {
 
 		if ( this._psmId_Displayed === psmIdOfClicked ) {
 
@@ -298,18 +274,39 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			return; // EARLY RETURN
 		}
 
-
-		this._psmId_Displayed = psmIdOfClicked;
-
+		this._psmId_Displayed = psmIdOfClicked; //  Save to instance variable
 
 		//  Update URL in browser
 		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed });
 		window.history.replaceState( null, null, lorikeetSpectrumViewer_newWindowURL );
 
-		const $selector_table_rows_container = $clickedElement.closest(".selector_table_rows_container");
-		
-		this._markPsmRowSelected( { $clickedElement, $selector_table_rows_container } );
-		
+		//  Update Table for new selection
+		{
+			const new_dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = []
+
+			for ( const dataTable_DataRowEntry of this._dataTable_RootTableDataObject_PutOnDOM.dataTable_DataRowEntries ) {
+
+				let highlightRow = false
+				if ( dataTable_DataRowEntry.tableRowClickHandlerParameter.psmId === psmIdOfClicked ) {
+					highlightRow = true
+				}
+
+				const new_dataTable_DataRowEntry = new DataTable_DataRowEntry({
+					uniqueId : dataTable_DataRowEntry.uniqueId,
+					sortOrder_OnEquals : dataTable_DataRowEntry.sortOrder_OnEquals,
+					columnEntries : dataTable_DataRowEntry.columnEntries,
+					highlightRow,
+					tableRowClickHandlerParameter : dataTable_DataRowEntry.tableRowClickHandlerParameter
+				})
+
+				new_dataTable_DataRowEntries.push( new_dataTable_DataRowEntry )
+			}
+
+			const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({ columns : this._dataTable_RootTableDataObject_PutOnDOM.columns, dataTable_DataRowEntries : new_dataTable_DataRowEntries })
+
+			this._insertPsmTableOnPage({dataTable_RootTableDataObject})
+		}
+
 		//  create new lorikeetOptions to create new Lorikeet
 		
 		const new_lorikeetOptions = this.lastUsed_lorikeetOptions;
@@ -318,10 +315,6 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		if ( ! storedPsmPeptideDataForPsmId ) {
 			throw Error("No data for psmId: " + psmIdOfClicked );
 		}
-		//  storedPsmPeptideDataForPsmId
-		//		charge, peptideSequence, variableMods [{aminoAcid,index,modMass}], ntermMod, ctermMod,
-		//		psmId, reportedPeptideId, reportedPeptideString, scanNumber,
-		// 		psm_precursor_MZ, psm_precursor_RetentionTime
 
 		new_lorikeetOptions.charge = storedPsmPeptideDataForPsmId.charge;
 		new_lorikeetOptions.sequence = storedPsmPeptideDataForPsmId.peptideSequence;
@@ -329,6 +322,9 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		new_lorikeetOptions.ntermMod = storedPsmPeptideDataForPsmId.ntermMod;
 		new_lorikeetOptions.ctermMod = storedPsmPeptideDataForPsmId.ctermMod;
 		new_lorikeetOptions.label = storedPsmPeptideDataForPsmId.label;
+
+		new_lorikeetOptions.userReporterIons = storedPsmPeptideDataForPsmId.reporterIonMassList
+
 
 		if ( storedPsmPeptideDataForPsmId.psm_precursor_MZ !== undefined && storedPsmPeptideDataForPsmId.psm_precursor_MZ !== null ) {
 
@@ -345,34 +341,6 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		}
 
 		this._addLorikeetToPageInternal( { lorikeetOptions : new_lorikeetOptions } );
-	}
-
-	/**
-	 * Create Data Table and insert on page
-	 */
-	_markPsmRowSelected( { psmId, $clickedElement, $selector_table_rows_container } ) {
-
-		const _SELECTED_PSM_ROW_MARKING_CSS_CLASSNAME = "psm-selected";
-
-		//  Clear previous row mark as selected 
-		const $selector_data_table_rowAll = $selector_table_rows_container.find(".selector_data_table_row");
-		$selector_data_table_rowAll.removeClass( _SELECTED_PSM_ROW_MARKING_CSS_CLASSNAME );
-		
-		//  Mark new row selected
-		if ( $clickedElement ) {
-			//  Have clicked element so use it
-			const $selector_data_table_rowClicked = $clickedElement.closest(".selector_data_table_row");
-			$selector_data_table_rowClicked.addClass( _SELECTED_PSM_ROW_MARKING_CSS_CLASSNAME );
-		} else {
-			//  Find row with id of psmId and mark it
-			$selector_data_table_rowAll.each( function( index, element ) {
-				const $row = $( this );
-				const psmIdOfElement = $row.data( 'id' );
-				if ( psmIdOfElement === psmId ) {
-					$row.addClass( _SELECTED_PSM_ROW_MARKING_CSS_CLASSNAME );
-				}
-			} );
-		}		
 	}
 
 	/**

@@ -36,7 +36,7 @@ const create_dataTable_Root_React = function({ tableObject, containerDOMElement,
     tableObject : DataTable_RootTableObject
     containerDOMElement, 
     renderCompleteCallbackFcn 
-}) {
+}) : DataTable_TableRoot {
 
     if ( containerDOMElement === undefined || containerDOMElement === null ) {
         throw Error("create_dataTable_Root_React({ containerDOMElement }): containerDOMElement is undefined or null ");
