@@ -260,7 +260,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
 		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List", tableOptions : dataTable_TableOptions })
 
-		const dataTable = create_dataTable_Root_React({ tableObject : dataTable_RootTableObject, containerDOMElement, renderCompleteCallbackFcn : undefined })
+		create_dataTable_Root_React({ tableObject : dataTable_RootTableObject, containerDOMElement, renderCompleteCallbackFcn : undefined })
 	}
 
 	/**

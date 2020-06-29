@@ -4,6 +4,7 @@
  * Classes and types for the Data Objects used in Data Table React
 */
 import React from "react";
+import {dataTable_React_DataObjects_Validator} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects_Validator";
 
 type DataTable_UniqueId = string | number;
 
@@ -13,6 +14,11 @@ type DataTable_ColumnId = string;
 
 /**
  * Data Table - Root Table Object
+ *
+ * For stand alone Data Table in DOM (Not enclosed by a React Managed element)
+ * it is recommended to use the functions create_dataTable_Root_React, remove_dataTable_Root_React
+ * in the file dataTable_TableRoot_React_Create_Remove_Table_DOM.ts
+ * to Create and Remove the Data Table to/from the DOM
  */
 class DataTable_RootTableObject {
 
@@ -20,31 +26,48 @@ class DataTable_RootTableObject {
     tableOptions : DataTable_TableOptions 
     tableDataObject : DataTable_RootTableDataObject
 
+    /**
+     * @throws Error if not valid
+     */
     constructor({ dataTableId, tableOptions, tableDataObject } : {
 
         dataTableId : string  //  Used for validation error messages
         tableOptions : DataTable_TableOptions 
         tableDataObject : DataTable_RootTableDataObject
     }) {
-        if ( dataTableId === undefined || dataTableId === null || dataTableId === "" ) {
+        this.dataTableId = dataTableId;
+        this.tableOptions = tableOptions;
+        this.tableDataObject = tableDataObject;
+
+        //  throws Error
+        DataTable_RootTableObject.constructorDataValidation( this )
+
+        //  Assumes all child properties are fully populated when this object is created
+        //  throws Error
+        dataTable_React_DataObjects_Validator({ dataTable_RootTableObject : this })
+    }
+
+    /**
+     * @throws Error if not valid
+     */
+    static constructorDataValidation( dataTable_RootTableObject : DataTable_RootTableObject ) : void {
+
+        if ( dataTable_RootTableObject.dataTableId === undefined || dataTable_RootTableObject.dataTableId === null || dataTable_RootTableObject.dataTableId === "" ) {
             const msg = 'DataTable_RootTableObject.constructor: dataTableId === undefined || dataTableId === null || dataTableId === ""';
             console.warn( msg )
             throw Error( msg );
         }
-        if ( ! tableOptions ) {
+        if ( ! dataTable_RootTableObject.tableOptions ) {
             const msg = 'DataTable_RootTableObject.constructor: ( ! tableOptions )';
             console.warn( msg )
             throw Error( msg );
         }
-        if ( ! tableDataObject ) {
+        if ( ! dataTable_RootTableObject.tableDataObject ) {
             const msg = 'DataTable_RootTableObject.constructor: ( ! tableDataObject )';
             console.warn( msg )
             throw Error( msg );
         }
 
-        this.dataTableId = dataTableId;
-        this.tableOptions = tableOptions;
-        this.tableDataObject = tableDataObject;
     }
 }
 
@@ -170,25 +193,30 @@ class DataTable_RootTableDataObject {
         dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
         columns : Array<DataTable_Column>
     }) {
-        if ( ! columns ) {
+        this.columns = columns;
+        this.dataTable_DataRowEntries = dataTable_DataRowEntries;
+        this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
+
+        DataTable_RootTableDataObject.constructorDataValidation( this )
+    }
+
+    static constructorDataValidation( dataTable_RootTableDataObject : DataTable_RootTableDataObject ) : void {
+
+        if ( ! dataTable_RootTableDataObject.columns ) {
             const msg = 'DataTable_RootTableDataObject.constructor: ( ! columns )';
             console.warn( msg )
             throw Error( msg );
         }
-        if ( dataTable_DataRowEntries && dataTable_DataGroupRowEntries ) {
+        if ( dataTable_RootTableDataObject.dataTable_DataRowEntries && dataTable_RootTableDataObject.dataTable_DataGroupRowEntries ) {
             const msg = 'DataTable_RootTableDataObject.constructor: ( dataTable_DataRowEntries && dataTable_DataGroupRowEntries )';
             console.warn( msg )
             throw Error( msg );
         }
-        if ( ( ! dataTable_DataRowEntries ) && ( ! dataTable_DataGroupRowEntries ) ) {
+        if ( ( ! dataTable_RootTableDataObject.dataTable_DataRowEntries ) && ( ! dataTable_RootTableDataObject.dataTable_DataGroupRowEntries ) ) {
             const msg = 'DataTable_RootTableDataObject.constructor: ( ( ! dataTable_DataRowEntries ) && ( ! dataTable_DataGroupRowEntries ) )';
             console.warn( msg )
             throw Error( msg );
         }
-
-        this.columns = columns;
-        this.dataTable_DataRowEntries = dataTable_DataRowEntries;
-        this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
     }
 
     shallowClone() : DataTable_RootTableDataObject {
@@ -450,22 +478,6 @@ class DataTable_DataRowEntry {
         
         // showChildTable? : boolean
      }) {
-        if ( uniqueId === undefined || uniqueId === null || uniqueId === "" ) {
-            const msg = 'DataTable_DataRowEntry.constructor: uniqueId === undefined || uniqueId === null || uniqueId === ""';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === "" ) {
-            const msg = 'DataTable_DataRowEntry.constructor: sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === ""';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( columnEntries === undefined || columnEntries === null ) {
-            const msg = 'DataTable_DataRowEntry.constructor: columnEntries === undefined';
-            console.warn( msg )
-            throw Error( msg );
-        }
-
         this.uniqueId = uniqueId; 
         this.sortOrder_OnEquals = sortOrder_OnEquals;
         this.greyOutRow = greyOutRow;
@@ -475,6 +487,25 @@ class DataTable_DataRowEntry {
         this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
         this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter
         this.dataRow_GetChildTable_ReturnReactComponent_Parameter = dataRow_GetChildTable_ReturnReactComponent_Parameter;
+    }
+
+    static constructorDataValidation( dataTable_DataRowEntry : DataTable_DataRowEntry ) {
+
+        if ( dataTable_DataRowEntry.uniqueId === undefined || dataTable_DataRowEntry.uniqueId === null || dataTable_DataRowEntry.uniqueId === "" ) {
+            const msg = 'DataTable_DataRowEntry.constructor: uniqueId === undefined || uniqueId === null || uniqueId === ""';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( dataTable_DataRowEntry.sortOrder_OnEquals === undefined || dataTable_DataRowEntry.sortOrder_OnEquals === null || dataTable_DataRowEntry.sortOrder_OnEquals === "" ) {
+            const msg = 'DataTable_DataRowEntry.constructor: sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === ""';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( dataTable_DataRowEntry.columnEntries === undefined || dataTable_DataRowEntry.columnEntries === null ) {
+            const msg = 'DataTable_DataRowEntry.constructor: columnEntries === undefined';
+            console.warn( msg )
+            throw Error( msg );
+        }
     }
 }
 

@@ -290,6 +290,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
                                     <DataTable_TableRoot
                                         tableObject={ this.state.massDisplay_DataTable_RootTableObject }
+                                        resortTableOnUpdate={ true }
                                     />
 
                                 </div>

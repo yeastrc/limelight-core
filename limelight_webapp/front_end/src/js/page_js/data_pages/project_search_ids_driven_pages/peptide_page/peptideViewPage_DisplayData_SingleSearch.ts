@@ -9,9 +9,6 @@
  * 
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
@@ -30,6 +27,7 @@ import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { ReportedPeptides_DataTableObjects_ForSingleSearch_PeptidePage_Result, reportedPeptides_DataTableOjbects_ForSingleSearch_PeptidePage_createChildTableObjects } from './peptidePage_Display_SingleSearch_ReportedPeptideListSection_Create_TableData';
 import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
+import {create_dataTable_Root_React, remove_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
 
 /**
  * 
@@ -380,7 +378,8 @@ export class PeptideViewPage_Display_SingleSearch {
 
 			//  Remove any existing peptide table
 
-			ReactDOM.unmountComponentAtNode( peptide_list_container_DOM );
+			// Use ONLY when Data Table is not enclosed by React Managed DOM element
+			remove_dataTable_Root_React({ containerDOMElement : peptide_list_container_DOM })
 
 			console.log("Rendering Peptide List END, Now: " + new Date() );
 
@@ -423,24 +422,9 @@ export class PeptideViewPage_Display_SingleSearch {
 				console.log("Rendering Peptide List END, Now: " + new Date() );
 			};
 
-			//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
-			
-			const proteinExperimentPage_SingleProtein_Root_Component = (
-				React.createElement(
-					DataTable_TableRoot,
-					{
-						tableObject : reportedPeptideList_RootTableObject
-					},
-					null
-				)
-			);
+			// create_dataTable_Root_React(...): Use ONLY when Data Table is not enclosed by React Managed DOM element
+			create_dataTable_Root_React({ tableObject : reportedPeptideList_RootTableObject, containerDOMElement : peptide_list_container_DOM, renderCompleteCallbackFcn })
 
-			const renedered_DataTable_TableRoot : DataTable_TableRoot = ReactDOM.render( 
-				proteinExperimentPage_SingleProtein_Root_Component,
-				peptide_list_container_DOM,
-				renderCompleteCallbackFcn
-			);
-		
 		}
 	}
 

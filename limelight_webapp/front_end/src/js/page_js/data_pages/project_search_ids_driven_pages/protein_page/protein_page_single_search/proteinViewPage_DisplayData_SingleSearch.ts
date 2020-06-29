@@ -113,7 +113,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	private _proteinPage_Display_SingleSearch_SingleProtein : ProteinPage_Display_SingleSearch_SingleProtein;
 
 	private _downloadProteinsClickHandlerAttached : boolean;
-	private _proteinList_renderedReactComponent : DataTable_TableRoot;
+	private _proteinList_IsInDOM : boolean;
 	private _addTooltipForProteinName_Called : boolean;
 
 	private _mainData_LoadedFor_displayProteinListOnPage = false; // Set to true once "Main Data" Loaded for current project search id.
@@ -490,7 +490,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			const protein_list_containerDOMElement = $protein_list_container[ 0 ];
 			remove_dataTable_Root_React({ containerDOMElement : protein_list_containerDOMElement }); // External function
 
-			this._proteinList_renderedReactComponent = undefined;
+			this._proteinList_IsInDOM = false;
 
 			console.log("Rendering Protein List END (No Data), Now: " + new Date() );
 		}
@@ -514,7 +514,7 @@ export class ProteinViewPage_Display_SingleSearch {
 		}
 		$protein_counts_download_assoc_psms_block.hide();
 
-		if ( this._proteinList_renderedReactComponent && proteinList.length > 80 ) {
+		if ( this._proteinList_IsInDOM && proteinList.length > 80 ) {
 
 			//  Have existing list that will be updating and new list is long enough so display "Updating" message
 			const $protein_list_updating_message = $("#protein_list_updating_message");
@@ -592,12 +592,14 @@ export class ProteinViewPage_Display_SingleSearch {
 			}
 			const protein_list_containerDOMElement = $protein_list_container[ 0 ];
 
-			this._proteinList_renderedReactComponent = create_dataTable_Root_React({  // External Function;
+			create_dataTable_Root_React({  // External Function;
 
 				tableObject, containerDOMElement : protein_list_containerDOMElement, renderCompleteCallbackFcn 
 			});
 
-			//  Add tooltips to  $protein_list_container instead since that is what is already in the DOM
+			this._proteinList_IsInDOM = true;
+
+				//  Add tooltips to  $protein_list_container instead since that is what is already in the DOM
 			this._addTooltipForProteinName( { $selector_table_rows_container : $protein_list_container } )
 
 		}, 10 );

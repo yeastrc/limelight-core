@@ -4,6 +4,10 @@
  * Add / Remove  DataTable_TableRoot React Component into DOM
  * 
  * <DataTable_TableRoot>  in  dataTable_TableRoot_React.tsx
+ *
+ * function create_dataTable_Root_React can also be used to update the DOM
+ *
+ * exported functions: create_dataTable_Root_React, remove_dataTable_Root_React
  */
 
 
@@ -17,33 +21,34 @@ import { DataTable_TableRoot, DataTable_TableRoot_Props } from './dataTable_Tabl
 
 /**
  * Create a Data Table on the Page  - using React
+ *
+ * Use ONLY when Data Table is not enclosed by React Managed DOM element
  * 
  * Calling create_dataTable_Root_React on a DOM node that contains a React instance updates that React instance
  * 
  * @param tableObject - Same as for standard data table
  * 
- * @param tableOptions { 
- *      rowClickHandler - function({ event, uniqueId, dataObject }) 
+ * @param resortTableOnUpdate - Optional, Use with care - When tableObject property changes, apply existing sort columns to it.  This requires that the same table column identifiers are in the new table.
  * 
  * @param containerDOMElement - DOM element reference
  * 
  * @param renderCompleteCallbackFcn - Optional - Function called on Component Rendered
- * 
- * @returns created React Component
+ *
  */
-const create_dataTable_Root_React = function({ tableObject, containerDOMElement, renderCompleteCallbackFcn } : { 
+const create_dataTable_Root_React = function({ tableObject, resortTableOnUpdate, containerDOMElement, renderCompleteCallbackFcn } : {
     
     tableObject : DataTable_RootTableObject
+    resortTableOnUpdate? : boolean
     containerDOMElement, 
     renderCompleteCallbackFcn 
-}) : DataTable_TableRoot {
+}) : void {
 
     if ( containerDOMElement === undefined || containerDOMElement === null ) {
         throw Error("create_dataTable_Root_React({ containerDOMElement }): containerDOMElement is undefined or null ");
     }
 
     const renderCompletecallbackFcn_Local = ( ) => {
-        var z = 0;
+
         if ( renderCompleteCallbackFcn ) {
             renderCompleteCallbackFcn();
         }
@@ -62,13 +67,12 @@ const create_dataTable_Root_React = function({ tableObject, containerDOMElement,
         // }, 5000 );
     }
 
-    const renderCompletecallbackFcn = ( ) => { };
-
     const projectPage_ExperimentsSectionRoot_Component = (
         React.createElement(
             DataTable_TableRoot,
             {
-                tableObject
+                tableObject,
+                resortTableOnUpdate
             },
             null
         )
@@ -80,14 +84,13 @@ const create_dataTable_Root_React = function({ tableObject, containerDOMElement,
         renderCompletecallbackFcn_Local 
     );
 
-    return renderedReactComponent;
-    //  To Remove React from the DOM element
-
-    //  ReactDOM.unmountComponentAtNode(domContainerNode)
+    // return renderedReactComponent;
 }
 
 /**
  * Remove Data Table on the Page  - using React
+ *
+ * Use ONLY when Data Table is not enclosed by React Managed DOM element
  * 
  * No Error if call this on DOM element NOT containing a React Component
  * 

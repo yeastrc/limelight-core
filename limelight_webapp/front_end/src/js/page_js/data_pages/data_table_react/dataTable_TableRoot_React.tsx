@@ -2,12 +2,18 @@
  * dataTable_TableRoot_React.tsx
  * 
  * Actual Table Root
+ *
+ *
+ * For stand alone Data Table in DOM (Not enclosed by a React Managed element)
+ * it is recommended to use the functions create_dataTable_Root_React, remove_dataTable_Root_React
+ * in the file dataTable_TableRoot_React_Create_Remove_Table_DOM.ts
+ * to Create and Remove the Data Table to/from the DOM
  */
 import React from 'react'
 
 import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from "./dataTable_constants";
 
-import { DataTable_RootTableObject, DataTable_ColumnId, DataTable_TableOptions, DataTable_SortColumnsInfoEntry, DataTable_RootTableDataObject, DataTable_DataRowEntry, DataTable_DataGroupRowEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import { DataTable_RootTableObject, DataTable_ColumnId, DataTable_TableOptions, DataTable_SortColumnsInfoEntry, DataTable_RootTableDataObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 
 import { DataTable_Table_HeaderRowEntry }  from './dataTable_Table_HeaderRowEntry_React';
@@ -15,12 +21,15 @@ import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
 import { DataTable_Table_DataRow_Group } from './dataTable_Table_DataRow_Group_React';
 
 import { sort_dataRows_on_sortColumnsInfo } from './dataTable_SortDataRows';
+import {dataTable_React_DataObjects_Validator} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects_Validator";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 /**
  * 
  */
 export interface DataTable_TableRoot_Props {
     tableObject : DataTable_RootTableObject
+    resortTableOnUpdate? : boolean //  Use with care - When tableObject property changes, apply existing sort columns to it.  This requires that the same table column identifiers are in the new table.
 }
 
 /**
@@ -40,7 +49,12 @@ interface DataTable_TableRoot_State {
 }
 
 /**
- * 
+ * Data Table Root Node
+ *
+ * For stand alone Data Table in DOM (Not enclosed by a React Managed element)
+ * it is recommended to use the functions create_dataTable_Root_React, remove_dataTable_Root_React
+ * in the file dataTable_TableRoot_React_Create_Remove_Table_DOM.ts
+ * to Create and Remove the Data Table to/from the DOM
  */
 export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Props, DataTable_TableRoot_State > {
 
@@ -49,21 +63,41 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     constructor(props : DataTable_TableRoot_Props) {
         super(props);
 
-        this.state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({ tableObject : props.tableObject });
+        this.state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({
+            tableObject : props.tableObject,
+            resortTableOnUpdate : false /* not resort on first create */,
+            sortColumnsInfo : null //  Not sort at first
+        });
     }
 
     /**
      * 
      */
-    private static _createStateObjectFrom_DataTable_RootTableObject({ tableObject } : { tableObject : DataTable_RootTableObject }) : DataTable_TableRoot_State {
+    private static _createStateObjectFrom_DataTable_RootTableObject({ tableObject, resortTableOnUpdate, sortColumnsInfo } : {
 
-        const state = {
+        tableObject : DataTable_RootTableObject
+        resortTableOnUpdate : boolean
+        sortColumnsInfo : Array<DataTable_SortColumnsInfoEntry>
+
+    }) : DataTable_TableRoot_State {
+
+        const state : DataTable_TableRoot_State = {
             tableDataObject: tableObject.tableDataObject,
             tableOptions : tableObject.tableOptions,
             tableDataObject_FromProps: tableObject.tableDataObject,
-            tableOptions_FromProps : tableObject.tableOptions,
-            sortColumnsInfo : null
+            tableOptions_FromProps : tableObject.tableOptions
         };
+        if ( resortTableOnUpdate && sortColumnsInfo ) {
+
+            const sort_tableObject_on_sortColumnsInfo_Result = DataTable_TableRoot._sort_tableObject_on_sortColumnsInfo({ tableObject : tableObject.tableDataObject, sortColumnsInfo });
+            const tableDataObject_New = sort_tableObject_on_sortColumnsInfo_Result.tableObject;
+
+            //  update tableDataObject
+            state.tableDataObject = tableDataObject_New;
+
+        } else {
+            state.sortColumnsInfo = null
+        }
 
         return state;
     }
@@ -109,8 +143,24 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             return null;  //
         }
 
-        //  Props changed so reset sorting
-        const new_state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({ tableObject : props.tableObject });
+        //  Validate new DataTable Object from Props
+        {
+            try {
+                // throws Error if not valid
+                dataTable_React_DataObjects_Validator({dataTable_RootTableObject: props.tableObject})
+            } catch (e) {
+                //  Have catch since dataTable_React_DataObjects_Validator also throws Error
+                console.warn("dataTable_React_DataObjects_Validator(...) threw Error: ", e)
+                console.warn("dataTable_React_DataObjects_Validator(...) threw Error: props.tableObject.dataTableId: " + props.tableObject.dataTableId + ", props.tableObject: ", props.tableObject)
+                reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                throw e;
+            }
+        }
+
+        //  Props changed so create new state
+        const new_state : DataTable_TableRoot_State = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({
+            tableObject : props.tableObject, resortTableOnUpdate : props.resortTableOnUpdate, sortColumnsInfo : state.sortColumnsInfo
+        });
 
         return new_state;
     }
@@ -228,7 +278,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         const sortColumnsInfo = this._update_sortColumnsInfo({ shiftKeyDown, columnId, sortColumnsInfo_Existing });
 
-        const sort_tableObject_on_sortColumnsInfo_Result = this._sort_tableObject_on_sortColumnsInfo({ tableObject, sortColumnsInfo });
+        const sort_tableObject_on_sortColumnsInfo_Result = DataTable_TableRoot._sort_tableObject_on_sortColumnsInfo({ tableObject, sortColumnsInfo });
         const tableDataObject_New = sort_tableObject_on_sortColumnsInfo_Result.tableObject;
 
         //  Return updated objects to update state
@@ -285,9 +335,9 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     /**
      * 
      */
-    _sort_tableObject_on_sortColumnsInfo({ 
+    static _sort_tableObject_on_sortColumnsInfo({
         
-        tableObject, sortColumnsInfo 
+        tableObject, sortColumnsInfo
     } : { tableObject : DataTable_RootTableDataObject, sortColumnsInfo : Array<DataTable_SortColumnsInfoEntry>  
     }) : { tableObject : DataTable_RootTableDataObject } {
 
