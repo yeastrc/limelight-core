@@ -143,7 +143,8 @@ const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLook
 		searchDataLookupParamsCode : searchDataLookupParamsCode_New, 
 		pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
 		pageStateString : pageStatePartsFromURL.pageStateString, 
-		referrer : pageStatePartsFromURL.referrer 
+		referrer : pageStatePartsFromURL.referrer,
+		experimentId : undefined
 	} );
 	
 	window.history.replaceState( null, null, newURL );

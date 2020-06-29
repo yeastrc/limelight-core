@@ -35,7 +35,7 @@ import {
 import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
-import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder.js';
+import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder';
 
 
 /**
@@ -458,7 +458,8 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
                 searchDataLookupParamsCode,
                 pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
                 pageStateString : pageStatePartsFromURL.pageStateString,
-                referrer : pageStatePartsFromURL.referrer
+                referrer : pageStatePartsFromURL.referrer,
+                experimentId : undefined
             } );
 
             //  TODO  Change to update the URL and then update all JS variables on page for updated list of searches,
@@ -499,7 +500,8 @@ const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLook
         searchDataLookupParamsCode : searchDataLookupParamsCode_New,
         pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
         pageStateString : pageStatePartsFromURL.pageStateString,
-        referrer : pageStatePartsFromURL.referrer
+        referrer : pageStatePartsFromURL.referrer,
+        experimentId : undefined
     } );
 
     window.history.replaceState( null, null, newURL );

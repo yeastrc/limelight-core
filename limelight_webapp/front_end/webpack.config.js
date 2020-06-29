@@ -56,7 +56,7 @@ const mainConfig = {
 		//  Data Pages
 		//  
 		
-		'data_pages/projectsListPage' : './src/js/page_js/data_pages/other_data_pages/projectsListPage.js',
+		'data_pages/projectsListPage' : './src/js/page_js/data_pages/other_data_pages/projectsListPage.ts',
 		
 		//  Project Page:
 		//   Project page for each type of user and whether or not the project is locked
@@ -70,7 +70,7 @@ const mainConfig = {
 		'data_pages/projectViewPage_ProjectLocked_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ProjectOwnerUser.js',
 		
 		//  Lorikeet Own Page
-		'data_pages/lorikeetSpectrumViewPage_Root' : './src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.js',
+		'data_pages/lorikeetSpectrumViewPage_Root' : './src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.ts',
 
 		//  ProjectSearchId Driven pages
 
@@ -91,18 +91,18 @@ const mainConfig = {
 		
 		//  User Pages
 		
-		'user_pages/userLoginPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userLoginPage_Root.js',
-		'user_pages/userInvitePage_Root' : './src/js/page_js/user_account_page_js/root_parts/userInvitePage_Root.js',
-		'user_pages/userResetPasswordPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userResetPasswordPage_Root.js',
-		'user_pages/userAccountManagementPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userAccountManagementPage_Root.js',
+		'user_pages/userLoginPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userLoginPage_Root.ts',
+		'user_pages/userInvitePage_Root' : './src/js/page_js/user_account_page_js/root_parts/userInvitePage_Root.ts',
+		'user_pages/userResetPasswordPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userResetPasswordPage_Root.ts',
+		'user_pages/userAccountManagementPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userAccountManagementPage_Root.ts',
 
 		///////////////
 		
 		//  Webapp Configure Page
-		'webapp_admin/configurePage_Root' : './src/js/page_js/webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Root.js',
+		'webapp_admin/configurePage_Root' : './src/js/page_js/webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Root.ts',
 
 		//  Webapp Manage Users Page
-		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.js',
+		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.ts',
 
 		///////////////
 		

@@ -2,12 +2,12 @@
  * Load initial data required for mod page.
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager.ts';
-import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils';
 
 export class ModViewPage_DataLoader {
 

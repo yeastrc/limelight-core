@@ -43,7 +43,6 @@ import { create_reportedPeptide_CommonValue_EncodedString } from 'page_js/data_p
 import { get_DynamicModificationsForReportedPeptideIds } from '../protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides';
 import { loadPeptideIdsIfNeeded } from '../protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
 import { DataTable_TableOptions_dataRowClickHandler_RequestParm, DataTable_TableOptions, DataTable_RootTableDataObject, DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
-import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { create_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM';
 import { ProteinRow_tableRowClickHandlerParameter_MultipleSearches, renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject } from './proteinViewPage_DisplayData_MultipleSearches_Create_ProteinList_DataTable_RootTableDataObject';
 import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES } from './proteinViewPage_DisplayData_MultipleSearches_Constants';
@@ -129,10 +128,9 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 	private _proteinViewPage_Display_MultipleSearches_SingleProtein : ProteinPage_Display_MultipleSearches_SingleProtein;
 	
-	private _downloadProteinsClickHandlerAttached = true;
 	private currentProteinListDisplayTableData = undefined
 	
-	private _proteinList_renderedReactComponent : DataTable_TableRoot;
+	private _proteinList_IsInDOM : boolean;
 
 	private _addTooltipForProteinName_ADDED = false;  // So don't add more than once
 	
@@ -482,7 +480,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 					}
 					$protein_counts_download_assoc_psms_block.hide();
 			
-					if ( this._proteinList_renderedReactComponent ) {
+					if ( this._proteinList_IsInDOM ) {
 			
 						//  Have existing list that will be updating and waiting for new data so display "Updating" message
 						const $protein_list_updating_message = $("#protein_list_updating_message");
@@ -1107,7 +1105,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		}
 		$protein_counts_download_assoc_psms_block.hide();
 
-		if ( this._proteinList_renderedReactComponent && proteinList.length > 80 ) {
+		if ( this._proteinList_IsInDOM && proteinList.length > 80 ) {
 
 			//  Have existing list that will be updating and new list is long enough so display "Updating" message
 			const $protein_list_updating_message = $("#protein_list_updating_message");
@@ -1209,10 +1207,12 @@ export class ProteinViewPage_Display_MultipleSearches {
 			}
 			const protein_list_containerDOMElement = $protein_list_container[ 0 ];
 
-			this._proteinList_renderedReactComponent = create_dataTable_Root_React({  // External Function;
+			create_dataTable_Root_React({  // External Function;
 
 				tableObject, containerDOMElement : protein_list_containerDOMElement, renderCompleteCallbackFcn 
 			});
+
+			this._proteinList_IsInDOM = true;
 
 			//  Add tooltips to  $protein_list_container instead since that is what is already in the DOM
 			this._addTooltipForProteinName( { $selector_table_rows_container : $protein_list_container } )

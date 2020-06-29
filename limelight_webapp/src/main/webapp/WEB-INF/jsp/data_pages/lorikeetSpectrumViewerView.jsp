@@ -51,9 +51,13 @@
 	<script id="project_view_controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER %></script>
 		
 	<div id="project_search_outer_container" style="margin-left: 10px; margin-top: 5px;">
-		<div id="project_link_container"></div>
+		<div id="project_link_container" style="display: none">
+			<a  id="project_title_link" href=""  target="_blank" >From Project: <span id="project_title_span"></span></a>
+		</div>
 		
-		<div id="search_name_container" style=""></div>
+		<div id="search_name_container" style="display: none;">
+			<span id="search_name_span"></span> (<span id="search_id_span"></span>)
+		</div>
 	</div>
 
 	<div id="lorikeet_holder">LOADING</div>

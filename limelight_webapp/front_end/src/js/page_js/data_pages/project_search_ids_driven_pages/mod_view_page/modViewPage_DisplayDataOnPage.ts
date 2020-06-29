@@ -7,7 +7,7 @@
 
 "use strict";
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
 import {ModViewPage_DataLoader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
 import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';

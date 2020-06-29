@@ -301,7 +301,8 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
                 searchDataLookupParamsCode,
                 pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
                 pageStateString : pageStatePartsFromURL.pageStateString,
-                referrer : pageStatePartsFromURL.referrer
+                referrer : pageStatePartsFromURL.referrer,
+                experimentId : undefined
             } );
 
             //  TODO  Change to update the URL and then update all JS variables on page for updated list of searches,
@@ -342,7 +343,8 @@ const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLook
         searchDataLookupParamsCode : searchDataLookupParamsCode_New,
         pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
         pageStateString : pageStatePartsFromURL.pageStateString,
-        referrer : pageStatePartsFromURL.referrer
+        referrer : pageStatePartsFromURL.referrer,
+        experimentId : undefined
     } );
 
     window.history.replaceState( null, null, newURL );

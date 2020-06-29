@@ -20,8 +20,8 @@ import { _search_detail_section_main_page_logged_in_users_template } from './sea
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
 
 //  Local imports
 
@@ -594,7 +594,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
                 throw Error("Failed to find DOM element with class 'selector_error_message_web_link_url_invalid'. _weblinks_OpenAddClicked(...) projectSearchId: " + projectSearchId );
             }
 
-            showErrorMsg( $selector_error_message_web_link_url_invalid );
+            showErrorMsg( $selector_error_message_web_link_url_invalid, undefined /* clearMsg */ );
 
             $selector_weblinks_add_link_input_url.focus();
 

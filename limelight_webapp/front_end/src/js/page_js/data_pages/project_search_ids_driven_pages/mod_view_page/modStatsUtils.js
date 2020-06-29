@@ -1,5 +1,5 @@
 import jStat from 'jstat'
-import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile.js';
+import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
 
 export class ModStatsUtils {

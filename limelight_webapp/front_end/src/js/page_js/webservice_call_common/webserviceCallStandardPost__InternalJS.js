@@ -14,25 +14,25 @@
  * 
  * The following handle the fail/error response with their own GUI/Page updates to user.
  * 
- * createUserAccount_With_Invite.js
- * userResetPassword_Subpart.js
+ * createUserAccount_With_Invite.ts
+ * userResetPassword_Subpart.ts
  * 
  * The following use $.ajax still:
- * reportWebErrorToServer.js - Since calling a webservice that does not accept the "/" + webserviceSyncTrackingCode
+ * reportWebErrorToServer - Since calling a webservice that does not accept the "/" + webserviceSyncTrackingCode
  * 
- * googleChartLoaderForThisWebapp.js - Since loads Javacript
+ * googleChartLoaderForThisWebapp.ts - Since loads Javacript
  */
 
 //////////////////////////////////
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon.js';
+import { _AJAX_POST_JSON_CONTENT_TYPE, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors';
 
-import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallStandardPost_RejectObject_Class.js';
+import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallStandardPost_RejectObject_Class';
 
 /**
  * !!!!!   INTERNAL ONLY
