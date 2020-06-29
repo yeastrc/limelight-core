@@ -9,14 +9,14 @@
 
 import { Handlebars, _share_page_template_bundle } from './sharePage_dataPages_ImportHandlebarsTemplates';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts.js';
-import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM.js';
+import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
+import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
 
-import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay.js';
+import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
 
 
 

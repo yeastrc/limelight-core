@@ -7,7 +7,7 @@
 
 let Handlebars = require('handlebars/runtime');
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer.js';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
 import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
 import {ProteinPositionDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionDataListingManager.js';

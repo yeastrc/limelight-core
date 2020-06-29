@@ -7,7 +7,7 @@
 import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { SpectrumRetrieveAndDisplay_Use_lorikeet } from 'page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet.js';
+import { SpectrumRetrieveAndDisplay_Use_lorikeet } from 'page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet';
 
 
 

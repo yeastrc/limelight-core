@@ -11,14 +11,14 @@ let Handlebars = require('handlebars/runtime');
 let _common_template_bundle = 
 	require("../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
     
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
 import { TableDataUtils } from 'page_js/data_pages/data_tables/tableDataUtils.js';
 import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils.js';
-import { SpectrumRetrieveAndDisplay_Use_lorikeet } from 'page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet.js';
+import { SpectrumRetrieveAndDisplay_Use_lorikeet } from 'page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet';
 
 
 const LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT = 4;

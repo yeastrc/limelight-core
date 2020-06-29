@@ -31,6 +31,7 @@ interface DataTable_TableRoot_State {
     tableDataObject_FromProps? : DataTable_RootTableDataObject
     tableOptions_FromProps? : DataTable_TableOptions
 
+
     tableDataObject? : DataTable_RootTableDataObject
     tableOptions? : DataTable_TableOptions
 

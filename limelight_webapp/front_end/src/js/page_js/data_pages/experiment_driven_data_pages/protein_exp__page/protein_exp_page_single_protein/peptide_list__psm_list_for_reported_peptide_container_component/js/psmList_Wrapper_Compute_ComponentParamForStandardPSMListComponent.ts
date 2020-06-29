@@ -6,60 +6,17 @@
  * Create     DataTable_RootTableObject for child table
  */
 
-// import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
-
-// import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-
 //   Reporter Ion Mass Rounding to provide some level of commonality between searches
 import { 
-    reporterIonMass_CommonRounding_ReturnNumber_Function,
-    reporterIonMass_CommonRounding_ReturnString_Function,
-    reporterIonMass_CommonRounding_ReturnNumber, 
-    reporterIonMass_CommonRounding_ReturnString, 
-    _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
+    reporterIonMass_CommonRounding_ReturnNumber,
 } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
 
 import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
 
-// //   From data_pages_common
-// import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
-
-// import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
-// import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
-
-// import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page//protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
-
-// import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page//protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
-
-// import {
-
-//     DataTable_RootTableObject,
-    
-//     DataTable_TableOptions,
-//     DataTable_TableOptions_dataRowClickHandler_RequestParm,
-//     DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-//     DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-    
-//     DataTable_Column,
-
-//     DataTable_RootTableDataObject,
-//     DataTable_DataGroupRowEntry,
-//     DataTable_DataRowEntry,
-//     DataTable_DataRow_ColumnEntry,
-
-//     DataTable_cellMgmt_External,
-//     DataTable_cellMgmt_External_PopulateRequest,
-//     DataTable_cellMgmt_External_PopulateResponse,
-//     DataTable_cellMgmt_ExternalReactComponent
-    
-// } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
-
 import { PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from '../js/psmList_Wrapper_ReturnChildReactComponent'
 
 //  Contained PSM List component
-import { psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent, PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent';
-
-// import { createReportedPeptideDisplayData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_create_createReportedPeptideDisplayData';
+import { PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent';
 
 /**
  * returned from reportedPeptidesForSingleSearch_createChildTableObjects

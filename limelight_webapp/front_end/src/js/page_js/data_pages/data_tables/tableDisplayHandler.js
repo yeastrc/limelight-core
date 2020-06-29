@@ -4,7 +4,7 @@
 
 "use strict";
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 
 export class TableDisplayHandler {

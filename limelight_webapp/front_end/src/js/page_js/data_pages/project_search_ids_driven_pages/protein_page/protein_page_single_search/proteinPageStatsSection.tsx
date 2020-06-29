@@ -10,8 +10,6 @@
 import React from 'react'
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
-
 export interface ProteinViewPage_StatsSection_Props {
 
     data

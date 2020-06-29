@@ -5,11 +5,9 @@
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
-
-import { DataTable_RootTableObject, DataTable_ColumnId, DataTable_TableOptions, DataTable_SortColumnsInfoEntry, DataTable_RootTableDataObject, DataTable_DataRowEntry, DataTable_DataGroupRowEntry, DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import { DataTable_RootTableDataObject, DataTable_DataRowEntry, DataTable_DataGroupRowEntry, DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { ProteinDataDisplay_ProteinListItem_SingleSearch } from './proteinViewPage_DisplayData_SingleSearch_CreateProteinDisplayData';
 import { ProteinInferenceUtils } from 'page_js/data_pages/protein_inference/ProteinInferenceUtils';
 import { ProteinGroup } from 'page_js/data_pages/protein_inference/ProteinGroup';

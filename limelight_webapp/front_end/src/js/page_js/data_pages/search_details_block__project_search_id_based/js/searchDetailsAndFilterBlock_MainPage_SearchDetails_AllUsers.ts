@@ -28,11 +28,11 @@ import { Handlebars, _search_detail_section_main_page_template } from './searchD
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/common_all_pages/genericToolTip';
 
-import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core.js';
+import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core';
 
 //  For type 
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
@@ -219,7 +219,9 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 							projectPageSearchDetails : undefined
 						};
 
-						for ( const promiseResult of promiseResults ) {
+						const promiseResults_CastArrayAny : Array<any> = promiseResults
+
+						for ( const promiseResult of promiseResults_CastArrayAny ) {
 							if (promiseResult.coreSearchDetails) {
 								searchDetailsResultsCombined.coreSearchDetails = promiseResult.coreSearchDetails;
 							}

@@ -26,7 +26,7 @@ const _dummy_template_template_bundle =
 Handlebars.templates = _dummy_template_template_bundle;
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer.js';
+import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 
 //  From local dir
