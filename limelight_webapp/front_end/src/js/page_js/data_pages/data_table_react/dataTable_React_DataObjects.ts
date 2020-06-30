@@ -188,6 +188,9 @@ class DataTable_RootTableDataObject {
     dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
     columns : Array<DataTable_Column>
 
+    /**
+     *
+     */
     constructor({ columns, dataTable_DataRowEntries, dataTable_DataGroupRowEntries } : {
         dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
         dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
@@ -200,6 +203,9 @@ class DataTable_RootTableDataObject {
         DataTable_RootTableDataObject.constructorDataValidation( this )
     }
 
+    /**
+     *
+     */
     static constructorDataValidation( dataTable_RootTableDataObject : DataTable_RootTableDataObject ) : void {
 
         if ( ! dataTable_RootTableDataObject.columns ) {
@@ -232,128 +238,99 @@ class DataTable_RootTableDataObject {
 class DataTable_Column {
 
     //  Dimensions of cells for this column, excluding padding around cell contents:
-    width : number;      //  width (set as width and max-width on DOM element style property) of column
-    heightInitial? : number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
+    width: number;      //  width (set as width and max-width on DOM element style property) of column
+    heightInitial?: number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
 
     //  If want graph in the cell, uses value from valueSort which must be a number
-    showHorizontalGraph? : boolean;
-    graphMaxValue? : number; //  Min Value assumed to be zero
-    graphWidth? : number;
+    showHorizontalGraph?: boolean;
+    graphMaxValue?: number; //  Min Value assumed to be zero
+    graphWidth?: number;
 
-    cssClassNameAdditions_HeaderRowCell? : string;  //  css classes to add to Header Row Cell entry HTML
-    cssClassNameAdditions_DataRowCell? : string;  //  css classes to add to Data Row Cell entry HTML
+    cssClassNameAdditions_HeaderRowCell?: string;  //  css classes to add to Header Row Cell entry HTML
+    cssClassNameAdditions_DataRowCell?: string;  //  css classes to add to Data Row Cell entry HTML
 
     //  object where it's properties are copied over the values to be assigned to the DOM element style property
     //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-    style_override_DataRowCell_React? : any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+    style_override_DataRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
     //  graphWidth : number;  //  Not Supported Yet
 
     //  Externally managed table cell contents
 
-    cellMgmt_External? : DataTable_cellMgmt_External
+    cellMgmt_External?: DataTable_cellMgmt_External
 
-    cellMgmt_ExternalReactComponent? : DataTable_cellMgmt_ExternalReactComponent
+    cellMgmt_ExternalReactComponent?: DataTable_cellMgmt_ExternalReactComponent
 
     //  For Header:
 
-    id : DataTable_ColumnId
+    id: DataTable_ColumnId
 
-    displayName : string
+    displayName: string
 
-    sortable? : boolean  // Assumed false if missing
+    sortable?: boolean  // Assumed false if missing
 
-    hideColumnHeader? : boolean  // Assumed false if missing
+    hideColumnHeader?: boolean  // Assumed false if missing
 
     //  object where it's properties are copied over the values to be assigned to the DOM element style property
     //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-    style_override_HeaderRowCell_React? : any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+    style_override_HeaderRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
-    
-    constructor({ 
-        id, displayName, width, heightInitial, 
 
-        //  If want graph in the cell
-        showHorizontalGraph,  //  Show single horizontal rectangle where the value from valueSort is a fraction of graphMaxValue
-        graphMaxValue, //  Min Value assumed to be zero
-        graphWidth,   // width of 'outer' rectangle to represent graphMaxValue
+    /**
+     *
+     */
+    constructor(
+        {
+            id, displayName, width, heightInitial,
 
-        cssClassNameAdditions_HeaderRowCell, cssClassNameAdditions_DataRowCell, style_override_DataRowCell_React, 
-        cellMgmt_External, cellMgmt_ExternalReactComponent, 
+            //  If want graph in the cell
+            showHorizontalGraph,  //  Show single horizontal rectangle where the value from valueSort is a fraction of graphMaxValue
+            graphMaxValue, //  Min Value assumed to be zero
+            graphWidth,   // width of 'outer' rectangle to represent graphMaxValue
 
-        //  For Header
-        sortable, hideColumnHeader, style_override_HeaderRowCell_React
-    } : { 
-        id : DataTable_ColumnId, 
-        displayName : string
-        width : number
+            cssClassNameAdditions_HeaderRowCell, cssClassNameAdditions_DataRowCell, style_override_DataRowCell_React,
+            cellMgmt_External, cellMgmt_ExternalReactComponent,
 
-        heightInitial? : number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
+            //  For Header
+            sortable, hideColumnHeader, style_override_HeaderRowCell_React
+        }: {
+            id: DataTable_ColumnId,
+            displayName: string
+            width: number
 
-        //  If want graph in the cell
-        showHorizontalGraph? : boolean;
-        graphMaxValue? : number; //  Min Value assumed to be zero
-        graphWidth? : number;
+            heightInitial?: number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
 
-        cssClassNameAdditions_HeaderRowCell? : string;  //  css classes to add to Header Row Cell entry HTML
-        cssClassNameAdditions_DataRowCell? : string;  //  css classes to add to Data Row Cell entry HTML
-    
-        //  object where it's properties are copied over the values to be assigned to the DOM element style property
-        //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-        style_override_DataRowCell_React? : any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
-    
-        //  graphWidth : number;  //  Not Supported Yet
-    
-        //  Externally managed table cell contents
-    
-        cellMgmt_External? : DataTable_cellMgmt_External
-    
-        cellMgmt_ExternalReactComponent? : DataTable_cellMgmt_ExternalReactComponent
-    
-        //  For Header:
-    
-        sortable? : boolean  // Assumed false if missing
-    
-        hideColumnHeader? : boolean  // Assumed false if missing
-    
-        //  object where it's properties are copied over the values to be assigned to the DOM element style property
-        //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-        style_override_HeaderRowCell_React? : any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
-    
-    }) {
-        if ( id === undefined || id === null || id === "" ) {
-            const msg = 'DataTable_Column.constructor: id === undefined || id === null || id === ""';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( displayName === undefined || displayName === null ) {
-            const msg = 'DataTable_Column.constructor: displayName === undefined || displayName === null';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( width === undefined || width === null ) {
-            const msg = 'DataTable_Column.constructor: width === undefined || width === null';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( width < 1 ) {
-            const msg = 'DataTable_Column.constructor: width < 1';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( showHorizontalGraph ) {
-            if ( ! graphMaxValue ) {
-                const msg = "DataTable_Column.constructor: showHorizontalGraph is true and graphMaxValue is not set or is zero";
-                console.warn( msg )
-                throw Error( msg );
-            }
-            if ( ! graphWidth ) {
-                const msg = "DataTable_Column.constructor: showHorizontalGraph is true and graphWidth is not set or is zero";
-                console.warn( msg )
-                throw Error( msg );
-            }
-        }
+            //  If want graph in the cell
+            showHorizontalGraph?: boolean;
+            graphMaxValue?: number; //  Min Value assumed to be zero
+            graphWidth?: number;
 
+            cssClassNameAdditions_HeaderRowCell?: string;  //  css classes to add to Header Row Cell entry HTML
+            cssClassNameAdditions_DataRowCell?: string;  //  css classes to add to Data Row Cell entry HTML
+
+            //  object where it's properties are copied over the values to be assigned to the DOM element style property
+            //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
+            style_override_DataRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+
+            //  graphWidth : number;  //  Not Supported Yet
+
+            //  Externally managed table cell contents
+
+            cellMgmt_External?: DataTable_cellMgmt_External
+
+            cellMgmt_ExternalReactComponent?: DataTable_cellMgmt_ExternalReactComponent
+
+            //  For Header:
+
+            sortable?: boolean  // Assumed false if missing
+
+            hideColumnHeader?: boolean  // Assumed false if missing
+
+            //  object where it's properties are copied over the values to be assigned to the DOM element style property
+            //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
+            style_override_HeaderRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+
+        }) {
         this.id = id;
         this.displayName = displayName;
         this.width = width;
@@ -375,6 +352,46 @@ class DataTable_Column {
         this.hideColumnHeader = hideColumnHeader
         this.style_override_HeaderRowCell_React = style_override_HeaderRowCell_React
     }
+
+    /**
+     *
+     */
+    static constructorDataValidation(dataTable_Column: DataTable_Column): void {
+
+        if (dataTable_Column.id === undefined || dataTable_Column.id === null || dataTable_Column.id === "") {
+            const msg = 'DataTable_Column.constructorDataValidation: id === undefined || id === null || id === ""';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_Column.displayName === undefined || dataTable_Column.displayName === null) {
+            const msg = 'DataTable_Column.constructorDataValidation: displayName === undefined || displayName === null';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_Column.width === undefined || dataTable_Column.width === null) {
+            const msg = 'DataTable_Column.constructorDataValidation: width === undefined || width === null';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_Column.width < 1) {
+            const msg = 'DataTable_Column.constructorDataValidation: width < 1';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_Column.showHorizontalGraph) {
+            if (!dataTable_Column.graphMaxValue) {
+                const msg = "DataTable_Column.constructorDataValidation: showHorizontalGraph is true and graphMaxValue is not set or is zero";
+                console.warn(msg)
+                throw Error(msg);
+            }
+            if (!dataTable_Column.graphWidth) {
+                const msg = "DataTable_Column.constructorDataValidation: showHorizontalGraph is true and graphWidth is not set or is zero";
+                console.warn(msg)
+                throw Error(msg);
+            }
+        }
+
+    }
 }
 
 ////////////
@@ -386,46 +403,59 @@ class DataTable_Column {
  */
 class DataTable_DataGroupRowEntry {
 
-    dataTable_DataRowEntries : Array<DataTable_DataRowEntry>
+    dataTable_DataRowEntries: Array<DataTable_DataRowEntry>
 
     // Copied from one of containing DataTable_DataRowEntry, probably first one
-    uniqueId : DataTable_UniqueId
-    sortOrder_OnEquals : any    //  Must be sortable using Javascript < > comparators
-    columnEntries : Array<DataTable_DataRow_ColumnEntry>
-    
+    uniqueId: DataTable_UniqueId
+    sortOrder_OnEquals: any    //  Must be sortable using Javascript < > comparators
+    columnEntries: Array<DataTable_DataRow_ColumnEntry>
+
     /////////
-    
-    constructor({ dataTable_DataRowEntries, uniqueId, sortOrder_OnEquals, columnEntries } : {
-        dataTable_DataRowEntries : Array<DataTable_DataRowEntry>   
-        uniqueId : DataTable_UniqueId,
-        sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
-        columnEntries : Array<DataTable_DataRow_ColumnEntry>
-     }) {
-        if ( ! dataTable_DataRowEntries ) {
-            const msg = 'DataTable_DataGroupRowEntry.constructor: ( ! dataTable_DataRowEntries )';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( uniqueId === undefined || uniqueId === null || uniqueId === "" ) {
-            const msg = 'DataTable_DataGroupRowEntry.constructor: uniqueId === undefined || uniqueId === null || uniqueId === ""';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === "" ) {
-            const msg = 'DataTable_DataGroupRowEntry.constructor: sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === ""';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( ! columnEntries ) {
-            const msg = 'DataTable_DataGroupRowEntry.constructor: ( ! columnEntries )';
-            console.warn( msg )
-            throw Error( msg );
-        }
+
+    /**
+     *
+     */
+    constructor({dataTable_DataRowEntries, uniqueId, sortOrder_OnEquals, columnEntries}: {
+        dataTable_DataRowEntries: Array<DataTable_DataRowEntry>
+        uniqueId: DataTable_UniqueId,
+        sortOrder_OnEquals: any,    //  Must be sortable using Javascript < > comparators
+        columnEntries: Array<DataTable_DataRow_ColumnEntry>
+    }) {
 
         this.dataTable_DataRowEntries = dataTable_DataRowEntries;
-        this.uniqueId = uniqueId; 
+        this.uniqueId = uniqueId;
         this.sortOrder_OnEquals = sortOrder_OnEquals;
         this.columnEntries = columnEntries;
+
+        DataTable_DataGroupRowEntry.constructorDataValidation( this )
+    }
+
+    /**
+     *
+     */
+    static constructorDataValidation(dataTable_DataGroupRowEntry: DataTable_DataGroupRowEntry): void {
+
+        if (!dataTable_DataGroupRowEntry.dataTable_DataRowEntries) {
+            const msg = 'DataTable_DataGroupRowEntry.constructorDataValidation: ( ! dataTable_DataRowEntries )';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_DataGroupRowEntry.uniqueId === undefined || dataTable_DataGroupRowEntry.uniqueId === null || dataTable_DataGroupRowEntry.uniqueId === "") {
+            const msg = 'DataTable_DataGroupRowEntry.constructorDataValidation: uniqueId === undefined || uniqueId === null || uniqueId === ""';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_DataGroupRowEntry.sortOrder_OnEquals === undefined || dataTable_DataGroupRowEntry.sortOrder_OnEquals === null || dataTable_DataGroupRowEntry.sortOrder_OnEquals === "") {
+            const msg = 'DataTable_DataGroupRowEntry.constructorDataValidation: sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === ""';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (!dataTable_DataGroupRowEntry.columnEntries) {
+            const msg = 'DataTable_DataGroupRowEntry.constructorDataValidation: ( ! columnEntries )';
+            console.warn(msg)
+            throw Error(msg);
+        }
+
     }
 }
 
@@ -456,7 +486,10 @@ class DataTable_DataRowEntry {
     showChildTable? : boolean;
 
     /////////
-    
+
+    /**
+     *
+     */
     constructor({ uniqueId, sortOrder_OnEquals, greyOutRow, highlightRow, row_CSS_Additions, columnEntries, tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter } : {
         uniqueId : DataTable_UniqueId,
         sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
@@ -487,22 +520,27 @@ class DataTable_DataRowEntry {
         this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
         this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter
         this.dataRow_GetChildTable_ReturnReactComponent_Parameter = dataRow_GetChildTable_ReturnReactComponent_Parameter;
+
+        DataTable_DataRowEntry.constructorDataValidation( this )
     }
 
+    /**
+     *
+     */
     static constructorDataValidation( dataTable_DataRowEntry : DataTable_DataRowEntry ) {
 
         if ( dataTable_DataRowEntry.uniqueId === undefined || dataTable_DataRowEntry.uniqueId === null || dataTable_DataRowEntry.uniqueId === "" ) {
-            const msg = 'DataTable_DataRowEntry.constructor: uniqueId === undefined || uniqueId === null || uniqueId === ""';
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: uniqueId === undefined || uniqueId === null || uniqueId === ""';
             console.warn( msg )
             throw Error( msg );
         }
         if ( dataTable_DataRowEntry.sortOrder_OnEquals === undefined || dataTable_DataRowEntry.sortOrder_OnEquals === null || dataTable_DataRowEntry.sortOrder_OnEquals === "" ) {
-            const msg = 'DataTable_DataRowEntry.constructor: sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === ""';
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: sortOrder_OnEquals === undefined || sortOrder_OnEquals === null || sortOrder_OnEquals === ""';
             console.warn( msg )
             throw Error( msg );
         }
         if ( dataTable_DataRowEntry.columnEntries === undefined || dataTable_DataRowEntry.columnEntries === null ) {
-            const msg = 'DataTable_DataRowEntry.constructor: columnEntries === undefined';
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: columnEntries === undefined';
             console.warn( msg )
             throw Error( msg );
         }
@@ -511,54 +549,76 @@ class DataTable_DataRowEntry {
 
 /**
  * A column in a Data Row
+ *
+ * valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+ * valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+ * tooltipText is set on 'title' attribute of cell
+ *
+ * cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
+ * cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
  */
 class DataTable_DataRow_ColumnEntry {
 
-    //  valueDisplay and valueSort MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+    //  valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+    //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+    //  cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
+    //  cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
 
-    valueDisplay? : string;
-    valueSort? : any  //  Must be sortable using Javascript < > comparators
-    tooltipText? : string;
+    valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
+    valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
+    tooltipText?: string; // tooltipText is set on 'title' attribute of cell
 
     //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
 
-    cellMgmt_External_Data? : any;
-    cellMgmt_ExternalReactComponent_Data? : any;
+    cellMgmt_External_Data?: any;
+    cellMgmt_ExternalReactComponent_Data?: any;
 
     //  graphFraction : number;  //  Not Supported Yet
 
-    constructor({ valueDisplay, valueSort, tooltipText, cellMgmt_External_Data, cellMgmt_ExternalReactComponent_Data } : {
-        valueDisplay? : string,
-        valueSort? : any,  //  Must be sortable using Javascript < > comparators
-        tooltipText? : string,
+    /**
+     * A column in a Data Row
+     *
+     * valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+     * valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+     *
+     * cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
+     * cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
+     */
+    constructor({valueDisplay, valueSort, tooltipText, cellMgmt_External_Data, cellMgmt_ExternalReactComponent_Data}: {
+        valueDisplay?: string, // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
+        valueSort?: any,  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
+        tooltipText?: string, // tooltipText is set on 'title' attribute of cell
 
         //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
 
-        cellMgmt_External_Data? : any,
-        cellMgmt_ExternalReactComponent_Data? : any
+        cellMgmt_External_Data?: any,
+        cellMgmt_ExternalReactComponent_Data?: any
     }) {
-        //  The params are auto copied to the this. and thus not available for the constructor code to use
-        if ( cellMgmt_External_Data && cellMgmt_ExternalReactComponent_Data )  {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructor: cellMgmt_External_Data && cellMgmt_ExternalReactComponent_Data';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueDisplay === undefined || valueDisplay === null ) )  {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructor: ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" ) )';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueSort === undefined || valueSort === null ) )  {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructor: ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueSort === undefined || valueSort === null ) )';
-            console.warn( msg )
-            throw Error( msg );
-        }
-
         this.valueDisplay = valueDisplay
         this.valueSort = valueSort
         this.tooltipText = tooltipText
         this.cellMgmt_External_Data = cellMgmt_External_Data
         this.cellMgmt_ExternalReactComponent_Data = cellMgmt_ExternalReactComponent_Data
+
+        DataTable_DataRow_ColumnEntry.constructorDataValidation(this)
+    }
+
+    /**
+     *
+     */
+    static constructorDataValidation(dataTable_DataRow_ColumnEntry: DataTable_DataRow_ColumnEntry) {
+
+        if (dataTable_DataRow_ColumnEntry.cellMgmt_External_Data && dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data) {
+            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: cellMgmt_External_Data && cellMgmt_ExternalReactComponent_Data';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (((!dataTable_DataRow_ColumnEntry.cellMgmt_External_Data) && (!dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data))
+            && (dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null)) {
+            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" ) )';
+            console.warn(msg)
+            throw Error(msg);
+        }
     }
 }
 
@@ -591,7 +651,7 @@ class DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params {
 }
 
 /**
- * Response frpm DataTable_cellMgmt_External.populateCellDOMObject_Initial
+ * Response from DataTable_cellMgmt_External.populateCellDOMObject_Initial
  */
 class DataTable_cellMgmt_External_PopulateResponse {
 
