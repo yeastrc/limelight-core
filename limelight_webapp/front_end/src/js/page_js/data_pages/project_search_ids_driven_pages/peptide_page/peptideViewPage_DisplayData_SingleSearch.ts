@@ -165,8 +165,13 @@ export class PeptideViewPage_Display_SingleSearch {
 		promise_loadData_For_PeptideList.catch( (reason) => {  })
 
 		promise_loadData_For_PeptideList.then( ( loadData_PromiseResult ) => { // loadData_PromiseResult may be undefined
+			try {
+				this._displayOnPage_PeptideList( loadData_PromiseResult );
 
-			this._displayOnPage_PeptideList( loadData_PromiseResult );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 		
 	}

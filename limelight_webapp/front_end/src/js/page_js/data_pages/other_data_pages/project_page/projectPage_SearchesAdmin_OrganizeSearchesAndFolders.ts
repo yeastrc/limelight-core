@@ -242,11 +242,15 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
         promise_loadDataFromServer.catch( () => {});
 
         promise_loadDataFromServer.then( ({ responseData }) => {
+			try {
+				this._sortSearches_ServerResult({ responseData });
 
-			this._sortSearches_ServerResult({ responseData });
-
-            this._putFoldersAndSearchesOnPage({ responseData });
-        });
+				this._putFoldersAndSearchesOnPage({ responseData });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
     }
 
     ////////////////
@@ -677,11 +681,15 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
         promise_loadDataFromServer.catch( () => {});
 
         promise_loadDataFromServer.then( ({ responseData }) => {
+			try {
+				this._sortSearches_ServerResult({ responseData });
 
-			this._sortSearches_ServerResult({ responseData });
-
-            this._processLoadDataResultsForSpecificFolder({ responseData, selectedFolderData : { folderId: folder_id } });
-        });
+				this._processLoadDataResultsForSpecificFolder({ responseData, selectedFolderData : { folderId: folder_id } });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
 	}
 	
 	/**

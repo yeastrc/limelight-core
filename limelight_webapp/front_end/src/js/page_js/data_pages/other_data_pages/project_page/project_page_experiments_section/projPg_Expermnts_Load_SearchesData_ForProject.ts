@@ -32,21 +32,30 @@ export const getSearchesDataForProject = function({ projectIdentifier }) {
 			promise_getSearchesDataFromServer.catch( () => {} );
 
 			promise_getSearchesDataFromServer.then( ({ responseData }) => {
+				try {
+					const searchList = _getSearchesListFromWebserviceResponse({ responseData });
 
-				const searchList = _getSearchesListFromWebserviceResponse({ responseData });
+					const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList });
 
-				const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList });
+					promise_getSearchesSubDataFromServer.catch( () => {} );
 
-				promise_getSearchesSubDataFromServer.catch( () => {} );
+					promise_getSearchesSubDataFromServer.then( ({ searchesSubDataFromServer }) => {
+						try {
+							//  Get Final Search List and Per Search and Ann Type data for the searches
 
-				promise_getSearchesSubDataFromServer.then( ({ searchesSubDataFromServer }) => {
+							const searchesSubData = _create_searchesSubData_From_searchesSubDataFromServer({ searchesSubDataFromServer });
 
-					//  Get Final Search List and Per Search and Ann Type data for the searches
+							resolve({ searchList, searchesSubData });
 
-					const searchesSubData = _create_searchesSubData_From_searchesSubDataFromServer({ searchesSubDataFromServer });
-
-					resolve({ searchList, searchesSubData });
-				});
+						} catch( e ) {
+							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+							throw e;
+						}
+					});
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
 			});
 		} catch (e) {
 			reportWebErrorToServer.reportErrorObjectToServer({

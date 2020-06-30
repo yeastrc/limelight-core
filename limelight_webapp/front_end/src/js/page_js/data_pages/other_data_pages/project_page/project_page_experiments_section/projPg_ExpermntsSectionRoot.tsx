@@ -127,11 +127,15 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
         const promise_loadExperiment = _loadExperiments_NonDrafts({ projectIdentifierFromURL : this.props.projectIdentifierFromURL });
         promise_loadExperiment.catch( (reason) => { } );
         promise_loadExperiment.then( ({ responseData }) => {
+            try {
+                this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
 
-            this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
-
-                return _process_loadExperiments_NonDrafts_responseData_SetState({ state, props, loadExperiments_responseData : responseData });
-            });
+                    return _process_loadExperiments_NonDrafts_responseData_SetState({ state, props, loadExperiments_responseData : responseData });
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
@@ -149,11 +153,15 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             const promise_loadExperimentDrafts = _loadExperimentDrafts({ projectIdentifierFromURL : this.props.projectIdentifierFromURL });
             promise_loadExperimentDrafts.catch( (reason) => { } );
             promise_loadExperimentDrafts.then( ({ responseData }) => {
+                try {
+                    this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
 
-                this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
-
-                    return _process_loadExperimentDrafts_responseData_SetState({ state, props, loadExperimentDrafts_responseData : responseData });
-                });
+                        return _process_loadExperimentDrafts_responseData_SetState({ state, props, loadExperimentDrafts_responseData : responseData });
+                    });
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
             });
         }
     }
@@ -175,13 +183,17 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
         const promise = _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall({ projectIdentifierFromURL : this.props.projectIdentifierFromURL });
         promise.catch( (reason) => { } );
         promise.then( ({ responseData }) => {
+            try {
+                if ( responseData.projectId_HasAtLeastOneActive_ProjectSearchId ) {
 
-            if ( responseData.projectId_HasAtLeastOneActive_ProjectSearchId ) {
+                    this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
 
-                this.setState( (state : ProjectPage_ExperimentsSectionRoot_State, props : ProjectPage_ExperimentsSectionRoot_Props ) : ProjectPage_ExperimentsSectionRoot_State => {
-
-                    return ({ createExperimentButton_Disabled : false }); // Change to NOT Disabled
-                });
+                        return ({ createExperimentButton_Disabled : false }); // Change to NOT Disabled
+                    });
+                }
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
             }
         });
     }
@@ -227,8 +239,12 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             promise_deleteExperiment.catch( (reason) => {  });
 
             promise_deleteExperiment.then( (result) => {
-
-                this._loadDraftExperiments_IfNeeded();
+                try {
+                  this._loadDraftExperiments_IfNeeded();
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
             });
         }
     }
@@ -274,8 +290,12 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             promise_deleteExperiment.catch( (reason) => {  });
 
             promise_deleteExperiment.then( (result) => {
-
-                this._loadExperiments_NonDrafts_IfNeeded();
+                try {
+                   this._loadExperiments_NonDrafts_IfNeeded();
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
             });
         }
     }

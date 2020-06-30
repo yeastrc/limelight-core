@@ -60,14 +60,35 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
     private _headerColumnClicked_BindThis : ({ shiftKeyDown, columnId } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId }) => void = this._headerColumnClicked.bind(this);
 
+    /**
+     *
+     */
     constructor(props : DataTable_TableRoot_Props) {
         super(props);
 
-        this.state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({
-            tableObject : props.tableObject,
-            resortTableOnUpdate : false /* not resort on first create */,
-            sortColumnsInfo : null //  Not sort at first
-        });
+        try {
+            if ( ! props.tableObject ) {
+                const msg = "DataTable_TableRoot:constructor: No value in props.tableObject";
+                console.warn( msg )
+                throw Error( msg )
+            }
+            if ( ! ( props.tableObject instanceof DataTable_RootTableObject ) ) {
+                const msg = "DataTable_TableRoot:constructor: props.tableObject NOT instanceof DataTable_RootTableObject";
+                console.warn( msg + ".  props.tableObject: ", props.tableObject )
+                throw Error( msg )
+            }
+
+            this.state = DataTable_TableRoot._createStateObjectFrom_DataTable_RootTableObject({
+                tableObject : props.tableObject,
+                resortTableOnUpdate : false /* not resort on first create */,
+                sortColumnsInfo : null //  Not sort at first
+            });
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+
     }
 
     /**

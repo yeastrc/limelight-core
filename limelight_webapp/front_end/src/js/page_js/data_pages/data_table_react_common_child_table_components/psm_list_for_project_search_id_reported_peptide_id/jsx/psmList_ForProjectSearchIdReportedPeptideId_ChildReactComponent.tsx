@@ -230,14 +230,18 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent ext
         promise_DataTable_RootTableObject.catch( (reason) => {  });
 
         promise_DataTable_RootTableObject.then( ( promiseResult : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult ) => {
+            try {
+                const childDataTable_RootTableObject : DataTable_RootTableObject = promiseResult.dataTable_RootTableObject;
 
-            const childDataTable_RootTableObject : DataTable_RootTableObject = promiseResult.dataTable_RootTableObject;
+                this._dataRetrievalInProgress = false;
 
-            this._dataRetrievalInProgress = false;
-            
-            this.setState ( ( prevState : PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent_State, props : PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent_Props ) : PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent_State => {
-                return {  childDataTable_RootTableObject };
-            });
+                this.setState ( ( prevState : PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent_State, props : PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent_Props ) : PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent_State => {
+                    return {  childDataTable_RootTableObject };
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         })
 
     }

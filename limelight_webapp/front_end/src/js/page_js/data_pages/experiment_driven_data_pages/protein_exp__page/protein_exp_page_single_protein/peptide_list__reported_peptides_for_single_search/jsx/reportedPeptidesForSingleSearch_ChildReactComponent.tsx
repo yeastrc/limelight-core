@@ -236,15 +236,19 @@ export class ReportedPeptidesForSingleSearch_ChildReactComponent extends React.C
             reportedPeptidesForSingleSearch_createChildTableObjects_Result.promise_DataTable_RootTableObject.catch( (reason) => { });
 
             reportedPeptidesForSingleSearch_createChildTableObjects_Result.promise_DataTable_RootTableObject.then( ( result : ReportedPeptidesForSingleSearch_createChildTableObjects_PromiseResolve_Result ) => {
-                
-                //  Deferred after promise
-                const childDataTable_RootTableObject : DataTable_RootTableObject = result.dataTable_RootTableObject;
+                try {
+                    //  Deferred after promise
+                    const childDataTable_RootTableObject : DataTable_RootTableObject = result.dataTable_RootTableObject;
 
-                this._dataRetrievalInProgress = false;
-        
-                this.setState ( ( prevState : ReportedPeptidesForSingleSearch_ChildReactComponent_State, props : ReportedPeptidesForSingleSearch_ChildReactComponent_Props ) : ReportedPeptidesForSingleSearch_ChildReactComponent_State => {
-                    return {  childDataTable_RootTableObject };
-                });
+                    this._dataRetrievalInProgress = false;
+
+                    this.setState ( ( prevState : ReportedPeptidesForSingleSearch_ChildReactComponent_State, props : ReportedPeptidesForSingleSearch_ChildReactComponent_Props ) : ReportedPeptidesForSingleSearch_ChildReactComponent_State => {
+                        return {  childDataTable_RootTableObject };
+                    });
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
             });
            
         } else {
