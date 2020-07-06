@@ -4,9 +4,9 @@
 
 "use strict";
 
-import {ModalOverlay} from '../../display_utilities/modalOverlay';
+import { Handlebars } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
-let Handlebars = require('handlebars/runtime');
+import {ModalOverlay} from '../../display_utilities/modalOverlay';
 
 export class ProteinPositionFilterOverlayDisplayManager {
 
@@ -44,7 +44,7 @@ export class ProteinPositionFilterOverlayDisplayManager {
      */
     static createOverlay( { callbackOnClickedHide, proteinPositionFilterStateManager, proteinData, proteinPositionResidues, reportedPeptideModData, totalPSMCount, aminoAcidModStats, projectSearchId, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } ) {
 
-        let props = { };
+        let props : any = { };
         props.width = '800';
         props.height = '500'
         props.title = 'Select Proteins and Positions To Show';
@@ -320,7 +320,7 @@ export class ProteinPositionFilterOverlayDisplayManager {
         const allSelected = proteinPositionFilterStateManager.getIsAllSelected({ proteinId });
 
         {
-            let props = { };
+            let props : any = { };
             props.isSelected = allSelected;
 
             let template = Handlebars.templates.proteinPositionFilterAllCheckbox;
@@ -348,7 +348,7 @@ export class ProteinPositionFilterOverlayDisplayManager {
 
         for( let position of moddedPositions ) {
 
-            let props = { };
+            let props : any = { };
             props.position = position;
             props.residue = ProteinPositionFilterOverlayDisplayManager.getProteinPositionResidue({ proteinId, position, proteinPositionResidues });
             props.isSelected = proteinPositionFilterStateManager.getIsProteinPositionSelected( { proteinId, position } );
@@ -429,7 +429,7 @@ export class ProteinPositionFilterOverlayDisplayManager {
             return { isEmpty : true }
         }
 
-        let props = { };
+        let props : any = { };
         props.filterItems = [ ];
 
         for( let proteinId of Object.keys( proteinPositionFilterStateManager.selectedProteinPositions ) ) {
@@ -441,8 +441,9 @@ export class ProteinPositionFilterOverlayDisplayManager {
                 const selectedPositions = proteinPositionFilterStateManager.getSelectedProteinPositions({proteinId});
 
                 if(selectedPositions !== undefined) {
+                    const selectedPositions_Array = Array.from(selectedPositions) as Array<any>;
                     displayString += ' (Position(s): ';
-                    displayString += Array.from(selectedPositions).sort((a, b) => (a - b)).join(', ');
+                    displayString += selectedPositions_Array.sort((a, b) => (a - b)).join(', ');
                     displayString += ')';
                 }
             }

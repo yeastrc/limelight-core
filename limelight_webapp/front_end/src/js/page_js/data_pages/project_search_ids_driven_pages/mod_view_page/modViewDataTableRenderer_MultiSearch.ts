@@ -5,11 +5,12 @@
 
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
+import { Handlebars } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
-import {ModDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataListingManager.js';
-import {ProteinDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinDataListingManager.js';
-import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+
+import {ModDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataListingManager';
+import {ProteinDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinDataListingManager';
+import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
 export class ModViewDataTableRenderer_MultiSearch {
 
@@ -176,7 +177,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 					projectSearchIds: projectSearchIdsToShow,
 					reportedPeptideModData,
 					proteinPositionResidues,
-					totalPSMCount,
 					aminoAcidModStats,
 					proteinPositionFilterStateManager,
 					searchDetailsBlockDataMgmtProcessing
@@ -186,7 +186,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 				// add the table to the page
 
-				let tableObject = { };
+				let tableObject : any = { };
 				tableObject.columns = columns;
 				tableObject.dataObjects = modObjects;
 				tableObject.expandableRows = true;
@@ -201,7 +201,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 				// add in the click and over handlers for the rows
 
-				let functionParams = { };
+				let functionParams : any = { };
 				functionParams.reportedPeptideModData = reportedPeptideModData;
 				functionParams.proteinPositionResidues = proteinPositionResidues;
 				functionParams.totalPSMCount = totalPSMCount;

@@ -5,13 +5,11 @@
 
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
-
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
-import { ModViewPage_DataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader.js';
-import { PeptideListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/peptideListingUtilsSingleSearch.js';
+import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities';
+import { ModViewPage_DataLoader } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader';
+import { PeptideListingUtilsSingleSearch } from 'page_js/data_pages/data_tables/peptideListingUtilsSingleSearch';
 
 export class PeptideDataListingManager {
 

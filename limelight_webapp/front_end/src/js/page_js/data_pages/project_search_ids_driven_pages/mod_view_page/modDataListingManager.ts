@@ -4,12 +4,12 @@
 
 "use strict";
 
-import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
+import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities';
 
 
 export class ModDataListingManager {
 
-    constructor( params ) {
+    constructor( ) {
 	
     }
 
@@ -31,17 +31,17 @@ export class ModDataListingManager {
 		
         for (let modMass of uniqueModMasses) {
 
-            let modObject = { };
+            let modObject : any = { };
 
             modObject.modMass = modMass;
             modObject.uniqueId = modMass + "";      // must be unique for each row
 			
-            let residues = ModViewDataUtilities.getResiduesForModMass( { modMass, reportedPeptideModData, proteinPositionResidues, proteinPositionFilterStateManager } );
+            let residues = ModViewDataUtilities.getResiduesForModMass( { modMass, reportedPeptideModData, proteinPositionResidues, proteinPositionFilterStateManager, proteinId : undefined } );
             modObject.residues = residues.join( ', ' );
 
-            modObject.psmCount = ModViewDataUtilities.getPSMCountForModMass( { modMass, reportedPeptideModData, aminoAcidModStats, proteinPositionFilterStateManager } );
+            modObject.psmCount = ModViewDataUtilities.getPSMCountForModMass( { modMass, reportedPeptideModData, aminoAcidModStats, proteinPositionFilterStateManager, proteinId : undefined, proteinPosition : undefined } );
 
-			modObject.peptideCount = ModViewDataUtilities.getPeptideCountForModMass( { modMass, reportedPeptideModData, proteinPositionFilterStateManager } );
+			modObject.peptideCount = ModViewDataUtilities.getPeptideCountForModMass( { modMass, reportedPeptideModData, proteinPositionFilterStateManager, proteinId : undefined, proteinPosition : undefined } );
 
 			modObject.proteinCount = ModViewDataUtilities.getProteinCountForModMass( { modMass, reportedPeptideModData, proteinPositionFilterStateManager } );
 
@@ -194,14 +194,16 @@ export class ModDataListingManager {
 			let totalPSMsForResiduesCacheObject ={ };
 			let totalInstancesOfResiduesInAllPSMsCacheObject ={ };
 
-			for (let modMass of uniqueModMasses) {
+			for (let modMass_Entry of uniqueModMasses) {
+
+				const modMass = modMass_Entry as any
 
 				// only consider mod masses that round correctly
 				if( Math.round(modMass) !== parseInt(roundedModMass) ) {
 					continue;
 				}
 
-				let modObject = {};
+				let modObject : any = {};
 				modObject.searchName = this.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
 				modObject.modMass = modMass;
 				modObject.uniqueId = modMass + "---" + projectSearchId;      // must be unique for each row
@@ -210,7 +212,8 @@ export class ModDataListingManager {
 					modMass,
 					reportedPeptideModData: reportedPeptideModData[projectSearchId],
 					proteinPositionResidues: proteinPositionResidues[projectSearchId],
-					proteinPositionFilterStateManager
+					proteinPositionFilterStateManager,
+					proteinId : undefined
 				});
 				modObject.residues = residues.join(', ');
 
@@ -218,13 +221,17 @@ export class ModDataListingManager {
 					modMass,
 					reportedPeptideModData: reportedPeptideModData[projectSearchId],
 					aminoAcidModStats: aminoAcidModStats[projectSearchId],
-					proteinPositionFilterStateManager
+					proteinPositionFilterStateManager,
+					proteinId : undefined,
+					proteinPosition : undefined
 				});
 
 				modObject.peptideCount = ModViewDataUtilities.getPeptideCountForModMass({
 					modMass,
 					reportedPeptideModData: reportedPeptideModData[projectSearchId],
-					proteinPositionFilterStateManager
+					proteinPositionFilterStateManager,
+					proteinId : undefined,
+					proteinPosition : undefined
 				});
 
 				modObject.proteinCount = ModViewDataUtilities.getProteinCountForModMass({

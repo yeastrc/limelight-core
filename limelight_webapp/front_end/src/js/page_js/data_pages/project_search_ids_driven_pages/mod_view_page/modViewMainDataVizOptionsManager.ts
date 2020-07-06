@@ -1,9 +1,12 @@
+
+
+
+import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
+
 import {ProteinPositionFilterOverlayDisplayManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterOverlayDisplayManager";
-import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch.js';
+import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
 
-let Handlebars = require('handlebars/runtime');
 
-let _mod_table_template_bundle = require("../../../../../../handlebars_templates_precompiled/mod_view_page/mod_view_page_template-bundle.js" );
 
 export class ModViewDataVizRendererOptionsHandler {
 
@@ -38,7 +41,8 @@ export class ModViewDataVizRendererOptionsHandler {
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
-            vizOptionsData
+            vizOptionsData,
+            projectSearchIds : undefined
         });
 
         // add section to page
@@ -80,6 +84,12 @@ export class ModViewDataVizRendererOptionsHandler {
 
         $formDiv.find('input#update-viz-button').click( function() {
 
+            //  These variables that hold values from .val() are all cast to 'any' because otherwise the code !isNaN(...) does not compile in Typescript
+
+            //        Search for ": any"
+
+            //  It is unclear what the code the code !isNaN(...) does since .val() likely never returns a number
+
             // update ratios vs/ counts
             {
                 // value of psm quant choice
@@ -89,14 +99,14 @@ export class ModViewDataVizRendererOptionsHandler {
 
             // update cutoffs for color scale
             {
-                const ratioCutoff = $formDiv.find("input#color-cutoff-ratio").val();
+                const ratioCutoff : any = $formDiv.find("input#color-cutoff-ratio").val();
                 if( ratioCutoff === '') {
                     delete vizOptionsData.data.colorCutoffRatio;
                 } else if( ratioCutoff !== undefined && !isNaN(ratioCutoff) ) {
                     vizOptionsData.data.colorCutoffRatio = parseFloat(ratioCutoff);
                 }
 
-                const countCutoff = $formDiv.find("input#color-cutoff-count").val();
+                const countCutoff : any = $formDiv.find("input#color-cutoff-count").val();
                 if( countCutoff === '' ) {
                     delete vizOptionsData.data.colorCutoffCount;
                 } else if( countCutoff !== undefined && !isNaN(countCutoff) ) {
@@ -107,7 +117,7 @@ export class ModViewDataVizRendererOptionsHandler {
             // update min and max mod masses
             {
 
-                const cutoff = $formDiv.find("input#modmass-cutoff-min").val();
+                const cutoff : any = $formDiv.find("input#modmass-cutoff-min").val();
                 if( cutoff === '' ) {
                     delete vizOptionsData.data.modMassCutoffMin;
                 } else if( cutoff !== undefined && !isNaN(cutoff) ) {
@@ -116,7 +126,7 @@ export class ModViewDataVizRendererOptionsHandler {
             }
             {
 
-                const cutoff = $formDiv.find("input#modmass-cutoff-max").val();
+                const cutoff : any = $formDiv.find("input#modmass-cutoff-max").val();
                 if( cutoff === '' ) {
                     delete vizOptionsData.data.modMassCutoffMax;
                 } else if( cutoff !== undefined && !isNaN(cutoff) ) {
@@ -239,7 +249,17 @@ export class ModViewDataVizRendererOptionsHandler {
 
         $( 'div#protein-position-filter-launch' ).click( function(e) {
 
-            ProteinPositionFilterOverlayDisplayManager.displayOverlay( { callbackOnClickedHide, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server } );
+            {
+                // const msg = "Error in $( 'div#protein-position-filter-launch' ).click(:  The call to ProteinPositionFilterOverlayDisplayManager.displayOverlay requires param 'projectSearchId' but there is no 'projectSearchId' available, only 'projectSearchIds'"
+                // console.warn( msg )
+                //  Comment out throw to allow the code to continue since it seems to have worked before without projectSearchId being passed
+                // throw Error( msg )
+            }
+
+            ProteinPositionFilterOverlayDisplayManager.displayOverlay( {
+                callbackOnClickedHide, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchId : undefined,
+                searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server
+            } );
             return false;
         });
     }
