@@ -1,10 +1,10 @@
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
+import { Handlebars } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
 import * as d3 from "d3";
 import * as Drag from 'd3-drag';
-import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch.js';
+import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
 import {ModStatsUtils} from "./modStatsUtils";
 
 export class ModViewDataVizRenderer_MultiSearch {
@@ -21,7 +21,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                              vizOptionsData
     }) {
 
-        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({ reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData, proteinPositionFilterStateManager });
+        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
+            reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData, proteinPositionFilterStateManager, countsOverride : undefined
+        });
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
         const sortedModMasses = Object.keys(modMap).map(Number).sort( (a,b) => ( a - b));
         const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
@@ -585,7 +587,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('font-family', 'sans-serif')
             .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength})))
             .on("mousemove", function (d, i) {
-                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData })
+                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData, modMass : undefined, psmCount : undefined })
             })
             .on("mouseout", function (d, i) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
@@ -716,7 +718,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     static getInsertionPointForProjectSearchId({ yScale, projectSearchIds, newTextYStart, labelFontSize, draggedProjectSearchId }) {
 
         let i = 0;
-        let returnedObject = { };
+        let returnedObject : any = { };
 
         const startOfDraggedElement =  yScale(draggedProjectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
 
@@ -914,9 +916,15 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     static showToolTip({ projectSearchId, modMass, psmCount, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData }) {
+
+        // @ts-ignore
+        const pageY = event.pageY
+        // @ts-ignore
+        const pageX = event.pageX
+
         tooltip
-            .style("top", (event.pageY + 20)+"px")
-            .style("left",(event.pageX + 20)+"px")
+            .style("top", (pageY + 20)+"px")
+            .style("left",(pageX + 20)+"px")
             .style("visibility", "visible")
             .html( function() {
 

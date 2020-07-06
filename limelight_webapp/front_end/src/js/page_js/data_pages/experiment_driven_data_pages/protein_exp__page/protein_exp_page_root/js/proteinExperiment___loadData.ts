@@ -70,8 +70,12 @@ const loadProteinDisplayData_Per_ProjectSearchId = function ( {
             promises_All.catch( (reason) => {  });
 
             promises_All.then( (promises_All_result) => {
-
-                resolve({ loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds })
+                try {
+                    resolve({ loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds })
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
             });
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

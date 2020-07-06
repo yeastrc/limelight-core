@@ -8,7 +8,12 @@
 
 export class ProteinPositionFilterStateManager {
 
-    constructor( params ) {
+    private _POSITIONS_KEY_NAME
+    private _ALL_KEY_NAME
+    private selectedProteinPositions
+    private overlay
+
+    constructor() {
 
         this._POSITIONS_KEY_NAME = 'positions';
         this._ALL_KEY_NAME = 'all';

@@ -29,13 +29,33 @@ export const dataTable_React_DataObjects_Validator = function ({ dataTable_RootT
     dataTable_RootTableObject : DataTable_RootTableObject
 }) : void {
 
-    const dataTableId = dataTable_RootTableObject.dataTableId
+    if ( ! ( dataTable_RootTableObject instanceof DataTable_RootTableObject ) ) {
+        const msg = "dataTable_React_DataObjects_Validator: dataTable_RootTableObject NOT instanceof DataTable_RootTableObject"
+        console.warn( msg )
+        throw Error( msg )
+    }
 
     // throw Error if an error
     DataTable_RootTableObject.constructorDataValidation( dataTable_RootTableObject )
 
+
+    const dataTableId = dataTable_RootTableObject.dataTableId
+
     const dataTable_TableOptions : DataTable_TableOptions = dataTable_RootTableObject.tableOptions
+
+    if ( ! ( dataTable_TableOptions instanceof DataTable_TableOptions) ) {
+        const msg = "dataTable_React_DataObjects_Validator: dataTable_TableOptions NOT instanceof DataTable_TableOptions"
+        console.warn( msg )
+        throw Error( msg )
+    }
+
     const dataTable_RootTableDataObject : DataTable_RootTableDataObject = dataTable_RootTableObject.tableDataObject
+
+    if ( ! ( dataTable_RootTableDataObject instanceof DataTable_RootTableDataObject) ) {
+        const msg = "dataTable_React_DataObjects_Validator: dataTable_RootTableDataObject NOT instanceof DataTable_RootTableDataObject"
+        console.warn( msg )
+        throw Error( msg )
+    }
 
     // throw Error if an error
     DataTable_RootTableDataObject.constructorDataValidation( dataTable_RootTableDataObject )
@@ -43,6 +63,33 @@ export const dataTable_React_DataObjects_Validator = function ({ dataTable_RootT
     const dataTable_ColumnEntries : Array<DataTable_Column> = dataTable_RootTableDataObject.columns
     const dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = dataTable_RootTableDataObject.dataTable_DataGroupRowEntries
     const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = dataTable_RootTableDataObject.dataTable_DataRowEntries
+
+    { // Validate dataTable_ColumnEntries
+
+        const id_Values = new Set<string>()
+
+        for (const dataTable_ColumnEntry of dataTable_ColumnEntries) {
+
+            if (!(dataTable_ColumnEntry instanceof DataTable_Column)) {
+                const msg = "dataTable_React_DataObjects_Validator: dataTable_ColumnEntry NOT instanceof DataTable_Column"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            // throw Error if an error
+            DataTable_Column.constructorDataValidation(dataTable_ColumnEntry)
+
+            if ( id_Values.has( dataTable_ColumnEntry.id ) ) {
+                const msg = "dataTable_React_DataObjects_Validator: dataTable_ColumnEntry.id same value found in more than one entry.  dataTable_ColumnEntry.id: " +
+                    dataTable_ColumnEntry.id +
+                    ", dataTableId: " + dataTableId
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            id_Values.add( dataTable_ColumnEntry.id )
+        }
+    }
 
     if ( dataTable_DataGroupRowEntries ) {
 
@@ -66,7 +113,25 @@ const validate_dataTable_DataGroupRowEntries = function({ dataTable_DataGroupRow
     dataTableId : string
 }) : void {
 
+    const uniqueIdValues = new Set<string|number>()
+
     for ( const dataTable_DataGroupRowEntry of dataTable_DataGroupRowEntries ) {
+
+        if ( ! ( dataTable_DataGroupRowEntry instanceof DataTable_DataGroupRowEntry) ) {
+            const msg = "dataTable_React_DataObjects_Validator: dataTable_DataGroupRowEntry NOT instanceof DataTable_DataGroupRowEntry"
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        if ( uniqueIdValues.has( dataTable_DataGroupRowEntry.uniqueId ) ) {
+            const msg = "dataTable_React_DataObjects_Validator: dataTable_DataGroupRowEntry.uniqueId same value found in more than one entry.  dataTable_DataGroupRowEntry.uniqueId: " +
+                dataTable_DataGroupRowEntry.uniqueId +
+                ", dataTableId: " + dataTableId
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        uniqueIdValues.add( dataTable_DataGroupRowEntry.uniqueId )
 
         validate_dataTable_DataRowEntries({ dataTable_DataRowEntries : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTableId });
     }
@@ -86,11 +151,29 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
     dataTableId : string
 }) : void {
 
+    const uniqueIdValues = new Set<string|number>()
+
     let tableRowCounter = 0; //  1 based.  NOT Currently Used
 
     for ( const dataTable_DataRowEntry of dataTable_DataRowEntries ) {
 
         tableRowCounter++
+
+        if ( ! ( dataTable_DataRowEntry instanceof DataTable_DataRowEntry) ) {
+            const msg = "dataTable_React_DataObjects_Validator: dataTable_DataRowEntry NOT instanceof DataTable_DataRowEntry"
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        if ( uniqueIdValues.has( dataTable_DataRowEntry.uniqueId ) ) {
+            const msg = "dataTable_React_DataObjects_Validator: dataTable_DataRowEntry.uniqueId same value found in more than one entry.  dataTable_DataRowEntry.uniqueId: " +
+                dataTable_DataRowEntry.uniqueId +
+                ", dataTableId: " + dataTableId
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        uniqueIdValues.add( dataTable_DataRowEntry.uniqueId )
 
         // throw Error if an error
         DataTable_DataRowEntry.constructorDataValidation(dataTable_DataRowEntry)

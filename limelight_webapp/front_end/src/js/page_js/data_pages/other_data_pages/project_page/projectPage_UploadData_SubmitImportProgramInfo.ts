@@ -92,11 +92,14 @@ export class ProjectPage_UploadData_SubmitImportProgramInfo {
 		promise_getUserSubmitImportProgramKey.catch(() => {  });
 
 		promise_getUserSubmitImportProgramKey.then( ({ responseData }) => {
+			try {
+				const userSubmitImportKey = responseData.existingKey;
 
-			const userSubmitImportKey = responseData.existingKey;
-
-			objectThis._createModalOverlay({ userSubmitImportKey, baseURL });
-
+				objectThis._createModalOverlay({ userSubmitImportKey, baseURL });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
 		});
 	}
 	

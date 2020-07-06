@@ -174,7 +174,9 @@ export class ModViewDataUtilities {
 
         let totalCount = 0;
 
-        for (let reportedPeptideId of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+        for (let reportedPeptideId_Entry of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+
+            const reportedPeptideId : any = reportedPeptideId_Entry as any
 
             let totalPositionsModified = 0;     // total positions modified in this reported peptide
                                                 // that is one of the passed in residues and the passed
@@ -482,7 +484,7 @@ export class ModViewDataUtilities {
         if( reportedPeptideModData[ reportedPeptideId ][ modMass ] === undefined ) { return false; }
 
         for( let proteinId of Object.keys( reportedPeptideModData[ reportedPeptideId ][ modMass ][ 'proteins' ] ) ) {
-            if( ModViewDataUtilities.reportedPeptideMatchesProteinForModMass( { reportedPeptideModData, modMass, proteinId, reportedPeptideId, proteinPositionFilterStateManager } ) ) {
+            if( ModViewDataUtilities.reportedPeptideMatchesProteinForModMass( { reportedPeptideModData, modMass, proteinId, reportedPeptideId, proteinPositionFilterStateManager, proteinPosition : undefined } ) ) {
                 return true;
             }
         }
@@ -586,7 +588,9 @@ export class ModViewDataUtilities {
 
         let proteinIds = new Set();
 
-        for (let reportedPeptideId of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+        for (let reportedPeptideId_Entry of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+
+            const reportedPeptideId : any = reportedPeptideId_Entry as any
 
             if( reportedPeptideModData[reportedPeptideId][modMass] ) {
 
@@ -607,7 +611,9 @@ export class ModViewDataUtilities {
 
         let reportedPeptideIds = new Set();
 
-        for (let reportedPeptideId of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+        for (let reportedPeptideId_Entry of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+
+            const reportedPeptideId : any = reportedPeptideId_Entry as any
 
             if( reportedPeptideModData[reportedPeptideId][modMass] ) {
 
@@ -642,9 +648,11 @@ export class ModViewDataUtilities {
      */
     static getPositionsModifiedInProteinForModMass({ modMass, proteinId, reportedPeptideModData, proteinPositionFilterStateManager } ) {
 
-        let positions = new Set();
+        let positions = new Set<number>();
 
-        for (let reportedPeptideId of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+        for (let reportedPeptideId_Entry of ModViewDataUtilities.getFilteredReportedPeptideIds( { reportedPeptideModData, proteinPositionFilterStateManager } ) ) {
+
+            const reportedPeptideId : any = reportedPeptideId_Entry as any
 
             if( reportedPeptideModData[reportedPeptideId][modMass] ) {
 

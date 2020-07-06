@@ -43,6 +43,17 @@ const create_dataTable_Root_React = function({ tableObject, resortTableOnUpdate,
     renderCompleteCallbackFcn 
 }) : void {
 
+    if ( ! tableObject ) {
+        const msg = "create_dataTable_Root_React: No value in tableObject";
+        console.warn( msg )
+        throw Error( msg )
+    }
+    if ( ! ( tableObject instanceof DataTable_RootTableObject ) ) {
+        const msg = "create_dataTable_Root_React: tableObject NOT instanceof DataTable_RootTableObject";
+        console.warn( msg + ".  tableObject: ", tableObject )
+        throw Error( msg )
+    }
+
     if ( containerDOMElement === undefined || containerDOMElement === null ) {
         throw Error("create_dataTable_Root_React({ containerDOMElement }): containerDOMElement is undefined or null ");
     }

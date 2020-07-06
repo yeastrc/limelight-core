@@ -5,18 +5,18 @@
 
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
+import { Handlebars } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
 import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
-import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
-import {ProteinPositionDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionDataListingManager.js';
-import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
+import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities';
+import {ProteinPositionDataListingManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionDataListingManager';
+import {TableDisplayHandler} from 'page_js/data_pages/data_tables/tableDisplayHandler';
 
 
 export class ProteinDataListingManager {
 
-    constructor( params ) {
+    constructor() {
 	
     }
 
@@ -89,7 +89,7 @@ export class ProteinDataListingManager {
 				let tableDisplayHandler = new TableDisplayHandler();
 				let proteinPositionDataListingManager = new ProteinPositionDataListingManager();
 
-				let tableObject = { };
+				let tableObject : any = { };
 				tableObject.columns = objectThis.getColumnsSingleSearch();
 				tableObject.dataObjects = proteinDataObjectArray;
 				tableDisplayHandler.addGraphWidths( { dataObjects : proteinDataObjectArray, columns : tableObject.columns } );
@@ -107,7 +107,7 @@ export class ProteinDataListingManager {
 
 				tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );
 				
-				let functionParams = { };
+				let functionParams : any = { };
 				functionParams.reportedPeptideModData = reportedPeptideModData;
 				functionParams.projectSearchId = projectSearchId;
 				functionParams.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
@@ -149,7 +149,7 @@ export class ProteinDataListingManager {
 
 				for (let proteinId of proteinIds) {
 
-					let proteinDataObject = {};
+					let proteinDataObject : any = {};
 
 					proteinDataObject.uniqueId = proteinId;
 					proteinDataObject.id = proteinId;
@@ -161,14 +161,14 @@ export class ProteinDataListingManager {
 					let positions = ModViewDataUtilities.getPositionsModifiedInProteinForModMass({ proteinId, modMass, reportedPeptideModData, proteinPositionFilterStateManager });
 					proteinDataObject.positions = positions.join( ', ' );
 
-					proteinDataObject.psmCount = ModViewDataUtilities.getPSMCountForModMass({ modMass, reportedPeptideModData, aminoAcidModStats, proteinId, proteinPositionFilterStateManager });
-					proteinDataObject.peptideCount = ModViewDataUtilities.getPeptideCountForModMass({ modMass, reportedPeptideModData, proteinId, proteinPositionFilterStateManager });
+					proteinDataObject.psmCount = ModViewDataUtilities.getPSMCountForModMass({ modMass, reportedPeptideModData, aminoAcidModStats, proteinId, proteinPositionFilterStateManager, proteinPosition : undefined });
+					proteinDataObject.peptideCount = ModViewDataUtilities.getPeptideCountForModMass({ modMass, reportedPeptideModData, proteinId, proteinPositionFilterStateManager, proteinPosition : undefined });
 
 					let totalPSMsContainingResidues = ModViewDataUtilities.getTotalPSMsContainingResiduesForProtein( { residues, proteinId, aminoAcidModStats } );
 					proteinDataObject.percentPSMsModified = ModViewDataUtilities.getFormattedDecimal( proteinDataObject.psmCount / totalPSMsContainingResidues * 100 );
 					
 					let totalInstancesOfModifiedResiduesForProtein = ModViewDataUtilities.getTotalInstancesOfModifiedResiduesForProtein( { modMass, residues, proteinId, reportedPeptideModData, aminoAcidModStats, proteinPositionResidues, proteinPositionFilterStateManager } );
-					let totalInstancesOfModdableResiduesForProtein = ModViewDataUtilities.getTotalInstancesOfModdableResiduesForProtein( { residues, proteinId, aminoAcidModStats } );
+					let totalInstancesOfModdableResiduesForProtein = ModViewDataUtilities.getTotalInstancesOfModdableResiduesForProtein( { residues, proteinId, aminoAcidModStats, cacheObject : undefined } );
 					proteinDataObject.percentResiduesModified = ModViewDataUtilities.getFormattedDecimal( totalInstancesOfModifiedResiduesForProtein / totalInstancesOfModdableResiduesForProtein * 100 );
 
 					proteinDataObjectArray.push(proteinDataObject);

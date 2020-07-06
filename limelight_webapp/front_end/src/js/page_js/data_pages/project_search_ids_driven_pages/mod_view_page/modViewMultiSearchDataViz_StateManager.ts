@@ -44,6 +44,9 @@ const _PSM_QUANT_METHOD_DECODING_KEYS = [
 
 export class ModMultiSearch_DataVizPageStateManager {
 
+    private _centralPageStateManager
+    private _vizOptionsData
+
     constructor({centralPageStateManager, vizOptionsData}) {
         if (centralPageStateManager) {
             this._centralPageStateManager = centralPageStateManager;

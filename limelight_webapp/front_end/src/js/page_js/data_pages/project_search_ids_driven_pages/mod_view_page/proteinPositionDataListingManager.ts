@@ -5,16 +5,16 @@
 
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
+import { Handlebars } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities.js';
-import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler.js';
-import { PeptideDataListingManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/peptideDataListingManager.js';
+import { ModViewDataUtilities } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities';
+import { TableDisplayHandler } from 'page_js/data_pages/data_tables/tableDisplayHandler';
+import { PeptideDataListingManager } from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/peptideDataListingManager';
 
 export class ProteinPositionDataListingManager {
 
-    constructor( params ) {
+    constructor() {
 	
     }
 
@@ -40,8 +40,8 @@ export class ProteinPositionDataListingManager {
 			try {
 				let tableDisplayHandler = new TableDisplayHandler();
 
-				let tableObject = { };
-				tableObject.columns = objectThis.getColumnsSingleSearch( { dataObjectArray, dataPageStateManager_DataFrom_Server, projectSearchId } );
+				let tableObject : any = { };
+				tableObject.columns = objectThis.getColumnsSingleSearch();
 				tableObject.dataObjects = dataObjectArray;
 				tableDisplayHandler.addGraphWidths( { dataObjects : dataObjectArray, columns : tableObject.columns } );
 
@@ -59,7 +59,7 @@ export class ProteinPositionDataListingManager {
 				tableDisplayHandler.addSortHandlerToHeader( $tableContainerDiv );
 				tableDisplayHandler.addHoverHandlerToRows( { $tableContainerDiv } );
 
-				let functionParams = { };
+				let functionParams : any = { };
 				functionParams.reportedPeptideModData = reportedPeptideModData;
 				functionParams.projectSearchId = projectSearchId;
 				functionParams.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
@@ -87,7 +87,7 @@ export class ProteinPositionDataListingManager {
 
 				for (let position of positions) {
 
-					let dataObject = {};
+					let dataObject : any = {};
 
 					dataObject.uniqueId = position;
 					dataObject.id = position;

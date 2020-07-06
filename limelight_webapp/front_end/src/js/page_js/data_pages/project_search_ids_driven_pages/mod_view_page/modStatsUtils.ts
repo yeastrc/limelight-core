@@ -22,7 +22,8 @@ export class ModStatsUtils {
             projectSearchIds,
             totalPSMCount,
             vizOptionsData,
-            countsOverride: true
+            countsOverride: true,
+            proteinPositionFilterStateManager : undefined
         });
 
         let selectedData = undefined;
