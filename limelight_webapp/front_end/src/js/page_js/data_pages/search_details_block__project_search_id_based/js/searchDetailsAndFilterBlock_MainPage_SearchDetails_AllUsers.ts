@@ -312,7 +312,11 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
             dataPerProjectSearchId.set( wsResultPerProjectSearchId.projectSearchId, { data : wsResultPerProjectSearchId, html : html } );
         }
 
-        const returnValue = { dataPerProjectSearchId, rootWsResult };
+		const genericForNoDataForProjectSearchId_HTML = this._searchDetails_ExpandSearchContents_Additions( {
+			rootWsResult, wsResultPerProjectSearchId : undefined, weblinksShowBlock : rootWsResult.weblinksShowBlockAlways, commentsShowBlock :  rootWsResult.commentsShowBlockAlways
+		} );
+
+		const returnValue = { dataPerProjectSearchId, rootWsResult, genericForNoDataForProjectSearchId_HTML };
 
         return returnValue;
 	}
@@ -399,18 +403,12 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 				}
 				
 				const projectPageSearchDetailsForProjectSearchId = projectPageSearchDetails_ForProjectSearchIds.get(projectSearchId);
-				if (!projectPageSearchDetailsForProjectSearchId) {
-					throw Error("No Project Page Search Details in projectPageSearchDetails.dataPerProjectSearchId for projectSearchId: " + projectSearchId);
-				}
-				
-				const weblinksShowAddWeblinkLink = projectPageSearchDetails_RootWsResult.weblinksShowAddWeblinkLink;
-				
-				if ( projectPageSearchDetailsForProjectSearchId ) {
-	
-					//  If have html, add add it
-					const data = projectPageSearchDetailsForProjectSearchId.data;
-					const HTML = projectPageSearchDetailsForProjectSearchId.html;
-					
+				if ( ! projectPageSearchDetailsForProjectSearchId ) {
+
+					//  NO projectPageSearchDetailsForProjectSearchId for projectSearchId
+
+					const genericForNoDataForProjectSearchId_HTML = projectPageSearchDetails.genericForNoDataForProjectSearchId_HTML
+
 					const $selector_search_details_root_table = $selector_search_details_container.find(".selector_search_details_root_table");
 					if ( $selector_search_details_root_table.length === 0 ) {
 						throw Error("Failed to find DOM element with class 'selector_search_details_root_table'");
@@ -425,14 +423,50 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 					if ( $tbody.length !== 1 ) {
 						throw Error("Found > 1 DOM element 'tbody' as child under DOM element with class 'selector_search_details_root_table'");
 					}
-					
-					$tbody.append( HTML );
-	
-					this._searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container });
-	
+
+					$tbody.append( genericForNoDataForProjectSearchId_HTML );
+
+					const weblinksShowAddWeblinkLink = projectPageSearchDetails_RootWsResult.weblinksShowAddWeblinkLink;
+
 					this._searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
-	
+
 					this._attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container });
+
+				} else {
+
+					//  YES projectPageSearchDetailsForProjectSearchId for projectSearchId
+
+					const weblinksShowAddWeblinkLink = projectPageSearchDetails_RootWsResult.weblinksShowAddWeblinkLink;
+
+					if ( projectPageSearchDetailsForProjectSearchId ) {
+
+						//  If have html, add add it
+						const data = projectPageSearchDetailsForProjectSearchId.data;
+						const HTML = projectPageSearchDetailsForProjectSearchId.html;
+
+						const $selector_search_details_root_table = $selector_search_details_container.find(".selector_search_details_root_table");
+						if ( $selector_search_details_root_table.length === 0 ) {
+							throw Error("Failed to find DOM element with class 'selector_search_details_root_table'");
+						}
+						if ( $selector_search_details_root_table.length !== 1 ) {
+							throw Error("Found > 1 DOM element with class 'selector_search_details_root_table'");
+						}
+						const $tbody = $selector_search_details_root_table.children("tbody");
+						if ( $tbody.length === 0 ) {
+							throw Error("Failed to find DOM element 'tbody' as child under DOM element with class 'selector_search_details_root_table'");
+						}
+						if ( $tbody.length !== 1 ) {
+							throw Error("Found > 1 DOM element 'tbody' as child under DOM element with class 'selector_search_details_root_table'");
+						}
+
+						$tbody.append( HTML );
+
+						this._searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container });
+
+						this._searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
+
+						this._attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container });
+					}
 				}
 			}
 
