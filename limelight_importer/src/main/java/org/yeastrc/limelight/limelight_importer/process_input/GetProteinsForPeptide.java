@@ -257,7 +257,9 @@ public class GetProteinsForPeptide {
 						}
 					}
 					
-					if ( ! processOneProteinForPeptideToProteinMapping( holder, peptide_IsotopeLabelId, peptideSequenceForProteinInference, proteins_PeptidePositionsInProteinResult ) ) {
+					if ( ! processOneProteinForPeptideToProteinMapping( 
+							holder, peptide_IsotopeLabelId, peptideSequenceForProteinInference, proteins_PeptidePositionsInProteinResult,
+							reportedPeptideFromLimelightXMLFile /* For Error Logging */ ) ) {
 						if ( peptide_IsotopeLabelString != null ) {
 							String msg = "reported peptide not found in <matched_protein> entry specified by  <matched_protein_for_peptide> id: " + matchedProteinId
 									+ ".  Processing Peptide with isotope label '" + peptide_IsotopeLabelString + "' and sequence: "
@@ -308,7 +310,13 @@ public class GetProteinsForPeptide {
 				//  Process Matched Proteins list, returning proteins that match the peptide in the request 
 
 				for ( InternalHolder_ProteinsFromMatchedProteins holder : proteinsFromMatchedProteinsList ) {
-					processOneProteinForPeptideToProteinMapping( holder, peptide_IsotopeLabelId, peptideSequenceForProteinInference, proteins_PeptidePositionsInProteinResult );
+					processOneProteinForPeptideToProteinMapping( 
+							holder, 
+							peptide_IsotopeLabelId, 
+							peptideSequenceForProteinInference, 
+							proteins_PeptidePositionsInProteinResult,
+							reportedPeptideFromLimelightXMLFile // For Error Logging 
+							);
 				}
 			}
 		}
@@ -337,7 +345,9 @@ public class GetProteinsForPeptide {
 			InternalHolder_ProteinsFromMatchedProteins holder,
 			int peptide_IsotopeLabelId,
 			String peptideSequenceForProteinInference,
-			Map<ProteinImporterContainer, Collection<Integer>> proteins_PeptidePositionsInProteinResult ) throws Exception {
+			Map<ProteinImporterContainer, Collection<Integer>> proteins_PeptidePositionsInProteinResult,
+			ReportedPeptide reportedPeptideFromLimelightXMLFile // For Logging
+			) throws Exception {
 
 		MatchedProtein matchedProteinFromLimelightXMLFile = holder.matchedProteinFromLimelightXML;
 		String proteinSequenceForProteinInference = holder.proteinSequenceForProteinInference;
@@ -351,7 +361,8 @@ public class GetProteinsForPeptide {
 					+ peptide_IsotopeLabelId 
 					+ ", protein_IsotopeLabelId: " + protein_IsotopeLabelId
 					+ ", peptideSequenceForProteinInference: " + peptideSequenceForProteinInference
-					+ ", protein sequence: " + holder.matchedProteinFromLimelightXML.getSequence();
+					+ ", protein sequence: " + holder.matchedProteinFromLimelightXML.getSequence()
+					+ ", reported Peptide String: " + reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
 			log.error( msg );
 			throw new LimelightImporterInternalException( msg );
 			//  !!  Cannot return false since used for a different thing
@@ -395,7 +406,8 @@ public class GetProteinsForPeptide {
 			}
 			String msg = "proteinImporterContainer already in map. protein sequence: "
 					+ proteinImporterContainer.getProteinSequenceDTO().getSequence()
-					+ isotopeLabelIdText;
+					+ isotopeLabelIdText
+					+ ".  reported Peptide String: " + reportedPeptideFromLimelightXMLFile.getReportedPeptideString();
 			log.error( msg );
 			throw new LimelightImporterInternalException(msg);
 		}

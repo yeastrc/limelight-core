@@ -50,7 +50,11 @@ public class ValidateMatchedProteinSection {
 	 * @throws LimelightImporterDataException for data errors
 	 */
 	public void validateMatchedProteinSection( LimelightInput limelightInput ) throws LimelightImporterDataException {
+
+		//  Validate that all protein sequences are unique
 		
+		Set<String> proteinSequences = new HashSet<>();
+
 		//  Validate that all protein annotation names are unique
 		
 		Set<String> proteinLabelNames = new HashSet<>();
@@ -76,6 +80,14 @@ public class ValidateMatchedProteinSection {
 			return;  //  TODO  maybe throw exception
 		}
 		for ( MatchedProtein matchedProtein : matchedProteinList ) {
+			
+			String proteinSequence = matchedProtein.getSequence();
+			
+			if ( ! proteinSequences.add( proteinSequence ) ) {
+				String msg = "All <matched_protein> entries must have unique 'sequence' attribute values.  Found value more than once: " + proteinSequence;
+				log.error( msg );
+				throw new LimelightImporterDataException(msg);
+			}
 			
 			BigInteger matchedProteinId = matchedProtein.getId();
 			
