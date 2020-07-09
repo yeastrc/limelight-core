@@ -1,9 +1,9 @@
 /**
- * projectPage_Root_ProjectLocked_ResearcherUser.js
+ * projectPage_Root_ResearcherUser.ts
  * 
  * Javascript for projectView.jsp page  
  * 
- * Root JS file for Researcher Users when the Project is Locked
+ * Root JS file for Researcher Users 
  * 
  * 
  */
@@ -13,13 +13,11 @@
  * Always do in Root Javascript for page:
  */
 
-/**
- * Require Handlebars and dummy_template_template-bundle.js so that Handlebars is properly initialized for other uses of it
- */
-var Handlebars = require('handlebars/runtime');
-var _dummy_template_template_bundle = 
-	require("../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
-// Handlebars.templates = _dummy_template_template_bundle;
+//  Required Import for Handlebars Support on this page
+import { Handlebars, _dummy_template_template_bundle } from './projectPage_Root_Handlebars_Include'
+
+const Handlebars_Local = Handlebars
+const _dummy_template_template_bundle_Local = _dummy_template_template_bundle
 
 
 /**
@@ -40,18 +38,40 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 
 import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
+import { ProjectPage_SearchesSection_LoggedInUsersInteraction } from './projectPage_SearchesSection_LoggedInUsersInteraction';
+import { ProjectPage_SearchDetails_LoggedInUsers } from './projectPage_SearchDetails_LoggedInUsers';
+import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './projectPage_SavedViews_Section_LoggedInUsersInteraction';
+
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
 import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction';
 import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
 import { ProjectPage_ProjectUserAccessAdminSection } from './projectPage_ProjectUserAccessAdminSection';
+import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './projectPage_ProjectSection_LoggedInUsersInteraction';
 import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction } from './projectPage_PublicAccessSection_ProjectOwnerInteraction';
 
 /**
  * 
  */
-class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
-	
+class ProjectViewPage_Root_ResearcherUser {
+
+	private _initializeCalled = false;
+
+	private _projectIdentifierFromURL : string
+
+	private _projectPage_ProjectSection_LoggedInUsersInteraction : ProjectPage_ProjectSection_LoggedInUsersInteraction
+	private _projectPage_SearchesSection_LoggedInUsersInteraction : ProjectPage_SearchesSection_LoggedInUsersInteraction
+	private _projectPage_SearchDetails_LoggedInUsers : ProjectPage_SearchDetails_LoggedInUsers
+	private _projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
+
+	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
+
+	private _projectPage_SearchesSection_AllUsersInteraction : ProjectPage_SearchesSection_AllUsersInteraction
+
+	private _projectPage_SavedViews_Section_AllUsersInteraction : ProjectPage_SavedViews_Section_AllUsersInteraction
+	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
+	private _projectPage_PublicAccessSection_ProjectOwnerInteraction : ProjectPage_PublicAccessSection_ProjectOwnerInteraction
+
 	/**
 	 * 
 	 */
@@ -65,8 +85,7 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 	 * 
 	 */
 	initialize() {
-		let objectThis = this;
-		
+
 		catchAndReportGlobalOnError.init();
 		
 		initShowHideErrorMessage();
@@ -79,36 +98,47 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 		projectPage_CommonOverall.initialize();
 		
 		const userIsProjectOwner = false;
-		const projectLocked = true;
+		const projectLocked = false;
 		
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
-		
+
+		this._projectPage_ProjectSection_LoggedInUsersInteraction = new ProjectPage_ProjectSection_LoggedInUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked });
+		this._projectPage_SearchesSection_LoggedInUsersInteraction = new ProjectPage_SearchesSection_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
+		this._projectPage_SearchDetails_LoggedInUsers = new ProjectPage_SearchDetails_LoggedInUsers({ projectIdentifierFromURL : this._projectIdentifierFromURL });
+		this._projectPage_SavedViews_Section_LoggedInUsersInteraction = new ProjectPage_SavedViews_Section_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
+
 		this._projectPage_ProjectSection_AllUsersInteraction = 
-			new ProjectPage_ProjectSection_AllUsersInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked } );
+			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction : this._projectPage_ProjectSection_LoggedInUsersInteraction } );
 		
 		this._projectPage_SearchesSection_AllUsersInteraction = 
 			new ProjectPage_SearchesSection_AllUsersInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked } );
-		
+				projectIdentifierFromURL : this._projectIdentifierFromURL,
+				projectPage_SearchesSection_LoggedInUsersInteraction : this._projectPage_SearchesSection_LoggedInUsersInteraction,
+				projectPage_SearchDetails_LoggedInUsers : this._projectPage_SearchDetails_LoggedInUsers } );
+
 		this._projectPage_SavedViews_Section_AllUsersInteraction =
 			new ProjectPage_SavedViews_Section_AllUsersInteraction({ 
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
 				projectPage_SavedViews_Section_LoggedInUsersInteraction : this._projectPage_SavedViews_Section_LoggedInUsersInteraction });
-			
+		
 
 		this._projectPage_ProjectUserAccessAdminSection =
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction =
-			new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
+				new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 
+					projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
+					
+		this._projectPage_SearchesSection_LoggedInUsersInteraction.initialize({ projectPage_SearchesSection_AllUsersInteraction : this._projectPage_SearchesSection_AllUsersInteraction });
+
+		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize({ projectPage_SavedViews_Section_AllUsersInteraction : this._projectPage_SavedViews_Section_AllUsersInteraction });
 
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 
+		this._projectPage_ProjectSection_LoggedInUsersInteraction.initialize({ projectPage_ProjectSection_AllUsersInteraction : this._projectPage_ProjectSection_AllUsersInteraction });
 		
 		window.setTimeout(() => {
 			//  Run in setTimeout to catch Errors
@@ -117,7 +147,7 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 
 		this._projectPage_PublicAccessSection_ProjectOwnerInteraction.initialize();
 		
-		////Instance of class
+		////  Instance of class
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		
 		mainPagesPopulateHeader.initialize();
@@ -133,11 +163,10 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 		this._initializeCalled = true;
 	};
 	
-
 	/**
 	 * 
 	 */
-	_getProjectIdentifierFromURL() {
+	_getProjectIdentifierFromURL() : string {
 
 		let windowPath = window.location.pathname;
 		
@@ -160,10 +189,10 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 $(document).ready(function() {
 
 	//Instance of class
-	let projectViewPage_Root_ProjectLocked_ResearcherUser = new ProjectViewPage_Root_ProjectLocked_ResearcherUser();
+	let projectViewPage_Root_ResearcherUser = new ProjectViewPage_Root_ResearcherUser();
 
 	try {
-		projectViewPage_Root_ProjectLocked_ResearcherUser.initialize();
+		projectViewPage_Root_ResearcherUser.initialize();
 		
 	} catch( e ) {
 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

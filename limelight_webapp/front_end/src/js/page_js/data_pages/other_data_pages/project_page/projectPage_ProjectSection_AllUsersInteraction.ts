@@ -24,6 +24,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
+import {ProjectPage_ProjectSection_LoggedInUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/projectPage_ProjectSection_LoggedInUsersInteraction";
 
 //  Local imports
 
@@ -34,16 +35,21 @@ import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
  */
 export class ProjectPage_ProjectSection_AllUsersInteraction {
 
-	private _initializeCalled
-	private _projectIdentifierFromURL
-	private _projectPage_ProjectSection_LoggedInUsersInteraction
-	private _project_notes_outer_container
-	private _project_notes_entry
+	private _initializeCalled = false;
+	private _projectIdentifierFromURL : string
+	private _projectPage_ProjectSection_LoggedInUsersInteraction : ProjectPage_ProjectSection_LoggedInUsersInteraction
+
+	private _project_notes_outer_container = _project_page__project_info_section_all_users_interaction_template.project_notes_outer_container;
+	private _project_notes_entry = _project_page__project_info_section_all_users_interaction_template.project_notes_entry;
 
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction } ) {
+	constructor( { projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction } : {
+
+		projectIdentifierFromURL : string
+		projectPage_ProjectSection_LoggedInUsersInteraction? : ProjectPage_ProjectSection_LoggedInUsersInteraction
+	} ) {
 
 		this._initializeCalled = false;
 		
@@ -53,13 +59,9 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
         if ( ! _project_page__project_info_section_all_users_interaction_template.project_notes_outer_container ) {
             throw Error("_project_page__project_info_section_all_users_interaction_template.project_notes_outer_container")
         }
-		this._project_notes_outer_container = _project_page__project_info_section_all_users_interaction_template.project_notes_outer_container;
-
         if ( ! _project_page__project_info_section_all_users_interaction_template.project_notes_entry ) {
             throw Error("_project_page__project_info_section_all_users_interaction_template.project_notes_entry")
         }
-		this._project_notes_entry = _project_page__project_info_section_all_users_interaction_template.project_notes_entry;
-
 	}
 
 	/**

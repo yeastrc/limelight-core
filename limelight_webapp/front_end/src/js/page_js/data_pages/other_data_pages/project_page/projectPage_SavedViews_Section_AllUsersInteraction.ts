@@ -31,6 +31,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
+import {ProjectPage_SavedViews_Section_LoggedInUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
 
 //  Local imports
 
@@ -41,8 +42,8 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
-	private _projectPage_SavedViews_Section_LoggedInUsersInteraction;
+	private _projectIdentifierFromURL : string
+	private _projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
 
 	private _projpg_saved_view_list_container_template = _project_page__saved_views_section_template.projpg_saved_view_list_container;
 	private _projpg_saved_view_list_item_template = _project_page__saved_views_section_template.projpg_saved_view_list_item;
@@ -53,6 +54,9 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 	constructor({ 
 		projectIdentifierFromURL,
 		projectPage_SavedViews_Section_LoggedInUsersInteraction
+	} : {
+		projectIdentifierFromURL : string
+		projectPage_SavedViews_Section_LoggedInUsersInteraction? : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
 	}) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;

@@ -61,13 +61,13 @@ const mainConfig = {
 		//  Project Page:
 		//   Project page for each type of user and whether or not the project is locked
 		//   Applies to both
-		'data_pages/projectViewPage_PublicUser' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_PublicUser.js',
+		'data_pages/projectViewPage_PublicUser' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_PublicUser.ts',
 		//   Project is NOT Locked
-		'data_pages/projectViewPage_Researcher_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ResearcherUser.js',
-		'data_pages/projectViewPage_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectOwnerUser.js',
+		'data_pages/projectViewPage_Researcher_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ResearcherUser.ts',
+		'data_pages/projectViewPage_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectOwnerUser.ts',
 		//   Project is Locked
-		'data_pages/projectViewPage_ProjectLocked_Researcher_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ResearcherUser.js',
-		'data_pages/projectViewPage_ProjectLocked_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ProjectOwnerUser.js',
+		'data_pages/projectViewPage_ProjectLocked_Researcher_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ResearcherUser.ts',
+		'data_pages/projectViewPage_ProjectLocked_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ProjectOwnerUser.ts',
 		
 		//  Lorikeet Own Page
 		'data_pages/lorikeetSpectrumViewPage_Root' : './src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.ts',

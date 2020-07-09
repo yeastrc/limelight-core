@@ -33,6 +33,9 @@ import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_O
 //  Local imports
 
 import { ProjectPage_SearchDetails_AllUsers } from 'page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_AllUsers';
+import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/projectPage_SearchesAdmin";
+import {ProjectPage_SearchDetails_LoggedInUsers} from "page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_LoggedInUsers";
+import {ProjectPage_SearchesSection_LoggedInUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/projectPage_SearchesSection_LoggedInUsersInteraction";
 
 //  prefix for DOM element 'id' attribute, followed by project search id
 const _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_CHECKBOX_ID_PREFIX = "search_item_checkbox_root_id_";
@@ -51,12 +54,12 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
+	private _projectIdentifierFromURL : string
 
-	private _projectPage_SearchesSection_LoggedInUsersInteraction;
-	private _projectPage_SearchesAdmin;
+	private _projectPage_SearchesSection_LoggedInUsersInteraction : ProjectPage_SearchesSection_LoggedInUsersInteraction
+	private _projectPage_SearchesAdmin : ProjectPage_SearchesAdmin
 
-	private _projectPage_SearchDetails_AllUsers
+	private _projectPage_SearchDetails_AllUsers : ProjectPage_SearchDetails_AllUsers
 
 	//  Set of all Project Search Ids of Searches Loaded
 	private _searchDataLoaded_ProjectSearchIds = new Set();
@@ -73,6 +76,12 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		projectPage_SearchesSection_LoggedInUsersInteraction, // object of class ProjectPage_SearchesSection_LoggedInUsersInteraction
 		projectPage_SearchDetails_LoggedInUsers, // object of class ProjectPage_SearchDetails_LoggedInUsers
 		projectPage_SearchesAdmin // object of class ProjectPage_SearchesAdmin
+	} : {
+		projectIdentifierFromURL : string
+		//  rest of parameters are optional
+		projectPage_SearchesSection_LoggedInUsersInteraction? : ProjectPage_SearchesSection_LoggedInUsersInteraction
+		projectPage_SearchDetails_LoggedInUsers? : ProjectPage_SearchDetails_LoggedInUsers
+		projectPage_SearchesAdmin? : ProjectPage_SearchesAdmin
 	}) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
