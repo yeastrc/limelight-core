@@ -46,6 +46,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectS
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
@@ -68,6 +69,9 @@ public class Project_ListProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_Res
 	
 	@Autowired
 	private SearchMinimalForProjectSearchIdSearcher_IF searchMinimalForProjectSearchIdSearcher;
+
+	@Autowired
+	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -176,12 +180,13 @@ public class Project_ListProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_Res
 					throw new LimelightInternalErrorException(msg);
 				}
 				int searchId = searchItemMinimal.getSearchId();
-				String searchName = searchItemMinimal.getName();
+				
+				String searchNameDisplay = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
 				
 				WebserviceResultItem webserviceItem = new WebserviceResultItem();
 				webserviceItem.projectSearchId = projectSearchidFoundInProject;
 				webserviceItem.searchId = searchId;
-				webserviceItem.searchName = searchName;
+				webserviceItem.searchName = searchNameDisplay;
 				webserviceItems.add( webserviceItem );
 			}
 			

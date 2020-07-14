@@ -83,6 +83,7 @@ import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalDa
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.AA_DataDownloadControllersPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.DownloadsCharacterSetConstant;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
@@ -126,6 +127,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private SearchMinimalForProjectSearchIdSearcher_IF searchMinimalForProjectSearchIdSearcher;
+
+	@Autowired
+	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
 	
 	@Autowired
 	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
@@ -1064,6 +1068,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 					throw new LimelightInternalErrorException(msg);
 				}
 				
+				String searchNameDisplay = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
+				
 				Set<Integer> annTypeIdsToRetrieve = new HashSet<>();
 				
 				for ( Map.Entry<Integer, AnnotationTypeDTO>  mapEntry : annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.entrySet() ) {
@@ -1130,7 +1136,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 							writer.write( String.valueOf( searchId ) );
 							writer.write( "\t" );
-							writer.write( searchItemMinimal.getName() );
+							writer.write( searchNameDisplay );
 							writer.write( "\t" );
 							writer.write( String.valueOf( psmWebDisplay.getScanNumber() ) );
 							writer.write( "\t" );

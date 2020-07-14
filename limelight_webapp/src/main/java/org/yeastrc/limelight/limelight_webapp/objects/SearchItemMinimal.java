@@ -35,6 +35,16 @@ public class SearchItemMinimal {
 				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + "]";
 	}
 
+	/**
+	 * @@@  WARNING:  Will return null if user did not assign a name to the search !!!
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public int getProjectSearchId() {
 		return projectSearchId;
 	}
@@ -46,12 +56,6 @@ public class SearchItemMinimal {
 	}
 	public void setSearchId(int searchId) {
 		this.searchId = searchId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	public int getProjectId() {
 		return projectId;

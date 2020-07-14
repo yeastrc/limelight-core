@@ -44,6 +44,7 @@ import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
 import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFolders.ProjectPageFoldersSearches;
 import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFoldersIF;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
@@ -65,6 +66,9 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 	
 	@Autowired
 	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
+
+	@Autowired
+	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -219,11 +223,14 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 	private List<WebserviceResultSearchItem> convertSearchItemMinimalToWebserviceResultSearchItem( List<SearchItemMinimal> searches ) {
 		List<WebserviceResultSearchItem> webserviceResultSearchItemList = new ArrayList<>( searches.size() );
 		for ( SearchItemMinimal searchItemMinimal : searches ) {
+			
+			String searchNameDisplay = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
+			
 			WebserviceResultSearchItem searchItem = new WebserviceResultSearchItem();
 			searchItem.id = searchItemMinimal.getProjectSearchId();
 			searchItem.searchId = searchItemMinimal.getSearchId();
 			searchItem.displayOrder = searchItemMinimal.getDisplayOrder();
-			searchItem.name = searchItemMinimal.getName();
+			searchItem.name = searchNameDisplay;
 			webserviceResultSearchItemList.add( searchItem );
 		}
 		return webserviceResultSearchItemList;
