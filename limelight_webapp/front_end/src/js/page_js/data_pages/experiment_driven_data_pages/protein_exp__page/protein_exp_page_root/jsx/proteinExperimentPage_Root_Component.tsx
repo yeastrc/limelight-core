@@ -43,6 +43,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {SaveView_Component, SaveView_Component_Props_Prop} from "page_js/data_pages/saveView_React/saveView_Component_React";
 
 
 /**
@@ -89,7 +90,7 @@ interface ProteinExperimentPage_Root_Component_State {
     proteinList_Updating? : boolean;    // Updating Protein List
 
     saveView_Component_React? //  React Component for Save View
-    saveView_Component_Props_Prop? //  Object passed to saveView_Component_React as property propsValue
+    saveView_Component_Props_Prop? : SaveView_Component_Props_Prop //  Object passed to saveView_Component_React as property propsValue
 
     //  Selected cells in Experiment_SingleExperiment_ConditionsGraphicRepresentation
     graphicRepresentation_SelectedCells? : ExperimentConditions_GraphicRepresentation_SelectedCells
@@ -126,19 +127,16 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
     constructor(props : ProteinExperimentPage_Root_Component_Props) {
         super(props);
 
-        let saveView_Component_React = undefined;
-        let saveView_Component_Props_Prop = undefined;
+        let saveView_Component_React : any = undefined; // class SaveView_Component
+        let saveView_Component_Props_Prop : SaveView_Component_Props_Prop = undefined;
 
         if ( props.experiment_DataPages_LoggedInUser_CommonObjectsFactory ) {
             if ( props.experiment_DataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps ) {
                 const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
                     props.experiment_DataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
                 );
-                
-                // const enableSetDefault = true;  //  true since on main page
-                const enableSetDefault = false; // false for now since Experiment Default View not supported yet
 
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.projectSearchIds, experimentId : props.experimentId, enableSetDefault });
+                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.projectSearchIds, experimentId : props.experimentId });
                 saveView_Component_React = result.saveView_Component_React
                 saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
             }

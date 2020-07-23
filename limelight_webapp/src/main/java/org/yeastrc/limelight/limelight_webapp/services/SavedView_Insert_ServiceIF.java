@@ -7,14 +7,14 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocExper
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocProjectSearchIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewDTO;
 
-public interface SavedView_PossibleDefault_Insert_ServiceIF {
+public interface SavedView_Insert_ServiceIF {
 
 	/**
 	 * @param item
 	 * @param childrenProjectSearchIds
 	 * @param childExperimentId TODO
 	 */
-	void addDataPageSavedView_UpdateDefaultIfSet(DataPageSavedViewDTO item,
+	void addDataPageSavedView(DataPageSavedViewDTO item,
 			List<DataPageSavedViewAssocProjectSearchIdDTO> childrenProjectSearchIds, DataPageSavedViewAssocExperimentIdDTO childExperimentId) throws SQLException;
 
 }

@@ -26,17 +26,14 @@ export class SaveView_Component_Props_Prop {
 
     projectSearchIds : Array<number>;
     experimentId? : number
-    enableSetDefault : boolean  //  Present to user the "Set Default" Checkbox and pass to server the value
 
-    constructor({ projectSearchIds, experimentId, enableSetDefault } : {
+    constructor({ projectSearchIds, experimentId } : {
 
         projectSearchIds : Array<number>;
         experimentId? : number
-        enableSetDefault : boolean  //  Present to user the "Set Default" Checkbox and pass to server the value
     }) {
         this.projectSearchIds = projectSearchIds
         this.experimentId = experimentId
-        this.enableSetDefault = enableSetDefault;
     }
 }
 
@@ -89,8 +86,7 @@ export class SaveView_Component extends React.Component< SaveView_Component_Prop
         const saveView_dataPages = new SaveView_dataPages();
         saveView_dataPages.initializeFrom_SaveView_Component_React({ 
             experimentId : this.props.propsValue.experimentId, 
-            projectSearchIds : this.props.propsValue.projectSearchIds, 
-            enableSetDefault : this.props.propsValue.enableSetDefault
+            projectSearchIds : this.props.propsValue.projectSearchIds
         });
 
         saveView_dataPages.saveView_MainPage_ButtonClicked_SaveView_Component_React();

@@ -10,12 +10,13 @@
 
  //  Imports
 
- import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
+import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
 
- import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers';
+import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers';
  
 import { SaveView_Create_Component_React_Type } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
 import { saveView_Create_Component_React } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React';
+import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 
 
 /**
@@ -54,6 +55,15 @@ export class DataPages_LoggedInUser_CommonObjectsFactory {
     instantiate_SaveView_dataPages() : SaveView_dataPages {
 
         return new SaveView_dataPages();
+    }
+
+    /**
+     * Create object of class SetDefaultView_dataPages
+     *
+     */
+    instantiate_SetDefaultView_dataPages() : SetDefaultView_dataPages {
+
+        return new SetDefaultView_dataPages();
     }
 
     /**

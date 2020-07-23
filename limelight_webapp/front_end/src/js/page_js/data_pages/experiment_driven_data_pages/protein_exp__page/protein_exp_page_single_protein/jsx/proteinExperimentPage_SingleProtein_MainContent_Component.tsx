@@ -434,10 +434,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
                     props.propsValue.experiment_DataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
                 );
-                
-                const enableSetDefault = false; // false since Single Protein Overlay
 
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : projectSearchIds_PossiblyFiltered, experimentId : props.propsValue.experimentId, enableSetDefault });
+                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : projectSearchIds_PossiblyFiltered, experimentId : props.propsValue.experimentId });
                 saveView_Component_React = result.saveView_Component_React
                 saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
             }

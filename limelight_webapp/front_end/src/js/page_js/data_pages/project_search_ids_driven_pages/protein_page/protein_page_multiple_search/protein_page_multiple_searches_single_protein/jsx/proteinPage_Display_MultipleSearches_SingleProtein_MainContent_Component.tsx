@@ -349,10 +349,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                 const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
                     props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
                 );
-                
-                const enableSetDefault = false; // false since Single Protein Overlay
 
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined, enableSetDefault });
+                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined });
                 saveView_Component_React = result.saveView_Component_React
                 saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
             }

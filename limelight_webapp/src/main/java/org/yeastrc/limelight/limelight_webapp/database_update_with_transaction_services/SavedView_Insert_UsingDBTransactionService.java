@@ -40,9 +40,9 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewDTO;
  *
  */
 @Service
-public class SavedView_PossibleDefault_Insert_UsingDBTransactionService {
+public class SavedView_Insert_UsingDBTransactionService {
 
-	private static final Logger log = LoggerFactory.getLogger( SavedView_PossibleDefault_Insert_UsingDBTransactionService.class );
+	private static final Logger log = LoggerFactory.getLogger( SavedView_Insert_UsingDBTransactionService.class );
 	
 	@Autowired
 	private DataPageSavedViewDAO_IF dataPageSavedViewDAO;
@@ -65,16 +65,9 @@ public class SavedView_PossibleDefault_Insert_UsingDBTransactionService {
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED)  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring DB Transactions
 	
-	public void addDataPageSavedView_UpdateDefaultIfSet( DataPageSavedViewDTO item, List<DataPageSavedViewAssocProjectSearchIdDTO> children, DataPageSavedViewAssocExperimentIdDTO childExperimentId ) { //  No 'Throws' allowed due to 
+	public void addDataPageSavedView( DataPageSavedViewDTO item, List<DataPageSavedViewAssocProjectSearchIdDTO> children, DataPageSavedViewAssocExperimentIdDTO childExperimentId ) { //  No 'Throws' allowed due to 
 		
 		try {
-			if ( item.getSingleProjectSearchIdDefaultView() != null ) {
-				// Have default Project Search Id so First clear project search id for 
-				
-				dataPageSavedViewDAO.clearAllSingleProjectSearchIdDefaultView_ForProjectSearchId(
-						item.getSingleProjectSearchIdDefaultView(), item.getPageControllerPath() );
-			}
-			
 			dataPageSavedViewDAO.save( item );
 			
 			for ( DataPageSavedViewAssocProjectSearchIdDTO child : children ) {

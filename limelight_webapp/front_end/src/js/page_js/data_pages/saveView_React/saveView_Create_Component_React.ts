@@ -15,15 +15,14 @@ import { SaveView_Create_Component_React_Result, SaveView_Create_Component_React
 /**
  * 
  */
-export const saveView_Create_Component_React = function({ projectSearchIds, experimentId, enableSetDefault } : {
+export const saveView_Create_Component_React = function({ projectSearchIds, experimentId } : {
 
     projectSearchIds : Array<number>
     experimentId? : number
-    enableSetDefault : boolean
 
 }) : SaveView_Create_Component_React_Result {
 
-    const saveView_Component_Props_Prop = new SaveView_Component_Props_Prop({ projectSearchIds, experimentId, enableSetDefault });
+    const saveView_Component_Props_Prop = new SaveView_Component_Props_Prop({ projectSearchIds, experimentId });
 
 
     const saveView_Create_Component_React_Result = new SaveView_Create_Component_React_Result({

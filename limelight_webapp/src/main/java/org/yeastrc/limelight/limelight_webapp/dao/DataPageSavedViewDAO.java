@@ -93,7 +93,7 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 		
 		DataPageSavedViewDTO result = null;
 		
-		final String querySQL = "SELECT project_id, single_project_search_id__default_view, user_id_created_record, user_id_last_updated_record FROM data_page_saved_view_tbl WHERE id = ? ";
+		final String querySQL = "SELECT project_id, user_id_created_record, user_id_last_updated_record FROM data_page_saved_view_tbl WHERE id = ? ";
 		
 		try ( Connection dbConnection = super.getDBConnection();
 			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
@@ -105,20 +105,16 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 					result = new DataPageSavedViewDTO();
 					result.setId( id );
 					result.setProjectId( rs.getInt( "project_id" ) );
-					int singleProjectSearchIdDefaultView = rs.getInt( "single_project_search_id__default_view" );
-					if ( ! rs.wasNull() ) {
-						result.setSingleProjectSearchIdDefaultView( singleProjectSearchIdDefaultView );
-					}
 					result.setUserIdCreated( rs.getInt( "user_id_created_record" ) );
 					result.setUserIdLastUpdated(rs.getInt( "user_id_last_updated_record" )  );
 				}
 			}
 		} catch ( RuntimeException e ) {
-			String msg = "SQL: " + querySQL;
+			String msg = "getNumericFieldsById: SQL: " + querySQL;
 			log.error( msg, e );
 			throw e;
 		} catch ( SQLException e ) {
-			String msg = "SQL: " + querySQL;
+			String msg = "getNumericFieldsById: SQL: " + querySQL;
 			log.error( msg, e );
 			throw e;
 		}
@@ -164,47 +160,6 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 		return result;
 	}
 	
-	/**
-	 * Return the single_project_search_id__default_view for id
-	 * 
-	 * @param id
-	 * @return null if not found or field is null
-	 * @throws SQLException
-	 */
-	@Override
-	public Integer get_SingleProjectSearchIdDefaultView_ById( int id ) throws SQLException {
-		
-		Integer result = null;
-		
-		final String querySQL = "SELECT single_project_search_id__default_view FROM data_page_saved_view_tbl WHERE id = ? ";
-		
-		try ( Connection dbConnection = super.getDBConnection();
-			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
-			
-			preparedStatement.setInt( 1, id );
-			
-			try ( ResultSet rs = preparedStatement.executeQuery() ) {
-				if ( rs.next() ) {
-					int projectSearchId = rs.getInt( "single_project_search_id__default_view" );
-					if ( ! rs.wasNull() ) {
-						result = projectSearchId;
-					}
-				}
-			}
-		} catch ( RuntimeException e ) {
-			String msg = "SQL: " + querySQL;
-			log.error( msg, e );
-			throw e;
-		} catch ( SQLException e ) {
-			String msg = "SQL: " + querySQL;
-			log.error( msg, e );
-			throw e;
-		}
-		
-		return result;
-	}
-	
-	
 	private static final String getURL_ByProjectSearchIdControllerPath_SQL =
 			"SELECT url_start_at_page_controller_path FROM data_page_saved_view_tbl "
 			+ " WHERE "
@@ -212,62 +167,15 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 			+ " AND"
 			+ " page_controller_path = ? ";
 
-	/**
-	 * Return the URL for project search id and controller path
-	 * 
-	 * @param projectSearchId
-	 * @return null if not found
-	 * @throws SQLException
-	 */
-	@Override
-	public String getURL_ByProjectSearchIdControllerPath( int projectSearchId, String controllerPath ) throws SQLException {
-		
-		String result = null;
-		
-		final String querySQL = getURL_ByProjectSearchIdControllerPath_SQL;
-		
-		try ( Connection dbConnection = super.getDBConnection();
-			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
-			
-			preparedStatement.setInt( 1, projectSearchId );
-			preparedStatement.setString( 2, controllerPath );
-			
-			try ( ResultSet rs = preparedStatement.executeQuery() ) {
-				if ( rs.next() ) {
-					result = rs.getString( "url_start_at_page_controller_path" );
-				}
-				if ( rs.next() ) {
-					String msg = "Found > 1 record for projectSearchId: " + projectSearchId 
-							+ ", controllerPath: " + controllerPath;
-					log.error( msg );
-					throw new LimelightInternalErrorException( msg );
-				}
-			}
-		} catch ( RuntimeException e ) {
-			String msg = "SQL: " + querySQL;
-			log.error( msg, e );
-			throw e;
-		} catch ( SQLException e ) {
-			String msg = "SQL: " + querySQL;
-			log.error( msg, e );
-			throw e;
-		}
-		
-		return result;
-	}
-	
-
-	
 	///////
 	
 	private static final String INSERT_SQL = 
 			"INSERT INTO data_page_saved_view_tbl "
 			+ " ( project_id, page_controller_path, "
-			+ " experiment_id, experiment_id_default_view, "
-			+ " single_project_search_id__default_view,"
+			+ " experiment_id, "
 			+ " label, url_start_at_page_controller_path, srch_data_lkp_params_string,"
 			+ " user_id_created_record, user_id_last_updated_record ) "
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -298,18 +206,6 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 							counter++;
 							if ( item.getExperimentId() != null ) {
 								pstmt.setInt( counter, item.getExperimentId() );
-							} else {
-								pstmt.setNull( counter, java.sql.Types.INTEGER );
-							}
-							counter++;
-							if ( item.getExperimentIdDefaultView() != null ) {
-								pstmt.setInt( counter, item.getExperimentIdDefaultView() );
-							} else {
-								pstmt.setNull( counter, java.sql.Types.INTEGER );
-							}
-							counter++;
-							if ( item.getSingleProjectSearchIdDefaultView() != null ) {
-								pstmt.setInt( counter, item.getSingleProjectSearchIdDefaultView() );
 							} else {
 								pstmt.setNull( counter, java.sql.Types.INTEGER );
 							}
@@ -382,89 +278,6 @@ public class DataPageSavedViewDAO extends Limelight_JDBC_Base implements DataPag
 
 		} catch ( RuntimeException e ) {
 			String msg = "label: " + label + ", id: " + id + ", SQL: " + UPDATE_SQL;
-			log.error( msg, e );
-			throw e;
-		}
-	}
-
-	/**
-	 * @param projectSearchId
-	 * @param id
-	 */
-	@Override
-	//  Spring DB Transactions
-	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateSingleProjectSearchIdDefaultView( int projectSearchId, int userId, int id ) {
-		
-		final String UPDATE_SQL = "UPDATE data_page_saved_view_tbl SET single_project_search_id__default_view = ? WHERE id = ?";
-		
-		// Use Spring JdbcTemplate so Transactions work properly
-		
-		//  How to get the auto-increment primary key for the inserted record
-		
-		try {
-			int rowsUpdated = this.getJdbcTemplate().update(
-					new PreparedStatementCreator() {
-						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-
-							PreparedStatement pstmt =
-									connection.prepareStatement( UPDATE_SQL );
-							int counter = 0;
-							counter++;
-							pstmt.setInt( counter, projectSearchId );
-							counter++;
-							pstmt.setInt( counter, id );
-
-							return pstmt;
-						}
-					});
-
-		} catch ( RuntimeException e ) {
-			String msg = "projectSearchId: " + projectSearchId + ", id: " + id + ", SQL: " + UPDATE_SQL;
-			log.error( msg, e );
-			throw e;
-		}
-	}
-	
-	private static final String clearAllSingleProjectSearchIdDefaultView_ForProjectSearchId_SQL =
-			"UPDATE data_page_saved_view_tbl "
-			+ "SET single_project_search_id__default_view = null "
-			+ "WHERE "
-			+ " single_project_search_id__default_view = ? "
-			+ " AND"
-			+ " page_controller_path = ? ";
-	/**
-	 * @param projectSearchId
-	 */
-	@Override
-	//  Spring DB Transactions
-	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void clearAllSingleProjectSearchIdDefaultView_ForProjectSearchId( int projectSearchId, String pageControllerPath ) {
-		
-		final String UPDATE_SQL = clearAllSingleProjectSearchIdDefaultView_ForProjectSearchId_SQL;
-		
-		// Use Spring JdbcTemplate so Transactions work properly
-		
-		//  How to get the auto-increment primary key for the inserted record
-		
-		try {
-			int rowsUpdated = this.getJdbcTemplate().update(
-					new PreparedStatementCreator() {
-						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-
-							PreparedStatement pstmt =
-									connection.prepareStatement( UPDATE_SQL );
-							int counter = 0;
-							counter++;
-							pstmt.setInt( counter, projectSearchId );
-							counter++;
-							pstmt.setString( counter, pageControllerPath );
-							return pstmt;
-						}
-					});
-
-		} catch ( RuntimeException e ) {
-			String msg = "projectSearchId: " + projectSearchId + ", SQL: " + UPDATE_SQL;
 			log.error( msg, e );
 			throw e;
 		}

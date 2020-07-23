@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
-import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocExperimentIdDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewAssocProjectSearchIdDTO;
@@ -45,7 +44,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.services.SavedView_PossibleDefault_Insert_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.services.SavedView_Insert_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -54,13 +53,13 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
- * Insert a Saved View with possible Default
+ * Insert a Saved View
  *
  */
 @RestController
-public class Save_View_PossibleDefault__Insert__RestWebserviceController {
+public class Save_View__Insert__RestWebserviceController {
 
-	private static final Logger log = LoggerFactory.getLogger( Save_View_PossibleDefault__Insert__RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( Save_View__Insert__RestWebserviceController.class );
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -72,7 +71,7 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 	private ExperimentDAO_IF experimentDAO;
 	
 	@Autowired
-	private SavedView_PossibleDefault_Insert_ServiceIF savedView_PossibleDefault_Insert_Service;
+	private SavedView_Insert_ServiceIF savedView_PossibleDefault_Insert_Service;
 	
 	
 	@Autowired
@@ -84,7 +83,7 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     /**
 	 * 
 	 */
-	public Save_View_PossibleDefault__Insert__RestWebserviceController() {
+	public Save_View__Insert__RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -143,7 +142,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
         	final String pageControllerPathFromWebserviceRequest = webserviceRequest.getPageControllerPath();
         	final String pageCurrentURL_StartAtPageController = webserviceRequest.getPageCurrentURL_StartAtPageController();
         	final String searchDataLookupParametersCode = webserviceRequest.getSearchDataLookupParametersCode();
-        	final boolean setDefault = webserviceRequest.isSetDefault();
 
     		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
     			log.warn( "No Project Search Ids" );
@@ -172,10 +170,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     			log.warn( "No searchDataLookupParametersCode or experimentId.  At 1 is required.  Both allowed to be populated at the same time." );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
         	}
-    		if ( setDefault && projectSearchIds.size() != 1 ) {
-    			log.warn( "Set Default True but projectSearchIds.size() != 1. projectSearchIds: " + projectSearchIds );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-   			}
 
     		//  Validate pageCurrentURL_StartAtPageController starts with pageControllerPath 
     		
@@ -224,17 +218,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 	    		}
     		}
     		
-    		//  Temp validation that if Experiment that SetDefault is not allowed since not supported yet.
-    		
-    		if ( experimentId != null
-    				&& setDefault
-    				&& pageCurrentURL_StartAtPageController.startsWith( AA_PageControllerPaths_Constants.EXPERIMENT_ID_BASED_PAGE_CONTROLLER_START ) ) {
-	    			log.warn( "setDefault true not currently supported for Experiment pages: pageCurrentURL_StartAtPageController: "
-	    					+ pageCurrentURL_StartAtPageController
-	    					+ ". experimentId: " + experimentId );
-	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		
     		
     		////////////////
     		
@@ -247,7 +230,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 
     		List<Integer> projectIdsForProjectSearchIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
     		
-    		WebSessionAuthAccessLevel webSessionAuthAccessLevel = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getWebSessionAuthAccessLevel();
     		UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getUserSession();
 
 
@@ -316,22 +298,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     		
     		item.setExperimentId( experimentId );  // Only populated for Experiment
     		
-    		if ( setDefault ) {
-    			if ( ! webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
-    				log.warn( "Set Default True but user not Project Owner. userId: " + userId + ", projectSearchIds: " + projectSearchIds );
-    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    			}
-    			
-    			if ( experimentId != null ) {
-    				String msg = "Not tested yet to have set default for experimentId";
-    				log.error(msg);
-    				throw new LimelightInternalErrorException(msg);
-    			}
-    			item.setExperimentIdDefaultView( experimentId );  // Only populated for Experiment
-    			
-    			Integer projectSearchIdSingle = projectSearchIds.get( 0 );
-        		item.setSingleProjectSearchIdDefaultView( projectSearchIdSingle );
-    		}
     		item.setUserIdCreated(userId);
     		item.setUserIdLastUpdated(userId);
     		item.setUrlStartAtPageControllerPath( pageCurrentURL_StartAtPageController );
@@ -350,7 +316,7 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     			childExperimentId.setExperimentId( experimentId );
     		}
     		
-    		savedView_PossibleDefault_Insert_Service.addDataPageSavedView_UpdateDefaultIfSet( item, childrenProjectSearchIds, childExperimentId );
+    		savedView_PossibleDefault_Insert_Service.addDataPageSavedView( item, childrenProjectSearchIds, childExperimentId );
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.status = true; // value ignored in Javascript code
@@ -384,7 +350,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
     	private String pageControllerPath;
     	private String pageCurrentURL_StartAtPageController;
     	private String searchDataLookupParametersCode;
-    	private boolean setDefault;
     	
 		public List<Integer> getProjectSearchIds() {
 			return projectSearchIds;
@@ -409,12 +374,6 @@ public class Save_View_PossibleDefault__Insert__RestWebserviceController {
 		}
 		public void setSearchDataLookupParametersCode(String searchDataLookupParametersCode) {
 			this.searchDataLookupParametersCode = searchDataLookupParametersCode;
-		}
-		public boolean isSetDefault() {
-			return setDefault;
-		}
-		public void setSetDefault(boolean setDefault) {
-			this.setDefault = setDefault;
 		}
 		public String getLabel() {
 			return label;

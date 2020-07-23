@@ -261,6 +261,13 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String INSERT_SHARED_PAGE_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/insert-shared-page";
+
+	//    Save Default View for Project Search Id based pages (Save Current View of a Project Search Id based page [peptide,protein,...])
+	
+	//   Save Default View for Project Search Id based pages
+
+	public static final String SAVE_DEFAULT_VIEW_PROJECT_SEARCH_BASED_PAGE_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/save-default-view-project-search-based-page";
 	
 	
 	//    Save View (Save Current View of a Project Search Id based page [peptide,protein,...])

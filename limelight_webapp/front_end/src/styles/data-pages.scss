@@ -386,8 +386,16 @@
 
 	/*  --------------------------------------------------  */
 	
-	//   Containers for Buttons "Save View" and "Share Page"
+	//   Containers for Buttons "Set Default", "Save View" and "Share Page"
 
+     .set-default-view-root-container {
+       display: inline-block;
+       position: relative;
+     }
+     .set-default-view-container { // In Template for button
+       display: inline-block;
+       position: relative;
+     }
     .save-view-root-container {
         display: inline-block;
         position: relative;

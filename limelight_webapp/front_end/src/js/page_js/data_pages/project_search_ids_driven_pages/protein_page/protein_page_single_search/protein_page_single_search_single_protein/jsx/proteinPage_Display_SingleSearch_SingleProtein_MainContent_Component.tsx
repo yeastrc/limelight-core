@@ -30,26 +30,6 @@ import { SaveView_Create_Component_React_Type, SaveView_Create_Component_React_R
 import { SharePage_Component } from 'page_js/data_pages/sharePage_React/sharePage_Component_React';
 
 
-// import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
-
-
-//   Modification Mass Rounding to provide some level of commonality between searches
-// import {
-// 	modificationMass_CommonRounding_ReturnNumber_Function,
-//     modificationMass_CommonRounding_ReturnString_Function,
-//     modificationMass_CommonRounding_ReturnNumber, 
-//     modificationMass_CommonRounding_ReturnString 
-// } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
-
-//   Reporter Ion Mass Rounding to provide some level of commonality between searches
-// import { 
-    // reporterIonMass_CommonRounding_ReturnNumber_Function,
-    // reporterIonMass_CommonRounding_ReturnString_Function,
-    // reporterIonMass_CommonRounding_ReturnNumber, 
-    // reporterIonMass_CommonRounding_ReturnString, 
-    // _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
-// } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
-
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
@@ -83,14 +63,9 @@ import { PeptideFiltersDisplay } from 'page_js/data_pages/experiment_driven_data
 import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 
 
-import { getReportedPeptideIdsForDisplay_AllProjectSearchIds } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds'
-
-
 import { 
     downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds, 
-    DownloadPSMs_PerProjectSearchId_Entry, 
-    DownloadPSMs_PerReportedPeptideId, 
-    DownloadPSMs_PerConditionGroupConditionData 
+    DownloadPSMs_PerProjectSearchId_Entry
 } from 'page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds';
 
 
@@ -391,10 +366,8 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
                 const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
                     props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
                 );
-                
-                const enableSetDefault = false; // false since Single Protein Overlay
 
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined, enableSetDefault });
+                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined });
                 saveView_Component_React = result.saveView_Component_React
                 saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
             }

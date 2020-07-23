@@ -1,7 +1,7 @@
 /**
  * saveView_dataPages.ts
  * 
- * Javascript for Data Pages: Save the current view/URL.  Optionally for single search, set as default
+ * Javascript for Data Pages: Save the current view/URL.
  * 
  */
 
@@ -30,16 +30,13 @@ export class SaveView_dataPages {
     //  Set in initialize
     private _projectSearchIds : Array<number>;
     private _experimentId : number;
-    private _enableSetDefault : boolean;
-    private _canSetDefault  : boolean;
-    private _userIsProjectOwner : boolean;
 
     //  set later
 
     private _modalOverlay : ModalOverlay;
 
 	/**
-	 * 
+	 *
 	 */
 	constructor() {
 
@@ -47,33 +44,27 @@ export class SaveView_dataPages {
 			throw Error("Nothing in _save_view_template_bundle.save_view__on_main_page_root");
 		}
         this._save_view__on_main_page_root_Template = _save_view_template_bundle.save_view__on_main_page_root;
-        
+
         if (!_save_view_template_bundle.save_view_overlay_contents) {
 			throw Error("Nothing in _save_view_template_bundle.save_view_overlay_contents");
 		}
         this._save_view_overlay_contents_Template = _save_view_template_bundle.save_view_overlay_contents;
-        
-        
+
+
     }
 
 	/**
-	 * 
+	 *
 	 */
-	public initialize({ projectSearchIds, experimentId, container_DOM_Element, enableSetDefault } : { 
-        
-        projectSearchIds : Array<number>, 
+	public initialize({ projectSearchIds, experimentId, container_DOM_Element } : {
+
+        projectSearchIds : Array<number>,
         experimentId? : number
-        container_DOM_Element : any, 
-        enableSetDefault : boolean 
+        container_DOM_Element : any,
     }) : void {
 
         this._projectSearchIds = projectSearchIds;
         this._experimentId = experimentId;
-
-        if ( enableSetDefault !== false ) {
-            //  this._enableSetDefault - Present to user the "Set Default" Checkbox and pass to server the value
-            this._enableSetDefault = true;  // Default to true if method param is undefined (not set)
-        }
 
         //  Populate Button for Save View
 
@@ -89,19 +80,6 @@ export class SaveView_dataPages {
                 console.log("Unable to initialize class SaveView_dataPages.  No DOM element with class 'selector_save_view_root_container'");
                 return;
             }
-        }
-
-        if ( ! this._enableSetDefault ) {
-            this._canSetDefault = false; // Override to false if param enableSetDefault is set to false
-        } else {
-            
-            //  Get is user Project Owner
-            const $page_auth_access_level_project_owner_allowed = $("#page_auth_access_level_project_owner_allowed");
-            if ( $page_auth_access_level_project_owner_allowed.length !== 0 ) {
-                this._userIsProjectOwner = true;
-            }
-
-            this._canSetDefault = this._userIsProjectOwner && this._projectSearchIds.length === 1;
         }
 
         const saveViewMainPageHTML = this._save_view__on_main_page_root_Template();
@@ -126,26 +104,19 @@ export class SaveView_dataPages {
 	 * @param container_DOM_Element - optional
 	 */
 	initializeFrom_SaveView_Component_React(
-        { projectSearchIds, experimentId, enableSetDefault } : 
-        { 
+        { projectSearchIds, experimentId } :
+        {
             projectSearchIds : Array<number>
             experimentId? : number
-            enableSetDefault : boolean 
         }
     ) : void {
 
         this._projectSearchIds = projectSearchIds;
         this._experimentId = experimentId;
-
-        if ( enableSetDefault !== false ) {
-            //  this._enableSetDefault - Present to user the "Set Default" Checkbox and pass to server the value
-            this._enableSetDefault = true;  // Default to true if method param is undefined (not set)
-        }
-
     }
 
 	/**
-	 * 
+	 *
 	 */
 	public saveView_MainPage_ButtonClicked_SaveView_Component_React() : void {
 
@@ -193,30 +164,6 @@ export class SaveView_dataPages {
 
         let overlay = new ModalOverlay( props );
 
-        //  Hack to make checkbox work since ModalOverlay is doing weird things.
-        if ( this._canSetDefault ) {
-            const $selector_save_view_as_default_checkbox = $contentDiv.find(".selector_save_view_as_default_checkbox");
-            if ( $selector_save_view_as_default_checkbox.length === 0 ) {
-                throw Error("No element with class 'selector_save_view_as_default_checkbox'");
-            }
-            $selector_save_view_as_default_checkbox.click( function(eventObject) {
-                try {
-                    eventObject.preventDefault();
-                    const $clickThis = $( this );
-                    const checkboxValue = $clickThis.prop( "checked" );
-                    window.setTimeout(() => {
-                        //  Hack to make checkbox work since ModalOverlay is doing weird things.
-                        //  Set checkbox to same value after timeout
-                        $clickThis.prop( "checked", checkboxValue );
-                    }, 1 );
-                    return false;
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-        }
-        
         const $selector_save_view_button = $contentDiv.find(".selector_save_view_button");
         if ( $selector_save_view_button.length === 0 ) {
         	throw Error("No element with class 'selector_save_view_button'");
@@ -240,7 +187,7 @@ export class SaveView_dataPages {
 	 */
     private _createModalOverlayContentDiv( {  } ) : any {
 
-    	let contentDivHTML = this._save_view_overlay_contents_Template( { canSetDefault : this._canSetDefault } );
+    	let contentDivHTML = this._save_view_overlay_contents_Template( { } );
     	let $contentDiv = $( contentDivHTML );
     	return $contentDiv;
     }
@@ -278,15 +225,6 @@ export class SaveView_dataPages {
             throw Error("No DOM element with class 'selector_save_view_overlay_root_container'");
         }
 
-        let setDefault = false;
-        if ( this._canSetDefault ) {
-            const $selector_save_view_as_default_checkbox = $selector_save_view_overlay_root_container.find(".selector_save_view_as_default_checkbox");
-            if ( $selector_save_view_as_default_checkbox.length === 0 ) {
-                throw Error("No element with class 'selector_save_view_as_default_checkbox'");
-            }
-            setDefault = $selector_save_view_as_default_checkbox.prop( "checked" );
-        }
-
         const $selector_save_view_label = $selector_save_view_overlay_root_container.find(".selector_save_view_label");
         if ( $selector_save_view_label.length === 0 ) {
             throw Error("No DOM element with class 'selector_save_view_label'");
@@ -317,7 +255,7 @@ export class SaveView_dataPages {
 		const pageStateString = pageStatePartsFromURL.pageStateString;
 		const referrer = pageStatePartsFromURL.referrer;
 
-        const promise__saveViewToServer = this._saveViewToServer({ viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds : this._projectSearchIds, experimentId : this._experimentId })
+        const promise__saveViewToServer = this._saveViewToServer({ viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds : this._projectSearchIds, experimentId : this._experimentId })
 
         promise__saveViewToServer.catch( () => {  });
 
@@ -334,7 +272,7 @@ export class SaveView_dataPages {
 	/**
      * Save the view to the server
 	 */
-	private _saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, setDefault, projectSearchIds, experimentId } ) : any {
+	private _saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds, experimentId } ) : any {
 
 		let promise = new Promise( function( resolve, reject ) {
             try {
@@ -344,8 +282,7 @@ export class SaveView_dataPages {
                         label : viewLabel,
                         pageControllerPath,
                         pageCurrentURL_StartAtPageController,
-                        searchDataLookupParametersCode,
-                        setDefault
+                        searchDataLookupParametersCode
                 };
 
                 const url = "d/rws/for-page/psb/insert-saved-view";

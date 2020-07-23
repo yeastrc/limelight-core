@@ -56,6 +56,7 @@ import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveVie
 
 //  From local dir
 import { ProteinViewPage_DisplayDataOnPage }  from './proteinViewPage_DisplayDataOnPage';
+import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 	
 //  From Testing
 	
@@ -70,7 +71,8 @@ export class ProteinViewPage_RootClass_Common {
 	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 
 	//  Comes from this._dataPages_LoggedInUser_CommonObjectsFactory  : DataPages_LoggedInUser_CommonObjectsFactory
-	private _saveView_dataPages : SaveView_dataPages; 
+	private _saveView_dataPages : SaveView_dataPages;
+	private _setDefaultView_dataPages : SetDefaultView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
 
 	//  Created or set in this class
 
@@ -100,6 +102,7 @@ export class ProteinViewPage_RootClass_Common {
 
 		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
 			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
+			this._setDefaultView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SetDefaultView_dataPages();
 		}
 
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
@@ -213,7 +216,11 @@ export class ProteinViewPage_RootClass_Common {
 		navigation_dataPages_Maint_Instance.initializePageOnLoad({ isManageNavigationOnPage : true, navigationChange_Callback : undefined, isSingleSearch, isMultipleSearches, isExperimentPage : false }); // Initialize
 
 		if ( this._saveView_dataPages ) {
-			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, enableSetDefault : undefined });
+			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, experimentId : undefined });
+		}
+		if ( isSingleSearch && this._setDefaultView_dataPages ) {
+			const projectSearchId = projectSearchIds[ 0 ]
+			this._setDefaultView_dataPages.initialize({ projectSearchId, container_DOM_Element : undefined, experimentId : undefined });
 		}
 
 		this._sharePage_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined });

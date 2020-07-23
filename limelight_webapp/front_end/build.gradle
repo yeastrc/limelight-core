@@ -112,7 +112,10 @@ task createHandlebarsOutputDirs {
   	  
   	  dirToCreate = rootDir + "save_view"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
+
+  	  dirToCreate = rootDir + "set_default_view"
+  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
+
   	  dirToCreate = rootDir + "share_page"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -253,6 +256,29 @@ task handlebarsPrecompile_save_view(type: NodeTask) {
   def precompile_Input_Directory = "handlebars_templates/save_view"
   def precompile_Output_File = "handlebars_templates_precompiled/save_view/save_view_template-bundle.js"
   
+  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
+  inputs.dir( precompile_Input_Directory )
+  outputs.file( precompile_Output_File )
+
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/handlebars/bin/handlebars')
+  } else {
+    script = project.file('node_modules/.bin/handlebars')
+  }
+  args = [ '--amd' , // parameters must be before file list
+  '--min',
+  '-f', precompile_Output_File,
+   precompile_Input_Directory
+   ]
+}
+
+//  Handlebars Precompile for input handlebars_templates/set_default_view
+task handlebarsPrecompile_set_default_view(type: NodeTask) {
+
+  def precompile_Input_Directory = "handlebars_templates/set_default_view"
+  def precompile_Output_File = "handlebars_templates_precompiled/set_default_view/set_default_view_template-bundle.js"
+
   // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
   inputs.dir( precompile_Input_Directory )
   outputs.file( precompile_Output_File )
@@ -787,6 +813,7 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_mod_view_page',
      'handlebarsPrecompile_common',
      'handlebarsPrecompile_save_view',
+     'handlebarsPrecompile_set_default_view',
      'handlebarsPrecompile_share_page',
      'handlebarsPrecompile_search_detail_section_main_page',
      'handlebarsPrecompile_search_detail_section_main_page_logged_in_users',

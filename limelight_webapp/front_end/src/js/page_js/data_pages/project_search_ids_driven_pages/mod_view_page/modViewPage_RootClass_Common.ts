@@ -44,6 +44,7 @@ import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveVie
 import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader';
 //  From local dir
 import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
+import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 
 //  From data_pages_common
 
@@ -54,6 +55,7 @@ export class ModViewPage_RootClass_Common {
 	
 	_dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 	_saveView_dataPages : SaveView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
+	private _setDefaultView_dataPages : SetDefaultView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
 
 	_page_UserDefault_processing : Page_UserDefault_processing;
 	_centralPageStateManager : CentralPageStateManager;
@@ -78,6 +80,7 @@ export class ModViewPage_RootClass_Common {
 
 		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
 			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
+			this._setDefaultView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SetDefaultView_dataPages();
 		}
 
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
@@ -164,7 +167,11 @@ export class ModViewPage_RootClass_Common {
 
 
 		if ( this._saveView_dataPages ) {
-			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, enableSetDefault : undefined });
+			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, experimentId : undefined });
+		}
+		if ( isSingleSearch && this._setDefaultView_dataPages ) {
+			const projectSearchId = projectSearchIds[ 0 ]
+			this._setDefaultView_dataPages.initialize({ projectSearchId, container_DOM_Element : undefined, experimentId : undefined });
 		}
 		
 		this._sharePage_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined });

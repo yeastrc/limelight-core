@@ -33,25 +33,6 @@ public interface DataPageSavedViewDAO_IF {
 	String getLabelById( int id ) throws SQLException;
 	
 	/**
-	 * Return the single_project_search_id__default_view for id
-	 * 
-	 * @param id
-	 * @return null if not found or field is null
-	 * @throws SQLException
-	 */
-	Integer get_SingleProjectSearchIdDefaultView_ById( int id ) throws SQLException;
-	
-
-	/**
-	 * Return the URL for project search id and controller path
-	 * 
-	 * @param projectSearchId
-	 * @return null if not found
-	 * @throws SQLException
-	 */
-	String getURL_ByProjectSearchIdControllerPath( int projectSearchId, String controllerPath ) throws SQLException;
-		
-	/**
 	 * @param item
 	 */
 	void save(DataPageSavedViewDTO item);
@@ -62,17 +43,6 @@ public interface DataPageSavedViewDAO_IF {
 	 */
 	void updateLabel( String label, int userId, int id );
 
-	/**
-	 * @param projectSearchId
-	 * @param id
-	 */
-	void updateSingleProjectSearchIdDefaultView(int projectSearchId, int userId, int id);
-
-	/**
-	 * @param projectSearchId
-	 */
-	void clearAllSingleProjectSearchIdDefaultView_ForProjectSearchId(int projectSearchId, String pageControllerPath);
-	
 	/**
 	 * @param id
 	 */

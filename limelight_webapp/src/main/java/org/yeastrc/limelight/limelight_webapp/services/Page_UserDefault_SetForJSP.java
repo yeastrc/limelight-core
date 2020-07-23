@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
-import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.DataPageDefaultViewProjectSearchPagesDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_ProjectSearchIds;
@@ -34,7 +34,7 @@ public class Page_UserDefault_SetForJSP implements Page_UserDefault_SetForJSP_IF
 	private static final Logger log = LoggerFactory.getLogger( Page_UserDefault_SetForJSP.class );
 	
 	@Autowired
-	private DataPageSavedViewDAO_IF dataPageSavedViewDAO;
+	private DataPageDefaultViewProjectSearchPagesDAO_IF dataPageDefaultViewProjectSearchPagesDAO;
 	
 	/**
 	 * @param controllerPath
@@ -93,7 +93,7 @@ public class Page_UserDefault_SetForJSP implements Page_UserDefault_SetForJSP_IF
 		
 		Integer projectSearchId = paramsForProjectSearchIdsList.get( 0 ).getProjectSearchId();
 		
-		String defaultURL = dataPageSavedViewDAO.getURL_ByProjectSearchIdControllerPath( projectSearchId, controllerPath );
+		String defaultURL = dataPageDefaultViewProjectSearchPagesDAO.getURL_ByProjectSearchIdControllerPath( projectSearchId, controllerPath );
 		
 		if ( StringUtils.isEmpty( defaultURL ) ) {
 

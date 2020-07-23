@@ -1,19 +1,18 @@
 package org.yeastrc.limelight.limelight_webapp.db_dto;
 
 /**
- * table data_page_saved_view_tbl
+ * table data_page_default_view_project_search_pages_tbl
  *
  */
-public class DataPageSavedViewDTO {
+public class DataPageDefaultViewExperimentPagesDTO {
 
 	private int id;
 	private int projectId;
 	private String pageControllerPath;
 	
-	private Integer experimentId;  // only for experiment
+	private Integer experimentIdDefaultView;  // only for experiment - Default View
+	private Integer singleProjectSearchIdDefaultView;
 	
-	
-	private String label;
 	private String urlStartAtPageControllerPath;
 	private String searchDataLookupParamsString;
 
@@ -31,6 +30,12 @@ public class DataPageSavedViewDTO {
 	}
 	public void setPageControllerPath(String pageControllerPath) {
 		this.pageControllerPath = pageControllerPath;
+	}
+	public Integer getSingleProjectSearchIdDefaultView() {
+		return singleProjectSearchIdDefaultView;
+	}
+	public void setSingleProjectSearchIdDefaultView(Integer singleProjectSearchIdDefaultView) {
+		this.singleProjectSearchIdDefaultView = singleProjectSearchIdDefaultView;
 	}
 	public int getUserIdCreated() {
 		return userIdCreated;
@@ -62,16 +67,10 @@ public class DataPageSavedViewDTO {
 	public void setProjectId(int projectId) {
 		this.projectId = projectId;
 	}
-	public String getLabel() {
-		return label;
+	public Integer getExperimentIdDefaultView() {
+		return experimentIdDefaultView;
 	}
-	public void setLabel(String label) {
-		this.label = label;
-	}
-	public Integer getExperimentId() {
-		return experimentId;
-	}
-	public void setExperimentId(Integer experimentId) {
-		this.experimentId = experimentId;
+	public void setExperimentIdDefaultView(Integer experimentIdDefaultView) {
+		this.experimentIdDefaultView = experimentIdDefaultView;
 	}
 }

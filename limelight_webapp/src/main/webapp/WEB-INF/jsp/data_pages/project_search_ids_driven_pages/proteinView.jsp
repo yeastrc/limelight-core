@@ -51,6 +51,8 @@
 	
 	<!-- Outer Container for Save View Button and other buttons  -->
 	<div >
+		<!--  Save As Default Button -->
+		<div class=" selector_set_default_view_root_container set-default-view-container " style="dislay: none;" ></div>
 		<!--  Save View Button -->
 		<div class=" selector_save_view_root_container save-view-root-container " ></div>
 		<!--  Share Page Button -->

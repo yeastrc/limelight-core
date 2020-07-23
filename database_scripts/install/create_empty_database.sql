@@ -1863,8 +1863,6 @@ CREATE TABLE  data_page_saved_view_tbl (
   project_id INT UNSIGNED NOT NULL,
   page_controller_path VARCHAR(80) NOT NULL,
   experiment_id INT UNSIGNED NULL COMMENT 'Only populated for Experiment',
-  experiment_id_default_view INT UNSIGNED NULL,
-  single_project_search_id__default_view INT UNSIGNED NULL,
   label VARCHAR(500) NULL,
   url_start_at_page_controller_path VARCHAR(6000) NOT NULL,
   srch_data_lkp_params_string VARCHAR(300) NOT NULL COMMENT '\'searchDataLookupParametersCode\'',
@@ -1887,7 +1885,7 @@ ENGINE = InnoDB;
 
 CREATE INDEX data_page_saved_view_project_id_idx ON data_page_saved_view_tbl (project_id ASC);
 
-CREATE INDEX sngle_prj_srch_id__dflt_vw__bs_cntrllr ON data_page_saved_view_tbl (single_project_search_id__default_view ASC, page_controller_path ASC);
+CREATE INDEX sngle_prj_srch_id__dflt_vw__bs_cntrllr ON data_page_saved_view_tbl (page_controller_path ASC);
 
 CREATE INDEX data_page_saved_view_experiment_id_idx ON data_page_saved_view_tbl (experiment_id ASC);
 
@@ -2044,6 +2042,58 @@ CREATE TABLE  url_shortener_associated_experiment_id_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX default_page_view_experiment_id_fk_idx ON url_shortener_associated_experiment_id_tbl (url_shortener_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table data_page_default_view_project_search_pages_tbl
+-- -----------------------------------------------------
+CREATE TABLE  data_page_default_view_project_search_pages_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_search_id INT UNSIGNED NOT NULL,
+  page_controller_path VARCHAR(80) NOT NULL,
+  url_start_at_page_controller_path VARCHAR(6000) NOT NULL,
+  srch_data_lkp_params_string VARCHAR(300) NOT NULL COMMENT '\'searchDataLookupParametersCode\'',
+  user_id_created_record INT UNSIGNED NOT NULL,
+  user_id_last_updated_record INT UNSIGNED NOT NULL,
+  date_record_created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  date_record_last_updated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_data_pg_dt_vw_prj_srch_pgs_ps_id
+    FOREIGN KEY (project_search_id)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_data_pg_dt_vw_prj_srch_pgs_ps_id_idx ON data_page_default_view_project_search_pages_tbl (project_search_id ASC);
+
+CREATE UNIQUE INDEX proj_srch_id_bs_cntrllr_unique ON data_page_default_view_project_search_pages_tbl (project_search_id ASC, page_controller_path ASC);
+
+
+-- -----------------------------------------------------
+-- Table data_page_default_view_experiment_pages_tbl
+-- -----------------------------------------------------
+CREATE TABLE  data_page_default_view_experiment_pages_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  experiment_id INT UNSIGNED NOT NULL,
+  page_controller_path VARCHAR(80) NOT NULL,
+  url_start_at_page_controller_path VARCHAR(6000) NOT NULL,
+  srch_data_lkp_params_string VARCHAR(300) NOT NULL COMMENT '\'searchDataLookupParametersCode\'',
+  user_id_created_record INT UNSIGNED NOT NULL,
+  user_id_last_updated_record INT UNSIGNED NOT NULL,
+  date_record_created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  date_record_last_updated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_data_page_dflt_vw_exp_pgs_tbl_exp_id
+    FOREIGN KEY (experiment_id)
+    REFERENCES experiment_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_data_page_dflt_vw_exp_pgs_tbl_exp_id_idx ON data_page_default_view_experiment_pages_tbl (experiment_id ASC);
+
+CREATE UNIQUE INDEX exp_id_bs_cntrllr_unique ON data_page_default_view_experiment_pages_tbl (experiment_id ASC, page_controller_path ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
