@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_importer.objects;
 
+import java.util.Set;
+
 import org.yeastrc.limelight.limelight_importer.process_input.BestPsmFilterableAnnotationProcessing;
 
 /**
@@ -24,8 +26,13 @@ import org.yeastrc.limelight.limelight_importer.process_input.BestPsmFilterableA
  *
  */
 public class PsmStatisticsAndBestValues {
+	
 	private int psmCountPassDefaultCutoffs = 0;
 	private BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing;
+	private Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions;
+	private Set<Integer> psmOpenModification_UniqueMassesRounded;
+	private long firstSavedPsmId = 0;
+	private long lastSavedPsmId = 0;
 	
 	public int getPsmCountPassDefaultCutoffs() {
 		return psmCountPassDefaultCutoffs;
@@ -42,5 +49,37 @@ public class PsmStatisticsAndBestValues {
 	public void setBestPsmFilterableAnnotationProcessing(
 			BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing) {
 		this.bestPsmFilterableAnnotationProcessing = bestPsmFilterableAnnotationProcessing;
+	}
+
+	public Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> getPsmOpenModification_UniquePositions() {
+		return psmOpenModification_UniquePositions;
+	}
+
+	public void setPsmOpenModification_UniquePositions(Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions) {
+		this.psmOpenModification_UniquePositions = psmOpenModification_UniquePositions;
+	}
+
+	public long getFirstSavedPsmId() {
+		return firstSavedPsmId;
+	}
+
+	public void setFirstSavedPsmId(long firstSavedPsmId) {
+		this.firstSavedPsmId = firstSavedPsmId;
+	}
+
+	public long getLastSavedPsmId() {
+		return lastSavedPsmId;
+	}
+
+	public void setLastSavedPsmId(long lastSavedPsmId) {
+		this.lastSavedPsmId = lastSavedPsmId;
+	}
+
+	public Set<Integer> getPsmOpenModification_UniqueMassesRounded() {
+		return psmOpenModification_UniqueMassesRounded;
+	}
+
+	public void setPsmOpenModification_UniqueMassesRounded(Set<Integer> psmOpenModification_UniqueMassesRounded) {
+		this.psmOpenModification_UniqueMassesRounded = psmOpenModification_UniqueMassesRounded;
 	}
 }

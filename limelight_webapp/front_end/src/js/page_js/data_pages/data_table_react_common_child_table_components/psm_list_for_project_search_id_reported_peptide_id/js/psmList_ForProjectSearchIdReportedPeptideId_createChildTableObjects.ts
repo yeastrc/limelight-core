@@ -72,13 +72,14 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
         try {
 
             const projectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchId
-            const psmIds = dataRow_GetChildTable_ReturnReactComponent_Parameter.psmIds;
+            const psmIds_Include = dataRow_GetChildTable_ReturnReactComponent_Parameter.psmIds_Include;
+            const psmIds_Exclude = dataRow_GetChildTable_ReturnReactComponent_Parameter.psmIds_Exclude;
             const reportedPeptideId = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideId;
             const searchDataLookupParamsRoot = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot;
             const dataPageStateManager = dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager;
             const alwaysShow_ReporterIonMasses_Column = dataRow_GetChildTable_ReturnReactComponent_Parameter.alwaysShow_ReporterIonMasses_Column;
 
-            const loadPromise = getPSMDataFromServer({ projectSearchId, psmIds, reportedPeptideId, searchDataLookupParamsRoot, dataPageStateManager, webserviceCallStandardPost_ApiObject_Holder_Class });
+            const loadPromise = getPSMDataFromServer({ projectSearchId, psmIds_Include, psmIds_Exclude, reportedPeptideId, searchDataLookupParamsRoot, dataPageStateManager, webserviceCallStandardPost_ApiObject_Holder_Class });
 
             loadPromise.catch( (reason) => { 
                 reject( reason ) 
@@ -161,7 +162,8 @@ const _create_DataTable_RootTableObject = function({
         psmAnnotationTypesForPsmListEntries_DisplayOrder,
         anyPsmsHave_precursor_M_Over_Z : get_DataTable_DataRowEntries_Result.anyPsmsHave_precursor_M_Over_Z,
         anyPsmsHave_retentionTime : get_DataTable_DataRowEntries_Result.anyPsmsHave_retentionTime,
-        anyPsmsHave_reporterIonMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_reporterIonMassesDisplay
+        anyPsmsHave_reporterIonMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_reporterIonMassesDisplay,
+        anyPsmsHave_openModificationMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_openModificationMassesDisplay
     });
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
@@ -200,7 +202,8 @@ const _getDataTableColumns = function({
     psmAnnotationTypesForPsmListEntries_DisplayOrder,
     anyPsmsHave_precursor_M_Over_Z,
     anyPsmsHave_retentionTime,
-    anyPsmsHave_reporterIonMassesDisplay
+    anyPsmsHave_reporterIonMassesDisplay,
+    anyPsmsHave_openModificationMassesDisplay
 
 } : { 
     
@@ -212,6 +215,7 @@ const _getDataTableColumns = function({
     anyPsmsHave_precursor_M_Over_Z? : boolean
     anyPsmsHave_retentionTime? : boolean
     anyPsmsHave_reporterIonMassesDisplay? : boolean
+    anyPsmsHave_openModificationMassesDisplay? : boolean
 
 }) : Array<DataTable_Column> {
 
@@ -329,6 +333,22 @@ const _getDataTableColumns = function({
         dataTable_Columns.push( dataTable_Column );
     }
 
+    if ( anyPsmsHave_openModificationMassesDisplay ) {
+        const dataTable_Column = new DataTable_Column({
+            id : "openModifications", // Used for tracking sort order. Keep short
+            displayName : "Open Modifications",
+            width : 65,
+            sortable : true,
+            style_override_DataRowCell_React : { fontSize: 12 },
+            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+            // style_override_header_React : {},  // Optional
+            // style_override_React : {},  // Optional
+            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
+            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+        });
+        dataTable_Columns.push( dataTable_Column );
+    }
+
     for ( const annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
 
         const dataTable_Column = new DataTable_Column({
@@ -353,6 +373,7 @@ interface Get_DataTable_DataRowEntries_Result {
     anyPsmsHave_precursor_M_Over_Z? : boolean
     anyPsmsHave_retentionTime? : boolean
     anyPsmsHave_reporterIonMassesDisplay? : boolean
+    anyPsmsHave_openModificationMassesDisplay? : boolean
 }
 
 /**
@@ -395,6 +416,7 @@ const _get_DataTable_DataRowEntries = function({
     let anyPsmsHave_precursor_M_Over_Z : boolean = false; 
     let anyPsmsHave_retentionTime : boolean = false;
     let anyPsmsHave_reporterIonMassesDisplay : boolean = false;
+    let anyPsmsHave_openModificationMassesDisplay = false;
 
     for ( const psmListItem of psmList ) {
 
@@ -406,6 +428,9 @@ const _get_DataTable_DataRowEntries = function({
         }
         if ( psmListItem.reporterIonMassList ) {
             anyPsmsHave_reporterIonMassesDisplay = true;
+        }
+        if ( psmListItem.openModificationMassList ) {
+            anyPsmsHave_openModificationMassesDisplay = true;
         }
     }
 
@@ -495,7 +520,24 @@ const _get_DataTable_DataRowEntries = function({
             })
             columnEntries.push( columnEntry );
         }
-        
+
+        if ( anyPsmsHave_openModificationMassesDisplay ) {
+            let valueDisplay = "";
+            let valueSort = "";
+            if ( psmListItem.openModificationMassList ) {
+                const openModificationMassAsString_List = [];
+                for ( const openModificationMass of psmListItem.openModificationMassList ) {
+                    const openModificationMass_String = openModificationMass.toString();
+                    openModificationMassAsString_List.push( openModificationMass_String );
+                }
+                valueDisplay = openModificationMassAsString_List.join(", ");
+            }
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                valueDisplay,
+                valueSort
+            })
+            columnEntries.push( columnEntry );
+        }
         //  Put PSM annotations into a list for display matching table headers
 
         // let psmAnnotationDisplayEntries = [];
@@ -530,7 +572,8 @@ const _get_DataTable_DataRowEntries = function({
         dataTable_DataRowEntries,
         anyPsmsHave_precursor_M_Over_Z,
         anyPsmsHave_retentionTime,
-        anyPsmsHave_reporterIonMassesDisplay
+        anyPsmsHave_reporterIonMassesDisplay,
+        anyPsmsHave_openModificationMassesDisplay
     }
 }
 

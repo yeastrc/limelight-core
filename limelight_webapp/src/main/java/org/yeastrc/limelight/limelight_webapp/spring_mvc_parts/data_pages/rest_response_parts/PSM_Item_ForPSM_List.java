@@ -39,8 +39,10 @@ public class PSM_Item_ForPSM_List {
 	private Double precursor_M_Over_Z;
 	
 	private List<BigDecimal> reporterIonMassList;
+	private List<Double> openModificationMassList;
 	
 	private boolean hasReporterIons;
+	private boolean hasOpenModifications;
 	
 	private Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap;
 	
@@ -103,6 +105,18 @@ public class PSM_Item_ForPSM_List {
 	}
 	public void setReporterIonMassList(List<BigDecimal> reporterIonMassList) {
 		this.reporterIonMassList = reporterIonMassList;
+	}
+	public boolean isHasOpenModifications() {
+		return hasOpenModifications;
+	}
+	public void setHasOpenModifications(boolean hasOpenModifications) {
+		this.hasOpenModifications = hasOpenModifications;
+	}
+	public List<Double> getOpenModificationMassList() {
+		return openModificationMassList;
+	}
+	public void setOpenModificationMassList(List<Double> openModificationMassList) {
+		this.openModificationMassList = openModificationMassList;
 	}
 	
 

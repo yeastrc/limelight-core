@@ -28,7 +28,8 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
     reportedPeptideId : number
     searchDataLookupParamsRoot
     dataPageStateManager : DataPageStateManager
-    psmIds? : Array<number>
+    psmIds_Include : ReadonlySet<number> // Optional
+    psmIds_Exclude : ReadonlySet<number> // Optional
     alwaysShow_ReporterIonMasses_Column? : boolean
 
     /**
@@ -40,21 +41,24 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
         reportedPeptideId,
         searchDataLookupParamsRoot,
         dataPageStateManager,
-        psmIds
+        psmIds_Include,
+        psmIds_Exclude
 
     } : { 
         projectSearchId : number
         reportedPeptideId : number
         searchDataLookupParamsRoot
         dataPageStateManager : DataPageStateManager
-        psmIds? : Array<number> // Optional
+        psmIds_Include? : ReadonlySet<number> // Optional
+        psmIds_Exclude? : ReadonlySet<number> // Optional
     }) {
 
         this.projectSearchId = projectSearchId;
         this.reportedPeptideId = reportedPeptideId;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
         this.dataPageStateManager = dataPageStateManager;
-        this.psmIds = psmIds;
+        this.psmIds_Include = psmIds_Include;
+        this.psmIds_Exclude = psmIds_Exclude;
     }
 
 

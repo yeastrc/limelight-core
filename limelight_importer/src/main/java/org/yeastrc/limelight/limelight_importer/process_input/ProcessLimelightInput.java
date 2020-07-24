@@ -30,6 +30,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinForPepti
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinsForPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabels;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchDAO;
@@ -41,7 +42,6 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInte
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
-import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.post_insert_search_processing.PerformPostInsertSearchProcessing;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles;
@@ -142,6 +142,7 @@ public class ProcessLimelightInput {
 			}
 				
 			searchDTO.setHasIsotopeLabel( peptideContainsIsotopeLabel( limelightInput ) );
+			searchDTO.setAnyPsmHasOpenModificationMasses( peptideContainsPSMWithOpenModificationMass( limelightInput ) );
 			searchDTO.setReportedPeptideMatchedProteinMappingProvided( reportedPeptides_Any_Contain_MatchedProteinForPeptide( limelightInput ) );
 				
 			SearchDAO.getInstance().saveToDatabase( searchDTO );
@@ -332,7 +333,7 @@ public class ProcessLimelightInput {
 		
 		return false;
 	}
-	
+		
 	/**
 	 * @param reportedPeptide
 	 * @throws LimelightImporterDataException
@@ -351,6 +352,37 @@ public class ProcessLimelightInput {
 		return false;
 	}
 
+	/**
+	 * At least one "reported_peptide" contains "psm" that contains "peptide_open_modification"
+	 * @param limelightInput
+	 * @throws LimelightImporterDataException for data errors
+	 */
+	private boolean peptideContainsPSMWithOpenModificationMass( LimelightInput limelightInput ) throws LimelightImporterDataException {
+		
+		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
+		if ( reportedPeptides != null ) {
+			List<ReportedPeptide> reportedPeptideList =
+					reportedPeptides.getReportedPeptide();
+			if ( reportedPeptideList != null && ( ! reportedPeptideList.isEmpty() ) ) {
+				for ( ReportedPeptide reportedPeptide : reportedPeptideList ) {
+					
+					if ( reportedPeptide.getPsms() != null && ( ! ( reportedPeptide.getPsms().getPsm().isEmpty() ) ) ) {
+						
+						for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
+							
+							if ( psm.getPsmOpenModification() != null && psm.getPsmOpenModification().getMass() != null )
+								//  This PSM contains "psm_open_modification"
+								 //  May also be PSMs that do NOT have Open Modifications
+								return true;  //  EARLY RETURN 
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * All "reported_peptide" contains "matched_protein_for_peptide"
 	 * @param limelightInput

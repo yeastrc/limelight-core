@@ -22,6 +22,10 @@ import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptid
 
 //  React Component that will be returned
 import { SearchesForCondtionForSinglePeptide_ChildReactComponent } from '../jsx/searchesForConditionForSinglePeptide_ChildReactComponent';
+import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 
 
 
@@ -32,8 +36,8 @@ class SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactCom
     
     createReportedPeptideDisplayData_Result_Entry_ForParentRow : CreateReportedPeptideDisplayData_Result_Entry
     projectSearchIds : Array<number>
-    reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
-    reporterIonMassesSelected : Set<number>
+    reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     searchDataLookupParamsRoot
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -46,18 +50,18 @@ class SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactCom
         
         createReportedPeptideDisplayData_Result_Entry_ForParentRow,
         projectSearchIds,
-        reportedPeptideIdsMap_KeyProjectSearchId,
-        reporterIonMassesSelected,
+        reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId,  //  The Reported Peptide Ids Associated with Parent Peptide
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
         searchDataLookupParamsRoot,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         loadedDataCommonHolder,
         dataPageStateManager 
     } : { 
         createReportedPeptideDisplayData_Result_Entry_ForParentRow : CreateReportedPeptideDisplayData_Result_Entry
-        projectSearchIds : Array<number>,
-        reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
-        reporterIonMassesSelected : Set<number>
-        searchDataLookupParamsRoot
+        projectSearchIds : Array<number>
+        reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
         dataPageStateManager : DataPageStateManager
@@ -65,8 +69,8 @@ class SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactCom
 
         this.createReportedPeptideDisplayData_Result_Entry_ForParentRow = createReportedPeptideDisplayData_Result_Entry_ForParentRow;
         this.projectSearchIds = projectSearchIds;
-        this.reportedPeptideIdsMap_KeyProjectSearchId = reportedPeptideIdsMap_KeyProjectSearchId;
-        this.reporterIonMassesSelected = reporterIonMassesSelected;
+        this.reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId = reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId;
+        this.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
         this.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
         this.loadedDataCommonHolder = loadedDataCommonHolder;

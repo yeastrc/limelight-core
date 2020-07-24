@@ -8,9 +8,9 @@ import React from 'react'
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 
-import { 
+import {
     DataTable_TableOptions, DataTable_TableOptions_dataRow_GetChildTableData_RequestParm, DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-    DataTable_Column, DataTable_DataRowEntry, DataTable_RootTableObject 
+    DataTable_Column, DataTable_DataRowEntry, DataTable_RootTableObject, DataTable_RootTableDataObject, DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_TableRoot } from './dataTable_TableRoot_React';
@@ -27,6 +27,7 @@ export interface DataTable_Table_DataRow_Props {
     dataObject : DataTable_DataRowEntry
     tableOptions : DataTable_TableOptions
     columns : Array<DataTable_Column>
+    dataTable_RootTableDataObject : DataTable_RootTableDataObject
     isLastRow : boolean
 }
 
@@ -56,6 +57,8 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
     private _row_onClick_BindThis = this._row_onClick.bind(this);
 
+    private readonly _row_OfTable_Ref :  React.RefObject<HTMLTableRowElement>
+
     private _displayChildTable = false;  //  Primary is instance property.  Copied to state property displayChildTable
 
 
@@ -66,6 +69,8 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         super(props);
 
         // this.rowDivRef = React.createRef();
+
+        this._row_OfTable_Ref = React.createRef();
 
         this.state = {
             displayChildTable : false
@@ -179,7 +184,24 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
             if ( this.props.tableOptions.dataRowClickHandler ) {
 
-                this.props.tableOptions.dataRowClickHandler({ event, tableRowClickHandlerParameter : this.props.dataObject.tableRowClickHandlerParameter }); 
+                const targetDOMElement_domRect = this._row_OfTable_Ref.current.getBoundingClientRect();
+
+                /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
+
+                const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
+                const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
+                const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
+                const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+
+                const rowDOM_Rect : DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect = {
+                    left : targetDOMElement_domRect_Left,
+                    right : targetDOMElement_domRect_Right,
+                    top : targetDOMElement_domRect_Top,
+                    bottom : targetDOMElement_domRect_Bottom
+                }
+
+
+                this.props.tableOptions.dataRowClickHandler({ event, rowDOM_Rect, tableRowClickHandlerParameter : this.props.dataObject.tableRowClickHandlerParameter });
             } 
 
             if ( this.props.tableOptions.dataRow_GetChildTableData ) {
@@ -281,38 +303,35 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         // console.log("DataTable_Table_DataRow: render")
 
 
-        if ( this.props.tableOptions.dataRow_GetChildTableData && ( ! this.props.dataObject.dataRow_GetChildTableDataParameter ) ) {
-            const msg = "tableOptions.dataRow_GetChildTableData populated but dataObject.dataRow_GetChildTableDataParameter is not populated"   
-            console.warn( msg );
-            throw Error( msg );
+        if (this.props.tableOptions.dataRow_GetChildTableData && (!this.props.dataObject.dataRow_GetChildTableDataParameter)) {
+            const msg = "tableOptions.dataRow_GetChildTableData populated but dataObject.dataRow_GetChildTableDataParameter is not populated"
+            console.warn(msg);
+            throw Error(msg);
         }
 
-        if ( this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent && ( ! this.props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter ) ) {
-            const msg = "tableOptions.dataRow_GetChildTable_ReturnReactComponent populated but dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter is not populated"   
-            console.warn( msg );
-            throw Error( msg );
+        if (this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent && (!this.props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter)) {
+            const msg = "tableOptions.dataRow_GetChildTable_ReturnReactComponent populated but dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter is not populated"
+            console.warn(msg);
+            throw Error(msg);
         }
-
 
 
         let className_Row_classNameClickable = " ";
 
-        if ( this.props.tableOptions.dataRowClickHandler || this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
-            className_Row_classNameClickable = " clickable " 
+        if (this.props.tableOptions.dataRowClickHandler || this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent) {
+            className_Row_classNameClickable = " clickable "
         }
-
 
 
         let className_innerContainingDiv_HighlightRow = "";
 
-        if ( this.props.dataObject.highlightRow ) {
-            className_innerContainingDiv_HighlightRow = " table-row-highlight ";
+        if (this.props.dataObject.highlightRowWithBackgroundColor) {
+            className_innerContainingDiv_HighlightRow = " table-row-highlight-with-background-color ";
         }
 
 
-
-        const className_Row = ( 
-            " data-table-data-row  table-row-hovered-highlight   " 
+        const className_Row = (
+            " data-table-data-row  table-row-hovered-highlight   "
             + className_Row_classNameClickable
             + className_innerContainingDiv_HighlightRow
         );
@@ -333,7 +352,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         let rowClickHandler = undefined;
 
-        if ( this.props.tableOptions.dataRowClickHandler || this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
+        if (this.props.tableOptions.dataRowClickHandler || this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent) {
 
             rowClickHandler = this._row_onClick_BindThis;
         }
@@ -341,19 +360,19 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         let childTableShowHideIcon = undefined;
 
-        if ( this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
+        if (this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent) {
 
-            if ( this.state.displayChildTable ) {
+            if (this.state.displayChildTable) {
 
                 childTableShowHideIcon = (
                     <div className=" child-table-show-hide-icon-container ">
-                        <img src="static/images/pointer-down.png" className=" clickable child-table-show-hide-icon " onClick={ rowClickHandler }/>
+                        <img src="static/images/pointer-down.png" className=" clickable child-table-show-hide-icon " onClick={rowClickHandler}/>
                     </div>
                 );
             } else {
                 childTableShowHideIcon = (
                     <div className=" child-table-show-hide-icon-container ">
-                        <img src="static/images/pointer-right.png" className=" clickable child-table-show-hide-icon " onClick={ rowClickHandler }/>
+                        <img src="static/images/pointer-right.png" className=" clickable child-table-show-hide-icon " onClick={rowClickHandler}/>
                     </div>
                 );
             }
@@ -363,23 +382,23 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         {
             let childTable = undefined;
 
-            if ( this.state.childDataTable_RootTableObject ) {
+            if (this.state.childDataTable_RootTableObject) {
 
                 childTable = (
-                    
-                    <DataTable_TableRoot 
-                        tableObject={ this.state.childDataTable_RootTableObject }
+
+                    <DataTable_TableRoot
+                        tableObject={this.state.childDataTable_RootTableObject}
                     />
                 );
 
-            } else if ( this.state.childDataTable_ReactComponent ) {
+            } else if (this.state.childDataTable_ReactComponent) {
 
                 //  Cast to any since would not compile without it.  Probably a way to make this work but for now:
-                let Component : any = this.state.childDataTable_ReactComponent as any //  as ChildTable;  // Make First letter capital for JSX
+                let Component: any = this.state.childDataTable_ReactComponent as any //  as ChildTable;  // Make First letter capital for JSX
 
                 childTable = (
-                    <Component 
-                        dataRow_GetChildTable_ReturnReactComponent_Parameter={ this.state.dataRow_GetChildTable_ReturnReactComponent_Parameter }
+                    <Component
+                        dataRow_GetChildTable_ReturnReactComponent_Parameter={this.state.dataRow_GetChildTable_ReturnReactComponent_Parameter}
                         // key={ this.state.dataRow_GetChildTable_ReturnReactComponent_Parameter }  // key={...} is required
                     />
                     // !!!! Adding key={...} failed to cause <Component> to unmount when this.state.dataRow_GetChildTable_ReturnReactComponent_Parameter
@@ -391,26 +410,26 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     // This is a simpler lifecycle for <Component> than having to deal with a change to the prop dataRow_GetChildTable_ReturnReactComponent_Parameter
                 );
             }
-            if ( childTable ) {
+            if (childTable) {
 
                 const containerStyle = {} as React.CSSProperties;
 
-                if ( ! this.state.displayChildTable ) {
+                if (!this.state.displayChildTable) {
                     containerStyle.display = "none";
                 }
 
                 let classNameAddition = "";
 
-                if ( ! this.props.isLastRow ) {
+                if (!this.props.isLastRow) {
                     classNameAddition = " child-data-table-container-not-last-parent-row ";
                 }
 
                 const className = " child-data-table-container " + classNameAddition;
 
                 childTableAndContainer = (
-                    
-                    <div style={ containerStyle } className={ className }>
-                        { childTable }
+
+                    <div style={containerStyle} className={className}>
+                        {childTable}
                     </div>
 
                 )
@@ -419,84 +438,116 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         //  Create Components for columns
 
-        const columnComponents = ( 
-            this.props.dataObject.columnEntries.map( (dataObject_columnEntry, index) => {
+        const columnComponents = (
+            this.props.dataObject.columnEntries.map((dataObject_columnEntry, index) => {
 
-                const column = this.props.columns[ index ];
+                const column = this.props.columns[index];
 
-                if ( ! column ) {
+                if (!column) {
                     const msg = "DataTable_Table_DataRowEntry: No column for index: " + index;
-                    console.warn( msg );
-                    throw Error( msg );
+                    console.warn(msg);
+                    throw Error(msg);
                 }
 
-                if ( column.cellMgmt_External ) {
+                if (column.cellMgmt_External) {
 
                     return (
-                        <DataTable_Table_DataRowEntry_External_Cell_Mgmt_React 
-                            column={ column }
+                        <DataTable_Table_DataRowEntry_External_Cell_Mgmt_React
+                            column={column}
                             // dataObject={ this.props.dataObject }
-                            dataObject_columnEntry={ dataObject_columnEntry } 
+                            dataObject_columnEntry={dataObject_columnEntry}
                             // index={ index }
-                            key={ index } 
+                            key={index}
                         />
                     );
                 }
 
-                if ( column.cellMgmt_ExternalReactComponent ) {
+                if (column.cellMgmt_ExternalReactComponent) {
 
                     return (
-                        <DataTable_Table_DataRowEntry_External_ReactComponent 
-                            column={ column }
+                        <DataTable_Table_DataRowEntry_External_ReactComponent
+                            column={column}
                             // dataObject={ this.props.dataObject }
-                            dataObject_columnEntry={ dataObject_columnEntry } 
+                            dataObject_columnEntry={dataObject_columnEntry}
                             // index={ index }
-                            key={ index } 
+                            key={index}
                         />
                     );
                 }
 
                 return (
-                    <DataTable_Table_DataRowEntry 
-                        column={ column }
+                    <DataTable_Table_DataRowEntry
+                        column={column}
                         // dataObject={ this.props.dataObject }
-                        dataObject_columnEntry={ dataObject_columnEntry } 
+                        dataObject_columnEntry={dataObject_columnEntry}
                         // index={ index }
-                        key={ index } 
+                        key={index}
                     />
                 );
             })
         );
 
-        let className_innerContainingDiv_GreyOut = "";
+        let className_outerContainingDiv : string = undefined
 
-        if ( this.props.dataObject.greyOutRow ) {
-            className_innerContainingDiv_GreyOut = " grey-out-row ";
+        {
+            let className_outerContainingDiv_Border = "";
+
+            if (this.props.dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder) {
+
+                if ( this.props.dataObject.highlightRowWithBorderSolid || this.props.dataObject.highlightRowWithBorderDash ) {
+                    className_outerContainingDiv_Border = " row-border-padding ";
+                } else {
+                    className_outerContainingDiv_Border = " row-border-place-holder ";
+                }
+            }
+
+            className_outerContainingDiv = " data-table-data-rows-outer-containing-div " + className_outerContainingDiv_Border
         }
 
+        let className_innerContainingDiv : string = undefined
 
-        // let className_innerContainingDiv_HighlightRow = "";
-        //
-        // if ( this.props.dataObject.highlightRow ) {
-        //     className_innerContainingDiv_HighlightRow = " table-row-highlight ";
-        // }
+        {
+            let className_innerContainingDiv_GreyOut = "";
 
-        let className_innerContainingDiv_row_CSS_Additions = "";
+            if (this.props.dataObject.greyOutRow) {
+                className_innerContainingDiv_GreyOut = " grey-out-row ";
+            }
 
-        if ( this.props.dataObject.row_CSS_Additions ) {
-            className_innerContainingDiv_row_CSS_Additions = this.props.dataObject.row_CSS_Additions;
+            let className_innerContainingDiv_Border = "";
+
+            if (this.props.dataObject.highlightRowWithBorderSolid) {
+                className_innerContainingDiv_Border = " row-border row-border-style-solid ";
+
+            } else if (this.props.dataObject.highlightRowWithBorderDash) {
+                className_innerContainingDiv_Border = " row-border row-border-style-dashed ";
+            }
+
+            let className_innerContainingDiv_row_CSS_Additions = "";
+
+            if (this.props.dataObject.row_CSS_Additions) {
+                className_innerContainingDiv_row_CSS_Additions = this.props.dataObject.row_CSS_Additions;
+            }
+
+            className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut + className_innerContainingDiv_HighlightRow +
+                className_innerContainingDiv_Border +
+                className_innerContainingDiv_row_CSS_Additions;
         }
 
-        const className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut + className_innerContainingDiv_HighlightRow + className_innerContainingDiv_row_CSS_Additions;
+        let styleOverrides_innerContainingDiv : React.CSSProperties = undefined
+
+        if ( this.props.dataObject.styleOverrides_innerContainingDiv ) {
+            styleOverrides_innerContainingDiv = this.props.dataObject.styleOverrides_innerContainingDiv;
+        }
+
 
         return (
             <React.Fragment>
 
-                <div className=" data-table-data-rows-outer-containing-div ">
+                <div className={ className_outerContainingDiv }>
 
                     { childTableShowHideIcon }
 
-                    <div className={ className_innerContainingDiv }>
+                    <div className={ className_innerContainingDiv } style={ styleOverrides_innerContainingDiv }>
                         
                         <table className=" data-table-data-rows-table ">
                             <tbody>
@@ -505,7 +556,8 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                                     style={ { position: "relative" } } 
                                     className={ className_Row } 
                                     onClick={ rowClickHandler }
-                                    data-id={ this.props.dataObject.uniqueId }
+                                    ref={ this._row_OfTable_Ref }
+                                    // data-id={ this.props.dataObject.uniqueId }
                                 >
 
                                     {/* Render columns */}

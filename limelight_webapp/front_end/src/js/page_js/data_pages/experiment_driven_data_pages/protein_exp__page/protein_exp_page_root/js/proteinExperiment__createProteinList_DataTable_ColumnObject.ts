@@ -51,7 +51,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
         //  Elements for each row must be in the same order as in this array
 
         {
-            const column: DataTable_Column = {
+            const column = new DataTable_Column({
                 id: 'protName', //  Short string that is unique for each column
                 displayName: 'Protein(s)',
                 sortable: true, // Will sort using Javascript < > on the 'value' property
@@ -61,13 +61,13 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 style_override_DataRowCell_React: {whiteSpace: "nowrap", overflowX: "auto", fontSize: "12px"}, // React format Style overrides
                 style_override_HeaderRowCell_React: {fontSize: "12px"}, //  React format Style Overrides for Header Row Cells
                 // css_class : ' clickable ' // + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' '
-            };
+            });
 
             columns.push(column);
         }
 
         {
-            const column: DataTable_Column = {
+            const column = new DataTable_Column({
                 id: 'protDesc', //  Short string that is unique for each column
                 displayName: 'Protein Descripton(s)',
                 sortable: true, // Will sort using Javascript < > on the 'value' property
@@ -82,7 +82,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 }, // React format Style overrides
                 style_override_HeaderRowCell_React: {fontSize: "12px"}, //  React format Style Overrides for Header Row Cells
                 // css_class : ' clickable ' // + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' '
-            };
+            });
 
             columns.push(column);
         }
@@ -94,7 +94,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
         //         throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
         //     }
 
-        //     const column = {
+        //     const column = new DataTable_Column({
         //         id : 'nmPsm_' + projectSearchId, //  Short string that is unique for each column
         //         displayName :  'PSMs (' + searchNameObject.searchId + ")" ,
         //         sortable: true, // Will sort using Javascript < > on the 'value' property
@@ -102,7 +102,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
         //         style_override_React : { fontSize: "12px" }, // React format Style overrides
         //         style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
         //         // css_class : ' clickable '
-        //     };
+        //     });
 
         //     columns.push( column );
         // }
@@ -111,7 +111,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
 
             const condition = condition_with_its_project_search_ids.condition;
 
-            const column: DataTable_Column = {
+            const column = new DataTable_Column({
                 id: 'condition_' + condition.id, //  Short string that is unique for each column
                 displayName: "PSMs (" + condition.label + ")",
                 sortable: true, // Will sort using Javascript < > on the 'value' property
@@ -120,13 +120,13 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 style_override_DataRowCell_React: {fontSize: "12px"}, // React format Style overrides
                 style_override_HeaderRowCell_React: {fontSize: "12px"}, //  React format Style Overrides for Header Row Cells
                 // css_class : ' clickable '
-            };
+            });
 
             columns.push(column);
         }
 
         if (conditions_for_condition_group_with_their_project_search_ids.length > 0) {
-            const column: DataTable_Column = {
+            const column = new DataTable_Column({
                 id: 'extFun', //  Short string that is unique for each column
                 displayName: 'PSMs per Condition',
                 // sortable: true, // Will sort using Javascript < > on the 'value' property
@@ -148,13 +148,13 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                     //  Function called to populate the DOM element on DOM element Mount (React calls componentDidMount())
                     populateCellDOMObject_Initial: this._PSMs_per_Condition_populateCellDOMObject_Initial_BindThis
                 }
-            };
+            });
 
             columns.push(column);
         }
 
         // if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
-        //     const column : DataTable_Column = {
+        //     const column = new DataTable_Column({
         //         id : 'extFun', //  Short string that is unique for each column
         //         displayName :  'PSMs per Condition - React Component - Only Up to 3 Conditions For Initial Testing',
         //         // sortable: true, // Will sort using Javascript < > on the 'value' property
@@ -171,7 +171,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
         //             //  React component to embed inside the <div> for the cell
         //             reactComponent : ProteinExperimentPage_PSMs_Per_Condition_Component
         //         }
-        //     };
+        //     });
 
         //     columns.push( column );
         // }

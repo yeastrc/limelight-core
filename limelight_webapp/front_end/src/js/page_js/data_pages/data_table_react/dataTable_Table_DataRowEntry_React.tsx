@@ -101,16 +101,6 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       const column = this.props.column;
 
-      let classesAdditions = "";
-      if ( column.cssClassNameAdditions_DataRowCell ) {
-        classesAdditions = "  " + column.cssClassNameAdditions_DataRowCell;
-      }
-
-      const className = ( "data-table-data-cell data-table-cell " // 'data-table-cell' not in CSS file
-          // + column.id
-          + classesAdditions
-      );
-
       const styleContainerDiv : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
 
 
@@ -204,13 +194,13 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       return (
           <td 
-              className={ className }
+              className={ " data-table-data-cell data-table-cell " }
               // data-index={ index }
               // data-value={ valueDisplay }
               >
                 {/* Removed since property not set: data-row-id={ columnEntry.uniqueId } */}
 
-            <div style={ styleContainerDiv } title={ tooltipText }>
+            <div style={ styleContainerDiv } className={ column.cssClassNameAdditions_DataRowCell } title={ tooltipText } >
               { horizontalGraph }
               { horizontalGraph_SpaceAfter }
               <span className=" table-data-cell-property-value ">{ valueDisplay }</span>

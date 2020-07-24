@@ -9,6 +9,7 @@
  */
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 
 /**
  * Get coverageArrayOfBoolean for Protein Sequence Coverage for the Reported Peptide Ids for Display
@@ -16,12 +17,12 @@ import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data
  */
 export const getSequenceCoverageBooleanArray_ForReportedPeptideIds = function({ 
     
-    reportedPeptideIdsForDisplay_Map_KeyProjectSearchId,
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
     proteinSequenceVersionId,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     projectSearchIds
-} : { 
-    reportedPeptideIdsForDisplay_Map_KeyProjectSearchId : Map<number, Array<number>>,
+} : {
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     projectSearchIds : Array<number>
@@ -35,12 +36,14 @@ export const getSequenceCoverageBooleanArray_ForReportedPeptideIds = function({
 
     for ( const projectSearchId of projectSearchIds ) {
 
-        const reportedPeptideIdsForDisplay = reportedPeptideIdsForDisplay_Map_KeyProjectSearchId.get( projectSearchId );
+        const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId );
 
-        if ( ! reportedPeptideIdsForDisplay ) {
-            // No reportedPeptideIdsForDisplay for this projectSearchId so skip to next projectSearchId
+        if ( ! reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId ) {
+            // No reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId for this projectSearchId so skip to next projectSearchId
             continue; //  EARLY CONTINUE
         }
+
+        const reportedPeptideIdsForDisplay = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds()
 
         const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
 
@@ -67,7 +70,7 @@ const process_ProteinSequenceCoverage_Matching_ReportedPeptideIdsForDisplay = fu
     proteinSequenceVersionId,
     coverageArrayOfBoolean  //  Updated in this function
 } : { 
-    reportedPeptideIds : Array<number>, 
+    reportedPeptideIds : ReadonlySet<number>,
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
     proteinSequenceVersionId : number,
     coverageArrayOfBoolean : Array<boolean>

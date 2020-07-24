@@ -25,49 +25,29 @@ import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 
 import {
-
-    DataTable_ColumnId,
-
     DataTable_RootTableObject,
-    
-    DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    
-    DataTable_Column,
-    DataTable_SortColumnsInfoEntry,
-
-    DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
-    DataTable_DataRowEntry,
-    DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
-
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 
-import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from '../js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
+import { Create_GeneratedReportedPeptideListData_Result } from '../js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
 import { createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection, GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData';
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 
 /**
  * 
  */
 export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_Props {
 
-    create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_Result;  //  For dispaying the peptide list in sub component
+    create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_Result;  //  For displaying the peptide list in sub component
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     conditionGroupsDataContainer : ConditionGroupsDataContainer;
 
-    reporterIonMassesSelected : Set<number>, 
-    staticModificationMassesToFilterOn, 
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
     searchDataLookupParamsRoot,
@@ -100,7 +80,7 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
         super(props);
 
         this.state = { 
-            // prev_reportedPeptideIdsForDisplay_Map_KeyProjectSearchId : this.props.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId 
+            // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId : this.props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId
         };
     }
 
@@ -118,13 +98,13 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
 
     //     //    Return new state (like return from setState(callback)) or null
 
-    //     if ( props.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId !== state.prev_reportedPeptideIdsForDisplay_Map_KeyProjectSearchId ) {
+    //     if ( props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId !== state.prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId ) {
 
-    //         //   reportedPeptideIdsForDisplay_Map_KeyProjectSearchId changed so update showUpdatingMessage
+    //         //   reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId changed so update showUpdatingMessage
             
     //         return { 
     //             showUpdatingMessage : true, 
-    //             prev_reportedPeptideIdsForDisplay_Map_KeyProjectSearchId : props.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId 
+    //             prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId : props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId
     //         };
     //     }
             
@@ -136,7 +116,7 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
     //  */
     // shouldComponentUpdate(nextProps : ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_Props, nextState : ProteinExperimentPage_SingleProtein_ReportedPeptideListSection_Component_State ) {
 
-    //     // console.log("ModificationMass_UserSelections_VariableModifications: shouldComponentUpdate")
+    //     // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
 
     //     //  Only update if changed: props or state: 
 
@@ -206,9 +186,8 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
 
                         conditionGroupsContainer={ this.props.conditionGroupsContainer }
                         conditionGroupsDataContainer={ this.props.conditionGroupsDataContainer }
-            
-                        reporterIonMassesSelected={ this.props.reporterIonMassesSelected }
-                        staticModificationMassesToFilterOn={ this.props.staticModificationMassesToFilterOn }
+
+                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds={ this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
                         proteinSequenceVersionId={ this.props.proteinSequenceVersionId }
                         projectSearchIds={ this.props.projectSearchIds }
                         searchDataLookupParamsRoot={ this.props.searchDataLookupParamsRoot }
@@ -239,8 +218,7 @@ export interface ReportedPeptideList_Component_Props {
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
     conditionGroupsDataContainer : ConditionGroupsDataContainer
 
-    reporterIonMassesSelected : Set<number>, 
-    staticModificationMassesToFilterOn, 
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
     searchDataLookupParamsRoot,
@@ -256,7 +234,7 @@ export interface ReportedPeptideList_Component_Props {
 interface ReportedPeptideList_Component_State {
 
     placeholder?
-    // prev_reportedPeptideIdsForDisplay_Map_KeyProjectSearchId? : Map<number, Array<number>>
+    // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId? : Map<number, Array<number>>
     // showUpdatingMessage? : boolean 
 }
 
@@ -273,7 +251,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         super(props);
 
         this.state = { 
-            // prev_reportedPeptideIdsForDisplay_Map_KeyProjectSearchId : this.props.reportedPeptideIdsForDisplay_Map_KeyProjectSearchId 
+            // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId : this.props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId
         };
     }
 
@@ -282,7 +260,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
      */
     shouldComponentUpdate(nextProps : ReportedPeptideList_Component_Props, nextState : ReportedPeptideList_Component_State ) {
 
-        // console.log("ModificationMass_UserSelections_VariableModifications: shouldComponentUpdate")
+        // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
 
         //  Only update if changed: props or state: 
 
@@ -310,9 +288,8 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
             conditionGroupsContainer : this.props.conditionGroupsContainer,
             conditionGroupsDataContainer : this.props.conditionGroupsDataContainer,
 
-            reporterIonMassesSelected : this.props.reporterIonMassesSelected, 
-            staticModificationMassesToFilterOn : this.props.staticModificationMassesToFilterOn, 
-            proteinSequenceVersionId : this.props.proteinSequenceVersionId, 
+            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+            proteinSequenceVersionId : this.props.proteinSequenceVersionId,
             projectSearchIds : this.props.projectSearchIds,
             searchDataLookupParamsRoot : this.props.searchDataLookupParamsRoot,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,

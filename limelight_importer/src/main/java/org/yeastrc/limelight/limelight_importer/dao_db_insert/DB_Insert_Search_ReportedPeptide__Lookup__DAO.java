@@ -57,10 +57,11 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 			"INSERT INTO search__rep_pept__lookup_tbl "
 			+ 	"( reported_peptide_id, search_id, "
 			+  		" has_dynamic_modifictions, has_isotope_labels, "
-			+ 		" any_psm_has_dynamic_modifications, any_psm_has_reporter_ions, "
+			+ 		" any_psm_has_dynamic_modifications, any_psm_has_open_modifictions, any_psm_has_reporter_ions, "
 			+ 		" psm_num_at_default_cutoff, "
-			+ 		" peptide_meets_default_cutoffs, related_peptide_unique_for_search ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ 		" peptide_meets_default_cutoffs, related_peptide_unique_for_search,"
+			+ 		" psm_id_sequential_start, psm_id_sequential_end ) "
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -95,6 +96,12 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}			
+			counter++;
+			if ( item.isAnyPsmHasOpenModifications() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
 			counter++;
 			if ( item.isAnyPsmHasReporterIons() ) {
@@ -115,6 +122,12 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
+
+			//  Only not zero if PSM Ids are sequential
+			counter++;
+			pstmt.setLong( counter, item.getPsmIdSequentialStart() );
+			counter++;
+			pstmt.setLong( counter, item.getPsmIdSequentialEnd() );
 			
 			pstmt.executeUpdate();
 			

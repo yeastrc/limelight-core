@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
@@ -102,12 +103,27 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		boolean hasDynamicModifications = false;
 		boolean hasIsotopeLabels = false;
 		boolean anyPsmHasDynamicModifications = false;
+		boolean anyPsmHasOpenModifications = false;
 		boolean anyPsmHasReporterIons = false;
 		
 		if ( reportedPeptide.getPeptideModifications() != null 
 				&& reportedPeptide.getPeptideModifications().getPeptideModification() != null 
 				&& ( ! reportedPeptide.getPeptideModifications().getPeptideModification().isEmpty() ) ) {
 			hasDynamicModifications = true;
+		}
+		{
+
+			if ( reportedPeptide.getPsms() != null && ( ! ( reportedPeptide.getPsms().getPsm().isEmpty() ) ) ) {
+				
+				for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
+					
+					if ( psm.getPsmOpenModification() != null && psm.getPsmOpenModification().getMass() != null ) {
+						//  This PSM contains "psm_open_modification"
+						anyPsmHasOpenModifications = true; //  May also be PSMs that do NOT have Open Modifications
+						break;
+					}
+				}
+			}
 		}
 		
 		if ( reportedPeptide.getPeptideIsotopeLabels() != null 
@@ -199,9 +215,12 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		search_ReportedPeptide__Lookup__DTO.setHasDynamicModifications( hasDynamicModifications );
 		search_ReportedPeptide__Lookup__DTO.setHasIsotopeLabels( hasIsotopeLabels );
 		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasDynamicModifications( anyPsmHasDynamicModifications );
+		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasOpenModifications( anyPsmHasOpenModifications );
 		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasReporterIons( anyPsmHasReporterIons );
 		search_ReportedPeptide__Lookup__DTO.setPsmNumAtDefaultCutoff( psmStatisticsAndBestValues.getPsmCountPassDefaultCutoffs() );
 		search_ReportedPeptide__Lookup__DTO.setPeptideMeetsDefaultCutoffs( peptideMeetsDefaultCutoffs );
+		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialStart( psmStatisticsAndBestValues.getFirstSavedPsmId() );
+		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialEnd( psmStatisticsAndBestValues.getLastSavedPsmId());
 		
 		methodResult.search_ReportedPeptide__Lookup__DTO = search_ReportedPeptide__Lookup__DTO;
 		

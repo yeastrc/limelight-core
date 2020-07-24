@@ -520,7 +520,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 								searchId, 
 								reportedPeptideId, 
 								psmIds, 
-								searcherCutoffValuesSearchLevel );
+								null, searcherCutoffValuesSearchLevel );
 				
 				populateReporterIonMassesForPSMs( psmWebDisplayList );
 				
@@ -579,7 +579,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional__ReportedPeptideI
 
 				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
 					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, searcherCutoffValuesSearchLevel );
+							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, null, searcherCutoffValuesSearchLevel );
 					
 					populateReporterIonMassesForPSMs( psmWebDisplayList );
 					

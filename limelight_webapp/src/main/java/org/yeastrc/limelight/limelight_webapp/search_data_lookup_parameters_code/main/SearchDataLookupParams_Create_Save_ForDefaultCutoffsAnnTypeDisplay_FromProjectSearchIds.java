@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookupRootIdTypes;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 
@@ -70,13 +71,18 @@ public class SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo,
 			Map<Integer, Integer> projectSearchIdsToSearchIds, 
 			SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException {
+		
+		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
+			String msg = "create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(...): projectSearchIds == null || projectSearchIds.isEmpty()";
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
 
 		Integer singleProjectSearchIdCreatedDefaultsFor = null;
 		if ( projectSearchIds.size() == 1 ) {
 			singleProjectSearchIdCreatedDefaultsFor = projectSearchIds.get( 0 );
 		}
-		if ( ( ! projectSearchIds.isEmpty() )
-				&& existingSearchDataLookupParamsRoot != null 
+		if ( existingSearchDataLookupParamsRoot != null 
 				&& existingSearchDataLookupParamsRoot.getParamsForProjectSearchIds() != null 
 				&& existingSearchDataLookupParamsRoot.getParamsForProjectSearchIds().getParamsForProjectSearchIdsList() != null
 				&& ( ! existingSearchDataLookupParamsRoot.getParamsForProjectSearchIds().getParamsForProjectSearchIdsList().isEmpty() ) ) {

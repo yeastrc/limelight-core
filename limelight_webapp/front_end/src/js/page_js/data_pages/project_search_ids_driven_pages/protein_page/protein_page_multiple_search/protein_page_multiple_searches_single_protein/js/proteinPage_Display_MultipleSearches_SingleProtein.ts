@@ -39,6 +39,7 @@ import {
 	_update_Overlay_OnWindowResize_MultipleSearch_SingleProtein 
 } from './proteinPage_Display_MultipleSearches_SingleProtein_nonClass_Functions';
 import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
 
 
 /**
@@ -226,7 +227,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			loadedDataCommonHolder : this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			searchDataLookupParamsRoot : this._searchDataLookupParamsRoot,
-			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject
+			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject,
+			open_Modifications_Subpart_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
 		});
 
 		if ( promise_loadDataForInitialOverlayShow ) {

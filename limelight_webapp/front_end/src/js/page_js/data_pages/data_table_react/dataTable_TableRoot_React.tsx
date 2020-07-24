@@ -468,6 +468,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                 const lastColumn = index === ( columnsArrayLength - 1 );
 
+                //   return inside a array.map
                 return (
                     <DataTable_Table_HeaderRowEntry 
                         column={ column } 
@@ -481,9 +482,17 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             })
         );
 
+        let tableHeaderContainerDiv_ClassNames : string = " table-header-container-div "
+
+        if ( this.state.tableDataObject.highlightingOneOrMoreRowsWithBorder ) {
+
+            tableHeaderContainerDiv_ClassNames += " table-header-container-div-padding-for-data-row-border "
+        }
+
+
         let headerMain = (
 
-            <div >
+            <div className={ tableHeaderContainerDiv_ClassNames }>
                 <table className=" data-table-header-table ">
                     <thead>
                         <tr className=" data-table-header-row data-table-row ">
@@ -524,6 +533,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                         dataTable_DataGroupRowEntry={ dataTable_DataGroupRowEntry }
                         columns={ this.state.tableDataObject.columns }
                         tableOptions={ this.state.tableOptions }
+                        dataTable_RootTableDataObject={ this.state.tableDataObject }
                         highlightRow={ highlightRow }
                         key={ dataTable_DataGroupRowEntry.uniqueId } />
                 );
@@ -565,6 +575,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                         columns={ this.state.tableDataObject.columns } 
                         dataObject={ dataTable_DataRowEntry } 
                         tableOptions={ this.state.tableOptions }
+                        dataTable_RootTableDataObject={ this.state.tableDataObject }
                         isLastRow={ isLastRow }
                         key={ dataTable_DataRowEntry.uniqueId } />
                     );

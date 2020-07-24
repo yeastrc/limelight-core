@@ -32,6 +32,7 @@ public class SearchDTO_Importer {
 	private boolean hasScanFilenames;
 	private boolean hasScanData;
 	private boolean hasIsotopeLabel;
+	private boolean anyPsmHasOpenModificationMasses;
 	private boolean reportedPeptideMatchedProteinMappingProvided;
 	private Integer createdByUserId;
 	
@@ -89,6 +90,12 @@ public class SearchDTO_Importer {
 	}
 	public void setReportedPeptideMatchedProteinMappingProvided(boolean reportedPeptideMatchedProteinMappingProvided) {
 		this.reportedPeptideMatchedProteinMappingProvided = reportedPeptideMatchedProteinMappingProvided;
+	}
+	public boolean isAnyPsmHasOpenModificationMasses() {
+		return anyPsmHasOpenModificationMasses;
+	}
+	public void setAnyPsmHasOpenModificationMasses(boolean anyPsmHasOpenModificationMasses) {
+		this.anyPsmHasOpenModificationMasses = anyPsmHasOpenModificationMasses;
 	}
 
 }

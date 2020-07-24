@@ -9,6 +9,10 @@
 import React from 'react'
 
 import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
 
 
 /**
@@ -162,7 +166,7 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
                 {/* Float Left */}
                 <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Static Modifications:</div>
 
-                <div className="modification-mass-selection-block" >
+                <div className=" filter-common-selection-block modification-mass-selection-block " >
                     <div style={ { marginTop: 2 } }>
                         <div >
                             { singleModification_Entries }
@@ -185,8 +189,8 @@ interface SingleModification_Entry_Props {
 }
 
 interface SingleModification_Entry_State {
-    checked : boolean
-    prevProp_staticModificationEntry
+    selection_SelectionType : SingleProtein_Filter_SelectionType
+    prevProp_staticModificationEntry?
 }
 
 /**
@@ -194,7 +198,10 @@ interface SingleModification_Entry_State {
  */
 class SingleModification_Entry extends React.Component< SingleModification_Entry_Props, SingleModification_Entry_State > {
 
-    private _checkboxChanged_BindThis;
+    //  bind to 'this' for passing as parameters
+    private _choice_ANY_Clicked_Callback_BindThis = this._choice_ANY_Clicked_Callback.bind(this)
+    private _choice_ALL_Clicked_Callback_BindThis = this._choice_ALL_Clicked_Callback.bind(this)
+    private _choice_Remove_Clicked_Callback_BindThis = this._choice_Remove_Clicked_Callback.bind(this)
 
     /**
      * 
@@ -202,15 +209,19 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
     constructor(props : SingleModification_Entry_Props) {
         super(props);
 
-        //  bind to 'this' for passing as parameters
-        this._checkboxChanged_BindThis = this._checkboxChanged.bind(this);
+        const staticModificationEntry = props.staticModificationEntry;
 
-        let checked = this.props.staticModificationEntry.selected;
-        if ( ! checked ) {
-            checked = false; // make false if not true
+        const residueLetter = staticModificationEntry.residueLetter;
+        const modMass = staticModificationEntry.modMass;
+
+        let checked : SingleProtein_Filter_SelectionType = null
+
+        const selectionEntry = this.props.modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass })
+        if ( selectionEntry ) {
+            checked = selectionEntry.selectionType
         }
 
-        this.state = { checked, prevProp_staticModificationEntry : props.staticModificationEntry };
+        this.state = { selection_SelectionType: checked, prevProp_staticModificationEntry : props.staticModificationEntry };
     }
 
     /**
@@ -247,49 +258,118 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
      */
     shouldComponentUpdate(nextProps : SingleModification_Entry_Props, nextState : SingleModification_Entry_State ) {
 
-        // console.log("ModificationMass_UserSelections_VariableModifications: shouldComponentUpdate")
+        // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
 
         //  Only update if changed: props or state: 
 
-        if ( this.state.checked !== nextState.checked ) {
+        if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
             return true;
         }
         return false;
 
         //  If Comment out prev code, comment out this method
     }
-    
+
     /**
-     * 
-     */    
-    _checkboxChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+     *
+     */
+    private _choice_ANY_Clicked_Callback() {
+        try {
+            const selectionType = SingleProtein_Filter_SelectionType.ANY
 
-        const target_htmlElement = event.target as HTMLInputElement;
-        const checkedProperty_htmlElement = target_htmlElement.checked;  //  New Value
+            this.setState( (state, props) : SingleModification_Entry_State => {
 
-        // console.log( "_checkboxChanged: target.checked: " + checkedProperty_htmlElement + ", this.state.checked: " + this.state.checked )
+                return { selection_SelectionType : selectionType }
+            });
 
-        this.setState( (state, props) => {
+            const staticModificationEntry = this.props.staticModificationEntry;
 
-            return { checked : checkedProperty_htmlElement }
-        });
+            const residueLetter = staticModificationEntry.residueLetter;
+            const modMass = staticModificationEntry.modMass;
 
-        const staticModificationEntry = this.props.staticModificationEntry;
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+            this.props.modificationMass_UserSelections_StateObject.set_StaticModification_Selected({ residueLetter, modMass, entry : newEntry });
 
-        const residueLetter = staticModificationEntry.residueLetter;
-        const modMass = staticModificationEntry.modMass;
+            this._updateRestofPage();
 
-        if ( checkedProperty_htmlElement ) {
-            this.props.modificationMass_UserSelections_StateObject.add_StaticModification_Selected({ residueLetter, modMass });
-        } else {
-            this.props.modificationMass_UserSelections_StateObject.delete_StaticModification_Selected({ residueLetter, modMass });
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
         }
-
-        window.setTimeout( () => {
-            this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback();
-        }, 1 );
     }
-    
+
+    /**
+     *
+     */
+    private _choice_ALL_Clicked_Callback() {
+        try {
+            const selectionType = SingleProtein_Filter_SelectionType.ALL
+
+            this.setState( (state, props) : SingleModification_Entry_State => {
+
+                return { selection_SelectionType : selectionType }
+            });
+
+            const staticModificationEntry = this.props.staticModificationEntry;
+
+            const residueLetter = staticModificationEntry.residueLetter;
+            const modMass = staticModificationEntry.modMass;
+
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+            this.props.modificationMass_UserSelections_StateObject.set_StaticModification_Selected({ residueLetter, modMass, entry : newEntry });
+
+            this._updateRestofPage();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _choice_Remove_Clicked_Callback() {
+        try {
+            this.setState( (state, props) : SingleModification_Entry_State => {
+
+                return { selection_SelectionType : null }
+            });
+            const staticModificationEntry = this.props.staticModificationEntry;
+
+            const residueLetter = staticModificationEntry.residueLetter;
+            const modMass = staticModificationEntry.modMass;
+            this.props.modificationMass_UserSelections_StateObject.delete_StaticModification_Selected({ residueLetter, modMass })
+
+            this._updateRestofPage();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _updateRestofPage() {
+        try {
+            window.setTimeout( () => {
+                try {
+                    this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 1 );
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
     /**
      * 
      */    
@@ -297,18 +377,16 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
 
         const staticModificationEntry = this.props.staticModificationEntry;
 
+        const textLabel = staticModificationEntry.modMass + " (" + staticModificationEntry.residueLetter + ")";
+
         return (
-            <div className=" mod-mass-outer-div ">
-                <label>
-                <div style={ { display: "inline-block" } }>
-                        <input type="checkbox"  checked={ this.state.checked } onChange={ this._checkboxChanged_BindThis } />
-                    </div>
-                    <div style={ { display: "inline-block" } }>
-                        { staticModificationEntry.modMass } ({ staticModificationEntry.residueLetter })
-                    </div>
-                    
-                </label>
-            </div>
+            <Filter_selectionItem_Any_All_SelectionItem_Container
+                textLabel={ textLabel }
+                current_selection_SelectionType={ this.state.selection_SelectionType }
+                any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
+                all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
+                remove_Selected_Callback={ this._choice_Remove_Clicked_Callback_BindThis }
+            />
         );
     }
 }

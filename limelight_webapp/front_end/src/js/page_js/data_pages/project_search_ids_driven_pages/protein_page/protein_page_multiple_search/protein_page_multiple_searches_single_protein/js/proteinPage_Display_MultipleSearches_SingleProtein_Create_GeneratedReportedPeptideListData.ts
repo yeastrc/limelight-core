@@ -7,34 +7,25 @@
  * 
  */
 
-//   From data_pages_common
-import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
-
-
 //   Modification Mass Rounding to provide some level of commonality between searches
 import { 
-    modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnNumber
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 
 //   Reporter Ion Mass Rounding to provide some level of commonality between searches
 import { 
-    reporterIonMass_CommonRounding_ReturnNumber_Function,
-    reporterIonMass_CommonRounding_ReturnString_Function,
-    reporterIonMass_CommonRounding_ReturnNumber, 
-    reporterIonMass_CommonRounding_ReturnString, 
-    _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
+    reporterIonMass_CommonRounding_ReturnNumber
 } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 
-import { psm_ReporterIonMasses_FilterOnSelectedValues } from 'page_js/data_pages/data_pages_common/psm_ReporterIonMasses_FilterOnSelectedValues';
-
 import { reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches } from 'page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches';
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {
+    ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 //  Child Data Searches for Single Peptide show/hide
 
@@ -89,7 +80,7 @@ export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Resul
  */
 export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein = function( { 
     
-    reportedPeptideIdsForDisplay_Map_KeyProjectSearchId, 
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
     reporterIonMassesSelected, 
     staticModificationMassesToFilterOn, 
     proteinSequenceVersionId, 
@@ -97,7 +88,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     loadedDataCommonHolder
 } : {
-    reportedPeptideIdsForDisplay_Map_KeyProjectSearchId : Map<number, Array<number>>, 
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
     reporterIonMassesSelected : Set<number>, 
     staticModificationMassesToFilterOn, 
     proteinSequenceVersionId : number, 
@@ -121,9 +112,10 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
     
     for ( const projectSearchId of projectSearchIds ) {
 
-        const reportedPeptideIdsForDisplay = reportedPeptideIdsForDisplay_Map_KeyProjectSearchId.get( projectSearchId );
-        if ( ! reportedPeptideIdsForDisplay ) {
-            throw Error( "No reportedPeptideIdsForDisplay for projectSearchId: " + projectSearchId );
+        const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId =
+            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId );
+        if ( ! reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId ) {
+            throw Error( "No reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId for projectSearchId: " + projectSearchId );
         }
 
         const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
@@ -134,8 +126,8 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         //  Map<(reported peptide), Map<(position),Array<(mod mass rounded strings)>>
         const variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId = ( 
             _getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId({ 
-                loadedDataPerProjectSearchIdHolder, 
-                reportedPeptideIdsForDisplay, 
+                loadedDataPerProjectSearchIdHolder,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
                 proteinSequenceVersionId
             })
         );
@@ -150,62 +142,14 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         //  Various Maps, key Reported Peptide Id
         const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
-        let psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = undefined;
-
-        if ( reporterIonMassesSelected && reporterIonMassesSelected.size !== 0 ) {
-            //  User has selected Reporter Ion Masses so need to compute psm count
-
-            psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs();
-            if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs ) {
-                //  No psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs for this Project Search Id
-                // throw Error("_createReportedPeptideDisplayData: reporterIonMassesSelected is populated. nothing returned from loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs()" );
-            }
-        }
-
         //  reportedPeptideIds filtered if applicable so now create display peptide row objects
 
-        for ( const reportedPeptideId of reportedPeptideIdsForDisplay ) {
-        
-            let numPsms = undefined;
-        
-            if ( reporterIonMassesSelected && reporterIonMassesSelected.size !== 0 ) {
-                //  User has selected Reporter Ion Masses so need to compute psm count
+        for ( const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId // : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+              of reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_Entries_IterableIterator() ) {
 
-                if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs ) {
-                    
-                    //  loadedDataPerProjectSearchIdHolder not contain psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs for this Project Search Id
-                    numPsms = 0;
-                
-                } else {
+            const reportedPeptideId =  reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.reportedPeptideId
 
-                    const psmReporterIonMassesPerPSM_ForPsmIdMap_Object = psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
-
-                    if ( ! psmReporterIonMassesPerPSM_ForPsmIdMap_Object ) {
-                        // No data for this reported peptide
-                        throw Error("_createReportedPeptideDisplayData: reporterIonMassesSelected is populated. nothing returned from psmReporterIonMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId ). reportedPeptideId: " + reportedPeptideId );
-                    }
-
-                    const psmReporterIonMassesPerPSM_ForPsmIdMap = psmReporterIonMassesPerPSM_ForPsmIdMap_Object.psmReporterIonMassesPerPSM_ForPsmIdMap;
-
-                    const psm_ReporterIonMasses_FilterOnSelectedValues_Result = (
-                        psm_ReporterIonMasses_FilterOnSelectedValues({ reporterIonMassesSelected, psmReporterIonMassesPerPSM_ForPsmIdMap, returnPsmIds : false, reporterIonMassTransformer })
-                    );
-                    const numPsmsLocal = psm_ReporterIonMasses_FilterOnSelectedValues_Result.count;
-
-                    if ( ! numPsmsLocal ) {
-                        throw Error("_createReportedPeptideDisplayData: reporterIonMassesSelected is populated. No numPsmsLocal for reportedPeptideId: " + reportedPeptideId + ", proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
-                    }
-
-                    numPsms = numPsmsLocal;
-                }
-                
-            } else {
-
-                numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
-                if ( ! numPsms ) {
-                    throw Error("_createReportedPeptideDisplayData: No numPsms for reportedPeptideId: " + reportedPeptideId + ", proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
-                }
-            }
+            let numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include_Exclude;
 
             numberOfPsmsForReportedPeptides += numPsms;
 
@@ -224,7 +168,10 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
             const staticModificationsRounded_KeyPosition = _get_staticModificationsRounded_KeyPosition_ForSelectedStaticModsAndPeptideSequence({ peptideSequenceString, selectedStaticModificationsForProjectSearchId });
 
             //   Call external function
-            const peptideSequenceDisplay = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches({ peptideSequence : peptideSequenceString, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition });
+            const peptideSequenceDisplay = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches({
+                peptideSequence : peptideSequenceString,
+                variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition
+            });
 
             let peptideItemInMap : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
             if ( peptideItemInMap ) {
@@ -415,12 +362,12 @@ const _get_staticModificationsRounded_KeyPosition_ForSelectedStaticModsAndPeptid
  * @returns  Map<(reported peptide), Map<(position),Array<(mod mass rounded strings sorted)>>
  */	
 const _getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId = function({ 
-    loadedDataPerProjectSearchIdHolder, 
-    reportedPeptideIdsForDisplay, 
+    loadedDataPerProjectSearchIdHolder,
+    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     proteinSequenceVersionId
 } : { 
-    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-    reportedPeptideIdsForDisplay : Array<number>, 
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
     proteinSequenceVersionId : number
 }) 
 
@@ -436,7 +383,7 @@ const _getVariableModificationsRoundedByReportedPeptideIdPosition_ForSingleProje
         return new Map(); //  EARLY RETURN
     }
 
-    const reportedPeptideIdsForDisplay_Set = new Set( reportedPeptideIdsForDisplay );
+    const reportedPeptideIdsForDisplay_Set : ReadonlySet<number> = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds();
 
     //  Use proteinCoverage_KeyProteinSequenceVersionId since by proteinSequenceVersionId
 

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmModification;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPosition;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReporterIon;
@@ -37,12 +38,14 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescr
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModificationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationLookupDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationPositionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
+import org.yeastrc.limelight.limelight_importer.objects.PsmOpenModification_UniquePosition_InReportedPeptide_Entry;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
-import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.utils.ReporterIonMass_Round_IfNecessary;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
@@ -51,6 +54,8 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationLookupDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 
@@ -106,11 +111,22 @@ public class ProcessPSMsForReportedPeptide {
 		DB_Insert_PsmDescriptiveAnnotationDAO db_Insert_PsmDescriptiveAnnotationDAO = DB_Insert_PsmDescriptiveAnnotationDAO.getInstance();
 		DB_Insert_PsmFilterableAnnotationLookupDAO db_Insert_PsmFilterableAnnotationLookupDAO = DB_Insert_PsmFilterableAnnotationLookupDAO.getInstance();
 		
+		Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions = new HashSet<>();
+		Set<Integer> psmOpenModification_UniqueMassesRounded = new HashSet<>();
+		
 		int psmCountPassDefaultCutoffs = 0;
 		boolean saveAnyPSMs = false;
+		
+		boolean firstSavedPSM = true;
+		boolean savedPsmIds_Sequential = true;
+		long firstSavedPsmId = 0;
+		long lastSavedPsmId = 0;
+		long previousSavedPsmId = 0;
+		
 		for ( Psm psm : psmList ) {
 
 			boolean psmHasModifications = false;
+			boolean psmHasOpenModifications = false;
 			boolean psmHasReporterIons = false;
 			
 			if ( psm.getPsmModifications() != null 
@@ -118,6 +134,11 @@ public class ProcessPSMsForReportedPeptide {
 					&& ( ! psm.getPsmModifications().getPsmModification().isEmpty() ) ) {
 				
 				psmHasModifications = true;
+			}
+			if ( psm.getPsmOpenModification() != null 
+					&& psm.getPsmOpenModification().getMass() != null ) {
+				
+				psmHasOpenModifications = true;
 			}
 			if ( psm.getReporterIons() != null 
 					&& psm.getReporterIons().getReporterIon() != null
@@ -132,6 +153,7 @@ public class ProcessPSMsForReportedPeptide {
 							reportedPeptideDTO, 
 							psm,
 							psmHasModifications,
+							psmHasOpenModifications,
 							psmHasReporterIons,
 							searchScanFileEntry_AllEntries );
 			
@@ -187,6 +209,67 @@ public class ProcessPSMsForReportedPeptide {
 				}
 			}
 			
+			if ( psm.getPsmOpenModification() != null ) {
+				
+				BigDecimal massBD = psm.getPsmOpenModification().getMass();
+				if ( massBD == null ) {
+					String msg = "'mass' not set on 'psm_open_modification'";
+					log.error(msg);
+					throw new LimelightImporterDataException(msg);
+				}
+				double massDbl = massBD.doubleValue();
+				
+				PsmOpenModificationDTO psmOpenModificationDTO = new PsmOpenModificationDTO();
+				psmOpenModificationDTO.setPsmId( psmDTO.getId() );
+				psmOpenModificationDTO.setMass(massDbl);
+				DB_Insert_PsmOpenModificationDAO.getInstance().saveToDatabase(psmOpenModificationDTO);
+				
+				{
+					double massDbl_Rounded = Math.round( massDbl );
+					if ( massDbl_Rounded > Integer.MAX_VALUE ) {
+						String msg = "psm.getPsmOpenModification().getMass() rounded is > Integer.MAX_VALUE. is: " + massDbl_Rounded;
+						log.error(msg);
+						throw new LimelightImporterInternalException(msg);
+					}
+					if ( massDbl_Rounded < Integer.MIN_VALUE ) {
+						String msg = "psm.getPsmOpenModification().getMass() rounded is < Integer.MIN_VALUE. is: " + massDbl_Rounded;
+						log.error(msg);
+						throw new LimelightImporterInternalException(msg);
+					}
+					int massInt = (int) massDbl_Rounded;
+					psmOpenModification_UniqueMassesRounded.add( massInt );
+				}
+				
+				if ( ! psm.getPsmOpenModification().getPsmOpenModificationPosition().isEmpty() ) {
+
+					for ( PsmOpenModificationPosition psmOpenModificationPosition : psm.getPsmOpenModification().getPsmOpenModificationPosition() ) {
+
+						PsmOpenModificationPositionDTO psmOpenModificationPositionDTO = new PsmOpenModificationPositionDTO();
+						psmOpenModificationPositionDTO.setPsmOpenModificationId( psmOpenModificationDTO.getId() );
+						if ( psmOpenModificationPosition.getPosition() != null ) {
+							psmOpenModificationPositionDTO.setPosition( psmOpenModificationPosition.getPosition().intValueExact() );
+						}
+						if ( psmOpenModificationPosition.isIsNTerminal() != null && psmOpenModificationPosition.isIsNTerminal().booleanValue() ) {
+							psmOpenModificationPositionDTO.setIs_N_Terminal(true);
+							psmOpenModificationPositionDTO.setPosition( 1 );
+						}
+						if ( psmOpenModificationPosition.isIsCTerminal() != null && psmOpenModificationPosition.isIsCTerminal().booleanValue() ) {
+							psmOpenModificationPositionDTO.setIs_C_Terminal(true);
+							psmOpenModificationPositionDTO.setPosition( peptideString.length() );
+						}
+
+						DB_Insert_PsmOpenModificationPositionDAO.getInstance().saveToDatabase( psmOpenModificationPositionDTO );
+
+						PsmOpenModification_UniquePosition_InReportedPeptide_Entry psmOpenModification_UniquePosition_InReportedPeptide_Entry = new PsmOpenModification_UniquePosition_InReportedPeptide_Entry();
+						psmOpenModification_UniquePosition_InReportedPeptide_Entry.setPosition( psmOpenModificationPositionDTO.getPosition() );
+						psmOpenModification_UniquePosition_InReportedPeptide_Entry.setIs_N_Terminal( psmOpenModificationPositionDTO.isIs_N_Terminal() );
+						psmOpenModification_UniquePosition_InReportedPeptide_Entry.setIs_C_Terminal( psmOpenModificationPositionDTO.isIs_C_Terminal() );
+
+						psmOpenModification_UniquePositions.add( psmOpenModification_UniquePosition_InReportedPeptide_Entry );
+					}
+				}
+			}
+			
 			List<PsmFilterableAnnotationDTO> currentPsm_psmAnnotationDTO_Filterable_List = 
 					populatePsmAnnotations.populatePsmFilterableAnnotations( psm, psmDTO );
 			
@@ -223,8 +306,32 @@ public class ProcessPSMsForReportedPeptide {
 			
 			bestPsmFilterableAnnotationProcessing.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 			
+			{
+				if ( firstSavedPSM ) {
+					
+					firstSavedPSM = false;
+					firstSavedPsmId = psmDTO.getId();
+					
+				} else {
+					
+					if ( savedPsmIds_Sequential ) {  // can skip once savedPsmIds_Sequential is false
+						
+						lastSavedPsmId = psmDTO.getId();
+						
+						if ( ( previousSavedPsmId + 1 ) != psmDTO.getId()  ) {
+							
+							savedPsmIds_Sequential = false;
+						}
+					}
+				}
+			
+				previousSavedPsmId = psmDTO.getId();
+			}
+			
 			saveAnyPSMs = true;
-		}
+			
+		} // end of loop processing Psm in input file
+		
 		if ( ! saveAnyPSMs ) {
 			String msg = "No PSMs saved for this reported peptide: " + 
 					reportedPeptide.getReportedPeptideString();
@@ -235,6 +342,16 @@ public class ProcessPSMsForReportedPeptide {
 		PsmStatisticsAndBestValues psmStatisticsAndBestValues = new PsmStatisticsAndBestValues();
 		psmStatisticsAndBestValues.setPsmCountPassDefaultCutoffs( psmCountPassDefaultCutoffs );
 		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing( bestPsmFilterableAnnotationProcessing );
+		if ( ! psmOpenModification_UniqueMassesRounded.isEmpty() ) {
+			psmStatisticsAndBestValues.setPsmOpenModification_UniqueMassesRounded( psmOpenModification_UniqueMassesRounded );
+		}
+		if ( ! psmOpenModification_UniquePositions.isEmpty() ) {
+			psmStatisticsAndBestValues.setPsmOpenModification_UniquePositions( psmOpenModification_UniquePositions );
+		}
+		if ( savedPsmIds_Sequential ) {
+			psmStatisticsAndBestValues.setFirstSavedPsmId( firstSavedPsmId );
+			psmStatisticsAndBestValues.setLastSavedPsmId( lastSavedPsmId );
+		}
 		
 		return psmStatisticsAndBestValues;
 	}

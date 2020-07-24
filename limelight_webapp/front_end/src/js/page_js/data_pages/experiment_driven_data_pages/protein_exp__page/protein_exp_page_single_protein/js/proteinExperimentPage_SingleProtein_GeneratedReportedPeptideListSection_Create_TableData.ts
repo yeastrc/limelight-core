@@ -14,34 +14,18 @@ import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 
 import {
-
-    DataTable_ColumnId,
-
     DataTable_RootTableObject,
-    
     DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-    
     DataTable_Column,
-    DataTable_SortColumnsInfoEntry,
-
     DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
-    
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer, ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 
-import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from './proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
+import { Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from './proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
 
 //  Child Data Searches for Single Peptide show/hide
@@ -66,6 +50,8 @@ import {
     forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent, 
     ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
 } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_ReturnChildReactComponent';
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 
 
 //////////////////
@@ -99,8 +85,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     conditionGroupsContainer,
     conditionGroupsDataContainer,
 
-    reporterIonMassesSelected, 
-    staticModificationMassesToFilterOn, 
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
     proteinSequenceVersionId, 
     projectSearchIds,
     searchDataLookupParamsRoot,
@@ -113,11 +98,10 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
     conditionGroupsDataContainer : ConditionGroupsDataContainer
 
-    reporterIonMassesSelected : Set<number>, 
-    staticModificationMassesToFilterOn, 
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
-    searchDataLookupParamsRoot,
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
     dataPageStateManager : DataPageStateManager
@@ -323,7 +307,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
                         projectSearchIds,
                         reportedPeptideIdsMap_KeyProjectSearchId : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
-                        reporterIonMassesSelected,
+                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         searchDataLookupParamsRoot,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                         loadedDataCommonHolder,
@@ -351,8 +335,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                         conditionGroupsDataContainer,
 
                         projectSearchIds,
-                        reportedPeptideIdsMap_KeyProjectSearchId : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
-                        reporterIonMassesSelected,
+                        reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
+                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         searchDataLookupParamsRoot,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                         loadedDataCommonHolder,

@@ -38,12 +38,14 @@ import {
     
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein, Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry } from './proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
+import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry } from './proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
 
 
 //  Child Data Searches for Single Peptide show/hide
 
 import { ProteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter, proteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent } from '../protein_page_multiple_searches_single_protein_searches_for_generated_reported_peptide/js/proteinPage_SingleProtein_searchesForGeneratedSinglePeptide_ReturnChildReactComponent';
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 //////////////////
@@ -72,10 +74,9 @@ export class GetDataTableDataObjects_MultipleSearch_SingleProtein_Result {
  */
 export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein = function( { 
     
-    create_GeneratedReportedPeptideListData_Result, 
-    
-    reporterIonMassesSelected, 
-    staticModificationMassesToFilterOn, 
+    create_GeneratedReportedPeptideListData_Result,
+
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
     proteinSequenceVersionId, 
     projectSearchIds,
     searchDataLookupParamsRoot,
@@ -85,13 +86,12 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 } : {
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
 
-    reporterIonMassesSelected : Set<number>, 
-    staticModificationMassesToFilterOn, 
-    proteinSequenceVersionId : number, 
-    projectSearchIds : Array<number>,
-    searchDataLookupParamsRoot,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+    proteinSequenceVersionId : number
+    projectSearchIds : Array<number>
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
 
 } ) : GetDataTableDataObjects_MultipleSearch_SingleProtein_Result {
@@ -219,8 +219,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     createReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry_ForParentRow : createReportedPeptideDisplayData_Result_Entry_ForThisRow,
                     
                     projectSearchIds,
-                    reportedPeptideIdsMap_KeyProjectSearchId : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
-                    reporterIonMassesSelected,
+                    reportedPeptideIdsMap_KeyProjectSearchId_ForParentPeptide : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
+                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                     searchDataLookupParamsRoot,
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                     loadedDataCommonHolder,

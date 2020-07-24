@@ -26,14 +26,16 @@ export const getPSMDataFromServer = function({
     
     projectSearchId, 
     reportedPeptideId,
-    psmIds, // Optional
+    psmIds_Include, // Optional
+    psmIds_Exclude, // Optional
     searchDataLookupParamsRoot,
     dataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class
 } : { 
     projectSearchId : number, 
     reportedPeptideId : number,
-    psmIds : Array<number>
+    psmIds_Include: ReadonlySet<number>
+    psmIds_Exclude: ReadonlySet<number>
     searchDataLookupParamsRoot
     dataPageStateManager : DataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class : WebserviceCallStandardPost_ApiObject_Holder_Class
@@ -42,16 +44,27 @@ export const getPSMDataFromServer = function({
     return new Promise( ( resolve, reject ) => {
         try {
 
+            let psmIds_Include_Array : Array<number> = undefined
+            let psmIds_Exclude_Array : Array<number> = undefined
+
+            if ( psmIds_Include ) {
+                psmIds_Include_Array = Array.from(psmIds_Include)
+            }
+            if ( psmIds_Exclude ) {
+                psmIds_Exclude_Array = Array.from(psmIds_Exclude)
+            }
+
             let searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId = _getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId({ projectSearchId, searchDataLookupParamsRoot });
 
             let psmAnnotationTypeIdsForSorting : Array<number> = _get_Psm_AnnotationTypeIds_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
             
             let requestObject = {
-                    projectSearchId,
-                    psmIds, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
-                    reportedPeptideId,
-                    searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,
-                    psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting
+                projectSearchId,
+                psmIds_Include : psmIds_Include_Array, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
+                psmIds_Exclude : psmIds_Exclude_Array, // Optional.  If provided, Additive to
+                reportedPeptideId,
+                searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,
+                psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting
             };
 
             console.log("AJAX Call to d/rws/for-page/psb/psm-list START, Now: " + new Date() );

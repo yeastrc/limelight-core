@@ -360,6 +360,9 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 
+	public static final String PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
 
 	//  PSM Best (at Reported Peptide level) Filterable Annotation data for Reported Peptide Ids, Annotation Type Ids, Project Search Id
 	public static final String PSM_BEST_FILTRBL_ANN_DATA_LIST_REP_PEPT_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
@@ -419,6 +422,10 @@ public class AA_RestWSControllerPaths_Constants {
 	//  Reported Peptide Modifications for each Reported Peptide Id in request
 	public static final String DYNAMIC_MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/dynamic-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
+
+	//  Reported Peptide Open Modifications for each Reported Peptide Id in request
+	public static final String OPEN_MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/open-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
 
 	
 	//    used on many pages 

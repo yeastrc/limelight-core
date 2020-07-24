@@ -16,35 +16,43 @@ import {
     DataTable_TableOptions, DataTable_TableOptions_dataRowClickHandler_RequestParm
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
+import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
+import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay";
+import {
+    Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer,
+    Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer_CellMgmt_Data
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__TableEntryContainer";
 
 /**
  *
  */
 export class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params {
-    updated_selectedModificationMasses : Set<number>
+    updated_selectedModificationMasses_Map : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 }
 
 /**
  *
  */
-export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout = function({
+export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout = function(
+    {
+        height, width, title, proteinName,
+        modUniqueMassesWithTheirPsmCountsArray,
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+        callbackOn_Cancel_Close_Clicked,
+        callback_updateSelectedMods
+    } : {
+        height : number
+        width : number
+        title : string
+        proteinName : string
+        modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
+        callbackOn_Cancel_Close_Clicked : () => void;
+        callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
 
-    height, width, title, proteinName,
-    modUniqueMassesWithTheirPsmCountsArray,
-    modificationMasses_Selected,
-    callbackOn_Cancel_Close_Clicked,
-    callback_updateSelectedMods
-} : {
-    height : number
-    width : number
-    title : string
-    proteinName : string
-    modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
-    modificationMasses_Selected : Set<number>
-    callbackOn_Cancel_Close_Clicked : () => void;
-    callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
-
-}) : JSX.Element {
+    }) : JSX.Element {
 
     return (
         <ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component
@@ -53,7 +61,7 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
             title={ title }
             proteinName={ proteinName }
             modUniqueMassesWithTheirPsmCountsArray={ modUniqueMassesWithTheirPsmCountsArray }
-            modificationMasses_Selected={ modificationMasses_Selected }
+            selectedModificationMasses_MapClone={ modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__ExcludingNoModification_AsMapClone() }
             callbackOn_Cancel_Close_Clicked={ callbackOn_Cancel_Close_Clicked }
             callback_updateSelectedMods={ callback_updateSelectedMods }
         />
@@ -69,7 +77,7 @@ interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterConta
     title : string
     proteinName : string
     modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
-    modificationMasses_Selected : Set<number>
+    selectedModificationMasses_MapClone : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
 }
@@ -92,7 +100,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
     private _above_mod_list_block_Ref : React.RefObject<HTMLDivElement>
     private _mods_selection_dialog_list_bounding_box_Ref : React.RefObject<HTMLDivElement>
 
-    private _modificationMasses_Selected_InProgress : Set<number>
+    private _modificationMasses_Selected_InProgress : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 
     /**
      *
@@ -103,13 +111,18 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         this._above_mod_list_block_Ref = React.createRef<HTMLDivElement>();
         this._mods_selection_dialog_list_bounding_box_Ref = React.createRef<HTMLDivElement>();
 
-        this._modificationMasses_Selected_InProgress = new Set( props.modificationMasses_Selected )
+        this._modificationMasses_Selected_InProgress = props.selectedModificationMasses_MapClone
 
-        const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({ modUniqueMassesWithTheirPsmCountsArray : props.modUniqueMassesWithTheirPsmCountsArray })
+        const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
+            modUniqueMassesWithTheirPsmCountsArray : props.modUniqueMassesWithTheirPsmCountsArray
+        })
 
         this.state = { massDisplay_DataTable_RootTableObject };
     }
 
+    /**
+     *
+     */
     componentDidMount(): void {
 
         //  Adjust scrollable div max-height
@@ -122,25 +135,93 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         this._mods_selection_dialog_list_bounding_box_Ref.current.style.maxHeight = scrollableDivMaxHeightPxString;
     }
 
+    /**
+     *
+     */
     private _updateButtonClicked(  ) {
 
-        this.props.callback_updateSelectedMods({ updated_selectedModificationMasses : this._modificationMasses_Selected_InProgress })
+        this.props.callback_updateSelectedMods({
+            updated_selectedModificationMasses_Map : this._modificationMasses_Selected_InProgress
+        })
     }
 
+    /**
+     *
+     */
     private _dataRowClickHandler(param: DataTable_TableOptions_dataRowClickHandler_RequestParm): void {
+
+        const rowClicked_Left = param.rowDOM_Rect.left
+        const rowClicked_Bottom = param.rowDOM_Rect.bottom
+
+        const windowScroll_X = window.scrollX;
+        const windowScroll_Y = window.scrollY;
+
+        const position_Left = Math.floor( rowClicked_Left ) + windowScroll_X - 1 ; // -1 to shift left to align Left border with left border of selected items
+        const position_Top = Math.floor( rowClicked_Bottom ) + windowScroll_Y
+
+        let current_selection_SelectionType : SingleProtein_Filter_SelectionType = undefined
 
         const mass = param.tableRowClickHandlerParameter.mass;
 
-        if ( ! this._modificationMasses_Selected_InProgress.delete( mass ) ) {
-            this._modificationMasses_Selected_InProgress.add( mass )
+        {
+            const selectionEntry = this._modificationMasses_Selected_InProgress.get(mass);
+            if (selectionEntry) {
+                current_selection_SelectionType = selectionEntry.selectionType
+            }
         }
 
-        const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({ modUniqueMassesWithTheirPsmCountsArray : this.props.modUniqueMassesWithTheirPsmCountsArray })
+        const any_Selected_Callback = () => {
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.ANY })
+            this._modificationMasses_Selected_InProgress.set( mass, newEntry );
+
+            this._updateTable_ForChangedSelection()
+        }
+
+        const all_Selected_Callback = () => {
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.ALL })
+            this._modificationMasses_Selected_InProgress.set( mass, newEntry );
+
+            this._updateTable_ForChangedSelection()
+        }
+
+        const remove_Selected_Callback = () => {
+            this._modificationMasses_Selected_InProgress.delete( mass )
+
+            this._updateTable_ForChangedSelection()
+        }
+
+        //  Creates the overlay and inserts it into the DOM, positioned by position_Left, position_Top
+        filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create({  // External Function
+
+            current_selection_SelectionType,
+            position_Left,
+            position_Top,
+            any_Selected_Callback,
+            all_Selected_Callback,
+            remove_Selected_Callback
+        })
+    }
+
+    /**
+     *
+     */
+    private _updateTable_ForChangedSelection() : void {
+
+        const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
+            modUniqueMassesWithTheirPsmCountsArray : this.props.modUniqueMassesWithTheirPsmCountsArray
+        })
 
         this.setState({ massDisplay_DataTable_RootTableObject })
     }
 
-    private _create_DataTableObjects({ modUniqueMassesWithTheirPsmCountsArray }) : DataTable_RootTableObject {
+    /**
+     *
+     */
+    private _create_DataTableObjects({ modUniqueMassesWithTheirPsmCountsArray } : {
+
+        modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}>
+
+    }) : DataTable_RootTableObject {
 
         // modUniqueMassesWithTheirPsmCountsArray //  []; // {mass, psmCount}
 
@@ -149,6 +230,25 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         const dataTable_Columns : Array<DataTable_Column> = [];
 
         {
+            // { //  ANY or ALL label when selected
+            //     const dataTable_Column = new DataTable_Column({
+            //         id: "any_all", // Used for tracking sort order. Keep short
+            //         displayName: "",
+            //         width: 40,
+            //         sortable: true,
+            //         style_override_DataRowCell_React: {
+            //             // display: "inline-block",
+            //             // whiteSpace: "nowrap",
+            //             // overflowX: "auto",
+            //             fontSize: 12
+            //         },
+            //         // style_override_header_React : {},  // Optional
+            //         // style_override_React : {},  // Optional
+            //         // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
+            //         // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            //     });
+            //     dataTable_Columns.push(dataTable_Column);
+            // }
             {
                 const dataTable_Column = new DataTable_Column({
                     id: "mass", // Used for tracking sort order. Keep short
@@ -161,6 +261,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                         // overflowX: "auto",
                         fontSize: 12
                     },
+                    cellMgmt_ExternalReactComponent : { reactComponent : Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer }
                     // style_override_header_React : {},  // Optional
                     // style_override_React : {},  // Optional
                     // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
@@ -169,19 +270,20 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                 dataTable_Columns.push(dataTable_Column);
             }
             {
+                const style_override_DataRowCell_React : React.CSSProperties = {
+                    // display: "inline-block",
+                    // whiteSpace: "nowrap",
+                    // overflowX: "auto",
+                    // textAlign: "right",
+                    paddingTop: 3,
+                        fontSize: 12
+                }
                 const dataTable_Column = new DataTable_Column({
                     id: "psmCount", // Used for tracking sort order. Keep short
                     displayName: "PSMs",
                     width: 75,
                     sortable: true,
-                    style_override_DataRowCell_React: {
-                        // display: "inline-block",
-                        // whiteSpace: "nowrap",
-                        // overflowX: "auto",
-                        // fontSize: 12
-                    },
-                    // style_override_header_React : {},  // Optional
-                    // style_override_React : {},  // Optional
+                    style_override_DataRowCell_React
                     // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
                     // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
                 });
@@ -201,34 +303,107 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
                 const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
                 {
-                    { // reportedPeptideSequence
+                    // { // 'ANY'/'ALL'
+                    //     let columnContent = ""
+                    //     const entry = this._modificationMasses_Selected_InProgress.get( modUniqueMassesWithTheirPsmCountsEntry.mass )
+                    //     if ( entry ) {
+                    //         if (entry.selectionType === SingleProtein_Filter_SelectionType.ANY) {
+                    //             columnContent = "Any"
+                    //         } else if (entry.selectionType === SingleProtein_Filter_SelectionType.ALL) {
+                    //             columnContent = "All"
+                    //         } else {
+                    //             //  Unknown value for existingEntry.selectionType
+                    //             const msg = "ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component:_create_DataTableObjects: Unknown value for entry.selectionType : " + entry.selectionType
+                    //             console.warn( msg )
+                    //             throw Error( msg )
+                    //         }
+                    //     }
+                    //     const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    //         valueDisplay: columnContent,
+                    //         valueSort: columnContent
+                    //     })
+                    //     columnEntries.push(columnEntry);
+                    // }
+
+                    { // mod mass
+
+                        const textLabel : string = modUniqueMassesWithTheirPsmCountsEntry.mass.toString()
+                        let current_selection_SelectionType : SingleProtein_Filter_SelectionType = undefined;
+                        {
+                            const entry : SingleProtein_Filter_PerUniqueIdentifier_Entry = this._modificationMasses_Selected_InProgress.get( modUniqueMassesWithTheirPsmCountsEntry.mass )
+                            if ( entry ) {
+                                current_selection_SelectionType = entry.selectionType
+                            }
+                        }
+
+                        const cellMgmt_ExternalReactComponent_Data = new Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer_CellMgmt_Data({
+                            textLabel,
+                            current_selection_SelectionType
+                        })
+
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay: modUniqueMassesWithTheirPsmCountsEntry.mass,
-                            valueSort: modUniqueMassesWithTheirPsmCountsEntry.mass
+                            // valueDisplay: modUniqueMassesWithTheirPsmCountsEntry.mass.toString(),
+                            valueSort: modUniqueMassesWithTheirPsmCountsEntry.mass,
+                            cellMgmt_ExternalReactComponent_Data
                         })
                         columnEntries.push(columnEntry);
                     }
 
-                    { // numPsms
-                        const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay: modUniqueMassesWithTheirPsmCountsEntry.psmCount.toLocaleString(),
-                            valueSort: modUniqueMassesWithTheirPsmCountsEntry.psmCount
-                        })
-                        columnEntries.push(columnEntry);
-                    }
+                    const columnEntry = new DataTable_DataRow_ColumnEntry({
+                        valueDisplay: modUniqueMassesWithTheirPsmCountsEntry.psmCount.toLocaleString(),
+                        valueSort: modUniqueMassesWithTheirPsmCountsEntry.psmCount
+                    })
+                    columnEntries.push(columnEntry);
                 }
 
-                let highlightRow = false;
+                // let highlightRowWithBackgroundColor = false;
 
-                if ( this._modificationMasses_Selected_InProgress.has( modUniqueMassesWithTheirPsmCountsEntry.mass ) ) {
-                    highlightRow = true;
+                // if ( this._modificationMasses_Selected_InProgress.has( modUniqueMassesWithTheirPsmCountsEntry.mass ) ) {
+                //     highlightRowWithBackgroundColor = true;
+                // }
+
+                // let row_CSS_Additions : string = undefined
+                // let styleOverrides_innerContainingDiv : React.CSSProperties = undefined
+
+                // if ( this._modificationMasses_Selected_InProgress.has( modUniqueMassesWithTheirPsmCountsEntry.mass ) ) {
+                //     row_CSS_Additions = " standard-border-color-dark "
+                //     styleOverrides_innerContainingDiv = {
+                //         marginTop : 3,
+                //         marginBottom : 3,
+                //         borderStyle : "solid",
+                //         borderWidth : 2
+                //     }
+                // }
+
+                let highlightRowWithBorderSolid = false
+                let highlightRowWithBorderDash = false
+
+                {
+                    const entry : SingleProtein_Filter_PerUniqueIdentifier_Entry = this._modificationMasses_Selected_InProgress.get( modUniqueMassesWithTheirPsmCountsEntry.mass )
+                    if ( entry ) {
+                        if ( entry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+                            //  OR
+                            highlightRowWithBorderDash = true
+                        } else if ( entry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                            //  AND
+                            highlightRowWithBorderSolid = true
+                        } else {
+                            const msg = "ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component:_create_DataTableObjects: Unknown value for entry.selectionType : " + entry.selectionType
+                            console.warn( msg )
+                            throw Error( msg )
+                        }
+                    }
                 }
 
                 const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                     uniqueId : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     sortOrder_OnEquals : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     columnEntries,
-                    highlightRow,
+                    // highlightRowWithBackgroundColor,
+                    highlightRowWithBorderSolid,
+                    highlightRowWithBorderDash,
+                    // row_CSS_Additions,
+                    // styleOverrides_innerContainingDiv,
                     tableRowClickHandlerParameter : { mass : modUniqueMassesWithTheirPsmCountsEntry.mass }
                 })
 
@@ -238,7 +413,8 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
         const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
             columns : dataTable_Columns,
-            dataTable_DataRowEntries
+            dataTable_DataRowEntries,
+            highlightingOneOrMoreRowsWithBorder : true
         });
 
         const tableOptions = new DataTable_TableOptions({
@@ -254,7 +430,12 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         return dataTable_RootTableObject;
     }
 
+    /**
+     *
+     */
     render(): React.ReactNode {
+
+        let mods_selection_dialog_list_bounding_box_Width = 280;
 
         return (
             <ModalOverlay_Limelight_Component
@@ -283,8 +464,9 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                                 {/* width: value tied to width of list entry */}
 
                             <div ref={ this._mods_selection_dialog_list_bounding_box_Ref }
-                                style={ {  maxHeight : 300, overflowY: "auto", width: 270, overflowX: "hidden" } } // max-height updated after mount
-                                className=" mod-mass-select-dialog-bounding-box  ">
+                                style={ {  maxHeight : 300, overflowY: "auto", width: mods_selection_dialog_list_bounding_box_Width, overflowX: "hidden" } } // max-height updated after mount
+                                // className=" mod-mass-select-dialog-bounding-box  "
+                            >
 
                                 <div  >
 

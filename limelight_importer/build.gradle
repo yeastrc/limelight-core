@@ -69,6 +69,7 @@ configurations.all {
 
  String limelight_import_version = project.file('../Gradle_limelight-import-api_version_for_Gradle.txt').getText('UTF-8');
 
+//  This commented out variable may NOT be current/correct string.
 // String limelight_import_version = "0.9.0";
  
 println("limelight_import_version: " + limelight_import_version);

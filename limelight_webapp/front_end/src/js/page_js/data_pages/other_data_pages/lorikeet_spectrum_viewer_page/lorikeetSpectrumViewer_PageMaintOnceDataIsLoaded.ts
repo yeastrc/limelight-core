@@ -295,7 +295,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 					uniqueId : dataTable_DataRowEntry.uniqueId,
 					sortOrder_OnEquals : dataTable_DataRowEntry.sortOrder_OnEquals,
 					columnEntries : dataTable_DataRowEntry.columnEntries,
-					highlightRow,
+					highlightRowWithBackgroundColor: highlightRow,
 					tableRowClickHandlerParameter : dataTable_DataRowEntry.tableRowClickHandlerParameter
 				})
 

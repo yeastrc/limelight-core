@@ -93,10 +93,10 @@ export const dataTable_React_DataObjects_Validator = function ({ dataTable_RootT
 
     if ( dataTable_DataGroupRowEntries ) {
 
-        return validate_dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTableId })
+        return validate_dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTable_RootTableDataObject, dataTableId })
     }
 
-    return  validate_dataTable_DataRowEntries({ dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTableId })
+    return  validate_dataTable_DataRowEntries({ dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTable_RootTableDataObject, dataTableId })
 }
 
 /**
@@ -105,11 +105,12 @@ export const dataTable_React_DataObjects_Validator = function ({ dataTable_RootT
  * @returns true if valid, otherwise false
  * @throws Throws Error for some errors
  */
-const validate_dataTable_DataGroupRowEntries = function({ dataTable_DataGroupRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTableId } : {
+const validate_dataTable_DataGroupRowEntries = function({ dataTable_DataGroupRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTable_RootTableDataObject, dataTableId } : {
 
     dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry>
     dataTable_ColumnEntries : Array<DataTable_Column>
     dataTable_TableOptions : DataTable_TableOptions
+    dataTable_RootTableDataObject : DataTable_RootTableDataObject
     dataTableId : string
 }) : void {
 
@@ -133,7 +134,9 @@ const validate_dataTable_DataGroupRowEntries = function({ dataTable_DataGroupRow
 
         uniqueIdValues.add( dataTable_DataGroupRowEntry.uniqueId )
 
-        validate_dataTable_DataRowEntries({ dataTable_DataRowEntries : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTableId });
+        validate_dataTable_DataRowEntries({
+            dataTable_DataRowEntries : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTable_RootTableDataObject, dataTableId
+        });
     }
 }
 
@@ -143,11 +146,12 @@ const validate_dataTable_DataGroupRowEntries = function({ dataTable_DataGroupRow
  * @returns true if valid, otherwise false
  * @throws Throws Error for some errors
  */
-const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTableId } : {
+const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, dataTable_ColumnEntries, dataTable_TableOptions, dataTable_RootTableDataObject, dataTableId } : {
 
     dataTable_DataRowEntries : Array<DataTable_DataRowEntry>  // Rows in Table or in Group
     dataTable_ColumnEntries : Array<DataTable_Column>    //  DataTable_Column - Column Def for each column in table
     dataTable_TableOptions : DataTable_TableOptions,
+    dataTable_RootTableDataObject : DataTable_RootTableDataObject
     dataTableId : string
 }) : void {
 
@@ -197,6 +201,13 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
         }
         if ( dataTable_DataRowEntry.childTableData && ( ! dataTable_TableOptions.dataRow_GetChildTableData ) ) {
             const msg = "dataTable_DataRowEntry.childTableData has value BUT dataTable_TableOptions.dataRow_GetChildTableData does NOT have a value. dataTableId: " + dataTableId
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        // Data in row but not in dataTable_RootTableDataObject
+        if ( ( dataTable_DataRowEntry.highlightRowWithBorderSolid || dataTable_DataRowEntry.highlightRowWithBorderDash ) && ( ! dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder ) ) {
+            const msg = "dataTable_DataRowEntry.highlightRowWithBorderSolid or dataTable_DataRowEntry.highlightRowWithBorderDash is true BUT dataTable_TableOptions.highlightingOneOrMoreRowsWithBorder is not true. dataTableId: " + dataTableId
             console.warn( msg )
             throw Error( msg )
         }

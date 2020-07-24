@@ -206,6 +206,9 @@ public class ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_Rest
     			boolean anyPsmHas_DynamicModifications = entry.isAnyPsmHas_DynamicModifications();
     			reportedPeptideItemForProjectSearch.setAnyPsmHas_DynamicModifications( anyPsmHas_DynamicModifications );
     			
+    			boolean anyPsmHas_OpenModifications = entry.isAnyPsmHas_OpenModifications();
+    			reportedPeptideItemForProjectSearch.setAnyPsmHas_OpenModifications( anyPsmHas_OpenModifications );
+    			
     			boolean anyPsmHas_ReporterIons = entry.isAnyPsmHas_ReporterIons();
     			reportedPeptideItemForProjectSearch.setAnyPsmHas_ReporterIons( anyPsmHas_ReporterIons );
     			

@@ -71,6 +71,12 @@ public class PsmDAO extends Limelight_JDBC_Base implements PsmDAO_IF {
 					if ( has_modifications == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						result.setHasModifications( true );
 					}
+					{
+						int intValue = rs.getInt( "has_open_modifications" );
+						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							result.setHasOpenModifications( true );
+						}
+					}
 					int has_reporterIons = rs.getInt( "has_reporter_ions" );
 					if ( has_reporterIons == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						result.setHasReporterIons( true );

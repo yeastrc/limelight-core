@@ -106,7 +106,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 							}
 						}
 
-						objectThis._processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
+						objectThis._processReportedPeptideId_AndData_ListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } );
 						
 						if ( ! objectThis._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() ) {
 
@@ -558,7 +558,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 	 * 	Set:  this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds( ) 
 	 *  Set (if available):  this._loadedDataPerProjectSearchIdHolder.set_numPsmsForReportedPeptideIdMap() : Map of num PSMs : Key ReportedPeptideId
 	 */
-	_processPeptideIdListFromServer_Populate_loadedData( { reportedPeptideCoreDataArray } ) {
+	_processReportedPeptideId_AndData_ListFromServer_Populate_loadedData({ reportedPeptideCoreDataArray } ) {
 		
 		//  Each entry in reportedPeptideCoreDataArray is an object with properties reportedPeptideId and numPsms_IfComputedOrInDB
 		
@@ -573,6 +573,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		const numPsmsForReportedPeptideIdMap = new Map();
 		const reportedPeptideIds_HasDynamicModifications = new Set();
 		const reportedPeptideIds_AnyPsmHas_DynamicModifications = new Set();
+		const reportedPeptideIds_AnyPsmHas_OpenModifications = new Set();
 		const reportedPeptideIds_AnyPsmHas_ReporterIons = new Set();
 		
 		let allSet_numPsmsForReportedPeptideIdMap = true;
@@ -583,6 +584,7 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 			const numPsms_IfComputedOrInDB = reportedPeptideCoreDataEntry.numPsms_IfComputedOrInDB;
 			const reportedPeptideHas_DynamicModifications = reportedPeptideCoreDataEntry.reportedPeptideHas_DynamicModifications;
 			const anyPsmHas_DynamicModifications = reportedPeptideCoreDataEntry.anyPsmHas_DynamicModifications;
+			const anyPsmHas_OpenModifications = reportedPeptideCoreDataEntry.anyPsmHas_OpenModifications;
 			const anyPsmHas_ReporterIons = reportedPeptideCoreDataEntry.anyPsmHas_ReporterIons;
 
 			reportedPeptideIds.push( reportedPeptideId );
@@ -599,6 +601,9 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 			if ( anyPsmHas_DynamicModifications ) {
 				reportedPeptideIds_AnyPsmHas_DynamicModifications.add( reportedPeptideId );
 			}
+			if ( anyPsmHas_OpenModifications ) {
+				reportedPeptideIds_AnyPsmHas_OpenModifications.add( reportedPeptideId );
+			}
 			if ( anyPsmHas_ReporterIons ) {
 				reportedPeptideIds_AnyPsmHas_ReporterIons.add( reportedPeptideId );
 			}
@@ -612,6 +617,8 @@ export class ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer 
 		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_HasDynamicModifications( reportedPeptideIds_HasDynamicModifications );
 		//  Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Dynamic Modifications
 		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_AnyPsmHas_DynamicModifications( reportedPeptideIds_AnyPsmHas_DynamicModifications );
+		//  Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Open Modifications
+		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_AnyPsmHas_OpenModifications( reportedPeptideIds_AnyPsmHas_OpenModifications );
 		//  Reported Peptides for Current Cutoffs/Filters that for each Reported Peptide Id it contains at least 1 PSM that has Reporter Ions
 		this._loadedDataPerProjectSearchIdHolder.set_reportedPeptideIds_AnyPsmHas_ReporterIons( reportedPeptideIds_AnyPsmHas_ReporterIons );
 	}

@@ -34,6 +34,7 @@ import org.yeastrc.limelight.limelight_webapp.dao.PsmDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.SearchScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.*;
+import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.LorikeetOpenMod.LorikeetOpenModPosition;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -105,7 +106,13 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 	
 	@Autowired
 	private SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF srchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher;
+	
+	@Autowired
+	private PsmOpenModification_For_PsmId_Searcher_IF psmOpenModification_For_PsmId_Searcher;
 
+	@Autowired
+	private PsmOpenModificationPosition_Searcher_IF psmOpenModificationPosition_Searcher;
+	
 	@Autowired
 	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
 	
@@ -324,84 +331,159 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 			    throw new LimelightInternalErrorException( msg );
 			}
 			lorikeetRootData.setSequence( peptideSequence );
-			
-	        // Variable Mods, N and C terminus Mods
-			
-			List<LorikeetVariableMod> variableMods = null;
-
-			double ntermMod = 0; // additional mass to be added to the n-term
-			double ctermMod = 0; // additional mass to be added to the c-term
-			
-
-			if ( psmDTO.isHasModifications() ) {
 				
-				//  Use Dynamic Mod records at PSM level
-
-				List<PsmDynamicModificationDTO> srchRepPeptDynamicModDTOList = 
-						psmDynamicModification_For_PsmId_Searcher
-						.getPsmDynamicModification_For_PsmId( psmId );
-
-				variableMods = new ArrayList<>( srchRepPeptDynamicModDTOList.size() );
+			{
+		        // Variable Mods, N and C terminus Mods
 				
-				for ( PsmDynamicModificationDTO psmDynamicModificationDTO : srchRepPeptDynamicModDTOList ) {
+				List<LorikeetVariableMod> variableMods = null;
+	
+				double ntermMod = 0; // additional mass to be added to the n-term
+				double ctermMod = 0; // additional mass to be added to the c-term
+				
+	
+				if ( psmDTO.isHasModifications() ) {
 					
-					if ( psmDynamicModificationDTO.isIs_N_Terminal() && psmDynamicModificationDTO.isIs_C_Terminal() ) {
-						String msg = "PSM Dynamic Mod has both Is_N_Terminal and Is_C_Terminal true.  id: " + psmDynamicModificationDTO.getId();
-						log.error( msg );
-						throw new LimelightInternalErrorException(msg);
+					//  Use Dynamic Mod records at PSM level
+	
+					List<PsmDynamicModificationDTO> srchRepPeptDynamicModDTOList = 
+							psmDynamicModification_For_PsmId_Searcher
+							.getPsmDynamicModification_For_PsmId( psmId );
+	
+					variableMods = new ArrayList<>( srchRepPeptDynamicModDTOList.size() );
+					
+					for ( PsmDynamicModificationDTO psmDynamicModificationDTO : srchRepPeptDynamicModDTOList ) {
+						
+						if ( psmDynamicModificationDTO.isIs_N_Terminal() && psmDynamicModificationDTO.isIs_C_Terminal() ) {
+							String msg = "PSM Dynamic Mod has both Is_N_Terminal and Is_C_Terminal true.  id: " + psmDynamicModificationDTO.getId();
+							log.error( msg );
+							throw new LimelightInternalErrorException(msg);
+						}
+						if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
+							ntermMod += psmDynamicModificationDTO.getMass();
+						} else if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
+							ctermMod += psmDynamicModificationDTO.getMass();
+						} else {
+							int dynamicModPosition = psmDynamicModificationDTO.getPosition();
+							String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
+							LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
+							lorikeetVariableMod.setIndex( psmDynamicModificationDTO.getPosition() );
+							lorikeetVariableMod.setModMass( psmDynamicModificationDTO.getMass() );
+							lorikeetVariableMod.setAminoAcid( aminoAcid );
+							variableMods.add( lorikeetVariableMod );
+						}
 					}
-					if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
-						ntermMod += psmDynamicModificationDTO.getMass();
-					} else if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
-						ctermMod += psmDynamicModificationDTO.getMass();
-					} else {
-						int dynamicModPosition = psmDynamicModificationDTO.getPosition();
-						String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
-						LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
-						lorikeetVariableMod.setIndex( psmDynamicModificationDTO.getPosition() );
-						lorikeetVariableMod.setModMass( psmDynamicModificationDTO.getMass() );
-						lorikeetVariableMod.setAminoAcid( aminoAcid );
-						variableMods.add( lorikeetVariableMod );
+					
+				} else {
+	
+					//  Use Dynamic Mod records at Reported Peptide level
+	
+					List<SrchRepPeptDynamicModDTO> srchRepPeptDynamicModDTOList = 
+							srchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher
+							.getSrchRepPept_DynamicMod_For_SearchIdReportedPeptideId( searchId, reportedPeptideId );
+	
+					variableMods = new ArrayList<>( srchRepPeptDynamicModDTOList.size() );
+					
+					for ( SrchRepPeptDynamicModDTO srchRepPeptDynamicModDTO : srchRepPeptDynamicModDTOList ) {
+	
+						if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() && srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
+							String msg = "SrchRepPeptDynamicModDTO has both Is_N_Terminal and Is_C_Terminal true. id: " + srchRepPeptDynamicModDTO.getId();
+							log.error( msg );
+							throw new LimelightInternalErrorException(msg);
+						}
+						if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() ) {
+							ntermMod += srchRepPeptDynamicModDTO.getMass();
+						} else if ( srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
+							ctermMod += srchRepPeptDynamicModDTO.getMass();
+						} else {
+							int dynamicModPosition = srchRepPeptDynamicModDTO.getPosition();
+							String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
+							LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
+							lorikeetVariableMod.setIndex( srchRepPeptDynamicModDTO.getPosition() );
+							lorikeetVariableMod.setModMass( srchRepPeptDynamicModDTO.getMass() );
+							lorikeetVariableMod.setAminoAcid( aminoAcid );
+							variableMods.add( lorikeetVariableMod );
+						}
+					}
+				}
+		        
+		        lorikeetRootData.setVariableMods( variableMods );
+		        
+		        lorikeetRootData.setNtermMod( ntermMod );
+		        lorikeetRootData.setCtermMod( ctermMod );
+	    	}
+			
+			{  //  PSM Open Modifications
+				
+				List<PsmOpenModificationDTO> psmOpenModificationDTOList = 
+						psmOpenModification_For_PsmId_Searcher.getPsmOpenModification_For_PsmId( psmId );
+				
+				if ( ! psmOpenModificationDTOList.isEmpty() ) {
+					
+					List<LorikeetOpenMod> lorikeetOpenModList = new ArrayList<>( psmOpenModificationDTOList.size() );
+					lorikeetRootData.setOpenMods( lorikeetOpenModList );
+					
+					for ( PsmOpenModificationDTO psmOpenModificationDTO : psmOpenModificationDTOList ) {
+						
+						LorikeetOpenMod lorikeetOpenMod = new LorikeetOpenMod();
+						lorikeetOpenModList.add( lorikeetOpenMod );
+						lorikeetOpenMod.setModMass( psmOpenModificationDTO.getMass() );
+						
+						List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList = 
+								psmOpenModificationPosition_Searcher.getPsmOpenModificationPosition( psmOpenModificationDTO.getId() );
+						
+						if ( ! psmOpenModificationPositionDTOList.isEmpty() ) {
+							List<LorikeetOpenModPosition> lorikeetOpenModPositionList = new ArrayList<>( psmOpenModificationPositionDTOList.size() );
+							lorikeetOpenMod.setPositions( lorikeetOpenModPositionList );
+							
+							for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : psmOpenModificationPositionDTOList ) {
+	
+								String aminoAcid = peptideSequence.substring( psmOpenModificationPositionDTO.getPosition() - 1 /* chg to zero based */, psmOpenModificationPositionDTO.getPosition() );
+	
+								LorikeetOpenModPosition lorikeetOpenModPosition = new LorikeetOpenModPosition();
+								lorikeetOpenModPositionList.add( lorikeetOpenModPosition );
+								lorikeetOpenModPosition.setIndex( psmOpenModificationPositionDTO.getPosition() );
+								lorikeetOpenModPosition.setIs_N_Terminal( psmOpenModificationPositionDTO.isIs_N_Terminal() );
+								lorikeetOpenModPosition.setIs_C_Terminal( psmOpenModificationPositionDTO.isIs_C_Terminal() );
+								lorikeetOpenModPosition.setAminoAcid( aminoAcid );
+							}
+						}
 					}
 				}
 				
-			} else {
-
-				//  Use Dynamic Mod records at Reported Peptide level
-
-				List<SrchRepPeptDynamicModDTO> srchRepPeptDynamicModDTOList = 
-						srchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher
-						.getSrchRepPept_DynamicMod_For_SearchIdReportedPeptideId( searchId, reportedPeptideId );
-
-				variableMods = new ArrayList<>( srchRepPeptDynamicModDTOList.size() );
-				
-				for ( SrchRepPeptDynamicModDTO srchRepPeptDynamicModDTO : srchRepPeptDynamicModDTOList ) {
-
-					if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() && srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
-						String msg = "SrchRepPeptDynamicModDTO has both Is_N_Terminal and Is_C_Terminal true. id: " + srchRepPeptDynamicModDTO.getId();
-						log.error( msg );
-						throw new LimelightInternalErrorException(msg);
-					}
-					if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() ) {
-						ntermMod += srchRepPeptDynamicModDTO.getMass();
-					} else if ( srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
-						ctermMod += srchRepPeptDynamicModDTO.getMass();
-					} else {
-						int dynamicModPosition = srchRepPeptDynamicModDTO.getPosition();
-						String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
-						LorikeetVariableMod lorikeetVariableMod = new LorikeetVariableMod();
-						lorikeetVariableMod.setIndex( srchRepPeptDynamicModDTO.getPosition() );
-						lorikeetVariableMod.setModMass( srchRepPeptDynamicModDTO.getMass() );
-						lorikeetVariableMod.setAminoAcid( aminoAcid );
-						variableMods.add( lorikeetVariableMod );
-					}
-				}
 			}
-	        
-	        lorikeetRootData.setVariableMods( variableMods );
-	        
-	        lorikeetRootData.setNtermMod( ntermMod );
-	        lorikeetRootData.setCtermMod( ctermMod );
+
+			{ // Static Mods
+				List<StaticModDTO> staticModsForSearch = staticModDTOForSearchIdSearcher.getListForSearchId( searchId );
+				List<LorikeetStaticMod> staticModsLorikeet = new ArrayList<>( staticModsForSearch.size() );
+				for ( StaticModDTO staticModDTO : staticModsForSearch ) {
+					LorikeetStaticMod  staticModLorikeet = new LorikeetStaticMod();
+					staticModLorikeet.setAminoAcid( staticModDTO.getResidue() );
+					staticModLorikeet.setModMass( staticModDTO.getMass().doubleValue() );
+					staticModsLorikeet.add( staticModLorikeet );
+				}
+				lorikeetRootData.setStaticMods( staticModsLorikeet );	
+			}
+			
+	        {  //  Reporter Ions from PSM
+	        	if ( psmDTO.isHasReporterIons() ) {
+	        		
+	        		List<Long> psmIds = new ArrayList<>( 1 );
+	        		psmIds.add( psmId );
+	
+		        	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
+		        			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
+		        			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds );
+
+		        	List<BigDecimal> userReporterIons = new ArrayList<>( reporterIonMassesSearcherResult.size() );
+		        	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem dbItem : reporterIonMassesSearcherResult ) {
+		        		BigDecimal reporterIonMass = dbItem.getReporterIonMass();
+		        		userReporterIons.add( reporterIonMass );
+		        	}
+		        	lorikeetRootData.setUserReporterIons( userReporterIons );
+	        	}
+	        }
+    		
+	        ///
 	        
 
         	lorikeetRootData.setFileName( scanFilename );
@@ -440,37 +522,6 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 				}     
 			}
 			
-			{ // Static Mods
-				List<StaticModDTO> staticModsForSearch = staticModDTOForSearchIdSearcher.getListForSearchId( searchId );
-				List<LorikeetStaticMod> staticModsLorikeet = new ArrayList<>( staticModsForSearch.size() );
-				for ( StaticModDTO staticModDTO : staticModsForSearch ) {
-					LorikeetStaticMod  staticModLorikeet = new LorikeetStaticMod();
-					staticModLorikeet.setAminoAcid( staticModDTO.getResidue() );
-					staticModLorikeet.setModMass( staticModDTO.getMass().doubleValue() );
-					staticModsLorikeet.add( staticModLorikeet );
-				}
-				lorikeetRootData.setStaticMods( staticModsLorikeet );	
-			}
-			
-	        {  //  Reporter Ions from PSM
-	        	if ( psmDTO.isHasReporterIons() ) {
-	        		
-	        		List<Long> psmIds = new ArrayList<>( 1 );
-	        		psmIds.add( psmId );
-	
-		        	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
-		        			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
-		        			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds );
-
-		        	List<BigDecimal> userReporterIons = new ArrayList<>( reporterIonMassesSearcherResult.size() );
-		        	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem dbItem : reporterIonMassesSearcherResult ) {
-		        		BigDecimal reporterIonMass = dbItem.getReporterIonMass();
-		        		userReporterIons.add( reporterIonMass );
-		        	}
-		        	lorikeetRootData.setUserReporterIons( userReporterIons );
-	        	}
-	        }
-    		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( lorikeetGetSpectrumServiceResult );
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );

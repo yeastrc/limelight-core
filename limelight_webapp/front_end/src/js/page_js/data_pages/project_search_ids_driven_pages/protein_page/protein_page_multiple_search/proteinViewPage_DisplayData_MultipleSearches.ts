@@ -47,6 +47,7 @@ import { create_dataTable_Root_React } from 'page_js/data_pages/data_table_react
 import { ProteinRow_tableRowClickHandlerParameter_MultipleSearches, renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject } from './proteinViewPage_DisplayData_MultipleSearches_Create_ProteinList_DataTable_RootTableDataObject';
 import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES } from './proteinViewPage_DisplayData_MultipleSearches_Constants';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
+import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 
 /**
  * Entry in proteinList
@@ -420,6 +421,13 @@ export class ProteinViewPage_Display_MultipleSearches {
 				}
 			}
 			{
+				const promise_get__ = get_OpenModificationsForReportedPeptideIds({ loadedDataPerProjectSearchIdHolder, projectSearchId, reportedPeptideIds });
+
+				if ( promise_get__ ) { //  May return null so test before add to array
+					promises__get_Array.push( promise_get__ );
+				}
+			}
+			{
 				const promise_get__ = loadPeptideIdsIfNeeded( { reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder } );
 
 				if ( promise_get__ ) { //  May return null so test before add to array
@@ -756,12 +764,14 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			//                  loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
+			//					loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId()
+
 			//                  loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId();
 
 			const proteinPeptideMap : Map<number, Set<string>> = new Map(); // Map<proteinSequenceVersionId, Set<reportedPeptide_CommonValue_EncodedString>>
 
 			//  Map< proteinSequenceVersionId, Map< generatedReportedPeptide, Map< projectSearchId, Set< reportedPeptideIds >
-			const proteinSequenceVersionId_generatedReportedPeptide_projectSearchId_reportedPeptideIds_Map : Map<string,Map<number,Set<number>>> = new Map();
+			// const proteinSequenceVersionId_generatedReportedPeptide_projectSearchId_reportedPeptideIds_Map : Map<string,Map<number,Set<number>>> = new Map();
 
 			//  Cached reportedPeptide_CommonValue_EncodedString : Map<projectSearchId, Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>>
 			const  cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId_Key_projectSearchId : Map<number, Map<number, string>> = new Map();
@@ -810,11 +820,21 @@ export class ProteinViewPage_Display_MultipleSearches {
 						console.warn( msg );
 						throw Error( msg );
 					}
-		
+
+					//  Open Modifications Per Reported Peptide Id.   mass is double
+					// Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, mass }]>>
+					const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
+
+					if ( ! openModificationsOnReportedPeptide_KeyReportedPeptideId ) {
+						const msg = "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': No value in: loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId()"
+						console.warn( msg );
+						throw Error( msg );
+					}
+
 					const reportedPeptideIds = proteinItemRecord.reportedPeptideIds;
 
 					for ( const reportedPeptideId of reportedPeptideIds ) {
-						
+
 						//  Cached reportedPeptide_CommonValue_EncodedString : Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>
 						let reportedPeptide_CommonValue_EncodedString = cached_reportedPeptide_CommonValue_EncodedString_key_reportedPeptideId.get( reportedPeptideId );
 
@@ -822,53 +842,54 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 							//  Not in cache so compute:
 
-							let modsRoundedSet_KeyPosition: Map<number, Set<number>> = new Map();
+							const variableMmodificationsRoundedArray_Map_KeyPosition: Map<number, Array<string>> = new Map();
 
-							const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
-							if ( dynamicModificationsOnReportedPeptideArray ) {
-								
-								//  Have Mods for this reportedPeptideId
-								for ( const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray ) {
-								
-									const mass = dynamicModificationOnReportedPeptide.mass;
-									const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+							{
+								const modsRoundedSet_KeyPosition: Map<number, Set<number>> = new Map();
 
-									let modsRoundedSet = modsRoundedSet_KeyPosition.get( positionOnReportedPeptide );
-									if ( ! modsRoundedSet ) {
-										modsRoundedSet = new Set();
-										modsRoundedSet_KeyPosition.set( positionOnReportedPeptide, modsRoundedSet );
+								const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get(reportedPeptideId);
+								if (dynamicModificationsOnReportedPeptideArray) {
+
+									//  Have Mods for this reportedPeptideId
+									for (const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray) {
+
+										const mass = dynamicModificationOnReportedPeptide.mass;
+										const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+
+										let modsRoundedSet = modsRoundedSet_KeyPosition.get(positionOnReportedPeptide);
+										if (!modsRoundedSet) {
+											modsRoundedSet = new Set();
+											modsRoundedSet_KeyPosition.set(positionOnReportedPeptide, modsRoundedSet);
+										}
+
+										const massRounded = modificationMass_CommonRounding_ReturnNumber(mass);  // Call external function
+										modsRoundedSet.add(massRounded);
 									}
 
-									const massRounded = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
-									modsRoundedSet.add( massRounded );
-								}
-							}
-							
+									for (const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries()) {
+										const positionOfModification = modsRoundedSet_KeyPosition_Entry[0];
+										const modsRoundedSet = modsRoundedSet_KeyPosition_Entry[1];
 
-							const variableMmodificationsRoundedArray_Map_KeyPosition : Map<number, Array<string>> = new Map();
-
-							for ( const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries() ) {
-								const positionOfModification = modsRoundedSet_KeyPosition_Entry[ 0 ];
-								const modsRoundedSet = modsRoundedSet_KeyPosition_Entry[ 1 ];
-				
-								const modsRoundedArray = Array.from( modsRoundedSet );
-								if ( modsRoundedArray.length > 1 ) {
-									modsRoundedArray.sort( (a,b) => {
-										if ( a < b ) {
-											return -1;
-										} else if ( a > b ) {
-											return 1;
-										} else {
-											return 0;
+										const modsRoundedArray = Array.from(modsRoundedSet);
+										if (modsRoundedArray.length > 1) {
+											modsRoundedArray.sort((a, b) => {
+												if (a < b) {
+													return -1;
+												} else if (a > b) {
+													return 1;
+												} else {
+													return 0;
+												}
+											});
 										}
-									});
+										const modsRoundedStringsArray: Array<string> = [];
+										for (const modRounded of modsRoundedArray) {
+											const modRoundedString = modRounded.toString();
+											modsRoundedStringsArray.push(modRoundedString);
+										}
+										variableMmodificationsRoundedArray_Map_KeyPosition.set(positionOfModification, modsRoundedStringsArray);
+									}
 								}
-								const modsRoundedStringsArray : Array<string> = [];
-								for ( const modRounded of modsRoundedArray ) {
-									const modRoundedString = modRounded.toString();
-									modsRoundedStringsArray.push( modRoundedString );
-								}
-								variableMmodificationsRoundedArray_Map_KeyPosition.set( positionOfModification, modsRoundedStringsArray );
 							}
 
 							const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId });
@@ -881,7 +902,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 							reportedPeptide_CommonValue_EncodedString = create_reportedPeptide_CommonValue_EncodedString({ 
 								
-								peptideId, variableModifications_Map_KeyPosition : variableMmodificationsRoundedArray_Map_KeyPosition, staticModifications_Map_KeyPosition : undefined 
+								peptideId, variableModifications_Map_KeyPosition : variableMmodificationsRoundedArray_Map_KeyPosition, staticModifications_Map_KeyPosition : undefined
 							});
 
 							//  Cached reportedPeptide_CommonValue_EncodedString : Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>

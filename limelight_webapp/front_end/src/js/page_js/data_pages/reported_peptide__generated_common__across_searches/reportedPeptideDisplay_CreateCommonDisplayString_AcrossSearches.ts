@@ -16,9 +16,10 @@
 /**
  * @param peptideSequence
  * @param variableModificationsRoundedArray_KeyPosition - Map<(position), Array of variable modifications strings)>
+ * @param staticModificationsRounded_KeyPosition - Map<position, mass rounded as string>
  * 
  */
-export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches = function({ peptideSequence, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition } : { 
+export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches = function({ peptideSequence, variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition } : {
     
     peptideSequence : string, 
     variableModificationsRoundedArray_KeyPosition : Map<number, Array<string>> //  Map<position, Array<mass rounded as string>>

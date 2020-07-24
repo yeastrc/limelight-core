@@ -14,6 +14,7 @@ const  _PRIMARY_SEPARATOR = "!";  // <peptide id>!<variable mods>!<static mods>
 
 const _PEPTIDE_ID_IDENTIER = "PID";  //  Starts <peptide id> section
 const _VARIABLE_MODS_IDENTIFIER = "V";  // Starts <variable mods> section
+const _OPEN_MODS_IDENTIFIER = "O";  // Starts <open mods> section
 const _STATIC_MODS_IDENTIFIER = "S";    // Starts <static mods> section
 const _MODS_ENTRY_SEPARATOR = "@";     //  <position>$<mass>$<mass>...@<position>$<mass>$<mass>...
 const _MODS_ENTRY_SUB_SEPARATOR = "$"  //  
@@ -24,6 +25,7 @@ const valueCheckForDelimiters = function( value : string ) : void {
     if ( value.includes( _PRIMARY_SEPARATOR ) 
     || value.includes( _PEPTIDE_ID_IDENTIER )
     || value.includes( _VARIABLE_MODS_IDENTIFIER )
+    || value.includes( _OPEN_MODS_IDENTIFIER )
     || value.includes( _STATIC_MODS_IDENTIFIER )
     || value.includes( _STATIC_MODS_IDENTIFIER )
     || value.includes( _MODS_ENTRY_SEPARATOR )
@@ -88,7 +90,7 @@ export const create_reportedPeptide_CommonValue_EncodedString = function({ pepti
 }
 
 /**
- * Encode Variable or Static mod masses
+ * Encode Variable mod masses
  * 
  */
 const encodeVariableModPositionAndMasses = function({ modifications_Map_KeyPosition , resultString_Array } : {
@@ -131,17 +133,26 @@ const encodeVariableModPositionAndMasses = function({ modifications_Map_KeyPosit
 
         const masses = modifications_Map_KeyPosition.get( position );
 
+        masses.sort( (a,b) => {
+            if ( a < b ) {
+                return -1;
+            }
+            if ( a > b ) {
+                return 1;
+            }
+            return 0;
+        });
+
         for ( const mass of masses ) {
             resultString_Array.push( _MODS_ENTRY_SUB_SEPARATOR );
             resultString_Array.push( mass );
         }
     }
-
 }
 
 
 /**
- * Encode Variable or Static mod masses
+ * Encode Static mod masses
  * 
  */
 const encodeStaticModPositionAndMasses = function({ modifications_Map_KeyPosition , resultString_Array } : {

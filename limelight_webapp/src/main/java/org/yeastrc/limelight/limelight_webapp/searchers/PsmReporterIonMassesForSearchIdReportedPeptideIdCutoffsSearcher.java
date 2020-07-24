@@ -95,13 +95,13 @@ public class PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher ext
 						sqlSB.append( "  psm_filterable_annotation__lookup_tbl AS tbl_" );
 						sqlSB.append( Integer.toString( counter ) );
 						if ( counter > 1 ) {
-							sqlSB.append( " ON psm_tbl.search_id = tbl_" );
+							sqlSB.append( " ON tbl_1.search_id = tbl_" );
 							sqlSB.append( Integer.toString( counter ) );
 							sqlSB.append( ".search_id" );
-							sqlSB.append( " AND psm_tbl.reported_peptide_id = tbl_" );
+							sqlSB.append( " AND tbl_1.reported_peptide_id = tbl_" );
 							sqlSB.append( Integer.toString( counter ) );
 							sqlSB.append( ".reported_peptide_id" );
-							sqlSB.append( " AND psm_tbl.id = tbl_" );
+							sqlSB.append( " AND tbl_1.psm_id = tbl_" );
 							sqlSB.append( Integer.toString( counter ) );
 							sqlSB.append( ".psm_id" );
 						}

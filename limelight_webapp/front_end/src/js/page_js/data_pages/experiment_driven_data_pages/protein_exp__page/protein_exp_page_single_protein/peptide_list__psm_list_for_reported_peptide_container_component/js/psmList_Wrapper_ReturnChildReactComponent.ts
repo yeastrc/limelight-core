@@ -19,6 +19,8 @@ import { DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_Reque
 
 //  React Component that will be returned
 import { PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent } from '../jsx/psmList_Wrapper_ChildReactComponent';
+import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 
 
@@ -29,7 +31,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
     
     projectSearchId : number
     reportedPeptideId : number
-    reporterIonMassesSelected : Set<number>
+    proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
     searchDataLookupParamsRoot
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -43,7 +45,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
         
         projectSearchId,
         reportedPeptideId,
-        reporterIonMassesSelected,
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
         searchDataLookupParamsRoot,
         loadedDataPerProjectSearchIdHolder,
         loadedDataCommonHolder,
@@ -52,7 +54,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
     } : { 
         projectSearchId : number
         reportedPeptideId : number
-        reporterIonMassesSelected : Set<number>
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
         searchDataLookupParamsRoot
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -62,7 +64,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
 
         this.projectSearchId = projectSearchId;
         this.reportedPeptideId = reportedPeptideId;
-        this.reporterIonMassesSelected = reporterIonMassesSelected;
+        this.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
         this.loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
         this.loadedDataCommonHolder = loadedDataCommonHolder;

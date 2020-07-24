@@ -17,6 +17,7 @@ import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/
 import { ReporterIonMass_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject';
 
 import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 
 /**
  * 
@@ -85,116 +86,6 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
         }
     }
 
-	/**
-	 * Add User Selected Variable Modifications Formatted to array
-	 */
-	_userSelectionDisplay_Add_Variable_ModificationsFormatted({ variableModificationMassesToFilterOn, modsFilteringOnForDisplayArray }) {
-
-		const modificationsSelectedArray = Array.from( variableModificationMassesToFilterOn );
-
-		if ( modificationsSelectedArray.length === 1 ) {
-			//  Single selected modification so put in string
-			const modificationFormatted = modificationsSelectedArray[ 0 ].toString(); 
-			modsFilteringOnForDisplayArray.push( modificationFormatted );
-			return; // EARLY RETURN
-		}
-
-		// Multiple selected modifications so sort, and put in comma delim string with ' or ' before last entry
-
-		modificationsSelectedArray.sort( function( a, b ) {
-			//  Sort Ascending
-			if ( a < b ) {
-				return -1;
-			}
-			if ( a > b ) {
-				return 1;
-			}
-			return 0;
-		});
-
-		//  Add to list using toString()
-		for ( const modification of modificationsSelectedArray ) {
-			const modificationFormatted = modification.toString();
-			modsFilteringOnForDisplayArray.push( modificationFormatted );
-		}
-	}
-
-	/**
-	 * Add User Selected Static Modifications Formatted to array
-	 */
-	_userSelectionDisplay_Add_Static_ModificationsFormatted({ staticModificationMassesToFilterOn, modsFilteringOnForDisplayArray }) {
-
-		//  staticModificationMassesToFilterOn is Map<String (Residue), Set< Number ( Mod Mass ) >>
-
-		const modificationsSelectedEntriesArray = [];
-
-		for ( const entry of staticModificationMassesToFilterOn.entries() ) {
-
-			const residue = entry[ 0 ];
-			const modMasses = entry[ 1 ];
-
-			for ( const modMass of modMasses ) {
-				const modificationSelectedEntry = { residue : residue, modMass : modMass };
-				modificationsSelectedEntriesArray.push( modificationSelectedEntry );
-			} 
-		}
-
-		if ( modificationsSelectedEntriesArray.length === 1 ) {
-			//  Single selected modification so put in string
-			const modificationFormatted = modificationsSelectedEntriesArray[ 0 ].modMass.toString() + " (" + modificationsSelectedEntriesArray[ 0 ].residue + ")";
-			modsFilteringOnForDisplayArray.push( modificationFormatted );
-			return; // EARLY RETURN
-		}
-
-		// Multiple selected modifications so sort, and put in comma delim string with ' or ' before last entry
-
-		modificationsSelectedEntriesArray.sort( function( a, b ) {
-			//  Sort Ascending on Mod Mass then Residue
-			if ( a.modMass < b.modMass ) {
-				return -1;
-			}
-			if ( a.modMass > b.modMass ) {
-				return 1;
-			}
-			if ( a.residue < b.residue ) {
-				return -1;
-			}
-			if ( a.residue > b.residue ) {
-				return 1;
-			}
-			return 0;
-		});
-
-		//  Add to list using toString()
-		for ( const modification of modificationsSelectedEntriesArray ) {
-			const modificationFormatted = modification.modMass.toString() + " (" + modification.residue + ")";
-			modsFilteringOnForDisplayArray.push( modificationFormatted );
-		}
-	}
-
-	/**
-	 * put in comma delim string with ' or ' before last entry
-	 */
-	_userSelectionDisplay_CombineArrayIntoFormattedString({ array } : { array : Array<any> }) {
-
-		const numEntries = array.length;
-
-		if ( numEntries === 1 ) {
-			//  Single Element so return
-			return array[ 0 ]; // EARLY RETURN
-		}
-
-		//  > 1 entry so format with Comma Delim except before last entry.  Put ' or ' before last entry
-
-		const lastEntryIndex = numEntries - 1;
-		const allEntriesButLast = array.slice( 0, lastEntryIndex );
-
-		let allEntriesButLastCommaDelim = allEntriesButLast.join(", ");
-		
-		const result = allEntriesButLastCommaDelim + " or " + array[ lastEntryIndex ];
-		return result;
-	}
-
     ////////////////////////////////////////
 
     /**
@@ -207,15 +98,17 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
             const modificationMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
 
-            const is_Any_VariableModification_Selected = modificationMass_UserSelections_StateObject.is_Any_VariableModification_Selected();
+            const is_Any_VariableModification_Selected = modificationMass_UserSelections_StateObject.get_VariableModificationSelections().is_Any_Modification_Selected();
+            const is_Any_OpenModification_Selected = modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected();
             const is_Any_StaticModification_Selected = modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected();
 
-            const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected();
+            const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
 
             const peptideSearchString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
 
             if ( ( ( ! selectedProteinSequencePositionsSet ) || ( selectedProteinSequencePositionsSet.size === 0 ) )
                 && ( ! is_Any_VariableModification_Selected )
+                && ( ! is_Any_OpenModification_Selected )
                 && ( ! is_Any_StaticModification_Selected )
                 && ( ( ! reporterIonssSelectedsSet ) || ( reporterIonssSelectedsSet.size === 0 ) )
                 && ( ! peptideSearchString )
@@ -228,7 +121,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
         }
 
-        let selectedProteinSequencePositions_Display = undefined;
+        let selectedProteinSequencePositions_DisplayString : string = undefined;
 
         {
             const selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
@@ -238,117 +131,219 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 const selectedProteinSequencePositionsArray = Array.from( selectedProteinSequencePositionsSet );
                 selectedProteinSequencePositionsArray.sort();
 
-                const selectedProteinSequencePositionsString = this._userSelectionDisplay_CombineArrayIntoFormattedString({ array : selectedProteinSequencePositionsArray });
-
-                selectedProteinSequencePositions_Display = (
-                    <div >
-                        <span>Must cover protein position(s): </span> <span>{ selectedProteinSequencePositionsString }</span> {/* example: 3, 6 or 987 */}
-                    </div>
-                );
+                selectedProteinSequencePositions_DisplayString = _userSelectionDisplay_CombineArrayIntoFormattedString({ array : selectedProteinSequencePositionsArray });
             }
         }
 
-        let selectedModificationsMasses_Display = undefined;
+        const AND_SEPERATOR_STRING = "AND"
+        const OR_SEPERATOR_STRING = "OR"
+
+        let selection_AND_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+        let selection_OR_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
         {
             const modificationMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
+            const variable_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_VariableModificationSelections()
+            const open_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
 
-            const is_Any_VariableModification_Selected = modificationMass_UserSelections_StateObject.is_Any_VariableModification_Selected();
-            const is_Any_StaticModification_Selected = modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected();
+            //  Variable Mods
+            if ( variable_ModificationSelections_StateObject.is_Any_Modification_Selected() ) {
 
-            if ( is_Any_VariableModification_Selected || is_Any_StaticModification_Selected ) {
-
-                let modificationMassesVariableStatic : string = undefined;
-
-                {
-                    const variableModificationMassesToFilterOn = modificationMass_UserSelections_StateObject.get_VariableModificationsSelected_ExcludingNoModificationOption();
-                    const staticModificationMassesToFilterOn = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected();
-
-                    
-                    const modsFilteringOnForDisplayArray = [];
-
-                    if ( variableModificationMassesToFilterOn && variableModificationMassesToFilterOn.size !== 0 ) {
-                        //  Have Variable Mod Mass selected so add to display array
-                        this._userSelectionDisplay_Add_Variable_ModificationsFormatted({ variableModificationMassesToFilterOn, modsFilteringOnForDisplayArray });
-                    }
-                    if ( staticModificationMassesToFilterOn && staticModificationMassesToFilterOn.size !== 0 ) {
-                        //  Have Static Mod Mass selected so add to display array
-                        this._userSelectionDisplay_Add_Static_ModificationsFormatted({ staticModificationMassesToFilterOn, modsFilteringOnForDisplayArray });
-                    }
-
-                    if ( modsFilteringOnForDisplayArray.length !== 0 ) {
-                        modificationMassesVariableStatic = this._userSelectionDisplay_CombineArrayIntoFormattedString({ array : modsFilteringOnForDisplayArray });
-                    }
-                }
-
-                // Any Variable or Static mods selected or Variable 'unmodified' selected
-                    
-                if ( modificationMass_UserSelections_StateObject.is_NO_VariableModification_AKA_Unmodified_Selected() ) {
-
-                    // 'unmodified' in Variable Mods selected.
-
-                    if ( is_Any_StaticModification_Selected ) {
-
-                        //  Static Mods Selected
-                        
-                        selectedModificationsMasses_Display = (
-                            <React.Fragment>
-                                <div >
-                                    Must contain no variable modifications
-                                </div>
-                                <div>
-                                    <span >Must contain static modifications: </span> <span >{ modificationMassesVariableStatic }</span>
-                                </div>
-                            </React.Fragment>
-                        );
+                const no_Modification_SelectionEntry = variable_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected()
+                if ( no_Modification_SelectionEntry ) {
+                    const key = "Var_NoMod"
+                    const display = <span key={ key } style={ { whiteSpace: "nowrap" } }>no variable modification mass(es)</span>
+                    if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        selection_OR_Group_Display_Entries.push( display )
+                    } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString: AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
+                        selection_AND_Group_Display_Entries.push( display )
                     } else {
-                        selectedModificationsMasses_Display = (
-                            <div>
-                                Must contain no variable modification mass(es)
-                            </div>
-                        );
+                        const msg = "variable_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL"
+                        console.warn( msg )
+                        throw Error( msg )
                     }
-                } else {
-                    selectedModificationsMasses_Display = (
-
-                        // 'unmodified' not selected.  Combine Variable and Static modification selection
-
-                        <div>
-                            <span >Must contain modification mass(es): </span> <span>{ modificationMassesVariableStatic }</span> {/* ex: 57.99, 23.33 or 57.02 (C)  */}
-                        </div>
-                    );
+                }
+                {
+                    const selectedModMasses = Array.from( variable_ModificationSelections_StateObject.get_ModificationsSelected__OnlyModMasses_Only__ANY_SelectionType_AsSet() )
+                    selectedModMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for ( const selectedModMass of selectedModMasses ) {
+                        const key = "Var_Mod_" + selectedModMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Variable mod: </span><span> </span><span>{ selectedModMass }</span></span>
+                        selection_OR_Group_Display_Entries.push( display )
+                    }
+                }
+                {
+                    const selectedModMasses = Array.from(variable_ModificationSelections_StateObject.get_ModificationsSelected__OnlyModMasses_Only__ALL_SelectionType_AsSet())
+                    selectedModMasses.sort(function (a, b) {
+                        //  Sort Ascending
+                        if (a < b) {
+                            return -1;
+                        }
+                        if (a > b) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for (const selectedModMass of selectedModMasses) {
+                        const key = "Var_Mod_" + selectedModMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString: AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries})
+                        const display = <span key={key} style={{whiteSpace: "nowrap"}}><span>Variable mod: </span><span> </span><span>{selectedModMass}</span></span>
+                        selection_AND_Group_Display_Entries.push(display)
+                    }
                 }
             }
-        }
 
-        let selectedReporterIonMasses_Display = undefined;
-        {
-            const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected();
+            //  Open Mods
+            if ( open_ModificationSelections_StateObject.is_Any_Modification_Selected() ) {
 
-            if ( reporterIonssSelectedsSet && ( reporterIonssSelectedsSet.size !== 0 ) ) {
+                const no_Modification_SelectionEntry = open_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected()
+                if ( no_Modification_SelectionEntry ) {
+                    const key = "Open_NoMod"
+                    const display = <span key={ key } style={ { whiteSpace: "nowrap" } }>no open modification mass(es)</span>
+                    if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        selection_OR_Group_Display_Entries.push( display )
+                    } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString: AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
+                        selection_AND_Group_Display_Entries.push( display )
+                    } else {
+                        const msg = "open_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                }
+                {
+                    const selectedModMasses = Array.from( open_ModificationSelections_StateObject.get_ModificationsSelected__OnlyModMasses_Only__ANY_SelectionType_AsSet() )
+                    selectedModMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for ( const selectedModMass of selectedModMasses ) {
+                        const key = "Open_Mod_" + selectedModMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Open mod: </span><span> </span><span>{ selectedModMass }</span></span>
+                        selection_OR_Group_Display_Entries.push( display )
+                    }
+                }
+                {
+                    const selectedModMasses = Array.from( open_ModificationSelections_StateObject.get_ModificationsSelected__OnlyModMasses_Only__ALL_SelectionType_AsSet() )
+                    selectedModMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for (const selectedModMass of selectedModMasses) {
+                        const key = "Open_Mod_" + selectedModMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                        const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Open mod: </span><span> </span><span>{selectedModMass}</span></span>
+                        selection_AND_Group_Display_Entries.push(display)
+                    }
+                }
+            }
 
-                const reporterIonssSelectedsArray = Array.from( reporterIonssSelectedsSet );
-                reporterIonssSelectedsArray.sort();
+            // Static Mods
+            if ( modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected() ) {
 
-                const reporterIonssSelectedsString = this._userSelectionDisplay_CombineArrayIntoFormattedString({ array : reporterIonssSelectedsArray });
+                const selection_ANY = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__ANY_SelectionType()
+                const selection_ALL = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__ALL_SelectionType()
 
-                selectedReporterIonMasses_Display = (
-                    <div >
-                        <span>PSM reporter ion mass(es) must contain: </span> <span>{ reporterIonssSelectedsString }</span>
-                    </div>
-                );
+                _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
+                    staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ANY,
+                    seperatorString : OR_SEPERATOR_STRING,
+                    selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries
+                })
+
+                _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
+                    staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ALL,
+                    seperatorString : AND_SEPERATOR_STRING,
+                    selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries
+                })
+            }
+
+            const reporterIonMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject;
+
+            if ( reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
+                {
+                    const selectedReporterIonMasses = Array.from( reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly__SelectionType__ANY__AsSet() )
+                    selectedReporterIonMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for ( const selectedReporterIonMass of selectedReporterIonMasses ) {
+                        const key = "Reporter_Ion_" + selectedReporterIonMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Reporter ion: </span><span> </span><span>{ selectedReporterIonMass }</span></span>
+                        selection_OR_Group_Display_Entries.push( display )
+                    }
+                }
+                {
+                    const selectedReporterIonMasses = Array.from( reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly__SelectionType__ALL__AsSet() )
+                    selectedReporterIonMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for (const selectedReporterIonMass of selectedReporterIonMasses) {
+                        const key = "Reporter_Ion_" + selectedReporterIonMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                        const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Reporter ion: </span><span> </span><span>{selectedReporterIonMass}</span></span>
+                        selection_AND_Group_Display_Entries.push(display)
+                    }
+                }
+            }
+
+            if ( selection_OR_Group_Display_Entries.length === 1 && selection_AND_Group_Display_Entries.length > 0 ) {
+                //  OR only has 1 entry so move to AND and delete OR
+                _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                selection_AND_Group_Display_Entries.push( selection_OR_Group_Display_Entries[ 0 ] )
+                selection_OR_Group_Display_Entries = undefined //  delete OR entry
+            }
+
+            //  Set to undefined if empty
+            if ( selection_OR_Group_Display_Entries && selection_OR_Group_Display_Entries.length === 0 ) {
+                selection_OR_Group_Display_Entries = undefined
+            }
+            if ( selection_AND_Group_Display_Entries && selection_AND_Group_Display_Entries.length === 0 ) {
+                selection_AND_Group_Display_Entries = undefined
             }
         }
 
-        let peptideSequenceSearchStrings_Display = undefined;
+        let peptideSequenceSearchStrings_DisplayString : string = undefined;
         {
-            const peptideSearchString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
-            if ( peptideSearchString ) {
-                peptideSequenceSearchStrings_Display = (
-                    <div >
-                        <span>Peptide sequences must contain: </span> <span>{ peptideSearchString }</span>
-                    </div>
-                );
-            }
+            peptideSequenceSearchStrings_DisplayString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
         }
 
         return (
@@ -362,12 +357,131 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 </div>
                 <div style={ { marginLeft: 80 } }>
 
-                    { selectedProteinSequencePositions_Display }
-                    { selectedModificationsMasses_Display }
-                    { selectedReporterIonMasses_Display }
-                    { peptideSequenceSearchStrings_Display }
+                    { ( selectedProteinSequencePositions_DisplayString ) ?
+                        <div >
+                            <span style={{whiteSpace: "nowrap"}}>Must cover protein position(s): </span> <span>{ selectedProteinSequencePositions_DisplayString }</span> {/* example: 3, 6 or 987 */}
+                        </div>
+                        : null /* Display nothing */ }
+
+                    { ( selection_AND_Group_Display_Entries ) ? //  Filter Values "AND" relationship
+                        <div>
+                            All peptides must contain: { selection_AND_Group_Display_Entries }
+                        </div>
+                        : null /* Display nothing */ }
+                    { ( selection_OR_Group_Display_Entries ) ? //  Filter Values "OR" relationship
+                        <div>
+                            All peptides must contain: { selection_OR_Group_Display_Entries }
+                        </div>
+                        : null /* Display nothing */ }
+
+                    { ( peptideSequenceSearchStrings_DisplayString ) ?
+                        <div >
+                            <span style={{whiteSpace: "nowrap"}}>Peptide sequences must contain: </span> <span>{ peptideSequenceSearchStrings_DisplayString }</span>
+                        </div>
+                        : null /* Display nothing */ }
+
                 </div>
             </div>
         );
     }
+}
+
+//////////////////////
+//////////////////////
+//////////////////////
+
+//  NOT in any class
+
+
+/**
+ * Add User Selected Static Modifications Formatted to array
+ *
+ * Called once for "ANY" and once for "ALL"
+ */
+const _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL = function(
+    { staticModificationMassesToFilterOn_ANY_or_ALL, seperatorString, selection_Group_Display_Entries_Local } : {
+    staticModificationMassesToFilterOn_ANY_or_ALL : Map<string, Set<number>>
+    seperatorString : string
+    selection_Group_Display_Entries_Local : Array<JSX.Element>
+}) {
+
+    //  staticModificationMassesToFilterOn_ANY_or_ALL is Map<String (Residue), Set< Number ( Mod Mass ) >>
+
+    const modificationsSelectedEntriesArray : Array<{ residue : string, modMass : number }> = [];
+
+    for ( const entry of staticModificationMassesToFilterOn_ANY_or_ALL.entries() ) {
+
+        const residue = entry[ 0 ];
+        const modMasses = entry[ 1 ];
+
+        for ( const modMass of modMasses ) {
+            const modificationSelectedEntry = { residue : residue, modMass : modMass };
+            modificationsSelectedEntriesArray.push( modificationSelectedEntry );
+        }
+    }
+
+    // Multiple selected modifications so sort, and put in comma delim string with ' or ' before last entry
+
+    modificationsSelectedEntriesArray.sort( function( a, b ) {
+        //  Sort Ascending on Mod Mass then Residue
+        if ( a.modMass < b.modMass ) {
+            return -1;
+        }
+        if ( a.modMass > b.modMass ) {
+            return 1;
+        }
+        if ( a.residue < b.residue ) {
+            return -1;
+        }
+        if ( a.residue > b.residue ) {
+            return 1;
+        }
+        return 0;
+    });
+
+    //  Add to list using toString()
+    for ( const modification of modificationsSelectedEntriesArray ) {
+        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString, selection_Group_Display_Entries_Local })
+        const modificationFormatted = modification.modMass.toString() + " (" + modification.residue + ")";
+        const key = seperatorString + "_StaticMod_" + modificationFormatted
+        const entry = <span key={ key }  style={{whiteSpace: "nowrap"}}><span >Static mod:</span><span > </span><span >{ modificationFormatted }</span></span>
+        selection_Group_Display_Entries_Local.push( entry )
+    }
+}
+
+/**
+ *
+ */
+const _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local = function({ seperatorString, selection_Group_Display_Entries_Local } : {
+    seperatorString : string
+    selection_Group_Display_Entries_Local : Array<JSX.Element>
+}) : void {
+    if ( selection_Group_Display_Entries_Local.length > 0 ) {
+        const key = seperatorString + "_Seperator_" + selection_Group_Display_Entries_Local.length
+        const entry = <span key={ key } ><span > </span><span>{ seperatorString }</span><span> </span></span>
+        selection_Group_Display_Entries_Local.push( entry )
+    }
+}
+
+/**
+ * put in comma delim string with ' or ' before last entry
+ */
+const _userSelectionDisplay_CombineArrayIntoFormattedString = function({ array } : { array : Array<any> }) {
+
+    const numEntries = array.length;
+
+    if ( numEntries === 1 ) {
+        //  Single Element so return
+        return array[ 0 ]; // EARLY RETURN
+    }
+
+    //  > 1 entry so format with Comma Delim except before last entry.  Put ' or ' before last entry
+
+    const lastEntryIndex = numEntries - 1;
+    const allEntriesButLast = array.slice( 0, lastEntryIndex );
+
+    let allEntriesButLastCommaDelim = allEntriesButLast.join(", ");
+
+    const result = allEntriesButLastCommaDelim + " or " + array[ lastEntryIndex ];
+    return result;
 }

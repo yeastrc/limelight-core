@@ -31,7 +31,8 @@ public class PsmDTO {
 	private int charge;
 	private int scanNumber;
 	private Integer searchScanFileId;
-	private boolean hasModifications;
+	private boolean hasModifications; //  Has PSM level Dynamic Modifications
+	private boolean hasOpenModifications; //  Has PSM level Open Modifications
 	private boolean hasReporterIons;
 	private BigDecimal precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal precursor_MZ;            // precursor_m_z
@@ -95,5 +96,11 @@ public class PsmDTO {
 	}
 	public void setHasReporterIons(boolean hasReporterIons) {
 		this.hasReporterIons = hasReporterIons;
+	}
+	public boolean isHasOpenModifications() {
+		return hasOpenModifications;
+	}
+	public void setHasOpenModifications(boolean hasOpenModifications) {
+		this.hasOpenModifications = hasOpenModifications;
 	}
 }

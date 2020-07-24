@@ -36,6 +36,8 @@ import { SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReact
 import { reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent, ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_ReturnChildReactComponent';
 
 import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
+import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 ////////////
 
@@ -134,22 +136,29 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
                 throw Error( msg );
             }
 
-            const reportedPeptideIds = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIdsMap_KeyProjectSearchId.get( projectSearchId );
-            if ( ( ! reportedPeptideIds ) || reportedPeptideIds.size === 0 ) {
-                const msg = "searchesForSinglePeptide_createChildTableObjects.ts: reportedPeptideIdsMap_KeyProjectSearchId.get( projectSearchId ); returns nothing or empty set";
-                console.warn( msg, reportedPeptideIds );
+            const reportedPeptideIds_ForDisplay : Set<number> = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId.get( projectSearchId )
+            if ( ( ! reportedPeptideIds_ForDisplay ) || reportedPeptideIds_ForDisplay.size === 0 ) {
+                const msg = "searchesForSinglePeptide_createChildTableObjects.ts: dataRow_GetChildTable_ReturnReactComponent_Parameter..reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId.get( projectSearchId ) returns  nothing or empty set";
+                console.warn( msg, reportedPeptideIds_ForDisplay );
                 throw Error( msg );
             }
-            if ( reportedPeptideIds.size === undefined ) {
-                const msg = "searchesForSinglePeptide_createChildTableObjects.ts: reportedPeptideIds.size === undefined";
-                console.warn( msg, reportedPeptideIds );
+            if ( reportedPeptideIds_ForDisplay.size === undefined ) {
+                const msg = "searchesForSinglePeptide_createChildTableObjects.ts: reportedPeptideIds_ForDisplay.size === undefined";
+                console.warn( msg, reportedPeptideIds_ForDisplay );
+                throw Error( msg );
+            }
+
+            const reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId );
+            if ( ( ! reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId ) ) {
+                const msg = "searchesForSinglePeptide_createChildTableObjects.ts: reportedPeptideIdsMap_KeyProjectSearchId.get( projectSearchId ); returns nothing";
+                console.warn( msg, reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId );
                 throw Error( msg );
             }
 
             const reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter = new ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter({
                 projectSearchId,
-                reportedPeptideIds,
-                reporterIonMassesSelected : dataRow_GetChildTable_ReturnReactComponent_Parameter.reporterIonMassesSelected,
+                reportedPeptideIds_ForDisplay,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId,
                 searchDataLookupParamsRoot : dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot,
                 loadedDataPerProjectSearchIdHolder,
                 loadedDataCommonHolder : dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataCommonHolder,

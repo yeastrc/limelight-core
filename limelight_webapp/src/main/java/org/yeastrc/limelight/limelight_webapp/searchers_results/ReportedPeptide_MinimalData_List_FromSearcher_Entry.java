@@ -27,6 +27,7 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 
 	private boolean reportedPeptideHas_DynamicModifications;
 	private boolean anyPsmHas_DynamicModifications;
+	private boolean anyPsmHas_OpenModifications;
 	private boolean anyPsmHas_ReporterIons;
 	
 	//  These are null if not computed
@@ -61,5 +62,11 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 	}
 	public void setReportedPeptideHas_DynamicModifications(boolean reportedPeptideHas_DynamicModifications) {
 		this.reportedPeptideHas_DynamicModifications = reportedPeptideHas_DynamicModifications;
+	}
+	public boolean isAnyPsmHas_OpenModifications() {
+		return anyPsmHas_OpenModifications;
+	}
+	public void setAnyPsmHas_OpenModifications(boolean anyPsmHas_OpenModifications) {
+		this.anyPsmHas_OpenModifications = anyPsmHas_OpenModifications;
 	}
 }

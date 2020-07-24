@@ -82,6 +82,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
 					+ " search__rep_pept__lookup_tbl.has_dynamic_modifictions, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_dynamic_modifications, "
+					+ " search__rep_pept__lookup_tbl.any_psm_has_open_modifictions, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_reporter_ions "
 			;
 	
@@ -390,6 +391,12 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 			int anyPsmHas_DynamicModifications_Int = rs.getInt( "any_psm_has_dynamic_modifications" );
 			if ( anyPsmHas_DynamicModifications_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 				item.setAnyPsmHas_DynamicModifications(true);
+			}
+		}
+		{
+			int field_Int = rs.getInt( "any_psm_has_open_modifictions" );
+			if ( field_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				item.setAnyPsmHas_OpenModifications(true);
 			}
 		}
 		{

@@ -423,7 +423,275 @@ export class ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessD
 		})
 	}
 
+
 	////////////////////////
+
+	/**
+	 * For this proteinSequenceVersionId, get the PSM Open Modification Masses for the Reported Peptide Ids
+	 *
+	 * @param searchDataLookupParams_For_Single_ProjectSearchId - Optional.  If not populated, retrieved from this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId(...)
+	 *
+	 * @returns Promise or null
+	 */
+	loadDataFor_PSM_OpenModificationMasses_Per_ReportedPeptideId_For_ProteinSequenceVersionId(
+		{
+			proteinSequenceVersionId,
+			projectSearchId,
+			searchDataLookupParams_For_Single_ProjectSearchId
+		} : {
+			proteinSequenceVersionId,
+			projectSearchId,
+			searchDataLookupParams_For_Single_ProjectSearchId?  // Optional
+		}) : Promise<any> {
+
+		// console.log( "loadDataFor_PSM_OpenModificationMasses_Per_ReportedPeptideId_For_ProteinSequenceVersionId")
+
+		//  Get Reported Peptide Ids for proteinSequenceVersionId
+
+		const reportedPeptideIdsKeyProteinSequenceVersionId = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();
+
+		const reportedPeptideIds = reportedPeptideIdsKeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+		if ( reportedPeptideIds === undefined || reportedPeptideIds.length === 0 ) {
+
+			// No Reported Peptide Ids so skip
+
+			return null;  // EARLY RETURN
+		}
+
+		//  Get Reported Peptide Ids that don't have Map< PSM ID, Set<Open Modification Mass> for
+
+		let psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap = this._loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs();
+		if ( ! psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap ) {
+			psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap = new Map();
+			this._loadedDataPerProjectSearchIdHolder.set_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs( psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap );
+		}
+
+		//   Reported Peptide Ids with any PSM level Open Modifications
+		//  	Set
+		const reportedPeptideIds_AnyPsmHas_OpenModifications = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_OpenModifications();
+
+		if ( reportedPeptideIds_AnyPsmHas_OpenModifications.size === 0 ) {
+			//  No Reported Peptide Ids with any PSM level Open Modifications so exit
+			return null; // EARLY RETURN
+		}
+
+		const reportedPeptideIdsToLoadDataFor = [];
+		const reportedPeptideIdsToLoadDataFor_AsSet = new Set(); //  Create set for tracking received data for all reported peptide ids
+		{
+			for ( const reportedPeptideId of reportedPeptideIds ) {
+
+				//  Filter Reported Peptide Ids to just ones with any PSM level Open Modifications
+
+				if ( ! reportedPeptideIds_AnyPsmHas_OpenModifications.has( reportedPeptideId ) ) {
+					// No PSM level Open Modifications so skip
+					continue; // EARLY CONTINUE
+				}
+
+				if ( ! psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap.get( reportedPeptideId ) ) {
+					//  Data not already retrieved so add reportedPeptideId
+					reportedPeptideIdsToLoadDataFor.push( reportedPeptideId );
+				}
+			}
+		}
+
+		if ( reportedPeptideIdsToLoadDataFor.length === 0 ) {
+			//  No data needs to be loaded
+			return null; // EARLY RETURN
+		}
+
+		return new Promise( (resolve, reject) => {
+			try {
+
+				let searchDataLookupParams_For_Single_ProjectSearchId_Local = searchDataLookupParams_For_Single_ProjectSearchId;
+				if ( ! searchDataLookupParams_For_Single_ProjectSearchId_Local ) {
+
+					searchDataLookupParams_For_Single_ProjectSearchId_Local =
+						this._searchDetailsBlockDataMgmtProcessing.
+						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId, dataPageStateManager : undefined /* , optional dataPageStateManager */ } );
+				}
+
+				const promise = ProteinViewDataLoader.getPsmsOpenModificationMassesForReportedPeptideIdsCutoffs({
+					projectSearchId : projectSearchId,
+					reportedPeptideIds : reportedPeptideIdsToLoadDataFor,
+					searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId_Local
+				});
+
+				promise.then( ( { reportedPeptideId_psmOpenModificationMassesList_List } ) => {
+					try {
+
+						//  	PSM: Open Modification Mass Values for each PSM for current cutoffs per PSM Id per Reported Peptide Id
+						// _psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs - Map<integer,
+
+						let psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = this._loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs();
+						if ( ! psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs ) {
+							psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = new Map();
+							this._loadedDataPerProjectSearchIdHolder.set_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs( psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs );
+						}
+
+						//  	PSM: Open Modification Mass Values for each PSM for current cutoffs per PSM Id per Reported Peptide Id
+						// _psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs - Map<integer,
+
+						let psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = this._loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
+						if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs ) {
+							psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = new Map();
+							this._loadedDataPerProjectSearchIdHolder.set_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs( psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs );
+						}
+
+
+						//  	Open Modification Mass Unique Values for all PSMs for current cutoffs per Reported Peptide Id
+						// _psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs - Map<integer, { integer, Map<integer, { integer, Set<double> } > } > : Map<Reported Peptide Id, openModificationMasses (Set) >
+
+						let psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs = this._loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs();
+						if ( ! psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs ) {
+							psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs = new Map();
+							this._loadedDataPerProjectSearchIdHolder.set_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs( psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs );
+						}
+
+
+						for ( const reportedPeptideId_psmOpenModificationMassesList_Entry of reportedPeptideId_psmOpenModificationMassesList_List ) {
+
+							const reportedPeptideId = reportedPeptideId_psmOpenModificationMassesList_Entry.reportedPeptideId;
+							const psmOpenModificationMassesList = reportedPeptideId_psmOpenModificationMassesList_Entry.psmOpenModificationMassesList;
+
+							let psmOpenModificationMassesPerPSM_ForPsmIdMap :
+								Map<number,
+									{psmId: number,
+										openModificationEntries_ForMassMap: Map<number,
+											{openModificationMass: number, openModificationMass_Rounded: number,
+												positions: Map<number, {position: number, isNTerminal: boolean, isCTerminal: boolean}>}[]>}> = undefined;
+							{
+								let psmOpenModificationMassesPerPSM_ForPsmIdMap_Object = psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
+								if ( ! psmOpenModificationMassesPerPSM_ForPsmIdMap_Object ) {
+									psmOpenModificationMassesPerPSM_ForPsmIdMap = new Map();
+									psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, { reportedPeptideId, psmOpenModificationMassesPerPSM_ForPsmIdMap } );
+								} else {
+									psmOpenModificationMassesPerPSM_ForPsmIdMap = psmOpenModificationMassesPerPSM_ForPsmIdMap_Object.psmOpenModificationMassesPerPSM_ForPsmIdMap;
+								}
+							}
+
+							let psmIds_ContainAnyOpenModificationMass : Set<number> = undefined
+							let psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap : Map<number, {openModificationMass_Rounded: number, psmIds_Set: Set<number>}> = undefined
+							{
+								let psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap_Object = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId )
+								if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap_Object ) {
+									psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap = new Map();
+									psmIds_ContainAnyOpenModificationMass = new Set();
+									psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, { reportedPeptideId, psmIds_ContainAnyOpenModificationMass, openModificationMass_RoundedMap : psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap } );
+								} else {
+									psmIds_ContainAnyOpenModificationMass = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap_Object.psmIds_ContainAnyOpenModificationMass;
+									psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap_Object.openModificationMass_RoundedMap;
+								}
+							}
+
+							let psmOpenModificationMassesUnique_PerReportedPeptideId : Set<number> = undefined;
+							{
+								let psmOpenModificationMassesUnique_PerReportedPeptideId_Object = psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
+								if ( ! psmOpenModificationMassesUnique_PerReportedPeptideId_Object ) {
+									psmOpenModificationMassesUnique_PerReportedPeptideId = new Set();
+									psmOpenModificationMassesUnique_PerReportedPeptideId_Object = { reportedPeptideId, openModificationMasses : psmOpenModificationMassesUnique_PerReportedPeptideId }
+									psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, psmOpenModificationMassesUnique_PerReportedPeptideId_Object );
+								} else {
+									psmOpenModificationMassesUnique_PerReportedPeptideId = psmOpenModificationMassesUnique_PerReportedPeptideId_Object.openModificationMasses;
+								}
+							}
+
+							for ( const psmOpenModificationMassEntry of psmOpenModificationMassesList ) {
+								const psmId = psmOpenModificationMassEntry.psmId;
+								const openModificationMass = psmOpenModificationMassEntry.openModificationMass;
+								const openModificationMass_Rounded = Math.round( openModificationMass );
+								//  Following only populated when there is a position, otherwise null
+								const openModificationPosition = psmOpenModificationMassEntry.openModificationPosition;
+								const is_N_Terminal = psmOpenModificationMassEntry.is_N_Terminal;
+								const is_C_Terminal = psmOpenModificationMassEntry.is_C_Terminal;
+
+								let psmOpenModificationMassEntriesPerPSM : Map<number,
+									{openModificationMass: number, openModificationMass_Rounded: number,
+										positions: Map<number, {position: number, isNTerminal: boolean, isCTerminal: boolean}>}[]> = undefined;
+
+								let psmOpenModificationMassesPerPSM_Object = psmOpenModificationMassesPerPSM_ForPsmIdMap.get( psmId );
+								if ( ! psmOpenModificationMassesPerPSM_Object ) {
+									psmOpenModificationMassEntriesPerPSM = new Map();
+									psmOpenModificationMassesPerPSM_ForPsmIdMap.set( psmId, { psmId, openModificationEntries_ForMassMap : psmOpenModificationMassEntriesPerPSM } );
+								} else {
+									psmOpenModificationMassEntriesPerPSM = psmOpenModificationMassesPerPSM_Object.openModificationEntries_ForMassMap;
+								}
+
+								let positions: Map<number, {position: number, isNTerminal: boolean, isCTerminal: boolean}> = undefined;
+
+								let psmOpenModificationMassEntries_ForRoundedMass = psmOpenModificationMassEntriesPerPSM.get( openModificationMass_Rounded );
+								if ( ! psmOpenModificationMassEntries_ForRoundedMass ) {
+									positions = new Map();
+									psmOpenModificationMassEntries_ForRoundedMass = [{openModificationMass, openModificationMass_Rounded, positions }]
+									psmOpenModificationMassEntriesPerPSM.set( openModificationMass_Rounded, psmOpenModificationMassEntries_ForRoundedMass );
+								} else {
+									//  Find openModificationMass in psmOpenModificationMassEntries_ForRoundedMass
+									let psmOpenModificationMassEntry_openModificationMass = undefined;
+									for ( const entry of psmOpenModificationMassEntries_ForRoundedMass ) {
+										if ( entry.openModificationMass === openModificationMass ) {
+											psmOpenModificationMassEntry_openModificationMass = entry;
+											positions = psmOpenModificationMassEntry_openModificationMass.positions;
+											break;
+										}
+										if ( ! psmOpenModificationMassEntry_openModificationMass ) {
+											positions = new Map();
+											psmOpenModificationMassEntry_openModificationMass = {openModificationMass, openModificationMass_Rounded, positions }
+											psmOpenModificationMassEntries_ForRoundedMass.push( psmOpenModificationMassEntry_openModificationMass );
+										}
+									}
+								}
+
+								if ( openModificationPosition !== null ) {
+									const position = {position: openModificationPosition, isNTerminal : is_N_Terminal, isCTerminal : is_C_Terminal }
+									positions.set( openModificationPosition, position );
+								}
+
+								//  Map per Rounded Mass then Set of PSM Ids
+								{
+									let psmIds_Set : Set<number> = undefined;
+									let psmOpenModificationMasses_PsmIdSet_Object = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap.get( openModificationMass_Rounded )
+									if ( ! psmOpenModificationMasses_PsmIdSet_Object ) {
+										psmIds_Set = new Set()
+										psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap.set(openModificationMass_Rounded, { openModificationMass_Rounded, psmIds_Set })
+									} else {
+										psmIds_Set = psmOpenModificationMasses_PsmIdSet_Object.psmIds_Set
+									}
+									psmIds_Set.add( psmId )
+									psmIds_ContainAnyOpenModificationMass.add( psmId )
+								}
+							}
+
+							reportedPeptideIdsToLoadDataFor_AsSet.delete( reportedPeptideId );
+						}
+
+						if ( reportedPeptideIdsToLoadDataFor_AsSet.size !== 0 ) {
+							console.warn("reportedPeptideIdsToLoadDataFor_AsSet not empty after processing AJAX response");
+						}
+
+						resolve();
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+				promise.catch(function(reason) {
+					try {
+						reject(reason);
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		})
+	}
+
+
+	////////////////////////
+
 	/**
 	 * @param retrieveForSingleSearch : boolean, true if retrieving for use with Single Search
 	 * @param retrieveForMultipleSearches : boolean, true if retrieving for use with Multiple Searches

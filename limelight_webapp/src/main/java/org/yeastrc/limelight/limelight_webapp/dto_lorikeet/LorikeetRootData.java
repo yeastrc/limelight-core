@@ -73,11 +73,18 @@ public class LorikeetRootData {
 	private double ntermMod = 0; // additional mass to be added to the n-term
 	private double ctermMod = 0; // additional mass to be added to the c-term
 	
-	private String label;		// stable isotope label name
+	
+	/**
+	 * Open Modifications
+	 */
+	private List<LorikeetOpenMod> openMods;
 	
 	//  Reporter Ions
 	
 	private List<BigDecimal> userReporterIons;
+
+	private String label;		// stable isotope label name
+	
 	
 	/**
 	 * 
@@ -301,6 +308,16 @@ public class LorikeetRootData {
 
 	public void setUserReporterIons(List<BigDecimal> userReporterIons) {
 		this.userReporterIons = userReporterIons;
+	}
+
+
+	public List<LorikeetOpenMod> getOpenMods() {
+		return openMods;
+	}
+
+
+	public void setOpenMods(List<LorikeetOpenMod> openMods) {
+		this.openMods = openMods;
 	}
 
 

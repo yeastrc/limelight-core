@@ -28,6 +28,11 @@ import { psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_Return
 //  Local
 
 import { createReportedPeptideDisplayData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_create_createReportedPeptideDisplayData';
+import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
+import {
+    ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+    ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 ////////////////
 
@@ -52,16 +57,14 @@ export class ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Res
 export const reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects = ({
 
     projectSearchId,
-    reportedPeptideIds,
-    reporterIonMassesSelected,
+    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     searchDataLookupParamsRoot,
     loadedDataPerProjectSearchIdHolder,
     loadedDataCommonHolder,
     dataPageStateManager
 } : {
     projectSearchId : number
-    reportedPeptideIds : Set<number>
-    reporterIonMassesSelected : Set<number>
+    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
     searchDataLookupParamsRoot
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -106,8 +109,7 @@ export const reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_cre
 
     } = _create_dataTable_RootTableObject({
         projectSearchId,
-        reportedPeptideIds,
-        reporterIonMassesSelected,
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         loadedDataPerProjectSearchIdHolder,
         loadedDataCommonHolder,
         searchDataLookupParamsRoot,
@@ -128,8 +130,7 @@ export const reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_cre
  */
 const _create_dataTable_RootTableObject = function({
     projectSearchId,
-    reportedPeptideIds,
-    reporterIonMassesSelected,
+    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     searchDataLookupParamsRoot,
     loadedDataPerProjectSearchIdHolder,
     loadedDataCommonHolder,
@@ -137,8 +138,7 @@ const _create_dataTable_RootTableObject = function({
 
 } : {
     projectSearchId : number
-    reportedPeptideIds : Set<number>
-    reporterIonMassesSelected : Set<number>
+    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
     searchDataLookupParamsRoot
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -150,17 +150,16 @@ const _create_dataTable_RootTableObject = function({
     numberOfReportedPeptides : number
 } {
 
+    const reportedPeptideIds_ForDisplay = new Set( reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds() )
 
     const createReportedPeptideDisplayData_result = createReportedPeptideDisplayData({
-        reportedPeptideIdsForDisplay : reportedPeptideIds, 
-        reporterIonMassesSelected, 
+        reportedPeptideIds_ForDisplay,
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         proteinSequenceVersionId : undefined/* Only for error reporting */, 
         projectSearchId, 
         loadedDataPerProjectSearchIdHolder,
         loadedDataCommonHolder,
-        dataPageStateManager,
-
-        forMultipleSearchesPage : false
+        dataPageStateManager
     });
 
     // createReportedPeptideDisplayData_result:
@@ -274,6 +273,10 @@ const _create_dataTable_RootTableObject = function({
         for ( const peptideEntry of createReportedPeptideDisplayData_result.peptideList ) {
 
             const reportedPeptideId = peptideEntry.reportedPeptideId;
+
+            const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId =
+                peptideEntry.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+
     // peptideList array element:
     //     reportedPeptideId: 141285
     //     reportedPeptideSequence: "EKKLE[9945.4689]ERRKRRRFLSPQQPPLLLPL - FAKE, has Isotope Label - commented out"
@@ -342,7 +345,7 @@ const _create_dataTable_RootTableObject = function({
             const psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter = new PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter({
                 projectSearchId,
                 reportedPeptideId,
-                reporterIonMassesSelected,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId: proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
                 searchDataLookupParamsRoot,
                 loadedDataPerProjectSearchIdHolder,
                 loadedDataCommonHolder,
@@ -365,7 +368,6 @@ const _create_dataTable_RootTableObject = function({
         dataTable_DataRowEntries
     });
     
-// import { psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent, PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__psm_list_for_reported_peptide_container_component/js/psmList_Wrapper_ReturnChildReactComponent';
 
     const tableOptions = new DataTable_TableOptions({
         //  Comment out since no further drill down to child table

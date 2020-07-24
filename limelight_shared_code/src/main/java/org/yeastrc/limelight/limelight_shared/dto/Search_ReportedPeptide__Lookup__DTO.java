@@ -32,8 +32,11 @@ public class Search_ReportedPeptide__Lookup__DTO {
 	private boolean hasDynamicModifications;
 	private boolean hasIsotopeLabels;
 	private boolean anyPsmHasDynamicModifications;
+	private boolean anyPsmHasOpenModifications;
 	private boolean anyPsmHasReporterIons;
 	private boolean relatedPeptideUniqueForSearch;
+	private long psmIdSequentialStart;  // Only not zero if PSM Ids are sequential
+	private long psmIdSequentialEnd;    // Only not zero if PSM Ids are sequential
 	
 	private int psmNumAtDefaultCutoff;
 
@@ -48,15 +51,37 @@ public class Search_ReportedPeptide__Lookup__DTO {
 	private Integer numUniquePsmAtDefaultCutoff;
 
 
+
 	@Override
 	public String toString() {
-		return "Search_ReportedPeptide__Lookup__DTO [searchId=" + searchId + ", reportedPeptideId="
-				+ reportedPeptideId 
-				+ ", hasDynamicModifications=" + hasDynamicModifications + ", hasIsotopeLabels=" + hasIsotopeLabels
-				+ ", anyPsmHasDynamicModifications=" + anyPsmHasDynamicModifications
-				+ ", relatedPeptideUniqueForSearch=" + relatedPeptideUniqueForSearch + ", psmNumAtDefaultCutoff="
+		return "Search_ReportedPeptide__Lookup__DTO [searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
+				+ ", hasDynamicModifications=" + hasDynamicModifications + ", hasOpenModifications="
+				+ anyPsmHasOpenModifications + ", hasIsotopeLabels=" + hasIsotopeLabels + ", anyPsmHasDynamicModifications="
+				+ anyPsmHasDynamicModifications + ", anyPsmHasReporterIons=" + anyPsmHasReporterIons
+				+ ", relatedPeptideUniqueForSearch=" + relatedPeptideUniqueForSearch + ", psmIdSequentialStart="
+				+ psmIdSequentialStart + ", psmIdSequentialEnd=" + psmIdSequentialEnd + ", psmNumAtDefaultCutoff="
 				+ psmNumAtDefaultCutoff + ", peptideMeetsDefaultCutoffs=" + peptideMeetsDefaultCutoffs
 				+ ", numUniquePsmAtDefaultCutoff=" + numUniquePsmAtDefaultCutoff + "]";
+	}
+
+
+	public long getPsmIdSequentialStart() {
+		return psmIdSequentialStart;
+	}
+
+
+	public void setPsmIdSequentialStart(long psmIdSequentialStart) {
+		this.psmIdSequentialStart = psmIdSequentialStart;
+	}
+
+
+	public long getPsmIdSequentialEnd() {
+		return psmIdSequentialEnd;
+	}
+
+
+	public void setPsmIdSequentialEnd(long psmIdSequentialEnd) {
+		this.psmIdSequentialEnd = psmIdSequentialEnd;
 	}
 
 	
@@ -146,4 +171,13 @@ public class Search_ReportedPeptide__Lookup__DTO {
 		this.anyPsmHasReporterIons = anyPsmHasReporterIons;
 	}
 
+
+	public boolean isAnyPsmHasOpenModifications() {
+		return anyPsmHasOpenModifications;
+	}
+
+
+	public void setAnyPsmHasOpenModifications(boolean anyPsmHasOpenModifications) {
+		this.anyPsmHasOpenModifications = anyPsmHasOpenModifications;
+	}
 }

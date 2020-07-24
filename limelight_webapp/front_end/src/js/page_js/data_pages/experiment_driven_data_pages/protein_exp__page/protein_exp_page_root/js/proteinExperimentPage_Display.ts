@@ -71,6 +71,7 @@ import {get_DynamicModificationsForReportedPeptideIds} from "page_js/data_pages/
 import {loadPeptideIdsIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer";
 import {ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
 import {ProteinExperiment__CreateProteinDataTableColumns_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ColumnObject";
+import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 
 
 
@@ -929,6 +930,13 @@ const _loadDataFor_ComputedReportedPeptides_AllProteins = function( { projectSea
 
         {
             const promise_get__ = get_DynamicModificationsForReportedPeptideIds({ loadedDataPerProjectSearchIdHolder, projectSearchId, reportedPeptideIds });
+
+            if ( promise_get__ ) { //  May return null so test before add to array
+                promises__get_Array.push( promise_get__ );
+            }
+        }
+        {
+            const promise_get__ = get_OpenModificationsForReportedPeptideIds({ loadedDataPerProjectSearchIdHolder, projectSearchId, reportedPeptideIds });
 
             if ( promise_get__ ) { //  May return null so test before add to array
                 promises__get_Array.push( promise_get__ );

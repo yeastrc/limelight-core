@@ -229,13 +229,13 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
             <React.Fragment>
 
 
-                <div className=" peptide-sequence-selection-outer-block " >
+                <div className=" filter-common-block-selection-outer-block peptide-sequence-selection-outer-block " >
 
                     <div>
                         <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Peptide:</div>
-                        <div className=" peptide-sequence-selection-block " >
+                        <div className=" filter-common-selection-block peptide-sequence-selection-block " >
                             <div style={ {  marginTop: 2 } }>
-                                <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Variable and Static Mods */}
+                                <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Variable and Static Mods */}
                                     <input type="text" maxLength={ 400 } style={ { width: 180} } value={ peptideSequence_UserSelection }
                                         onChange={ this._inputFieldChanged_BindThis }
                                     />

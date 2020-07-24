@@ -61,6 +61,7 @@ public class PopulatePsmDTO {
 			ReportedPeptideDTO reportedPeptideDTO, 
 			Psm psm,
 			boolean psmHasModifications,
+			boolean psmHasOpenModifications,
 			boolean psmHasReporterIons,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws LimelightImporterDataException, Exception {
 		
@@ -79,7 +80,8 @@ public class PopulatePsmDTO {
 		psmDTO.setPrecursor_RetentionTime( psm.getPrecursorRetentionTime() );
 		psmDTO.setPrecursor_MZ( psm.getPrecursorMZ() );
 		
-		psmDTO.setHasModifications( psmHasModifications );
+		psmDTO.setHasModifications( psmHasModifications ); //  Has Variable/Dynamic Modifications
+		psmDTO.setHasOpenModifications( psmHasOpenModifications );
 		psmDTO.setHasReporterIons( psmHasReporterIons );
 		
 		if ( psm.getScanNumber() != null ) {

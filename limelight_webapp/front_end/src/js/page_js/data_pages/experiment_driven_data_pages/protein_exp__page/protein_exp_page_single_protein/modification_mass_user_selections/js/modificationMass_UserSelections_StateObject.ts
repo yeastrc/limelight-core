@@ -12,8 +12,9 @@
  */
 
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
-
-import { _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED } from '../jsx/modificationMass_UserSelections_Constants';
+import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
+import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 
 
 
@@ -35,12 +36,22 @@ const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 
 const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
+//  Kept For backwards compatibility
 const _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME = 'b';
 const _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME = 'c';
+
 const _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME = 'd';
 
-const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_BASE = 35;         // Only specific Variable Modifications
-const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR = 'Z';   // Only specific Variable Modifications
+const _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME = 'e';
+const _ENCODED_DATA__OPEN_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME = 'f';
+
+//  Sub parts of Static Mod Mass Selection
+const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME = "a"
+const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE_PROPERTY_NAME = "b"
+
+//  Values in ...SELECTION_TYPE_PROPERTY_NAME
+const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ANY__PROPERTY_NAME = "a"
+const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ALL__PROPERTY_NAME = "b"
 
 ///////
 
@@ -51,11 +62,14 @@ export class ModificationMass_UserSelections_StateObject {
 
     private _initializeCalled : boolean = false;
 
-    //  Set of Selected Variable Modification Masses
-    private _variableModificationsSelected : Set<number | string> = new Set();  // call .clear() to reset the selected
+    //  Selected Variable Modification
+    private _variableModificationsSelected = new ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject();
 
-    //  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
-    private _staticModificationsSelected : Map<string, Set<number>> = new Map();  // call .clear() to reset the selected
+    //  Selected Open Modification
+    private _openModificationsSelected = new ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject();
+
+    //  Map of Selected Static Modification Residue Letter And Mass <String, Map<Number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> <Residue Letter, <Mass, Entry>>
+    private _staticModificationsSelected : Map<string, Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> = new Map();  // call .clear() to reset the selected
 
 	/**
 	 * 
@@ -69,94 +83,29 @@ export class ModificationMass_UserSelections_StateObject {
 	 */
     clear_selectedModifications() : void {
 
-        this._variableModificationsSelected.clear(); // Reset to None
+        this._variableModificationsSelected.clear_selectedModifications(); // Reset to None
+        this._openModificationsSelected.clear_selectedModifications(); // Reset to None
         this._staticModificationsSelected.clear(); // Reset to None
-    }
-
-	/**
-     * 
-	 */
-    clear_selectedVariableModifications() : void {
-
-        this._variableModificationsSelected.clear(); // Reset to None
     }
 
     //////////////////////////////////
 
     //   Variable Mods External
 
-	/**
-	 * Includes check for Unmodified selected
-	 */
-    is_Any_VariableModification_Selected() : boolean {
-        return this._variableModificationsSelected.size !== 0;
+    /**
+     * Return object for managing Variable Modification (and unmodified) selections
+     */
+    get_VariableModificationSelections() : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject {
+        return this._variableModificationsSelected
     }
 
-	/**
-	 * Did the user select to show reported peptides with no modification masses
-	 */
-    is_NO_VariableModification_AKA_Unmodified_Selected() : boolean {
-        return this._variableModificationsSelected.has( _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED );
-    }
+    //   Open Mods External
 
-	/**
-	 * 
-	 */
-    is_VariableModification_Selected( modMass : number ) : boolean {
-        return this._variableModificationsSelected.has( modMass );
-    }
-
-	/**
-	 * @returns a Set of the currently selected Variable Modifications, excluding the "No Modification" selection option
-	 */
-    get_VariableModificationsSelected_ExcludingNoModificationOption() : Set<number> {
-        
-        const selectionCopy : Set<number> = new Set();
-
-        if ( this._variableModificationsSelected.size !== 0 ) {
-            for ( const entry of this._variableModificationsSelected ) {
-                if ( entry !== _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED ) {
-                    if ( ! variable_is_type_number_Check( entry ) ) {
-                        const msg = "entry in this._variableModificationsSelected is not _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED and is not number: " + entry;
-                        console.warn( msg );
-                        throw Error( msg );
-                    }
-                    const entry_Number : number = entry as number;
-
-                    selectionCopy.add( entry_Number );
-                }
-            }
-        }
-        
-        return selectionCopy;
-    }
-
-	/**
-	 * 
-	 */
-    add_VariableModification_Selected( modMass : number ) : void {
-        this._variableModificationsSelected.add( modMass );
-    }
-
-	/**
-	 * 
-	 */
-    delete_VariableModification_Selected( modMass : number ) : void {
-        this._variableModificationsSelected.delete( modMass );
-    }
-
-	/**
-	 * Set the user select to show reported peptides with no modification masses
-	 */
-    set_NO_VariableModification_AKA_Unmodified_Selected() : void {
-        this._variableModificationsSelected.add( _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED );
-    }
-
-	/**
-	 * Remove the user select to show reported peptides with no modification masses
-	 */
-    remove_NO_VariableModification_AKA_Unmodified_Selected() : void {
-        this._variableModificationsSelected.delete( _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED );
+    /**
+     * Return object for managing Open Modification (and unmodified) selections
+     */
+    get_OpenModificationSelections() : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject {
+        return this._openModificationsSelected
     }
 
     ///////////////
@@ -170,24 +119,142 @@ export class ModificationMass_UserSelections_StateObject {
         return this._staticModificationsSelected.size !== 0;
     }
 
-	/**
-	 * @returns a Map of the currently selected Static Modifications: 
-     *     Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
-	 */
-    get_StaticModifications_Selected() : Map<string, Set<number>> {
-        return this._staticModificationsSelected;
+    /**
+     * @returns true if any Static Modifications currently selected of type SelectionType.ANY
+     */
+    is_Any_StaticModification_Selected__SelectionType__ANY() : boolean {
+
+        let anySelected = false;
+        if ( this._staticModificationsSelected.size !== 0 ) {
+            for ( const mapEntry_Key_ResidueLetter of this._staticModificationsSelected.entries() ) {
+                const map_Key_ModMass = mapEntry_Key_ResidueLetter[ 1 ]
+                for ( const mapEntry_Key_ModMass of map_Key_ModMass.entries() ) {
+                    const selectionEntry = mapEntry_Key_ModMass[1]
+                    if (selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY) {
+                        anySelected = true
+                        break;
+                    }
+                }
+                if ( anySelected ) {
+                    break
+                }
+            }
+        }
+        return anySelected // any selection of type SelectionType.ANY
+    }
+
+    /**
+     * @returns true if any Static Modifications currently selected of type SelectionType.ALL
+     */
+    is_Any_StaticModification_Selected__SelectionType__ALL() : boolean {
+
+        let anySelected = false;
+        if ( this._staticModificationsSelected.size !== 0 ) {
+            for ( const mapEntry_Key_ResidueLetter of this._staticModificationsSelected.entries() ) {
+                const map_Key_ModMass = mapEntry_Key_ResidueLetter[ 1 ]
+                for ( const mapEntry_Key_ModMass of map_Key_ModMass.entries() ) {
+                    const selectionEntry = mapEntry_Key_ModMass[1]
+                    if (selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL) {
+                        anySelected = true
+                        break;
+                    }
+                }
+                if ( anySelected ) {
+                    break
+                }
+            }
+        }
+        return anySelected // any selection of type SelectionType.ALL
     }
 
 	/**
+	 * @returns a Map of the currently selected Static Modifications.  Just Residues and Masses:
+     *     Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+	 */
+    get_StaticModifications_Selected_Residue_Mass_Map_Set() : Map<string, Set<number>> {
+        const result : Map<string, Set<number>> = new Map()
+        for ( const entryResidueMapEntry of this._staticModificationsSelected.entries() ) {
+            const entryResidue = entryResidueMapEntry[ 0 ]
+            const entryResidueMapValue = entryResidueMapEntry[ 1 ];
+            const resultMassSet = new Set<number>();
+            result.set( entryResidue, resultMassSet );
+            for ( const massMapEntry of entryResidueMapValue ) {
+                const mass = massMapEntry[ 0 ]
+                resultMassSet.add( mass )
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @returns a Map of the currently selected Static Modifications.  Just Residues and Masses:  Only for "ANY" Selection type SingleProtein_Filter_SelectionType.ANY
+     *     Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+     */
+    get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__ANY_SelectionType() : Map<string, Set<number>> {
+        const result : Map<string, Set<number>> = new Map()
+        for ( const entryResidueMapEntry of this._staticModificationsSelected.entries() ) {
+            const entryResidue = entryResidueMapEntry[ 0 ]
+            const entryResidueMapValue = entryResidueMapEntry[ 1 ];
+            const resultMassSet = new Set<number>();
+            result.set( entryResidue, resultMassSet );
+            for ( const massMapEntry of entryResidueMapValue ) {
+                const selectionTypeEntry = massMapEntry[ 1 ]
+                if ( selectionTypeEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+                    const mass = massMapEntry[0]
+                    resultMassSet.add(mass)
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @returns a Map of the currently selected Static Modifications.  Just Residues and Masses:  Only for "ALL" Selection type SingleProtein_Filter_SelectionType.ALL
+     *     Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+     */
+    get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__ALL_SelectionType() : Map<string, Set<number>> {
+        const result : Map<string, Set<number>> = new Map()
+        for ( const entryResidueMapEntry of this._staticModificationsSelected.entries() ) {
+            const entryResidue = entryResidueMapEntry[ 0 ]
+            const entryResidueMapValue = entryResidueMapEntry[ 1 ];
+            const resultMassSet = new Set<number>();
+            result.set( entryResidue, resultMassSet );
+            for ( const massMapEntry of entryResidueMapValue ) {
+                const selectionTypeEntry = massMapEntry[ 1 ]
+                if ( selectionTypeEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                    const mass = massMapEntry[0]
+                    resultMassSet.add(mass)
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     */
+    get_StaticModification_Selected({ residueLetter, modMass } : { residueLetter : string, modMass : number }) : SingleProtein_Filter_PerUniqueIdentifier_Entry {
+
+        let result : SingleProtein_Filter_PerUniqueIdentifier_Entry = undefined
+
+        const entryFor_ResidueLetter = this._staticModificationsSelected.get( residueLetter );
+        if ( entryFor_ResidueLetter ) {
+            result = entryFor_ResidueLetter.get( modMass );
+        }
+
+        return result
+    }
+
+    /**
 	 * 
 	 */
-    add_StaticModification_Selected({ residueLetter, modMass } : { residueLetter : string, modMass : number }) : void {
+    set_StaticModification_Selected({ residueLetter, modMass, entry } : { residueLetter : string, modMass : number, entry : SingleProtein_Filter_PerUniqueIdentifier_Entry }) : void {
         let entryFor_ResidueLetter = this._staticModificationsSelected.get( residueLetter );
         if ( ! entryFor_ResidueLetter ) {
-            entryFor_ResidueLetter = new Set();
+            entryFor_ResidueLetter = new Map();
             this._staticModificationsSelected.set( residueLetter, entryFor_ResidueLetter )
         }
-        entryFor_ResidueLetter.add( modMass );
+        entryFor_ResidueLetter.set( modMass, entry );
     }
 
 	/**
@@ -223,91 +290,20 @@ export class ModificationMass_UserSelections_StateObject {
 		const result = {}
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
-		if (this._variableModificationsSelected && this._variableModificationsSelected.size !== 0) {
+		{
+			const variableModificationsSelected_Encoded = this._variableModificationsSelected.getEncodedStateData();
 
-            //  Split selected modifications into Integer and non-integer
-            const modificationsInteger : Array<number> = [];
-            const modificationsNonInteger : Array<number | string> = [];  //  Allow String since _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED is a string
-
-			for ( const modificationSelected of this._variableModificationsSelected ) {
-
-                if ( modificationSelected === _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED ) {
-                    //  Special case for _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED since is not numeric / Is a string
-                    modificationsNonInteger.push( modificationSelected );
-
-                } else {
-                    if ( ! variable_is_type_number_Check( modificationSelected ) ) {
-                        const msg = "entry in this._variableModificationsSelected is not _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED and is not number: " + modificationSelected;
-                        console.warn( msg );
-                        throw Error( msg );
-                    }
-                    const modificationSelected_Number : number = modificationSelected as number;
-
-                    if ( Number.isSafeInteger( modificationSelected_Number ) ) {
-                        modificationsInteger.push( modificationSelected_Number );
-                    } else {
-                        modificationsNonInteger.push( modificationSelected );
-                    }
-                }
-            }
-
-            {  //  Encode Integer values to string and store to output object
-
-                if ( modificationsInteger && modificationsInteger.length !== 0 ) {
-                
-                    modificationsInteger.sort(function (a, b) {
-                        if (a < b) {
-                            return -1;
-                        }
-                        if (a > b) {
-                            return 1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
-
-                    const modificationsIntegerAsOffsetAndAltBase = [];
-                    let prevModification = undefined;
-                    for (const modification of modificationsInteger) {
-
-                        let modificationValueToSave = modification;
-                        if (prevModification !== undefined) {
-                            modificationValueToSave = modification - prevModification; // Not first so save offset
-                        }
-                        prevModification = modification;
-
-                        const modificationValueToSaveAsAltBase = modificationValueToSave.toString(_ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_BASE);
-                        modificationsIntegerAsOffsetAndAltBase.push(modificationValueToSaveAsAltBase);
-                    }
-
-                    const modificationsDelimited = modificationsIntegerAsOffsetAndAltBase.join(_ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR);
-
-                    result[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] = modificationsDelimited;
-                }
-            }
-
-            {  //  Sort and Store Non Integer values to output object
-                    
-                    //  This has to deal with the value for _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED (which is currently "U") in the array modificationsNonInteger
-                    //     This results in the array modificationsNonInteger probably not being sorted properly, which isn't a big deal
-
-                if ( modificationsNonInteger && modificationsNonInteger.length !== 0 ) {
-
-                        modificationsNonInteger.sort(function (a, b) {
-                        if (a < b) {
-                            return -1;
-                        }
-                        if (a > b) {
-                            return 1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
-
-                    result[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] = modificationsNonInteger;
-                }
-            }
+			if ( variableModificationsSelected_Encoded ) {
+				result[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] = variableModificationsSelected_Encoded;
+			}
 		}
+        {
+            const openModificationsSelected_Encoded = this._openModificationsSelected.getEncodedStateData();
+
+            if ( openModificationsSelected_Encoded ) {
+                result[ _ENCODED_DATA__OPEN_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] = openModificationsSelected_Encoded;
+            }
+        }
 
         // this._staticModificationsSelected: Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
 		if ( this._staticModificationsSelected && this._staticModificationsSelected.size !== 0 ) {
@@ -321,8 +317,8 @@ export class ModificationMass_UserSelections_StateObject {
                 const mapKey = mapEntry[ 0 ];
                 const mapValue = mapEntry[ 1 ];
 
-                const staticModificationsSelectedArray = Array.from( mapValue );
-                staticModificationsSelectedArray.sort(function (a, b) {
+                const staticModificationsSelectedMassesKeysArray = Array.from( mapValue.keys() );
+                staticModificationsSelectedMassesKeysArray.sort(function (a, b) {
                     if (a < b) {
                         return -1;
                     }
@@ -333,7 +329,27 @@ export class ModificationMass_UserSelections_StateObject {
                     return 0;
                 });
 
-                staticModificationsSelectedForEncoding[ mapKey ] = staticModificationsSelectedArray;
+                const resultArray = []
+
+                for ( const massKey of staticModificationsSelectedMassesKeysArray ) {
+
+                    const selectEntry = mapValue.get( massKey );
+                    if ( ! selectEntry ) {
+                        const  msg = "BUG: mapValue.get( massKey ) not return a value"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+
+                    const selectEntryEncoded = _encodeStaticModSelection( selectEntry )
+
+                    const resultEntry = {}
+                    resultEntry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME ] = massKey;
+                    resultEntry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE_PROPERTY_NAME ] = selectEntryEncoded;
+
+                    resultArray.push( resultEntry )
+                }
+
+                staticModificationsSelectedForEncoding[ mapKey ] = resultArray;
             }
 
             result[ _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME ] = staticModificationsSelectedForEncoding;
@@ -363,59 +379,31 @@ export class ModificationMass_UserSelections_StateObject {
 			throw Error( msg );
 		}
 
-		const newSet_selectedModificationMasses : Set<number | string> = new Set();
-        
-        { //  Get Integer modifications and decode
-            const modificationsAsOffsetAndAltBaseString = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
+		{  //  Old Variable Mods Selections for backwards compatibility
 
-            if ( modificationsAsOffsetAndAltBaseString ) {
-                //  Have positions (first is position, rest are offsets) so convert to Number and compute positions
-                const modificationsAsOffsetAndAltBaseString_Split = modificationsAsOffsetAndAltBaseString.split(_ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR);
+			if ( encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] ||
+				encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] ) {
 
-                let prevModificationValue : number = undefined;
-                for ( const modificationsAsOffsetAndAltBase of modificationsAsOffsetAndAltBaseString_Split ) {
-                    //  modificationAsOffset: all but first are offset
-                    const modificationAsOffset : number = Number.parseInt( modificationsAsOffsetAndAltBase, _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_BASE);
-                    if ( Number.isNaN(modificationAsOffset) ) {
-                        const msg = "set_encodedStateData(...): modificationsOffset failed to parse: " + modificationsAsOffsetAndAltBase;
-                        console.log( msg );
-                        throw Error( msg );
-                    }
-                    let modification : number = undefined;
-                    if ( prevModificationValue === undefined ) {
-                        //  First modification so not offset
-                        modification = modificationAsOffset;
-                    } else {
-                        modification = modificationAsOffset + prevModificationValue;
-                    }
-                    newSet_selectedModificationMasses.add( modification );
-                    prevModificationValue = modification;
-                }
+				const encodedStateData_For_VariableModificationsSelections = {}
+				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ];
+				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
+				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];
+
+				this._variableModificationsSelected.set_encodedStateData({ encodedStateData : encodedStateData_For_VariableModificationsSelections })
+			}
+		}
+		{  //  Current Variable Modifications Selections
+			if ( encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] ) {
+
+				this._variableModificationsSelected.set_encodedStateData({ encodedStateData : encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] })
+			}
+		}
+        {  //  Open Modifications Selections
+            if ( encodedStateData[ _ENCODED_DATA__OPEN_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] ) {
+
+                this._openModificationsSelected.set_encodedStateData({ encodedStateData : encodedStateData[ _ENCODED_DATA__OPEN_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] })
             }
         }
-        { //  Get Non Integer modifications and add to set
-            
-            const modificationsNonInteger = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];
-
-            if ( modificationsNonInteger && modificationsNonInteger.length !== 0 ) {
-
-                for ( const modificationNonInteger of modificationsNonInteger ) {
-
-                    //  Validate that array element is number or _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED
-                    if ( modificationNonInteger !== _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED ) {
-                        if ( ! variable_is_type_number_Check( modificationNonInteger ) ) {
-                            const msg = "entry in encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] is not _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED and is not number: " + modificationNonInteger;
-                            console.warn( msg );
-                            throw Error( msg );
-                        }
-                    }
-    
-                    newSet_selectedModificationMasses.add( modificationNonInteger );
-                }
-            }
-        }
-
-        this._variableModificationsSelected = newSet_selectedModificationMasses;
 
 
         { //  Static Mods
@@ -426,39 +414,94 @@ export class ModificationMass_UserSelections_StateObject {
 
             if ( staticModificationsSelectedEncoded ) { // local_staticModificationsSelected is Object of Arrays if populated
 
-                const local_staticModificationsSelected : Map<string, Set<number>> = new Map();
+                const local_staticModificationsSelected : Map<string, Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> = new Map();
 
                 const objectKeys = Object.keys( staticModificationsSelectedEncoded );
                 for ( const objectKey of objectKeys ) {
+
+                    //  Either currently an Array<{a:mass,b:selectionTypeEncoded}  or previously, Array<mass>
                     const staticModificationsSelectedMassesArray = staticModificationsSelectedEncoded[ objectKey ];
-                    const staticModificationsSelectedMassesSet : Set<number> = new Set( staticModificationsSelectedMassesArray );
-                    for ( const entry of staticModificationsSelectedMassesSet ) {
-                        if ( ! variable_is_type_number_Check( entry ) ) {
-                            const msg = "entry in encodedStateData[ _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME ] is not number: " + entry + ", objectKey: " + objectKey;
+                    if ( ! ( staticModificationsSelectedMassesArray instanceof Array ) ) {
+                        const msg = "( ! ( staticModificationsSelectedMassesArray instanceof Array ) )"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                    const staticModificationsSelectedMassesMap : Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry> = new Map();
+                    for ( const entry of staticModificationsSelectedMassesArray ) {
+                        if ( variable_is_type_number_Check( entry ) ) {
+                            //  Old version with just the mass as a number
+                            const selectionEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.ANY });
+                            staticModificationsSelectedMassesMap.set( entry, selectionEntry )
+
+                        } else if ( entry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME ] ) {
+                            //  Have 'current' entry
+                            const mass = entry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME ]
+                            const selectionEncoded = entry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE_PROPERTY_NAME ];
+                            let selectionEntry = _decodeStaticModSelection( selectionEncoded )
+                            staticModificationsSelectedMassesMap.set( mass, selectionEntry )
+
+                        } else {
+                            const msg = "entry in encodedStateData[ _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME ] is not number and is not an object with property '" +
+                                _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME +
+                                "'  entry: " + entry + ", objectKey: " + objectKey;
                             console.warn( msg );
                             throw Error( msg );
                         }
+
                     }
-                    local_staticModificationsSelected.set( objectKey, staticModificationsSelectedMassesSet );
+                    if ( staticModificationsSelectedMassesMap.size > 0 ) {
+                        local_staticModificationsSelected.set(objectKey, staticModificationsSelectedMassesMap);
+                    }
                 }
                 this._staticModificationsSelected = local_staticModificationsSelected;
             }
         }
-        
-        this._initialVariableModificationsSelectedCleanup();
 	}
 
-	/**
-	 * Clean up this._variableModificationsSelected due to not allowing unmodified to be selected when anything else is selected.
-     * 
-     * If any mass selected, the unmodified will be removed.
-	 */
-	private _initialVariableModificationsSelectedCleanup() : void {
-
-        if ( this._variableModificationsSelected.size > 1 ) {
-            //  If the set contains _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED and anything else, remove _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED
-            this._variableModificationsSelected.delete( _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED );
-        }
-    }
 }
 
+//////
+
+//  Private functions
+
+/**
+ *
+ */
+const _decodeStaticModSelection = function( selectionEncoded : string ) : SingleProtein_Filter_PerUniqueIdentifier_Entry {
+
+    let selectionType : SingleProtein_Filter_SelectionType = null
+
+    if ( selectionEncoded === _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ANY__PROPERTY_NAME ) {
+        selectionType = SingleProtein_Filter_SelectionType.ANY
+    } else if ( selectionEncoded === _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ALL__PROPERTY_NAME ) {
+        selectionType = SingleProtein_Filter_SelectionType.ALL
+    } else {
+        const msg = "_decodeStaticModSelection: Unknown value for selectionEncoded: " + selectionEncoded
+        console.warn( msg )
+        throw Error( msg )
+    }
+
+    const entry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+
+    return  entry
+}
+
+/**
+ *
+ */
+const _encodeStaticModSelection = function ( selectionEntry : SingleProtein_Filter_PerUniqueIdentifier_Entry ) : string {
+
+    let selectionEntryEncoded = undefined;
+
+    if ( selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+        selectionEntryEncoded = _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ANY__PROPERTY_NAME
+    } else if ( selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+        selectionEntryEncoded = _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ALL__PROPERTY_NAME
+    } else {
+        const msg = "_encodeStaticModSelection: Unknown value for selectionEntry.selectionType: " + selectionEntry.selectionType
+        console.warn( msg )
+        throw Error( msg )
+    }
+
+    return selectionEntryEncoded
+}

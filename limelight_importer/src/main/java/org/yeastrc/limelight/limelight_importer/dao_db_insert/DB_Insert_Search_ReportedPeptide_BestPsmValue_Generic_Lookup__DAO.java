@@ -58,9 +58,9 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 			+ 	"( reported_peptide_id, search_id, "
 			+ 		" annotation_type_id, "
 			+  		" has_dynamic_modifictions, has_isotope_labels, "
-			+ 		" any_psm_has_reporter_ions, "
+			+ 		" any_psm_has_open_modifictions, any_psm_has_reporter_ions, "
 			+ 		" best_psm_value_for_ann_type_id, psm_id_for_best_value__non_fk ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -92,6 +92,12 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
 
+			counter++;
+			if ( item.isAnyPsmHasOpenModifications() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
 			counter++;
 			if ( item.isAnyPsmHasReporterIons() ) {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );

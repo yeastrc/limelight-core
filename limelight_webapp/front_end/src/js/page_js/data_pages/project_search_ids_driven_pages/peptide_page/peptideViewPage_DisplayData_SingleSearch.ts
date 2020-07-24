@@ -27,6 +27,11 @@ import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { ReportedPeptides_DataTableObjects_ForSingleSearch_PeptidePage_Result, reportedPeptides_DataTableOjbects_ForSingleSearch_PeptidePage_createChildTableObjects } from './peptidePage_Display_SingleSearch_ReportedPeptideListSection_Create_TableData';
 import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
+import {
+	ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+	ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+
 import {create_dataTable_Root_React, remove_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
 
 /**
@@ -400,12 +405,37 @@ export class PeptideViewPage_Display_SingleSearch {
 				this._searchDetailsBlockDataMgmtProcessing.
 				getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
 			);
+
+			const reportedPeptideIds_ForDisplay : Set<number> = new Set<number>()
+			const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId(undefined )
+			{
+				const numPsmsForReportedPeptideIdMap = this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+				if ( ! numPsmsForReportedPeptideIdMap) {
+					throw Error("this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() returned nothing")
+				}
+
+				for (const reportedPeptideId of reportedPeptideIdsForDisplay) {
+					const numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
+					if ( numPsms === undefined ) {
+						throw Error("numPsmsForReportedPeptideIdMap.get(reportedPeptideId) returned undefined for reportedPeptideId: " + reportedPeptideId )
+					}
+					reportedPeptideIds_ForDisplay.add( reportedPeptideId )
+					const entry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
+						reportedPeptideId,
+						psmIds_Include: undefined,
+						psmIds_Exclude: undefined,
+						psmIds_UnionSelection_ExplicitSelectAll: false,
+						psmCount_after_Include_Exclude : numPsms
+					})
+					reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry)
+				}
+			}
 			
             const reportedPeptides_DataTableObjects_ForSingleSearch_PeptidePage_Result : ReportedPeptides_DataTableObjects_ForSingleSearch_PeptidePage_Result = (
                 reportedPeptides_DataTableOjbects_ForSingleSearch_PeptidePage_createChildTableObjects({
                     projectSearchId : this._projectSearchId,
-                    reportedPeptideIds : new Set( reportedPeptideIdsForDisplay ),
-                    reporterIonMassesSelected : undefined, // new Set(),
+					reportedPeptideIds_ForDisplay,
+					reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
                     searchDataLookupParamsRoot,
                     loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
                     loadedDataCommonHolder : this._loadedDataCommonHolder,
@@ -429,7 +459,6 @@ export class PeptideViewPage_Display_SingleSearch {
 
 			// create_dataTable_Root_React(...): Use ONLY when Data Table is not enclosed by React Managed DOM element
 			create_dataTable_Root_React({ tableObject : reportedPeptideList_RootTableObject, containerDOMElement : peptide_list_container_DOM, renderCompleteCallbackFcn })
-
 		}
 	}
 

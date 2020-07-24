@@ -292,6 +292,56 @@ export class ProteinViewDataLoader {
 	}
 
 	/**
+	 * Get PSM Open Modification Masses per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
+	 */
+	static getPsmsOpenModificationMassesForReportedPeptideIdsCutoffs( { projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId } ) {
+
+		let promise = new Promise( function( resolve, reject ) {
+			try {
+				let requestObject = {
+					projectSearchId,
+					reportedPeptideIds,
+					searchDataLookupParams_For_Single_ProjectSearchId,
+				};
+
+				console.log("AJAX Call to get psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
+
+				const url = "d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+				promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+					try {
+						console.log("AJAX Call to get psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
+
+						//  reportedPeptideId_psmOpenModificationMassesList_List entry:
+						// private long psmId;
+						// private double openModificationMass;
+						// private Integer openModificationPosition;
+						// private Boolean is_N_Terminal;
+						// private Boolean is_C_Terminal;
+
+						resolve({ reportedPeptideId_psmOpenModificationMassesList_List : responseData.reportedPeptideId_psmOpenModificationMassesList_List });
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+
+		return promise;
+	}
+
+	/**
 	 * Get Peptide Ids from Reported Peptide Ids and Project Search Id
 	 */
 	static getPeptideIdsFromReportedPeptideIds( { projectSearchId, reportedPeptideIds } ) {
@@ -787,5 +837,49 @@ export class ProteinViewDataLoader {
 		
 		return promise;
 	}
-	
+
+	/**
+	 * Get Open Modification Data From Reported Peptide Ids
+	 */
+	static getOpenModificationsForReportedPeptideids( { projectSearchId, reportedPeptideIds } ) : Promise<unknown> {
+
+		let promise = new Promise( function( resolve, reject ) {
+			try {
+				let requestObject = {
+					projectSearchId : projectSearchId,
+					reportedPeptideIds : reportedPeptideIds
+				};
+
+				console.log("AJAX Call to get open-modifications-per-reported-peptide-id START, Now: " + new Date() );
+
+				const url = "d/rws/for-page/psb/open-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
+
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+				promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+					try {
+						console.log("AJAX Call to get open-modifications-per-reported-peptide-id END, Now: " + new Date() );
+
+						//  JS Object.  <Reported Peptide Id, [{}]>
+
+						resolve( responseData.openModification_KeyReportedPeptideId );
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+
+		return promise;
+	}
+
 }

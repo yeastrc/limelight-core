@@ -37,22 +37,27 @@ import org.yeastrc.limelight.limelight_importer.dao.ReportedPeptideDAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchDynamicModMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchIsotopeLabelDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReporterIonMassDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.dto.SearchProteinVersionDTO;
 import org.yeastrc.limelight.limelight_importer.lookup_records_create_update.LookupRecordsCreate_Main;
+import org.yeastrc.limelight.limelight_importer.objects.PsmOpenModification_UniquePosition_InReportedPeptide_Entry;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
-import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessSave_SingleReportedPeptide.ProcessSave_SingleReportedPeptide_Results;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO;
+import org.yeastrc.limelight.limelight_shared.dto.SrchRepPept_PsmOpenModRounded_Lookup_DTO;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 
 /**
@@ -111,8 +116,12 @@ public class ProcessReportedPeptidesAndPSMs {
 				//  Inserted proteinSequenceVersionIds
 				Set<Integer> proteinSequenceVersionIdsAll = new HashSet<>();
 				
-				//  Accumulate Unique Dynamic Mod Masses to insert into a lookup table
+				//  Accumulate Unique Reported Peptide Level Dynamic Mod Masses to insert into a lookup table
 				Set<Double> uniqueDynamicModMassesForTheSearch = new HashSet<>();
+
+				//  Accumulate Unique PSM Level Open Mod Masses Rounded to insert into a lookup table
+				Set<Integer> uniquePsmOpenModMassesRoundedForTheSearch = new HashSet<>();
+				
 				//  Accumulate Unique Reporter Ion Masses to insert into a lookup table
 				Set<BigDecimal> uniqueReporterIonMassesForTheSearch = new HashSet<>();
 				//  Accumulate Unique Isotope Label Ids to insert into a lookup table
@@ -182,6 +191,40 @@ public class ProcessReportedPeptidesAndPSMs {
 							uniqueReporterIonMassesForTheSearch.add( reporterIonMass );
 						}
 					}
+
+					if ( psmStatisticsAndBestValues.getPsmOpenModification_UniqueMassesRounded() != null ){
+						
+						int reportedPeptideId = savedReportedPeptideDTO.getId();
+						
+						for ( Integer mass : psmStatisticsAndBestValues.getPsmOpenModification_UniqueMassesRounded() ) {
+							SrchRepPept_PsmOpenModRounded_Lookup_DTO dto = new SrchRepPept_PsmOpenModRounded_Lookup_DTO();
+							dto.setSearchId( searchId );
+							dto.setReportedPeptideId( reportedPeptideId );
+							dto.setMass( mass );
+							DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO.getInstance().save(dto);
+						}
+						
+						uniquePsmOpenModMassesRoundedForTheSearch.addAll( psmStatisticsAndBestValues.getPsmOpenModification_UniqueMassesRounded() );
+					}
+					if ( psmStatisticsAndBestValues.getPsmOpenModification_UniquePositions() != null ){
+					
+						List<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions_List = new ArrayList<>( psmStatisticsAndBestValues.getPsmOpenModification_UniquePositions() );
+						Collections.sort( psmOpenModification_UniquePositions_List );
+						int reportedPeptideId = savedReportedPeptideDTO.getId();
+						
+						DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO = DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO.getInstance();
+						
+						for ( PsmOpenModification_UniquePosition_InReportedPeptide_Entry entry : psmOpenModification_UniquePositions_List ) {
+							Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO dto = new Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO();
+							dto.setSearchId( searchId );
+							dto.setReportedPeptideId( reportedPeptideId );
+							dto.setPosition( entry.getPosition() );
+							dto.setIs_N_Terminal( entry.isIs_N_Terminal() );
+							dto.setIs_C_Terminal( entry.isIs_C_Terminal() );
+							
+							db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO.saveToDatabase( dto );
+						}
+					}
 					
 					//  Add to unique values per search
 					uniqueReporterIonMassesForTheSearch.addAll( uniqueReporterIonMassesForTheReportedPeptide );
@@ -204,6 +247,7 @@ public class ProcessReportedPeptidesAndPSMs {
 				
 				insertUniqueProtinVersionIdsForTheSearch( proteinSequenceVersionIdsAll, searchId );
 				insertUniqueDynamicModMassesForTheSearch( uniqueDynamicModMassesForTheSearch, searchId );
+				insert_uniquePsmOpenModMassesRoundedForTheSearch( uniquePsmOpenModMassesRoundedForTheSearch, searchId );
 				insertUniqueReporterIonMassesForTheSearch( uniqueReporterIonMassesForTheSearch, searchId );
 				insertIsotopeLabelIdsForTheSearch( uniqueIsotopeLabelIdsForTheSearch, searchId );
 			}
@@ -264,6 +308,18 @@ public class ProcessReportedPeptidesAndPSMs {
 		}	
 	}
 
+	/**
+	 * @param uniquePsmOpenModMassesRoundedForTheSearch
+	 * @throws Exception
+	 */
+	private void insert_uniquePsmOpenModMassesRoundedForTheSearch( 
+			Set<Integer> uniquePsmOpenModMassesRoundedForTheSearch, int searchId ) throws Exception {
+		for ( Integer openModMass : uniquePsmOpenModMassesRoundedForTheSearch ) {
+			
+			DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO.getInstance().saveSearchOpenModMass(searchId, openModMass);
+		}	
+	}
+	
 	/**
 	 * @param uniqueReporterIonMassesForTheSearch
 	 * @throws Exception

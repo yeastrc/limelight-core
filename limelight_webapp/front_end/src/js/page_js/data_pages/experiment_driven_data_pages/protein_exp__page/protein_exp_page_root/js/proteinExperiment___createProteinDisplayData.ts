@@ -294,7 +294,7 @@ export const proteinExperiment_CreateProteinDisplayData = function ( {
                 const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
 
                 if ( ! loadedDataPerProjectSearchIdHolder ) {
-                    const msg = "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': No value in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
+                    const msg = "proteinExperiment_CreateProteinDisplayData: 'Compute Generated Encoded Reported Peptide String': No value in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
                     console.warn( msg );
                     throw Error( msg );
                 }
@@ -304,7 +304,17 @@ export const proteinExperiment_CreateProteinDisplayData = function ( {
                 const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
                 if ( ! dynamicModificationsOnReportedPeptide_KeyReportedPeptideId ) {
-                    const msg = "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': No value in: loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId()"
+                    const msg = "proteinExperiment_CreateProteinDisplayData: 'Compute Generated Encoded Reported Peptide String': No value in: loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId()"
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                //  Open Modifications Per Reported Peptide Id.   mass is double
+                // Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, mass }]>>
+                const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
+
+                if ( ! openModificationsOnReportedPeptide_KeyReportedPeptideId ) {
+                    const msg = "proteinExperiment_CreateProteinDisplayData: 'Compute Generated Encoded Reported Peptide String': No value in: loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId()"
                     console.warn( msg );
                     throw Error( msg );
                 }
@@ -320,59 +330,60 @@ export const proteinExperiment_CreateProteinDisplayData = function ( {
 
                         //  Not in cache so compute:
 
-                        let modsRoundedSet_KeyPosition: Map<number, Set<number>> = new Map();
+                        const variableMmodificationsRoundedArray_Map_KeyPosition: Map<number, Array<string>> = new Map();
 
-                        const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
-                        if ( dynamicModificationsOnReportedPeptideArray ) {
+                        {
+                            const modsRoundedSet_KeyPosition: Map<number, Set<number>> = new Map();
 
-                            //  Have Mods for this reportedPeptideId
-                            for ( const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray ) {
+                            const dynamicModificationsOnReportedPeptideArray = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get(reportedPeptideId);
+                            if (dynamicModificationsOnReportedPeptideArray) {
 
-                                const mass = dynamicModificationOnReportedPeptide.mass;
-                                const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+                                //  Have Mods for this reportedPeptideId
+                                for (const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray) {
 
-                                let modsRoundedSet = modsRoundedSet_KeyPosition.get( positionOnReportedPeptide );
-                                if ( ! modsRoundedSet ) {
-                                    modsRoundedSet = new Set();
-                                    modsRoundedSet_KeyPosition.set( positionOnReportedPeptide, modsRoundedSet );
+                                    const mass = dynamicModificationOnReportedPeptide.mass;
+                                    const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+
+                                    let modsRoundedSet = modsRoundedSet_KeyPosition.get(positionOnReportedPeptide);
+                                    if (!modsRoundedSet) {
+                                        modsRoundedSet = new Set();
+                                        modsRoundedSet_KeyPosition.set(positionOnReportedPeptide, modsRoundedSet);
+                                    }
+
+                                    const massRounded = modificationMass_CommonRounding_ReturnNumber(mass);  // Call external function
+                                    modsRoundedSet.add(massRounded);
                                 }
 
-                                const massRounded = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
-                                modsRoundedSet.add( massRounded );
-                            }
-                        }
+                                for (const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries()) {
+                                    const positionOfModification = modsRoundedSet_KeyPosition_Entry[0];
+                                    const modsRoundedSet = modsRoundedSet_KeyPosition_Entry[1];
 
-
-                        const variableMmodificationsRoundedArray_Map_KeyPosition : Map<number, Array<string>> = new Map();
-
-                        for ( const modsRoundedSet_KeyPosition_Entry of modsRoundedSet_KeyPosition.entries() ) {
-                            const positionOfModification = modsRoundedSet_KeyPosition_Entry[ 0 ];
-                            const modsRoundedSet = modsRoundedSet_KeyPosition_Entry[ 1 ];
-
-                            const modsRoundedArray = Array.from( modsRoundedSet );
-                            if ( modsRoundedArray.length > 1 ) {
-                                modsRoundedArray.sort( (a,b) => {
-                                    if ( a < b ) {
-                                        return -1;
-                                    } else if ( a > b ) {
-                                        return 1;
-                                    } else {
-                                        return 0;
+                                    const modsRoundedArray = Array.from(modsRoundedSet);
+                                    if (modsRoundedArray.length > 1) {
+                                        modsRoundedArray.sort((a, b) => {
+                                            if (a < b) {
+                                                return -1;
+                                            } else if (a > b) {
+                                                return 1;
+                                            } else {
+                                                return 0;
+                                            }
+                                        });
                                     }
-                                });
+                                    const modsRoundedStringsArray: Array<string> = [];
+                                    for (const modRounded of modsRoundedArray) {
+                                        const modRoundedString = modRounded.toString();
+                                        modsRoundedStringsArray.push(modRoundedString);
+                                    }
+                                    variableMmodificationsRoundedArray_Map_KeyPosition.set(positionOfModification, modsRoundedStringsArray);
+                                }
                             }
-                            const modsRoundedStringsArray : Array<string> = [];
-                            for ( const modRounded of modsRoundedArray ) {
-                                const modRoundedString = modRounded.toString();
-                                modsRoundedStringsArray.push( modRoundedString );
-                            }
-                            variableMmodificationsRoundedArray_Map_KeyPosition.set( positionOfModification, modsRoundedStringsArray );
                         }
 
                         const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId });
 
                         if ( peptideId === undefined || peptideId === null ) {
-                            const msg = "ProteinViewPage_Display_MultipleSearches: 'Compute Generated Encoded Reported Peptide String': No Peptide Id found for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                            const msg = "proteinExperiment_CreateProteinDisplayData: 'Compute Generated Encoded Reported Peptide String': No Peptide Id found for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
                             console.warn( msg );
                             throw Error( msg );
                         }

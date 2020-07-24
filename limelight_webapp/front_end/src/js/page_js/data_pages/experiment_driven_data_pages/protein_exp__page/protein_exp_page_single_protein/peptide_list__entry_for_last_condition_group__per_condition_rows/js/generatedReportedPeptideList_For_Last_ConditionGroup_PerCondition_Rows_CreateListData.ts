@@ -47,6 +47,8 @@ import { ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_Get
 //  Child Data Searches for Single Peptide show/hide
 
 import { searchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent, SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__searches_for_condition_for_single_peptide/js/searchesForConditionForSinglePeptide_ReturnChildReactComponent';
+import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 
 
 //////////////////
@@ -93,8 +95,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_Last_Conditio
     const conditionGroupsDataContainer : ConditionGroupsDataContainer = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsDataContainer;
 
     const projectSearchIds : Array<number> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchIds
-    const reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIdsMap_KeyProjectSearchId
-    const reporterIonMassesSelected : Set<number> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.reporterIonMassesSelected
+    const reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId
+    const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds =
+        forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     const searchDataLookupParamsRoot = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot
     const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
     const loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataCommonHolder
@@ -305,8 +308,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_Last_Conditio
                 new SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter({
                     createReportedPeptideDisplayData_Result_Entry_ForParentRow : createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow,
                     projectSearchIds : projectSearchIds_ThatHavePsmCountsGtZero,
-                    reportedPeptideIdsMap_KeyProjectSearchId : reportedPeptideIdsMap_KeyProjectSearchId,
-                    reporterIonMassesSelected,
+                    reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId,
+                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                     searchDataLookupParamsRoot,
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                     loadedDataCommonHolder,

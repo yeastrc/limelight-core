@@ -8,8 +8,12 @@
 
 import React from 'react'
 
-import { reporterIonMass_UserSelections_BuildData_ForReactComponent, ReporterIonMass_UserSelections_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reporter_ions_user_selections/js/reporterIonMass_UserSelections_BuildData_ForReactComponent';
+import { ReporterIonMass_UserSelections_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reporter_ions_user_selections/js/reporterIonMass_UserSelections_BuildData_ForReactComponent';
 import { ReporterIonMass_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject';
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
 
 
 /**
@@ -39,48 +43,10 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
         this.state = {  };
     }
 
-
-    /**
-     * After render()
-     */
-    // componentDidMount() {
-
-    //     console.log("ReporterIonMass_UserSelections: componentDidMount");
-    // }
-
-    /**
-     * Clean Up
-     */
-    // componentWillUnmount() {
-
-    // }
-
-
-    /**
-     * Must be Static
-     * Called before 
-     *   Initial render: 'render()'
-     *   Rerender : 'shouldComponentUpdate()'
-     * 
-     * Return new state (like return from setState(callback)) or null
-     */
-    // static getDerivedStateFromProps( props, state ) {
-
-      // console.log("called: static getDerivedStateFromProps(): " );
-
-      //  Return new state (like return from setState(callback)) or null
-
-    //   return null;
-
-    // }
-  
-
     /**
      * @returns true if should update, false otherwise
      */
     shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState) {
-
-        // console.log("ReporterIonMass_UserSelections: shouldComponentUpdate")
 
         //  Only update if changed: props: 
 
@@ -91,34 +57,6 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
 
          //  If Comment out prev code, comment out this method
     }
-
-    // getSnapshotBeforeUpdate( <see docs> ) {
-
-
-    // }
-
-
-    /**
-     * After render()
-     */
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-
-    //     // console.log("ReporterIonMass_UserSelections: componentDidUpdate")
-
-    //     // if ( this.dataObject_columnEntry_NewValue_Callback ) {
-    //     //     this.dataObject_columnEntry_NewValue_Callback({ dataObject_columnEntry : this.props.dataObject_columnEntry });
-    //     // }
-    // }
-
-    /**
-     * 
-     */
-    // _callbackMethodForSelectedProteinSequenceChange( params ) {
-
-    //     console.log("ReporterIonMass_UserSelections: _callbackMethodForSelectedProteinSequenceChange. params: ");
-    //     console.log( params );
-
-    // }
 
     /**
      * 
@@ -155,12 +93,12 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
         return (
             <React.Fragment>
 
-                <div className=" reporter-ion-mass-selection-outer-block ">
+                <div className=" filter-common-block-selection-outer-block reporter-ion-mass-selection-outer-block ">
 
                     {/* Float Left */}
                     <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Reporter Ions:</div>
 
-                    <div className="reporter-ion-mass-selection-block" >
+                    <div className="filter-common-selection-block" >
                         <div style={ { marginTop: 2 } }>
                             <div >
                                 { singleReporterIon_Entries }
@@ -183,14 +121,14 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
  * 
  */
 interface SingleReporterIon_Entry_Props {
-    reporterIonEntry
+    reporterIonEntry : {reporterIonMass: number, selected: boolean} //  selected NOT USED
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback : () => void;
 }
 
 interface SingleReporterIon_Entry_State {
-    checked
-    prev_reporterIonEntry
+    selection_SelectionType : SingleProtein_Filter_SelectionType
+    prev_reporterIonEntry? : {reporterIonMass: number, selected: boolean}
 }
 
 /**
@@ -199,7 +137,9 @@ interface SingleReporterIon_Entry_State {
 class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_Props, SingleReporterIon_Entry_State > {
 
     //  bind to 'this' for passing as parameters
-    private _checkboxChanged_BindThis = this._checkboxChanged.bind(this);
+    private _choice_ANY_Clicked_Callback_BindThis = this._choice_ANY_Clicked_Callback.bind(this)
+    private _choice_ALL_Clicked_Callback_BindThis = this._choice_ALL_Clicked_Callback.bind(this)
+    private _choice_Remove_Clicked_Callback_BindThis = this._choice_Remove_Clicked_Callback.bind(this)
 
     /**
      * 
@@ -207,12 +147,17 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
     constructor(props : SingleReporterIon_Entry_Props) {
         super(props);
 
-        let checked = props.reporterIonEntry.selected;
-        if ( ! checked ) {
-            checked = false; // make false if not true
+        let selection_SelectionType : SingleProtein_Filter_SelectionType = null;
+
+        {
+            const entry = props.reporterIonMass_UserSelections_StateObject.get_ReporterIon_Selected_Entry(props.reporterIonEntry.reporterIonMass)
+
+            if (entry) {
+                selection_SelectionType = entry.selectionType;
+            }
         }
 
-        this.state = { checked, prev_reporterIonEntry : props.reporterIonEntry };
+        this.state = { selection_SelectionType, prev_reporterIonEntry : props.reporterIonEntry };
     }
 
     /**
@@ -231,14 +176,9 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
 
         if ( props.reporterIonEntry !== state.prev_reporterIonEntry ) {
 
-            //   variableModificationEntry changed so update checked
-            
-            let checked = props.reporterIonEntry.selected;
-            if ( ! checked ) {
-                checked = false; // make false if not true
-            }
+            //   reporterIonEntry changed so update checked
 
-            return { checked, prev_reporterIonEntry : props.reporterIonEntry };
+            return { prev_reporterIonEntry : props.reporterIonEntry };
         }
             
         return null;
@@ -249,11 +189,9 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
      */
     shouldComponentUpdate(nextProps : SingleReporterIon_Entry_Props, nextState : SingleReporterIon_Entry_State ) {
 
-        // console.log("ModificationMass_UserSelections_VariableModifications: shouldComponentUpdate")
-
         //  Only update if changed: props or state: 
 
-        if ( this.state.checked !== nextState.checked ) {
+        if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
             return true;
         }
         return false;
@@ -262,31 +200,95 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
     }
 
     /**
-     * 
-     */    
-    _checkboxChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+     *
+     */
+    private _choice_ANY_Clicked_Callback() {
+        try {
+            const selectionType = SingleProtein_Filter_SelectionType.ANY
 
-        const target_htmlElement = event.target as HTMLInputElement;
-        const checkedProperty_htmlElement = target_htmlElement.checked;  //  New Value
+            this.setState( (state, props) : SingleReporterIon_Entry_State => {
 
-        const reporterIonMass = this.props.reporterIonEntry.reporterIonMass;
+                return { selection_SelectionType : selectionType }
+            });
 
-        // console.log( "_checkboxChanged: target.checked: " + checkedProperty_htmlElement + ", this.state.checked: " + this.state.checked )
+            const reporterIonMass = this.props.reporterIonEntry.reporterIonMass;
 
-        this.setState( (state, props) => {
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+            this.props.reporterIonMass_UserSelections_StateObject.set_ReporterIons_Selected( reporterIonMass, newEntry )
 
-            return { checked : checkedProperty_htmlElement }
-        });
+            this._updateRestofPage();
 
-        if ( checkedProperty_htmlElement ) {
-            this.props.reporterIonMass_UserSelections_StateObject.add_ReporterIons_Selected( reporterIonMass )
-        } else {
-            this.props.reporterIonMass_UserSelections_StateObject.delete_ReporterIons_Selected( reporterIonMass );
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
         }
+    }
 
-        window.setTimeout( () => {
-            this.props.updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback();
-        }, 1 );
+    /**
+     *
+     */
+    private _choice_ALL_Clicked_Callback() {
+        try {
+            const selectionType = SingleProtein_Filter_SelectionType.ALL
+
+            this.setState( (state, props) : SingleReporterIon_Entry_State => {
+
+                return { selection_SelectionType : selectionType }
+            });
+
+            const reporterIonMass = this.props.reporterIonEntry.reporterIonMass;
+
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+            this.props.reporterIonMass_UserSelections_StateObject.set_ReporterIons_Selected( reporterIonMass, newEntry )
+
+            this._updateRestofPage();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _choice_Remove_Clicked_Callback() {
+        try {
+            this.setState( (state, props) : SingleReporterIon_Entry_State => {
+
+                return { selection_SelectionType : null }
+            });
+            const reporterIonMass = this.props.reporterIonEntry.reporterIonMass;
+
+            this.props.reporterIonMass_UserSelections_StateObject.delete_ReporterIons_Selected( reporterIonMass );
+
+            this._updateRestofPage();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _updateRestofPage() {
+        try {
+            window.setTimeout( () => {
+                try {
+                    this.props.updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 1 );
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 
     /**
@@ -296,18 +298,16 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
 
         const reporterIonEntry = this.props.reporterIonEntry;
 
+        const textLabel = reporterIonEntry.reporterIonMass.toString()
+
         return (
-            <div className=" reporter-ion-mass-outer-div ">
-                <label>
-                <div style={ { display: "inline-block" } }>
-                        <input type="checkbox"  checked={ this.state.checked } onChange={ this._checkboxChanged_BindThis } />
-                    </div>
-                    <div style={ { display: "inline-block" } }>
-                        { reporterIonEntry.reporterIonMass }
-                    </div>
-                    
-                </label>
-            </div>
+            <Filter_selectionItem_Any_All_SelectionItem_Container
+                textLabel={ textLabel }
+                current_selection_SelectionType={ this.state.selection_SelectionType }
+                any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
+                all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
+                remove_Selected_Callback={ this._choice_Remove_Clicked_Callback_BindThis }
+            />
         );
     }
 }

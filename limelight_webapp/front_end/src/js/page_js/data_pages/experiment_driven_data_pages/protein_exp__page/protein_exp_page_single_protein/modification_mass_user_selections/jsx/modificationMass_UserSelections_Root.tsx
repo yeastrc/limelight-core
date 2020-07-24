@@ -22,7 +22,7 @@ import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/
 import { ModificationMass_UserSelections_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData';
 
 import { ModificationMass_UserSelections_StaticModifications } from './modificationMass_UserSelections_StaticModifications';
-import { ModificationMass_UserSelections_VariableModifications } from './modificationMass_UserSelections_VariableModifications';
+import { ModificationMass_UserSelections_Variable_or_Open_Modifications } from './modificationMass_UserSelections_Variable_or_Open_Modifications';
 
 
 /**
@@ -30,6 +30,7 @@ import { ModificationMass_UserSelections_VariableModifications } from './modific
  */
 export interface ModificationMass_UserSelections_Root_Props {
 
+    openModification_OpenSelectMassOverlay_Override_Callback : () => void
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData;
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     proteinSequenceVersionId : number, 
@@ -148,16 +149,38 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
         const modificationMass_UserSelections_ComponentData = this.props.modificationMass_UserSelections_ComponentData;
 
         const variableModificationsData = modificationMass_UserSelections_ComponentData.variableModificationsData;
+        const open_ModificationsData = modificationMass_UserSelections_ComponentData.open_ModificationsData;
         const staticModificationsData = modificationMass_UserSelections_ComponentData.staticModificationsData;
 
         return (
                 
-            <div className=" modification-mass-selection-outer-block ">
+            <div className=" filter-common-block-selection-outer-block modification-mass-selection-outer-block ">
 
                 {/*   Variable Modifications */}
-                <ModificationMass_UserSelections_VariableModifications
-                    variableModificationsData={ variableModificationsData }
-                    modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
+                <ModificationMass_UserSelections_Variable_or_Open_Modifications
+                    variable_Modifications_DISPLAY={ true }
+                    open_Modifications_DISPLAY={ false }
+                    openSelectMassOverlay_Override_Callback={ undefined }
+                    variable_or_Open_ModificationsData={ variableModificationsData }
+                    modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject.get_VariableModificationSelections() }
+                    updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
+                    update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
+                    //  For Selection in Overlay
+                    proteinSequenceVersionId={ this.props.proteinSequenceVersionId }
+                    projectSearchIds={ this.props.projectSearchIds }
+                    proteinNames={ this.props.proteinNames }
+                    proteinDescriptions={ this.props.proteinDescriptions }
+                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
+                    modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
+                />
+
+                {/*   Open Modifications */}
+                <ModificationMass_UserSelections_Variable_or_Open_Modifications
+                    variable_Modifications_DISPLAY={ false }
+                    open_Modifications_DISPLAY={ true }
+                    openSelectMassOverlay_Override_Callback={ this.props.openModification_OpenSelectMassOverlay_Override_Callback }
+                    variable_or_Open_ModificationsData={ open_ModificationsData }
+                    modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject.get_OpenModificationSelections() }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                     update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
                     //  For Selection in Overlay

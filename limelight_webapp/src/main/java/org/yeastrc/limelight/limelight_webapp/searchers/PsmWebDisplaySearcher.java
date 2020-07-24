@@ -45,7 +45,7 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	private static final Logger log = LoggerFactory.getLogger( PsmWebDisplaySearcher.class );
 
 	private static final String SQL_MAIN = 
-			"SELECT psm_tbl.id AS psm_id, psm_tbl.has_reporter_ions,"
+			"SELECT psm_tbl.id AS psm_id, psm_tbl.has_reporter_ions, psm_tbl.has_open_modifications, "
 			+ 		" psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
 			+ 		 " psm_tbl.scan_number AS scan_number, "
 			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
@@ -57,7 +57,7 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	/**
 	 * @param searchId
 	 * @param reportedPeptideId
-	 * @param psmIds - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
+	 * @param psmIds_Include - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
 	 * @param searcherCutoffValuesSearchLevel - PSM and Peptide cutoffs for a search id
 	 * @return
 	 * @throws Exception
@@ -66,8 +66,17 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	public List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay( 
 			int searchId, 
 			int reportedPeptideId, 
-			List<Long> psmIds, //  Optional
+			List<Long> psmIds_Include, //  Optional
+			List<Long> psmIds_Exclude, //  Optional
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel  ) throws Exception {
+		
+//		if ( psmIds_Include != null && ( ! psmIds_Include.isEmpty() )
+//				&& psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
+//			
+//			String msg = "Invalid Input: true: psmIds_Include != null && ( ! psmIds_Include.isEmpty() ) && psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() )";
+//			log.error( msg );
+//			throw new LimelightInternalErrorException(msg);
+//		}
 		
 		List<PsmWebDisplayWebServiceResult> psms = new ArrayList<PsmWebDisplayWebServiceResult>();
 		
@@ -78,7 +87,7 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		/////   Start building the SQL
 		sqlSB.append( SQL_MAIN );
 		
-		if ( psmIds == null || psmIds.isEmpty() ) {
+		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
 			//  Add inner join for each PSM cutoff
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 				sqlSB.append( " INNER JOIN " );
@@ -92,11 +101,12 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 				sqlSB.append( ".psm_id" );
 			}
 		}
+		
 		///////////
 		sqlSB.append( SQL_WHERE_START );
 		//////////
 		
-		if ( psmIds == null || psmIds.isEmpty() ) {
+		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
 
 			// Process PSM Cutoffs for WHERE
 
@@ -127,18 +137,33 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			}
 		} else {
 			
-			//  Filter using psmIds
+			//  Filter using psmIds Includes
 			
 			sqlSB.append( " AND psm_tbl.id IN ( " );
 			
-			for ( int counter = 1; counter <= psmIds.size(); counter++ ) {
+			for ( int counter = 1; counter <= psmIds_Include.size(); counter++ ) {
 				if ( counter != 1 ) {
 					sqlSB.append( "," );
 				}
 				sqlSB.append( "?" );
 			}
 			sqlSB.append( " ) " );
+		}
+		
+
+		if ( psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
+
+			//  Filter using psmIds Excludes
 			
+			sqlSB.append( " AND psm_tbl.id NOT IN ( " );
+			
+			for ( int counter = 1; counter <= psmIds_Exclude.size(); counter++ ) {
+				if ( counter != 1 ) {
+					sqlSB.append( "," );
+				}
+				sqlSB.append( "?" );
+			}
+			sqlSB.append( " ) " );
 		}
 		
 		String sql = sqlSB.toString();
@@ -152,7 +177,7 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			paramCounter++;
 			preparedStatement.setInt( paramCounter, reportedPeptideId );
 			
-			if ( psmIds == null || psmIds.isEmpty() ) {
+			if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
 
 				// Process PSM Cutoffs for WHERE
 				
@@ -168,14 +193,24 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 //				}
 			} else {
 
-				//  Filter using psmIds
+				//  Filter using psmIds Includes
 
-				for ( Long psmId : psmIds ) {
+				for ( Long psmId : psmIds_Include ) {
 					paramCounter++;
 					preparedStatement.setLong(paramCounter, psmId );
 				}
 			}
 
+			if ( psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
+
+				//  Filter using psmIds Excludes
+				
+				for ( Long psmId : psmIds_Exclude ) {
+					paramCounter++;
+					preparedStatement.setLong(paramCounter, psmId );
+				}
+			}
+			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while( rs.next() ) {
 					PsmWebDisplayWebServiceResult psmWebDisplay = new PsmWebDisplayWebServiceResult();
@@ -185,6 +220,12 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					int hasReporterIonsInt = rs.getInt("has_reporter_ions" );
 					if ( hasReporterIonsInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						psmWebDisplay.setHasReporterIons( true );
+					}
+					{
+						int intValue = rs.getInt( "has_open_modifications" );
+						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							psmWebDisplay.setHasOpenModifications( true );
+						}
 					}
 
 					psmWebDisplay.setCharge( rs.getInt( "charge" ) );

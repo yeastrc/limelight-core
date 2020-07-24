@@ -18,7 +18,7 @@
 package org.yeastrc.limelight.limelight_shared.dto;
 
 /**
- * Table unified_rp__search__rep_pept__best_psm_value_lookup_tbl
+ * Table search__rep_pept__best_psm_value_lookup_tbl
  *
  */
 public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
@@ -30,6 +30,7 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	
 	private boolean hasDynamicModifications;
 	private boolean hasIsotopeLabels;
+	private boolean anyPsmHasOpenModifications;
 	private boolean anyPsmHasReporterIons;
 	
 	private double bestPsmValueForAnnTypeId;
@@ -45,6 +46,7 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 		this.searchId = search_ReportedPeptide__Lookup__DTO.getSearchId();
 		
 		this.hasDynamicModifications = search_ReportedPeptide__Lookup__DTO.isHasDynamicModifications();
+		this.anyPsmHasOpenModifications = search_ReportedPeptide__Lookup__DTO.isAnyPsmHasOpenModifications();
 		this.hasIsotopeLabels = search_ReportedPeptide__Lookup__DTO.isHasIsotopeLabels();
 		this.anyPsmHasReporterIons = search_ReportedPeptide__Lookup__DTO.isAnyPsmHasReporterIons();
 	}
@@ -91,14 +93,16 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	public void setPsmIdForBestValue(long psmIdForBestValue) {
 		this.psmIdForBestValue = psmIdForBestValue;
 	}
-
 	public boolean isAnyPsmHasReporterIons() {
 		return anyPsmHasReporterIons;
 	}
-
 	public void setAnyPsmHasReporterIons(boolean anyPsmHasReporterIons) {
 		this.anyPsmHasReporterIons = anyPsmHasReporterIons;
 	}
-	
-
+	public boolean isAnyPsmHasOpenModifications() {
+		return anyPsmHasOpenModifications;
+	}
+	public void setAnyPsmHasOpenModifications(boolean anyPsmHasOpenModifications) {
+		this.anyPsmHasOpenModifications = anyPsmHasOpenModifications;
+	}
 }

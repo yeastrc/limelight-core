@@ -91,11 +91,6 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
     const column = this.props.column;
 
-    let classesAdditions = "";
-    if ( column.cssClassNameAdditions_HeaderRowCell ) {
-      classesAdditions = "  " + column.cssClassNameAdditions_HeaderRowCell;
-    }
-
     const classNameCommon = "data-table-header-cell column-" + column.id + " ";
 
     let headerItem = null;
@@ -131,7 +126,7 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
           classNameSortable = " sortable-header clickable " 
       }
   
-      const className = classNameCommon + " " + classNameSortable + classesAdditions;
+      const className = classNameCommon + " " + classNameSortable;
   
       const styleDisplayNameDiv = { whiteSpace: "normal", fontSize: "12px", overflowX: "hidden", textOverflow: "ellipsis" } as React.CSSProperties;
 
@@ -190,6 +185,16 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
         cellInnerContainerDivStyle.gridTemplateColumns = "auto";
       }
 
+      let className_InnermostDiv_Column_DisplayName : string = undefined
+      {
+          let classesAdditions = "";
+          if ( column.cssClassNameAdditions_HeaderRowCell ) {
+              classesAdditions = "  " + column.cssClassNameAdditions_HeaderRowCell;
+          }
+
+          className_InnermostDiv_Column_DisplayName = " display-name-container " + classesAdditions
+      }
+
       headerItem = (
         <th 
             className={ className }
@@ -197,7 +202,7 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
             data-columnid={ column.id }>
           <div style={ cellOuterContainerDivStyle }>
             <div style={ cellInnerContainerDivStyle }>
-              <div style= { styleDisplayNameDiv } className=" display-name-container " >
+              <div style= { styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName } >
 
                   <span className=" display-name-value ">{ column.displayName }</span>
               </div>

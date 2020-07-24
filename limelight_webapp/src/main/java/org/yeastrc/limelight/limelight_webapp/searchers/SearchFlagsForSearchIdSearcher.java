@@ -47,6 +47,7 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		private boolean hasScanData;
 		private boolean hasIsotopeLabel;
 		private boolean anyPsmHas_DynamicModifications;
+		private boolean anyPsmHas_OpenModifications;
 		private boolean anyPsmHas_ReporterIons;
 		private boolean reportedPeptideMatchedProteinMappingProvided;
 		
@@ -68,6 +69,9 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		public boolean isReportedPeptideMatchedProteinMappingProvided() {
 			return reportedPeptideMatchedProteinMappingProvided;
 		}
+		public boolean isAnyPsmHas_OpenModifications() {
+			return anyPsmHas_OpenModifications;
+		}
 		
 	}
 		
@@ -75,7 +79,9 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 			"SELECT "
 			+ " has_scan_filenames, has_scan_data,"
 			+ " has_isotope_label,"
-			+ " any_psm_has_dynamic_modifications, any_psm_has_reporter_ions,"
+			+ " any_psm_has_dynamic_modifications, "
+			+ " any_psm_has_open_modificaton_masses, "
+			+ " any_psm_has_reporter_ions,"
 			+ " reported_peptide_matched_protein_mapping_provided "
 			+ " FROM "
 			+ " search_tbl  "
@@ -114,6 +120,10 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 					int anyPsmHas_DynamicModifications = rs.getInt( "any_psm_has_dynamic_modifications" );
 					if ( anyPsmHas_DynamicModifications == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						result.anyPsmHas_DynamicModifications = true;
+					}
+					int any_psm_has_open_modificaton_masses = rs.getInt( "any_psm_has_open_modificaton_masses" );
+					if ( any_psm_has_open_modificaton_masses == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+						result.anyPsmHas_OpenModifications = true;
 					}
 					int anyPsmHas_ReporterIons = rs.getInt( "any_psm_has_reporter_ions" );
 					if ( anyPsmHas_ReporterIons == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {

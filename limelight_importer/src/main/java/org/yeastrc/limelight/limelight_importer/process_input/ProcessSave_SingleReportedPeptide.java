@@ -241,43 +241,45 @@ public class ProcessSave_SingleReportedPeptide {
 			}
 		}
 		
-		PeptideModifications peptideModifications = reportedPeptide.getPeptideModifications();
-		if ( peptideModifications != null ) {
-			List<PeptideModification> peptideModificationList = peptideModifications.getPeptideModification();
-			if ( peptideModificationList != null && ( ! peptideModificationList.isEmpty() ) ) {
-				DB_Insert_SrchRepPeptDynamicModDAO dao = DB_Insert_SrchRepPeptDynamicModDAO.getInstance();
-				
-				for ( PeptideModification peptideModification : peptideModificationList ) {
-					SrchRepPeptDynamicModDTO dto = new SrchRepPeptDynamicModDTO();
-					BigDecimal massBD = peptideModification.getMass();
-					if ( massBD == null ) {
-						String msg = "mass on peptideModification is missing.  reported peptide: " + reportedPeptideString;
-						log.error( msg );
-						throw new LimelightImporterDataException( msg );
-					}
-					double massDbl = massBD.doubleValue();
-					dto.setMass( massDbl );
+		{
+			PeptideModifications peptideModifications = reportedPeptide.getPeptideModifications();
+			if ( peptideModifications != null ) {
+				List<PeptideModification> peptideModificationList = peptideModifications.getPeptideModification();
+				if ( peptideModificationList != null && ( ! peptideModificationList.isEmpty() ) ) {
+					DB_Insert_SrchRepPeptDynamicModDAO dao = DB_Insert_SrchRepPeptDynamicModDAO.getInstance();
 					
-					if ( peptideModification.getPosition() != null ) {
-						dto.setPosition( peptideModification.getPosition().intValue() );
+					for ( PeptideModification peptideModification : peptideModificationList ) {
+						SrchRepPeptDynamicModDTO dto = new SrchRepPeptDynamicModDTO();
+						BigDecimal massBD = peptideModification.getMass();
+						if ( massBD == null ) {
+							String msg = "mass on peptideModification is missing.  reported peptide: " + reportedPeptideString;
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						}
+						double massDbl = massBD.doubleValue();
+						dto.setMass( massDbl );
+						
+						if ( peptideModification.getPosition() != null ) {
+							dto.setPosition( peptideModification.getPosition().intValue() );
+						}
+						
+						//   For Database, set position to first or last position of peptide if N or C terminus is set
+						if ( peptideModification.isIsNTerminal() != null && peptideModification.isIsNTerminal().booleanValue() ) {
+							dto.setIs_N_Terminal(true);
+							dto.setPosition( 1 );
+						}
+						if ( peptideModification.isIsCTerminal() != null && peptideModification.isIsCTerminal().booleanValue() ) {
+							dto.setIs_C_Terminal(true);
+							dto.setPosition( peptideString.length() );
+						}
+						
+						dto.setSearchId( searchId );
+						dto.setReportedPeptideId( reportedPeptideId );
+						dao.save( dto );
+	
+						//  Accumulate mod mass values across the search 
+						uniqueDynamicModMassesForTheSearch.add( massDbl );
 					}
-					
-					//   For Database, set position to first or last position of peptide if N or C terminus is set
-					if ( peptideModification.isIsNTerminal() != null && peptideModification.isIsNTerminal().booleanValue() ) {
-						dto.setIs_N_Terminal(true);
-						dto.setPosition( 1 );
-					}
-					if ( peptideModification.isIsCTerminal() != null && peptideModification.isIsCTerminal().booleanValue() ) {
-						dto.setIs_C_Terminal(true);
-						dto.setPosition( peptideString.length() );
-					}
-					
-					dto.setSearchId( searchId );
-					dto.setReportedPeptideId( reportedPeptideId );
-					dao.save( dto );
-
-					//  Accumulate mod mass values across the search 
-					uniqueDynamicModMassesForTheSearch.add( massDbl );
 				}
 			}
 		}

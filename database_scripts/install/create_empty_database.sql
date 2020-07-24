@@ -133,6 +133,7 @@ CREATE TABLE  search_tbl (
   has_scan_data TINYINT UNSIGNED NOT NULL DEFAULT 0,
   has_isotope_label TINYINT NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT NOT NULL DEFAULT 0,
+  any_psm_has_open_modificaton_masses TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   reported_peptide_matched_protein_mapping_provided TINYINT NOT NULL DEFAULT 0,
   import_end_timestamp TIMESTAMP NULL,
@@ -266,7 +267,8 @@ CREATE TABLE  psm_tbl (
   charge TINYINT NOT NULL,
   scan_number MEDIUMINT UNSIGNED NOT NULL,
   search_scan_file_id MEDIUMINT UNSIGNED NULL,
-  has_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  has_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Has PSM Dynamic Modifications',
+  has_open_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
   has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   precursor_retention_time DECIMAL(9,4) NULL,
   precursor_m_z DECIMAL(10,4) NULL,
@@ -849,10 +851,13 @@ CREATE TABLE  search__rep_pept__lookup_tbl (
   has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
   has_isotope_labels TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has_open_modifictions TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   psm_num_at_default_cutoff INT(10) UNSIGNED NOT NULL,
   peptide_meets_default_cutoffs ENUM('yes','no','not_applicable') NOT NULL,
   related_peptide_unique_for_search TINYINT(1) NOT NULL DEFAULT 0,
+  psm_id_sequential_start BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
+  psm_id_sequential_end BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
   num_unique_psm_at_default_cutoff INT(10) UNSIGNED NULL COMMENT 'Allow num_unique_psm_at_default_cutoff since do not have value at record insert.',
   PRIMARY KEY (search_id, reported_peptide_id),
   CONSTRAINT search__rep_pept__gnrc_lkp_reported_peptide_id_fk
@@ -885,6 +890,7 @@ CREATE TABLE  search__rep_pept__best_psm_value_lookup_tbl (
   annotation_type_id INT(10) UNSIGNED NOT NULL,
   has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
   has_isotope_labels TINYINT(3) NOT NULL DEFAULT 0,
+  any_psm_has_open_modifictions TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   best_psm_value_for_ann_type_id DOUBLE NOT NULL,
   psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
@@ -1885,8 +1891,6 @@ ENGINE = InnoDB;
 
 CREATE INDEX data_page_saved_view_project_id_idx ON data_page_saved_view_tbl (project_id ASC);
 
-CREATE INDEX sngle_prj_srch_id__dflt_vw__bs_cntrllr ON data_page_saved_view_tbl (page_controller_path ASC);
-
 CREATE INDEX data_page_saved_view_experiment_id_idx ON data_page_saved_view_tbl (experiment_id ASC);
 
 
@@ -2042,6 +2046,119 @@ CREATE TABLE  url_shortener_associated_experiment_id_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX default_page_view_experiment_id_fk_idx ON url_shortener_associated_experiment_id_tbl (url_shortener_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  psm_id BIGINT UNSIGNED NOT NULL,
+  mass DOUBLE NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT psm_open_modfctn__psm_id_fk
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_open_modification_tbl (psm_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_position_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_position_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  psm_open_modification_id BIGINT UNSIGNED NOT NULL,
+  position MEDIUMINT UNSIGNED NOT NULL,
+  is_n_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  is_c_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  CONSTRAINT psm_open_modfctn_pos_parent_id_fk
+    FOREIGN KEY (psm_open_modification_id)
+    REFERENCES psm_open_modification_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_open_modification_position_tbl (psm_open_modification_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table srch_rep_pept__psm_open_mod_rounded_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch_rep_pept__psm_open_mod_rounded_lookup_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT(10) UNSIGNED NOT NULL,
+  psm_open_mod_mass_rounded_unique INT NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT srch_rp_ppt__opn_md_srch_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT srch_rp_ppt__opn_md_rprtd_pd_id_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin
+COMMENT = 'Unique open mod mass values at the psm level';
+
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__psm_open_mod_rounded_lookup_tbl (search_id ASC, reported_peptide_id ASC);
+
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__psm_open_mod_rounded_lookup_tbl (reported_peptide_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT(10) UNSIGNED NOT NULL,
+  position_unique MEDIUMINT UNSIGNED NOT NULL,
+  is_n_terminal TINYINT(1) UNSIGNED NOT NULL,
+  is_c_terminal TINYINT(1) UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT srch_rp_ppt__opn_md_pud_srch_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT srch_rp_ppt__opn_md_pud_rprtd_pd_id_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin;
+
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (search_id ASC, reported_peptide_id ASC);
+
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (reported_peptide_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table search__open_mod_mass__psm_rounded_unique__lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__open_mod_mass__psm_rounded_unique__lookup_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  open_mod_mass_unique_of_psm_level_rounded INT NOT NULL,
+  PRIMARY KEY (search_id, open_mod_mass_unique_of_psm_level_rounded),
+  CONSTRAINT search__open_mod_mass__search_id_fk0
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+COMMENT = 'Unique open mod mass values at the psm level';
 
 
 -- -----------------------------------------------------

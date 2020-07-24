@@ -418,7 +418,7 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 				uniqueId: psmObject.psmId,
 				sortOrder_OnEquals: psmObject.psmId,
 				columnEntries,
-				highlightRow,
+				highlightRowWithBackgroundColor: highlightRow,
 				tableRowClickHandlerParameter: {psmId: psmObject.psmId}
 			})
 

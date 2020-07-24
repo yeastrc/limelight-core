@@ -28,6 +28,7 @@ public class PsmWebDisplayWebServiceResult {
 	
 	private long psmId;
 	
+	private boolean hasOpenModifications;
 	private boolean hasReporterIons;
 	
 	private int charge;
@@ -41,7 +42,7 @@ public class PsmWebDisplayWebServiceResult {
 
 	private List<BigDecimal> reporterIonMassList;
 	
-	
+	private List<Double> openModificationMassesList;
 
 	public long getPsmId() {
 		return psmId;
@@ -110,5 +111,17 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setReporterIonMassList(List<BigDecimal> reporterIonMassList) {
 		this.reporterIonMassList = reporterIonMassList;
+	}
+	public List<Double> getOpenModificationMassesList() {
+		return openModificationMassesList;
+	}
+	public void setOpenModificationMassesList(List<Double> openModificationMassesList) {
+		this.openModificationMassesList = openModificationMassesList;
+	}
+	public boolean isHasOpenModifications() {
+		return hasOpenModifications;
+	}
+	public void setHasOpenModifications(boolean hasOpenModifications) {
+		this.hasOpenModifications = hasOpenModifications;
 	}
 }

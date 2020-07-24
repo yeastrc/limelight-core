@@ -50,7 +50,7 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 		projectPage_ExperimentsSection_LoggedInUsersInteraction, // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
 	} : { 
 		projectIdentifierFromURL : any 
-		projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
+		projectPage_ExperimentsSection_LoggedInUsersInteraction? : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
 	}) {
 
 		if ( ! limelight__IsVariableAString( projectIdentifierFromURL ) ) {

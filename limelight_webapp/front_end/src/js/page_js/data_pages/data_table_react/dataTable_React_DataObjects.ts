@@ -137,8 +137,19 @@ class DataTable_TableOptions {
 /**
  * Param to DataTable_TableOptions.dataRowClickHandler
  */
+class DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect {
+    left : number
+    right : number
+    top : number
+    bottom : number
+}
+
+/**
+ * Param to DataTable_TableOptions.dataRowClickHandler
+ */
 class DataTable_TableOptions_dataRowClickHandler_RequestParm {
     event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
+    rowDOM_Rect : DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect
     tableRowClickHandlerParameter : any  //  From property DataTable_DataRowEntry.tableRowClickHandlerParameter
 }
 
@@ -189,16 +200,25 @@ class DataTable_RootTableDataObject {
     columns : Array<DataTable_Column>
 
     /**
+     * MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.
+     * This property can be true neither of them are true to hold space for when setting them true
+     */
+    highlightingOneOrMoreRowsWithBorder? : boolean
+
+    /**
+     * @param highlightingOneOrMoreRowsWithBorder - MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.  Can be true neither of them are true to hold space for when setting them true
      *
      */
-    constructor({ columns, dataTable_DataRowEntries, dataTable_DataGroupRowEntries } : {
+    constructor({ columns, dataTable_DataRowEntries, dataTable_DataGroupRowEntries, highlightingOneOrMoreRowsWithBorder } : {
         dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
         dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
         columns : Array<DataTable_Column>
+        highlightingOneOrMoreRowsWithBorder? : boolean
     }) {
         this.columns = columns;
         this.dataTable_DataRowEntries = dataTable_DataRowEntries;
         this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
+        this.highlightingOneOrMoreRowsWithBorder = highlightingOneOrMoreRowsWithBorder
 
         DataTable_RootTableDataObject.constructorDataValidation( this )
     }
@@ -227,7 +247,10 @@ class DataTable_RootTableDataObject {
 
     shallowClone() : DataTable_RootTableDataObject {
 
-        const clone = new DataTable_RootTableDataObject({ columns : this.columns, dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries });
+        const clone = new DataTable_RootTableDataObject({
+            columns : this.columns, dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries,
+            highlightingOneOrMoreRowsWithBorder : this.highlightingOneOrMoreRowsWithBorder
+        });
         return clone;
     }
 }
@@ -273,7 +296,7 @@ class DataTable_Column {
 
     //  object where it's properties are copied over the values to be assigned to the DOM element style property
     //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-    style_override_HeaderRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+    style_override_HeaderRowCell_React?: React.CSSProperties; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
 
     /**
@@ -310,7 +333,7 @@ class DataTable_Column {
 
             //  object where it's properties are copied over the values to be assigned to the DOM element style property
             //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-            style_override_DataRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+            style_override_DataRowCell_React?: React.CSSProperties; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
             //  graphWidth : number;  //  Not Supported Yet
 
@@ -467,8 +490,11 @@ class DataTable_DataRowEntry {
     uniqueId : DataTable_UniqueId
     sortOrder_OnEquals : any    //  Must be sortable using Javascript < > comparators
     greyOutRow? : boolean;  //  Grey out the row.  Apply CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
-    highlightRow? : boolean //  Highlight the row.  Apply CSS class 'table-row-highlight' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+    highlightRowWithBackgroundColor? : boolean //  Highlight the row by applying a background color.  Apply CSS class 'table-row-highlight-with-background-color' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+    highlightRowWithBorderSolid? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a solid border.
+    highlightRowWithBorderDash? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a dash border.
     row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+    styleOverrides_innerContainingDiv : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
     columnEntries : Array<DataTable_DataRow_ColumnEntry>
 
     tableRowClickHandlerParameter? : any  //  Data passed to DataTable_TableOptions.dataRowClickHandler
@@ -490,12 +516,20 @@ class DataTable_DataRowEntry {
     /**
      *
      */
-    constructor({ uniqueId, sortOrder_OnEquals, greyOutRow, highlightRow, row_CSS_Additions, columnEntries, tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter } : {
+    constructor(
+        {
+            uniqueId, sortOrder_OnEquals, greyOutRow, highlightRowWithBackgroundColor, highlightRowWithBorderSolid, highlightRowWithBorderDash, row_CSS_Additions, styleOverrides_innerContainingDiv,
+            columnEntries,
+            tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter
+        } : {
         uniqueId : DataTable_UniqueId,
         sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
         greyOutRow? : boolean;  //  Grey out the row.  Apply CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
-        highlightRow? : boolean //  Highlight the row.  Apply CSS class 'table-row-highlight' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+        highlightRowWithBackgroundColor? : boolean //  Highlight the row with background color.  Apply CSS class 'table-row-highlight-with-background-color' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+        highlightRowWithBorderSolid? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a solid border.
+        highlightRowWithBorderDash? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a dash border.
         row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+        styleOverrides_innerContainingDiv? : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
         columnEntries : Array<DataTable_DataRow_ColumnEntry>,
         tableRowClickHandlerParameter? : any,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
         dataRow_GetChildTableDataParameter? : any,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
@@ -514,8 +548,11 @@ class DataTable_DataRowEntry {
         this.uniqueId = uniqueId; 
         this.sortOrder_OnEquals = sortOrder_OnEquals;
         this.greyOutRow = greyOutRow;
-        this.highlightRow = highlightRow;
+        this.highlightRowWithBackgroundColor = highlightRowWithBackgroundColor;
+        this.highlightRowWithBorderSolid = highlightRowWithBorderSolid;
+        this.highlightRowWithBorderDash = highlightRowWithBorderDash;
         this.row_CSS_Additions = row_CSS_Additions;
+        this.styleOverrides_innerContainingDiv = styleOverrides_innerContainingDiv
         this.columnEntries = columnEntries;
         this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
         this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter
@@ -541,6 +578,11 @@ class DataTable_DataRowEntry {
         }
         if ( dataTable_DataRowEntry.columnEntries === undefined || dataTable_DataRowEntry.columnEntries === null ) {
             const msg = 'DataTable_DataRowEntry.constructorDataValidation: columnEntries === undefined';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( dataTable_DataRowEntry.highlightRowWithBorderSolid && dataTable_DataRowEntry.highlightRowWithBorderDash ) {
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: highlightRowWithBorderSolid and highlightRowWithBorderDash cannot both be true';
             console.warn( msg )
             throw Error( msg );
         }
@@ -678,6 +720,7 @@ export {
     DataTable_RootTableObject,
     
     DataTable_TableOptions,
+    DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect,
     DataTable_TableOptions_dataRowClickHandler_RequestParm,
     DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
     DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,

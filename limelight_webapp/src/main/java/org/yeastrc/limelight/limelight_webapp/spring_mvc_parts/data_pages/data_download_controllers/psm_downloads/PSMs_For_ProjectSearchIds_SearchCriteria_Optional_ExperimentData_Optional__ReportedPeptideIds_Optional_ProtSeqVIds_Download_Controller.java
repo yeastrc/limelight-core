@@ -66,6 +66,8 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.AnnotationTypeListForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
@@ -169,6 +171,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
+	
+	@Autowired
+	private OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF openModificationMasses_PsmLevel_ForPsmIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -307,6 +312,39 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				log.warn( "No paramsForProjectSearchIdsList" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+			
+			//  Validate don't have both populated:  psmIds_Include and psmIds_Exclude
+
+//			{
+//	    		for ( RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : projectSearchIdsReportedPeptideIdsPsmIds ) {
+//	    			
+//	    			//  Passed from client - Optional
+//	    			List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
+//
+//	    			if ( reportedPeptideIdsAndTheirPsmIds != null ) {
+//
+//
+//	    				for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
+//
+//	    					Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
+//	    					List<Long> psmIds_Include = reportedPeptideIdAndItsPsmIds.psmIds_Include;
+//	    					List<Long> psmIds_Exclude = reportedPeptideIdAndItsPsmIds.psmIds_Exclude;
+//
+//	    					if ( psmIds_Include != null && ( ! psmIds_Include.isEmpty() )
+//	    							&& psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
+//	    						
+//	    						String msg = "Invalid Input: true: psmIds_Include != null && ( ! psmIds_Include.isEmpty() ) && psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ). reportedPeptideId: " 
+//	    								+ reportedPeptideId
+//	    								+ ", projectSearchId: "
+//	    								+ singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
+//	    						log.warn( msg );
+//	    						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//	    					}
+//	    					
+//	    				}
+//	    			}
+//	    		}
+//			}
 			
     		//  Validate that Project Search Ids provided are in paramsForProjectSearchIdsList
 
@@ -588,7 +626,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
 				
 				Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
-				List<Long> psmIds = reportedPeptideIdAndItsPsmIds.psmIds;
+				List<Long> psmIds_Include = reportedPeptideIdAndItsPsmIds.psmIds_Include;
+				List<Long> psmIds_Exclude = reportedPeptideIdAndItsPsmIds.psmIds_Exclude;
 				
 				reportedPeptideIds_ForAdditionalProcessing.add( reportedPeptideId );
 				
@@ -596,10 +635,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 						psmWebDisplaySearcher.getPsmsWebDisplay( 
 								searchId, 
 								reportedPeptideId, 
-								psmIds, 
+								psmIds_Include, 
+								psmIds_Exclude, 
 								searcherCutoffValuesSearchLevel );
 				
 				populateReporterIonMassesForPSMs( psmWebDisplayList );
+				
+				populateOpenModificationMassesForPSMs( psmWebDisplayList );
 				
 				PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
 				psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
@@ -656,7 +698,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
 					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, searcherCutoffValuesSearchLevel );
+							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, null, searcherCutoffValuesSearchLevel );
 					
 					populateReporterIonMassesForPSMs( psmWebDisplayList );
 					
@@ -765,6 +807,65 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
     				Collections.sort( reporterIonMassesList );
     				entry.setReporterIonMassList( reporterIonMassesList );
+    			}
+    		}
+    	}
+    }
+
+	//////////////////////////////////////
+
+
+    /**
+     * @param psmWebDisplayList
+     * @return 
+     * @throws SQLException 
+     */
+    private void populateOpenModificationMassesForPSMs( List<PsmWebDisplayWebServiceResult> psmWebDisplayList ) throws SQLException {
+
+    	if ( psmWebDisplayList.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmWebDisplayList.size() );
+    	
+    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
+    		if ( entry.isHasOpenModifications() ) {
+    			psmIds_Containing_OpenModification_Masses.add( entry.getPsmId() );
+    		}
+    	}
+
+    	List<OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> openModificationMassesSearcherResult = 
+    			openModificationMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_OpenModificationMasses_PsmLevel_ForPsmIds( psmIds_Containing_OpenModification_Masses );
+
+    	//  Copy into Set in Map
+    	
+    	Map<Long, Set<Double>> openModificationMassesSet_Key_PsmId = new HashMap<>();
+    	
+    	for ( OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : openModificationMassesSearcherResult ) {
+    		
+    		Long psmId = item.getPsmId();
+    		Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
+    		if ( openModificationMassesSet_For_PsmId == null ) {
+    			openModificationMassesSet_For_PsmId = new HashSet<>();
+    			openModificationMassesSet_Key_PsmId.put( psmId, openModificationMassesSet_For_PsmId );
+    		}
+    		openModificationMassesSet_For_PsmId.add( item.getOpenModificationMass() );
+    	}
+    	
+    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
+    		if ( entry.isHasOpenModifications() ) {
+    			Long psmId = entry.getPsmId();
+    			Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
+    			if ( openModificationMassesSet_For_PsmId == null ) {
+    				log.warn( "No entry in openModificationMassesSet_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( openModificationMassesSet_For_PsmId != null ) {
+    				List<Double> openModificationMassesList = new ArrayList<>( openModificationMassesSet_For_PsmId );
+    				Collections.sort( openModificationMassesList );
+    				entry.setOpenModificationMassesList( openModificationMassesList );
     			}
     		}
     	}
@@ -1021,13 +1122,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 		OutputStreamWriter writer = null;
 		try {
-
+			
 			ServletOutputStream out = httpServletResponse.getOutputStream();
 			BufferedOutputStream bos = new BufferedOutputStream(out);
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSEARCH NAME\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tSCAN FILENAME" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modifications\tSCAN FILENAME" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
 				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
@@ -1231,6 +1332,30 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 									}
 									String reporterIonMassAsString = reporterIonMassAsStringSB.toString();
 									writer.write( String.valueOf( reporterIonMassAsString ) );
+								}
+							}
+							
+							writer.write( "\t" );
+							{
+								List<Double> openModificationMassList = psmWebDisplay.getOpenModificationMassesList();
+								if ( openModificationMassList != null && ( ! openModificationMassList.isEmpty() ) ) {
+									StringBuilder openModificationMassAsStringSB = new StringBuilder( 10000 );
+									boolean first = true;
+									for ( Double openModificationMass : openModificationMassList ) {
+										String openModificationMassString = Double.toString( openModificationMass );
+										if ( openModificationMassString.contains( "." ) ) {
+											//  openModificationMassString contains '.' so strip trailing zeros
+											openModificationMassString = StringUtils.stripEnd(openModificationMassString, "0" );
+										}
+										if ( first ) {
+											first = false;
+										} else {
+											openModificationMassAsStringSB.append( ", " );
+										}
+										openModificationMassAsStringSB.append( openModificationMassString );
+									}
+									String openModificationMassAsString = openModificationMassAsStringSB.toString();
+									writer.write( String.valueOf( openModificationMassAsString ) );
 								}
 							}
 
@@ -1461,13 +1586,17 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	public static class RequestJSONParsed_PerReportedPeptideId {
 		
 		private Integer reportedPeptideId;
-		private List<Long> psmIds;
+		private List<Long> psmIds_Include;
+		private List<Long> psmIds_Exclude;
 		
 		public void setReportedPeptideId(Integer reportedPeptideId) {
 			this.reportedPeptideId = reportedPeptideId;
 		}
-		public void setPsmIds(List<Long> psmIds) {
-			this.psmIds = psmIds;
+		public void setPsmIds_Include(List<Long> psmIds_Include) {
+			this.psmIds_Include = psmIds_Include;
+		}
+		public void setPsmIds_Exclude(List<Long> psmIds_Exclude) {
+			this.psmIds_Exclude = psmIds_Exclude;
 		}
 	}
 

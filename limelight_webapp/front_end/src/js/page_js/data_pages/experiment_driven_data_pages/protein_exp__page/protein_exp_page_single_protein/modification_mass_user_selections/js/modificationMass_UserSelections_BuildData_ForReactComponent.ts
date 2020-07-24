@@ -21,14 +21,23 @@ import {
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-
-import { _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED } from '../jsx/modificationMass_UserSelections_Constants';
-
 import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
 
-import { ModificationMass_UserSelections_ComponentData } from './modificationMass_UserSelections_ComponentData';
+import {
+    ModificationMass_UserSelections_ComponentData,
+    ModificationMass_UserSelections_ComponentData_StaticModificationsData,
+    ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry,
+    ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData,
+    ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry
+} from './modificationMass_UserSelections_ComponentData';
+import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 
-const _MAX_MODS_DISPLAY_NON_SELECTED = 20;
+const _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS = 20;
+
+// for Open Mods: Always display Add/Change Links. Never initially show not selected mass values
+const _MAX_MODS_DISPLAY_NON_SELECTED__OPEN_MODS = 0;
 
 
 /**
@@ -55,12 +64,19 @@ const modificationMass_UserSelections_BuildData_ForReactComponent = function({
     });
 
     const variableModificationsData = _variable_modificationMass_UserSelections_BuildData_ForReactComponent({ 
-        modificationMass_UserSelections_StateObject, proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, modificationMass_CommonRounding_ReturnNumber
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : modificationMass_UserSelections_StateObject.get_VariableModificationSelections(),
+        proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, modificationMass_CommonRounding_ReturnNumber
     })
 
-    const result = {
+    const open_ModificationsData = _open_modificationMass_UserSelections_BuildData_ForReactComponent({
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : modificationMass_UserSelections_StateObject.get_OpenModificationSelections(),
+        proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, modificationMass_CommonRounding_ReturnNumber
+    })
+
+    const result : ModificationMass_UserSelections_ComponentData = {
         staticModificationsData,
-        variableModificationsData
+        variableModificationsData,
+        open_ModificationsData
     }
 
     return result;
@@ -82,7 +98,7 @@ const _create_staticModificationsUniqueResidueLettersMassesMapSet = function({
     projectSearchIds : Array<number>, 
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
-}) {
+}) : ModificationMass_UserSelections_ComponentData_StaticModificationsData {
 
     //  Unique Static Mod Residue Letter/ masses for the Searches:  Map<Residue Letter, <Set<Mod Mass>>
     const staticModificationsUniqueResidueLettersMassesMapSet = new Map(); 
@@ -127,7 +143,7 @@ const _create_staticModificationsUniqueResidueLettersMassesMapSet = function({
 
     //  Convert to array of objects for display
 
-    const residueLetterMassArrayForDisplay = [];
+    const residueLetterMassArrayForDisplay : Array<ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry>= [];
 
     //  Masses as Array so can sort
 
@@ -137,7 +153,7 @@ const _create_staticModificationsUniqueResidueLettersMassesMapSet = function({
         const modMasses = mapEntry[ 1 ];
         for ( const modMass of modMasses ) {
 
-            const displayEntry = { residueLetter, modMass };
+            const displayEntry : ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry = { residueLetter, modMass, selected : false };
             
             residueLetterMassArrayForDisplay.push( displayEntry );
         }
@@ -161,7 +177,7 @@ const _create_staticModificationsUniqueResidueLettersMassesMapSet = function({
     });
 
         // staticModificationsSelected:  Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
-        const staticModificationsSelected = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected();
+        const staticModificationsSelected = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set();
 
     for ( const modEntry of residueLetterMassArrayForDisplay ) {
 
@@ -182,75 +198,155 @@ const _create_staticModificationsUniqueResidueLettersMassesMapSet = function({
  * 
  * 
  */
-const _variable_modificationMass_UserSelections_BuildData_ForReactComponent = function({ 
-    
-    modificationMass_UserSelections_StateObject, 
+const _variable_modificationMass_UserSelections_BuildData_ForReactComponent = function({
+
+    modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
     proteinSequenceVersionId, 
     projectSearchIds, 
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
     modificationMass_CommonRounding_ReturnNumber
-} : { 
-    modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject, 
+} : {
+    modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>, 
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
-}) {
+}) : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData {
 
-    const variableModificationsUniqueMassesSet = _create_variableModificationsUniqueMassesSet({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, modificationMass_CommonRounding_ReturnNumber });
+    const modificationsUniqueMassesSet = _create_variableModificationsUniqueMassesSet({
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_CommonRounding_ReturnNumber
+    });
 
-    if ( variableModificationsUniqueMassesSet.size === 0 ) {
+    if (modificationsUniqueMassesSet.size === 0) {
 
         //  No Modifications so return here
-        const result = { showNoVariableModificationsMsg : true };
+        const result: ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData = {showNo_Variable_or_Open_ModificationsMsg: true};
 
         return result; // EARLY EXIT
     }
 
-    const is_NO_VariableModification_AKA_Unmodified_Selected : boolean = modificationMass_UserSelections_StateObject.is_NO_VariableModification_AKA_Unmodified_Selected();
+    return _variable_or_open_modificationMass_UserSelections_BuildData_ForReactComponent({
+        maxModsDisplay_Unselected : _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS,
+        modificationsUniqueMassesSet,
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_CommonRounding_ReturnNumber
+    })
+}
+
+///
+
+
+/**
+ *
+ *
+ */
+const _open_modificationMass_UserSelections_BuildData_ForReactComponent = function(
+    {
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_CommonRounding_ReturnNumber
+    } : {
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject: ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+        proteinSequenceVersionId: number,
+        projectSearchIds: Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        modificationMass_CommonRounding_ReturnNumber: modificationMass_CommonRounding_ReturnNumber_Function
+    }) : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData {
+
+    const modificationsUniqueMassesSet = _create_openModificationsUniqueMassesSet({
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_CommonRounding_ReturnNumber
+    });
+
+    if (modificationsUniqueMassesSet.size === 0) {
+
+        //  No Modifications so return here
+        const result: ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData = {showNo_Variable_or_Open_ModificationsMsg: true};
+
+        return result; // EARLY EXIT
+    }
+
+    return _variable_or_open_modificationMass_UserSelections_BuildData_ForReactComponent({
+        maxModsDisplay_Unselected : _MAX_MODS_DISPLAY_NON_SELECTED__OPEN_MODS,
+        modificationsUniqueMassesSet,
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_CommonRounding_ReturnNumber
+    })
+}
+
+
+///
+
+/**
+ *
+ *
+ */
+const _variable_or_open_modificationMass_UserSelections_BuildData_ForReactComponent = function({
+
+   maxModsDisplay_Unselected,
+   modificationsUniqueMassesSet,
+   modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+   proteinSequenceVersionId,
+   projectSearchIds,
+   loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+   modificationMass_CommonRounding_ReturnNumber
+} : {
+    maxModsDisplay_Unselected : number
+    modificationsUniqueMassesSet: Set<number>
+    modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
+    proteinSequenceVersionId : number,
+    projectSearchIds : Array<number>,
+    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+    modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
+}) : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData {
+
+    const unmodified_Selection_Variable_or_Open_Modifications : SingleProtein_Filter_PerUniqueIdentifier_Entry = modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected();
 
     //   Set
-    const variableModificationsSelected_ExcludingNoModificationOption = modificationMass_UserSelections_StateObject.get_VariableModificationsSelected_ExcludingNoModificationOption()
+    const modificationsSelected__OnlyModMasses_AsSet = modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__OnlyModMasses_AsSet()
 
-    const result : {
-        is_NO_VariableModification_AKA_Unmodified_Selected : boolean
-        showAddVariableModificationsSelectionLink : boolean
-        variableModificationEntries : Array<{modMass : number, selected : boolean }>
-        showChangeVariableModificationsSelectionLink : boolean
-
-        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
-        proteinSequenceVersionId : number
-        projectSearchIds : number[]
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds :  Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-        modificationMass_CommonRounding_ReturnNumber :  (modificationMass: number) => number
-    } = {
-        is_NO_VariableModification_AKA_Unmodified_Selected,
-        showAddVariableModificationsSelectionLink : false,
-        variableModificationEntries : undefined,
-        showChangeVariableModificationsSelectionLink : undefined,
+    const result : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData = {
+        unmodified_Selection_Variable_or_Open_Modifications,
+        showAdd_Variable_or_Open_ModificationsSelectionLink : false,
+        variable_or_Open_ModificationEntries : undefined,
+        showChange_Variable_or_Open_ModificationsSelectionLink : undefined,
     
-        modificationMass_UserSelections_StateObject, 
+        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
         proteinSequenceVersionId, 
         projectSearchIds, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
         modificationMass_CommonRounding_ReturnNumber
     }; 
 
-    if ( ( variableModificationsSelected_ExcludingNoModificationOption.size === 0 ) && ( variableModificationsUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) ) {
+    if ( ( modificationsSelected__OnlyModMasses_AsSet.size === 0 ) && ( modificationsUniqueMassesSet.size > maxModsDisplay_Unselected ) ) {
 
-        result.showAddVariableModificationsSelectionLink = true;
+        result.showAdd_Variable_or_Open_ModificationsSelectionLink = true;
         return result; // EARLY EXIT
     }
 
-    let showChangeVariableModificationsSelectionLink = false;
+    let showChange_Variable_or_Open_ModificationsSelectionLink = false;
 
-    if ( ( variableModificationsUniqueMassesSet.size > _MAX_MODS_DISPLAY_NON_SELECTED ) && ( variableModificationsUniqueMassesSet.size !== variableModificationsSelected_ExcludingNoModificationOption.size ) ) {
+    if ( ( modificationsUniqueMassesSet.size > maxModsDisplay_Unselected )
+        && ( modificationsUniqueMassesSet.size !== ( modificationsSelected__OnlyModMasses_AsSet.size ) ) ) {
         //  more mod masses than normally display and not all are selected
-        showChangeVariableModificationsSelectionLink = true;
+        showChange_Variable_or_Open_ModificationsSelectionLink = true;
     }
 
     //  Masses as Array so can sort
-    const modUniqueMassesArray = Array.from( variableModificationsUniqueMassesSet );
+    const modUniqueMassesArray = Array.from( modificationsUniqueMassesSet );
 
     //  Sort masses
     modUniqueMassesArray.sort( function(a, b) {
@@ -263,25 +359,32 @@ const _variable_modificationMass_UserSelections_BuildData_ForReactComponent = fu
         return 0;
     });
 
-    const variableModificationEntries : Array<{modMass : number, selected : boolean }> = [];  // mass with checked flag
+    const variable_or_Open_ModificationEntries : Array<ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry> = [];
 
     for ( const modUniqueMassEntry of modUniqueMassesArray ) {
 
-        const selected = variableModificationsSelected_ExcludingNoModificationOption.has( modUniqueMassEntry );
+        let selectionType : SingleProtein_Filter_SelectionType = null
 
-        const resultEntry = {
+        {
+            const selected_Entry = modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_Modification_Selected_Entry( modUniqueMassEntry )
+            if ( selected_Entry ) {
+                selectionType = selected_Entry.selectionType
+            }
+        }
+
+        const resultEntry : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry = {
             modMass : modUniqueMassEntry,
-            selected
+            selectionType
         };
 
-        if ( ( ! showChangeVariableModificationsSelectionLink ) || ( selected ) ) {
+        if ( ( ! showChange_Variable_or_Open_ModificationsSelectionLink ) || ( selectionType ) ) {
             //  Either not > _MAX_MODS_DISPLAY_NON_SELECTED mod masses OR the mod has has been selected
-            variableModificationEntries.push( resultEntry );
+            variable_or_Open_ModificationEntries.push( resultEntry );
         }
     }
 
-    result.variableModificationEntries = variableModificationEntries;
-    result.showChangeVariableModificationsSelectionLink = showChangeVariableModificationsSelectionLink;
+    result.variable_or_Open_ModificationEntries = variable_or_Open_ModificationEntries;
+    result.showChange_Variable_or_Open_ModificationsSelectionLink = showChange_Variable_or_Open_ModificationsSelectionLink;
 
     return result;
 }
@@ -303,7 +406,7 @@ const _create_variableModificationsUniqueMassesSet = function({
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
 }) : Set<number> {
 
-    //  Unique Variable Mod masses for the protein or selected positions
+    //  Unique Variable Mod masses for the protein
     const variableModificationsUniqueMassesSet : Set<any> = new Set(); 
 
     for ( const projectSearchId of projectSearchIds ) {
@@ -339,6 +442,59 @@ const _create_variableModificationsUniqueMassesSet = function({
     }
 
     return variableModificationsUniqueMassesSet;
+}
+
+/**
+ * Get Unique Open Mods Set for whole protein
+ */
+const _create_openModificationsUniqueMassesSet = function({
+
+                                                                  proteinSequenceVersionId,
+                                                                  projectSearchIds,
+                                                                  loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+                                                                  modificationMass_CommonRounding_ReturnNumber
+                                                              } : {
+    proteinSequenceVersionId : number,
+    projectSearchIds : Array<number>,
+    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+    modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
+}) : Set<number> {
+
+    //  Unique Variable Mod masses for the protein
+    const modificationsUniqueMassesSet : Set<any> = new Set();
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+        if ( ! loadedDataPerProjectSearchIdHolder ) {
+            throw Error("No entry in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
+        }
+
+        const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId();
+
+        if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
+
+            const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+
+            if ( modificationsOnProtein ) {
+                for ( const modificationOnProtein of modificationsOnProtein) {
+                    //  Currently a single array of all  mods for the protein.
+                    let mass = modificationOnProtein.mass;
+                    // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
+                    if ( modificationMass_CommonRounding_ReturnNumber ) {
+
+                        //  Used in multiple searches to round the modification mass
+                        mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                    }
+
+                    modificationsUniqueMassesSet.add( mass );
+                }
+            }
+        }
+    }
+
+    return modificationsUniqueMassesSet;
 }
 
 

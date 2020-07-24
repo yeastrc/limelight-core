@@ -56,17 +56,18 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_DescriptiveAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.PSM_List_RequestRoot;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.PSM_Item_ForPSM_List;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
@@ -116,6 +117,9 @@ public class PSM_List_RestWebserviceController {
 	
 	@Autowired
 	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
+
+	@Autowired
+	private OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF openModificationMasses_PsmLevel_ForPsmIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -179,7 +183,7 @@ public class PSM_List_RestWebserviceController {
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		PSM_List_RequestRoot webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, PSM_List_RequestRoot.class );
+    		WebserviceRequestRoot webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequestRoot.class );
 
     		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = webserviceRequest.getSearchDataLookupParams_For_Single_ProjectSearchId();
     		List<Integer> psmAnnotationTypeIdsForSorting = webserviceRequest.getPsmAnnotationTypeIdsForSorting();
@@ -190,7 +194,8 @@ public class PSM_List_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
-    		List<Long> psmIds = webserviceRequest.getPsmIds();
+    		List<Long> psmIds_Include = webserviceRequest.getPsmIds_Include();
+    		List<Long> psmIds_Exclude = webserviceRequest.getPsmIds_Exclude();
 
     		Integer projectSearchId = webserviceRequest.getProjectSearchId();
 
@@ -248,7 +253,7 @@ public class PSM_List_RestWebserviceController {
 			}
 			
     		List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, webserviceRequest.getReportedPeptideId(), psmIds, searcherCutoffValuesSearchLevel );
+    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, webserviceRequest.getReportedPeptideId(), psmIds_Include, psmIds_Exclude, searcherCutoffValuesSearchLevel );
 
     		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
 			
@@ -337,6 +342,7 @@ public class PSM_List_RestWebserviceController {
     			result.setScanFilename( psmWebDisplay.getScanFilename() );
     			
     			result.setHasReporterIons( psmWebDisplay.isHasReporterIons() );
+    			result.setHasOpenModifications( psmWebDisplay.isHasOpenModifications() );
 
     			if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
     				
@@ -414,6 +420,7 @@ public class PSM_List_RestWebserviceController {
     		
     		populateReporterIonMassesForPSMs( resultList );
     		
+    		populateOpenModificationMassesForPSMs( resultList );
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     		
@@ -424,6 +431,7 @@ public class PSM_List_RestWebserviceController {
     		webserviceResult.search_hasScanFilenames = searchFlagsForSearchIdSearcher_Result.isHasScanFilenames();
     		webserviceResult.search_hasIsotopeLabel = searchFlagsForSearchIdSearcher_Result.isHasIsotopeLabel();
     		webserviceResult.search_anyPsmHas_DynamicModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_DynamicModifications();
+    		webserviceResult.search_anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_OpenModifications();
     		webserviceResult.search_anyPsmHas_ReporterIons = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_ReporterIons();
     	
 
@@ -498,6 +506,133 @@ public class PSM_List_RestWebserviceController {
     		}
     	}
     }
+
+	//////////////////////////////////////
+
+
+    /**
+     * @param psmWebDisplayList
+     * @return 
+     * @throws SQLException 
+     */
+    private void populateOpenModificationMassesForPSMs( List<PSM_Item_ForPSM_List> psmWebDisplayList ) throws SQLException {
+
+    	if ( psmWebDisplayList.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmWebDisplayList.size() );
+    	
+    	for ( PSM_Item_ForPSM_List entry : psmWebDisplayList ) {
+    		if ( entry.isHasOpenModifications() ) {
+    			psmIds_Containing_OpenModification_Masses.add( entry.getPsmId() );
+    		}
+    	}
+
+    	List<OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> openModificationMassesSearcherResult = 
+    			openModificationMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_OpenModificationMasses_PsmLevel_ForPsmIds( psmIds_Containing_OpenModification_Masses );
+
+    	//  Copy into Set in Map
+    	
+    	Map<Long, Set<Double>> openModificationMassesSet_Key_PsmId = new HashMap<>();
+    	
+    	for ( OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : openModificationMassesSearcherResult ) {
+    		
+    		Long psmId = item.getPsmId();
+    		Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
+    		if ( openModificationMassesSet_For_PsmId == null ) {
+    			openModificationMassesSet_For_PsmId = new HashSet<>();
+    			openModificationMassesSet_Key_PsmId.put( psmId, openModificationMassesSet_For_PsmId );
+    		}
+    		openModificationMassesSet_For_PsmId.add( item.getOpenModificationMass() );
+    	}
+    	
+    	for ( PSM_Item_ForPSM_List entry : psmWebDisplayList ) {
+    		if ( entry.isHasOpenModifications() ) {
+    			Long psmId = entry.getPsmId();
+    			Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
+    			if ( openModificationMassesSet_For_PsmId == null ) {
+    				log.warn( "No entry in openModificationMassesSet_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( openModificationMassesSet_For_PsmId != null ) {
+    				List<Double> openModificationMassesList = new ArrayList<>( openModificationMassesSet_For_PsmId );
+    				Collections.sort( openModificationMassesList );
+    				entry.setOpenModificationMassList( openModificationMassesList );
+    			}
+    		}
+    	}
+    }
+	
+	/**
+	 * Root object for JSON request
+	 * 
+	 * This is the representation that the Javascript code uses
+	 *
+	 */
+	public static class WebserviceRequestRoot {
+	
+		private Integer projectSearchId;
+		private List<Long> psmIds_Include; // Optional
+		private List<Long> psmIds_Exclude; // Optional
+		private Integer reportedPeptideId;
+		private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
+		private List<Integer> psmAnnotationTypeIdsForSorting;
+		
+		public Integer getReportedPeptideId() {
+			return reportedPeptideId;
+		}
+	
+		public void setReportedPeptideId(Integer reportedPeptideId) {
+			this.reportedPeptideId = reportedPeptideId;
+		}
+	
+		public Integer getProjectSearchId() {
+			return projectSearchId;
+		}
+	
+		public void setProjectSearchId(Integer projectSearchId) {
+			this.projectSearchId = projectSearchId;
+		}
+	
+		public SearchDataLookupParams_For_Single_ProjectSearchId getSearchDataLookupParams_For_Single_ProjectSearchId() {
+			return searchDataLookupParams_For_Single_ProjectSearchId;
+		}
+	
+		public void setSearchDataLookupParams_For_Single_ProjectSearchId(
+				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
+			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
+		}
+	
+		public List<Integer> getPsmAnnotationTypeIdsForSorting() {
+			return psmAnnotationTypeIdsForSorting;
+		}
+	
+		public void setPsmAnnotationTypeIdsForSorting(List<Integer> psmAnnotationTypeIdsForSorting) {
+			this.psmAnnotationTypeIdsForSorting = psmAnnotationTypeIdsForSorting;
+		}
+
+		public List<Long> getPsmIds_Include() {
+			return psmIds_Include;
+		}
+
+		public void setPsmIds_Include(List<Long> psmIds_Include) {
+			this.psmIds_Include = psmIds_Include;
+		}
+
+		public List<Long> getPsmIds_Exclude() {
+			return psmIds_Exclude;
+		}
+
+		public void setPsmIds_Exclude(List<Long> psmIds_Exclude) {
+			this.psmIds_Exclude = psmIds_Exclude;
+		}
+	
+	
+	}
+
     
     /**
      * 
@@ -511,6 +646,7 @@ public class PSM_List_RestWebserviceController {
     	boolean search_hasScanFilenames;
 		boolean search_hasIsotopeLabel;
 		boolean search_anyPsmHas_DynamicModifications;
+		boolean search_anyPsmHas_OpenModifications;
 		boolean search_anyPsmHas_ReporterIons;
 		
 		
@@ -531,6 +667,9 @@ public class PSM_List_RestWebserviceController {
 		}
 		public boolean isSearch_anyPsmHas_ReporterIons() {
 			return search_anyPsmHas_ReporterIons;
+		}
+		public boolean isSearch_anyPsmHas_OpenModifications() {
+			return search_anyPsmHas_OpenModifications;
 		}
 		
 
