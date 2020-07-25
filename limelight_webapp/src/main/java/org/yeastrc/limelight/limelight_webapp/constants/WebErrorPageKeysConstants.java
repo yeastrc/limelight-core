@@ -23,6 +23,19 @@ package org.yeastrc.limelight.limelight_webapp.constants;
  */
 public class WebErrorPageKeysConstants {
 
+	public static final String RESPONSE_STATUS_CODE = "responseStatusCode";
+
+	/**
+	 * If any Project Search Id not found in DB
+	 */
+	public static final String REQUESTED_SEARCH_NOT_FOUND = "requestedSearchNotFound";
+	
+	/**
+	 * The Project Ids from the Project Search Ids is more than 1
+	 */
+	public static final String REQUESTED_SEARCHES_FOUND_MORE_THAN_ONE_PROJECT = 
+			"requestedSearchesFoundMoreThanOneProject";
+
 	public static final String REQUESTED_DATA_NOT_FOUND = "requestedDataNotFound";
 
 	public static final String URL_FORMAT_INVALID = "urlFormatInvalid";

@@ -19,7 +19,10 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_inter
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -45,7 +48,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_ProjectSearchIds;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_GetRecordForCodeIF;
-import org.yeastrc.limelight.limelight_webapp.services.Get_ProjectIds_For_ProjectSearchIds_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectIdsForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.error_pages_controllers.AA_ErrorPageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
@@ -103,8 +106,8 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 	private SearchDataLookupParams_GetRecordForCodeIF searchDataLookupParams_GetRecordForCode;
 
 	@Autowired
-	private Get_ProjectIds_For_ProjectSearchIds_ServiceIF get_ProjectIds_For_ProjectSearchIds_Service;
-
+	private ProjectIdsForProjectSearchIdsSearcherIF projectIdsForProjectSearchIdsSearcher;
+	
 	@Autowired
 	private PopulatePageHeaderDataIF populatePageHeaderData;
 
@@ -191,7 +194,10 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     			final int statusCode404 = 404; // Resource not found
 
     			httpServletResponse.setStatus( statusCode404 ); 
-    			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_DATA_NOT_FOUND, true ); // Control message on error page
+    			
+    			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCH_NOT_FOUND, true ); // Control message on error page
+    			//  WAS
+    			// httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_DATA_NOT_FOUND, true ); // Control message on error page
 
     			final String mainErrorPageControllerURL =
     					AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
@@ -259,19 +265,97 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     		//             or get list of projectSearchId/projectId pairs 
     		//             and return an error when a projectSearchId is not found in the DB
 
-    		List<Integer> projectIds = get_ProjectIds_For_ProjectSearchIds_Service.get_ProjectIds_For_ProjectSearchIds_Service( projectSearchIds );
+    		List<Integer> projectIds = null;
 
-    		if ( projectIds.isEmpty() ) {
-    			String msg = "No projectIds found. projectsearchIds: " + projectSearchIds;
-    			log.warn( msg );
-    			throw new LimelightErrorDataInWebRequestException( "Project Search Id not found" );
-    		}
+    		{
+	    		Map<Integer,Integer> projectIdMap_Key_ProjectSearchId = projectIdsForProjectSearchIdsSearcher.getProjectIdMappingForProjectSearchIds( projectSearchIds );
+	
+	    		if ( projectIdMap_Key_ProjectSearchId.isEmpty() ) {
 
-    		if ( projectIds.size() > 1 ) {
-    			String msg = "Project Search Ids resulted in > 1 Project Id.  projectIds: " + projectIds;
-    			log.warn( msg );
-    			throw new LimelightErrorDataInWebRequestException( msg );
+	    			final int statusCode404 = 404; // Resource not found
+
+	    			httpServletResponse.setStatus( statusCode404 ); 
+	    			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCH_NOT_FOUND, true ); // Control message on error page
+
+	    			final String mainErrorPageControllerURL =
+	    					AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
+	    					+ AA_ErrorPageControllerPaths_Constants.MAIN_ERROR_PAGE_CONTROLLER;
+
+	    			RequestDispatcher requestDispatcher = 
+	    					httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+
+	    			log.warn( "Error in URL to Project Search Based page, No projectSearchIds found in database. projectSearchId: " + StringUtils.join( projectSearchIds )
+	    					+ ".  setting HTTP status code to: " + statusCode404
+	    					+ ".  Forwarding to '"
+	    					+ mainErrorPageControllerURL
+	    					+ "'. requestURI: " + requestURI );
+
+	    			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+	    			return false; //  EARLY EXIT
+	    		}
+	    			
+	    		Set<Integer> projectIdsSet = new HashSet<>();
+	    		
+	    		for ( Integer projectSearchId : projectSearchIds ) {
+	    			Integer projectIdForProjectSearchId = projectIdMap_Key_ProjectSearchId.get( projectSearchId );
+	    			if ( projectIdForProjectSearchId == null ) {
+
+		    			final int statusCode404 = 404; // Resource not found
+
+		    			httpServletResponse.setStatus( statusCode404 ); 
+		    			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCH_NOT_FOUND, true ); // Control message on error page
+
+		    			final String mainErrorPageControllerURL =
+		    					AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
+		    					+ AA_ErrorPageControllerPaths_Constants.MAIN_ERROR_PAGE_CONTROLLER;
+
+		    			RequestDispatcher requestDispatcher = 
+		    					httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+
+		    			log.warn( "Error in URL to Project Search Based page, projectSearchId not found in database. projectSearchId: " + projectSearchId
+		    					+ ".  setting HTTP status code to: " + statusCode404
+		    					+ ".  Forwarding to '"
+		    					+ mainErrorPageControllerURL
+		    					+ "'. requestURI: " + requestURI );
+
+		    			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+		    			return false; //  EARLY EXIT
+	    			}
+	    			projectIdsSet.add( projectIdForProjectSearchId );
+	    		}
+
+	    		if ( projectIdsSet.size() > 1 ) {
+
+	    			final int statusCode404 = 404; // Resource not found
+
+	    			httpServletResponse.setStatus( statusCode404 ); 
+	    			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCHES_FOUND_MORE_THAN_ONE_PROJECT, true ); // Control message on error page
+
+	    			final String mainErrorPageControllerURL =
+	    					AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
+	    					+ AA_ErrorPageControllerPaths_Constants.MAIN_ERROR_PAGE_CONTROLLER;
+
+	    			RequestDispatcher requestDispatcher = 
+	    					httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+
+	    			log.warn( "Error in URL to Project Search Based page, projectIdsSet.size() > 1. projectSearchIds: " 
+	    					+ StringUtils.join( projectSearchIds )
+	    					+ ".  projectIdsSet: " + StringUtils.join( projectIdsSet )
+	    					+ ".  setting HTTP status code to: " + statusCode404
+	    					+ ".  Forwarding to '"
+	    					+ mainErrorPageControllerURL
+	    					+ "'. requestURI: " + requestURI );
+
+	    			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+	    			return false; //  EARLY EXIT
+	    		}
+	    		
+	    		projectIds = new ArrayList<>( projectIdsSet );
     		}
+    		
     		
     		GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
     				getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );

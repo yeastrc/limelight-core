@@ -1,16 +1,25 @@
-<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
-<%--
+<%@page import="org.yeastrc.limelight.limelight_webapp.constants.WebErrorPageKeysConstants"%>
+<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %><%-- Put on Every Page --%><%--
+
 		generalError.jsp
 		
 		Specified in web.xml
 		
 		Displayed when an exception is returned from a controller
 
---%>
+--%><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/top_of_every_page_doctype__jsp_cache_directives.jsp" %><%-- 
 
-<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/top_of_every_page_doctype__jsp_cache_directives.jsp" %>
 
-<%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
+
+--%><%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %><%-- 
+
+--%><%
+Integer responseStatusCode = (Integer) request.getAttribute( WebErrorPageKeysConstants.RESPONSE_STATUS_CODE );
+if ( responseStatusCode != null ) {
+	response.setStatus( responseStatusCode );
+}
+%>
+
 
 <html>
   <head>
@@ -48,6 +57,23 @@
 	  		  </c:if>
 	  		  
 	  		  
+	  		  <c:if test="${ requestedSearchNotFound }">
+	  		  	<div style="margin-top: 24px; margin-bottom: 24px; ">
+	  		  		A requested search was not found.
+	  		  	</div>
+	  		  </c:if>
+	  		  
+	  		  <c:if test="${ requestedSearchesFoundMoreThanOneProject }">
+	  		  	<div style="margin-top: 24px; margin-bottom: 24px; ">
+	  		  		<div >
+	  		  			A requested search was not found
+  		  			</div>
+  		  			<div>
+	  		  		 	in the requested project.
+  		  		 	</div>
+	  		  	</div>
+	  		  </c:if>
+	  		  	  		  	  		  
 	  		  <c:if test="${ requestedDataNotFound }">
 	  		  	<div style="margin-top: 24px; margin-bottom: 24px; ">
 	  		  		The requested data was not found.
