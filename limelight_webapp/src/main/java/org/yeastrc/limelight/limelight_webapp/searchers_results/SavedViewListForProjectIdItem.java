@@ -9,7 +9,6 @@ public class SavedViewListForProjectIdItem {
 	private int id;
 	private String label;
 	private String url;
-	private Integer singleProjectSearchIdDefaultView;
 	private int userIdCreated;
 	
 	public int getId() {
@@ -29,12 +28,6 @@ public class SavedViewListForProjectIdItem {
 	}
 	public void setUrl(String url) {
 		this.url = url;
-	}
-	public Integer getSingleProjectSearchIdDefaultView() {
-		return singleProjectSearchIdDefaultView;
-	}
-	public void setSingleProjectSearchIdDefaultView(Integer singleProjectSearchIdDefaultView) {
-		this.singleProjectSearchIdDefaultView = singleProjectSearchIdDefaultView;
 	}
 	public int getUserIdCreated() {
 		return userIdCreated;

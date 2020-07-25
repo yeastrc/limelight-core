@@ -41,7 +41,7 @@ public class SavedViewListForProjectIdSearcher extends Limelight_JDBC_Base imple
 		
 	private static final String QUERY_SQL = 
 			"SELECT "
-			+ " id, label, url_start_at_page_controller_path, single_project_search_id__default_view, user_id_created_record "
+			+ " id, label, url_start_at_page_controller_path, user_id_created_record "
 			+ " FROM "
 			+ " data_page_saved_view_tbl "
 			+ " WHERE project_id = ? ";
@@ -68,10 +68,6 @@ public class SavedViewListForProjectIdSearcher extends Limelight_JDBC_Base imple
 					item.setId( rs.getInt( "id" ) );
 					item.setLabel( rs.getString( "label" ) );
 					item.setUrl( rs.getString( "url_start_at_page_controller_path" ) );
-					int singleProjectSearchIdDefaultView = rs.getInt( "single_project_search_id__default_view" );
-					if ( ! rs.wasNull() ) {
-						item.setSingleProjectSearchIdDefaultView( singleProjectSearchIdDefaultView );
-					}
 					item.setUserIdCreated( rs.getInt( "user_id_created_record" ) );
 					resultList.add( item );
 				}

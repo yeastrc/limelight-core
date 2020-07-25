@@ -46,7 +46,6 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SavedViewListForProjectI
 import org.yeastrc.limelight.limelight_webapp.searchers_results.SavedViewListForProjectIdItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -160,20 +159,6 @@ public class ProjectView_SavedViewsList_RestWebserviceController {
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
 			}
 
-			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
-
-    		Integer userId = null;
-    		
-    		if ( userSession != null ) {
-    			userId = userSession.getUserId();
-    		}
-    		
-			boolean requestFromActualUser = false;
-			
-			if ( userSession != null && userSession.isActualUser() && userSession.getUserId() != null ) {
-				requestFromActualUser = true;
-			}
-
     		List<SavedViewListForProjectIdItem> savedViewListDB = savedViewListForProjectIdSearcher.getSavedViewListForProjectId( projectId );
     		
     		List<SavedViewItem> savedViewList = null;
@@ -188,26 +173,11 @@ public class ProjectView_SavedViewsList_RestWebserviceController {
     				savedViewItem.setId( savedViewItenDB.getId() );
     				savedViewItem.setLabel( savedViewItenDB.getLabel() );
     				savedViewItem.setUrl( savedViewItenDB.getUrl() );
-    				
-    				if ( savedViewItenDB.getSingleProjectSearchIdDefaultView() != null ) {
-    					//  Default view
-    					if ( requestFromActualUser ) {
-    						//  Not mark when public user
-    						savedViewItem.setDefaultView(true);
-    					}
-    					
-    					if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
-    						// Project owner so can change or delete this entry
-    						savedViewItem.setCanEdit(true);
-    						savedViewItem.setCanDelete(true);
-    					}
-    				} else {
-    					//  Not Default View
-    					if ( webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed() ) {
-    						// Researcher or Project owner so can change or delete this entry
-    						savedViewItem.setCanEdit(true);
-    						savedViewItem.setCanDelete(true);
-    					}
+
+    				if ( webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed() ) {
+    					// Researcher or Project owner so can change or delete this entry
+    					savedViewItem.setCanEdit(true);
+    					savedViewItem.setCanDelete(true);
     				}
     				savedViewList.add( savedViewItem );
     			}
