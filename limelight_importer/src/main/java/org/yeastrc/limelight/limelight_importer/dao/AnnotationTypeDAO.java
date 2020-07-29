@@ -50,18 +50,114 @@ public class AnnotationTypeDAO {
 	public void saveToDatabase( AnnotationTypeDTO item ) throws Exception {
 		
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+
+			//  Generate next id value for insert into main table using table ...insert_id_tbl
+			
+			//  Get id for new record to insert using table project_annotation_type__insert_id_tbl
+			int id = save_InsertGetInsertId( dbConnection );
+			
+			//  delete all records in 
+			deleteLessThanId( id, dbConnection );
+			
+			item.setId( id );
+			
+			//  Insert into main table
 			saveToDatabase( item, dbConnection );
 		}
 	}
 
+	/**
+	 * Insert into 'side' table to get next auto increment value to use as 'id' on main insert
+	 * @throws Exception 
+	 */
+	private int save_InsertGetInsertId( Connection conn ) throws Exception {
+		
+		final String INSERT_GET_ID_SQL = "INSERT INTO annotation_type__insert_id_tbl (  ) VALUES ( )";
+		
+		//  How to get the auto-increment primary key for the inserted record
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = INSERT_GET_ID_SQL;
+		try {
+			pstmt = conn.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS );
+
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			if( rs.next() ) {
+				int id =  rs.getInt( 1 );
+				
+				return id;
+			} else
+				throw new LimelightImporterDatabaseException( "Failed to insert annotation_type__insert_id_tbl " );
+		} catch ( Exception e ) {
+			log.error( "ERROR: save_InsertGetInsertId(...) sql: " + sql, e );
+			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+//			if( conn != null ) {
+//				try { conn.close(); } catch( Throwable t ) { ; }
+//				conn = null;
+//			}
+		}
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param id
+	 * @throws Exception 
+	 */
+	private void deleteLessThanId( int id, Connection conn ) throws Exception {
+		
+		final String DELETE_SQL = "DELETE FROM annotation_type__insert_id_tbl WHERE id < ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = DELETE_SQL;
+		try {
+			pstmt = conn.prepareStatement( sql );
+			int counter = 0;
+			counter++;
+			pstmt.setInt( counter, id );
+
+			pstmt.executeUpdate();
+			
+		} catch ( Exception e ) {
+			log.error( "ERROR: deleteLessThanId(...) sql: " + sql, e );
+			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+//			if( conn != null ) {
+//				try { conn.close(); } catch( Throwable t ) { ; }
+//				conn = null;
+//			}
+		}
+	}
+	
+
 	private final static String INSERT_SQL = 
 			"INSERT INTO annotation_type_tbl "
 			
-			+ "( search_id, search_programs_per_search_id, "
+			+ "( id, search_id, search_programs_per_search_id, "
 			+ 	" psm_peptide_protein_type, filterable_descriptive_type, "
 			+ 	" name, default_visible, display_order, description ) "
 			
-			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 		
 	/**
 	 * This will INSERT the given AnnotationTypeDTO into the database
@@ -113,6 +209,8 @@ public class AnnotationTypeDAO {
 				throw new IllegalArgumentException(msg);
 			}
 
+			counter++;
+			pstmt.setInt( counter, item.getId() );
 			counter++;
 			pstmt.setInt( counter, item.getSearchId() );
 			counter++;

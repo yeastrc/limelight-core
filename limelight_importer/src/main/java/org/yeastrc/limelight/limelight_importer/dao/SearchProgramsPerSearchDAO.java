@@ -46,19 +46,110 @@ public class SearchProgramsPerSearchDAO {
 	public void save( SearchProgramsPerSearchDTO item ) throws Exception {
 		
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
-			save( item, dbConnection );
 
+			//  Generate next id value for insert into main table using table ...insert_id_tbl
+			
+			//  Get id for new record to insert using table project_search_programs_per_search__insert_id_tbl
+			int id = save_InsertGetInsertId( dbConnection );
+			
+			//  delete all records in 
+			deleteLessThanId( id, dbConnection );
+			
+			item.setId( id );
+			
+			//  Insert into main table
+			save( item, dbConnection );
+		}
+	}
+
+	/**
+	 * Insert into 'side' table to get next auto increment value to use as 'id' on main insert
+	 * @throws Exception 
+	 */
+	private int save_InsertGetInsertId( Connection conn ) throws Exception {
+		
+		final String INSERT_GET_ID_SQL = "INSERT INTO search_programs_per_search__insert_id_tbl (  ) VALUES ( )";
+		
+		//  How to get the auto-increment primary key for the inserted record
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = INSERT_GET_ID_SQL;
+		try {
+			pstmt = conn.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS );
+
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			if( rs.next() ) {
+				int id =  rs.getInt( 1 );
+				
+				return id;
+			} else
+				throw new LimelightImporterDatabaseException( "Failed to insert search_programs_per_search__insert_id_tbl " );
 		} catch ( Exception e ) {
-			String msg = "ERROR save(...) item: " + item;
-			log.error( msg, e );
+			log.error( "ERROR: save_InsertGetInsertId(...) sql: " + sql, e );
 			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+//			if( conn != null ) {
+//				try { conn.close(); } catch( Throwable t ) { ; }
+//				conn = null;
+//			}
+		}
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param id
+	 * @throws Exception 
+	 */
+	private void deleteLessThanId( int id, Connection conn ) throws Exception {
+		
+		final String DELETE_SQL = "DELETE FROM search_programs_per_search__insert_id_tbl WHERE id < ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = DELETE_SQL;
+		try {
+			pstmt = conn.prepareStatement( sql );
+			int counter = 0;
+			counter++;
+			pstmt.setInt( counter, id );
+
+			pstmt.executeUpdate();
+			
+		} catch ( Exception e ) {
+			log.error( "ERROR: deleteLessThanId(...) sql: " + sql, e );
+			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+//			if( conn != null ) {
+//				try { conn.close(); } catch( Throwable t ) { ; }
+//				conn = null;
+//			}
 		}
 	}
 	
+
 	
 	private final String INSERT_SQL = 
-			"INSERT INTO search_programs_per_search_tbl ( search_id, name, display_name, version, description ) "
-			+ "VALUES ( ?, ?, ?, ?, ? )";
+			"INSERT INTO search_programs_per_search_tbl ( id, search_id, name, display_name, version, description ) "
+			+ "VALUES ( ?, ?, ?, ?, ?, ? )";
 	
 	/**
 	 * @param item
@@ -71,7 +162,9 @@ public class SearchProgramsPerSearchDAO {
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 
 			int counter = 0;
-			
+
+			counter++;
+			pstmt.setInt( counter, item.getId() );
 			counter++;
 			pstmt.setInt( counter, item.getSearchId() );
 			counter++;

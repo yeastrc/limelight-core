@@ -2214,6 +2214,68 @@ CREATE INDEX fk_data_page_dflt_vw_exp_pgs_tbl_exp_id_idx ON data_page_default_vi
 CREATE UNIQUE INDEX exp_id_bs_cntrllr_unique ON data_page_default_view_experiment_pages_tbl (experiment_id ASC, page_controller_path ASC);
 
 
+-- -----------------------------------------------------
+-- Table project__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project__insert_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table project_tbl';
+
+
+-- -----------------------------------------------------
+-- Table project_search__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search__insert_id_tbl (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table project_search_tbl';
+
+
+-- -----------------------------------------------------
+-- Table search__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__insert_id_tbl (
+  id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table search_tbl';
+
+
+-- -----------------------------------------------------
+-- Table psm__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin
+COMMENT = 'Get next id value for insert table psm_tbl';
+
+
+-- -----------------------------------------------------
+-- Table annotation_type__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  annotation_type__insert_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table annotation_type_tbl';
+
+
+-- -----------------------------------------------------
+-- Table search_programs_per_search__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_programs_per_search__insert_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id val for insrt tbl search_programs_per_search_tbl';
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

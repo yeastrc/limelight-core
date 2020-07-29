@@ -50,17 +50,113 @@ public class SearchDAO {
 	public void saveToDatabase( SearchDTO_Importer item ) throws Exception {
 		
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+
+			//  Generate next id value for insert into main table using table ...insert_id_tbl
+			
+			//  Get id for new record to insert using table project_search__insert_id_tbl
+			int id = save_InsertGetInsertId( dbConnection );
+			
+			//  delete all records in 
+			deleteLessThanId( id, dbConnection );
+			
+			item.setId( id );
+			
+			//  Insert into main table
 			saveToDatabase( item, dbConnection );
 		}
 	}
+
+	/**
+	 * Insert into 'side' table to get next auto increment value to use as 'id' on main insert
+	 * @throws Exception 
+	 */
+	private int save_InsertGetInsertId( Connection conn ) throws Exception {
+		
+		final String INSERT_GET_ID_SQL = "INSERT INTO search__insert_id_tbl (  ) VALUES ( )";
+		
+		//  How to get the auto-increment primary key for the inserted record
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = INSERT_GET_ID_SQL;
+		try {
+			pstmt = conn.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS );
+
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			if( rs.next() ) {
+				int id =  rs.getInt( 1 );
+				
+				return id;
+			} else
+				throw new LimelightImporterDatabaseException( "Failed to insert search__insert_id_tbl " );
+		} catch ( Exception e ) {
+			log.error( "ERROR: save_InsertGetInsertId(...) sql: " + sql, e );
+			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+//			if( conn != null ) {
+//				try { conn.close(); } catch( Throwable t ) { ; }
+//				conn = null;
+//			}
+		}
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param id
+	 * @throws Exception 
+	 */
+	private void deleteLessThanId( int id, Connection conn ) throws Exception {
+		
+		final String DELETE_SQL = "DELETE FROM search__insert_id_tbl WHERE id < ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = DELETE_SQL;
+		try {
+			pstmt = conn.prepareStatement( sql );
+			int counter = 0;
+			counter++;
+			pstmt.setInt( counter, id );
+
+			pstmt.executeUpdate();
+			
+		} catch ( Exception e ) {
+			log.error( "ERROR: deleteLessThanId(...) sql: " + sql, e );
+			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+//			if( conn != null ) {
+//				try { conn.close(); } catch( Throwable t ) { ; }
+//				conn = null;
+//			}
+		}
+	}
 	
+
 	private static final String INSERT_SQL =
 			"INSERT INTO search_tbl "
-			+ " (path, directory_name, fasta_filename, "
+			+ " ( id, path, directory_name, fasta_filename, "
 			+   " has_scan_filenames, has_scan_data, has_isotope_label, any_psm_has_open_modificaton_masses,"
 			+   " reported_peptide_matched_protein_mapping_provided, "
 			+   " status_id, created_by_user_id ) "
-			+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
 			+ " )";
 	/**
 	 * This will INSERT the given SearchDTO into the database... even if an id is already set.
@@ -71,8 +167,10 @@ public class SearchDAO {
 	public void saveToDatabase( SearchDTO_Importer item, Connection dbConnection ) throws Exception {
 
 		final String sql = INSERT_SQL;
-		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 			int counter = 0;
+			counter++;
+			pstmt.setInt( counter, item.getId() ); 
 			counter++;
 			pstmt.setString( counter, item.getPath() );
 			counter++;
@@ -118,12 +216,6 @@ public class SearchDAO {
 			
 			pstmt.executeUpdate();
 			
-			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
-				if( rs.next() ) {
-					item.setId( rs.getInt( 1 ) );
-				} else
-					throw new LimelightImporterDatabaseException( "Failed to insert search for " + item.getPath() );
-			}
 		} catch ( Exception e ) {
 			log.error( "ERROR: saveToDatabase(...) sql: " + sql, e );
 			throw e;

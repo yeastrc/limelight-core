@@ -87,23 +87,37 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 		}
 		return result;
 	}
-	
 
-	private static final String insert_querySQL = 
-			"INSERT INTO project_search_tbl "
-			+ " ( project_id, search_id, status_id, search_name, search_display_order, created_by_user_id ) "
-			+ " VALUES ( ?, ?, ?, ?, ?, ? )";
-//			"SELECT project_id, search_id, status_id, search_name, search_display_order, created_by_user_id "
-//			+ " FROM project_search_tbl WHERE id = ? ";
-	
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
 	
 	@Override
 	public void save( ProjectSearchDTO item ) {
-		
-		final String INSERT_SQL = insert_querySQL;
 
+		//  Generate next id value for insert into main table using table ...insert_id_tbl
+		
+		//  Get id for new record to insert using table project_search__insert_id_tbl
+		int id = save_InsertGetInsertId();
+		
+		//  delete all records in 
+		deleteLessThanId( id );
+		
+		item.setId( id );
+		
+		//  Insert into main table
+		
+		save_MainInsert(item);
+		
+	}
+
+
+	/**
+	 * Insert into 'side' table to get next auto increment value to use as 'id' on main insert
+	 */
+	private int save_InsertGetInsertId() {
+		
+		final String INSERT_SQL = "INSERT INTO project_search__insert_id_tbl (  ) VALUES ( )";
+		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
 		//  How to get the auto-increment primary key for the inserted record
@@ -116,7 +130,98 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 
 							PreparedStatement pstmt =
 									connection.prepareStatement( INSERT_SQL, Statement.RETURN_GENERATED_KEYS );
+
+							return pstmt;
+						}
+					},
+					keyHolder);
+
+			Number insertedKey = keyHolder.getKey();
+			
+			long insertedKeyLong = insertedKey.longValue();
+			
+			if ( insertedKeyLong > Integer.MAX_VALUE ) {
+				String msg = "Inserted key is too large, is > Integer.MAX_VALUE. insertedKey: " + insertedKey;
+				log.error( msg );
+				throw new LimelightInternalErrorException( msg );
+			}
+			
+			int insertedKeyInt = (int) insertedKeyLong; // Inserted auto-increment primary key for the inserted record
+			
+			return insertedKeyInt;
+			
+		} catch ( RuntimeException e ) {
+			String msg = "SQL: " + INSERT_SQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+	/**
+	 * Only call from Transaction service
+	 * 
+	 * @param id
+	 */
+	private void deleteLessThanId( int id ) {
+		
+		final String DELETE_SQL = "DELETE FROM project_search__insert_id_tbl WHERE id < ?";
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+//			int rowsUpdated = 
+			this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt = connection.prepareStatement( DELETE_SQL );
 							int counter = 0;
+							counter++;
+							pstmt.setInt( counter, id );
+
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "id: " + id + ", SQL: " + DELETE_SQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+
+	private static final String insert_querySQL = 
+			"INSERT INTO project_search_tbl "
+			+ " ( id, project_id, search_id, status_id, search_name, search_display_order, created_by_user_id ) "
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+//			"SELECT project_id, search_id, status_id, search_name, search_display_order, created_by_user_id "
+//			+ " FROM project_search_tbl WHERE id = ? ";
+	
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	
+	private void save_MainInsert( ProjectSearchDTO item ) {
+		
+		final String INSERT_SQL = insert_querySQL;
+
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		//  How to get the auto-increment primary key for the inserted record
+		
+		try {
+//			KeyHolder keyHolder = new GeneratedKeyHolder();
+			int rowsUpdated = this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt =
+									connection.prepareStatement( INSERT_SQL
+//											, Statement.RETURN_GENERATED_KEYS 
+											);
+							int counter = 0;
+							counter++;
+							pstmt.setInt( counter, item.getId() );
 							counter++;
 							pstmt.setInt( counter, item.getProjectId() );
 							counter++;
@@ -135,20 +240,22 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 							}
 							return pstmt;
 						}
-					},
-					keyHolder);
-
-			Number insertedKey = keyHolder.getKey();
-			
-			long insertedKeyLong = insertedKey.longValue();
-			
-			if ( insertedKeyLong > Integer.MAX_VALUE ) {
-				String msg = "Inserted key is too large, is > Integer.MAX_VALUE. insertedKey: " + insertedKey;
-				log.error( msg );
-				throw new LimelightInternalErrorException( msg );
-			}
-			
-			item.setId( (int) insertedKeyLong ); // Inserted auto-increment primary key for the inserted record
+					}
+//					,
+//					keyHolder
+					);
+//
+//			Number insertedKey = keyHolder.getKey();
+//			
+//			long insertedKeyLong = insertedKey.longValue();
+//			
+//			if ( insertedKeyLong > Integer.MAX_VALUE ) {
+//				String msg = "Inserted key is too large, is > Integer.MAX_VALUE. insertedKey: " + insertedKey;
+//				log.error( msg );
+//				throw new LimelightInternalErrorException( msg );
+//			}
+//			
+//			item.setId( (int) insertedKeyLong ); // Inserted auto-increment primary key for the inserted record
 			
 		} catch ( RuntimeException e ) {
 			String msg = "UserDTO: " + item + ", SQL: " + INSERT_SQL;
