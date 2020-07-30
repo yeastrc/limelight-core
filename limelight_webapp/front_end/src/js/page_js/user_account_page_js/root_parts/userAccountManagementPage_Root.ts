@@ -874,7 +874,7 @@ class UserAccountManagementPage {
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
 				try {
-					
+
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 					throw e;
