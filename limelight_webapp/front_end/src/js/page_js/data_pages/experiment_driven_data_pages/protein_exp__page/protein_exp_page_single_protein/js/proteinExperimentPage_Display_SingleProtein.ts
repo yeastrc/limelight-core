@@ -45,6 +45,7 @@ import {
 } from './proteinExperimentPage_Display_SingleProtein_nonClass_Functions';
 import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 /**
@@ -75,7 +76,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _projectSearchIds : Array<number>;
 
-	private _searchDataLookupParamsRoot;
+	private _searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 
 	private _conditionGroupsContainer : Experiment_ConditionGroupsContainer;
 	private _conditionGroupsDataContainer : ConditionGroupsDataContainer;

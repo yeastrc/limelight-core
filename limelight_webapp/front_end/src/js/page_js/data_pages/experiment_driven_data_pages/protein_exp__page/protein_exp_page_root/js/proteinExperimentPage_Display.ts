@@ -72,6 +72,7 @@ import {loadPeptideIdsIfNeeded} from "page_js/data_pages/project_search_ids_driv
 import {ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
 import {ProteinExperiment__CreateProteinDataTableColumns_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ColumnObject";
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 
@@ -114,7 +115,7 @@ export class ProteinExperimentPage_Display {
 
     private _projectSearchIds : Array<number>;
 
-    private _searchDataLookupParamsRoot
+    private _searchDataLookupParamsRoot : SearchDataLookupParameters_Root
 
     private _conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     private _conditionGroupsDataContainer : ConditionGroupsDataContainer;
@@ -179,7 +180,7 @@ export class ProteinExperimentPage_Display {
         experimentId : number, 
         experimentName : string, 
         projectSearchIds : Array<number>,
-        searchDataLookupParamsRoot,
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         conditionGroupsContainer : Experiment_ConditionGroupsContainer,
         conditionGroupsDataContainer : ConditionGroupsDataContainer,
         experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData,
@@ -258,6 +259,7 @@ export class ProteinExperimentPage_Display {
             experimentId : this._experimentId,
             experimentName : this._experimentName ,
             projectSearchIds : this._projectSearchIds,
+            searchDataLookupParamsRoot : this._searchDataLookupParamsRoot,
             experimentConditions_GraphicRepresentation_PropsData : this._experimentConditions_GraphicRepresentation_PropsData ,
             conditionGroupsContainer : this._conditionGroupsContainer ,
             conditionGroupsDataContainer : this._conditionGroupsDataContainer ,

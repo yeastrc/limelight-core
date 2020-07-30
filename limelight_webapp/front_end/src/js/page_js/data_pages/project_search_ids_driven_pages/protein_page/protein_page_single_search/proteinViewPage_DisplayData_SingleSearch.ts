@@ -112,7 +112,6 @@ export class ProteinViewPage_Display_SingleSearch {
 
 	private _proteinPage_Display_SingleSearch_SingleProtein : ProteinPage_Display_SingleSearch_SingleProtein;
 
-	private _downloadProteinsClickHandlerAttached : boolean;
 	private _proteinList_IsInDOM : boolean;
 	private _addTooltipForProteinName_Called : boolean;
 
@@ -376,33 +375,28 @@ export class ProteinViewPage_Display_SingleSearch {
 		}
 
 
-		if ( ! this._downloadProteinsClickHandlerAttached ) {
-	
-			//  Download Proteins container and link.  The version for 1 project search id
+		//  Download Proteins container and link.  The version for 1 project search id
 
-			//  Show and attach click handler here since now have the data loaded for downloading
-		
-			const $protein_download_proteins = $("#protein_download_proteins");
+		//  Show and attach click handler here since now have the data loaded for downloading
 
-			//  First remove any previous click handler
-			$protein_download_proteins.off("click");
-			
-			$protein_download_proteins.show();
+		const $protein_download_proteins = $("#protein_download_proteins");
 
-			$protein_download_proteins.click( (eventObject) => {
-				try {
-					eventObject.preventDefault();
+		//  First remove any previous click handler
+		$protein_download_proteins.off("click");
 
-					this._downloadProteinList();
+		$protein_download_proteins.show();
 
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-					throw e;
-				}
-			});
+		$protein_download_proteins.click( (eventObject) => {
+			try {
+				eventObject.preventDefault();
 
-			this._downloadProteinsClickHandlerAttached = true;
-		}
+				this._downloadProteinList();
+
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+				throw e;
+			}
+		});
 
 	}
 
@@ -1054,7 +1048,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			for ( const columnEntry of proteinItem.columnEntries ) {
 			
 				let dataForColumn = columnEntry.valueDisplay;
-				if ( columnEntry.valueSort ) {
+				if ( columnEntry.valueSort !== undefined && columnEntry.valueSort !== null ) {
 					dataForColumn = columnEntry.valueSort;
 				}
 				reportLineParts.push( dataForColumn )

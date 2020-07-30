@@ -25,25 +25,26 @@ import { ExperimentConditions_GraphicRepresentation_SelectedCells, create_Experi
 import { Experiment_SingleExperiment_ConditionsGraphicRepresentation, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents, ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler, ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
 import { Experiment_ConditionGroupsContainer, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
-import { create_experimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
+import { ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
 
 import { SharePage_Component } from 'page_js/data_pages/sharePage_React/sharePage_Component_React';
 
-import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {DataTable_DataGroupRowEntry, DataTable_DataRowEntry, DataTable_RootTableObject} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 import {SearchDetailsAndOtherFiltersOuterBlock_Layout} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
-import {SearchDetailsAndFilterBlock_MainPage_Root} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
 import {
     ProteinPage_ProteinGroupingFilterSelection_Component_Root,
     ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
     ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {SaveView_Component, SaveView_Component_Props_Prop} from "page_js/data_pages/saveView_React/saveView_Component_React";
+import { SaveView_Component_Props_Prop} from "page_js/data_pages/saveView_React/saveView_Component_React";
+import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
 
 
 /**
@@ -68,6 +69,7 @@ export interface ProteinExperimentPage_Root_Component_Props {
     experimentId : number;
     experimentName : string;
     projectSearchIds : Array<number>;
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData
     
     experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
@@ -118,8 +120,8 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
     private _CAST_TEST_ONLY_mainCell_getHoverContents : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = this._mainCell_getHoverContents;
 
-
-    //  bind to 'this' for passing as parameters
+    private _downloadProteinList_Clicked_BindThis = this._downloadProteinList_Clicked.bind(this)
+    private _downloadPSMList_Clicked_BindThis = this._downloadPSMList_Clicked.bind(this)
 
     /**
      * 
@@ -350,6 +352,25 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
     }
 
     /**
+     *
+     */
+    private _downloadProteinList_Clicked() {
+
+        if ( this.state.proteinListData ) {
+            _downloadProteinList({proteinListData: this.state.proteinListData, experimentId : this.props.experimentId})
+        }
+    }
+
+
+    /**
+     *
+     */
+    private _downloadPSMList_Clicked() {
+
+        _downloadPSMs({ experimentId : this.props.experimentId, projectSearchIds : this.props.projectSearchIds, searchDataLookupParamsRoot : this.props.searchDataLookupParamsRoot });
+    }
+
+    /**
      * 
      */    
     render() {
@@ -436,6 +457,17 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
                                 ) : null }
                                 <span >Protein Count: </span>
                                 <span >{ proteinCount_String }</span>
+
+
+                                <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } }  className=" fake-link " onClick={ this._downloadProteinList_Clicked_BindThis }>
+                                    Download Proteins
+                                </span>
+
+                                {/*In Progress but needs more coding*/}
+                                {/*<span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link " onClick={ this._downloadPSMList_Clicked_BindThis }>*/}
+                                {/*    Download PSMs*/}
+                                {/*</span>*/}
+
                             </div>
 
                             <DataTable_TableRoot
@@ -691,5 +723,205 @@ const _mainCell_getHoverContents_StandAlone = function({
     return { hoverContent };
 }
 
+///////////////
+///////////////
 
-	
+/**
+ *
+ */
+const _downloadProteinList = function({ proteinListData, experimentId } : {
+
+    proteinListData : ProteinExperimentPage_Root_Component_ProteinListData_Param
+    experimentId : number
+}) {
+
+    const proteinListDataTable = proteinListData.proteinListDataTable;
+
+    const proteinDisplayDataAsString = _createProteinDisplayDownloadDataAsString( proteinListDataTable );
+
+    if (!proteinDisplayDataAsString) {
+
+        window.alert("No data to download")
+        return // EARLY RETURN
+    }
+
+
+    const filename = 'proteins-search-' + experimentId + '.txt';
+
+    StringDownloadUtils.downloadStringAsFile({stringToDownload: proteinDisplayDataAsString, filename: filename});
+}
+
+/**
+ *
+ */
+const _createProteinDisplayDownloadDataAsString = function( proteinListDataTable: DataTable_RootTableObject ) : string {
+
+    if (!proteinListDataTable) {
+
+        window.alert("No data to download")
+        return // EARLY RETURN
+    }
+
+    const tableDataObject = proteinListDataTable.tableDataObject
+
+    //  Array of Arrays of reportLineParts
+    const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
+
+    //  reportLineParts will be joined with separator '\t'
+
+    const columnIndexesToSkip : Set<number> = new Set()
+
+    //  Header Line
+    {
+        const reportLineParts = [];
+
+        for ( let index = 0; index < tableDataObject.columns.length; index++ ) {
+
+            const column = tableDataObject.columns[ index ]
+
+            if ( "PSMs per Condition" === column.displayName ) {
+
+                //  Skipping this column
+
+                columnIndexesToSkip.add( index )
+
+            } else {
+
+                reportLineParts.push(column.displayName);
+            }
+        }
+
+        reportLineParts_AllLines.push(reportLineParts);
+    }
+
+    if ( tableDataObject.dataTable_DataRowEntries ) {
+        _createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries({ dataTable_DataRowEntries : tableDataObject.dataTable_DataRowEntries, columnIndexesToSkip, reportLineParts_AllLines })
+
+    } else if ( tableDataObject.dataTable_DataGroupRowEntries ) {
+
+        _createProteinDisplayDownloadDataAsString_Process_dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries : tableDataObject.dataTable_DataGroupRowEntries, columnIndexesToSkip, reportLineParts_AllLines })
+
+    } else {
+
+        window.alert("Error in processing")
+        throw Error("tableDataObject.dataTable_DataRowEntries NOR tableDataObject.dataTable_DataRowEntries is populated")
+    }
+
+    //  Join all line parts into strings, delimit on '\t'
+
+    const reportLine_AllLines = [];
+
+    let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
+    const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
+
+    for (const reportLineParts of reportLineParts_AllLines) {
+
+        reportLineParts_AllLinesIndex++;
+
+        let reportLine = reportLineParts.join("\t");
+        if (reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last) {
+            reportLine += '\n'; // Add '\n' to last line
+        }
+        reportLine_AllLines.push(reportLine);
+    }
+
+    //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
+
+    const reportLinesSingleString = reportLine_AllLines.join('\n');
+
+    return reportLinesSingleString;
+}
+
+/**
+ *
+ */
+const _createProteinDisplayDownloadDataAsString_Process_dataTable_DataGroupRowEntries = function({ dataTable_DataGroupRowEntries, columnIndexesToSkip, reportLineParts_AllLines } : {
+
+    dataTable_DataGroupRowEntries: DataTable_DataGroupRowEntry[]
+    columnIndexesToSkip : Set<number>
+    reportLineParts_AllLines : Array<Array<string>>
+}) {
+
+    for ( const dataTable_DataGroupRowEntry of dataTable_DataGroupRowEntries ) {
+
+        _createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries({ dataTable_DataRowEntries : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, columnIndexesToSkip, reportLineParts_AllLines })
+    }
+}
+
+/**
+ *
+ */
+const _createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, columnIndexesToSkip, reportLineParts_AllLines } : {
+
+    dataTable_DataRowEntries : DataTable_DataRowEntry[]
+    columnIndexesToSkip : Set<number>
+    reportLineParts_AllLines : Array<Array<string>>
+}) {
+
+    //  Data Lines
+    for (const dataTable_DataRowEntry of dataTable_DataRowEntries) {
+
+        const reportLineParts = [];
+
+        for ( let index = 0; index < dataTable_DataRowEntry.columnEntries.length; index++ ) {
+
+            if ( columnIndexesToSkip.has( index) ) {
+
+                //  Skip this column
+                continue  // EARLY CONTINUE
+            }
+
+            const columnEntry = dataTable_DataRowEntry.columnEntries[ index ]
+
+            let dataForColumn = columnEntry.valueDisplay;
+            if ( columnEntry.valueSort !== undefined && columnEntry.valueSort !== null ) {
+                dataForColumn = columnEntry.valueSort;
+            }
+            reportLineParts.push(dataForColumn)
+        }
+
+        reportLineParts_AllLines.push(reportLineParts);
+    }
+}
+
+
+///////////////
+///////////////
+
+
+/**
+ *
+ */
+const _downloadPSMs = function({ experimentId, projectSearchIds, searchDataLookupParamsRoot } : {
+
+    experimentId : number
+    projectSearchIds : Array<number> //  Filtered based on experiment graphic
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
+}) {
+
+    const projectSearchIdsReportedPeptideIdsPsmIds = [];
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        throw Error(" Need to compute conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId before can execute this code")
+
+        // const experimentDataForSearch = conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId.get( projectSearchId );
+        // if ( experimentDataForSearch === undefined ) {
+        //     const msg = "No value in conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId;
+        //     console.warn( msg );
+        //     throw Error( msg );
+        // }
+        //
+        // const projectSearchIdsReportedPeptideIdsPsmIds_Entry = { projectSearchId, experimentDataForSearch };
+        //
+        // projectSearchIdsReportedPeptideIdsPsmIds.push(projectSearchIdsReportedPeptideIdsPsmIds_Entry);
+    }
+
+    downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {
+        experimentId,
+        projectSearchIdsReportedPeptideIdsPsmIds,
+        searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+        proteinSequenceVersionIds : undefined
+    } );
+
+}

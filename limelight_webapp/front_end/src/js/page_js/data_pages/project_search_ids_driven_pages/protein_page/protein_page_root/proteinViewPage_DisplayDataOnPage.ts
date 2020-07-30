@@ -60,7 +60,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 	private _proteinViewPage_Display_SingleSearch : ProteinViewPage_Display_SingleSearch;
 	private _proteinViewPage_Display_MultipleSearches : ProteinViewPage_Display_MultipleSearches;
-	private _downloadPSMClickHandlerAttached : boolean;
 
 	/**
 	 * 
@@ -268,12 +267,53 @@ export class ProteinViewPage_DisplayDataOnPage {
 	 */
 	populateProteinListBlock_MultipleSearches({ projectSearchIds }) {
 
-		// const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
-		// if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
-		// 	throw Error("Failed to find DOM element with id 'protein_counts_download_assoc_psms_block'");
-		// }
-		// $protein_counts_download_assoc_psms_block.show();
-		
+		const objectThis = this;
+
+		// Wait to show and attach click handler for #protein_download_proteins until after protein list is displayed
+
+		//  Download PSMs container and link.  Only supported for 1 project search id
+
+		const $protein_download_assoc_psms = $("#protein_download_assoc_psms");
+
+		//  First remove any previous click handler
+		$protein_download_assoc_psms.off("click");
+
+		$protein_download_assoc_psms.show();
+
+		$protein_download_assoc_psms.click( function(eventObject) {
+			try {
+				eventObject.preventDefault();
+
+				const projectSearchIds_InDownloadClickHandler =
+					objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+
+				const searchDataLookupParamsRoot: SearchDataLookupParameters_Root =
+					objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined});
+
+				if (!searchDataLookupParamsRoot) {
+					throw Error("searchDataLookupParamsRoot not found");
+				}
+
+				const projectSearchIdsReportedPeptideIdsPsmIds = [];
+
+				for ( const projectSearchId_InDownloadClickHandler of projectSearchIds_InDownloadClickHandler ) {
+
+					const single_projectSearchId_ReportedPeptideIdsPsmIds = {projectSearchId: projectSearchId_InDownloadClickHandler};
+
+					projectSearchIdsReportedPeptideIdsPsmIds.push(single_projectSearchId_ReportedPeptideIdsPsmIds);
+				}
+
+				downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( {
+					projectSearchIdsReportedPeptideIdsPsmIds,
+					searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+					proteinSequenceVersionIds : undefined
+				} );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+				throw e;
+			}
+		});
+
 		this._proteinViewPage_Display_MultipleSearches.populateProteinList({ projectSearchIds });
 	}
 
@@ -286,52 +326,52 @@ export class ProteinViewPage_DisplayDataOnPage {
 
 		// Wait to show and attach click handler for #protein_download_proteins until after protein list is displayed
 
-		if ( ! this._downloadPSMClickHandlerAttached ) {
-	
-			//  Download PSMs container and link.  Only supported for 1 project search id
-		
-			const $protein_download_assoc_psms = $("#protein_download_assoc_psms");
-			$protein_download_assoc_psms.show();
+		//  Download PSMs container and link.  Only supported for 1 project search id
 
-			$protein_download_assoc_psms.click( function(eventObject) {
-				try {
-					eventObject.preventDefault();
+		const $protein_download_assoc_psms = $("#protein_download_assoc_psms");
 
-					const projectSearchIds_InDownloadClickHandler = 
-					objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+		//  First remove any previous click handler
+		$protein_download_assoc_psms.off("click");
 
-					if ( projectSearchIds_InDownloadClickHandler.length !== 1 ) {
-						alert("More than one Search is not supported" );
-						throw Error( "More than one Search is not supported" );
-					}
-					
-					let projectSearchId_InDownloadClickHandler = projectSearchIds_InDownloadClickHandler[0];
-					
-					const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = 
-						objectThis._searchDetailsBlockDataMgmtProcessing.
-						getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+		$protein_download_assoc_psms.show();
 
-					if ( ! searchDataLookupParamsRoot ) {
-						throw Error( "searchDataLookupParamsRoot not found" );
-					}
+		$protein_download_assoc_psms.click( function(eventObject) {
+			try {
+				eventObject.preventDefault();
 
-					const single_projectSearchId_ReportedPeptideIdsPsmIds = { projectSearchId : projectSearchId_InDownloadClickHandler };
-					
-					const projectSearchIdsReportedPeptideIdsPsmIds = [ single_projectSearchId_ReportedPeptideIdsPsmIds ];
+				const projectSearchIds_InDownloadClickHandler =
+				objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
-					downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( { 
-						projectSearchIdsReportedPeptideIdsPsmIds,
-						searchDataLookupParamsRoot : searchDataLookupParamsRoot,
-						proteinSequenceVersionIds : undefined
-					} );
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
-					throw e;
+				if ( projectSearchIds_InDownloadClickHandler.length !== 1 ) {
+					alert("More than one Search is not supported" );
+					throw Error( "More than one Search is not supported" );
 				}
-			});
 
-			this._downloadPSMClickHandlerAttached = true;
-		}
+				let projectSearchId_InDownloadClickHandler = projectSearchIds_InDownloadClickHandler[0];
+
+				const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
+					objectThis._searchDetailsBlockDataMgmtProcessing.
+					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+
+				if ( ! searchDataLookupParamsRoot ) {
+					throw Error( "searchDataLookupParamsRoot not found" );
+				}
+
+				const single_projectSearchId_ReportedPeptideIdsPsmIds = { projectSearchId : projectSearchId_InDownloadClickHandler };
+
+				const projectSearchIdsReportedPeptideIdsPsmIds = [ single_projectSearchId_ReportedPeptideIdsPsmIds ];
+
+				downloadPsmsFor_projectSearchIds_FilterCriteria_RepPeptProtSeqVIds( {
+					projectSearchIdsReportedPeptideIdsPsmIds,
+					searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+					proteinSequenceVersionIds : undefined
+				} );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+				throw e;
+			}
+		});
+
 
 		const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
 		if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
