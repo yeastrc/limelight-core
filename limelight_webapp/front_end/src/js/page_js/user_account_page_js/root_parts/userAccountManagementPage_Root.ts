@@ -28,8 +28,10 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 const UPDATE_WEBSERVICE_URL = "user/rws/for-page/user-change-account-info";
 
+const USER_LOCAL_USER_DATA_MANAGE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-local-user-data-manage";;
+
 const USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL = "user/rws/for-page/user-submit-import-key-manage";
-const USER_SUBMIT_IMPORT_KEY_GET_WEBSERVICE_URL = "user/rws/for-page/user-submit-import-key-get";
+// const USER_SUBMIT_IMPORT_KEY_GET_WEBSERVICE_URL = "user/rws/for-page/user-submit-import-key-get";
 
 /**
  * 
@@ -146,6 +148,18 @@ class UserAccountManagementPage {
 				hideAllErrorMessages();
 				objectThis.updatePassword(clickThis, eventObject);	
 				eventObject.preventDefault();  // stop click bubble up.
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+		var $import_complete_notification_checkbox = $("#import_complete_notification_checkbox");
+		$import_complete_notification_checkbox.change( function(eventObject) {
+			try {
+				var clickThis = this;
+				objectThis.update_import_complete_notification(clickThis, eventObject);
+				eventObject.stopPropagation();   // stop click bubble up.
+				//  eventObject.preventDefault();  remove since breaks checkbox
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -836,6 +850,41 @@ class UserAccountManagementPage {
 		$password.val("");
 		$passwordConfirm.val("");
 	};
+
+	/**
+	 *
+	 */
+	update_import_complete_notification(clickThis, eventObject) {
+		try {
+			const import_complete_notification_checkboxDOM = document.getElementById("import_complete_notification_checkbox") as HTMLInputElement
+			if ( ! ( import_complete_notification_checkboxDOM instanceof HTMLInputElement ) ) {
+				throw Error("( ! ( import_complete_notification_checkboxDOM instanceof HTMLInputElement ) )")
+			}
+			const sendEmailOnImportFinish = import_complete_notification_checkboxDOM.checked  //  boolean true|false
+
+			const requestData = { sendEmailOnImportFinish }
+
+			const url = USER_LOCAL_USER_DATA_MANAGE_REST_WEBSERVICE_CONTROLLER;
+
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+			promise_webserviceCallStandardPost.catch( () => { }  );
+
+			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				try {
+					
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+		} catch( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		}
+	}
 
 	/**
 	 * 

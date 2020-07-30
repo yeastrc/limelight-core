@@ -46,6 +46,8 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 
 	public static final String USER_CHANGE_ACCOUNT_INFO_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-change-account-info";
 
+	public static final String USER_LOCAL_USER_DATA_MANAGE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-local-user-data-manage";
+
 	public static final String USER_SUBMIT_IMPORT_KEY_GET_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-submit-import-key-get";
 	public static final String USER_SUBMIT_IMPORT_KEY_MANAGE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-submit-import-key-manage";
 

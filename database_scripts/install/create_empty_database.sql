@@ -48,6 +48,7 @@ CREATE TABLE  user_tbl (
   user_mgmt_user_id INT UNSIGNED NOT NULL,
   user_access_level SMALLINT NULL,
   enabled_app_specific TINYINT NOT NULL DEFAULT 1,
+  send_email_on_import_finish TINYINT NOT NULL DEFAULT 1,
   last_login DATETIME NULL,
   last_login_ip VARCHAR(255) NULL,
   created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

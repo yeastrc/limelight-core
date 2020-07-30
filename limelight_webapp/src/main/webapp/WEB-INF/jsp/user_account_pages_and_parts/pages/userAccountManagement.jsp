@@ -193,6 +193,24 @@
 		</div>
 		
 	</div> <%--  END: <div class="account-info-block" style="position: relative;" >  --%>
+	
+	
+  <c:if test="${ displaySendImportCompleteEmailMgmtBlock }">
+  
+	<div class=" account-info-block " style="margin-bottom: 20px;">
+		<div style="font-weight: bold">
+			Upload Email Notification
+		</div>
+		<div >
+			<label>
+				Notify me when upload is complete 
+				<input type="checkbox" id="import_complete_notification_checkbox"
+					<c:if test="${ loggedInUser.sendEmailOnImportFinish }"> checked </c:if>	
+				>
+			</label>
+		</div>
+	</div>
+  </c:if>
   
   <c:if test="${ displaySubmitImportKeyMgmtBlock }">
   

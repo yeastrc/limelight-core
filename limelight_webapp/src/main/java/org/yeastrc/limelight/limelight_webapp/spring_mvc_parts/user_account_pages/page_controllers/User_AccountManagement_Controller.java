@@ -27,6 +27,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
+import org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.searchers.User_IsAny_ProjectOwner_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
@@ -53,7 +56,10 @@ public class User_AccountManagement_Controller {
 
 	@Autowired
 	private UserSessionManager userSessionManager;
-
+	
+	@Autowired
+	private UserDAO_IF userDAO;
+	
 	@Autowired
 	private PopulatePageHeaderDataIF populatePageHeaderData;
 	
@@ -112,6 +118,15 @@ public class User_AccountManagement_Controller {
 
 			populatePageHeaderData.populatePageHeaderData( null /* projectIds */, userSession, httpServletRequest );
 			
+
+			UserDTO userDTO = userDAO.getForId( userSession.getUserId() );
+			if ( userDTO == null ) {
+				String msg = "userDTO == null: userSession.getUserId(): " + userSession.getUserId();
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			
+			
 			LoggedInUser loggedInUser = new LoggedInUser();
 			
 			loggedInUser.firstName = userSession.getFirstName();
@@ -119,9 +134,11 @@ public class User_AccountManagement_Controller {
 			loggedInUser.email = userSession.getEmail();
 			loggedInUser.organization = userSession.getOrganization();
 			loggedInUser.username = userSession.getUsername();
+			loggedInUser.sendEmailOnImportFinish = userDTO.isSendEmailOnImportFinish();
 			
 			httpServletRequest.setAttribute( "loggedInUser", loggedInUser );
 			
+			boolean displaySendImportCompleteEmailMgmtBlock = false;
 			boolean displaySubmitImportKeyMgmtBlock = false;
 			
 			if ( userSession.isGlobalAdminUser() || 
@@ -129,12 +146,20 @@ public class User_AccountManagement_Controller {
 							&& userSession.getUserAccessLevel() <= AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN ) ) {
 				
 				//  Global or local admin so set true
+				displaySendImportCompleteEmailMgmtBlock = true;
 				displaySubmitImportKeyMgmtBlock = true;
+				
 			} else {
 				if ( user_IsAny_ProjectOwner_Searcher.getUser_IsAny_ProjectOwner( userSession.getUserId() ) ) {
 					//  User is project owner on any project
+					displaySendImportCompleteEmailMgmtBlock = true;
 					displaySubmitImportKeyMgmtBlock = true;
 				}
+			}
+
+			if ( displaySendImportCompleteEmailMgmtBlock ) {
+				
+				httpServletRequest.setAttribute( "displaySendImportCompleteEmailMgmtBlock", displaySendImportCompleteEmailMgmtBlock );
 			}
 			
 			if ( displaySubmitImportKeyMgmtBlock ) {
@@ -167,6 +192,7 @@ public class User_AccountManagement_Controller {
 		private String email;
 		private String organization;
 		private String username;
+		private boolean sendEmailOnImportFinish;
 		
 		public String getFirstName() {
 			return firstName;
@@ -197,6 +223,12 @@ public class User_AccountManagement_Controller {
 		}
 		public void setUsername(String username) {
 			this.username = username;
+		}
+		public boolean isSendEmailOnImportFinish() {
+			return sendEmailOnImportFinish;
+		}
+		public void setSendEmailOnImportFinish(boolean sendEmailOnImportFinish) {
+			this.sendEmailOnImportFinish = sendEmailOnImportFinish;
 		}
 		
 	}

@@ -30,6 +30,7 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.en
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailIF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
@@ -77,6 +78,17 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 			) throws Exception {
 		
 		int userId = fileImportTrackingDTO.getUserId();
+		
+
+
+		UserDTO userDTO = userDAO.getForId( userId );
+		if ( userDTO == null ) {
+			String msg = "Failed to get userDTO for Limelight user id: " + userId;
+			log.error(msg);
+			throw new LimelightWebappDataException(msg);
+		}
+		
+		
 
 		//  Get User Mgmt User Id for userId
 		Integer userMgmtUserId = userDAO.getUserMgmtUserIdForId( userId );
@@ -116,7 +128,11 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         			);
 			
         	if ( sendEmailItem != null ) {
-        		sendEmail.sendEmail( sendEmailItem );
+        		
+        		if ( userDTO.isSendEmailOnImportFinish() ) {
+        			
+        			sendEmail.sendEmail( sendEmailItem );
+        		}
         		
         		{  //  Send to extra "to" emails specified in config table, ANY status
         			String extraEmailAddressesToSendTo_CommaDelim =

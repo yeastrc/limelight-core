@@ -94,4 +94,10 @@ public interface UserDAO_IF {
 	 */
 	void updateLastLogin(int id, String lastLoginIP);
 
+	/**
+	 * Update send_email_on_import_finish = ? 
+	 * @param id
+	 * @param sendEmailOnImportFinish
+	 */
+	public void update_SendEmailOnImportFinish( int id, boolean sendEmailOnImportFinish );
 }

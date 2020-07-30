@@ -55,7 +55,7 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 		
 		UserDTO result = null;
 
-		final String querySQL = "SELECT id, user_mgmt_user_id, user_access_level, enabled_app_specific FROM user_tbl WHERE id = ?";
+		final String querySQL = "SELECT id, user_mgmt_user_id, user_access_level, enabled_app_specific, send_email_on_import_finish FROM user_tbl WHERE id = ?";
 		
 		try ( Connection dbConnection = super.getDBConnection();
 			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
@@ -85,7 +85,7 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 		
 		List<UserDTO> resultList = new ArrayList<>();
 
-		final String querySQL = "SELECT id, user_mgmt_user_id, user_access_level, enabled_app_specific FROM user_tbl ";
+		final String querySQL = "SELECT id, user_mgmt_user_id, user_access_level, enabled_app_specific, send_email_on_import_finish FROM user_tbl ";
 		
 		try ( Connection dbConnection = super.getDBConnection();
 			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
@@ -129,6 +129,15 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 		} else {
 			result.setEnabledAppSpecific( false );
 		}
+		{
+			int fieldValueInt = rs.getInt( "send_email_on_import_finish" );
+			if ( fieldValueInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				result.setSendEmailOnImportFinish( true );
+			} else {
+				result.setSendEmailOnImportFinish( false );
+			}
+		}
+		
 		return result;
 	}
 
@@ -368,6 +377,45 @@ public class UserDAO extends Limelight_JDBC_Base implements UserDAO_IF {
 							int counter = 0;
 							counter++;
 							pstmt.setString( counter, lastLoginIP );
+							counter++;
+							pstmt.setInt( counter, id );
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "id: " + id + ", SQL: " + sql;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF#updateLastLogin(int, java.lang.String)
+	 */
+	@Override
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	
+	public void update_SendEmailOnImportFinish( int id, boolean sendEmailOnImportFinish ) {
+		
+		final String sql = "UPDATE user_tbl SET send_email_on_import_finish = ? WHERE id = ?";
+
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+			int rowsUpdated = this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt = connection.prepareStatement( sql );
+							int counter = 0;
+							counter++;
+							if ( sendEmailOnImportFinish ) {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+							} else {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+							}
 							counter++;
 							pstmt.setInt( counter, id );
 							return pstmt;

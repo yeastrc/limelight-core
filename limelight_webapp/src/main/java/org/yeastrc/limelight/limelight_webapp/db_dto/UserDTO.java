@@ -27,6 +27,7 @@ public class UserDTO {
 	private int userMgmtUserId;
 	private Integer userAccessLevel;
 	private boolean enabledAppSpecific;
+	private boolean sendEmailOnImportFinish;
 	
 	public int getId() {
 		return id;
@@ -51,6 +52,12 @@ public class UserDTO {
 	}
 	public void setEnabledAppSpecific(boolean enabledAppSpecific) {
 		this.enabledAppSpecific = enabledAppSpecific;
+	}
+	public boolean isSendEmailOnImportFinish() {
+		return sendEmailOnImportFinish;
+	}
+	public void setSendEmailOnImportFinish(boolean sendEmailOnImportFinish) {
+		this.sendEmailOnImportFinish = sendEmailOnImportFinish;
 	}
 	
 }
