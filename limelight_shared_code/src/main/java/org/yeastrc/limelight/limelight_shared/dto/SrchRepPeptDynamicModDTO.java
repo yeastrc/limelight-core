@@ -30,6 +30,9 @@ public class SrchRepPeptDynamicModDTO {
 	private double mass;
 	private boolean is_N_Terminal;
 	private boolean is_C_Terminal;
+	private String peptideResidueLetter;
+	private String proteinResidueLetterIfAllSame; // null if values not all same  
+
 	
 	public int getId() {
 		return id;
@@ -72,5 +75,17 @@ public class SrchRepPeptDynamicModDTO {
 	}
 	public void setIs_C_Terminal(boolean is_C_Terminal) {
 		this.is_C_Terminal = is_C_Terminal;
+	}
+	public String getPeptideResidueLetter() {
+		return peptideResidueLetter;
+	}
+	public void setPeptideResidueLetter(String peptideResidueLetter) {
+		this.peptideResidueLetter = peptideResidueLetter;
+	}
+	public String getProteinResidueLetterIfAllSame() {
+		return proteinResidueLetterIfAllSame;
+	}
+	public void setProteinResidueLetterIfAllSame(String proteinResidueLetterIfAllSame) {
+		this.proteinResidueLetterIfAllSame = proteinResidueLetterIfAllSame;
 	}
 }

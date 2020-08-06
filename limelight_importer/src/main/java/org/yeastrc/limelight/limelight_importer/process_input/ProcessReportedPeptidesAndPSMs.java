@@ -45,6 +45,7 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_R
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.dto.SearchProteinVersionDTO;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.lookup_records_create_update.LookupRecordsCreate_Main;
 import org.yeastrc.limelight.limelight_importer.objects.PsmOpenModification_UniquePosition_InReportedPeptide_Entry;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
@@ -148,6 +149,7 @@ public class ProcessReportedPeptidesAndPSMs {
 					
 					ReportedPeptideDTO savedReportedPeptideDTO = processSave_SingleReportedPeptide_Results.getReportedPeptideDTO();
 					SearchReportedPeptideDTO savedSearchReportedPeptideDTO = processSave_SingleReportedPeptide_Results.getSearchReportedPeptideDTO();
+					Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition = processSave_SingleReportedPeptide_Results.getProteinResidueLetters_AllProteins_Map_Key_PeptidePosition();
 					
 					if ( savedSearchReportedPeptideDTO.isAnyPsmHasDynamicModifications() ) {
 						anyReportedPeptideHasAnyPsmsHasDynamicModifications = true;
@@ -215,12 +217,29 @@ public class ProcessReportedPeptidesAndPSMs {
 						DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO = DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO.getInstance();
 						
 						for ( PsmOpenModification_UniquePosition_InReportedPeptide_Entry entry : psmOpenModification_UniquePositions_List ) {
+							
+							int peptideIndex = entry.getPosition() - 1;  // zero based
+							String peptideResidueLetter = reportedPeptide.getSequence().substring( peptideIndex, peptideIndex + 1 );
+							
 							Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO dto = new Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO();
 							dto.setSearchId( searchId );
 							dto.setReportedPeptideId( reportedPeptideId );
-							dto.setPosition( entry.getPosition() );
+							dto.setPositionUnique( entry.getPosition() );
 							dto.setIs_N_Terminal( entry.isIs_N_Terminal() );
 							dto.setIs_C_Terminal( entry.isIs_C_Terminal() );
+							dto.setPeptideResidueLetter( peptideResidueLetter );
+							
+//							Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition
+							Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( entry.getPosition() );
+							if ( proteinResidueLetters_AllProteins == null ) {
+								String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null processing PsmOpenModification_UniquePosition_InReportedPeptide_Entry entry.  reported peptide: " + reportedPeptide.getReportedPeptideString();
+								log.error(msg);
+								throw new LimelightImporterDataException( msg );
+							}
+							if ( proteinResidueLetters_AllProteins.size() == 1 ) {
+								String proteinResidueLetter_Only = proteinResidueLetters_AllProteins.iterator().next();
+								dto.setProteinResidueLetterIfAllSame( proteinResidueLetter_Only );
+							}
 							
 							db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO.saveToDatabase( dto );
 						}

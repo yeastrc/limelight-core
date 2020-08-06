@@ -823,6 +823,8 @@ CREATE TABLE  srch_rep_pept__dynamic_mod_tbl (
   mass DOUBLE NOT NULL,
   is_n_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   is_c_terminal TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  peptide_residue_letter CHAR(1) NOT NULL DEFAULT ' ',
+  protein_residue_letter_if_all_same CHAR(1) NULL DEFAULT ' ' COMMENT 'Only populated if all same value',
   PRIMARY KEY (id),
   CONSTRAINT srch_rp_ppt__dn_md_srch_id_fk
     FOREIGN KEY (search_id)
@@ -1259,6 +1261,7 @@ CREATE TABLE  protein_coverage_tbl (
   protein_sequence_version_id INT UNSIGNED NOT NULL,
   protein_start_position INT UNSIGNED NOT NULL,
   protein_end_position INT UNSIGNED NOT NULL,
+  peptide_protein_match_not_exact_match TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Caused by I L equiv and other',
   PRIMARY KEY (id),
   CONSTRAINT protein_coverage__search_id_fk
     FOREIGN KEY (search_id)
@@ -2126,6 +2129,8 @@ CREATE TABLE  srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (
   position_unique MEDIUMINT UNSIGNED NOT NULL,
   is_n_terminal TINYINT(1) UNSIGNED NOT NULL,
   is_c_terminal TINYINT(1) UNSIGNED NOT NULL,
+  peptide_residue_letter CHAR(1) NOT NULL,
+  protein_residue_letter_if_all_same CHAR(1) NULL COMMENT 'Only populated if all same value',
   PRIMARY KEY (id),
   CONSTRAINT srch_rp_ppt__opn_md_pud_srch_id_fk
     FOREIGN KEY (search_id)
@@ -2274,6 +2279,41 @@ CREATE TABLE  search_programs_per_search__insert_id_tbl (
   PRIMARY KEY (id))
 ENGINE = InnoDB
 COMMENT = 'Get next id val for insrt tbl search_programs_per_search_tbl';
+
+
+-- -----------------------------------------------------
+-- Table protein_coverage_peptide_protein_residue_different_tbl
+-- -----------------------------------------------------
+CREATE TABLE  protein_coverage_peptide_protein_residue_different_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT UNSIGNED NOT NULL,
+  peptide_id_info_only INT UNSIGNED NOT NULL COMMENT 'Do Not use peptide_id_info_only to map peptides to  proteins',
+  protein_sequence_version_id INT UNSIGNED NOT NULL,
+  peptide_position MEDIUMINT UNSIGNED NOT NULL,
+  protein_position MEDIUMINT UNSIGNED NOT NULL,
+  peptide_residue_letter CHAR(1) NOT NULL,
+  protein_residue_letter CHAR(1) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT prot_cov_pptd_prtn_rsidu_df_search_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT prot_cov_pptd_prtn_rsidu_df__reportd_peptid_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin;
+
+CREATE INDEX search_id_protein_seq_version_id ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, protein_sequence_version_id ASC);
+
+CREATE INDEX reported_peptide_id_fk_idx ON protein_coverage_peptide_protein_residue_different_tbl (reported_peptide_id ASC);
+
+CREATE INDEX search_id_reppeptide_id_pept_pos ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, reported_peptide_id ASC, peptide_position ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

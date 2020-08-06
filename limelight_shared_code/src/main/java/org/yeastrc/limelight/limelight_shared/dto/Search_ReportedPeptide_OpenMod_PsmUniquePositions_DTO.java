@@ -25,9 +25,11 @@ public class Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO {
 
 	private int searchId;
 	private int reportedPeptideId;
-	private int position;
+	private int positionUnique;
 	private boolean is_N_Terminal;
 	private boolean is_C_Terminal;
+	private String peptideResidueLetter;
+	private String proteinResidueLetterIfAllSame; // null if values not all same 
 	
 	public int getSearchId() {
 		return searchId;
@@ -41,11 +43,11 @@ public class Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO {
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
 	}
-	public int getPosition() {
-		return position;
+	public int getPositionUnique() {
+		return positionUnique;
 	}
-	public void setPosition(int position) {
-		this.position = position;
+	public void setPositionUnique(int position) {
+		this.positionUnique = position;
 	}
 	public boolean isIs_N_Terminal() {
 		return is_N_Terminal;
@@ -58,5 +60,17 @@ public class Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO {
 	}
 	public void setIs_C_Terminal(boolean is_C_Terminal) {
 		this.is_C_Terminal = is_C_Terminal;
+	}
+	public String getPeptideResidueLetter() {
+		return peptideResidueLetter;
+	}
+	public void setPeptideResidueLetter(String peptideResidueLetter) {
+		this.peptideResidueLetter = peptideResidueLetter;
+	}
+	public String getProteinResidueLetterIfAllSame() {
+		return proteinResidueLetterIfAllSame;
+	}
+	public void setProteinResidueLetterIfAllSame(String proteinResidueLetterIfAllSame) {
+		this.proteinResidueLetterIfAllSame = proteinResidueLetterIfAllSame;
 	}
 }

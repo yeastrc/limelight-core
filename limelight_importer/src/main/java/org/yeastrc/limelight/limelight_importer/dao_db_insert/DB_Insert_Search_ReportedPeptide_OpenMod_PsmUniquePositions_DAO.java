@@ -41,9 +41,10 @@ public class DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO {
 	private static final String SQL =
 			"INSERT IGNORE INTO srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl ( "
 					+ " search_id, reported_peptide_id, "
-					+ " position_unique, is_n_terminal, is_c_terminal "
+					+ " position_unique, is_n_terminal, is_c_terminal, "
+					+ " peptide_residue_letter, protein_residue_letter_if_all_same "
 					+ " ) " 
-					+ " VALUES ( ?, ?, ?, ?, ? ) ";
+					+ " VALUES ( ?, ?, ?, ?, ?, ?, ? ) ";
 
 	/**
 	 * insert srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl
@@ -63,7 +64,7 @@ public class DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO {
 				pstmt.setInt( counter, item.getReportedPeptideId() );
 
 				counter++;
-				pstmt.setInt( counter,  item.getPosition() );
+				pstmt.setInt( counter,  item.getPositionUnique() );
 
 				counter++;
 				if ( item.isIs_N_Terminal() ) {
@@ -77,7 +78,12 @@ public class DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO {
 				} else {
 					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 				}
-
+				
+				counter++;
+				pstmt.setString( counter, item.getPeptideResidueLetter() );
+				counter++;
+				pstmt.setString( counter, item.getProteinResidueLetterIfAllSame() );
+				
 				pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {

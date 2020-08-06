@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_importer.process_input;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModification;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModifications;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPosition;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabels;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
@@ -37,6 +39,7 @@ import org.yeastrc.limelight.limelight_importer.dao.IsotopeLabelDAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.PeptideDAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinImporterContainerDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ReportedPeptideDAO_Importer;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPeptDynamicModDAO;
@@ -47,9 +50,11 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterData
 import org.yeastrc.limelight.limelight_importer.objects.ProteinImporterContainer;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.peptide_protein_position.ProteinCoverageDTO_SaveToDB_NoDups;
+import org.yeastrc.limelight.limelight_importer.process_input.GetProteinsForPeptide.GetProteinsForPeptideResult_EntryPerProtein;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
+import org.yeastrc.limelight.limelight_shared.dto.ProteinCoveragePeptideProteinProteinResidueDifferentDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideFilterableAnnotationDTO;
@@ -82,6 +87,7 @@ public class ProcessSave_SingleReportedPeptide {
 		private ReportedPeptideDTO reportedPeptideDTO;
 		private SearchReportedPeptideDTO searchReportedPeptideDTO;
 		private Set<Integer> proteinVersionIdsForReportedPeptide;
+		private Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition;
 		
 		public ReportedPeptideDTO getReportedPeptideDTO() {
 			return reportedPeptideDTO;
@@ -107,6 +113,13 @@ public class ProcessSave_SingleReportedPeptide {
 		}
 		public void setSearchReportedPeptideDTO(SearchReportedPeptideDTO searchReportedPeptideDTO) {
 			this.searchReportedPeptideDTO = searchReportedPeptideDTO;
+		}
+		public Map<Integer, Set<String>> getProteinResidueLetters_AllProteins_Map_Key_PeptidePosition() {
+			return proteinResidueLetters_AllProteins_Map_Key_PeptidePosition;
+		}
+		public void setProteinResidueLetters_AllProteins_Map_Key_PeptidePosition(
+				Map<Integer, Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition) {
+			this.proteinResidueLetters_AllProteins_Map_Key_PeptidePosition = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition;
 		}
 	}
 	
@@ -134,12 +147,15 @@ public class ProcessSave_SingleReportedPeptide {
 		
 		String peptideString = reportedPeptide.getSequence();
 		int peptideLength = peptideString.length();
-		
+		 
+				
+		Set<Integer> peptidePositionsToGetProteinResidueLettersFor = getPeptidePositionsToGetProteinResidueLettersFor( reportedPeptide );
+				
 		GetProteinsForPeptide.GetProteinsForPeptideResult getProteinsForPeptideResult =
-				GetProteinsForPeptide.getInstance().getProteinsForPeptide( reportedPeptide );
+				GetProteinsForPeptide.getInstance().getProteinsForPeptide( reportedPeptide, peptidePositionsToGetProteinResidueLettersFor );
 		
-		Map<ProteinImporterContainer, Collection<Integer>> proteins_PeptidePositionsInProtein =
-				getProteinsForPeptideResult.getProteins_PeptidePositionsInProtein();
+		Map<ProteinImporterContainer, GetProteinsForPeptideResult_EntryPerProtein> proteins_PeptidePositionsInProtein =
+				getProteinsForPeptideResult.getProteins_EntryPerProtein();
 				
 		//  If no proteins Mapped, throw error
 		if ( proteins_PeptidePositionsInProtein.isEmpty() ) {
@@ -207,11 +223,34 @@ public class ProcessSave_SingleReportedPeptide {
 		// Save Protein Mappings for Reported Peptide  "matched_protein_refs"    
 		
 		Set<Integer> proteinVersionIdsForReportedPeptide = new HashSet<>();
-
-		for ( Map.Entry<ProteinImporterContainer, Collection<Integer>> proteins_PeptidePositionsInProteinEntry : proteins_PeptidePositionsInProtein.entrySet() ) {
+		
+		Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition = new HashMap<>();
+				
+		
+		for ( Map.Entry<ProteinImporterContainer, GetProteinsForPeptideResult_EntryPerProtein> proteins_PeptidePositionsInProteinEntry : proteins_PeptidePositionsInProtein.entrySet() ) {
 			
 			ProteinImporterContainer proteinImporterContainer = proteins_PeptidePositionsInProteinEntry.getKey();
-			Collection<Integer> peptidePositionsInProtein = proteins_PeptidePositionsInProteinEntry.getValue();
+			
+			GetProteinsForPeptideResult_EntryPerProtein getProteinsForPeptideResult_EntryPerProtein = proteins_PeptidePositionsInProteinEntry.getValue();
+			Collection<Integer> peptidePositionsInProtein = getProteinsForPeptideResult_EntryPerProtein.getPeptidePositionInProteinList();
+			Map<Integer,Set<ProteinCoveragePeptideProteinProteinResidueDifferentDTO>> diffResidue_Map_Key_PeptidePosition = getProteinsForPeptideResult_EntryPerProtein.getDiffResidue_Map_Key_PeptidePosition();
+			
+			{
+				Map<Integer,Set<String>> proteinResidueLetters_Map_Key_PeptidePosition = getProteinsForPeptideResult_EntryPerProtein.getProteinResidueLetters_Map_Key_PeptidePosition();
+				for ( Map.Entry<Integer,Set<String>> entry : proteinResidueLetters_Map_Key_PeptidePosition.entrySet() ) {
+				
+					Integer peptidePosition = entry.getKey();
+					Set<String> singleProtein_ResidueLetters = entry.getValue();
+					Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( peptidePosition );
+					if ( proteinResidueLetters_AllProteins == null ) {
+						proteinResidueLetters_AllProteins = new HashSet<>();
+						proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.put( peptidePosition, proteinResidueLetters_AllProteins );
+					}
+					proteinResidueLetters_AllProteins.addAll( singleProtein_ResidueLetters );
+				}
+			}
+			
+			boolean peptideProteinMatchNotExactMatch = ! diffResidue_Map_Key_PeptidePosition.isEmpty();
 			
 			proteinImporterContainer.setSearchId( searchId );
 			
@@ -237,7 +276,18 @@ public class ProcessSave_SingleReportedPeptide {
 				proteinCoverageDTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
 				proteinCoverageDTO.setProteinStartPosition( peptidePositionInProtein );
 				proteinCoverageDTO.setProteinEndPosition( peptidePositionInProtein + peptideLength - 1 );
+				proteinCoverageDTO.setPeptideProteinMatchNotExactMatch( peptideProteinMatchNotExactMatch );
 				ProteinCoverageDTO_SaveToDB_NoDups.getInstance().proteinCoverageDTO_SaveToDB_NoDups( proteinCoverageDTO );
+			}
+			
+			for ( Map.Entry<Integer,Set<ProteinCoveragePeptideProteinProteinResidueDifferentDTO>> entry : diffResidue_Map_Key_PeptidePosition.entrySet() ) {
+				for ( ProteinCoveragePeptideProteinProteinResidueDifferentDTO item : entry.getValue() ) {
+					item.setSearchId( searchId );
+					item.setReportedPeptideId( reportedPeptideDTO.getId() );
+					item.setPeptideIdInfoOnly( peptideDTO.getId() );
+					item.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
+					DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO.getInstance().save(item);
+				}
 			}
 		}
 		
@@ -260,7 +310,26 @@ public class ProcessSave_SingleReportedPeptide {
 						dto.setMass( massDbl );
 						
 						if ( peptideModification.getPosition() != null ) {
-							dto.setPosition( peptideModification.getPosition().intValue() );
+							
+							int position = peptideModification.getPosition().intValue();
+							dto.setPosition( position );
+							
+							int beginIndex = position - 1; // change from 1 based to zero based
+							int endIndex = beginIndex + 1;
+							String peptideResidueLetter = reportedPeptide.getSequence().substring( beginIndex, endIndex );
+							
+							dto.setPeptideResidueLetter( peptideResidueLetter );
+							
+							Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position );
+							if ( proteinResidueLetters_AllProteins == null ) {
+								String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null.  reported peptide: " + reportedPeptideString;
+								log.error(msg);
+								throw new LimelightImporterDataException( msg );
+							}
+							if ( proteinResidueLetters_AllProteins.size() == 1 ) {
+								String proteinResidueLetters_OnlyEntry = proteinResidueLetters_AllProteins.iterator().next();
+								dto.setProteinResidueLetterIfAllSame(proteinResidueLetters_OnlyEntry);
+							}
 						}
 						
 						//   For Database, set position to first or last position of peptide if N or C terminus is set
@@ -314,8 +383,74 @@ public class ProcessSave_SingleReportedPeptide {
 		processSave_SingleReportedPeptide_Results.searchReportedPeptideDTO = searchReportedPeptideDTO;
 		processSave_SingleReportedPeptide_Results.searchReportedPeptideFilterableAnnotationDTOList = searchReportedPeptideFilterableAnnotationDTOList;
 		processSave_SingleReportedPeptide_Results.proteinVersionIdsForReportedPeptide = proteinVersionIdsForReportedPeptide;
+		processSave_SingleReportedPeptide_Results.proteinResidueLetters_AllProteins_Map_Key_PeptidePosition = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition;
 		
 		return processSave_SingleReportedPeptide_Results;
 	}
 	
+	/**
+	 * @param reportedPeptide
+	 * @return
+	 * @throws LimelightImporterDataException 
+	 */
+	private Set<Integer> getPeptidePositionsToGetProteinResidueLettersFor( ReportedPeptide reportedPeptide ) throws LimelightImporterDataException {
+		
+		Set<Integer> peptidePositionsToGetProteinResidueLettersFor = new HashSet<>();
+	
+		//  Peptide Level Variable Modifications
+
+		PeptideModifications peptideModifications = reportedPeptide.getPeptideModifications();
+		if ( peptideModifications != null ) {
+			List<PeptideModification> peptideModificationList = peptideModifications.getPeptideModification();
+			if ( peptideModificationList != null && ( ! peptideModificationList.isEmpty() ) ) {
+
+				for ( PeptideModification peptideModification : peptideModificationList ) {
+					
+					if ( peptideModification.getPosition() != null ) {
+						peptidePositionsToGetProteinResidueLettersFor.add( peptideModification.getPosition().intValue() );
+					}
+
+				}
+			}
+		}
+		
+		//  PSM level Open Modifications
+		
+		if ( reportedPeptide.getPsms() != null 
+				&& reportedPeptide.getPsms().getPsm() != null && ( ! reportedPeptide.getPsms().getPsm().isEmpty() ) ) {
+			for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
+				
+				if ( psm.getPsmOpenModification() != null 
+						&& psm.getPsmOpenModification().getPsmOpenModificationPosition() != null 
+						&& ( ! psm.getPsmOpenModification().getPsmOpenModificationPosition().isEmpty() ) ) {
+					for ( PsmOpenModificationPosition psmOpenModificationPosition : psm.getPsmOpenModification().getPsmOpenModificationPosition() ) {
+						
+						int position = 0;
+						if ( psmOpenModificationPosition.isIsNTerminal() != null && psmOpenModificationPosition.isIsNTerminal().booleanValue() ) {
+							
+							position = 1;
+							
+						} else if ( psmOpenModificationPosition.isIsCTerminal() != null && psmOpenModificationPosition.isIsCTerminal().booleanValue() ) {
+						
+							position = reportedPeptide.getSequence().length();
+							
+						} else if ( psmOpenModificationPosition.getPosition() != null ) {
+							
+							position = psmOpenModificationPosition.getPosition().intValue();
+							
+						} else {
+							String msg = "Getting PSM level Open Modifications Positions: Not 'N' or 'C' term set and true or position set.";
+							log.error(msg);
+							throw new LimelightImporterDataException(msg);
+						}
+						
+						peptidePositionsToGetProteinResidueLettersFor.add( position );
+					}
+				}
+			}
+		}
+		
+		return peptidePositionsToGetProteinResidueLettersFor;
+	}
+
 }

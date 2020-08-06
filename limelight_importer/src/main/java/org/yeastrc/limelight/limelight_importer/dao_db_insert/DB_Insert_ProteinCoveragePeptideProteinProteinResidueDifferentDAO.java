@@ -26,37 +26,35 @@ import java.sql.Statement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
-import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
+import org.yeastrc.limelight.limelight_shared.dto.ProteinCoveragePeptideProteinProteinResidueDifferentDTO;
 
 
 /**
- * table protein_coverage_tbl
+ * table protein_coverage_peptide_protein_residue_different_tbl
  *
  */
-public class DB_Insert_ProteinCoverageDAO {
+public class DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO {
 
 
-	private static final Logger log = LoggerFactory.getLogger( DB_Insert_ProteinCoverageDAO.class );
+	private static final Logger log = LoggerFactory.getLogger( DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO.class );
 
-	private DB_Insert_ProteinCoverageDAO() { }
-	public static DB_Insert_ProteinCoverageDAO getInstance() { return new DB_Insert_ProteinCoverageDAO(); }
+	private DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO() { }
+	public static DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO getInstance() { return new DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO(); }
 
 
-	private static final String INSERT_SQL = "INSERT INTO protein_coverage_tbl "
+	private static final String INSERT_SQL = "INSERT INTO protein_coverage_peptide_protein_residue_different_tbl "
 
-			+ " ( search_id, reported_peptide_id, peptide_id_info_only, "
-			+   " protein_sequence_version_id, protein_start_position, protein_end_position,"
-			+   " peptide_protein_match_not_exact_match )"
+			+ " ( search_id, reported_peptide_id, peptide_id_info_only, protein_sequence_version_id, "
+			+ " peptide_position, protein_position, peptide_residue_letter, protein_residue_letter )"
 
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 	
 	/**
 	 * Save the associated data to the database
 	 * @param item
 	 * @throws Exception
 	 */
-	public void save( ProteinCoverageDTO item ) throws Exception {
+	public void save( ProteinCoveragePeptideProteinProteinResidueDifferentDTO item ) throws Exception {
 				
 		final String sql = INSERT_SQL;
 		try {
@@ -78,17 +76,15 @@ public class DB_Insert_ProteinCoverageDAO {
 				pstmt.setInt( counter,  item.getProteinSequenceVersionId() );
 
 				counter++;
-				pstmt.setInt( counter,  item.getProteinStartPosition() );
+				pstmt.setInt( counter,  item.getPeptidePosition() );
 				counter++;
-				pstmt.setInt( counter,  item.getProteinEndPosition() );
+				pstmt.setInt( counter,  item.getProteinPosition() );
 				
 				counter++;
-				if ( item.isPeptideProteinMatchNotExactMatch() ) {
-					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-				} else {
-					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-				}
-
+				pstmt.setString( counter,  item.getPeptideResidueLetter() );
+				counter++;
+				pstmt.setString( counter,  item.getProteinResidueLetter() );
+				
 				pstmt.executeUpdate();
 
 				try ( ResultSet rs = pstmt.getGeneratedKeys() ) {

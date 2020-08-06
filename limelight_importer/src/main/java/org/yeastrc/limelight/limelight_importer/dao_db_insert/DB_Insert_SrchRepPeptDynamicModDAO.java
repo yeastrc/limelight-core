@@ -43,9 +43,10 @@ public class DB_Insert_SrchRepPeptDynamicModDAO {
 	private static final String INSERT_SQL = "INSERT INTO srch_rep_pept__dynamic_mod_tbl "
 
 			+ " ( search_id, reported_peptide_id, "
-			+   " position, mass, is_n_terminal, is_c_terminal )"
+			+   " position, mass, is_n_terminal, is_c_terminal,"
+			+   " peptide_residue_letter, protein_residue_letter_if_all_same )"
 
-			+ " VALUES ( ?, ?, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 
 //	private static final String QUERY_UNIQUE_RECORD_SQL = 
 //			
@@ -99,6 +100,11 @@ public class DB_Insert_SrchRepPeptDynamicModDAO {
 			} else {
 				pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
+
+			counter++;
+			pstmt.setString( counter, item.getPeptideResidueLetter() );
+			counter++;
+			pstmt.setString( counter, item.getProteinResidueLetterIfAllSame() );
 			
 			pstmt.executeUpdate();
 
