@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -67,12 +68,20 @@ public class PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher ext
 		
 		List<PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> resultList = new ArrayList<>();
 		
-		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = 
-				searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
+
+		//  Create reversed version of list
+		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList_Reversed = 
+				new ArrayList<>( searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList() );
+		
+		Collections.reverse(psmCutoffValuesList_Reversed);
+		
+		//  Generate nested sub selects for each annotation type filtering on,
+		//     with a innermost subselect of PSM Ids for search id / reported peptide id
+				
 
 		StringBuilder sqlSB = new StringBuilder( 10000 );
 		
-		if ( psmCutoffValuesList.isEmpty() ) {
+		if ( psmCutoffValuesList_Reversed.isEmpty() ) {
 			sqlSB.append( "SELECT psm_tbl.id as psm_id, psm_reporter_ion_mass_tbl.reporter_ion_mass " );
 			sqlSB.append( " FROM psm_tbl " );
 			sqlSB.append( " INNER JOIN psm_reporter_ion_mass_tbl ON psm_tbl.id = psm_reporter_ion_mass_tbl.psm_id " );
@@ -81,72 +90,55 @@ public class PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher ext
 		} else {
 			{
 				//  Main Select
-				sqlSB.append( " SELECT filterable_psm_ids.psm_id as psm_id, psm_reporter_ion_mass_tbl.reporter_ion_mass FROM ( " ); 
+				sqlSB.append( " SELECT psm_ids.psm_id as psm_id, psm_reporter_ion_mass_tbl.reporter_ion_mass FROM " ); 
 				 		 
 				{
 					//  Start Subselect
 
-					sqlSB.append( " SELECT tbl_1.psm_id FROM  " );
+					//  generate sub-selects from outer most to inner most 
+			
+					for ( int counter = 0; counter < psmCutoffValuesList_Reversed.size(); counter++ ) {
 
-					for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
-						if ( counter > 1 ) {
-							sqlSB.append( " INNER JOIN " );
-						}
-						sqlSB.append( "  psm_filterable_annotation__lookup_tbl AS tbl_" );
-						sqlSB.append( Integer.toString( counter ) );
-						if ( counter > 1 ) {
-							sqlSB.append( " ON tbl_1.search_id = tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".search_id" );
-							sqlSB.append( " AND tbl_1.reported_peptide_id = tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".reported_peptide_id" );
-							sqlSB.append( " AND tbl_1.psm_id = tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".psm_id" );
-						}
+						sqlSB.append( " ( SELECT psm_filterable_annotation_tbl.psm_id FROM psm_filterable_annotation_tbl INNER JOIN " );
 					}
-					sqlSB.append( " WHERE ( " );
-					{
-						int counter = 0; 
-						for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList ) {
-							counter++;
-							if ( counter > 1 ) {
-								sqlSB.append( " ) AND ( " );
-							}
-							sqlSB.append( "tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".search_id = ? AND " );
-							sqlSB.append( "tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".reported_peptide_id = ? AND " );
-							sqlSB.append( "tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".annotation_type_id = ? AND " );
-							sqlSB.append( "tbl_" );
-							sqlSB.append( Integer.toString( counter ) );
-							sqlSB.append( ".value_double " );
-							if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO() == null ) {
-								String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
-								log.error( msg );
-								throw new LimelightInternalErrorException(msg);
-							}
-							if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
-								sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
-							} else {
-								sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
-							}
-							sqlSB.append( " ? " );
+					
+					//  Add innermost subselect on psm_tbl to get psm ids
+					
+					sqlSB.append( " ( SELECT id AS psm_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ? ) " );
+
+					//  Close sub-selects from inner most to outer most 
+			
+					for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList_Reversed ) {
+
+						sqlSB.append( " as psm_ids ON psm_filterable_annotation_tbl.psm_id = psm_ids.psm_id " );
+						sqlSB.append( " WHERE annotation_type_id = ? AND " );
+						sqlSB.append( " value_double " );
+						if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO() == null ) {
+							String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
+							log.error( msg );
+							throw new LimelightInternalErrorException(msg);
 						}
+						if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+							sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
+						} else if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
+							sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
+						} else {
+							String msg = "ERROR: entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() is unknown value: "
+									+ entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum()
+									+ ".  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
+							log.error( msg );
+							throw new LimelightInternalErrorException(msg);
+						}
+						sqlSB.append( " ? )  " );
 					}
-					sqlSB.append( " ) " );
+					sqlSB.append( "  as psm_ids " );
 					
 				}  //  End Subselect
 				
-				sqlSB.append( " ) " );
+//				sqlSB.append( " ) " );
 			}
-			sqlSB.append( " AS filterable_psm_ids " );
-			sqlSB.append( " INNER JOIN psm_reporter_ion_mass_tbl ON filterable_psm_ids.psm_id = psm_reporter_ion_mass_tbl.psm_id " );
+//			sqlSB.append( " AS psm_ids " );
+			sqlSB.append( " INNER JOIN psm_reporter_ion_mass_tbl ON psm_ids.psm_id = psm_reporter_ion_mass_tbl.psm_id " );
 		}
 		
 		String sql = sqlSB.toString();
@@ -155,17 +147,21 @@ public class PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher ext
 			     PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
 
 			int counter = 0;
-			if ( psmCutoffValuesList.isEmpty() ) {
+			if ( psmCutoffValuesList_Reversed.isEmpty() ) {
+				//  psm_tbl fields
 				counter++;
 				preparedStatement.setInt( counter, searchId );
 				counter++;
 				preparedStatement.setInt( counter, reportedPeptideId );
 			} else {
-				for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList ) {
-					counter++;
-					preparedStatement.setInt( counter, searchId );
-					counter++;
-					preparedStatement.setInt( counter, reportedPeptideId );
+				//  psm_tbl fields
+				counter++;
+				preparedStatement.setInt( counter, searchId );
+				counter++;
+				preparedStatement.setInt( counter, reportedPeptideId );
+				
+				//  Close sub-selects from inner most to outer most 
+				for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList_Reversed ) {
 					counter++;
 					preparedStatement.setInt( counter, entry.getAnnotationTypeDTO().getId() );
 					counter++;

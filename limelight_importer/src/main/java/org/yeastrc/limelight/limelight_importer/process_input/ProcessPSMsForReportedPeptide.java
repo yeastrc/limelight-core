@@ -37,7 +37,6 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModificationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationLookupDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationPositionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
@@ -53,7 +52,6 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
-import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationLookupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
@@ -109,7 +107,6 @@ public class ProcessPSMsForReportedPeptide {
 		DB_Insert_PsmReporterIonMassDAO db_Insert_PsmReporterIonMassDAO = DB_Insert_PsmReporterIonMassDAO.getInstance();
 		DB_Insert_PsmFilterableAnnotationDAO db_Insert_PsmFilterableAnnotationDAO = DB_Insert_PsmFilterableAnnotationDAO.getInstance();
 		DB_Insert_PsmDescriptiveAnnotationDAO db_Insert_PsmDescriptiveAnnotationDAO = DB_Insert_PsmDescriptiveAnnotationDAO.getInstance();
-		DB_Insert_PsmFilterableAnnotationLookupDAO db_Insert_PsmFilterableAnnotationLookupDAO = DB_Insert_PsmFilterableAnnotationLookupDAO.getInstance();
 		
 		Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions = new HashSet<>();
 		Set<Integer> psmOpenModification_UniqueMassesRounded = new HashSet<>();
@@ -282,18 +279,6 @@ public class ProcessPSMsForReportedPeptide {
 
 			for ( PsmDescriptiveAnnotationDTO psmDescriptiveAnnotationDTO : currentPsm_psmAnnotationDTO_Descriptive_List ) {
 				db_Insert_PsmDescriptiveAnnotationDAO.saveToDatabase( psmDescriptiveAnnotationDTO );
-			}
-			
-			//  Save PSM Lookup version
-			for ( PsmFilterableAnnotationDTO psmFilterableAnnotationDTO : currentPsm_psmAnnotationDTO_Filterable_List ) {
-				PsmFilterableAnnotationLookupDTO psmFilterableAnnotationLookupDTO = new PsmFilterableAnnotationLookupDTO();
-				psmFilterableAnnotationLookupDTO.setSearchId( searchId );
-				psmFilterableAnnotationLookupDTO.setReportedPeptideId( reportedPeptideDTO.getId() );
-				psmFilterableAnnotationLookupDTO.setValueDouble( psmFilterableAnnotationDTO.getValueDouble() );
-				psmFilterableAnnotationLookupDTO.setPsmAnnotationFilterableId( psmFilterableAnnotationDTO.getId() );
-				psmFilterableAnnotationLookupDTO.setPsmId( psmDTO.getId() );
-				psmFilterableAnnotationLookupDTO.setAnnotationTypeId( psmFilterableAnnotationDTO.getAnnotationTypeId() );
-				db_Insert_PsmFilterableAnnotationLookupDAO.saveToDatabase( psmFilterableAnnotationLookupDTO );
 			}
 			
 			boolean doesPsmPassDefaultCutoffs = 

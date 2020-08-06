@@ -81,7 +81,7 @@ public class PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher {
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 				sqlSB.append( " INNER JOIN " );
 				//  If slow, use psm_filterable_annotation__generic_lookup and put more limits in query on search, reported peptide, and maybe link type
-				sqlSB.append( " psm_filterable_annotation__lookup_tbl AS psm_fltrbl_tbl_" );
+				sqlSB.append( " psm_filterable_annotation_tbl AS psm_fltrbl_tbl_" );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( " ON "  );
 				sqlSB.append( " psm_tbl.id = "  );
@@ -95,7 +95,7 @@ public class PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher {
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 				sqlSB.append( " INNER JOIN " );
 				//  If slow, use psm_filterable_annotation__generic_lookup and put more limits in query on search, reported peptide, and maybe link type
-				sqlSB.append( " psm_filterable_annotation__lookup_tbl AS psm_fltrbl_tbl_othr_psm_" );
+				sqlSB.append( " psm_filterable_annotation_tbl AS psm_fltrbl_tbl_othr_psm_" );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( " ON "  );
 				sqlSB.append( " psm_other.id = "  );
@@ -134,12 +134,6 @@ public class PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher {
 				sqlSB.append( " ( " );
 				sqlSB.append( "psm_fltrbl_tbl_" );
 				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".search_id = ? AND " );
-				sqlSB.append( "psm_fltrbl_tbl_" );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".reported_peptide_id = ? AND " );
-				sqlSB.append( "psm_fltrbl_tbl_" );
-				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( ".annotation_type_id = ? AND " );
 				sqlSB.append( "psm_fltrbl_tbl_" );
 				sqlSB.append( Integer.toString( counter ) );
@@ -165,9 +159,6 @@ public class PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher {
 				counter++;
 				sqlSB.append( " AND " );
 				sqlSB.append( " ( " );
-				sqlSB.append( "psm_fltrbl_tbl_othr_psm_" );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".search_id = ? AND " );
 				sqlSB.append( "psm_fltrbl_tbl_othr_psm_" );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( ".annotation_type_id = ? AND " );
@@ -241,10 +232,6 @@ public class PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher {
 					for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
 						AnnotationTypeDTO srchPgmFilterablePsmAnnotationTypeDTO = searcherCutoffValuesPsmAnnotationLevel.getAnnotationTypeDTO();
 						paramCounter++;
-						pstmt.setInt( paramCounter, searchId );
-						paramCounter++;
-						pstmt.setInt( paramCounter, reportedPeptideId );
-						paramCounter++;
 						pstmt.setInt( paramCounter, srchPgmFilterablePsmAnnotationTypeDTO.getId() );
 						paramCounter++;
 						pstmt.setDouble( paramCounter, searcherCutoffValuesPsmAnnotationLevel.getAnnotationCutoffValue() );
@@ -257,8 +244,6 @@ public class PsmCountForUniquePSM_SearchIdReportedPeptideId_Searcher {
 					//  PSM Cutoffs are not the default 
 					for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
 						AnnotationTypeDTO srchPgmFilterablePsmAnnotationTypeDTO = searcherCutoffValuesPsmAnnotationLevel.getAnnotationTypeDTO();
-						paramCounter++;
-						pstmt.setInt( paramCounter, searchId );
 						paramCounter++;
 						pstmt.setInt( paramCounter, srchPgmFilterablePsmAnnotationTypeDTO.getId() );
 						paramCounter++;

@@ -702,53 +702,6 @@ CREATE INDEX srch__rep_pept_srch_id_reppeptid_ann_tp__idx ON srch__rep_pept_filt
 
 
 -- -----------------------------------------------------
--- Table psm_filterable_annotation_tbl
--- -----------------------------------------------------
-CREATE TABLE  psm_filterable_annotation_tbl (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  psm_id BIGINT UNSIGNED NOT NULL,
-  annotation_type_id INT UNSIGNED NOT NULL,
-  value_double DOUBLE NOT NULL,
-  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
-  PRIMARY KEY (id),
-  CONSTRAINT psm_filterable_annotation__psm_id_fk0
-    FOREIGN KEY (psm_id)
-    REFERENCES psm_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_filterable_annotation_tbl (psm_id ASC, annotation_type_id ASC);
-
-
--- -----------------------------------------------------
--- Table psm_filterable_annotation__lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  psm_filterable_annotation__lookup_tbl (
-  psm_annotation_filterable_id BIGINT UNSIGNED NOT NULL,
-  psm_id BIGINT UNSIGNED NOT NULL,
-  annotation_type_id INT UNSIGNED NOT NULL,
-  value_double DOUBLE NOT NULL,
-  search_id MEDIUMINT UNSIGNED NOT NULL,
-  reported_peptide_id INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (psm_annotation_filterable_id),
-  CONSTRAINT psm_filterable_annotation__lookup_tbl_psm_annfilt_id_fk
-    FOREIGN KEY (psm_annotation_filterable_id)
-    REFERENCES psm_filterable_annotation_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_bin;
-
-CREATE INDEX psm_filtrble_ann__generic_lkup__srch_rep_pep_anntpid_value ON psm_filterable_annotation__lookup_tbl (search_id ASC, reported_peptide_id ASC, annotation_type_id ASC, value_double ASC);
-
-CREATE INDEX psm_filtrble_ann__generic_lkup__psm_id_idx ON psm_filterable_annotation__lookup_tbl (psm_id ASC);
-
-CREATE INDEX search_id_ann_type_id_link_type ON psm_filterable_annotation__lookup_tbl (search_id ASC, annotation_type_id ASC);
-
-
--- -----------------------------------------------------
 -- Table srch__rep_pept_descriptive_annotation_tbl
 -- -----------------------------------------------------
 CREATE TABLE  srch__rep_pept_descriptive_annotation_tbl (
@@ -1595,6 +1548,26 @@ CREATE TABLE  search__isotope_label_lookup_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX search__isotope_label_lookup__isotope_label_id_fk_idx ON search__isotope_label_lookup_tbl (isotope_label_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table psm_filterable_annotation_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_filterable_annotation_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  psm_id BIGINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  value_double DOUBLE NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (id),
+  CONSTRAINT psm_filterable_annotation__psm_id_fk0
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_filterable_annotation_tbl (psm_id ASC, annotation_type_id ASC);
 
 
 -- -----------------------------------------------------
