@@ -1554,20 +1554,17 @@ CREATE INDEX search__isotope_label_lookup__isotope_label_id_fk_idx ON search__is
 -- Table psm_filterable_annotation_tbl
 -- -----------------------------------------------------
 CREATE TABLE  psm_filterable_annotation_tbl (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   psm_id BIGINT UNSIGNED NOT NULL,
   annotation_type_id INT UNSIGNED NOT NULL,
   value_double DOUBLE NOT NULL,
   value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
-  PRIMARY KEY (id),
+  PRIMARY KEY (psm_id, annotation_type_id),
   CONSTRAINT psm_filterable_annotation__psm_id_fk0
     FOREIGN KEY (psm_id)
     REFERENCES psm_tbl (id)
     ON DELETE CASCADE
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_filterable_annotation_tbl (psm_id ASC, annotation_type_id ASC);
 
 
 -- -----------------------------------------------------
