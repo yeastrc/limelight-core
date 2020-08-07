@@ -67,36 +67,42 @@ public interface ProjectDAO_IF {
 	/**
 	 * @param title
 	 * @param projectId
+	 * @param userId TODO
 	 */
-	void updateTitle( String title, int projectId );
+	void updateTitle( String title, int projectId, int userId );
 
 	/**
 	 * @param projectAbstract
 	 * @param projectId
+	 * @param userId TODO
 	 */
-	void updateAbstract( String projectAbstract, int projectId );
+	void updateAbstract( String projectAbstract, int projectId, int userId );
 
 	/**
 	 * @param markedForDeletion
 	 * @param projectId
+	 * @param userId TODO
 	 */
-	void updateMarkedForDeletion( boolean markedForDeletion, int projectId );
+	void updateMarkedForDeletion( boolean markedForDeletion, int projectId, int userId );
 
 	/**
 	 * @param projectLocked
 	 * @param projectId
+	 * @param userId TODO
 	 */
-	void updateProjectLocked( boolean projectLocked, int projectId );
+	void updateProjectLocked( boolean projectLocked, int projectId, int userId );
 	
 	/**
 	 * @param publicAccessLevel
 	 * @param projectId
+	 * @param userId TODO
 	 */
-	void updatePublicAccessLevel( Integer publicAccessLevel, int projectId );
+	void updatePublicAccessLevel( Integer publicAccessLevel, int projectId, int userId );
 	
 	/**
 	 * @param shortName
 	 * @param projectId
+	 * @param userId TODO
 	 */
-	void updateShortName( String shortName, int projectId );
+	void updateShortName( String shortName, int projectId, int userId );
 }

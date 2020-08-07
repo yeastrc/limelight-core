@@ -40,6 +40,7 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -180,11 +181,22 @@ public class Project_Label_AddChange_RestWebserviceController {
 					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
 
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+			
 			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
-			Integer userId = null;
-			if ( userSession != null ) {
-				userId = userSession.getUserId();
+
+			if ( userSession == null ) {
+				String msg = "( userSession == null )";
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
 			}
+
+			Integer userId = userSession.getUserId();
+			if ( userId == null ) {
+				String msg = "( userId == null )";
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			
 
 			if ( ! webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 				
@@ -194,7 +206,7 @@ public class Project_Label_AddChange_RestWebserviceController {
 			boolean duplicateLabelEncountered = false;
 			
 			try {
-				projectDAO.updateShortName( labelText, projectId );
+				projectDAO.updateShortName( labelText, projectId, userId );
 			
 			} catch ( org.springframework.dao.DuplicateKeyException e ) {
 				//  Duplicate short name

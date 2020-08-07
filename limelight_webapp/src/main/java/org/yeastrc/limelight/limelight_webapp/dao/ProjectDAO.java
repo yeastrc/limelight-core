@@ -307,7 +307,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	 */
 	private void save_MainInsert( ProjectDTO item ) {
 		
-		final String INSERT_SQL = "INSERT INTO project_tbl ( id, title, abstract ) VALUES ( ?, ?, ? )";
+		final String INSERT_SQL = "INSERT INTO project_tbl ( id, title, abstract, created_by_user_id, updated_by_user_id ) VALUES ( ?, ?, ?, ?, ? )";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -330,6 +330,10 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							pstmt.setString( counter, item.getTitle() );
 							counter++;
 							pstmt.setString( counter, item.getAbstractText() );
+							counter++;
+							pstmt.setInt( counter, item.getCreatedByUserId() );
+							counter++;
+							pstmt.setInt( counter, item.getUpdatedByUserId() );
 
 							return pstmt;
 						}
@@ -364,9 +368,9 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateTitle( String title, int projectId ) {
+	public void updateTitle( String title, int projectId, int userId ) {
 		
-		final String INSERT_SQL = "UPDATE project_tbl SET title = ? WHERE id = ?";
+		final String INSERT_SQL = "UPDATE project_tbl SET title = ?, updated_by_user_id = ? WHERE id = ?";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -382,6 +386,8 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							int counter = 0;
 							counter++;
 							pstmt.setString( counter, title );
+							counter++;
+							pstmt.setInt( counter, userId );
 							counter++;
 							pstmt.setInt( counter, projectId );
 
@@ -403,9 +409,9 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateAbstract( String projectAbstract, int projectId ) {
+	public void updateAbstract( String projectAbstract, int projectId, int userId ) {
 		
-		final String UPDATE_SQL = "UPDATE project_tbl SET abstract = ? WHERE id = ?";
+		final String UPDATE_SQL = "UPDATE project_tbl SET abstract = ?, updated_by_user_id = ? WHERE id = ?";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -421,6 +427,8 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							int counter = 0;
 							counter++;
 							pstmt.setString( counter, projectAbstract );
+							counter++;
+							pstmt.setInt( counter, userId );
 							counter++;
 							pstmt.setInt( counter, projectId );
 
@@ -442,10 +450,10 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateMarkedForDeletion( boolean markedForDeletion, int projectId ) {
+	public void updateMarkedForDeletion( boolean markedForDeletion, int projectId, int userId ) {
 		
-		final String UPDATE_SQL = "UPDATE project_tbl SET marked_for_deletion = ? WHERE id = ?";
-		
+		final String UPDATE_SQL = "UPDATE project_tbl SET marked_for_deletion = ?, marked_for_deletion_timestamp = NOW(), marked_for_deletion_user_id = ?, updated_by_user_id = ? WHERE id = ?";
+
 		// Use Spring JdbcTemplate so Transactions work properly
 		
 		//  How to get the auto-increment primary key for the inserted record
@@ -460,6 +468,10 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							int counter = 0;
 							counter++;
 							pstmt.setBoolean( counter, markedForDeletion );
+							counter++;
+							pstmt.setInt( counter, userId );
+							counter++;
+							pstmt.setInt( counter, userId );
 							counter++;
 							pstmt.setInt( counter, projectId );
 
@@ -481,9 +493,9 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateProjectLocked( boolean projectLocked, int projectId ) {
+	public void updateProjectLocked( boolean projectLocked, int projectId, int userId ) {
 		
-		final String UPDATE_SQL = "UPDATE project_tbl SET project_locked = ? WHERE id = ?";
+		final String UPDATE_SQL = "UPDATE project_tbl SET project_locked = ?, updated_by_user_id = ? WHERE id = ?";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -499,6 +511,8 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							int counter = 0;
 							counter++;
 							pstmt.setBoolean( counter, projectLocked );
+							counter++;
+							pstmt.setInt( counter, userId );
 							counter++;
 							pstmt.setInt( counter, projectId );
 
@@ -520,9 +534,9 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updatePublicAccessLevel( Integer publicAccessLevel, int projectId ) {
+	public void updatePublicAccessLevel( Integer publicAccessLevel, int projectId, int userId ) {
 		
-		final String UPDATE_SQL = "UPDATE project_tbl SET public_access_level = ? WHERE id = ?";
+		final String UPDATE_SQL = "UPDATE project_tbl SET public_access_level = ?, updated_by_user_id = ? WHERE id = ?";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -542,6 +556,8 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							} else {
 								pstmt.setNull( counter, java.sql.Types.INTEGER );
 							}
+							counter++;
+							pstmt.setInt( counter, userId );
 							counter++;
 							pstmt.setInt( counter, projectId );
 
@@ -563,9 +579,9 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateShortName( String shortName, int projectId ) {
+	public void updateShortName( String shortName, int projectId, int userId ) {
 		
-		final String UPDATE_SQL = "UPDATE project_tbl SET short_name = ? WHERE id = ?";
+		final String UPDATE_SQL = "UPDATE project_tbl SET short_name = ?, updated_by_user_id = ? WHERE id = ?";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		

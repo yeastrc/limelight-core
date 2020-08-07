@@ -123,6 +123,8 @@ public class ProjectCreate_RestWebserviceController {
     		ProjectDTO projectDTO = new ProjectDTO();
     		projectDTO.setTitle( projectSaveRequest.getProjectTitle() );
     		projectDTO.setAbstractText( projectSaveRequest.getProjectAbstract() );
+    		projectDTO.setCreatedByUserId( userId );
+    		projectDTO.setUpdatedByUserId( userId );
     		
     		ProjectUserDTO projectUserDTO = new ProjectUserDTO();
     		projectUserDTO.setUserId( userId );

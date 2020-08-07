@@ -77,6 +77,10 @@ CREATE TABLE  project_tbl (
   public_access_locked TINYINT NULL DEFAULT 0,
   marked_for_deletion_timestamp TIMESTAMP NULL,
   marked_for_deletion_user_id INT UNSIGNED NULL,
+  created_by_user_id INT UNSIGNED NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_by_user_id INT UNSIGNED NULL,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id))
 ENGINE = InnoDB;
 

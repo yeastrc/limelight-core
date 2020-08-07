@@ -33,8 +33,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -141,11 +143,23 @@ public class UpdateAbstractOnProjectRecord_RestWebserviceController {
 			projectIds.add( projectId );
 			
 			//  Restrict access to Project owners or above (admin)
-//			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
+			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
 					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
 					.validateProjectOwnerAllowed( projectIds, httpServletRequest );
-
-    		projectDAO.updateAbstract( webserviceRequest.projectAbstract, projectId );
+			
+			if ( validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession() == null ) {
+				String msg = "( validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession() == null )";
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			Integer userId = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession().getUserId();
+			if ( userId == null ) {
+				String msg = "( userId == null )";
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			
+    		projectDAO.updateAbstract( webserviceRequest.projectAbstract, projectId, userId );
     		
     		
     		WebserviceResult webserviceResult = new WebserviceResult();
