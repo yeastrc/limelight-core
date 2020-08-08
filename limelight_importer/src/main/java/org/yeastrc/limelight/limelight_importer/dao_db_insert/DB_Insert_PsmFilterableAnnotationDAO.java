@@ -91,7 +91,7 @@ public class DB_Insert_PsmFilterableAnnotationDAO {
 
 		final String sql = INSERT_SQL;
 		
-		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 			
 			int counter = 0;
 			
@@ -107,13 +107,6 @@ public class DB_Insert_PsmFilterableAnnotationDAO {
 			pstmt.setString( counter, item.getValueString() );
 			
 			pstmt.executeUpdate();
-			
-			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
-				if( rs.next() ) {
-					item.setId( rs.getInt( 1 ) );
-				} else
-					throw new LimelightImporterDatabaseException( "Failed to insert for " + item );
-			}			
 		}
 	}
 	
