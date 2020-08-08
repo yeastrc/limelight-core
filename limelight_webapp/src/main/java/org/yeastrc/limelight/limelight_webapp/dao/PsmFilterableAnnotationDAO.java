@@ -85,7 +85,6 @@ public class PsmFilterableAnnotationDAO extends Limelight_JDBC_Base implements P
 		PsmFilterableAnnotationDTO item;
 		item = new PsmFilterableAnnotationDTO();
 		
-		item.setId( rs.getLong( "id" ) );
 		item.setPsmId( rs.getLong( "psm_id" ) );
 		
 		item.setAnnotationTypeId( rs.getInt( "annotation_type_id" ) );
