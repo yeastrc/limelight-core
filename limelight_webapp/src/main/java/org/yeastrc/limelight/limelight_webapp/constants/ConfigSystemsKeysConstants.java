@@ -68,6 +68,11 @@ public class ConfigSystemsKeysConstants {
 	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER_KEY = "server_or_javascript_error_emails_server_identifier";
 
 
+	/////////   Submit Import Emails Config
+	
+	//  Submit Import Received
+	public static final String SUBMIT_IMPORT_RECEIVED_EMAILS_TO_SEND_TO_KEY = "submit_import_received_emails_to_send_to";
+
 	/////////   Run Importer Status Emails Config
 	
 	//  Any status

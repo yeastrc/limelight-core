@@ -86,6 +86,7 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.ut
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
+import org.yeastrc.limelight.limelight_webapp.services.SendEmailForSubmitImportServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Marshal_RestRequest_Object_ToXML;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_XML_ToObject;
@@ -132,6 +133,9 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 	
 	@Autowired
 	private DeleteDirectoryAndContentsUtilIF deleteDirectoryAndContentsUtil;
+	
+	@Autowired
+	private SendEmailForSubmitImportServiceIF sendEmailForSubmitImportService;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -763,6 +767,17 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		}
 		
 		webservice_Result_Base.setStatusSuccess( true );
+		
+		try {
+			
+			// send email to notify submit received
+			sendEmailForSubmitImportService.sendEmailForSubmitImportInternalService( fileImportTrackingDTO );
+			
+		} catch ( Throwable t ) {
+			String msg = "caught Throwable sending email that an import has been submitted.  This Throwable will be swallowed and the Webservice response will be success";
+			log.error(msg);
+			//  Swallow this Throwable
+		}
 		
 		
 		return webserviceMethod_Internal_Results;
