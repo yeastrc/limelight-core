@@ -65,6 +65,16 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	
 	private int maxDBConnections = MAX_TOTAL_DB_CONNECTIONS;
 	
+	private boolean insertControlCommitConnection_Do_NOT_Disable_AutoCommit = false;
+	
+	/**
+	 * 
+	 */
+	public void setInsertControlCommitConnection_Do_NOT_Disable_AutoCommit() {
+		
+		insertControlCommitConnection_Do_NOT_Disable_AutoCommit = true;
+	}
+	
 	/**
 	 * Allow setting a value for dbConnectionParametersProvider
 	 * 
@@ -173,16 +183,23 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 			
 			_insertControlCommitConnection = getConnectionInternal( WhichConnectionPool.BULK_INSERTS );
 			
-			_insertControlCommitConnection.setAutoCommit(false);
+			if ( ! insertControlCommitConnection_Do_NOT_Disable_AutoCommit ) {
+			
+				_insertControlCommitConnection.setAutoCommit(false);
+			}
 
 			_insertControlCommitConnectionGetCount = 0;
 		}
 		
 		_insertControlCommitConnectionGetCount++;
 		
-		if ( _insertControlCommitConnectionGetCount > COMMIT_AFTER_500_INSERTS ) {
+		if ( _insertControlCommitConnectionGetCount > COMMIT_AFTER_500_INSERTS 
+				|| insertControlCommitConnection_Do_NOT_Disable_AutoCommit ) {
 			
-			_insertControlCommitConnection.commit();
+			if ( ! insertControlCommitConnection_Do_NOT_Disable_AutoCommit ) {
+			
+				_insertControlCommitConnection.commit();
+			}
 			
 			_insertControlCommitConnectionGetCount = 0;
 		}
@@ -209,7 +226,10 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 			return;
 		}
 		
-		_insertControlCommitConnection.commit();
+		if ( ! insertControlCommitConnection_Do_NOT_Disable_AutoCommit ) {
+
+			_insertControlCommitConnection.commit();
+		}
 		
 		_insertControlCommitConnection.close(); // Return connection to pool
 		

@@ -18,7 +18,6 @@
 package org.yeastrc.limelight.limelight_webapp.searchers_results;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Result from PsmWebDisplaySearcher
@@ -39,10 +38,6 @@ public class PsmWebDisplayWebServiceResult {
 	private Integer scanFileId;
 
 	private int searchId;
-
-	private List<BigDecimal> reporterIonMassList;
-	
-	private List<Double> openModificationMassesList;
 
 	public long getPsmId() {
 		return psmId;
@@ -105,18 +100,6 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setHasReporterIons(boolean hasReporterIons) {
 		this.hasReporterIons = hasReporterIons;
-	}
-	public List<BigDecimal> getReporterIonMassList() {
-		return reporterIonMassList;
-	}
-	public void setReporterIonMassList(List<BigDecimal> reporterIonMassList) {
-		this.reporterIonMassList = reporterIonMassList;
-	}
-	public List<Double> getOpenModificationMassesList() {
-		return openModificationMassesList;
-	}
-	public void setOpenModificationMassesList(List<Double> openModificationMassesList) {
-		this.openModificationMassesList = openModificationMassesList;
 	}
 	public boolean isHasOpenModifications() {
 		return hasOpenModifications;

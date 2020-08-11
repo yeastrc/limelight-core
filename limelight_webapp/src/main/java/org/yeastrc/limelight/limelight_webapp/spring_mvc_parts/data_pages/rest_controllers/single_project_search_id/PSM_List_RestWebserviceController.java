@@ -22,10 +22,12 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +46,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
@@ -57,18 +61,17 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.PSM_Item_ForPSM_List;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
@@ -120,6 +123,9 @@ public class PSM_List_RestWebserviceController {
 
 	@Autowired
 	private OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF openModificationMasses_PsmLevel_ForPsmIds_Searcher;
+	
+	@Autowired
+	private OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF openModificationPositions_PsmLevel_ForOpenModIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -330,11 +336,11 @@ public class PSM_List_RestWebserviceController {
         		}
     		}
     		
-    		List<PSM_Item_ForPSM_List> resultList = new ArrayList<>( psmWebDisplayList.size() );
+    		List<WebserviceResponse_PSM_Item> resultList = new ArrayList<>( psmWebDisplayList.size() );
     		
     		for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
     			
-    			PSM_Item_ForPSM_List result = new PSM_Item_ForPSM_List();
+    			WebserviceResponse_PSM_Item result = new WebserviceResponse_PSM_Item();
     			result.setPsmId( psmWebDisplay.getPsmId() );
     			result.setSearchId( psmWebDisplay.getSearchId() );
     			result.setCharge( psmWebDisplay.getCharge() );
@@ -456,7 +462,7 @@ public class PSM_List_RestWebserviceController {
      * @return 
      * @throws SQLException 
      */
-    private void populateReporterIonMassesForPSMs( List<PSM_Item_ForPSM_List> psm_ResultList ) throws SQLException {
+    private void populateReporterIonMassesForPSMs( List<WebserviceResponse_PSM_Item> psm_ResultList ) throws SQLException {
 
     	if ( psm_ResultList.isEmpty() ) {
     		//  No Input entries so return 
@@ -465,7 +471,7 @@ public class PSM_List_RestWebserviceController {
     	
     	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psm_ResultList.size() );
     	
-    	for ( PSM_Item_ForPSM_List entry : psm_ResultList ) {
+    	for ( WebserviceResponse_PSM_Item entry : psm_ResultList ) {
     		if ( entry.isHasReporterIons() ) {
     			psmIds_ContainingReporterIonMasses.add( entry.getPsmId() );
     		}
@@ -490,7 +496,7 @@ public class PSM_List_RestWebserviceController {
     		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
     	}
     	
-    	for ( PSM_Item_ForPSM_List entry : psm_ResultList ) {
+    	for ( WebserviceResponse_PSM_Item entry : psm_ResultList ) {
     		if ( entry.isHasReporterIons() ) {
     			Long psmId = entry.getPsmId();
     			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
@@ -515,7 +521,7 @@ public class PSM_List_RestWebserviceController {
      * @return 
      * @throws SQLException 
      */
-    private void populateOpenModificationMassesForPSMs( List<PSM_Item_ForPSM_List> psmWebDisplayList ) throws SQLException {
+    private void populateOpenModificationMassesForPSMs( List<WebserviceResponse_PSM_Item> psmWebDisplayList ) throws SQLException {
 
     	if ( psmWebDisplayList.isEmpty() ) {
     		//  No Input entries so return 
@@ -524,43 +530,112 @@ public class PSM_List_RestWebserviceController {
     	
     	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmWebDisplayList.size() );
     	
-    	for ( PSM_Item_ForPSM_List entry : psmWebDisplayList ) {
+    	for ( WebserviceResponse_PSM_Item entry : psmWebDisplayList ) {
     		if ( entry.isHasOpenModifications() ) {
     			psmIds_Containing_OpenModification_Masses.add( entry.getPsmId() );
     		}
     	}
 
-    	List<OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> openModificationMassesSearcherResult = 
+    	List<PsmOpenModificationDTO> openModificationMassesSearcherResult = 
     			openModificationMasses_PsmLevel_ForPsmIds_Searcher
     			.get_OpenModificationMasses_PsmLevel_ForPsmIds( psmIds_Containing_OpenModification_Masses );
-
-    	//  Copy into Set in Map
     	
-    	Map<Long, Set<Double>> openModificationMassesSet_Key_PsmId = new HashMap<>();
-    	
-    	for ( OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : openModificationMassesSearcherResult ) {
-    		
-    		Long psmId = item.getPsmId();
-    		Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
-    		if ( openModificationMassesSet_For_PsmId == null ) {
-    			openModificationMassesSet_For_PsmId = new HashSet<>();
-    			openModificationMassesSet_Key_PsmId.put( psmId, openModificationMassesSet_For_PsmId );
-    		}
-    		openModificationMassesSet_For_PsmId.add( item.getOpenModificationMass() );
+    	List<Long> psmOpenModificationIdList = new ArrayList<>( openModificationMassesSearcherResult.size() );
+    	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
+    		psmOpenModificationIdList.add( item.getId() );
     	}
     	
-    	for ( PSM_Item_ForPSM_List entry : psmWebDisplayList ) {
+    	List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList =
+    			openModificationPositions_PsmLevel_ForOpenModIds_Searcher
+    			.get_OpenModificationMasses_PsmLevel_For_psmOpenModificationIds( psmOpenModificationIdList );
+    	
+    	Map<Long,List<PsmOpenModificationPositionDTO>> psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId = new HashMap<>();
+    	for ( PsmOpenModificationPositionDTO item : psmOpenModificationPositionDTOList ) {
+    		Long psmOpenModificationId = item.getPsmOpenModificationId();
+    		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_InMap = 
+    				psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
+    		if ( psmOpenModificationPositionDTOList_InMap == null ) {
+    			psmOpenModificationPositionDTOList_InMap = new ArrayList<>();
+    			psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.put( psmOpenModificationId, psmOpenModificationPositionDTOList_InMap );
+    		}
+    		psmOpenModificationPositionDTOList_InMap.add( item );
+    	}
+
+    	//  Copy into List in Map in Map
+    	
+    	Map<Long, Map<Double,List<WebserviceResponse_PSM_OpenModItem_PositionItem>>> openModificationPositionsList_Key_OpenModMass_Key_PsmId = new HashMap<>();
+    	
+    	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
+    		
+    		Long psmOpenModificationId = item.getId();
+    		Long psmId = item.getPsmId();
+    		Double openModMass = item.getMass();
+    		Map<Double,List<WebserviceResponse_PSM_OpenModItem_PositionItem>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    		if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
+    			openModificationPositionsList_Key_OpenModMass_For_PsmId = new HashMap<>();
+    			openModificationPositionsList_Key_OpenModMass_Key_PsmId.put( psmId, openModificationPositionsList_Key_OpenModMass_For_PsmId );
+    		}
+    		List<WebserviceResponse_PSM_OpenModItem_PositionItem> openModificationPositionsList = openModificationPositionsList_Key_OpenModMass_For_PsmId.get( openModMass );
+    		if ( openModificationPositionsList == null ) {
+    			openModificationPositionsList = new ArrayList<>();
+    			openModificationPositionsList_Key_OpenModMass_For_PsmId.put( openModMass, openModificationPositionsList );
+    		}
+    		
+    		//  get positions (optional)
+    		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_MapEntry = psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
+    		if ( psmOpenModificationPositionDTOList_MapEntry != null ) {
+    			for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTOList_Entry : psmOpenModificationPositionDTOList_MapEntry ) {
+    				WebserviceResponse_PSM_OpenModItem_PositionItem webserviceResponse_PSM_OpenModItem_PositionItem = new WebserviceResponse_PSM_OpenModItem_PositionItem();
+    				webserviceResponse_PSM_OpenModItem_PositionItem.position = psmOpenModificationPositionDTOList_Entry.getPosition();
+    				webserviceResponse_PSM_OpenModItem_PositionItem.is_N_Terminal = psmOpenModificationPositionDTOList_Entry.isIs_N_Terminal();
+    				webserviceResponse_PSM_OpenModItem_PositionItem.is_C_Terminal = psmOpenModificationPositionDTOList_Entry.isIs_C_Terminal();
+    				openModificationPositionsList.add( webserviceResponse_PSM_OpenModItem_PositionItem );
+    			}
+    		}
+    	}
+    	
+    	for ( WebserviceResponse_PSM_Item entry : psmWebDisplayList ) {
     		if ( entry.isHasOpenModifications() ) {
     			Long psmId = entry.getPsmId();
-    			Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
-    			if ( openModificationMassesSet_For_PsmId == null ) {
-    				log.warn( "No entry in openModificationMassesSet_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
+    			Map<Double,List<WebserviceResponse_PSM_OpenModItem_PositionItem>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
+    				log.warn( "No entry in openModificationPositionsList_Key_OpenModMass_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
     						+ psmId );
     			}
-    			if ( openModificationMassesSet_For_PsmId != null ) {
-    				List<Double> openModificationMassesList = new ArrayList<>( openModificationMassesSet_For_PsmId );
-    				Collections.sort( openModificationMassesList );
-    				entry.setOpenModificationMassList( openModificationMassesList );
+    			if ( openModificationPositionsList_Key_OpenModMass_Key_PsmId != null ) {
+    				List<Map.Entry<Double,List<WebserviceResponse_PSM_OpenModItem_PositionItem>>> openModificationMassesMapEntriesList = new ArrayList<>( openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet() );
+    				Collections.sort(openModificationMassesMapEntriesList, new Comparator<Map.Entry<Double,List<WebserviceResponse_PSM_OpenModItem_PositionItem>>>() {
+
+						@Override
+						public int compare(Entry<Double, List<WebserviceResponse_PSM_OpenModItem_PositionItem>> o1, Entry<Double, List<WebserviceResponse_PSM_OpenModItem_PositionItem>> o2) {
+							if ( o1.getKey() < o2.getKey() )
+								return -1;
+							if ( o1.getKey() > o2.getKey() )
+								return 1;
+							return 0;
+						}
+					});
+    				List<WebserviceResponse_PSM_OpenModItem> openModificationMassAndPositionsList = new ArrayList<>( openModificationMassesMapEntriesList.size() );
+
+    				for ( Map.Entry<Double,List<WebserviceResponse_PSM_OpenModItem_PositionItem>> mapEntry : openModificationMassesMapEntriesList ) {
+    					
+    					WebserviceResponse_PSM_OpenModItem webserviceResponse_PSM_OpenModItem = new WebserviceResponse_PSM_OpenModItem();
+    					webserviceResponse_PSM_OpenModItem.openModMass = mapEntry.getKey();
+    					if ( ! mapEntry.getValue().isEmpty() ) {
+    						//  Only populate if not empty
+    						webserviceResponse_PSM_OpenModItem.positionEntries_Optional = mapEntry.getValue();
+    					}
+    					openModificationMassAndPositionsList.add( webserviceResponse_PSM_OpenModItem );
+    				}
+    				
+    				if ( openModificationMassAndPositionsList.isEmpty() ) {
+    					String msg = "openModificationMassAndPositionsList.isEmpty(). psmId: " + psmId;
+    					log.warn(msg);
+    				}
+    				
+    				if ( ! openModificationMassAndPositionsList.isEmpty() ) {
+    					entry.openModificationMassAndPositionsList = openModificationMassAndPositionsList;
+    				}
     			}
     		}
     	}
@@ -640,7 +715,7 @@ public class PSM_List_RestWebserviceController {
      */
     public static class WebserviceResult {
     	
-    	List<PSM_Item_ForPSM_List> resultList;
+    	List<WebserviceResponse_PSM_Item> resultList;
     	
     	boolean searchHasScanData;
     	boolean search_hasScanFilenames;
@@ -650,7 +725,7 @@ public class PSM_List_RestWebserviceController {
 		boolean search_anyPsmHas_ReporterIons;
 		
 		
-		public List<PSM_Item_ForPSM_List> getResultList() {
+		public List<WebserviceResponse_PSM_Item> getResultList() {
 			return resultList;
 		}
 		public boolean isSearchHasScanData() {
@@ -673,6 +748,144 @@ public class PSM_List_RestWebserviceController {
 		}
 		
 
+    }
+
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResponse_PSM_Item {
+
+    	private long psmId;
+    	private int charge;
+    	private int scanNumber;
+    	private String scanFilename;
+    	private int searchId;
+
+    	private Float retentionTimeSeconds;
+    	private Double precursor_M_Over_Z;
+
+    	private List<BigDecimal> reporterIonMassList;
+    	private List<WebserviceResponse_PSM_OpenModItem> openModificationMassAndPositionsList;
+
+    	private boolean hasReporterIons;
+    	private boolean hasOpenModifications;
+    	
+    	private Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap;
+    	
+		public long getPsmId() {
+			return psmId;
+		}
+		public void setPsmId(long psmId) {
+			this.psmId = psmId;
+		}
+		public int getCharge() {
+			return charge;
+		}
+		public void setCharge(int charge) {
+			this.charge = charge;
+		}
+		public int getScanNumber() {
+			return scanNumber;
+		}
+		public void setScanNumber(int scanNumber) {
+			this.scanNumber = scanNumber;
+		}
+		public String getScanFilename() {
+			return scanFilename;
+		}
+		public void setScanFilename(String scanFilename) {
+			this.scanFilename = scanFilename;
+		}
+		public int getSearchId() {
+			return searchId;
+		}
+		public void setSearchId(int searchId) {
+			this.searchId = searchId;
+		}
+		public Float getRetentionTimeSeconds() {
+			return retentionTimeSeconds;
+		}
+		public void setRetentionTimeSeconds(Float retentionTimeSeconds) {
+			this.retentionTimeSeconds = retentionTimeSeconds;
+		}
+		public Double getPrecursor_M_Over_Z() {
+			return precursor_M_Over_Z;
+		}
+		public void setPrecursor_M_Over_Z(Double precursor_M_Over_Z) {
+			this.precursor_M_Over_Z = precursor_M_Over_Z;
+		}
+		public List<BigDecimal> getReporterIonMassList() {
+			return reporterIonMassList;
+		}
+		public void setReporterIonMassList(List<BigDecimal> reporterIonMassList) {
+			this.reporterIonMassList = reporterIonMassList;
+		}
+		public boolean isHasReporterIons() {
+			return hasReporterIons;
+		}
+		public void setHasReporterIons(boolean hasReporterIons) {
+			this.hasReporterIons = hasReporterIons;
+		}
+		public boolean isHasOpenModifications() {
+			return hasOpenModifications;
+		}
+		public void setHasOpenModifications(boolean hasOpenModifications) {
+			this.hasOpenModifications = hasOpenModifications;
+		}
+		public Map<Integer, AnnotationDataItem_ForPage> getPsmAnnotationMap() {
+			return psmAnnotationMap;
+		}
+		public void setPsmAnnotationMap(Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap) {
+			this.psmAnnotationMap = psmAnnotationMap;
+		}
+		public List<WebserviceResponse_PSM_OpenModItem> getOpenModificationMassAndPositionsList() {
+			return openModificationMassAndPositionsList;
+		}
+		public void setOpenModificationMassAndPositionsList(
+				List<WebserviceResponse_PSM_OpenModItem> openModificationMassAndPositionsList) {
+			this.openModificationMassAndPositionsList = openModificationMassAndPositionsList;
+		}
+    }
+    
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResponse_PSM_OpenModItem {
+
+    	private double openModMass;
+    	private List<WebserviceResponse_PSM_OpenModItem_PositionItem> positionEntries_Optional;
+    	
+		public double getOpenModMass() {
+			return openModMass;
+		}
+		public List<WebserviceResponse_PSM_OpenModItem_PositionItem> getPositionEntries_Optional() {
+			return positionEntries_Optional;
+		}
+    }
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResponse_PSM_OpenModItem_PositionItem {
+
+    	private int position;
+    	private boolean is_N_Terminal;
+    	private boolean is_C_Terminal;
+    	
+		public int getPosition() {
+			return position;
+		}
+		public boolean isIs_N_Terminal() {
+			return is_N_Terminal;
+		}
+		public boolean isIs_C_Terminal() {
+			return is_C_Terminal;
+		}
     }
 }
 

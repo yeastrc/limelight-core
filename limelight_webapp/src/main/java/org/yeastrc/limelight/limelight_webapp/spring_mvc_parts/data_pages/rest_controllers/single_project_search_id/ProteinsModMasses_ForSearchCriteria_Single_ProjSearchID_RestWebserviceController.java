@@ -48,7 +48,6 @@ import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPe
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.ProteinsModMasses_ForSearchCriteria_Single_ProjSearchID_RequestRoot;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.PSM_Item_ForPSM_List;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -197,15 +196,6 @@ public class ProteinsModMasses_ForSearchCriteria_Single_ProjSearchID_RestWebserv
     	}
     }
     
-    /**
-     * 
-     *
-     */
-    public static class WebserviceResult {
-    	List<PSM_Item_ForPSM_List> result;
-
-
-    }
 }
 
 

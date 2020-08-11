@@ -429,7 +429,7 @@ const _get_DataTable_DataRowEntries = function({
         if ( psmListItem.reporterIonMassList ) {
             anyPsmsHave_reporterIonMassesDisplay = true;
         }
-        if ( psmListItem.openModificationMassList ) {
+        if ( psmListItem.openModificationMassAndPositionsList ) {
             anyPsmsHave_openModificationMassesDisplay = true;
         }
     }
@@ -524,13 +524,68 @@ const _get_DataTable_DataRowEntries = function({
         if ( anyPsmsHave_openModificationMassesDisplay ) {
             let valueDisplay = "";
             let valueSort = "";
-            if ( psmListItem.openModificationMassList ) {
+            if ( psmListItem.openModificationMassAndPositionsList && psmListItem.openModificationMassAndPositionsList.length > 0 ) {
+                // ss
                 const openModificationMassAsString_List = [];
-                for ( const openModificationMass of psmListItem.openModificationMassList ) {
-                    const openModificationMass_String = openModificationMass.toString();
-                    openModificationMassAsString_List.push( openModificationMass_String );
+                for ( const openModificationMassAndPositionsEntry of psmListItem.openModificationMassAndPositionsList ) {
+                    const openModMass = openModificationMassAndPositionsEntry.openModMass;
+                    const positionEntries_Optional = openModificationMassAndPositionsEntry.positionEntries_Optional;
+                    const openModificationMass_String = openModMass.toString();
+                    let outputEntry_positionsSubstring = "";
+                    if ( positionEntries_Optional ) {
+                        const positionNumbers = [];
+                        let is_N_Terminal = false;
+                        let is_C_Terminal = false;
+                        for ( const positionEntry of positionEntries_Optional ) { // positionEntry : { position, is_N_Terminal, is_C_Terminal }
+                            if ( positionEntry.is_N_Terminal ) {
+                                is_N_Terminal = true;
+                            } else if ( positionEntry.is_C_Terminal ) {
+                                is_C_Terminal = true;
+                            }
+                            if ( ( ! positionEntry.is_N_Terminal ) && ( ! positionEntry.is_C_Terminal ) ) {
+                                positionNumbers.push(positionEntry.position);
+                            }
+                        }
+
+                        let positionNumbers_JoinString = "";
+
+                        if ( positionNumbers.length > 0 ) {
+                            positionNumbers.sort((a, b) => {
+                                if (a < b) {
+                                    return -1;
+                                }
+                                if (a > b) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+
+                            positionNumbers_JoinString = positionNumbers.join(", ");
+                        }
+
+                        let n_TerminalLabel = ""
+                        let n_TerminalSeparator = ""
+                        if ( is_N_Terminal ) {
+                            n_TerminalLabel = "n-term"
+                            if ( positionNumbers_JoinString.length > 0 ) {
+                                n_TerminalSeparator = ", "
+                            }
+                        }
+                        let c_TerminalLabel = ""
+                        let c_TerminalSeparator = ""
+                        if ( is_C_Terminal ) {
+                            c_TerminalLabel = "c-term"
+                            if ( positionNumbers_JoinString.length > 0 ) {
+                                c_TerminalSeparator = ", "
+                            }
+                        }
+                        outputEntry_positionsSubstring = " (" + n_TerminalLabel + n_TerminalSeparator + positionNumbers_JoinString + c_TerminalSeparator + c_TerminalLabel + ")";
+                    }
+                    const outputEntryString = openModificationMass_String + outputEntry_positionsSubstring
+                    openModificationMassAsString_List.push( outputEntryString );
                 }
                 valueDisplay = openModificationMassAsString_List.join(", ");
+                valueSort = psmListItem.openModificationMassAndPositionsList[ 0 ]; // Sort on first entry mass
             }
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 valueDisplay,

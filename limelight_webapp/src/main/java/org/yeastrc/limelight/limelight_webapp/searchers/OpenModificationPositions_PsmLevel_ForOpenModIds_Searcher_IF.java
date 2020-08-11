@@ -20,20 +20,20 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 
 /**
  * @author danj
  *
  */
-public interface OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF {
+public interface OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF {
 
 	/**
-	 * @param psmIds
+	 * @param psmOpenModificationIdList
 	 * @return
 	 * @throws SQLException
 	 */
-	List<PsmOpenModificationDTO> get_OpenModificationMasses_PsmLevel_ForPsmIds(
-			List<Long> psmIds) throws SQLException;
+	List<PsmOpenModificationPositionDTO> get_OpenModificationMasses_PsmLevel_For_psmOpenModificationIds(
+			List<Long> psmOpenModificationIdList) throws SQLException;
 
 }

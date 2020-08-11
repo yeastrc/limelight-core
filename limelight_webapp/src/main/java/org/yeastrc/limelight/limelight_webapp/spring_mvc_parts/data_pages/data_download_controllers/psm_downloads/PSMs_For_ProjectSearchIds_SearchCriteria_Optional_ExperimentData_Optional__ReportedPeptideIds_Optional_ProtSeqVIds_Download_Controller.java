@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletOutputStream;
@@ -48,6 +49,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
@@ -66,8 +69,8 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.AnnotationTypeListForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher.OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
@@ -174,6 +177,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF openModificationMasses_PsmLevel_ForPsmIds_Searcher;
+
+	@Autowired
+	private OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF openModificationPositions_PsmLevel_ForOpenModIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -639,13 +645,20 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 								psmIds_Exclude, 
 								searcherCutoffValuesSearchLevel );
 				
-				populateReporterIonMassesForPSMs( psmWebDisplayList );
+				List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
+				for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
+					PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
+					psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
+					psmEntry_InternalClass_List.add(psmEntry_InternalClass);
+				}
 				
-				populateOpenModificationMassesForPSMs( psmWebDisplayList );
+				populateReporterIonMassesForPSMs( psmEntry_InternalClass_List );
+				
+				populateOpenModificationMassesForPSMs( psmEntry_InternalClass_List );
 				
 				PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
 				psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
-				psmsForSingleReportedPeptideId.psmWebDisplayList = psmWebDisplayList;
+				psmsForSingleReportedPeptideId.psmEntry_InternalClass_List = psmEntry_InternalClass_List;
 				psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
 			}
 
@@ -699,12 +712,21 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
 					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
 							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, null, searcherCutoffValuesSearchLevel );
+
+					List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
+					for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
+						PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
+						psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
+						psmEntry_InternalClass_List.add(psmEntry_InternalClass);
+					}
 					
-					populateReporterIonMassesForPSMs( psmWebDisplayList );
+					populateReporterIonMassesForPSMs( psmEntry_InternalClass_List );
+					
+					populateOpenModificationMassesForPSMs( psmEntry_InternalClass_List );
 					
 					PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
 					psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
-					psmsForSingleReportedPeptideId.psmWebDisplayList = psmWebDisplayList;
+					psmsForSingleReportedPeptideId.psmEntry_InternalClass_List = psmEntry_InternalClass_List;
 					psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
 				}
 			}
@@ -761,18 +783,18 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
      * @return 
      * @throws SQLException 
      */
-    private void populateReporterIonMassesForPSMs( List<PsmWebDisplayWebServiceResult> psmWebDisplayList ) throws SQLException {
+    private void populateReporterIonMassesForPSMs( List<PsmEntry_InternalClass> psmEntry_InternalClass_List ) throws SQLException {
 
-    	if ( psmWebDisplayList.isEmpty() ) {
+    	if ( psmEntry_InternalClass_List.isEmpty() ) {
     		//  No Input entries so return 
     		return; // EARLY RETURN
     	}
     	
-    	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psmWebDisplayList.size() );
+    	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psmEntry_InternalClass_List.size() );
     	
-    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
-    		if ( entry.isHasReporterIons() ) {
-    			psmIds_ContainingReporterIonMasses.add( entry.getPsmId() );
+    	for ( PsmEntry_InternalClass entry : psmEntry_InternalClass_List ) {
+    		if ( entry.psmWebDisplayWebServiceResult.isHasReporterIons() ) {
+    			psmIds_ContainingReporterIonMasses.add( entry.psmWebDisplayWebServiceResult.getPsmId() );
     		}
     	}
 
@@ -795,7 +817,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
     	}
     	
-    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
+    	for ( PsmEntry_InternalClass psmEntry_InternalClass_Entry : psmEntry_InternalClass_List ) {
+    		
+    		PsmWebDisplayWebServiceResult entry = psmEntry_InternalClass_Entry.psmWebDisplayWebServiceResult;
     		if ( entry.isHasReporterIons() ) {
     			Long psmId = entry.getPsmId();
     			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
@@ -806,7 +830,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     			if ( reporterIonMassesSet_For_PsmId != null ) {
     				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
     				Collections.sort( reporterIonMassesList );
-    				entry.setReporterIonMassList( reporterIonMassesList );
+    				psmEntry_InternalClass_Entry.reporterIonMassList = reporterIonMassesList;
     			}
     		}
     	}
@@ -820,52 +844,152 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
      * @return 
      * @throws SQLException 
      */
-    private void populateOpenModificationMassesForPSMs( List<PsmWebDisplayWebServiceResult> psmWebDisplayList ) throws SQLException {
+    private void populateOpenModificationMassesForPSMs( List<PsmEntry_InternalClass> psmEntry_InternalClass_List ) throws SQLException {
 
-    	if ( psmWebDisplayList.isEmpty() ) {
+    	if ( psmEntry_InternalClass_List.isEmpty() ) {
     		//  No Input entries so return 
     		return; // EARLY RETURN
     	}
     	
-    	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmWebDisplayList.size() );
-    	
-    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
-    		if ( entry.isHasOpenModifications() ) {
-    			psmIds_Containing_OpenModification_Masses.add( entry.getPsmId() );
+    	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmEntry_InternalClass_List.size() );
+
+    	for ( PsmEntry_InternalClass entry : psmEntry_InternalClass_List ) {
+    		if ( entry.psmWebDisplayWebServiceResult.isHasOpenModifications() ) {
+    			psmIds_Containing_OpenModification_Masses.add( entry.psmWebDisplayWebServiceResult.getPsmId() );
     		}
     	}
 
-    	List<OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> openModificationMassesSearcherResult = 
+    	List<PsmOpenModificationDTO> openModificationMassesSearcherResult = 
     			openModificationMasses_PsmLevel_ForPsmIds_Searcher
     			.get_OpenModificationMasses_PsmLevel_ForPsmIds( psmIds_Containing_OpenModification_Masses );
-
-    	//  Copy into Set in Map
     	
-    	Map<Long, Set<Double>> openModificationMassesSet_Key_PsmId = new HashMap<>();
-    	
-    	for ( OpenModificationMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : openModificationMassesSearcherResult ) {
-    		
-    		Long psmId = item.getPsmId();
-    		Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
-    		if ( openModificationMassesSet_For_PsmId == null ) {
-    			openModificationMassesSet_For_PsmId = new HashSet<>();
-    			openModificationMassesSet_Key_PsmId.put( psmId, openModificationMassesSet_For_PsmId );
-    		}
-    		openModificationMassesSet_For_PsmId.add( item.getOpenModificationMass() );
+    	List<Long> psmOpenModificationIdList = new ArrayList<>( openModificationMassesSearcherResult.size() );
+    	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
+    		psmOpenModificationIdList.add( item.getId() );
     	}
     	
-    	for ( PsmWebDisplayWebServiceResult entry : psmWebDisplayList ) {
+    	List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList =
+    			openModificationPositions_PsmLevel_ForOpenModIds_Searcher
+    			.get_OpenModificationMasses_PsmLevel_For_psmOpenModificationIds( psmOpenModificationIdList );
+    	
+    	Map<Long,List<PsmOpenModificationPositionDTO>> psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId = new HashMap<>();
+    	for ( PsmOpenModificationPositionDTO item : psmOpenModificationPositionDTOList ) {
+    		Long psmOpenModificationId = item.getPsmOpenModificationId();
+    		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_InMap = 
+    				psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
+    		if ( psmOpenModificationPositionDTOList_InMap == null ) {
+    			psmOpenModificationPositionDTOList_InMap = new ArrayList<>();
+    			psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.put( psmOpenModificationId, psmOpenModificationPositionDTOList_InMap );
+    		}
+    		psmOpenModificationPositionDTOList_InMap.add( item );
+    	}
+
+    	//  Copy into List in Map in Map
+    	
+    	Map<Long, Map<Double,List<PsmOpenModificationPositionDTO>>> openModificationPositionsList_Key_OpenModMass_Key_PsmId = new HashMap<>();
+    	
+    	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
+    		
+    		Long psmOpenModificationId = item.getId();
+    		Long psmId = item.getPsmId();
+    		Double openModMass = item.getMass();
+    		Map<Double,List<PsmOpenModificationPositionDTO>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    		if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
+    			openModificationPositionsList_Key_OpenModMass_For_PsmId = new HashMap<>();
+    			openModificationPositionsList_Key_OpenModMass_Key_PsmId.put( psmId, openModificationPositionsList_Key_OpenModMass_For_PsmId );
+    		}
+    		List<PsmOpenModificationPositionDTO> openModificationPositionsList = openModificationPositionsList_Key_OpenModMass_For_PsmId.get( openModMass );
+    		if ( openModificationPositionsList == null ) {
+    			openModificationPositionsList = new ArrayList<>();
+    			openModificationPositionsList_Key_OpenModMass_For_PsmId.put( openModMass, openModificationPositionsList );
+    		}
+    		
+    		//  get positions (optional)
+    		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_MapEntry = psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
+    		if ( psmOpenModificationPositionDTOList_MapEntry != null ) {
+    			openModificationPositionsList.addAll( psmOpenModificationPositionDTOList_MapEntry );
+    		}
+    	}
+    	
+    	for ( PsmEntry_InternalClass psmEntry_InternalClass_Entry : psmEntry_InternalClass_List ) {
+    		
+    		PsmWebDisplayWebServiceResult entry = psmEntry_InternalClass_Entry.psmWebDisplayWebServiceResult;
     		if ( entry.isHasOpenModifications() ) {
     			Long psmId = entry.getPsmId();
-    			Set<Double> openModificationMassesSet_For_PsmId = openModificationMassesSet_Key_PsmId.get( psmId );
-    			if ( openModificationMassesSet_For_PsmId == null ) {
-    				log.warn( "No entry in openModificationMassesSet_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
+    			Map<Double,List<PsmOpenModificationPositionDTO>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
+    				log.warn( "No entry in openModificationPositionsList_Key_OpenModMass_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
     						+ psmId );
     			}
-    			if ( openModificationMassesSet_For_PsmId != null ) {
-    				List<Double> openModificationMassesList = new ArrayList<>( openModificationMassesSet_For_PsmId );
-    				Collections.sort( openModificationMassesList );
-    				entry.setOpenModificationMassesList( openModificationMassesList );
+    			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId != null ) {
+    				List<Map.Entry<Double,List<PsmOpenModificationPositionDTO>>> openModificationMassesMapEntriesList = new ArrayList<>( openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet() );
+    				//  Sort list of Map entries on Map Key
+    				Collections.sort(openModificationMassesMapEntriesList, new Comparator<Map.Entry<Double,List<PsmOpenModificationPositionDTO>>>() {
+						@Override
+						public int compare(Entry<Double, List<PsmOpenModificationPositionDTO>> o1, Entry<Double, List<PsmOpenModificationPositionDTO>> o2) {
+							if ( o1.getKey() < o2.getKey() )
+								return -1;
+							if ( o1.getKey() > o2.getKey() )
+								return 1;
+							return 0;
+						}
+					});
+    				
+    				//  Process Map entries into result display string for Open Mod Masses and positions
+    				
+    				psmEntry_InternalClass_Entry.openModificationMassString = ""; //  Default
+    				
+    				//  
+    				StringBuilder openModificationMassStringSB = new StringBuilder( 100000 );
+
+    				for ( Map.Entry<Double,List<PsmOpenModificationPositionDTO>> mapEntry : openModificationMassesMapEntriesList ) {
+    					
+    					if ( openModificationMassStringSB.length() != 0 ) {
+    						//  Not first entry, add comma delim
+    						openModificationMassStringSB.append( ", " );
+    					}
+    					Double openModMass = mapEntry.getKey();
+    					openModificationMassStringSB.append( openModMass );
+    					List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_ForEntry = mapEntry.getValue();
+    					if ( psmOpenModificationPositionDTOList_ForEntry != null && ( ! psmOpenModificationPositionDTOList_ForEntry.isEmpty() ) ) {
+    						openModificationMassStringSB.append( "(" ); // put positions in '(' ')'
+    						boolean is_N_Terminal = false;
+    						boolean is_C_Terminal = false;
+    						List<Integer> positions = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() );
+    						for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : psmOpenModificationPositionDTOList_ForEntry ) {
+    							if ( psmOpenModificationPositionDTO.isIs_N_Terminal() ) {
+    								is_N_Terminal = true;
+    							} else if ( psmOpenModificationPositionDTO.isIs_C_Terminal() ) {
+    								is_C_Terminal = true;
+    							}
+    							if ( ( ! psmOpenModificationPositionDTO.isIs_N_Terminal() ) && ( ! psmOpenModificationPositionDTO.isIs_C_Terminal() ) ) {
+    								positions.add( psmOpenModificationPositionDTO.getPosition() );
+    							}
+    						}
+    						Collections.sort( positions );
+    						boolean firstPositionEntry = true;
+    						if ( is_N_Terminal ) {
+    							firstPositionEntry = false;
+    							openModificationMassStringSB.append( "n-term" );
+    						}
+    						for ( Integer position : positions ) {
+    							if ( ! firstPositionEntry ) {
+    								openModificationMassStringSB.append( ", " );
+    							}
+    							firstPositionEntry = false;
+    							openModificationMassStringSB.append( position );
+    						}
+    						if ( is_C_Terminal ) {
+    							if ( ! firstPositionEntry ) {
+    								openModificationMassStringSB.append( ", " );
+    							}
+    							openModificationMassStringSB.append( "c-term" );
+    						}
+    						openModificationMassStringSB.append( ")" ); // put positions in '(' ')'
+    					}
+    				}
+
+    				psmEntry_InternalClass_Entry.openModificationMassString = openModificationMassStringSB.toString();
     			}
     		}
     	}
@@ -881,8 +1005,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
 			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId) {
 		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
-			for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayListForReportedPeptideIdsEntry.psmWebDisplayList ) {
+			for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
 
+				PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
+				
 				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
 						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
 				if ( scanData_KeyedOn_ScanNumber == null ) {
@@ -930,7 +1056,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
  		Map<Integer, Set<Integer>> scanNumbers_KeyedOn_ScanFileId = new HashMap<>();
 
  		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
- 			for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayListForReportedPeptideIdsEntry.psmWebDisplayList ) {
+			for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
+
+				PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
 
  				Integer scanFileId = psmWebDisplay.getScanFileId();
  				Integer scanNumber = psmWebDisplay.getScanNumber();
@@ -1232,8 +1360,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 						}
 
 						//  Process PSMs
+						for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
 
-						for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayListForReportedPeptideIdsEntry.psmWebDisplayList ) {
+							PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
 
 							writer.write( String.valueOf( searchId ) );
 							writer.write( "\t" );
@@ -1313,7 +1442,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							
 							writer.write( "\t" );
 							{
-								List<BigDecimal> reporterIonMassList = psmWebDisplay.getReporterIonMassList();
+								List<BigDecimal> reporterIonMassList = psmEntry_InternalClass.reporterIonMassList;
 								if ( reporterIonMassList != null && ( ! reporterIonMassList.isEmpty() ) ) {
 									StringBuilder reporterIonMassAsStringSB = new StringBuilder( 10000 );
 									boolean first = true;
@@ -1337,25 +1466,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							
 							writer.write( "\t" );
 							{
-								List<Double> openModificationMassList = psmWebDisplay.getOpenModificationMassesList();
-								if ( openModificationMassList != null && ( ! openModificationMassList.isEmpty() ) ) {
-									StringBuilder openModificationMassAsStringSB = new StringBuilder( 10000 );
-									boolean first = true;
-									for ( Double openModificationMass : openModificationMassList ) {
-										String openModificationMassString = Double.toString( openModificationMass );
-										if ( openModificationMassString.contains( "." ) ) {
-											//  openModificationMassString contains '.' so strip trailing zeros
-											openModificationMassString = StringUtils.stripEnd(openModificationMassString, "0" );
-										}
-										if ( first ) {
-											first = false;
-										} else {
-											openModificationMassAsStringSB.append( ", " );
-										}
-										openModificationMassAsStringSB.append( openModificationMassString );
-									}
-									String openModificationMassAsString = openModificationMassAsStringSB.toString();
-									writer.write( String.valueOf( openModificationMassAsString ) );
+								String openModificationMassString = psmEntry_InternalClass.openModificationMassString;
+								if ( openModificationMassString != null ) {
+
+									writer.write( String.valueOf( openModificationMassString ) );
 								}
 							}
 
@@ -1491,9 +1605,21 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 		private Integer reportedPeptideId;
 		
-		private List<PsmWebDisplayWebServiceResult> psmWebDisplayList;
+		List<PsmEntry_InternalClass> psmEntry_InternalClass_List;
 	}
 
+	/**
+	 * Internal PSM
+	 *
+	 */
+	private static class PsmEntry_InternalClass {
+		
+		private PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult;
+
+		private List<BigDecimal> reporterIonMassList;
+		private String openModificationMassString;
+	}
+	
 	/**
 	 * Internal Data for writeOutputToResponse Per Search Id
 	 */
@@ -1613,5 +1739,5 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		}
 		
 	}
-	
+
 }

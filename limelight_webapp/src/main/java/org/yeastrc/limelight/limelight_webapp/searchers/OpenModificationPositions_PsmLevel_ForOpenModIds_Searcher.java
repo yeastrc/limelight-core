@@ -27,7 +27,8 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
-import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 
 /**
@@ -35,40 +36,41 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
  *
  */
 @Component
-public class OpenModificationMasses_PsmLevel_ForPsmIds_Searcher extends Limelight_JDBC_Base implements OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF {
+public class OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher extends Limelight_JDBC_Base implements OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF {
 
-	private static final Logger log = LoggerFactory.getLogger( OpenModificationMasses_PsmLevel_ForPsmIds_Searcher.class );
+	private static final Logger log = LoggerFactory.getLogger( OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher.class );
 	
 	private static final String QUERY_START_SQL = 
 			"SELECT "
-			+ " id, psm_id, mass "
+			+ " id, psm_open_modification_id, position, is_n_terminal, is_c_terminal "
 			+ " FROM "
-			+ " psm_open_modification_tbl  "
-			+ " WHERE psm_id in ( ";
-
+			+ " psm_open_modification_position_tbl  "
+			+ " WHERE psm_open_modification_id in ( ";
+	
+	
 
 	/**
-	 * @param psmIds
+	 * @param psmOpenModificationIdList
 	 * @return
 	 * @throws SQLException
 	 */
 	@Override
-	public List<PsmOpenModificationDTO> get_OpenModificationMasses_PsmLevel_ForPsmIds( List<Long> psmIds ) throws SQLException {
+	public List<PsmOpenModificationPositionDTO> get_OpenModificationMasses_PsmLevel_For_psmOpenModificationIds( List<Long> psmOpenModificationIdList ) throws SQLException {
 
-		int resultSize = psmIds.size() * 5;
-		List<PsmOpenModificationDTO> result = new ArrayList<>( resultSize );
+		int resultSize = psmOpenModificationIdList.size() * 5;
+		List<PsmOpenModificationPositionDTO> result = new ArrayList<>( resultSize );
 		
-		if ( psmIds.isEmpty() ) {
-			//  No Request PSM IDs so return
+		if ( psmOpenModificationIdList.isEmpty() ) {
+			//  No Request psmOpenModificationIds so return
 			return result; // EARLY RETURN
 		}
 
-		int query_StringBuilderSize = 300 + ( 20 * psmIds.size() );
+		int query_StringBuilderSize = 300 + ( 20 * psmOpenModificationIdList.size() );
 		StringBuilder querySQL_SB = new StringBuilder( query_StringBuilderSize );
 		
 		querySQL_SB.append( QUERY_START_SQL );
 		
-		for ( int counter = 1; counter <= psmIds.size(); counter++ ) {
+		for ( int counter = 1; counter <= psmOpenModificationIdList.size(); counter++ ) {
 			if ( counter != 1 ) {
 				//  Not first so add ","
 				querySQL_SB.append( "," );
@@ -85,19 +87,31 @@ public class OpenModificationMasses_PsmLevel_ForPsmIds_Searcher extends Limeligh
 			
 			int counter = 0;
 			
-			for ( Long psmId : psmIds ) {
+			for ( Long psmId : psmOpenModificationIdList ) {
 				counter++;
 				preparedStatement.setLong( counter, psmId );
 			}
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
 
-					PsmOpenModificationDTO resultItem = new PsmOpenModificationDTO();
+					PsmOpenModificationPositionDTO resultItem = new PsmOpenModificationPositionDTO();
 					result.add( resultItem );
-					
+
 					resultItem.setId( rs.getLong( "id" ) );
-					resultItem.setPsmId( rs.getLong( "psm_id" ) );
-					resultItem.setMass( rs.getDouble( "mass" ) );
+					resultItem.setPsmOpenModificationId( rs.getLong( "psm_open_modification_id" ) );
+					resultItem.setPosition( rs.getInt( "position" ) );
+					{
+						int intVal = rs.getInt( "is_n_terminal" );
+						if ( intVal == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							resultItem.setIs_N_Terminal(true);
+						}
+					}
+					{
+						int intVal = rs.getInt( "is_c_terminal" );
+						if ( intVal == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							resultItem.setIs_C_Terminal(true);
+						}
+					}
 				}
 			}
 		} catch ( SQLException e ) {
