@@ -296,6 +296,7 @@ public class ProcessPSMsForReportedPeptide {
 					
 					firstSavedPSM = false;
 					firstSavedPsmId = psmDTO.getId();
+					lastSavedPsmId = psmDTO.getId();
 					
 				} else {
 					
