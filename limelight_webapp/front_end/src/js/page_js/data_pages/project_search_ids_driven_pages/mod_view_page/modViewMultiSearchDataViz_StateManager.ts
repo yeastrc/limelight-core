@@ -20,6 +20,7 @@ const _SAVE_STATE_KEYS = {
     'MOD_MASS_MAX_CUTOFF': 'x',
     'MOD_MASS_MIN_CUTOFF': 'n',
     'SELECTED_RECTS': 's',
+    'INCLUDE_OPEN_MODS' : 'o',
 };
 
 const _LOAD_STATE_KEYS = {
@@ -30,6 +31,7 @@ const _LOAD_STATE_KEYS = {
     'MOD_MASS_MAX_CUTOFF': 'modMassCutoffMax',
     'MOD_MASS_MIN_CUTOFF': 'modMassCutoffMin',
     'SELECTED_RECTS': 'selectedStateObject',
+    'INCLUDE_OPEN_MODS' : 'includeOpenMods',
 };
 
 const _PSM_QUANT_METHOD_ENCODING_KEYS = {
@@ -98,6 +100,10 @@ export class ModMultiSearch_DataVizPageStateManager {
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.SELECTED_RECTS)) {
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS] = { };
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS].data = this.getDecodedSelectedRects( encodedStateData[_SAVE_STATE_KEYS.SELECTED_RECTS] );
+            }
+
+            if(encodedDataKeys.includes(_SAVE_STATE_KEYS.INCLUDE_OPEN_MODS)) {
+                this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS] = encodedStateData[_SAVE_STATE_KEYS.INCLUDE_OPEN_MODS];
             }
         }
 
@@ -206,6 +212,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
         if(this._vizOptionsData.data[_LOAD_STATE_KEYS.MOD_MASS_MIN_CUTOFF] !== undefined) {
             dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF] = this._vizOptionsData.data[_LOAD_STATE_KEYS.MOD_MASS_MIN_CUTOFF];
+        }
+
+        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS] !== undefined && this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS] === false) {
+            dataForEncoding[_SAVE_STATE_KEYS.INCLUDE_OPEN_MODS] = this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS];
         }
 
         if( this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS] !== undefined

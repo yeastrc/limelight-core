@@ -24,6 +24,8 @@ import {create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer} 
 import {modViewPage_DisplayDataOnPage_createSearchDetailsSection} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DisplayDataOnPage_createSearchDetailsSection";
 import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
 
 /**
  * 
@@ -234,9 +236,12 @@ export class ModViewPage_DisplayDataOnPage {
 		
 				// get the total number of PSMs for this experiment that meet the cutoffs
 				let totalPSMCountPromise = dataLoader.getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-		
+
+				// get the open mod data
+				let openModDataPromise = dataLoader.getOpenModDataForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing, loadedData });
+
 				// after we get all the data, move on to rendering the page.
-				Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise, totalPSMCountPromise ] ).then( function( resolvedPromisesArray ) {
+				Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise, totalPSMCountPromise, openModDataPromise ] ).then( function( resolvedPromisesArray ) {
 					try {
 						resolve();
 					} catch( e ) {
@@ -289,6 +294,10 @@ export class ModViewPage_DisplayDataOnPage {
 		let totalPSMCount = {};
 		let aminoAcidModStats = {};
 		let proteinData = {};
+		let openModPSMData = {};
+		let reportedPeptideProteinMap = {};
+
+		console.log('loadedData', loadedData);
 
 		for(const projectSearchId of projectSearchIds) {
 
@@ -297,6 +306,8 @@ export class ModViewPage_DisplayDataOnPage {
 			totalPSMCount[projectSearchId] = loadedData[projectSearchId].totalPSMCount;
 			aminoAcidModStats[projectSearchId] = loadedData[projectSearchId].aminoAcidModStats.reportedPeptideData;
 			proteinData[projectSearchId] = loadedData[projectSearchId].proteinData;
+			openModPSMData[projectSearchId] = loadedData[projectSearchId].openModPSMData;
+			reportedPeptideProteinMap[projectSearchId] = loadedData[projectSearchId].openModReportedPeptideProteinMap;
 		}
 
 
@@ -322,7 +333,8 @@ export class ModViewPage_DisplayDataOnPage {
 			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
 			projectSearchIds,
-			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
+			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
+			openModPSMData
 		});
 
 		// add the viz to the page using these viz options
@@ -335,7 +347,8 @@ export class ModViewPage_DisplayDataOnPage {
 			proteinData,
 			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
-			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
+			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
+			openModPSMData
 		});
 	}
 

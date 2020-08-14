@@ -20,7 +20,8 @@ export class ModViewDataVizRendererOptionsHandler {
                                  searchDetailsBlockDataMgmtProcessing,
                                  dataPageStateManager_DataFrom_Server,
                                  vizOptionsData,
-                                 projectSearchIds
+                                 projectSearchIds,
+                                 openModPSMData
                              }) {
 
         // defaults for the viz
@@ -42,7 +43,8 @@ export class ModViewDataVizRendererOptionsHandler {
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
-            projectSearchIds : undefined
+            projectSearchIds : undefined,
+            openModPSMData
         });
 
         // add section to page
@@ -64,7 +66,8 @@ export class ModViewDataVizRendererOptionsHandler {
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
-            vizOptionsData
+            vizOptionsData,
+            openModPSMData
         })
     }
 
@@ -77,7 +80,8 @@ export class ModViewDataVizRendererOptionsHandler {
                                               proteinPositionFilterStateManager,
                                               searchDetailsBlockDataMgmtProcessing,
                                               dataPageStateManager_DataFrom_Server,
-                                              vizOptionsData
+                                              vizOptionsData,
+                                              openModPSMData
                                           }) {
 
         const $formDiv = $('div#data-viz-form');
@@ -133,6 +137,10 @@ export class ModViewDataVizRendererOptionsHandler {
                     vizOptionsData.data.modMassCutoffMax = parseInt(cutoff);
                 }
             }
+            {
+
+                vizOptionsData.data.includeOpenMods = $formDiv.find("input#include-open-mods-checkbox").prop('checked');
+            }
 
             // update hash in URL to reflect user customization state
             vizOptionsData.stateManagementObject.updateState();
@@ -146,7 +154,8 @@ export class ModViewDataVizRendererOptionsHandler {
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
-                vizOptionsData
+                vizOptionsData,
+                openModPSMData
             });
 
         });
@@ -190,6 +199,14 @@ export class ModViewDataVizRendererOptionsHandler {
                 $formToUpdate.find("input#modmass-cutoff-max").val(vizOptionsData.data.modMassCutoffMax )
             }
         }
+
+        // update whether or not to include open mods
+        {
+            if( vizOptionsData.data.includeOpenMods !== undefined ) {
+                $formToUpdate.find("input#include-open-mods-checkbox").prop( "checked", vizOptionsData.data.includeOpenMods);
+            }
+
+        }
     }
 
     static addFormToPage() {
@@ -209,7 +226,7 @@ export class ModViewDataVizRendererOptionsHandler {
         $mainContentDiv.empty();
     }
 
-    static addProteinPositionFilterToPage({ vizOptionsData, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server }) {
+    static addProteinPositionFilterToPage({ openModPSMData, vizOptionsData, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server }) {
 
         const $mainContentDiv = $('#mod_list_container');
 
@@ -230,7 +247,8 @@ export class ModViewDataVizRendererOptionsHandler {
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 projectSearchIds,
-                dataPageStateManager_DataFrom_Server
+                dataPageStateManager_DataFrom_Server,
+                openModPSMData
             });
 
             // add the viz to the page using these viz options
@@ -243,7 +261,8 @@ export class ModViewDataVizRendererOptionsHandler {
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
-                dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server
+                dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server,
+                openModPSMData
             });
         }
 

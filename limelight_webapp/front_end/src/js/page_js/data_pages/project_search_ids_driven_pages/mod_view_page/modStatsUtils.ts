@@ -11,7 +11,8 @@ export class ModStatsUtils {
                                        sortedModMasses,
                                        totalPSMCount,
                                        projectSearchIds,
-                                       searchDetailsBlockDataMgmtProcessing
+                                       searchDetailsBlockDataMgmtProcessing,
+                                        openModPSMData
     }) {
 
         let output = "Currently NOT filtered on Protein and Position selection\nsearch1\tsearch2\tmod mass\tpsm count 1\tpsm count 2\tz-score\tp-value\n";
@@ -23,7 +24,8 @@ export class ModStatsUtils {
             totalPSMCount,
             vizOptionsData,
             countsOverride: true,
-            proteinPositionFilterStateManager : undefined
+            proteinPositionFilterStateManager : undefined,
+            openModPSMData
         });
 
         let selectedData = undefined;

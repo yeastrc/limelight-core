@@ -304,9 +304,8 @@ export class ModViewPage_DataLoader {
 
 			const url = "d/rws/for-page/psb/peptide-list-reported-peptide-ids-single-project-search-id";
 
-      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
-
-      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
@@ -324,6 +323,52 @@ export class ModViewPage_DataLoader {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
           }
+        });
+    }
+
+    __createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+
+        let searchDataLookupParams_For_Single_ProjectSearchId =
+            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
+
+        let requestObject = {
+            projectSearchId : projectSearchId,
+            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
+        };
+
+        return requestObject;
+    }
+
+    getOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let requestObject = objectThis.__createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
+
+                const url = "d/rws/for-page/psb/mod-page-special-protein-coverage-map-open-mod-data-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        loadedData.openModPSMData = responseData.openModPsmIdsSet_KeyInnerOpenModMassRounded_KeyOuterReportedPeptideId;
+                        loadedData.openModReportedPeptideProteinMap = responseData.proteinCoverage_OnlyContainsMods_KeyInnerProteinSequenceVersionId_KeyOuterReportedPeptideId;
+                        resolve();
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
