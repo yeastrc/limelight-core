@@ -1018,7 +1018,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 for(const modMass of Object.keys(reportedPeptideMap)) {
 
                     // if we've already counted this reported peptide for this mod mass in this project search id, don't count its PSMs again
-                    if(modMass in countedReportedPeptides && projectSearchId in countedReportedPeptides[modMass] && reportedPeptideId in countedReportedPeptides[modMap][projectSearchId]) {
+                    if(modMass in countedReportedPeptides && projectSearchId in countedReportedPeptides[modMass] && reportedPeptideId in countedReportedPeptides[modMass][projectSearchId]) {
                         continue;
                     }
 
@@ -1074,6 +1074,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                            proteinPositionFilterStateManager,
                            openModPSMData,
                        }) {
+
+        console.log('called buildModMap');
+        console.log('openModPSMData', openModPSMData);
 
         const modMap = { };
 
