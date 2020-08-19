@@ -70,6 +70,8 @@ export class PeptideViewPage_Display_SingleSearch {
 	
 	private _projectSearchId : number;
 
+	private _loadData_For_PeptideList_LoadInProgress = false;
+
 
 	/////
 	
@@ -163,7 +165,7 @@ export class PeptideViewPage_Display_SingleSearch {
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing, //  Used in loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch(...) if param is not passed
 			proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer
 		});
-		
+
 		
 		const promise_loadData_For_PeptideList = this._loadData_For_PeptideList();
 
@@ -196,6 +198,8 @@ export class PeptideViewPage_Display_SingleSearch {
 			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
 		);
 
+		this._loadData_For_PeptideList_LoadInProgress = true;
+
 		return new Promise( (resolve, reject) => {
 			try {
 				const projectSearchId = this._projectSearchId;
@@ -221,6 +225,8 @@ export class PeptideViewPage_Display_SingleSearch {
 						if ( ! reportedPeptideIds.length ) {
 
 							//  No Reported Peptide Ids returned
+
+							this._loadData_For_PeptideList_LoadInProgress = false;
 
 							resolve({ noReportedPeptideIds : true });
 
@@ -251,6 +257,8 @@ export class PeptideViewPage_Display_SingleSearch {
 
 						promisesAll.then( ( promiseValue ) => {
 							try {
+
+								this._loadData_For_PeptideList_LoadInProgress = false;
 
 								resolve();
 
@@ -341,7 +349,20 @@ export class PeptideViewPage_Display_SingleSearch {
 
 			noReportedPeptideIds = true;
 		}
-		
+
+		const reportedPeptideIdsForDisplay = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
+
+		if ( reportedPeptideIdsForDisplay === undefined || reportedPeptideIdsForDisplay === null ) {
+			try {
+				const msg = "_displayOnPage_PeptideList(...). this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() returned null or undefined.  this._loadData_For_PeptideList_LoadInProgress: " + this._loadData_For_PeptideList_LoadInProgress;
+				console.warn( msg );
+				throw Error( msg );
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		}
+
 		console.log("Rendering Peptide List START, Now: " + new Date() );
 		
 		let $peptide_table_loading_text_display = $("#peptide_table_loading_text_display");
@@ -357,8 +378,6 @@ export class PeptideViewPage_Display_SingleSearch {
 		$peptide_list_container.show();
 		
 		const peptide_list_container_DOM = $peptide_list_container[ 0 ];
-
-		const reportedPeptideIdsForDisplay = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
 
 		let peptideListLength = reportedPeptideIdsForDisplay.length.toString();
 
