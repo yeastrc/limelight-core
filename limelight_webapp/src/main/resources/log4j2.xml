@@ -41,6 +41,10 @@
     <!-- 
     <Logger name="org.yeastrc.limelight.limelight_webapp.services.BrowserIs_InternetExplorer_Detection_Service" level="debug"/>
     -->
+     <!-- Log Access from Browser MicrosoftLegacyEdge if this is set to debug. -->
+    <!-- 
+    <Logger name="org.yeastrc.limelight.limelight_webapp.services.BrowserIs_MicrosoftEdgeLegacy_Detection_Service" level="debug"/>
+    -->
     
 	<!-- 
     <Logger name="org.springframework.transaction.interceptor" level="TRACE"/>

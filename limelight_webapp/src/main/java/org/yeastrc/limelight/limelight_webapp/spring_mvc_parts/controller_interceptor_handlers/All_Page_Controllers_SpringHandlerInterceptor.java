@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.yeastrc.limelight.limelight_webapp.services.BrowserIs_InternetExplorer_Detection_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.services.BrowserIs_MicrosoftEdgeLegacy_Detection_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.error_pages_controllers.AA_ErrorPageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.rest_controllers.AA_UserAccount_RestWSControllerPaths_Constants;
@@ -42,6 +43,9 @@ public class All_Page_Controllers_SpringHandlerInterceptor implements HandlerInt
 	
 	@Autowired
 	private BrowserIs_InternetExplorer_Detection_ServiceIF browserIs_InternetExplorer_Detection_Service;
+	
+	@Autowired
+	private BrowserIs_MicrosoftEdgeLegacy_Detection_ServiceIF browserIs_MicrosoftEdgeLegacy_Detection_Service;
 
 	/**
 	 * Used in class LimelightWebAppConfig
@@ -72,6 +76,18 @@ public class All_Page_Controllers_SpringHandlerInterceptor implements HandlerInt
     		httpServletResponse.sendRedirect( redirectPath );
     		
     		return false; // request handled here
+    	}
+    	
+    	if ( browserIs_MicrosoftEdgeLegacy_Detection_Service.browserIs_MicrosoftEdgeLegacy_Detection_Service( httpServletRequest ) ) {
+    		
+    		//  Currently commented out
+//    		String redirectPath = httpServletRequest.getContextPath() 
+//    				+ AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
+//    				+ AA_ErrorPageControllerPaths_Constants.MICROSOFT_LEGACY_EDGE_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER;
+//    		
+//    		httpServletResponse.sendRedirect( redirectPath );
+//    		
+//    		return false; // request handled here
     	}
     	
     	return true;
