@@ -91,7 +91,7 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 		
 		if ( psmCutoffValuesList_Reversed.isEmpty() ) {
 			sqlSB.append( "SELECT psm_tbl.id as psm_id, psm_open_modification_tbl.mass, " );
-			sqlSB.append( " psm_open_modification_tbl.position, psm_open_modification_tbl.is_n_terminal, psm_open_modification_tbl.is_c_terminal " );
+			sqlSB.append( " psm_open_modification_position_tbl.position, psm_open_modification_position_tbl.is_n_terminal, psm_open_modification_position_tbl.is_c_terminal " );
 			sqlSB.append( " FROM psm_tbl " );
 			sqlSB.append( " INNER JOIN psm_open_modification_tbl ON psm_tbl.id = psm_open_modification_tbl.psm_id " );
 			sqlSB.append( " LEFT OUTER JOIN psm_open_modification_position_tbl ON psm_open_modification_tbl.id = psm_open_modification_position_tbl.psm_open_modification_id " );
