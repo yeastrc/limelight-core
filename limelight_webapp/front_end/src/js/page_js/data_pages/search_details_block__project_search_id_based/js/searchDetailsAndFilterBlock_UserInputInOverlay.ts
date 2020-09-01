@@ -201,8 +201,9 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
         
         $search_filters_change_update_button.click( function(eventObject) {
 			try {
+				const clickThis = this;
 				eventObject.preventDefault();
-				objectThis._search_filters_change_update_button_Click();
+				objectThis._search_filters_change_update_button_Click( clickThis );
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -717,7 +718,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 	/**
 	 * 
 	 */
-	_search_filters_change_update_button_Click() {
+	_search_filters_change_update_button_Click( clickThis ) {
 
 //		window.alert("Not implemented yet");
 //		throw Error("_search_filters_change_update_button_Click() Not implemented yet");
@@ -803,6 +804,12 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		
 		if ( anyCutoffsChanged ) {
 			//  Cutoffs changed so apply new cutoffs to the page
+
+			//  First disable update button so that it cannot be clicked again
+			const $clickThis = $( clickThis );
+			$clickThis.prop("disabled",true);
+
+			//  apply new cutoffs to the page
 			this._applyNewCutoffsToPage( { 
 				searchDetails_Filters_AnnTypeDisplay_Root : searchDetails_Filters_AnnTypeDisplayRootObject_NEW,
 				projectSearchIdsForCutoffsChanged } );
