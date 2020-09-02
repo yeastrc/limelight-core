@@ -76,6 +76,8 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 
 	private static final Logger log = LoggerFactory.getLogger( Project_UploadData_ListSubmittedItems_RestWebserviceController.class );
+	
+	private static int QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE = -1;
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -292,6 +294,9 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 						.getPendingTrackingIdsAllProjects();
 			}
 			////////
+			
+			boolean needToUpdateQueuePosition = false; // true if need to go back through records and set queue position
+			
 			//   Main processing of tracking records
 			for ( InternalHolder internalHolder : internalHolderList ) {
 				FileImportTrackingDTO trackingItem = internalHolder.trackingItem;
@@ -311,11 +316,18 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 						trackingItem = FileImportTracking_Shared_Get_DAO.getInstance().getItem( trackingItem.getId() );
 						if ( trackingItem.getStatus() == FileImportStatus.QUEUED
 								|| trackingItem.getStatus() == FileImportStatus.RE_QUEUED ) {
-							String msg = "Tracking item is not in all pending for tracking status QUEUED or RE_QUEUED"
-									+ " after re-get from DB."
-									+ "  trackingItem id: " + trackingItem.getId();
-							log.error( msg );
-							throw new LimelightInternalErrorException(msg);
+							
+							//  Set to QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE and fix those after processing all records
+							
+							needToUpdateQueuePosition = true;
+							displayItem.setQueuePosition( QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE );
+							
+							// WAS
+//							String msg = "Tracking item is not in all pending for tracking status QUEUED or RE_QUEUED"
+//									+ " after re-get from DB."
+//									+ "  trackingItem id: " + trackingItem.getId();
+//							log.error( msg );
+//							throw new LimelightInternalErrorException(msg);
 						}
 					} else {
 						int queuePosition = queueIndex + 1; // add 1 since queueIndex is zero based
@@ -427,6 +439,29 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 				}
 				if ( trackingItem.getStatus() == FileImportStatus.COMPLETE ) {
 					completeSuccessTrackingIdList.add( trackingItem.getId() );
+				}
+			}
+
+			if ( needToUpdateQueuePosition ) {
+				
+				//  Some of queued or re-queued were not in pendingTrackingIdsAllProjectsList so set their queue position here
+				//  Arbitrary assign queue position to after size of pendingTrackingIdsAllProjectsList
+				
+				int nextQueuePosition = pendingTrackingIdsAllProjectsList.size() + 1;
+				
+				for ( int index = pendingItemsList.size() - 1; index >= 0; index-- ) {
+					
+					//  Process in reverse order since 
+					
+					FileImportTrackingDisplay displayItem = pendingItemsList.get( index );
+					
+					if ( displayItem.getQueuePosition() != null && displayItem.getQueuePosition().intValue() == QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE ) {
+						
+						displayItem.setQueuePosition( nextQueuePosition );
+						displayItem.setQueuePositionFmt( numberFormat.format( nextQueuePosition ) );
+
+						nextQueuePosition++;
+					}
 				}
 			}
 		}
