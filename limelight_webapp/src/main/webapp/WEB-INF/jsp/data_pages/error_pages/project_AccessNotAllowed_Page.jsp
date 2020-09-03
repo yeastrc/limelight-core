@@ -36,7 +36,8 @@
 			</div>
 			<div >
 				Please contact the project owner to get access.
-			</div>		</div>
+			</div>
+		</div>
 	</div>
   		
   </div>

@@ -525,7 +525,7 @@ const _get_DataTable_DataRowEntries = function({
             let valueDisplay = "";
             let valueSort = "";
             if ( psmListItem.openModificationMassAndPositionsList && psmListItem.openModificationMassAndPositionsList.length > 0 ) {
-                // ss
+
                 const openModificationMassAsString_List = [];
                 for ( const openModificationMassAndPositionsEntry of psmListItem.openModificationMassAndPositionsList ) {
                     const openModMass = openModificationMassAndPositionsEntry.openModMass;

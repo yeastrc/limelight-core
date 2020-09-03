@@ -48,6 +48,10 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	private List<BigDecimal> reporterIonMassList;
 	private boolean hasReporterIons;
 	
+	private List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart> openModificationMassAndPositionsList;
+	private boolean hasOpenModifications;
+
+	
 	/**
 	 * Variable Mods / Dynamic Mods
 	 */
@@ -149,6 +153,19 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_Item {
 	}
 	public void setHasReporterIons(boolean hasReporterIons) {
 		this.hasReporterIons = hasReporterIons;
+	}
+	public List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart> getOpenModificationMassAndPositionsList() {
+		return openModificationMassAndPositionsList;
+	}
+	public void setOpenModificationMassAndPositionsList(
+			List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart> openModificationMassAndPositionsList) {
+		this.openModificationMassAndPositionsList = openModificationMassAndPositionsList;
+	}
+	public boolean isHasOpenModifications() {
+		return hasOpenModifications;
+	}
+	public void setHasOpenModifications(boolean hasOpenModifications) {
+		this.hasOpenModifications = hasOpenModifications;
 	}
 	
 	

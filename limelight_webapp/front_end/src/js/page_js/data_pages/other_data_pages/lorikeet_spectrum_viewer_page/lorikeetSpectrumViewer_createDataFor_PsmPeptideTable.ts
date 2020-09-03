@@ -30,6 +30,8 @@ class PsmPeptideEntryAfterProcessing {
 	retentionTimeMinutesSort
 	reporterIonMassesDisplay
 	reporterIonMassesSort
+	openModificationMassesDisplay
+	openModificationMassesSort
 	psmObject // Existing psmObject from server
 
 // 	for( let annoId of Object.keys( psmObject.psmAnnotationMap ) ) {
@@ -62,9 +64,10 @@ export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = funct
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
 		anyPsmsHave_reporterIonMassesDisplay,
+		anyPsmsHave_openModificationMassesDisplay
 	} =  _preProcessInputData({ sorted_psmPeptideData, loadedDataFromServer })
 
-	const dataTable_Columns : Array<DataTable_Column> = _getDataTableColumns( { psmAnnotationTypesForPsmListEntries_DisplayOrder, anyPsmsHave_precursor_M_Over_Z, anyPsmsHave_retentionTime, anyPsmsHave_reporterIonMassesDisplay } );
+	const dataTable_Columns : Array<DataTable_Column> = _getDataTableColumns( { psmAnnotationTypesForPsmListEntries_DisplayOrder, anyPsmsHave_precursor_M_Over_Z, anyPsmsHave_retentionTime, anyPsmsHave_reporterIonMassesDisplay, anyPsmsHave_openModificationMassesDisplay } );
 
 	const dataTable_DataRowEntries = _createDataTableDataObjectArrayFromWebServiceResponse({
 		psmId_Selection,
@@ -72,7 +75,8 @@ export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = funct
 		psmAnnotationTypesForPsmListEntries_DisplayOrder,
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
-		anyPsmsHave_reporterIonMassesDisplay
+		anyPsmsHave_reporterIonMassesDisplay,
+		anyPsmsHave_openModificationMassesDisplay
 	});
 
 	const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
@@ -94,6 +98,7 @@ const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromSer
 	anyPsmsHave_precursor_M_Over_Z : boolean
 	anyPsmsHave_retentionTime : boolean
 	anyPsmsHave_reporterIonMassesDisplay : boolean
+	anyPsmsHave_openModificationMassesDisplay : boolean
 } {
 
 	const primaryLorikeetData = loadedDataFromServer.primaryLorikeetData.data;
@@ -102,6 +107,7 @@ const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromSer
 	let anyPsmsHave_precursor_M_Over_Z = false;
 	let anyPsmsHave_retentionTime = false;
 	let anyPsmsHave_reporterIonMassesDisplay = false;
+	let anyPsmsHave_openModificationMassesDisplay = false;
 
 	const psmPeptideEntryAfterProcessingEntries : Array<PsmPeptideEntryAfterProcessing> = []
 
@@ -150,7 +156,7 @@ const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromSer
 			}
 		}
 		{
-			if ( psmObject.reporterIonMassList ) {
+			if ( psmObject.reporterIonMassList && psmObject.reporterIonMassList.length > 0 ) {
 
 				const reporterIonMassAsString_List = [];
 				for ( const reporterIonMass of psmObject.reporterIonMassList ) {
@@ -164,6 +170,78 @@ const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromSer
 
 				anyPsmsHave_reporterIonMassesDisplay = true
 			}
+
+			if ( psmObject.openModificationMassAndPositionsList && psmObject.openModificationMassAndPositionsList.length > 0 ) {
+				let valueDisplay = "";
+				let valueSort = "";
+
+				const openModificationMassAsString_List = [];
+				for ( const openModificationMassAndPositionsEntry of psmObject.openModificationMassAndPositionsList ) {
+					const openModMass = openModificationMassAndPositionsEntry.openModMass;
+					const positionEntries_Optional = openModificationMassAndPositionsEntry.positionEntries_Optional;
+					const openModificationMass_String = openModMass.toString();
+					let outputEntry_positionsSubstring = "";
+					if ( positionEntries_Optional ) {
+						const positionNumbers = [];
+						let is_N_Terminal = false;
+						let is_C_Terminal = false;
+						for ( const positionEntry of positionEntries_Optional ) { // positionEntry : { position, is_N_Terminal, is_C_Terminal }
+							if ( positionEntry.is_N_Terminal ) {
+								is_N_Terminal = true;
+							} else if ( positionEntry.is_C_Terminal ) {
+								is_C_Terminal = true;
+							}
+							if ( ( ! positionEntry.is_N_Terminal ) && ( ! positionEntry.is_C_Terminal ) ) {
+								positionNumbers.push(positionEntry.position);
+							}
+						}
+
+						let positionNumbers_JoinString = "";
+
+						if ( positionNumbers.length > 0 ) {
+							positionNumbers.sort((a, b) => {
+								if (a < b) {
+									return -1;
+								}
+								if (a > b) {
+									return 1;
+								}
+								return 0;
+							});
+
+							positionNumbers_JoinString = positionNumbers.join(", ");
+						}
+
+						let n_TerminalLabel = ""
+						let n_TerminalSeparator = ""
+						if ( is_N_Terminal ) {
+							n_TerminalLabel = "n-term"
+							if ( positionNumbers_JoinString.length > 0 ) {
+								n_TerminalSeparator = ", "
+							}
+						}
+						let c_TerminalLabel = ""
+						let c_TerminalSeparator = ""
+						if ( is_C_Terminal ) {
+							c_TerminalLabel = "c-term"
+							if ( positionNumbers_JoinString.length > 0 ) {
+								c_TerminalSeparator = ", "
+							}
+						}
+						outputEntry_positionsSubstring = " (" + n_TerminalLabel + n_TerminalSeparator + positionNumbers_JoinString + c_TerminalSeparator + c_TerminalLabel + ")";
+					}
+					const outputEntryString = openModificationMass_String + outputEntry_positionsSubstring
+					openModificationMassAsString_List.push( outputEntryString );
+				}
+
+				valueDisplay = openModificationMassAsString_List.join(", ");
+				valueSort = psmObject.openModificationMassAndPositionsList[ 0 ].openModMass; // Sort on first entry mass
+
+				psmPeptideEntryAfterProcessing.openModificationMassesDisplay = valueDisplay
+				psmPeptideEntryAfterProcessing.openModificationMassesSort = valueSort
+
+				anyPsmsHave_openModificationMassesDisplay = true;
+			}
 		}
 
 		psmPeptideEntryAfterProcessingEntries.push( psmPeptideEntryAfterProcessing )
@@ -173,7 +251,8 @@ const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromSer
 		psmPeptideEntryAfterProcessingEntries,
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
-		anyPsmsHave_reporterIonMassesDisplay
+		anyPsmsHave_reporterIonMassesDisplay,
+		anyPsmsHave_openModificationMassesDisplay
 	}
 }
 
@@ -189,12 +268,14 @@ const _getDataTableColumns = function(
 		psmAnnotationTypesForPsmListEntries_DisplayOrder,
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
-		anyPsmsHave_reporterIonMassesDisplay
+		anyPsmsHave_reporterIonMassesDisplay,
+		anyPsmsHave_openModificationMassesDisplay
 	} : {
 		psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem>
 		anyPsmsHave_precursor_M_Over_Z : boolean
 		anyPsmsHave_retentionTime : boolean
 		anyPsmsHave_reporterIonMassesDisplay : boolean
+		anyPsmsHave_openModificationMassesDisplay : boolean
 
 	} ) : Array<DataTable_Column> {
 
@@ -276,6 +357,22 @@ const _getDataTableColumns = function(
 		dataTable_Columns.push( dataTable_Column );
 	}
 
+	if ( anyPsmsHave_openModificationMassesDisplay ) {
+		const dataTable_Column = new DataTable_Column({
+			id : "openModifications", // Used for tracking sort order. Keep short
+			displayName : "Open Modifications",
+			width : 65,
+			sortable : true,
+			style_override_DataRowCell_React : { fontSize: 12 },
+			// style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+			// style_override_header_React : {},  // Optional
+			// style_override_React : {},  // Optional
+			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
+			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+		});
+		dataTable_Columns.push( dataTable_Column );
+	}
+
 	for( let annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
 
 		const dataTable_Column = new DataTable_Column({
@@ -308,7 +405,8 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 		psmAnnotationTypesForPsmListEntries_DisplayOrder,
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
-		anyPsmsHave_reporterIonMassesDisplay
+		anyPsmsHave_reporterIonMassesDisplay,
+		anyPsmsHave_openModificationMassesDisplay
 	} : {
 		psmId_Selection : number
 		psmPeptideEntryAfterProcessingEntries : Array<PsmPeptideEntryAfterProcessing>
@@ -316,6 +414,7 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 		anyPsmsHave_precursor_M_Over_Z : boolean
 		anyPsmsHave_retentionTime : boolean
 		anyPsmsHave_reporterIonMassesDisplay : boolean
+		anyPsmsHave_openModificationMassesDisplay : boolean
 
 	} ) : Array<DataTable_DataRowEntry> {
 
@@ -382,6 +481,20 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 				if (psmPeptideEntryAfterProcessingEntry.reporterIonMassesDisplay !== undefined) {
 					valueDisplay = psmPeptideEntryAfterProcessingEntry.reporterIonMassesDisplay
 					valueSort = psmPeptideEntryAfterProcessingEntry.reporterIonMassesDisplay
+				}
+				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					valueDisplay,
+					valueSort
+				})
+				columnEntries.push(columnEntry);
+			}
+
+			if (anyPsmsHave_openModificationMassesDisplay) {
+				let valueDisplay = ""
+				let valueSort = ""
+				if (psmPeptideEntryAfterProcessingEntry.openModificationMassesDisplay !== undefined) {
+					valueDisplay = psmPeptideEntryAfterProcessingEntry.openModificationMassesDisplay
+					valueSort = psmPeptideEntryAfterProcessingEntry.openModificationMassesSort
 				}
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
 					valueDisplay,
