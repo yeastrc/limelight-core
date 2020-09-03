@@ -9,7 +9,7 @@
 <html>
 <head>
 	<title><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_title_start.jsp" 
-				%> No project with that URL could be found.</title>
+				%> No access to project.</title>
  
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_every_page.jsp" %>
 
@@ -31,8 +31,12 @@
 			Error
 		</div>
 		<div style="font-size: 16px;">
-			No access to that project is allowed.
-		</div>
+			<div >
+				You do not have access to this project. 
+			</div>
+			<div >
+				Please contact the project owner to get access.
+			</div>		</div>
 	</div>
   		
   </div>
