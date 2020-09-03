@@ -57,15 +57,19 @@ type OpenUserChangeFiltersOverlay_Callback = ( params : OpenUserChangeFiltersOve
 export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
 
     displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+    do_NOT_Display_ChangeSearches_Link? : boolean
+    do_NOT_Display_Re_Order_Searches_Link? : boolean
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
     dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
     dataPageStateManager_DataFrom_Server : DataPageStateManager
     searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
 
-    constructor(
+    constructor(  //  Not every use calls the constructor
         {
             displayOnly, // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+            do_NOT_Display_ChangeSearches_Link,
+            do_NOT_Display_Re_Order_Searches_Link,
             dataPages_LoggedInUser_CommonObjectsFactory,
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
             dataPageStateManager_DataFrom_Server,
@@ -74,6 +78,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
         } : {
 
     displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+    do_NOT_Display_ChangeSearches_Link? : boolean
+    do_NOT_Display_Re_Order_Searches_Link? : boolean
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
     dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
     dataPageStateManager_DataFrom_Server : DataPageStateManager
@@ -82,6 +88,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
         }) {
 
         this.displayOnly = displayOnly
+        this.do_NOT_Display_ChangeSearches_Link = do_NOT_Display_ChangeSearches_Link
+        this.do_NOT_Display_Re_Order_Searches_Link = do_NOT_Display_Re_Order_Searches_Link
         this.dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory
         this.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
         this.dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server
@@ -368,7 +376,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
 
         let changeSearchesJSX : JSX.Element = undefined
 
-        if ( ! this.props.propValue.displayOnly ) {
+        if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_ChangeSearches_Link ) ) {
 
             changeSearchesJSX = (
                 <ChangeSearches
@@ -527,19 +535,26 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
         }
 
 
-        let changeSearchesReorderSearchesJSX : JSX.Element = undefined
+        let changeSearchesJSX : JSX.Element = undefined
 
-        if ( ! this.props.propValue.displayOnly ) {
+        if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_ChangeSearches_Link ) ) {
 
-            changeSearchesReorderSearchesJSX = (
-                <React.Fragment>
-                    <ChangeSearches
-                        changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
-                    />
-                    <ChangeSearchesOrder
-                        changeSearchesOrderClickedCallback={ this.props.changeSearchesOrderClickedCallback }
-                    />
-                </React.Fragment>
+            changeSearchesJSX = (
+                <ChangeSearches
+                    changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
+                />
+            )
+        }
+
+
+        let reorderSearchesJSX : JSX.Element = undefined
+
+        if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_Re_Order_Searches_Link ) ) {
+
+            reorderSearchesJSX = (
+                <ChangeSearchesOrder
+                    changeSearchesOrderClickedCallback={ this.props.changeSearchesOrderClickedCallback }
+                />
             )
         }
 
@@ -551,7 +566,8 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                         <div>
                             Searches:
                         </div>
-                        { changeSearchesReorderSearchesJSX }
+                        { changeSearchesJSX }
+                        { reorderSearchesJSX }
                     </td>
                     <td style={ { verticalAlign : "top" } }>
                         { singleSearchesInsideSearchesBlock }
