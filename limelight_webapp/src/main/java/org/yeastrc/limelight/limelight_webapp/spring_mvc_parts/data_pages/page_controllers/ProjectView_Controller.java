@@ -37,6 +37,8 @@ import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
+import org.yeastrc.limelight.limelight_webapp.searchers.Experiments_AnyForProjectId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SavedView_AnyForProjectId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
@@ -62,6 +64,12 @@ public class ProjectView_Controller {
 
 	@Autowired
 	private ProjectDAO_IF projectDAO;
+	
+	@Autowired
+	private SavedView_AnyForProjectId_Searcher_IF savedView_AnyForProjectId_Searcher;
+	
+	@Autowired
+	private Experiments_AnyForProjectId_Searcher_IF experiments_AnyForProjectId_Searcher;
 
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
@@ -203,6 +211,30 @@ public class ProjectView_Controller {
 			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
 			
 			populatePageHeaderData.populatePageHeaderData( projectIds, userSession, httpServletRequest );
+			
+			if ( userSession != null && userSession.isActualUser() ) {
+
+				//  If logged in user, always show Saved Views and Experiments sections
+				
+				httpServletRequest.setAttribute( WebConstants.REQUEST_SHOW_SAVED_VIEWS_BLOCK, true );
+				httpServletRequest.setAttribute( WebConstants.REQUEST_SHOW_EXPRERIMENTS_BLOCK, true );
+			
+				
+			} else {
+				// For Public user, only show Saved Views section if there are any saved views
+
+				if ( savedView_AnyForProjectId_Searcher.savedView_AnyForProjectId( projectId ) ) {
+					
+					httpServletRequest.setAttribute( WebConstants.REQUEST_SHOW_SAVED_VIEWS_BLOCK, true );
+				}
+				
+				// For Public user, only show Saved Views section if there are any saved views
+				
+				if ( experiments_AnyForProjectId_Searcher.experiments_AnyForProjectId_Searcher( projectId ) ) {
+				
+					httpServletRequest.setAttribute( WebConstants.REQUEST_SHOW_EXPRERIMENTS_BLOCK, true );
+				}
+			}
 
 			return "data_pages/other_data_pages/project_view_page/projectView.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 

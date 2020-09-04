@@ -3,6 +3,14 @@
 	Page Section:   Experiment List
 --%>
 
+<%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
+	
+	
+<c:if test="${ showExperimentsBlock }">
+
+	<%--  If <script > is NOT present, then there is no Experiments block and JS will skip processing --%>
+	<script type="text/text" id="experiments_section_block_shown">Y</script>
+
 <div id="experiments_section__top_level_block"
 	class="top-level-container selector_collapsable_container"
 	style="display: none;" >
@@ -32,3 +40,6 @@
   	</div>
   	
 </div>
+
+</c:if>
+

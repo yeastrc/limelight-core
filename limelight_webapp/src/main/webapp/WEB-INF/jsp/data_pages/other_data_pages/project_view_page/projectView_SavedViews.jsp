@@ -3,6 +3,14 @@
 	Page Section:   Saved Views
 --%>
 
+<%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
+	
+	
+<c:if test="${ showSavedViewsBlock }">
+
+	<%--  If <script > is NOT present, then there is no saved views block and JS will skip processing --%>
+	<script type="text/text" id="saved_views_block_shown">Y</script>
+
 <div class="top-level-container selector_collapsable_container" >
 
 	<div  class="collapsable-link-container top-level-collapsable-link-container selector_collapsable_link_container" style="">
@@ -41,3 +49,6 @@
   	</div>
   	
 </div>
+
+</c:if>
+

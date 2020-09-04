@@ -112,6 +112,16 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 	 */
 	_listExperiments() {
 
+		{
+			const $experiments_section_block_shown = $("#experiments_section_block_shown")
+			if ( $experiments_section_block_shown.length === 0 ) {
+
+				//  No Experiments block so skip initialization
+
+				return;  // EARLY RETURN
+			}
+		}
+
 		const $experiments_section__top_level_block = $("#experiments_section__top_level_block");
 		if ( $experiments_section__top_level_block.length === 0 ) {
 			throw Error("NO DOM element with id 'experiments_section__top_level_block'");

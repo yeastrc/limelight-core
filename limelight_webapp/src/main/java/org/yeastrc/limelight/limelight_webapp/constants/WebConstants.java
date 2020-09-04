@@ -77,6 +77,16 @@ public class WebConstants {
 	 * Project Page 
 	 */
 	public static final String REQUEST_PROJECT_IDS = "projectIds";
+
+	/**
+	 * Set to true to show "Saved Views" block on Project Page
+	 */
+	public static final String REQUEST_SHOW_SAVED_VIEWS_BLOCK = "showSavedViewsBlock";
+
+	/**
+	 * Set to true to show "Experiments" block on Project Page
+	 */
+	public static final String REQUEST_SHOW_EXPRERIMENTS_BLOCK = "showExperimentsBlock";
 	
 	/**
 	 * Projects serialized to JSON
