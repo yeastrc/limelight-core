@@ -42,10 +42,11 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
-import org.yeastrc.limelight.limelight_webapp.searchers.PeptideListForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideBasicObjectsSearcherResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
+import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.PSM_Count_ForSearchCriteria_Single_ProjSearchID_RequestRoot;
@@ -75,7 +76,7 @@ public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceContr
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
 
 	@Autowired
-	private PeptideListForProjectSearchIdSearcherIF peptideListForProjectSearchIdSearcher;
+	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 
 	@Autowired
 	private PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF psmCountForSearchIdReportedPeptideIdSearcher;
@@ -183,11 +184,14 @@ public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceContr
     		
     		int totalPSMCount = 0;
 
-    		List<ReportedPeptideBasicObjectsSearcherResultEntry> peptideList = peptideListForProjectSearchIdSearcher.getPeptideList( searchId, searcherCutoffValuesSearchLevel );
+    		final int minimumNumberOfPSMsPerReportedPeptide = 1;
+    		
+    		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideList = 
+    				reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
+    				
+    		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideList ) {
 
-    		for ( ReportedPeptideBasicObjectsSearcherResultEntry entry : peptideList ) {
-
-    			Integer numPsms = entry.getNumPsms();
+    			Integer numPsms = entry.getNumPsms_IfComputedOrInDB();
     			
     			if ( numPsms == null ) {
     				numPsms = 

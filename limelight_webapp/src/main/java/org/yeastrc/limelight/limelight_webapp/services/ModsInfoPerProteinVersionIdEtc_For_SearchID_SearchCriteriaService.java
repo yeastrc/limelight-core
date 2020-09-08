@@ -31,10 +31,9 @@ import org.springframework.stereotype.Controller;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPeptDynamicModDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
-import org.yeastrc.limelight.limelight_webapp.searchers.PeptideListForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideBasicObjectsSearcherResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPerPerProteinSeqVersionIdRoot;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPerPerProteinSeqVersionIdRoot.PerModMassEntry;
 
@@ -49,7 +48,7 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 	private static final Logger log = LoggerFactory.getLogger( ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService.class );
 
 	@Autowired
-	private PeptideListForProjectSearchIdSearcherIF peptideListForProjectSearchIdSearcher;
+	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 	
 	@Autowired
 	private ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF proteinCoverage_For_SearchIdReportedPeptideId_Searcher;
@@ -78,11 +77,13 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 		Map<Integer, Map<Double,PerModMassEntry>> dataPer_ReportedPeptides = new HashMap<>();
 
 		//  Get proteinCoverageDTOList to get peptide positions on proteins. Includes ReportedPeptideId
+		
+		final int minimumNumberOfPSMsPerReportedPeptide = 1;
 
-		List<ReportedPeptideBasicObjectsSearcherResultEntry> peptidesForSearchCriteriaList = 
-				peptideListForProjectSearchIdSearcher.getPeptideList( searchId, searcherCutoffValuesSearchLevel );
+		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptidesForSearchCriteriaList = 
+				reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide);
 
-		for ( ReportedPeptideBasicObjectsSearcherResultEntry entry : peptidesForSearchCriteriaList ) {
+		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptidesForSearchCriteriaList ) {
 			
 			Integer reportedPeptideId = entry.getReportedPeptideId();
 						

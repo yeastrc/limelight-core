@@ -27,9 +27,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
-import org.yeastrc.limelight.limelight_webapp.searchers.PeptideListForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideBasicObjectsSearcherResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 
 /**
  * Get ProteinVersionIds For SearchId and Search Criteria
@@ -41,7 +40,7 @@ public class ProteinVersionIdsFor_SearchID_SearchCriteriaService implements Prot
 	private static final Logger log = LoggerFactory.getLogger( ProteinVersionIdsFor_SearchID_SearchCriteriaService.class );
 
 	@Autowired
-	private PeptideListForProjectSearchIdSearcherIF peptideListForProjectSearchIdSearcher;
+	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 	
 	@Autowired
 	private ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher;
@@ -57,9 +56,12 @@ public class ProteinVersionIdsFor_SearchID_SearchCriteriaService implements Prot
 		
 		Set<Integer> proteinVersionIds = new HashSet<>();
 		
-		List<ReportedPeptideBasicObjectsSearcherResultEntry> peptideList = peptideListForProjectSearchIdSearcher.getPeptideList( searchId, searcherCutoffValuesSearchLevel );
+		final int minimumNumberOfPSMsPerReportedPeptide = 1;
 		
-		for ( ReportedPeptideBasicObjectsSearcherResultEntry entry : peptideList ) {
+		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideList = 
+				reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
+				
+		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideList ) {
 			
 			List<Integer> proteinVersionIdsForSearchIdReportedPeptideId = 
 					proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher

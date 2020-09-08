@@ -38,6 +38,15 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 
 /**
+ * 
+ * !!!  WARNING  !!!!
+ * 
+ * Call ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(...) to get:
+ * 
+ *    1)  Correct call for Default Cutoffs when possible to get faster query
+ * 
+ * 
+ * 
  * Returns a minimal set of data for each reported peptide that meets the criteria
  * 
  * Assumed NOT Default Cutoffs.  NO optimizations that use default cutoffs
@@ -95,6 +104,15 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 
 	
 	/**
+	 * 
+	 * !!!  WARNING  !!!!
+	 * 
+	 * Call ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(...) to get:
+	 * 
+	 *    1)  Correct call for Default Cutoffs when possible to get faster query
+	 * 
+	 * 
+	 * 
 	 * @param searchId
 	 * @param searcherCutoffValuesSearchLevel
 	 * @param minimumNumberOfPSMsPerReportedPeptide

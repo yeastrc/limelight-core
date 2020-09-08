@@ -28,11 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
-import org.yeastrc.limelight.limelight_webapp.searchers.PeptideListForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideBasicObjectsSearcherResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ResidueAndPSMCountDataPerReportedPeptide_Root;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ResidueAndPSMCountDataPerReportedPeptide_Root.PerReportedPeptideEntry;
 
@@ -44,7 +44,7 @@ import org.yeastrc.limelight.limelight_webapp.services_result_objects.ResidueAnd
 public class ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteriaService implements ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteriaServiceIF {
 
 	@Autowired
-	private PeptideListForProjectSearchIdSearcherIF peptideListForProjectSearchIdSearcher;
+	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 	
 	@Autowired
 	private PeptideStringForSearchIdReportedPeptideIdSearcherIF peptideStringForSearchIdReportedPeptideIdSearcher;
@@ -72,9 +72,13 @@ public class ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteri
 		Map<Integer,PerReportedPeptideEntry> reportedPeptideData = new HashMap<>();
 		
 		//  Reported Peptide list from DB for search criteria
-		List<ReportedPeptideBasicObjectsSearcherResultEntry> peptideList = peptideListForProjectSearchIdSearcher.getPeptideList( searchId, searcherCutoffValuesSearchLevel );
 
-		for ( ReportedPeptideBasicObjectsSearcherResultEntry entry : peptideList ) {
+		final int minimumNumberOfPSMsPerReportedPeptide = 1;
+		
+		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideList = 
+				reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
+				
+		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideList ) {
 
 			Integer reportedPeptideId = entry.getReportedPeptideId();
 			
@@ -96,7 +100,7 @@ public class ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteri
 				}
 			}
 			
-			Integer numPsms = entry.getNumPsms();
+			Integer numPsms = entry.getNumPsms_IfComputedOrInDB();
 			if ( numPsms == null ) {
 				numPsms = 
 						psmCountForSearchIdReportedPeptideIdSearcher

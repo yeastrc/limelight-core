@@ -26,10 +26,24 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_
 /**
  * @author danj
  *
+	 * !!!  WARNING  !!!!
+	 * 
+	 * Call ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(...) to get:
+	 * 
+	 *    1)  Correct call for Default Cutoffs when possible to get faster query
+	 * 
  */
 public interface ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcherIF {
 
 	/**
+	 * 
+	 * !!!  WARNING  !!!!
+	 * 
+	 * Call ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(...) to get:
+	 * 
+	 *    1)  Correct call for Default Cutoffs when possible to get faster query
+	 * 
+	 * 
 	 * @param searchId
 	 * @param searcherCutoffValuesSearchLevel
 	 * @param minimumNumberOfPSMsPerReportedPeptide
