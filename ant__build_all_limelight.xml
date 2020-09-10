@@ -110,9 +110,6 @@
 
 		<!--  Build submodules and create runnable jars -->
 
-		<!--  web app  -->		
-		<ant antfile="ant_create_war.xml"  dir="limelight_webapp" />
-				
 		<!--  importer  -->		
 		<ant antfile="ant__create_runnable_jar_importer.xml"  dir="limelight_importer" />
 
@@ -121,7 +118,10 @@
 		
 		<!-- submit import  -->		
 		<ant antfile="ant__create_runnable_jar_submit_import.xml"  dir="limelight_submit_import" />
-		
+
+		<!--  web app  -->		
+		<ant antfile="ant_create_war.xml"  dir="limelight_webapp" />
+				
 	</target>
 	
 
