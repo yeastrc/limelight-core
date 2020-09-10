@@ -5,6 +5,8 @@ Submit Import Help:
           if the deployed war file was changed from "limelight.war")
     **  See information at end of help about configuration file
 
+-V  display version (Capitol V)
+
 --user-submit-import-key=
 
 -p (--project-id=) <project id>

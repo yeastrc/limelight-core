@@ -34,6 +34,7 @@ import org.yeastrc.limelight.limelight_submit_import.constants.ScanFilenameConst
 import org.yeastrc.limelight.limelight_submit_import.constants.UploadFileSubDirConstants;
 import org.yeastrc.limelight.limelight_submit_import.get_submitter_key.GetSubmitterKey;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.enum_classes.LimelightSubmit_FileImportFileType;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.main.CallSubmitImportWebservice;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.main.CallSubmitImportWebserviceInitParameters;
@@ -62,15 +63,17 @@ public class SubmitUploadMain {
 	
 	private static final int PROGRAM_EXIT_CODE_NO_ERROR = 0;
 
-	private static final int PROGRAM_EXIT_CODE_INVALID_CONFIGURATION = 1;
+	private static final int PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION = 1;
 	
-	private static final int PROGRAM_EXIT_CODE_INVALID_INPUT = 2;
+	private static final int PROGRAM_EXIT_CODE_INVALID_CONFIGURATION = 2;
 	
-//	private static final int PROGRAM_EXIT_CODE_NO_PROJECTS_FOR_USER = 3;
+	private static final int PROGRAM_EXIT_CODE_INVALID_INPUT = 3;
 	
-	private static final int PROGRAM_EXIT_CODE_UPLOAD_SUBMIT_FAILED = 4;
+//	private static final int PROGRAM_EXIT_CODE_NO_PROJECTS_FOR_USER = 4;
+	
+	private static final int PROGRAM_EXIT_CODE_UPLOAD_SUBMIT_FAILED = 5;
 
-	private static final int PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED = 5;
+	private static final int PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED = 6;
 	
 //	private static final int PROGRAM_EXIT_CODE_PROGRAM_PROBLEM = 99;
 
@@ -409,6 +412,8 @@ public class SubmitUploadMain {
 //			}
 
 			SubmitImport_Init_Request_PgmXML submitImport_Init_Request = new SubmitImport_Init_Request_PgmXML();
+			
+			submitImport_Init_Request.setSubmitProgramVersionNumber( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
 			submitImport_Init_Request.setProjectIdentifier( projectIdString );
 			submitImport_Init_Request.setSubmitterSameMachine( true );
 			submitImport_Init_Request.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
@@ -417,12 +422,19 @@ public class SubmitUploadMain {
 					callSubmitImportWebservice.call_SubmitImport_Init_Webservice( submitImport_Init_Request );
 
 			if ( ! submitImport_Init_Response.isStatusSuccess() ) {
-				
+
 				System.err.println( "" );
 				System.err.println( "********************************************************" );
 				System.err.println( "" );
 				System.err.println( "Submit import Failed." );
 
+				if ( submitImport_Init_Response.isSubmitProgramVersionNumber_NotAccepted() ) {
+
+					reportSubmitterVersionErrorToUser( submitImport_Init_Response.getSubmitProgramVersionNumber_Current_Per_Webapp() );
+					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION;
+					return submitResult;    //  EARLY EXIT
+				}
+				
 				if ( submitImport_Init_Response.isProjectIdNotFound() ) {
 					
 					System.err.println( "Unable to upload to this project as it is Not Found." );
@@ -510,6 +522,8 @@ public class SubmitUploadMain {
 
 
 			SubmitImport_FinalSubmit_Request_PgmXML finalSubmit_Request = new SubmitImport_FinalSubmit_Request_PgmXML();
+			
+			finalSubmit_Request.setSubmitProgramVersionNumber( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
 
 			finalSubmit_Request.setProjectIdentifier( projectIdString );
 			finalSubmit_Request.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
@@ -652,6 +666,13 @@ public class SubmitUploadMain {
 
 				System.err.println( "Upload Submit Failed" );
 
+				if ( finalSubmit_Response.isSubmitProgramVersionNumber_NotAccepted() ) {
+
+					reportSubmitterVersionErrorToUser( submitImport_Init_Response.getSubmitProgramVersionNumber_Current_Per_Webapp() );
+					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION;
+					return submitResult;    //  EARLY EXIT
+				}
+				
 				submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SUBMIT_FAILED;
 				
 				return submitResult;  //  EARLY EXIT
@@ -783,4 +804,20 @@ public class SubmitUploadMain {
 		return errorString;
 	}
 
+
+	/**
+	 * validateScanFileSuffix
+	 * 
+	 * @param inputScanFileString
+	 * @return null if no error, otherwise return the error message
+	 */
+	private static void reportSubmitterVersionErrorToUser( Integer submitProgramVersionNumber_Current_Per_Webapp ) {
+		
+		System.err.println();
+		System.err.println( "The Limelight Submit Program is out of date.  This version is no longer supported." );
+		System.err.println();
+		System.err.println( "Please visit the Limelight Web application to download the latest Limelight Submit program." );
+		System.err.println();
+	}
+	
 }

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_Base;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_WebJSON;
@@ -249,6 +250,39 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		
 		SubmitImport_Init_Response_PgmXML webserviceResult = new SubmitImport_Init_Response_PgmXML();
 
+		if ( webserviceRequest.getSubmitProgramVersionNumber() == null ) {
+			
+			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() == null. webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier() );
+			
+			webserviceResult.setStatusSuccess( false );
+			
+			//  Reason set in validateResult by method validateProjectOwnerAllowed(...)
+			
+			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
+
+			//  TODO  Return other than 200 code?
+			return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
+		}
+
+		if ( webserviceRequest.getSubmitProgramVersionNumber().intValue() < Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER ) {
+			
+			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() < Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER.  SubmitProgramVersionNumber: "
+					+ webserviceRequest.getSubmitProgramVersionNumber().intValue()
+					+ ", SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER: " + Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER
+					+ ", webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier() );
+			
+			webserviceResult.setStatusSuccess( false );
+			webserviceResult.setSubmitProgramVersionNumber_NotAccepted(true);
+			webserviceResult.setSubmitProgramVersionNumber_Current_Per_Webapp( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+			
+			//  Reason set in validateResult by method validateProjectOwnerAllowed(...)
+			
+			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
+
+			//  TODO  Return other than 200 code?
+			return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
+		}
+		
 		int projectId = getProjectId( webserviceRequest );
 		
 		Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId_Result validateResult =

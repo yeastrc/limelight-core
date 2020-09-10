@@ -35,6 +35,9 @@ public abstract class SubmitImport_Init_Request_Base extends BaseSubmitImportWeb
 	// Properties as XML attributes
 
 	@XmlAttribute
+	private Integer submitProgramVersionNumber;
+
+	@XmlAttribute
 	private String projectIdentifier;
 
 	public String getProjectIdentifier() {
@@ -42,6 +45,12 @@ public abstract class SubmitImport_Init_Request_Base extends BaseSubmitImportWeb
 	}
 	public void setProjectIdentifier(String projectIdentifier) {
 		this.projectIdentifier = projectIdentifier;
+	}
+	public Integer getSubmitProgramVersionNumber() {
+		return submitProgramVersionNumber;
+	}
+	public void setSubmitProgramVersionNumber(Integer submitProgramVersionNumber) {
+		this.submitProgramVersionNumber = submitProgramVersionNumber;
 	}
 	
 }

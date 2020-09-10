@@ -31,6 +31,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SubmitImport_FinalSubmit_Request_Base {
 
+
+	@XmlAttribute
+	private Integer submitProgramVersionNumber;
+
 	@XmlAttribute
 	private String projectIdentifier;
 	@XmlAttribute
@@ -73,5 +77,13 @@ public abstract class SubmitImport_FinalSubmit_Request_Base {
 
 	public void setFileItems(List<SubmitImport_FinalSubmit_SingleFileItem> fileItems) {
 		this.fileItems = fileItems;
+	}
+
+	public Integer getSubmitProgramVersionNumber() {
+		return submitProgramVersionNumber;
+	}
+
+	public void setSubmitProgramVersionNumber(Integer submitProgramVersionNumber) {
+		this.submitProgramVersionNumber = submitProgramVersionNumber;
 	}
 }

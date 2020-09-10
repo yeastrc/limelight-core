@@ -31,6 +31,13 @@ public abstract class SubmitImport_FinalSubmit_Response_Base {
 
 	@XmlAttribute
 	private boolean statusSuccess;
+
+	@XmlAttribute
+	private boolean submitProgramVersionNumber_NotAccepted;
+
+	@XmlAttribute
+	private Integer submitProgramVersionNumber_Current_Per_Webapp;
+
 	@XmlAttribute
 	private boolean projectLocked;
 	@XmlAttribute
@@ -53,6 +60,18 @@ public abstract class SubmitImport_FinalSubmit_Response_Base {
 	}
 	public void setSubmittedScanFileNotAllowed(boolean submittedScanFileNotAllowed) {
 		this.submittedScanFileNotAllowed = submittedScanFileNotAllowed;
+	}
+	public boolean isSubmitProgramVersionNumber_NotAccepted() {
+		return submitProgramVersionNumber_NotAccepted;
+	}
+	public void setSubmitProgramVersionNumber_NotAccepted(boolean submitProgramVersionNumber_NotAccepted) {
+		this.submitProgramVersionNumber_NotAccepted = submitProgramVersionNumber_NotAccepted;
+	}
+	public Integer getSubmitProgramVersionNumber_Current_Per_Webapp() {
+		return submitProgramVersionNumber_Current_Per_Webapp;
+	}
+	public void setSubmitProgramVersionNumber_Current_Per_Webapp(Integer submitProgramVersionNumber_Current_Per_Webapp) {
+		this.submitProgramVersionNumber_Current_Per_Webapp = submitProgramVersionNumber_Current_Per_Webapp;
 	}
 	
 

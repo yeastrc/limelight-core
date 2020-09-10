@@ -22,6 +22,7 @@ import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImpo
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUsernamePasswordFileException;
 import org.yeastrc.limelight.limelight_submit_import.main.SubmitUploadMain;
 import org.yeastrc.limelight.limelight_submit_import.main.SubmitUploadMain.SubmitResult;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 
 /**
  * 
@@ -115,7 +116,9 @@ public class SubmitImportProgram {
 			//  User Submit Import Program Key - Generated in Web app
 			CmdLineParser.Option userSubmitImportProgramKeyCommandLineOpt = 
 					cmdLineParser.addStringOption( 'Z', USER_SUBMIT_IMPORT_KEY_PARAM_STRING );
-		
+
+			CmdLineParser.Option versionOpt = cmdLineParser.addBooleanOption('V', "version"); 
+
 			CmdLineParser.Option helpOpt = cmdLineParser.addBooleanOption('h', "help"); 
 
 			CmdLineParser.Option helpConfigurationFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "help-configuration-file" );
@@ -146,6 +149,13 @@ public class SubmitImportProgram {
 				Boolean helpConfigurationFile = (Boolean) cmdLineParser.getOptionValue(helpConfigurationFileCommandLineOpt, Boolean.FALSE);
 				if(helpConfigurationFile) {
 					printHelpConfigurationFile();
+					System.exit( PROGRAM_EXIT_CODE_HELP );
+				}
+			}
+			{
+				Boolean version = (Boolean) cmdLineParser.getOptionValue(versionOpt, Boolean.FALSE);
+				if(version) {
+					System.out.println( "Version Number: " + Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
 					System.exit( PROGRAM_EXIT_CODE_HELP );
 				}
 			}

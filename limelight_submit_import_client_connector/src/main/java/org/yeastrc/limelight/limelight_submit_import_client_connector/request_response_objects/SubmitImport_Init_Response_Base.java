@@ -33,9 +33,17 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	// Properties as XML attributes
 
 	@XmlAttribute
-	private String uploadKey;
-	@XmlAttribute
 	private boolean statusSuccess;
+
+	@XmlAttribute
+	private boolean submitProgramVersionNumber_NotAccepted;
+
+	@XmlAttribute
+	private Integer submitProgramVersionNumber_Current_Per_Webapp;
+
+	@XmlAttribute
+	private String uploadKey;
+	
 	@XmlAttribute
 	private boolean projectLocked; 
 	
@@ -56,6 +64,18 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	}
 	public void setProjectLocked(boolean projectLocked) {
 		this.projectLocked = projectLocked;
+	}
+	public boolean isSubmitProgramVersionNumber_NotAccepted() {
+		return submitProgramVersionNumber_NotAccepted;
+	}
+	public void setSubmitProgramVersionNumber_NotAccepted(boolean submitProgramVersionNumber_NotAccepted) {
+		this.submitProgramVersionNumber_NotAccepted = submitProgramVersionNumber_NotAccepted;
+	}
+	public Integer getSubmitProgramVersionNumber_Current_Per_Webapp() {
+		return submitProgramVersionNumber_Current_Per_Webapp;
+	}
+	public void setSubmitProgramVersionNumber_Current_Per_Webapp(Integer submitProgramVersionNumber_Current_Per_Webapp) {
+		this.submitProgramVersionNumber_Current_Per_Webapp = submitProgramVersionNumber_Current_Per_Webapp;
 	}
 	
 }

@@ -50,7 +50,11 @@ public class BrowserIs_MicrosoftEdgeLegacy_Detection_Service implements BrowserI
 
 			if ( userAgentString != null ) {
 
-				if ( userAgentString.contains( "Edge/1" ) ) {
+				if ( userAgentString.contains( "Edge/1" ) 
+						|| userAgentString.contains( "Edge/2" )
+						|| userAgentString.contains( "Edge/3" )
+						|| userAgentString.contains( "Edge/4" )
+						|| userAgentString.contains( "Edge/5" ) ) {
 
 					if ( log.isDebugEnabled() ) {
 
