@@ -1,12 +1,13 @@
 <%--
-	webappAdminMain.jsp
+	webappAdminManageCachedData.jsp
 	
-	Webapp Administration Main Page
+	Webapp Administration Manage Caching Page
 
 // String path = request.getContextPath();
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 --%>
 
+<%@page import="org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants"%>
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
 
 
@@ -15,7 +16,7 @@
 <html>
 <head>
 	<title><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_title_start.jsp" 
-				%> Administration Main</title>
+				%> Administration Webapp Manage Cached Data</title>
 	
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_data_pages.jsp" %> 
 
@@ -30,29 +31,30 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
-   	<h1>Webapp Administration Main Page</h1>
+	<%--  This is set in the filter so this can/should go on every page --%>
+	<input type="hidden" id="logged_in_user_id" value="${ loggedInUserId }" >
+	
+   	<h1>Manage Cached Data</h1>
    	
    	<div >
-	   	<a href="admin/pg/config">Manage Configuration</a>
-	</div>
-   	<div >
-	   	<a href="admin/pg/manage-users">Manage Users</a>
-	</div>
+	   	<a href="admin">Webapp Administration Main Page</a>
+   	</div>
+   		
+	<div class="top-level-label-bottom-border" ></div>
 	
-	<h2>
-		Advanced Administration
-	</h2>
-	
-	<div >
-		<a href="admin/pg/manage-cached-data">Manage Cached Data</a>
+	<%--  Populated by the JS  --%>
+	<div id="ManageCachedDataForAdminPage_Root_Component">
 	</div>
-   
+
+					
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>
 
  <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_closing_body_tag_include_data_pages.jsp" %>
-    
+  
+  <script type="text/javascript" src="static/js_generated_bundles/webapp_admin/manageCachedDataPage_Root-bundle.js?x=${ cacheBustValue }"></script>
+  
   <%@ include file="//WEB-INF/jsp/jsp_includes_body_start_body_end/body_right_before_closing_body_tag.jsp" %>	
 </body>
 </html>

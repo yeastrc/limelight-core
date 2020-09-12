@@ -17,8 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers;
 
-import java.sql.SQLException;
-
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 
 /**
@@ -35,6 +33,6 @@ public interface PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF {
 	 * @throws Exception
 	 */
 	int getPsmCountForSearchIdReportedPeptideIdCutoffs(int reportedPeptideId, int searchId,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws SQLException;
+			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

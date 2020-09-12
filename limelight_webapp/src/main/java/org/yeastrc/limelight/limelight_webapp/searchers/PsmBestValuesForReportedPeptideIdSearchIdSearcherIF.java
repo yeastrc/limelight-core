@@ -31,6 +31,6 @@ public interface PsmBestValuesForReportedPeptideIdSearchIdSearcherIF {
 
 	List<PsmBestValuesForReportedPeptideIdSearchIdResult> getBestPsmValuesList(int searchId,
 			List<Integer> reportedPeptideIds, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel)
-			throws SQLException;
+			throws Exception;
 
 }

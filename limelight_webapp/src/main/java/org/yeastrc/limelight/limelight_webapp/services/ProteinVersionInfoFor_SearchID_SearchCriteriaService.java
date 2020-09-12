@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +56,7 @@ public class ProteinVersionInfoFor_SearchID_SearchCriteriaService implements Pro
 	public Map<Integer, ProteinInfoPerProteinVersionId> getProteinVersionInfoFor_ProjSearchID_SearchCriteria( 
 			int searchId,
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel
-			) throws SQLException {
+			) throws Exception {
 
 		Map<Integer, ProteinInfoPerProteinVersionId> result = new HashMap<>();
 

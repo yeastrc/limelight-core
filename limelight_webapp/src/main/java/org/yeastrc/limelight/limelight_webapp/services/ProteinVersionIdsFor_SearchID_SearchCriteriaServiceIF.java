@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
@@ -35,6 +34,6 @@ public interface ProteinVersionIdsFor_SearchID_SearchCriteriaServiceIF {
 	 * @throws SQLException
 	 */
 	Set<Integer> getProteinVersionIdsFor_ProjSearchID_SearchCriteria(int searchId,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws SQLException;
+			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

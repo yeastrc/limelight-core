@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +62,7 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 	public ModsInfoPerPerProteinSeqVersionIdRoot getModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteria( 
 			int searchId,
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel
-			) throws SQLException {
+			) throws Exception {
 
 		//  Result contains modMassesRoot, which is built by 
 		//    're-organizing' the data retrieved from:

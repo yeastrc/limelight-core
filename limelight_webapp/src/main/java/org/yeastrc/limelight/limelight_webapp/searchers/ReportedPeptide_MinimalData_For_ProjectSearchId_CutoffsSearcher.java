@@ -123,7 +123,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 	public List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  getPeptideDataList( 
 			int searchId, 
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel,
-			int minimumNumberOfPSMsPerReportedPeptide ) throws SQLException {
+			int minimumNumberOfPSMsPerReportedPeptide ) throws Exception {
 
 		if ( minimumNumberOfPSMsPerReportedPeptide < 1 ) {
 			String msg = "minimumNumberOfPSMsPerReportedPeptide must be >= 1";
@@ -393,7 +393,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 			List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList,
 			int minimumNumberOfPSMsPerReportedPeptide,
 			String sql
-			) throws SQLException {
+			) throws Exception {
 		
 		ReportedPeptide_MinimalData_List_FromSearcher_Entry item = new ReportedPeptide_MinimalData_List_FromSearcher_Entry();
 		int reportedPeptideId = rs.getInt( "reported_peptide_id" );

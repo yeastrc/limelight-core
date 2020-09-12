@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
@@ -37,6 +36,6 @@ public interface ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCri
 	 * @throws SQLException 
 	 */
 	ResidueAndPSMCountDataPerReportedPeptide_Root getPsm_Count_For_Residues_For_SearchID_SearchCriteriaService(List<String> residues,
-			int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws SQLException;
+			int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

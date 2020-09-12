@@ -12,11 +12,21 @@ import java.util.Map.Entry;
 
 /**
  * Entry per Search
+ * 
+ * 
+ *   !!!!!   Warning:  Has equals(...) and hashCode() that need to be updated if properties change   !!!!!!!
+ *   
+ *   equals(...) and hashCode() ONLY use fields:
+ *       projectSearchId
+ *       psmCutoffValuesPerAnnotationId
+ *       peptideCutoffValuesPerAnnotationId
+ *       
+ *       All other fields are derived values
  *
  */
 public class SearcherCutoffValuesSearchLevel {
 
-	//  Warning:  Has equals(...) and hashCode() that need to be updated if properties change
+	//  !!!!!   Warning:  Has equals(...) and hashCode() that need to be updated if properties change   !!!!!!!
 	
 	
 	private int projectSearchId;

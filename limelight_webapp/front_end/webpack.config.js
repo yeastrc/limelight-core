@@ -97,12 +97,17 @@ const mainConfig = {
 		'user_pages/userAccountManagementPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userAccountManagementPage_Root.ts',
 
 		///////////////
-		
+
+		/////  Admin Pages
+
 		//  Webapp Configure Page
 		'webapp_admin/configurePage_Root' : './src/js/page_js/webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Root.ts',
 
 		//  Webapp Manage Users Page
 		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.ts',
+
+		//  Webapp Manage Cached Data Page
+		'webapp_admin/manageCachedDataPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_cached_data_page/js/manageCachedDataForAdminPage_Root.ts',
 
 		///////////////
 		

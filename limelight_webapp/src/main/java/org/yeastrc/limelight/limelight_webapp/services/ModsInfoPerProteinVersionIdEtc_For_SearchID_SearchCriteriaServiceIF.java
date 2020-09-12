@@ -17,8 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
-
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPerPerProteinSeqVersionIdRoot;
 
@@ -35,6 +33,6 @@ public interface ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaServi
 	 * @throws SQLException
 	 */
 	ModsInfoPerPerProteinSeqVersionIdRoot getModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteria(int searchId,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws SQLException;
+			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

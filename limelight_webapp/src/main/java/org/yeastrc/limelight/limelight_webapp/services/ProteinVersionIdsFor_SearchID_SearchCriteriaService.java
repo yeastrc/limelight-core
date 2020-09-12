@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +51,7 @@ public class ProteinVersionIdsFor_SearchID_SearchCriteriaService implements Prot
 	public Set<Integer> getProteinVersionIdsFor_ProjSearchID_SearchCriteria( 
 			int searchId,
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel
-			) throws SQLException {
+			) throws Exception {
 		
 		Set<Integer> proteinVersionIds = new HashSet<>();
 		

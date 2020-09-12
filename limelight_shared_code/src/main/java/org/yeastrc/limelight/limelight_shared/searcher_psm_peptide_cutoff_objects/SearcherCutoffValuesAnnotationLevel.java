@@ -4,11 +4,20 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 
 /**
  * Entry for each Annotation 
+ * 
+ *  !!!!  Warning:  Has equals(...) and hashCode() that need to be updated if properties change   !!!!
+ *  
+ *  equals(...) and hashCode() ONLY use fields:
+ *  
+ *  	annotationTypeId
+ *  	annotationCutoffValue
+ *  
+ *    All other fields are related to those fields
  *
  */
 public class SearcherCutoffValuesAnnotationLevel {
 
-	//  Warning:  Has equals(...) and hashCode() that need to be updated if properties change
+	//  !!!!  Warning:  Has equals(...) and hashCode() that need to be updated if properties change   !!!!
 	
 	private int annotationTypeId;
 	private double annotationCutoffValue;

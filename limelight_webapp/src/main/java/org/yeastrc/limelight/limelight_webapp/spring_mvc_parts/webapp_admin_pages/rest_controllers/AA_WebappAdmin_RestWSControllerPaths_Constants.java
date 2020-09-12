@@ -54,6 +54,14 @@ public class AA_WebappAdmin_RestWSControllerPaths_Constants {
 	public static final String WEBAPP_ADMIN_MANAGE_USERS_USER_ENABLE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-users-user-enable";
 
 	public static final String WEBAPP_ADMIN_MANAGE_USERS_USER_GLOBAL_ACCESS_LEVEL_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-users-user-global-access-level";
+
+	//  Admin Manage Cached Data Page
+
+	public static final String WEBAPP_ADMIN_MANAGE_CACHED_DATA_CLEAR_ALL_CACHED_DATA_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-cached-data-clear-all-cached-data";
+
+	public static final String WEBAPP_ADMIN_MANAGE_CACHED_DATA_WRITE_CACHED_DATA_SIZE_TO_LOG_FILE_REST_WEBSERVICE_CONTROLLER = 
+			"admin/rws/for-page/manage-cached-data-write-cached-data-size-to-log-file";
+
 	
 
 	//  Under general User Account since shared code:

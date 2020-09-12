@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +30,6 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideBasicObjectsSearcherResultEntry;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ResidueAndPSMCountDataPerReportedPeptide_Root;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ResidueAndPSMCountDataPerReportedPeptide_Root.PerReportedPeptideEntry;
@@ -62,7 +60,7 @@ public class ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteri
 	public ResidueAndPSMCountDataPerReportedPeptide_Root getPsm_Count_For_Residues_For_SearchID_SearchCriteriaService (
 			List<String> residues,
 			int searchId,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
+			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
 
 		/**
 		 * Result

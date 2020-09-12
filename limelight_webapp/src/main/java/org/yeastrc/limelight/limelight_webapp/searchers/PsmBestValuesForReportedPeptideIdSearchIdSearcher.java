@@ -82,7 +82,7 @@ public class PsmBestValuesForReportedPeptideIdSearchIdSearcher extends Limelight
 	public List<PsmBestValuesForReportedPeptideIdSearchIdResult>  getBestPsmValuesList( 
 			int searchId, 
 			List<Integer> reportedPeptideIds,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
+			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
 
 		if ( reportedPeptideIds.isEmpty() ) {
 			//  No Reported Peptide Ids so return empty list
@@ -305,7 +305,8 @@ public class PsmBestValuesForReportedPeptideIdSearchIdSearcher extends Limelight
 			List<AnnotationTypeDTO> psmCutoffsAnnotationTypeDTOList,
 			boolean defaultCutoffsExactlyMatchAnnTypeDataToSearchData,
 			String sql
-			) throws SQLException {
+			) throws Exception {
+		
 		PsmBestValuesForReportedPeptideIdSearchIdResult item = new PsmBestValuesForReportedPeptideIdSearchIdResult();
 		int reportedPeptideId = rs.getInt( "reported_peptide_id" );
 		item.setReportedPeptideId(reportedPeptideId);
