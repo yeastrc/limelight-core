@@ -81,9 +81,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Autowired
 	private CachedData_InMemory_CentralRegistry_IF cachedData_InMemory_CentralRegistry;
 
-	LoadingCache<LocalCacheKey, LocalCacheValue> dbRecordsDataCache = null;
+	private volatile LoadingCache<LocalCacheKey, LocalCacheValue> dbRecordsDataCache = null;
 	
-	private int cacheMaxSize;
+	private volatile int cacheMaxSize;
 
 	/**
 	 * Constructor
@@ -268,13 +268,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Override
 	public void clearCacheData() throws Exception {
 		
-		if ( dbRecordsDataCache == null ) {
-			String msg = "In clearCacheData: dbRecordsDataCache == null ";
-			log.error(msg);
-			throw new LimelightInternalErrorException(msg);
-		}
+		//  Create new Cache
+		create_Cache();
 		
-		dbRecordsDataCache.invalidateAll();
+//		if ( dbRecordsDataCache == null ) {
+//			String msg = "In clearCacheData: dbRecordsDataCache == null ";
+//			log.error(msg);
+//			throw new LimelightInternalErrorException(msg);
+//		}
+//		
+//		dbRecordsDataCache.invalidateAll();
 	}
 
 	/* (non-Javadoc)
@@ -348,7 +351,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 
 	/**
-	 * Called from Constructor
+	 * 
 	 */
 	private void create_Cache() {
 		int cacheTimeout = CACHE_TIMEOUT_FULL_SIZE;

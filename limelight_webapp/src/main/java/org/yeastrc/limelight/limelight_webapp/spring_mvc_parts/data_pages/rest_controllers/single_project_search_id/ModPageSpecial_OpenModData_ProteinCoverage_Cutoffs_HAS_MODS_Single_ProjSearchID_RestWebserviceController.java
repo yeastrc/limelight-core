@@ -41,6 +41,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -96,11 +98,25 @@ public class ModPageSpecial_OpenModData_ProteinCoverage_Cutoffs_HAS_MODS_Single_
   
 	private static final Logger log = LoggerFactory.getLogger( ModPageSpecial_OpenModData_ProteinCoverage_Cutoffs_HAS_MODS_Single_ProjSearchID_RestWebserviceController.class );
 
+	/**
+	 * Path for this Controller
+	 */
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.MOD_PAGE_SPECIAL__PROTEIN_COVERAGE_OPEN_MOD_DATA_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER;
+	
+	/**
+	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
+	 */
+	private static final String CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT = Cached_WebserviceResponse_Management_Utils.translate_ControllerPath_For_CachedResponseMgmt( CONTROLLER_PATH );
+
+	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+
+	@Autowired
+	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
@@ -147,7 +163,7 @@ public class ModPageSpecial_OpenModData_ProteinCoverage_Cutoffs_HAS_MODS_Single_
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.MOD_PAGE_SPECIAL__PROTEIN_COVERAGE_OPEN_MOD_DATA_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER
+					+ CONTROLLER_PATH
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -208,7 +224,16 @@ public class ModPageSpecial_OpenModData_ProteinCoverage_Cutoffs_HAS_MODS_Single_
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
     		
     		////////////////
-   		
+
+    		{ // Return cached value if available
+    			
+    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody );
+    			
+    			if ( cachedResponse != null ) {
+    				
+    				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( cachedResponse );
+    			}
+    		}
     		
     		Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
 			if ( searchId == null ) {
@@ -360,6 +385,11 @@ public class ModPageSpecial_OpenModData_ProteinCoverage_Cutoffs_HAS_MODS_Single_
     		result.openModPsmIdsSet_KeyInnerOpenModMassRounded_KeyOuterReportedPeptideId = openModPsmIdsSet_KeyInnerOpenModMassRounded_KeyOuterReportedPeptideId;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
+
+    		{ // Save cached value 
+    			
+    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON );
+    		}
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
 
