@@ -123,6 +123,17 @@ public class LogBrowserJavascriptError_RestWebserviceController {
     				+ usernameForLogMsg
     				+ userIdForLogMsg );
     		
+
+    		try {
+    			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+    			
+    		} catch ( Exception e ) {
+    			
+    			log.error( "Exception calling sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();", e );
+    			
+    			//  Swallow Exception
+    		}
+			
     		LogBrowserJavascriptErrorResult webserviceResult = new LogBrowserJavascriptErrorResult();
     		webserviceResult.status = true;
     		
