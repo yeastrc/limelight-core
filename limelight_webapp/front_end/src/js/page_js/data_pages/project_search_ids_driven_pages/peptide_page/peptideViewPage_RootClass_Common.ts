@@ -127,7 +127,7 @@ export class PeptideViewPage_RootClass_Common {
 		let objectThis = this;
 		
 		catchAndReportGlobalOnError.init();
-		
+
 		this._page_UserDefault_processing.page_UserDefault_processing();
 
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();

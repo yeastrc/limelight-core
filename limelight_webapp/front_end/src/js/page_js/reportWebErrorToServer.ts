@@ -16,6 +16,8 @@
 "use strict";
 
 
+import {errorDisplay_WhenHave_Javascript_Typescript_Error} from "page_js/common_all_pages/errorDisplay_WhenHave_Javascript_Typescript_Error";
+
 /**
  * 
  */
@@ -25,6 +27,12 @@ var reportWebErrorToServer = {
 		 * 
 		 */
 		reportErrorObjectToServer : function( params ) {
+
+			try {
+				errorDisplay_WhenHave_Javascript_Typescript_Error();
+			} catch (e) {
+				console.warn("Exception calling errorDisplay_WhenHave_Javascript_Typescript_Error();")
+			}
 
 			var errorException = params.errorException;
 
