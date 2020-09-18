@@ -142,14 +142,18 @@ export class PeptideViewPage_DisplayDataOnPage {
 	 */
 	_filterValuesChanged_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
 
+		//  This is a even more blunt approach.  Appear to have timing issues updating in memory cached data when don't reload the page
+
+		window.location.reload(true ) //  param of true is deprecated, not the method
+
 		//  This is a blunt approach.  A better approach could be taken that preserves other User Input.
-
-		this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
-
-		window.setTimeout( () => {
-			//  Run in settimeout so Update to FilterBlock paints first so user gets immediate visual feedback
-			this.populatePeptideListBlock(); // Update rest of page with new values
-		}, 10 )
+		//
+		// this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
+		//
+		// window.setTimeout( () => {
+		// 	//  Run in settimeout so Update to FilterBlock paints first so user gets immediate visual feedback
+		// 	this.populatePeptideListBlock(); // Update rest of page with new values
+		// }, 10 )
 	}
 
 	/**
