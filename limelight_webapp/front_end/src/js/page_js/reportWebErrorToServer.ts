@@ -28,13 +28,25 @@ var reportWebErrorToServer = {
 		 */
 		reportErrorObjectToServer : function( params ) {
 
-			try {
-				errorDisplay_WhenHave_Javascript_Typescript_Error();
-			} catch (e) {
-				console.warn("Exception calling errorDisplay_WhenHave_Javascript_Typescript_Error();")
+			var errorException = params.errorException;
+			
+			let errorException_stack_Contains_react_devtools_backend = false;
+			
+			if ( errorException.stack ) {
+				
+				if ( errorException.stack.indexOf( "react_devtools_backend" ) ) {
+					
+					errorException_stack_Contains_react_devtools_backend = true;
+				}
 			}
 
-			var errorException = params.errorException;
+			if ( ! errorException_stack_Contains_react_devtools_backend ) {
+				try {
+					errorDisplay_WhenHave_Javascript_Typescript_Error();
+				} catch (e) {
+					console.warn("Exception calling errorDisplay_WhenHave_Javascript_Typescript_Error();")
+				}
+			}
 
 			try {
 
