@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -70,11 +72,25 @@ public class ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_Rest
   
 	private static final Logger log = LoggerFactory.getLogger( ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_RestWebserviceController.class );
 
+	/**
+	 * Path for this Controller
+	 */
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.REPORTED_PEPTIDE_LIST_REPORTED_PEPTIDE_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER;
+	
+	/**
+	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
+	 */
+	private static final String CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT = Cached_WebserviceResponse_Management_Utils.translate_ControllerPath_For_CachedResponseMgmt( CONTROLLER_PATH );
+
+	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+
+	@Autowired
+	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
@@ -112,7 +128,7 @@ public class ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_Rest
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.REPORTED_PEPTIDE_LIST_REPORTED_PEPTIDE_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER
+					+ CONTROLLER_PATH
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -169,7 +185,16 @@ public class ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_Rest
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
     		
     		////////////////
-   		
+
+    		{ // Return cached value if available
+    			
+    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody );
+    			
+    			if ( cachedResponse != null ) {
+    				
+    				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( cachedResponse );
+    			}
+    		}
     		
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		
@@ -220,6 +245,11 @@ public class ReportedPeptideIdList_ForSearchCriteria_Single_ProjectSearchId_Rest
     		webserviceResult.reportedPeptideList = peptideResultListResult;
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
+
+    		{ // Save cached value 
+    			
+    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON );
+    		}
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body( responseAsJSON );
 
