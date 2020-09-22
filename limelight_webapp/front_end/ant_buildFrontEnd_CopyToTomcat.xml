@@ -58,6 +58,7 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
+			<arg value="frontEndBuild_ForDevelopment" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 		

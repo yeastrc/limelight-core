@@ -202,18 +202,13 @@ dependencies {
 }
 
 /*
-	Before the Gradle WAR processing creates the war, it runs task ':front_end:frontEndBuild'
+	Before the Gradle WAR processing creates the war, it runs task 'frontEndBuild' in front_end sub directory. 
+	(':front_end:frontEndBuild')
 	to build the front end.
+	
+	(have 'include "front_end"' in settings.gradle)
 */
 processResources.dependsOn 'front_end:frontEndBuild'
-
-/*
-	Before the Gradle WAR processing creates the war, it runs task ':front_end:frontEndBuild'
-	to build the front end.
-*/
-processResources.dependsOn 'front_end:frontEndBuild'
-
-
 
 
 /*

@@ -4,12 +4,19 @@
  	Builds Front End and then copies results for inclusion in main webapp build under:
  	    ../src/main/webapp/static/js_generated_bundles
 	    ../src/main/webapp/static/css_generated
+	    
+    Task executed from Gradle file in parent directory used to build WAR file for web app:  'frontEndBuild'
  	
  	Default task:
 
-		defaultTasks 'frontEndBuild'
+		defaultTasks 'frontEndBuild_ForDevelopment'
  
  */
+ 
+//  !!! Execution starts at one of the tasks at the bottom of this file,
+
+//      except for when task 'clean' is executed from build all ant script at project/repo root.
+
  
  //  New way to import gradle plugin for node:  per https://plugins.gradle.org/plugin/com.moowork.node
 
@@ -51,14 +58,24 @@ dependencies {
 
 }
 
+//  !!! Execution starts at one of the tasks at the bottom of this file,
 
-defaultTasks 'frontEndBuild'
+//      except for when task 'clean' is executed from build all ant script at project/repo root.
+
+
+
+// 'defaultTasks': Ignored when build webapp .war file in parent directory since
+// 					task 'frontEndBuild' is specifically run from the build.gradle in the parent directory 
+
+defaultTasks 'frontEndBuild_ForDevelopment'  ///  Task run when no task specified when gradle run on command line
+
+
 
 /*
  * Clean up, remove output directories.  Removes some that are not deleted in task 'delete_outputDirs'
  * working directory: The directory this build.gradle file is in
  * 
- * !!!!  This task is only executed from build all ant script at project/repo root.
+ * !!!!  This task is only executed from build all ant script at project/repo root. !!!!!
  */
 task clean(type: Delete) {
   doFirst {	
@@ -70,6 +87,7 @@ task clean(type: Delete) {
 	   delete '../src/main/webapp/static/css_generated'
    }
 }
+
 
 /*
  * working directory: The directory this build.gradle file is in
@@ -776,9 +794,15 @@ task handlebarsPrecompile_dummy_template(type: NodeTask) {
    ]
 }
 
-//  Change so dev runs  'npm install' separately since it takes so long
 
-task webpack(type: NodeTask ) { //  , dependsOn: 'npmInstall') {
+/*
+	Run Webpack in Mode Development to include React Library in Development Mode.  JS always NEVER Minified due to settings in webpack.config file 
+
+	Run Webpack to build front end JS/TS and CSS
+	
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task runWebpack_DevelopmentMode(type: NodeTask ) { //  , dependsOn: 'npmInstall') {
   def osName = System.getProperty("os.name").toLowerCase();
   if (osName.contains("windows")) {
     script = project.file('node_modules/webpack/bin/webpack.js')
@@ -786,7 +810,25 @@ task webpack(type: NodeTask ) { //  , dependsOn: 'npmInstall') {
     script = project.file('node_modules/.bin/webpack')
   }
   //  specify mode development, defaults to production
-  args = [ '--mode=development' ] // --mode=development does no minification
+  args = [ '--mode=development' ] // --mode=development does no minification, also React Library includes more code and validation
+}
+
+/*
+	Run Webpack in Mode Production to !! NOT !! include React Library in Development Mode.  JS always NEVER Minified due to settings in webpack.config file 
+
+	Run Webpack to build front end JS/TS and CSS
+	
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task runWebpack_ProductionMode(type: NodeTask ) { //  , dependsOn: 'npmInstall') {
+  def osName = System.getProperty("os.name").toLowerCase();
+  if (osName.contains("windows")) {
+    script = project.file('node_modules/webpack/bin/webpack.js')
+  } else {
+    script = project.file('node_modules/.bin/webpack')
+  }
+  //  specify mode development, defaults to production
+  args = [ '--mode=production' ] // --mode=development does no minification
 }
 
 /*
@@ -803,8 +845,24 @@ task copyFrontEndCSS(type: Sync) {
 }
 
 
-task frontEndBuild(type: GradleBuild) {
-   tasks = [ 
+
+// task copyFrontEnd(type: Sync) { // , dependsOn: 'webpack') {
+//    from "FrontEnd/webapp_prebuild"
+//    into "src/main/webapp"
+// }
+
+// processResources.dependsOn 'copyFrontEnd' //  'webpack'
+
+// clean.delete << file('node_modules')
+// clean.delete << file('src/main/webapp/dist')
+
+
+
+ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
+
+	println("frontEndBuild_Main_Before_WebPack_Fcn called.")
+
+   def tasks = [ 
      'delete_outputDirs', 
      
      'createHandlebarsOutputDirs', 
@@ -834,25 +892,53 @@ task frontEndBuild(type: GradleBuild) {
      'handlebarsPrecompile_user_invite_processing',
      'handlebarsPrecompile_admin_user_management',
      'handlebarsPrecompile_dummy_template',
-     
-     'webpack', // Run webpack
-     
-     'copyFrontEndJS',
-     'copyFrontEndCSS'
    ]
+   
+   return tasks;
+}
+
+ext.frontEndBuild_Main_Add_After_WebPack_Fcn = { tasksInput ->
+
+	println("frontEndBuild_Main_Add_After_WebPack_Fcn called.")
+
+   def tasksOutput = tasksInput
+
+   tasksOutput += 'copyFrontEndJS'
+   tasksOutput += 'copyFrontEndCSS'
+   
+   return tasksOutput
+}
+
+
+/*
+ * !!!  Start Exec Here when run ANT script ant_build_War_CopyToTomcat.xml in parent dir to build WAR file
+ */
+task frontEndBuild(type: GradleBuild) {
+	println("frontEndBuild_ForDevelopment. main start" )
+	
+	def tasksTemp = frontEndBuild_Main_Before_WebPack_Fcn( 1 )
+	
+	tasksTemp += 'runWebpack_ProductionMode'
+	
+	tasksTemp = frontEndBuild_Main_Add_After_WebPack_Fcn( tasksTemp )
+	
+	tasks = tasksTemp
 }
 
 
 
-// task copyFrontEnd(type: Sync) { // , dependsOn: 'webpack') {
-//    from "FrontEnd/webapp_prebuild"
-//    into "src/main/webapp"
-// }
+/*
+ * !!!  Start Exec Here when run ANT script ant_buildFrontEnd_CopyToTomcat.xml to build only front end and copy to Tomcat
+ */
+task frontEndBuild_ForDevelopment(type: GradleBuild) { 
 
-// processResources.dependsOn 'copyFrontEnd' //  'webpack'
+	println("frontEndBuild_ForDevelopment. main start" )
 
-// clean.delete << file('node_modules')
-// clean.delete << file('src/main/webapp/dist')
-
-
-
+	def tasksTemp = frontEndBuild_Main_Before_WebPack_Fcn( 1 )
+	
+	tasksTemp += 'runWebpack_DevelopmentMode'
+	
+	tasksTemp = frontEndBuild_Main_Add_After_WebPack_Fcn( tasksTemp )
+	
+	tasks = tasksTemp
+}

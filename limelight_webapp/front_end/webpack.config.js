@@ -22,6 +22,9 @@ var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const mainConfig = {		
 	
 	devtool: 'source-map',
+    optimization: {
+	    minimize: false
+	},
 	resolve: {
 	    alias: {
 	       'handlebars.runtime': 'handlebars/dist/handlebars.runtime.min.js'
