@@ -93,9 +93,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 					+ " search__rep_pept__lookup_tbl.any_psm_has_dynamic_modifications, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_open_modifictions, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_reporter_ions "
-			;
-	
-	private final String SQL_MAIN_FROM_START = " FROM search__rep_pept__lookup_tbl ";
+					+ " FROM search__rep_pept__lookup_tbl ";
 
 	private final String SQL_MAIN_WHERE_START = 
 			" WHERE search__rep_pept__lookup_tbl.search_id = ? ";
@@ -144,62 +142,13 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 		}
 		
 		//////////////////////
+		
 		/////   Start building the SQL
+		
 		StringBuilder sqlSB = new StringBuilder( 1000 );
+		
 		sqlSB.append( SQL_FIRST_PART );
-		///////   Add fields to result from best PSM annotation values
-		{
-			//  Add Field retrieval for each PSM cutoff
-			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
-				sqlSB.append( " , " );
-				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".annotation_type_id " );
-				sqlSB.append( " AS "  );
-				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( "_annotation_type_id " );
-				sqlSB.append( " , " );
-				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".best_psm_value_for_ann_type_id " );
-				sqlSB.append( " AS "  );
-				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( "_best_psm_value_for_ann_type_id " );
-			}
-		}
-		///////   Add fields to result from best Peptide annotation values
-		{
-			//  Add inner join for each Peptide cutoff
-			for ( int counter = 1; counter <= peptideCutoffValuesList.size(); counter++ ) {
-				sqlSB.append( " , " );
-				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".annotation_type_id " );
-				sqlSB.append( " AS "  );
-				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( "_annotation_type_id " );
-				sqlSB.append( " , " );
-				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".value_double " );
-				sqlSB.append( " AS "  );
-				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( "_value_double " );
-				sqlSB.append( " , " );
-				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".value_string " );
-				sqlSB.append( " AS "  );
-				sqlSB.append( PEPTIDE_VALUE_FILTER_TABLE_ALIAS );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( "_value_string " );
-			}
-		}
-		sqlSB.append( SQL_MAIN_FROM_START );
+		
 		{
 			//  Add inner join for each PSM cutoff
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
