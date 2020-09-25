@@ -302,7 +302,7 @@ public class ProcessSave_SingleReportedPeptide {
 						SrchRepPeptDynamicModDTO dto = new SrchRepPeptDynamicModDTO();
 						BigDecimal massBD = peptideModification.getMass();
 						if ( massBD == null ) {
-							String msg = "mass on peptideModification is missing.  reported peptide: " + reportedPeptideString;
+							String msg = "mass on <peptide_modification> is missing.  reported peptide: " + reportedPeptideString;
 							log.error( msg );
 							throw new LimelightImporterDataException( msg );
 						}
@@ -314,32 +314,38 @@ public class ProcessSave_SingleReportedPeptide {
 							int position = peptideModification.getPosition().intValue();
 							dto.setPosition( position );
 							
-							int beginIndex = position - 1; // change from 1 based to zero based
-							int endIndex = beginIndex + 1;
-							String peptideResidueLetter = reportedPeptide.getSequence().substring( beginIndex, endIndex );
-							
-							dto.setPeptideResidueLetter( peptideResidueLetter );
-							
-							Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position );
-							if ( proteinResidueLetters_AllProteins == null ) {
-								String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null.  reported peptide: " + reportedPeptideString;
-								log.error(msg);
-								throw new LimelightImporterDataException( msg );
-							}
-							if ( proteinResidueLetters_AllProteins.size() == 1 ) {
-								String proteinResidueLetters_OnlyEntry = proteinResidueLetters_AllProteins.iterator().next();
-								dto.setProteinResidueLetterIfAllSame(proteinResidueLetters_OnlyEntry);
-							}
+							update_dto_Set_PeptideResidueLetter_ProteinResidueLetterIfAllSame( dto, reportedPeptide,
+									reportedPeptideString, proteinResidueLetters_AllProteins_Map_Key_PeptidePosition );
 						}
 						
 						//   For Database, set position to first or last position of peptide if N or C terminus is set
 						if ( peptideModification.isIsNTerminal() != null && peptideModification.isIsNTerminal().booleanValue() ) {
+							
 							dto.setIs_N_Terminal(true);
+							
+							if ( peptideModification.getPosition() != null && peptideModification.getPosition().intValue() != 1 ) {
+								String msg = "<peptide_modification> has \"is_n_terminal\" true and position value of other than 1.  reported peptide: " + reportedPeptideString;
+								log.error( msg );
+								throw new LimelightImporterDataException( msg );
+							}
 							dto.setPosition( 1 );
+
+							update_dto_Set_PeptideResidueLetter_ProteinResidueLetterIfAllSame( dto, reportedPeptide, reportedPeptideString, proteinResidueLetters_AllProteins_Map_Key_PeptidePosition );
 						}
 						if ( peptideModification.isIsCTerminal() != null && peptideModification.isIsCTerminal().booleanValue() ) {
+							
 							dto.setIs_C_Terminal(true);
+
+							if ( peptideModification.getPosition() != null && peptideModification.getPosition().intValue() != peptideString.length() ) {
+								String msg = "<peptide_modification> has \"is_c_terminal\" true and position value of other than peptide length (" 
+										+ peptideString.length()
+										+ ").  reported peptide: " + reportedPeptideString;
+								log.error( msg );
+								throw new LimelightImporterDataException( msg );
+							}
 							dto.setPosition( peptideString.length() );
+							
+							update_dto_Set_PeptideResidueLetter_ProteinResidueLetterIfAllSame( dto, reportedPeptide, reportedPeptideString, proteinResidueLetters_AllProteins_Map_Key_PeptidePosition );
 						}
 						
 						dto.setSearchId( searchId );
@@ -388,6 +394,38 @@ public class ProcessSave_SingleReportedPeptide {
 		return processSave_SingleReportedPeptide_Results;
 	}
 	
+	
+	/**
+	 * @param dto
+	 * @param reportedPeptide
+	 * @param reportedPeptideString
+	 * @param proteinResidueLetters_AllProteins_Map_Key_PeptidePosition
+	 * @throws LimelightImporterDataException
+	 */
+	private void update_dto_Set_PeptideResidueLetter_ProteinResidueLetterIfAllSame( 
+			SrchRepPeptDynamicModDTO dto, 
+			ReportedPeptide reportedPeptide,
+			String reportedPeptideString,
+			Map<Integer, Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition ) throws LimelightImporterDataException {
+		
+		int beginIndex = dto.getPosition() - 1; // change from 1 based to zero based
+		int endIndex = beginIndex + 1;
+		String peptideResidueLetter = reportedPeptide.getSequence().substring( beginIndex, endIndex );
+		
+		dto.setPeptideResidueLetter( peptideResidueLetter );
+		
+		Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( dto.getPosition() );
+		if ( proteinResidueLetters_AllProteins == null ) {
+			String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null.  reported peptide: " + reportedPeptideString;
+			log.error(msg);
+			throw new LimelightImporterDataException( msg );
+		}
+		if ( proteinResidueLetters_AllProteins.size() == 1 ) {
+			String proteinResidueLetters_OnlyEntry = proteinResidueLetters_AllProteins.iterator().next();
+			dto.setProteinResidueLetterIfAllSame(proteinResidueLetters_OnlyEntry);
+		}
+	}
+	
 	/**
 	 * @param reportedPeptide
 	 * @return
@@ -405,11 +443,27 @@ public class ProcessSave_SingleReportedPeptide {
 			if ( peptideModificationList != null && ( ! peptideModificationList.isEmpty() ) ) {
 
 				for ( PeptideModification peptideModification : peptideModificationList ) {
-					
-					if ( peptideModification.getPosition() != null ) {
-						peptidePositionsToGetProteinResidueLettersFor.add( peptideModification.getPosition().intValue() );
-					}
 
+					int position = 0;
+					if ( peptideModification.isIsNTerminal() != null && peptideModification.isIsNTerminal().booleanValue() ) {
+						
+						position = 1;
+						
+					} else if ( peptideModification.isIsCTerminal() != null && peptideModification.isIsCTerminal().booleanValue() ) {
+					
+						position = reportedPeptide.getSequence().length();
+						
+					} else if ( peptideModification.getPosition() != null ) {
+						
+						position = peptideModification.getPosition().intValue();
+						
+					} else {
+						String msg = "Getting PSM level Open Modifications Positions: Not 'N' or 'C' term set and true or position set.";
+						log.error(msg);
+						throw new LimelightImporterDataException(msg);
+					}
+					
+					peptidePositionsToGetProteinResidueLettersFor.add( position );
 				}
 			}
 		}
