@@ -84,7 +84,7 @@ export class ModViewPage_DisplayDataOnPage {
 		const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = new SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({
 			displayOnly : false,
 			do_NOT_Display_ChangeSearches_Link : true,
-			do_NOT_Display_Re_Order_Searches_Link : true,
+			do_NOT_Display_Re_Order_Searches_Link : false,
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
