@@ -220,13 +220,36 @@ export class ModViewDataVizRenderer_MultiSearch {
                                 }) {
 
 
-        let html = "<div class=\"clickable\">[Download Stats Report]</div>"
+        let html = "<div class=\"clickable\">[Download ZScore Report]</div>"
         let $html = $(html)
 
         $html.click(function() {
 
             // calculate and show stats
             ModStatsUtils.downloadSignificantMods({
+                reportedPeptideModData,
+                aminoAcidModStats,
+                vizOptionsData,
+                sortedModMasses,
+                totalPSMCount,
+                totalScanCount,
+                searchDetailsBlockDataMgmtProcessing,
+                projectSearchIds: vizOptionsData.data.projectSearchIds,
+                psmModData,
+                scanModData
+            });
+
+        });
+
+        $("div#data-viz-container").append($html);
+
+        html = "<div class=\"clickable\">[Download Data Table]</div>"
+        $html = $(html)
+
+        $html.click(function() {
+
+            // calculate and show stats
+            ModStatsUtils.downloadSummaryStatistics({
                 reportedPeptideModData,
                 aminoAcidModStats,
                 vizOptionsData,

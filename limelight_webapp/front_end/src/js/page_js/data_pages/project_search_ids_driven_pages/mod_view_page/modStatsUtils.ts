@@ -4,6 +4,73 @@ import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_Mul
 
 export class ModStatsUtils {
 
+    static downloadSummaryStatistics({
+                                         reportedPeptideModData,
+                                         aminoAcidModStats,
+                                         vizOptionsData,
+                                         sortedModMasses,
+                                         totalPSMCount,
+                                         totalScanCount,
+                                         projectSearchIds,
+                                         searchDetailsBlockDataMgmtProcessing,
+                                         psmModData,
+                                         scanModData
+                                     }) {
+
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
+        const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
+
+        let output = "# Currently NOT filtered on Protein and Position selection\n";
+        output += "# Search Id Key:\n"
+
+        for(const projectSearchId of projectSearchIds) {
+            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
+            output += "#\t" + searchId + "\t" + ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing }) + "\n";
+        }
+        output += "\n";
+
+        output += "mod mass";
+        for(const projectSearchId of projectSearchIds) {
+            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
+            output += "\tSearch:" + searchId + " " + quantTypeString + " " + (vizOptionsData.data.psmQuant === 'counts' ? "count" : "ratio");
+        }
+
+        output += "\n";
+
+        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
+            reportedPeptideModData,
+            aminoAcidModStats,
+            projectSearchIds,
+            totalPSMCount,
+            totalScanCount,
+            vizOptionsData,
+            countsOverride: false,
+            proteinPositionFilterStateManager : undefined,
+            psmModData,
+            scanModData
+        });
+
+        for (const modMass of sortedModMasses) {
+
+            output += modMass;
+
+            for(const projectSearchId of projectSearchIds) {
+
+                let x1 = modMap.get(modMass).get(projectSearchId); // modMap[modMass][projectSearchId1];
+                if (x1 === undefined) {
+                    x1 = 0;
+                }
+
+                output += "\t" + x1;
+            }
+
+            output += "\n";
+        }
+
+        StringDownloadUtils.downloadStringAsFile( { stringToDownload : output, filename: 'mod_summary_stats_report.txt' } );
+    }
+
+
     static downloadSignificantMods({
                                        reportedPeptideModData,
                                        aminoAcidModStats,
