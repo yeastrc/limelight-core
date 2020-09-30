@@ -38,6 +38,8 @@ import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPe
 
 /**
  * Get Mods Info For SearchId and Search Criteria
+ * 
+ *   !!!!   Mod Page ONLY   !!!!!
  *
  * Mods Info
  */
@@ -73,7 +75,7 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 		 * 
 		 * Map<reported_peptide_id, Map<Mod Mass, PerModMassEntry>
 		 */
-		Map<Integer, Map<Double,PerModMassEntry>> dataPer_ReportedPeptides = new HashMap<>();
+		Map<Integer, Map<Integer, PerModMassEntry>> dataPer_ReportedPeptides = new HashMap<>();
 
 		//  Get proteinCoverageDTOList to get peptide positions on proteins. Includes ReportedPeptideId
 		
@@ -95,7 +97,7 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 				continue;  // EARLY CONTINUE
 			}
 
-			Map<Double,PerModMassEntry> dataPer_ModMass = new HashMap<>();
+			Map<Integer, PerModMassEntry> dataPer_ModMass = new HashMap<>();
 
 			List<ProteinCoverageDTO> proteinVersionIdsForSearchIdReportedPeptideId = 
 					proteinCoverage_For_SearchIdReportedPeptideId_Searcher
@@ -104,7 +106,7 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 			//  Process Dynamic Mods on Reported Peptide
 			for ( SrchRepPeptDynamicModDTO srchRepPeptDynamicModDTOEntry : srchRepPeptDynamicModDTOList ) {
 
-				Double modMass = srchRepPeptDynamicModDTOEntry.getMass();
+				Integer modMass = (int) Math.round( srchRepPeptDynamicModDTOEntry.getMass() );
 				Integer mod_ReportedPeptide_Position = srchRepPeptDynamicModDTOEntry.getPosition();
 				
 				PerModMassEntry perModMassEntry = dataPer_ModMass.get( modMass );

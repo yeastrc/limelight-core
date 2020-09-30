@@ -13,26 +13,37 @@ export class ModViewDataVizRenderer_MultiSearch {
                              reportedPeptideModData,
                              proteinPositionResidues,
                              totalPSMCount,
+                             totalScanCount,
                              aminoAcidModStats,
                              proteinData,
                              proteinPositionFilterStateManager,
                              searchDetailsBlockDataMgmtProcessing,
                              dataPageStateManager_DataFrom_Server,
                              vizOptionsData,
-                             openModPSMData
+                             psmModData,
+                             scanModData
     }) {
 
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
-            reportedPeptideModData, aminoAcidModStats, projectSearchIds:vizOptionsData.data.projectSearchIds, totalPSMCount, vizOptionsData, proteinPositionFilterStateManager, countsOverride : undefined, openModPSMData
+            reportedPeptideModData,
+            aminoAcidModStats,
+            projectSearchIds:vizOptionsData.data.projectSearchIds,
+            totalPSMCount,
+            totalScanCount,
+            vizOptionsData,
+            proteinPositionFilterStateManager,
+            countsOverride : undefined,
+            psmModData,
+            scanModData
         });
 
-        if(Object.keys(modMap).length < 1) {
+        if(modMap.size < 1) {
             $('div#data-viz-container').empty();
             return;
         }
 
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
-        const sortedModMasses = Object.keys(modMap).map(Number).sort( (a,b) => ( a - b));
+        const sortedModMasses = Array.from( modMap.keys() ).sort( (a:number,b:number) => (a - b));
         const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
 
         // add a div for this viz to the page
@@ -133,13 +144,15 @@ export class ModViewDataVizRenderer_MultiSearch {
             reportedPeptideModData,
             proteinPositionResidues,
             totalPSMCount,
+            totalScanCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
             dataPageStateManager_DataFrom_Server,
             modMap,
             vizOptionsData,
-            openModPSMData
+            psmModData,
+            scanModData
         });
 
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
@@ -168,11 +181,13 @@ export class ModViewDataVizRenderer_MultiSearch {
         ModViewDataVizRenderer_MultiSearch.addDataDownloadLinks({
             reportedPeptideModData,
             totalPSMCount,
+            totalScanCount,
             aminoAcidModStats,
             searchDetailsBlockDataMgmtProcessing,
             sortedModMasses,
             vizOptionsData,
-            openModPSMData
+            psmModData,
+            scanModData
         })
 
         // show the data table under the vizualization by default
@@ -195,11 +210,13 @@ export class ModViewDataVizRenderer_MultiSearch {
     static addDataDownloadLinks({
                                     reportedPeptideModData,
                                     totalPSMCount,
+                                    totalScanCount,
                                     aminoAcidModStats,
                                     searchDetailsBlockDataMgmtProcessing,
                                     sortedModMasses,
                                     vizOptionsData,
-                                    openModPSMData
+                                    psmModData,
+                                    scanModData
                                 }) {
 
 
@@ -215,9 +232,11 @@ export class ModViewDataVizRenderer_MultiSearch {
                 vizOptionsData,
                 sortedModMasses,
                 totalPSMCount,
+                totalScanCount,
                 searchDetailsBlockDataMgmtProcessing,
                 projectSearchIds: vizOptionsData.data.projectSearchIds,
-                openModPSMData
+                psmModData,
+                scanModData
             });
 
         });
@@ -246,6 +265,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static addColorScaleLegend({ svg, rectAreaHeight, colorScale, minPSMCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData }) {
 
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
+        const quantType = psmQuantType ? 'PSM' : 'Scan';
+
         // create group element to hold legend
         let legendGroup = svg.append('g')
             .attr("transform", () => 'translate(0, ' + (rectAreaHeight + 10) + ')');
@@ -258,7 +280,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr("text-anchor", "end")
             .attr('font-size', labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
-            .text((d,i) => ( vizOptionsData.data.psmQuant === 'counts' ? 'PSM Count Color:' : 'PSM Ratio Color:'));
+            .text((d,i) => ( vizOptionsData.data.psmQuant === 'counts' ? quantType + ' Count Color:' : quantType + ' Ratio Color:'));
 
         // width of color scale bar
         const width = minLegendWidth;
@@ -576,13 +598,15 @@ export class ModViewDataVizRenderer_MultiSearch {
                                reportedPeptideModData,
                                proteinPositionResidues,
                                totalPSMCount,
+                               totalScanCount,
                                aminoAcidModStats,
                                proteinData,
                                proteinPositionFilterStateManager,
                                dataPageStateManager_DataFrom_Server,
                                modMap,
                                vizOptionsData,
-                               openModPSMData
+                               psmModData,
+                               scanModData
     }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -647,6 +671,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         reportedPeptideModData,
                         proteinPositionResidues,
                         totalPSMCount,
+                        totalScanCount,
                         aminoAcidModStats,
                         proteinData,
                         proteinPositionFilterStateManager,
@@ -656,7 +681,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                         vizOptionsData,
                         draggedProjectSearchId:d,
                         draggedObject: this,
-                        openModPSMData
+                        psmModData,
+                        scanModData
                     });
                 }));
     }
@@ -673,6 +699,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                                         reportedPeptideModData,
                                         proteinPositionResidues,
                                         totalPSMCount,
+                                        totalScanCount,
                                         aminoAcidModStats,
                                         proteinData,
                                         proteinPositionFilterStateManager,
@@ -682,7 +709,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                                         vizOptionsData,
                                         draggedProjectSearchId,
                                         draggedObject,
-                                        openModPSMData
+                                        psmModData,
+                                        scanModData
                                     }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -719,13 +747,15 @@ export class ModViewDataVizRenderer_MultiSearch {
                 reportedPeptideModData,
                 proteinPositionResidues,
                 totalPSMCount,
+                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
                 vizOptionsData,
-                openModPSMData
+                psmModData,
+                scanModData
             });
         }
     }
@@ -932,6 +962,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static showToolTip({ projectSearchId, modMass, psmCount, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData }) {
 
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
+        const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
+
         // @ts-ignore
         const pageY = event.pageY
         // @ts-ignore
@@ -956,9 +989,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 if(psmCount !== undefined) {
 
                     if( vizOptionsData.data.psmQuant === 'ratios' ) {
-                        txt += "<p>PSM Ratio: " + psmCount.toExponential(2) + "</p>";
+                        txt += "<p>" + quantTypeString + " Ratio: " + psmCount.toExponential(2) + "</p>";
                     } else {
-                        txt += "<p>PSM Count: " + psmCount + "</p>";
+                        txt += "<p>" + quantTypeString + " Count: " + psmCount + "</p>";
                     }
                 }
 
@@ -998,155 +1031,139 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static addOpenModsToModMap({
-                           projectSearchIds,
-                           totalPSMCount,
-                           vizOptionsData,
-                           countsOverride,
-                            modMap,
-                            openModPSMData,
-                            countedReportedPeptides
-                       }) {
-
-        for(const projectSearchId of projectSearchIds) {
-
-            let searchMap = openModPSMData[projectSearchId];
-
-            for(const reportedPeptideId of Object.keys(searchMap)) {
-                let reportedPeptideMap = searchMap[reportedPeptideId];
-
-                for(const modMass of Object.keys(reportedPeptideMap)) {
-
-                    // if we've already counted this reported peptide for this mod mass in this project search id, don't count its PSMs again
-                    if(modMass in countedReportedPeptides && projectSearchId in countedReportedPeptides[modMass] && reportedPeptideId in countedReportedPeptides[modMass][projectSearchId]) {
-                        continue;
-                    }
-
-                    // enforce requested mod mass cutoffs
-                    if(vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
-                        continue;
-                    }
-
-                    if(vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
-                        continue;
-                    }
-
-                    /*
-                     * todo: implement something like this for open mods? that is, does the peptide localize to a protein and cover a position selected to be shown?
-                     * unsure if we need/want to do this yet.
-                     */
-                    /*
-                    if(!ModViewDataVizRenderer_MultiSearch.shouldReportedPeptideBeIncludedForModMass({ projectSearchId, reportedPeptideId, modMass, proteinPositionFilterStateManager })) {
-                        continue;
-                    }
-                    */
-
-                    const roundedMass = modMass;
-                    let psmCount = reportedPeptideMap[modMass].length;
-
-                    if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
-                        psmCount = psmCount / totalPSMCount[projectSearchId].psmCount;
-                    }
-
-                    if(!(roundedMass in modMap)) {
-                        modMap[roundedMass] = { }
-                    }
-
-                    if(!(projectSearchId in modMap[roundedMass])) {
-                        modMap[roundedMass][projectSearchId] = 0;
-                    }
-
-                    modMap[roundedMass][projectSearchId] = modMap[roundedMass][projectSearchId] + psmCount;
-                }
-            }
-        }
-
-        return modMap;
-    }
-
+    /**
+     * Get a map of:
+     *
+     * mod mass => project search id => count/ratio/zscore
+     *
+     * @param reportedPeptideModData
+     * @param aminoAcidModStats
+     * @param projectSearchIds
+     * @param totalPSMCount
+     * @param vizOptionsData
+     * @param countsOverride
+     * @param proteinPositionFilterStateManager
+     * @param psmModData
+     * @param scanModData
+     */
     static buildModMap({
                            reportedPeptideModData,
                            aminoAcidModStats,
                            projectSearchIds,
                            totalPSMCount,
+                           totalScanCount,
                            vizOptionsData,
                            countsOverride,
                            proteinPositionFilterStateManager,
-                           openModPSMData,
+                           psmModData,
+                           scanModData,
                        }) {
 
         console.log('called buildModMap');
-        console.log('openModPSMData', openModPSMData);
+        console.log('psmModData', psmModData);
+        console.log('scanModData', scanModData);
 
-        const modMap = { };
+        const includeOpenMod = vizOptionsData.data.includeOpenMods === undefined || vizOptionsData.data.includeOpenMods === true;
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
 
-        // keep track of which reported peptides have been counted, so we don't double count psms
-        const reportedPeptidesCounted = { };    // { mod mass : { project search id : set(reported peptide ids) } }
+        const countdata = psmQuantType ? psmModData : scanModData;
+
+        const modMap = new Map();
 
         for(const projectSearchId of projectSearchIds) {
+            for (const reportedPeptideId of Object.keys(psmModData[projectSearchId])) {
 
-            let searchMap = reportedPeptideModData[projectSearchId];
+                // will be a psm or a scan
+                for (const item of countdata[projectSearchId][reportedPeptideId]) {
 
-            for(const reportedPeptideId of Object.keys(searchMap)) {
-                let reportedPeptideMap = searchMap[reportedPeptideId];
+                    // add in the variable mods
+                    for (const modMass of item['variable']) {
 
-                for(const modMass of Object.keys(reportedPeptideMap)) {
+                        // enforce requested mod mass cutoffs
+                        if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
+                            continue;
+                        }
 
-                    // enforce requested mod mass cutoffs
-                    if(vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
-                        continue;
+                        if (vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                            continue;
+                        }
+
+                        if (!ModViewDataVizRenderer_MultiSearch.shouldReportedPeptideBeIncludedForModMass({
+                            projectSearchId,
+                            reportedPeptideId,
+                            modMass:parseFloat( modMass + '.0' ),
+                            proteinPositionFilterStateManager,
+                            reportedPeptideModData
+                        })) {
+                            console.log('skipped ' + modMass);
+                            continue;
+                        }
+
+                        if(!modMap.has(modMass)) {
+                            modMap.set(modMass, new Map());
+                        }
+
+                        if(!modMap.get(modMass).has(projectSearchId)) {
+                            modMap.get(modMass).set(projectSearchId, new Set());
+                        }
+
+                        // get a unique id for this item
+                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+
+                        modMap.get(modMass).get(projectSearchId).add(uniqueId);
                     }
 
-                    if(vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
-                        continue;
+                    // add in the open mods
+                    if(includeOpenMod) {
+                        for (const modMass of item.open) {
+
+                            // enforce requested mod mass cutoffs
+                            if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
+                                continue;
+                            }
+
+                            if (vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                                continue;
+                            }
+
+                            if(!modMap.has(modMass)) {
+                                modMap.set(modMass, new Map());
+                            }
+
+                            if(!modMap.get(modMass).has(projectSearchId)) {
+                                modMap.get(modMass).set(projectSearchId, new Set());
+                            }
+
+                            // get a unique id for this item
+                            const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+
+                            // use sets to ensure we're not double counting psms or scans for a mod mass
+                            modMap.get(modMass).get(projectSearchId).add(uniqueId);
+                        }
                     }
 
-                    if(!ModViewDataVizRenderer_MultiSearch.shouldReportedPeptideBeIncludedForModMass({ projectSearchId, reportedPeptideId, modMass, proteinPositionFilterStateManager, reportedPeptideModData })) {
-                        continue;
-                    }
-
-                    const roundedMass = Math.round(parseFloat(modMass));
-                    let psmCount = ModViewDataVizRenderer_MultiSearch.getPsmCountForReportedPeptide({reportedPeptideId, projectSearchId, aminoAcidModStats});
-
-                    if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
-                        psmCount = psmCount / totalPSMCount[projectSearchId].psmCount;
-                    }
-
-                    if(!(roundedMass in modMap)) {
-                        modMap[roundedMass] = { }
-                    }
-
-                    if(!(projectSearchId in modMap[roundedMass])) {
-                        modMap[roundedMass][projectSearchId] = 0;
-                    }
-
-                    modMap[roundedMass][projectSearchId] = modMap[roundedMass][projectSearchId] + psmCount;
-
-                    if(!(roundedMass in reportedPeptidesCounted)) {
-                        reportedPeptidesCounted[roundedMass] = { };
-                    }
-
-                    if(!(projectSearchId in reportedPeptidesCounted[roundedMass])) {
-                        reportedPeptidesCounted[roundedMass][projectSearchId] = new Set();
-                    }
-
-                    reportedPeptidesCounted[roundedMass][projectSearchId].add(reportedPeptideId);
                 }
             }
         }
 
-        if(vizOptionsData.data.includeOpenMods === undefined || vizOptionsData.data.includeOpenMods === true) {
-            ModViewDataVizRenderer_MultiSearch.addOpenModsToModMap({
-                projectSearchIds,
-                totalPSMCount,
-                vizOptionsData,
-                countsOverride,
-                modMap,
-                openModPSMData,
-                countedReportedPeptides: reportedPeptidesCounted
-            });
+
+        // convert to a map of counts/ratios
+        for(const [modMass, projectCountMap] of modMap) {
+            for(const [projectSearchId, idSet] of projectCountMap) {
+                let count = idSet.size;
+
+                if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
+
+                    const ratioDenominator = psmQuantType ? totalPSMCount[projectSearchId].psmCount : totalScanCount[projectSearchId].scanCount;
+
+                    count = count / ratioDenominator;
+                }
+
+                modMap.get(modMass).set(projectSearchId, count);    // replace the set w/ the count
+            }
         }
 
+        console.log('Done with buildModMap()')
         return modMap;
     }
 
@@ -1174,9 +1191,9 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     static getModMatrix({modMap, projectSearchIds}) {
-        let modMatrix = Array( Object.keys(modMap).length );
+        let modMatrix = Array( modMap.size );
 
-        const sortedModMasses = Object.keys(modMap).sort( (a,b) => ( parseInt(a) - parseInt(b)));
+        const sortedModMasses = Array.from( modMap.keys() ).sort( (a:number,b:number) => (a - b));
 
         let i = 0;
         for(const modMass of sortedModMasses) {
@@ -1185,9 +1202,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             let k = 0;
             for(const projectSearchId of projectSearchIds) {
 
-                if(modMass in modMap && projectSearchId in modMap[modMass]) {
+                if(modMap.has(modMass) && modMap.get(modMass).has(projectSearchId)) {
                     modMatrix[i][k] = {
-                        psmCount: modMap[modMass][projectSearchId],
+                        psmCount: modMap.get(modMass).get(projectSearchId),
                         projectSearchId: projectSearchId,
                         modMass: modMass,
                         searchIndex: k,

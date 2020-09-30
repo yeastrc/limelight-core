@@ -8,13 +8,14 @@
                 PSM quant method:
 
                 <div style="margin-top:10px;">
-                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" selected>Ratios<br>
+                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" checked>Ratios<br>
                     <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts">Counts
                 </div>
 
-                <div style="margin-top:10px;">
-                    <input type="checkbox" name="include-open-mods" id="include-open-mods-checkbox" value="include-open-mods" checked>Include open mods
-                </div>
+                    <div style="margin-top:10px;">
+                        <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms" checked>PSMs<br>
+                        <input type="radio" name="quant-type" id="quant-type-option-scans" value="scans">Scans
+                    </div>
 
                 <div style="margin-top:10px;">
                     <input type="button" id="update-viz-button" class="button" value="Update Visualization"/>
@@ -51,6 +52,12 @@
                         <td><input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size="4"/></td>
                     </tr>
                 </table>
+            </div>
+
+            <div class="viz-form-section">
+                <div style="margin-top:10px;">
+                    <input type="checkbox" name="include-open-mods" id="include-open-mods-checkbox" value="include-open-mods" checked>Include open mods
+                </div>
             </div>
 
         </div> <!-- end form sections -->

@@ -15,6 +15,7 @@ const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'v';
 const _SAVE_STATE_KEYS = {
     'PROJECT_SEARCH_IDS': 'p',
     'PSM_QUANT_METHOD': 'q',
+    'QUANT_TYPE': 'a',
     'COLOR_MAX_CUTOFF_COUNT': 'c',
     'COLOR_MAX_CUTOFF_RATIO': 'r',
     'MOD_MASS_MAX_CUTOFF': 'x',
@@ -26,6 +27,7 @@ const _SAVE_STATE_KEYS = {
 const _LOAD_STATE_KEYS = {
     'PROJECT_SEARCH_IDS': 'projectSearchIds',
     'PSM_QUANT_METHOD': 'psmQuant',
+    'QUANT_TYPE': 'quantType',
     'COLOR_MAX_CUTOFF_COUNT': 'colorCutoffCount',
     'COLOR_MAX_CUTOFF_RATIO': 'colorCutoffRatio',
     'MOD_MASS_MAX_CUTOFF': 'modMassCutoffMax',
@@ -42,6 +44,16 @@ const _PSM_QUANT_METHOD_ENCODING_KEYS = {
 const _PSM_QUANT_METHOD_DECODING_KEYS = [
   'counts',
   'ratios'
+];
+
+const _QUANT_TYPE_ENCODING_KEYS = {
+    'psms': 0,
+    'scans': 1
+};
+
+const _QUANT_TYPE_DECODING_KEYS = [
+    'psms',
+    'scans'
 ];
 
 export class ModMultiSearch_DataVizPageStateManager {
@@ -79,6 +91,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.PSM_QUANT_METHOD)) {
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.PSM_QUANT_METHOD] = _PSM_QUANT_METHOD_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.PSM_QUANT_METHOD]];
+            }
+
+            if(encodedDataKeys.includes(_SAVE_STATE_KEYS.QUANT_TYPE)) {
+                this._vizOptionsData.data[_LOAD_STATE_KEYS.QUANT_TYPE] = _QUANT_TYPE_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.QUANT_TYPE]];
             }
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT)) {
@@ -196,6 +212,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
         if(this._vizOptionsData.data[_LOAD_STATE_KEYS.PSM_QUANT_METHOD] !== undefined) {
             dataForEncoding[_SAVE_STATE_KEYS.PSM_QUANT_METHOD] =  _PSM_QUANT_METHOD_ENCODING_KEYS[this._vizOptionsData.data[_LOAD_STATE_KEYS.PSM_QUANT_METHOD]];
+        }
+
+        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.QUANT_TYPE] !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.QUANT_TYPE] =  _QUANT_TYPE_ENCODING_KEYS[this._vizOptionsData.data[_LOAD_STATE_KEYS.QUANT_TYPE]];
         }
 
         if(this._vizOptionsData.data[_LOAD_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT] !== undefined) {

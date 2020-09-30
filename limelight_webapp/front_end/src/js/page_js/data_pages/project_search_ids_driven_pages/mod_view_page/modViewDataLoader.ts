@@ -105,6 +105,121 @@ export class ModViewPage_DataLoader {
         });
 	}
 
+    /**
+     * Get psm-level mod data
+     */
+    getScanModDataForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+
+                const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        loadedData.scanModData = responseData;
+                        resolve();
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
+    /**
+     * Get scan-level mod data
+     */
+    getPSMModDataForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+
+                const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        loadedData.psmModData = responseData;
+                        resolve();
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
+
+    /**
+     * Get total number of scans for search
+     */
+    getTotalScanCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+
+                const url = "d/rws/for-page/psb/scan-count-searchcriteria";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        loadedData.totalScanCount = responseData;
+                        resolve();
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
 	//////
 
 	/**
@@ -339,7 +454,7 @@ export class ModViewPage_DataLoader {
         return requestObject;
     }
 
-    getOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+    getPSMModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
 
         let objectThis = this;
 
@@ -347,7 +462,7 @@ export class ModViewPage_DataLoader {
             try {
                 let requestObject = objectThis.__createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
 
-                const url = "d/rws/for-page/psb/mod-page-special-protein-coverage-map-open-mod-data-single-project-search-id";
+                const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id";
 
                 const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
@@ -356,8 +471,40 @@ export class ModViewPage_DataLoader {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
-                        loadedData.openModPSMData = responseData.openModPsmIdsSet_KeyInnerOpenModMassRounded_KeyOuterReportedPeptideId;
-                        loadedData.openModReportedPeptideProteinMap = responseData.proteinCoverage_OnlyContainsMods_KeyInnerProteinSequenceVersionId_KeyOuterReportedPeptideId;
+                        loadedData.psmModData = responseData.resultRoot;
+                        resolve();
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
+    getScanModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let requestObject = objectThis.__createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
+
+                const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+
+                        loadedData.scanModData = responseData.resultRoot;
                         resolve();
 
                     } catch( e ) {

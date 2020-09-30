@@ -14,6 +14,7 @@ export class ModViewDataVizRendererOptionsHandler {
                                  reportedPeptideModData,
                                  proteinPositionResidues,
                                  totalPSMCount,
+                                 totalScanCount,
                                  aminoAcidModStats,
                                  proteinData,
                                  proteinPositionFilterStateManager,
@@ -21,7 +22,8 @@ export class ModViewDataVizRendererOptionsHandler {
                                  dataPageStateManager_DataFrom_Server,
                                  vizOptionsData,
                                  projectSearchIds,
-                                 openModPSMData
+                                 psmModData,
+                                 scanModData
                              }) {
 
         // defaults for the viz
@@ -37,6 +39,7 @@ export class ModViewDataVizRendererOptionsHandler {
             reportedPeptideModData,
             proteinPositionResidues,
             totalPSMCount,
+            totalScanCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
@@ -44,7 +47,8 @@ export class ModViewDataVizRendererOptionsHandler {
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             projectSearchIds : undefined,
-            openModPSMData
+            psmModData,
+            scanModData
         });
 
         // add section to page
@@ -61,13 +65,15 @@ export class ModViewDataVizRendererOptionsHandler {
             reportedPeptideModData,
             proteinPositionResidues,
             totalPSMCount,
+            totalScanCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
-            openModPSMData
+            psmModData,
+            scanModData
         })
     }
 
@@ -75,18 +81,22 @@ export class ModViewDataVizRendererOptionsHandler {
                                               reportedPeptideModData,
                                               proteinPositionResidues,
                                               totalPSMCount,
+                                              totalScanCount,
                                               aminoAcidModStats,
                                               proteinData,
                                               proteinPositionFilterStateManager,
                                               searchDetailsBlockDataMgmtProcessing,
                                               dataPageStateManager_DataFrom_Server,
                                               vizOptionsData,
-                                              openModPSMData
+                                              psmModData,
+                                              scanModData
                                           }) {
 
         const $formDiv = $('div#data-viz-form');
 
         $formDiv.find('input#update-viz-button').click( function() {
+
+            console.log('clicked update data viz');
 
             //  These variables that hold values from .val() are all cast to 'any' because otherwise the code !isNaN(...) does not compile in Typescript
 
@@ -142,6 +152,18 @@ export class ModViewDataVizRendererOptionsHandler {
                 vizOptionsData.data.includeOpenMods = $formDiv.find("input#include-open-mods-checkbox").prop('checked');
             }
 
+            // update whether we're showing psms or scan data
+            {
+                const isPsmsChecked = $formDiv.find("input#quant-type-option-psms").prop('checked');
+                if(isPsmsChecked) {
+                    vizOptionsData.data.quantType = 'psms';
+                } else {
+                    vizOptionsData.data.quantType = 'scans';
+                }
+
+                console.log('vizOptionsData', vizOptionsData);
+            }
+
             // update hash in URL to reflect user customization state
             vizOptionsData.stateManagementObject.updateState();
 
@@ -149,13 +171,15 @@ export class ModViewDataVizRendererOptionsHandler {
                 reportedPeptideModData,
                 proteinPositionResidues,
                 totalPSMCount,
+                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
                 vizOptionsData,
-                openModPSMData
+                psmModData,
+                scanModData
             });
 
         });
@@ -207,6 +231,18 @@ export class ModViewDataVizRendererOptionsHandler {
             }
 
         }
+
+        // update whether we're counting psms or scans
+        {
+            console.log('got here, quantType is', vizOptionsData.data.quantType );
+            if( vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms' ) {
+                $formToUpdate.find("input#quant-type-option-psms").prop( "checked", true);
+            } else {
+                $formToUpdate.find("input#quant-type-option-scans").prop( "checked", true);
+            }
+
+        }
+
     }
 
     static addFormToPage() {
@@ -226,7 +262,20 @@ export class ModViewDataVizRendererOptionsHandler {
         $mainContentDiv.empty();
     }
 
-    static addProteinPositionFilterToPage({ openModPSMData, vizOptionsData, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server }) {
+    static addProteinPositionFilterToPage({ psmModData,
+                                              scanModData,
+                                              vizOptionsData,
+                                              reportedPeptideModData,
+                                              proteinPositionFilterStateManager,
+                                              totalPSMCount,
+                                              totalScanCount,
+                                              proteinData,
+                                              proteinPositionResidues,
+                                              aminoAcidModStats,
+                                              projectSearchIds,
+                                              searchDetailsBlockDataMgmtProcessing,
+                                              dataPageStateManager_DataFrom_Server
+                                            }) {
 
         const $mainContentDiv = $('#mod_list_container');
 
@@ -242,13 +291,15 @@ export class ModViewDataVizRendererOptionsHandler {
                 reportedPeptideModData,
                 proteinPositionResidues,
                 totalPSMCount,
+                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 projectSearchIds,
                 dataPageStateManager_DataFrom_Server,
-                openModPSMData
+                psmModData,
+                scanModData
             });
 
             // add the viz to the page using these viz options
@@ -257,12 +308,14 @@ export class ModViewDataVizRendererOptionsHandler {
                 reportedPeptideModData,
                 proteinPositionResidues,
                 totalPSMCount,
+                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server,
-                openModPSMData
+                psmModData,
+                scanModData
             });
         }
 

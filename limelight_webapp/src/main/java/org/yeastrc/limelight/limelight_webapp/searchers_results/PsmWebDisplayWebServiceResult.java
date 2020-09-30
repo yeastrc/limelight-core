@@ -27,6 +27,7 @@ public class PsmWebDisplayWebServiceResult {
 	
 	private long psmId;
 	
+	private boolean hasModifications; // PSM level Variable/Dynamic Modifications
 	private boolean hasOpenModifications;
 	private boolean hasReporterIons;
 	
@@ -34,6 +35,7 @@ public class PsmWebDisplayWebServiceResult {
 	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal psm_precursor_MZ;            // precursor_m_z
 	private int scanNumber;
+	private Integer searchScanFileId;
 	private String scanFilename;
 	private Integer scanFileId;
 
@@ -106,5 +108,17 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setHasOpenModifications(boolean hasOpenModifications) {
 		this.hasOpenModifications = hasOpenModifications;
+	}
+	public boolean isHasModifications() {
+		return hasModifications;
+	}
+	public void setHasModifications(boolean hasModifications) {
+		this.hasModifications = hasModifications;
+	}
+	public Integer getSearchScanFileId() {
+		return searchScanFileId;
+	}
+	public void setSearchScanFileId(Integer searchScanFileId) {
+		this.searchScanFileId = searchScanFileId;
 	}
 }

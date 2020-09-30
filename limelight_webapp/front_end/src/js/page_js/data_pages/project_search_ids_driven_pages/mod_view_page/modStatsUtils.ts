@@ -10,23 +10,34 @@ export class ModStatsUtils {
                                        vizOptionsData,
                                        sortedModMasses,
                                        totalPSMCount,
+                                       totalScanCount,
                                        projectSearchIds,
                                        searchDetailsBlockDataMgmtProcessing,
-                                        openModPSMData
+                                       psmModData,
+                                       scanModData
     }) {
 
-        let output = "Currently NOT filtered on Protein and Position selection\nsearch1\tsearch2\tmod mass\tpsm count 1\tpsm count 2\tz-score\tp-value\n";
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
+        const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
+
+        let output = "Currently NOT filtered on Protein and Position selection\n";
+        output += "search1\tsearch2\tmod mass\t" + quantTypeString + " count 1\t" + quantTypeString + " count 2\tz-score\tp-value\n";
 
         const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
             reportedPeptideModData,
             aminoAcidModStats,
             projectSearchIds,
             totalPSMCount,
+            totalScanCount,
             vizOptionsData,
             countsOverride: true,
             proteinPositionFilterStateManager : undefined,
-            openModPSMData
+            psmModData,
+            scanModData
         });
+
+        console.log('modMap', modMap);
+        console.log('sortedModMasses', sortedModMasses);
 
         let selectedData = undefined;
         if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
@@ -42,7 +53,7 @@ export class ModStatsUtils {
                 continue;
             }
 
-            let n1 = totalPSMCount[projectSearchId1].psmCount;
+            let n1 = psmQuantType ? totalPSMCount[projectSearchId1].psmCount : totalScanCount[projectSearchId1].scanCount;
 
             for( let k = 0; k < projectSearchIds.length; k++ ) {
 
@@ -55,7 +66,7 @@ export class ModStatsUtils {
                         continue;
                     }
 
-                    let n2 = totalPSMCount[projectSearchId2].psmCount;
+                    let n2 = psmQuantType ? totalPSMCount[projectSearchId2].psmCount : totalScanCount[projectSearchId2].scanCount;
 
                     for (const modMass of sortedModMasses) {
 
@@ -65,12 +76,12 @@ export class ModStatsUtils {
                         }
 
 
-                        let x1 = modMap[modMass][projectSearchId1];
+                        let x1 = modMap.get(modMass).get(projectSearchId1); // modMap[modMass][projectSearchId1];
                         if (x1 === undefined) {
                             x1 = 0;
                         }
 
-                        let x2 = modMap[modMass][projectSearchId2];
+                        let x2 = modMap.get(modMass).get(projectSearchId2); // modMap[modMass][projectSearchId2];
                         if (x2 === undefined) {
                             x2 = 0;
                         }

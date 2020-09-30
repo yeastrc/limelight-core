@@ -33,7 +33,7 @@ public class ModsInfoPerPerProteinSeqVersionIdRoot {
 	 * 
 	 * Map<reported_peptide_id, Map<Mod Mass, PerModMassEntry>
 	 */
-	private Map<Integer, Map<Double,PerModMassEntry>> reportedPeptides;
+	private Map<Integer, Map<Integer, PerModMassEntry>> reportedPeptides;
 	
 	/**
 	 * 
@@ -93,7 +93,7 @@ public class ModsInfoPerPerProteinSeqVersionIdRoot {
 	 * Map<reported_peptide_id, Map<Mod Mass, PerModMassEntry>
 	 * @return
 	 */
-	public Map<Integer, Map<Double, PerModMassEntry>> getReportedPeptides() {
+	public Map<Integer, Map<Integer, PerModMassEntry>> getReportedPeptides() {
 		return reportedPeptides;
 	}
 
@@ -101,7 +101,7 @@ public class ModsInfoPerPerProteinSeqVersionIdRoot {
 	 * Map<reported_peptide_id, Map<Mod Mass, PerModMassEntry>
 	 * @param reportedPeptides
 	 */
-	public void setReportedPeptides(Map<Integer, Map<Double, PerModMassEntry>> reportedPeptides) {
+	public void setReportedPeptides(Map<Integer, Map<Integer, PerModMassEntry>> reportedPeptides) {
 		this.reportedPeptides = reportedPeptides;
 	}
 }

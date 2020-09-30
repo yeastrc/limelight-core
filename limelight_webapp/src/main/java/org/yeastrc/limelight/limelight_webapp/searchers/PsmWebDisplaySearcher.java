@@ -45,9 +45,10 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	private static final Logger log = LoggerFactory.getLogger( PsmWebDisplaySearcher.class );
 
 	private static final String SQL_MAIN = 
-			"SELECT psm_tbl.id AS psm_id, psm_tbl.has_reporter_ions, psm_tbl.has_open_modifications, "
+			"SELECT psm_tbl.id AS psm_id, "
+			+ 		" psm_tbl.has_modifications, psm_tbl.has_open_modifications, psm_tbl.has_reporter_ions, "
 			+ 		" psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
-			+ 		 " psm_tbl.scan_number AS scan_number, "
+			+ 		 " psm_tbl.scan_number AS scan_number, psm_tbl.search_scan_file_id, "
 			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
 			+ " FROM psm_tbl  "
 			+ " LEFT OUTER JOIN search_scan_file_tbl ON psm_tbl.search_scan_file_id = search_scan_file_tbl.id ";
@@ -91,7 +92,6 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			//  Add inner join for each PSM cutoff
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 				sqlSB.append( " INNER JOIN " );
-				//  If slow, use psm_filterable_annotation__generic_lookup and put more limits in query on search, reported peptide, and maybe link type
 				sqlSB.append( " psm_filterable_annotation_tbl AS psm_fltrbl_tbl_" );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( " ON "  );
@@ -216,15 +216,23 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					PsmWebDisplayWebServiceResult psmWebDisplay = new PsmWebDisplayWebServiceResult();
 					psmWebDisplay.setSearchId( searchId );
 					psmWebDisplay.setPsmId( rs.getLong( "psm_id" ) );
-					
-					int hasReporterIonsInt = rs.getInt("has_reporter_ions" );
-					if ( hasReporterIonsInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						psmWebDisplay.setHasReporterIons( true );
+
+					{
+						int intValue = rs.getInt( "has_modifications" );
+						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							psmWebDisplay.setHasModifications( true );
+						}
 					}
 					{
 						int intValue = rs.getInt( "has_open_modifications" );
 						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 							psmWebDisplay.setHasOpenModifications( true );
+						}
+					}
+					{
+						int intValue = rs.getInt("has_reporter_ions" );
+						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							psmWebDisplay.setHasReporterIons( true );
 						}
 					}
 
@@ -233,6 +241,12 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					psmWebDisplay.setPsm_precursor_MZ( rs.getBigDecimal( "precursor_m_z" ) );
 					
 					psmWebDisplay.setScanNumber( rs.getInt( "scan_number" ) );
+					{
+						int searchScanFileId = rs.getInt( "search_scan_file_id" );
+						if ( ! rs.wasNull() ) {
+							psmWebDisplay.setSearchScanFileId( searchScanFileId );
+						}
+					}
 					psmWebDisplay.setScanFilename( rs.getString( "scan_filename" ) );
 					
 					int scanFileId = rs.getInt( "scan_file_id" );
