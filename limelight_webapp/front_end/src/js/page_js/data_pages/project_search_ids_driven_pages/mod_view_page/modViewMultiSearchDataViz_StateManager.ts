@@ -22,6 +22,7 @@ const _SAVE_STATE_KEYS = {
     'MOD_MASS_MIN_CUTOFF': 'n',
     'SELECTED_RECTS': 's',
     'INCLUDE_OPEN_MODS' : 'o',
+    'DATA_TRANSFORMATION' : 't',
 };
 
 const _LOAD_STATE_KEYS = {
@@ -34,6 +35,7 @@ const _LOAD_STATE_KEYS = {
     'MOD_MASS_MIN_CUTOFF': 'modMassCutoffMin',
     'SELECTED_RECTS': 'selectedStateObject',
     'INCLUDE_OPEN_MODS' : 'includeOpenMods',
+    'DATA_TRANSFORMATION' : 'dataTransformation',
 };
 
 const _PSM_QUANT_METHOD_ENCODING_KEYS = {
@@ -54,6 +56,18 @@ const _QUANT_TYPE_ENCODING_KEYS = {
 const _QUANT_TYPE_DECODING_KEYS = [
     'psms',
     'scans'
+];
+
+const _DATA_TRANSFORMATION_ENCODING_KEYS = {
+    'scaled-mean-diff': 0,
+    'per-mod-zscore': 1,
+    'global-zscore': 2,
+};
+
+const _DATA_TRANSFORMATION_DECODING_KEYS = [
+    'scaled-mean-diff',
+    'per-mod-zscore',
+    'global-zscore',
 ];
 
 export class ModMultiSearch_DataVizPageStateManager {
@@ -95,6 +109,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.QUANT_TYPE)) {
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.QUANT_TYPE] = _QUANT_TYPE_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.QUANT_TYPE]];
+            }
+
+            if(encodedDataKeys.includes(_SAVE_STATE_KEYS.DATA_TRANSFORMATION)) {
+                this._vizOptionsData.data[_LOAD_STATE_KEYS.DATA_TRANSFORMATION] = _DATA_TRANSFORMATION_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.DATA_TRANSFORMATION]];
             }
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT)) {
@@ -216,6 +234,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
         if(this._vizOptionsData.data[_LOAD_STATE_KEYS.QUANT_TYPE] !== undefined) {
             dataForEncoding[_SAVE_STATE_KEYS.QUANT_TYPE] =  _QUANT_TYPE_ENCODING_KEYS[this._vizOptionsData.data[_LOAD_STATE_KEYS.QUANT_TYPE]];
+        }
+
+        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.DATA_TRANSFORMATION] !== undefined && this._vizOptionsData.data[_LOAD_STATE_KEYS.DATA_TRANSFORMATION] !== 'none') {
+            dataForEncoding[_SAVE_STATE_KEYS.DATA_TRANSFORMATION] =  _DATA_TRANSFORMATION_ENCODING_KEYS[this._vizOptionsData.data[_LOAD_STATE_KEYS.DATA_TRANSFORMATION]];
         }
 
         if(this._vizOptionsData.data[_LOAD_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT] !== undefined) {

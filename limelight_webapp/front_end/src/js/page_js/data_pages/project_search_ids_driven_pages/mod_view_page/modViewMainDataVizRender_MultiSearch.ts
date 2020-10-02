@@ -44,7 +44,22 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
         const sortedModMasses = Array.from( modMap.keys() ).sort( (a:number,b:number) => (a - b));
-        const maxPsmCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
+
+        let minCount = 0;
+        if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
+            minCount = ModViewDataVizRenderer_MultiSearch.getMinPSMCount(modMatrix, vizOptionsData);
+        }
+
+        let maxCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
+
+        // make min and max count symmetrical if zscore is enabled
+        if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
+            if (Math.abs(minCount) > maxCount) {
+                maxCount = Math.abs(minCount);
+            } else if (maxCount > Math.abs(minCount)) {
+                minCount = -1 * maxCount;
+            }
+        }
 
         // add a div for this viz to the page
         ModViewDataVizRenderer_MultiSearch.addDataVizContainerToPage();
@@ -81,12 +96,19 @@ export class ModViewDataVizRenderer_MultiSearch {
         // const colorScale = d3.scaleSequential(d3.interpolateYlGn)
         //     .domain([0, maxPsmCount])
 
-        const logScale = d3.scaleSqrt()
-            .domain([0, maxPsmCount])
+        let logScale;
+        let colorScale;
 
-        const colorScale = d3.scaleSequential(
-            (d) => d3.interpolatePlasma(logScale(d))
-        )
+        if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
+            logScale = d3.scaleSqrt().domain([minCount, maxCount]);
+            colorScale = d3.scalePow()
+                .exponent(1.4)
+                .domain([minCount, minCount/2, 0, maxCount/2, maxCount])
+                .range(["#db4325", "#eda247", "white", "#57c4ad", "#006164"]);
+        } else {
+            logScale = d3.scaleSqrt().domain([minCount, maxCount]);
+            colorScale = d3.scaleSequential((d) => d3.interpolatePlasma(logScale(d)));
+        }
 
         // start drawing the actual viz
         let svg = d3.select("div#data-viz-container").append("svg")
@@ -157,7 +179,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabelsHeader({ svg, width, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, minPSMCount: 0, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData });
+        ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, maxPsmCount: maxCount, minPsmCount: minCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData });
 
         ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
             svg,
@@ -286,10 +308,24 @@ export class ModViewDataVizRenderer_MultiSearch {
         $mainContentDiv.append( $dataVizContainer );
     }
 
-    static addColorScaleLegend({ svg, rectAreaHeight, colorScale, minPSMCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData }) {
+    static addColorScaleLegend({ svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantType = psmQuantType ? 'PSM' : 'Scan';
+        let showInts;
+
+        if((vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') && vizOptionsData.data.psmQuant === 'counts') {
+            showInts = true;
+        } else {
+            showInts = false;
+        }
+
+        let labelText = quantType;
+        labelText += vizOptionsData.data.psmQuant === 'counts' ? ' Count' : ' Ratio'
+        if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
+            labelText += " (" + ModViewDataVizRenderer_MultiSearch.getDataTransformationTypeString(vizOptionsData) + ")";
+        }
+        labelText += ' Color:';
 
         // create group element to hold legend
         let legendGroup = svg.append('g')
@@ -303,7 +339,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr("text-anchor", "end")
             .attr('font-size', labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
-            .text((d,i) => ( vizOptionsData.data.psmQuant === 'counts' ? quantType + ' Count Color:' : quantType + ' Ratio Color:'));
+            .text(() => (labelText));
 
         // width of color scale bar
         const width = minLegendWidth;
@@ -314,8 +350,9 @@ export class ModViewDataVizRenderer_MultiSearch {
         // add colored rects for scale bar
         for( let i = 0; i <= width; i++ ) {
 
-            let psmCountForI = ( i / width ) * ( maxPsmCount - minPSMCount );
-            if( vizOptionsData.data.psmQuant === 'counts' ) {
+            let psmCountForI = minPsmCount + ( i / width ) * ( maxPsmCount - minPsmCount );
+
+            if(showInts) {
                 psmCountForI = Math.floor(psmCountForI);
             }
             colorScaleGroup.append('rect')
@@ -337,8 +374,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
             const dx = Math.floor( (i / (numTicks - 1)) * width );
 
-            let psmCountForX = ( dx / width ) * ( maxPsmCount - minPSMCount );
-            if( vizOptionsData.data.psmQuant === 'counts' ) {
+            let psmCountForX = minPsmCount + ( dx / width ) * ( maxPsmCount - minPsmCount );
+
+            if(showInts) {
                 psmCountForX = Math.ceil(psmCountForX);
             }
 
@@ -361,7 +399,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 .attr('font-size', labelFontSize + 'px')
                 .attr('font-family', 'sans-serif')
                 .text((d,i) => (
-                    vizOptionsData.data.psmQuant === 'ratios' ? psmCountForX.toExponential(2) : psmCountForX
+                    showInts ? psmCountForX : psmCountForX.toExponential(2)
                 ));
 
         }
@@ -1171,8 +1209,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
         // convert to a map of counts/ratios
-        for(const [modMass, projectCountMap] of modMap) {
-            for(const [projectSearchId, idSet] of projectCountMap) {
+        for(const [modMass, searchCountMap] of modMap) {
+            for(const [projectSearchId, idSet] of searchCountMap) {
                 let count = idSet.size;
 
                 if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
@@ -1187,17 +1225,231 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         console.log('Done with buildModMap()')
+
+        if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
+            // convert the data into zscores
+            ModViewDataVizRenderer_MultiSearch.convertModMapToDataTransformation(modMap, vizOptionsData);
+        }
+
         return modMap;
+    }
+
+    static convertModMapToDataTransformation(modMap, vizOptionsData) {
+
+        if(vizOptionsData.data.dataTransformation === undefined) {
+            return;
+        }
+
+        switch(vizOptionsData.data.dataTransformation) {
+            case 'per-mod-zscore':
+                ModViewDataVizRenderer_MultiSearch.convertModMapToPerModZScore(modMap);
+                break;
+
+            case 'global-zscore':
+                ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
+                break;
+
+            case 'scaled-mean-diff':
+                ModViewDataVizRenderer_MultiSearch.convertModMapToPerModScaledMeanDelta(modMap);
+                break;
+        }
+
+    }
+
+    static getDataTransformationTypeString(vizOptionsData) {
+        if(vizOptionsData.data.dataTransformation === undefined) {
+            return 'None';
+        }
+
+        switch(vizOptionsData.data.dataTransformation) {
+            case 'per-mod-zscore':
+                return "Per-Mod Z-Score"
+                break;
+
+            case 'global-zscore':
+                return "Global Z-Score"
+                break;
+
+            case 'scaled-mean-diff':
+                return "Scaled Mean Diff."
+                break;
+        }
+    }
+
+    static convertModMapToPerModScaledMeanDelta(modMap) {
+        for(const [modMass, searchCountMap] of modMap) {
+            const mean = ModViewDataVizRenderer_MultiSearch.getMeanForModMass({modMap, modMass});
+
+            for (const [projectSearchId, count] of searchCountMap) {
+                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getScaledMeanDelta({ modMap, modMass, mean, projectSearchId }));
+            }
+        }
+    }
+
+    static convertModMapToPerModZScore(modMap) {
+        for(const [modMass, searchCountMap] of modMap) {
+            const mean = ModViewDataVizRenderer_MultiSearch.getMeanForModMass({modMap, modMass});
+            const standardDeviation = ModViewDataVizRenderer_MultiSearch.getStandardDeviationForModMass({ modMap, modMass, mean });
+
+            for (const [projectSearchId, count] of searchCountMap) {
+                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getZScoreForModMassProjectSearchId({ modMap, modMass, mean, standardDeviation, projectSearchId }));
+            }
+        }
+    }
+
+    static convertModMapToGlobalZScore(modMap) {
+        const globalMean = ModViewDataVizRenderer_MultiSearch.getGlobalMean(modMap);
+        const globalStandardDeviation = ModViewDataVizRenderer_MultiSearch.getGlobalStandardDeviation(modMap, globalMean);
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getZScoreForModMassProjectSearchId({ modMap, modMass, mean:globalMean, standardDeviation:globalStandardDeviation, projectSearchId }));
+            }
+        }
+    }
+
+    static getGlobalMean(modMap) {
+        let n = 0;
+        let sum = 0;
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                n++;
+                sum += count;
+            }
+        }
+
+        return (n > 0 ? sum / n : 0);
+    }
+
+    static getGlobalStandardDeviation(modMap, mean) {
+
+        let n = 0;
+        let sum = 0;
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                n++;
+                sum += (count - mean) ** 2;
+            }
+        }
+
+        if(n === 0) {
+            return 0;
+        }
+
+        sum = sum / n;
+        return Math.sqrt(sum);
+
+    }
+
+    static getZScoreForModMassProjectSearchId({modMap, modMass, mean, standardDeviation, projectSearchId}) {
+        if(!(modMap.has(modMass))) {
+            return 0;
+        }
+
+        const count = modMap.get(modMass).get(projectSearchId);
+        return (count - mean) / standardDeviation;
+    }
+
+    static getScaledMeanDelta({modMap, modMass, mean, projectSearchId}) {
+        if(!(modMap.has(modMass))) {
+            return 0;
+        }
+
+        const count = modMap.get(modMass).get(projectSearchId);
+        return (count - mean) / mean;
+    }
+
+    static getStandardDeviationForModMass({modMap, modMass, mean}) {
+        let sum = 0;
+
+        if(!(modMap.has(modMass))) {
+            return 0;
+        }
+
+        const searchCountMap = modMap.get(modMass);
+        for(const [projectSearchId, count] of searchCountMap) {
+            sum += (count - mean) ** 2;
+        }
+
+        sum = sum / searchCountMap.size;
+        return Math.sqrt(sum);
+    }
+
+    static getMeanForModMass({modMap, modMass}) {
+        let sum = 0;
+
+        if(!(modMap.has(modMass))) {
+            return 0;
+        }
+
+        const searchCountMap = modMap.get(modMass);
+        for(const [projectSearchId, count] of searchCountMap) {
+            sum += count;
+        }
+
+        return sum / searchCountMap.size;
+    }
+
+    static getMinForModMass({modMap, modMass}) {
+        let min = 100000000;
+
+        if(!(modMap.has(modMass))) {
+            return 0;
+        }
+
+        const searchCountMap = modMap.get(modMass);
+        for(const [projectSearchId, count] of searchCountMap) {
+            if(count < min) {
+                min = count;
+            }
+        }
+
+        return min;
+    }
+    static getMaxForModMass({modMap, modMass}) {
+        let max = 0;
+
+        if(!(modMap.has(modMass))) {
+            return 0;
+        }
+
+        const searchCountMap = modMap.get(modMass);
+        for(const [projectSearchId, count] of searchCountMap) {
+            if(count > max) {
+                max = count;
+            }
+        }
+
+        return max;
+    }
+
+    static getMinPSMCount(modMatrix, vizOptionsData) {
+
+        let min = 0;
+
+        for(let i = 0; i < modMatrix.length; i++ ) {
+            for(let k = 0; k < modMatrix[i].length; k++) {
+                if(modMatrix[i][k]['psmCount'] < min) {
+                    min = modMatrix[i][k]['psmCount'];
+                }
+            }
+        }
+
+        return min;
     }
 
     static getMaxPSMCount(modMatrix, vizOptionsData) {
 
-        if( vizOptionsData.data.psmQuant === 'ratios' && vizOptionsData.data.colorCutoffRatio !== undefined) {
-            return vizOptionsData.data.colorCutoffRatio;
-        }
+        if(!vizOptionsData.data.showZScore) {
+            if (vizOptionsData.data.psmQuant === 'ratios' && vizOptionsData.data.colorCutoffRatio !== undefined) {
+                return vizOptionsData.data.colorCutoffRatio;
+            }
 
-        if( vizOptionsData.data.psmQuant === 'counts' && vizOptionsData.data.colorCutoffCount !== undefined) {
-            return vizOptionsData.data.colorCutoffCount;
+            if (vizOptionsData.data.psmQuant === 'counts' && vizOptionsData.data.colorCutoffCount !== undefined) {
+                return vizOptionsData.data.colorCutoffCount;
+            }
         }
 
         let max = 0;

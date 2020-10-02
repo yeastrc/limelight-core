@@ -1,12 +1,7 @@
-
-
-
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
 import {ProteinPositionFilterOverlayDisplayManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterOverlayDisplayManager";
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
-
-
 
 export class ModViewDataVizRendererOptionsHandler {
 
@@ -111,6 +106,12 @@ export class ModViewDataVizRendererOptionsHandler {
                 vizOptionsData.data.psmQuant = choice;
             }
 
+            // update what kind of transformation we're applying to the data (e.g. zscore)
+            {
+                const choice = $formDiv.find("input:radio[name='data-transformation']:checked").val()
+                vizOptionsData.data.dataTransformation = choice;
+            }
+
             // update cutoffs for color scale
             {
                 const ratioCutoff : any = $formDiv.find("input#color-cutoff-ratio").val();
@@ -204,6 +205,21 @@ export class ModViewDataVizRendererOptionsHandler {
             }
         }
 
+        // update data transformations
+        {
+            const option = vizOptionsData.data.dataTransformation;
+
+            if( option === undefined || option === 'none' ) {
+                $formToUpdate.find("input#data-transformation-none").attr('checked', 'checked');
+            } else if( option === 'scaled-mean-diff') {
+                $formToUpdate.find("input#data-transformation-scaled-mean-diff").attr('checked', 'checked');
+            } else if( option === 'per-mod-zscore') {
+                $formToUpdate.find("input#data-transformation-per-mod-zscore").attr('checked', 'checked');
+            } else if( option === 'global-zscore') {
+                $formToUpdate.find("input#data-transformation-global-zscore").attr('checked', 'checked');
+            }
+        }
+
         // update ratio and count cutoffs
         {
             if( vizOptionsData.data.colorCutoffRatio !== undefined ) {
@@ -234,7 +250,6 @@ export class ModViewDataVizRendererOptionsHandler {
 
         // update whether we're counting psms or scans
         {
-            console.log('got here, quantType is', vizOptionsData.data.quantType );
             if( vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms' ) {
                 $formToUpdate.find("input#quant-type-option-psms").prop( "checked", true);
             } else {

@@ -2,7 +2,7 @@
     <div id="data-viz-title">Data Visualization Options:</div>
     <div id="data-viz-form">
 
-        <div id="form-sections">
+        <div id="form-sections" style="width:900px;">
 
                 <div class="viz-form-section">
                 Quant method:
@@ -52,6 +52,23 @@
                         <td><input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size="4"/></td>
                     </tr>
                 </table>
+            </div>
+
+            <div class="viz-form-section">
+                <div>Transformations:</div>
+
+                <div style="margin-top:5px;">
+                    <input type="radio" name="data-transformation" id="data-transformation-none" value="none" checked>None
+                </div>
+                <div style="margin-top:5px;">
+                    <input type="radio" name="data-transformation" id="data-transformation-scaled-mean-diff" value="scaled-mean-diff">Scaled Mean Diff.
+                </div>
+                <div style="margin-top:5px;">
+                    <input type="radio" name="data-transformation" id="data-transformation-per-mod-zscore" value="per-mod-zscore">Per-mod Z-Score
+                </div>
+                <div style="margin-top:5px;">
+                    <input type="radio" name="data-transformation" id="data-transformation-global-zscore" value="global-zscore">Global Z-Score
+                </div>
             </div>
 
             <div class="viz-form-section">
