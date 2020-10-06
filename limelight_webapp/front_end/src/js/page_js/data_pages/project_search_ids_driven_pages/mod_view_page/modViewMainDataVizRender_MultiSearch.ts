@@ -109,8 +109,13 @@ export class ModViewDataVizRenderer_MultiSearch {
                     .range(["#db4325", "#eda247", "white", "#57c4ad", "#006164"]);
             }
         } else {
-            const logScale = d3.scaleSqrt().domain([minCount, maxCount]);
-            colorScale = d3.scaleSequential((d) => d3.interpolatePlasma(logScale(d)));
+            //const logScale = d3.scaleSqrt().domain([minCount, maxCount]);
+            //colorScale = d3.scaleSequential((d) => d3.interpolatePlasma(logScale(d)));
+
+            colorScale = d3.scaleLinear()
+                .domain([0, maxCount/2, maxCount])
+                .range(["white", "#57c4ad", "#006164"]);
+
         }
 
         // start drawing the actual viz
