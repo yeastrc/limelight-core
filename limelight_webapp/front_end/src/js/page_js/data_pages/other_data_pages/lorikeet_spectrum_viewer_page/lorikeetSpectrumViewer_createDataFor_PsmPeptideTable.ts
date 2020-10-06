@@ -11,6 +11,7 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data
 import {DataTable_Column, DataTable_DataRow_ColumnEntry, DataTable_DataRowEntry, DataTable_RootTableDataObject} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {AnnotationTypeData_Root, AnnotationTypeItem, AnnotationTypeItems_PerProjectSearchId, DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class";
 
 
 //   !!!  Constants visible in this file/module
@@ -33,10 +34,6 @@ class PsmPeptideEntryAfterProcessing {
 	openModificationMassesDisplay
 	openModificationMassesSort
 	psmObject // Existing psmObject from server
-
-// 	for( let annoId of Object.keys( psmObject.psmAnnotationMap ) ) {
-// 	dataObject[ annoId ] = psmObject.psmAnnotationMap[ annoId ][ 'valueString' ];
-// }
 }
 
 /**
@@ -425,15 +422,37 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 
 	for ( const psmPeptideEntryAfterProcessingEntry of psmPeptideEntryAfterProcessingEntries ) {
 
-		const psmObject = psmPeptideEntryAfterProcessingEntry.psmObject
+		let psmId : number = undefined;
+		let reportedPeptideString = undefined;
+		let charge : number = undefined;
+		let psmAnnotationMap : any = undefined;    //  psmAnnotationMap is an Object
+		{
+			const psmObject = psmPeptideEntryAfterProcessingEntry.psmObject
+
+			psmId = psmObject.psmId
+			reportedPeptideString = psmObject.reportedPeptideString
+			charge = psmObject.charge
+			psmAnnotationMap = psmObject.psmAnnotationMap    //  psmAnnotationMap is an Object
+
+			if ( ! variable_is_type_number_Check( psmId ) ) {
+				const msg = "psmId is not a number: " + psmId;
+				console.warn( msg )
+				throw Error( msg )
+			}
+			if ( ! variable_is_type_number_Check( charge ) ) {
+				const msg = "charge is not a number: " + psmId;
+				console.warn( msg )
+				throw Error( msg )
+			}
+		}
 
 		const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
 
 		{
 			{ // reportedPeptideSequence
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
-					valueDisplay: psmObject.reportedPeptideString,
-					valueSort: psmObject.reportedPeptideString
+					valueDisplay: reportedPeptideString,
+					valueSort: reportedPeptideString
 				})
 				columnEntries.push(columnEntry);
 			}
@@ -454,8 +473,8 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 
 			{ // Charge
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
-					valueDisplay: psmObject.charge,
-					valueSort: psmObject.charge
+					valueDisplay: charge.toString(),
+					valueSort: charge
 				})
 				columnEntries.push(columnEntry);
 			}
@@ -505,7 +524,7 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 			{
 				//  Put PSM annotations into a list for display matching table headers
 
-				let psmAnnotationMap = psmPeptideEntryAfterProcessingEntry.psmObject.psmAnnotationMap;  //  psmAnnotationMap is an Object
+				//  psmAnnotationMap is an Object
 				if (psmAnnotationMap) {
 					for (const annTypeItem of psmAnnotationTypesForPsmListEntries_DisplayOrder) {
 						const entryForAnnTypeId = psmAnnotationMap[annTypeItem.annotationTypeId];
@@ -523,16 +542,20 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 			}
 
 			let highlightRow = false
-			if ( psmId_Selection === psmObject.psmId ) {
+			if ( psmId_Selection === psmId ) {
 				highlightRow = true
 			}
 
+			const tableRowClickHandlerParameter = new LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class({
+				psmId
+			});
+
 			const dataTable_DataRowEntry = new DataTable_DataRowEntry({
-				uniqueId: psmObject.psmId,
-				sortOrder_OnEquals: psmObject.psmId,
+				uniqueId: psmId,
+				sortOrder_OnEquals: psmId,
 				columnEntries,
 				highlightRowWithBackgroundColor: highlightRow,
-				tableRowClickHandlerParameter: {psmId: psmObject.psmId}
+				tableRowClickHandlerParameter
 			})
 
 			dataTable_DataRowEntries.push(dataTable_DataRowEntry);

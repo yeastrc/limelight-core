@@ -29,11 +29,11 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 public interface Psm_FilterableAnnotationData_SearcherIF {
 
 	/**
-	 * @param psmId
+	 * @param psmIds
 	 * @param srchPgmFilterableReportedPeptideAnnotationTypeDTOList
 	 * @return
 	 * @throws Exception
 	 */
-	List<PsmFilterableAnnotationDTO> getPsmFilterableAnnotationDTOList(long psmId, Collection<Integer> annotationTypeIds) throws Exception;
+	List<PsmFilterableAnnotationDTO> getPsmFilterableAnnotationDTOList(Collection<Long> psmIds, Collection<Integer> annotationTypeIds) throws Exception;
 
 }

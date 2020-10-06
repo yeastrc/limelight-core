@@ -54,7 +54,7 @@ export class ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Res
  * 
  * @returns ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result
  */
-export const reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects = ({
+export const reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_createChildTableObjects = ({
 
     projectSearchId,
     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
@@ -248,21 +248,6 @@ const _create_dataTable_RootTableObject = function({
                 dataTable_Columns.push( dataTable_Column );
             }
         }
-        // One entry {
-            //     annotationTypeId: 3750
-            //     searchProgramsPerSearchId: 438
-            //     name: "q-value"
-            //     defaultVisible: true
-            //     displayOrder: 1
-            //     description: "The minimum false discovery among all predictions with this score or better."
-            //     filterDirectionAbove: false
-            //     filterDirectionBelow: true
-            //     defaultFilter: true
-            //     defaultFilterValue: 0.05
-            //     defaultFilterValueString: "0.05"
-            //     sortOrder: null
-            //     sorttype: "number"
-            // }
     }
 
     //  Data Rows
@@ -307,13 +292,13 @@ const _create_dataTable_RootTableObject = function({
                 {  //  Reported Peptide Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null ) {
+                        if ( peptideEntry.peptideAnnotationMap_KeyAnnType === undefined || peptideEntry.peptideAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null )"
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        const annotationEntry = peptideEntry.peptideAnnotationMap[ annotationType.annotationTypeId ];
-                        let valueSort = annotationEntry.valueDouble;
+                        const annotationEntry = peptideEntry.peptideAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
+                        let valueSort : any = annotationEntry.valueDouble;
                         if ( valueSort === undefined || valueSort === null ) {
                             valueSort = annotationEntry.valueString; //  Needed for Descriptive Annotation Types
                         }
@@ -325,14 +310,14 @@ const _create_dataTable_RootTableObject = function({
                     }
                 }
                 {  //  PSM Best Scores
-                    const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-                    for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null ) {
+                    const annotationTypes = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
+                    for ( const annotationType of annotationTypes ) {
+                        if ( peptideEntry.psmAnnotationMap_KeyAnnType === undefined || peptideEntry.psmAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null )"
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        const annotationEntry = peptideEntry.psmAnnotationMap[ annotationType.annotationTypeId ];
+                        const annotationEntry = peptideEntry.psmAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
                             valueDisplay : annotationEntry.valueString,
                             valueSort : annotationEntry.valueDouble

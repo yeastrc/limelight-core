@@ -44,19 +44,29 @@ public class Psm_FilterableAnnotationData_Searcher extends Limelight_JDBC_Base i
 	@Autowired
 	private PsmFilterableAnnotationDAO_IF psmFilterableAnnotationDAO;
 
-	private static final String SQL_MAIN = 
+	private static final String SQL_MAIN_PART_1 = 
 			"SELECT * "
 			+ " FROM psm_filterable_annotation_tbl  "
-			+ " WHERE psm_id = ? AND annotation_type_id IN  ";
+			+ " WHERE psm_id IN ";
+	
+	private static final String SQL_MAIN_PART_2 = 
+			" AND annotation_type_id IN  ";
 	
 	/**
-	 * @param psmId
+	 * @param psmIds
 	 * @param srchPgmFilterableReportedPeptideAnnotationTypeDTOList
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public List<PsmFilterableAnnotationDTO> getPsmFilterableAnnotationDTOList( long psmId, Collection<Integer> annotationTypeIds  ) throws Exception {
+	public List<PsmFilterableAnnotationDTO> getPsmFilterableAnnotationDTOList( Collection<Long> psmIds, Collection<Integer> annotationTypeIds  ) throws Exception {
+		
+		if ( psmIds == null || psmIds.isEmpty() ) {
+			throw new IllegalArgumentException( "( psmIds == null || psmIds.isEmpty() )" );
+		}
+		if ( annotationTypeIds == null || annotationTypeIds.isEmpty() ) {
+			throw new IllegalArgumentException( "( annotationTypeIds == null || annotationTypeIds.isEmpty() )" );
+		}
 		
 		List<PsmFilterableAnnotationDTO> results = new ArrayList<>();
 		if ( annotationTypeIds == null || annotationTypeIds.isEmpty() ) {
@@ -65,20 +75,38 @@ public class Psm_FilterableAnnotationData_Searcher extends Limelight_JDBC_Base i
 		StringBuilder sqlSB = new StringBuilder( 1000 );
 		//////////////////////
 		/////   Start building the SQL
-		sqlSB.append( SQL_MAIN );
+		sqlSB.append( SQL_MAIN_PART_1 );
+
 		//////////
-		// Add type ids to  WHERE
-		boolean first = true;
-		sqlSB.append( " ( " );
-		for ( Integer annotationTypeId : annotationTypeIds ) {
-			if ( first ) {
-				first = false;
-			} else {
-				sqlSB.append( ", " );
+		// Add psm ids placeholder to  WHERE
+		{
+			sqlSB.append( " ( " );
+			int size = psmIds.size();
+			for ( int counter = 0; counter < size; counter++ ) {
+				if ( counter != 0 ) {
+					sqlSB.append( ", " );
+				}
+				sqlSB.append( " ? " );
 			}
-			sqlSB.append( annotationTypeId );
+			sqlSB.append( " ) " );
 		}
-		sqlSB.append( " ) " );
+
+		sqlSB.append( SQL_MAIN_PART_2 );
+
+		//////////
+		// Add ann type ids placeholder to  WHERE
+		{
+			sqlSB.append( " ( " );
+			int size = annotationTypeIds.size();
+			for ( int counter = 0; counter < size; counter++ ) {
+				if ( counter != 0 ) {
+					sqlSB.append( ", " );
+				}
+				sqlSB.append( " ? " );
+			}
+			sqlSB.append( " ) " );
+		}
+		
 		
 		String querySQL = sqlSB.toString();
 		
@@ -86,9 +114,20 @@ public class Psm_FilterableAnnotationData_Searcher extends Limelight_JDBC_Base i
 			     PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
 			
 			int paramCounter = 0;
-			paramCounter++;
-			preparedStatement.setLong( paramCounter, psmId );
 
+			{
+				for ( Long psmId : psmIds ) {
+					paramCounter++;
+					preparedStatement.setLong( paramCounter, psmId );
+				}
+			}
+			{
+				for ( Integer annotationTypeId : annotationTypeIds ) {
+					paramCounter++;
+					preparedStatement.setInt( paramCounter, annotationTypeId );
+				}
+			}
+			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while( rs.next() ) {
 					PsmFilterableAnnotationDTO item = psmFilterableAnnotationDAO.populateFromResultSet( rs );

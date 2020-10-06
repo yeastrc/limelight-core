@@ -80,7 +80,7 @@ import {
  LinksToExternalResources, load_PsmOpenModificationMasses_IfNeeded
 } from './proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_nonClass_Functions';
 
-import { reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects, ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result } from '../js/proteinPage_Display_SingleSearch_SingleProtein_ReportedPeptideListSection_Create_TableData'
+import { reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_createChildTableObjects, ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result } from '../js/proteinPage_Display_SingleSearch_SingleProtein_ReportedPeptideListSection_Create_TableData'
 import {
  SearchDetailsAndFilterBlock_MainPage_Root,
  SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
@@ -331,7 +331,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
   if ( reportedPeptideIdsForDisplay.length > 0 ) {
 
    const reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result : ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result = (
-       reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects({
+       reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_createChildTableObjects({
         projectSearchId : this.props.propsValue.projectSearchId,
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         searchDataLookupParamsRoot : this.props.propsValue.searchDataLookupParamsRoot,
@@ -520,7 +520,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
   const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId;
 
   const reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result : ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result = (
-      reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects({
+      reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_createChildTableObjects({
        projectSearchId : this.props.propsValue.projectSearchId,
        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
        searchDataLookupParamsRoot : this.props.propsValue.searchDataLookupParamsRoot,
@@ -1498,7 +1498,7 @@ export class ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Componen
        if ( reportedPeptideIdsForDisplay.size > 0 ) {
 
         const reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result : ReportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_Result = (
-            reportedPeptides_DataTableOjbects_ForSingleSearch_SingleProtein_createChildTableObjects({
+            reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_createChildTableObjects({
              projectSearchId : this.props.propsValue.projectSearchId,
              reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
              searchDataLookupParamsRoot : this.props.propsValue.searchDataLookupParamsRoot,

@@ -10,9 +10,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 // import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder.js';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
-
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
-
+import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 
 /**
@@ -53,13 +51,9 @@ const loadProteinDisplayData_Per_ProjectSearchId = function ( {
                 const  loadedDataPerProjectSearchIdHolder = new ProteinViewPage_LoadedDataPerProjectSearchIdHolder();
 
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set( projectSearchId, loadedDataPerProjectSearchIdHolder );
-                
-                const proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-                    loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
-                });
 
                 const promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = (
-                    proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId } )
+                    loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder } )
                 );
 
                 promises_Per_projectSearchId.push( promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer );

@@ -4,8 +4,6 @@
  * Javascript for  page lorikeetSpectrumViewerView.jsp 
  * 
  * Lorikeet Spectrum Viewer on it's own page
- * 
- * !!!!   Root Javascript file for page so remains as '.js' file  !!!
  */
 
 

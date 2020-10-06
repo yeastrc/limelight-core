@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
@@ -44,6 +45,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
@@ -54,18 +56,18 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 
 
 /**
- * Retrieve PSM IDs Per Reported Peptide Id for Reported Peptide Ids, Project Search ID, and Search Criteria
+ * Retrieve PSM Filterable Annoation Values Per Reported Peptide Id for Reported Peptide Ids, Ann Type Ids, Project Search ID, and Search Criteria
  *
  */
 @RestController
-public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Single_ProjSearchID_RestWebserviceController {
+public class Psm_FilterableAnnotationValues_PerReportedPeptide_For_ReportedPeptideIds_AnnTypeIds_SearchCriteria_Single_ProjSearchID_RestWebserviceController {
   
-	private static final Logger log = LoggerFactory.getLogger( Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Single_ProjSearchID_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( Psm_FilterableAnnotationValues_PerReportedPeptide_For_ReportedPeptideIds_AnnTypeIds_SearchCriteria_Single_ProjSearchID_RestWebserviceController.class );
 
 	/**
 	 * Path for this Controller
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_FILT_ANN_VALUES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_ANN_TYPE_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -89,7 +91,10 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
 
 	@Autowired
 	private PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF psmIdsForSearchIdReportedPeptideIdCutoffsSearcher;
-		
+
+	@Autowired
+	private Psm_FilterableAnnotationData_SearcherIF psm_FilterableAnnotationData_Searcher;
+	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
@@ -99,7 +104,7 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
     /**
 	 * 
 	 */
-	public Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Single_ProjSearchID_RestWebserviceController() {
+	public Psm_FilterableAnnotationValues_PerReportedPeptide_For_ReportedPeptideIds_AnnTypeIds_SearchCriteria_Single_ProjSearchID_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -155,16 +160,21 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
     		Integer projectSearchId = webserviceRequest.projectSearchId;
 
     		if ( projectSearchId == null ) {
-    			log.warn( "No Project Search Ids" );
+    			log.warn( "No Project Search Id" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 			if ( webserviceRequest.reportedPeptideIds == null || webserviceRequest.reportedPeptideIds.isEmpty() ) {
-				String msg = "No ReportedPeptideIds or is empty: " + projectSearchId;
+				String msg = "No ReportedPeptideIds or is empty: projectSearchId: " + projectSearchId;
+				log.warn( msg );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			if ( webserviceRequest.annotationTypeIds == null || webserviceRequest.annotationTypeIds.isEmpty() ) {
+				String msg = "No annotationTypeIds or is empty: projectSearchId: " + projectSearchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId == null ) {
-				String msg = "No Search Criteria: " + projectSearchId;
+				String msg = "No Search Criteria: projectSearchId: " + projectSearchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
@@ -203,14 +213,22 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
 			
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
-    		
+
     		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel =
     				searcherCutoffValuesRootLevel_Factory
     				.createSearcherCutoffValuesSearchLevel(
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
+
+    		List<WebserviceResult_PsmIds_Entry> reportedPeptideId_psmIdsList_List = null;
     		
-    		List<WebserviceResult_Entry> reportedPeptideId_psmIdList_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		if ( webserviceRequest.return_reportedPeptideId_psmIdsList_List != null && webserviceRequest.return_reportedPeptideId_psmIdsList_List ) {
+    			//  Requested return of also reportedPeptideId_psmIdList_List
+    		
+    			reportedPeptideId_psmIdsList_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		}
+
+    		List<WebserviceResult_AnnValue_Entry> annValue_Entries_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
 
     		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
@@ -218,14 +236,36 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
     					psmIdsForSearchIdReportedPeptideIdCutoffsSearcher
     					.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
 
-    			WebserviceResult_Entry entry = new WebserviceResult_Entry();
-    			entry.reportedPeptideId = reportedPeptideId;
-    			entry.psmIdList = psmIdList;
-    			reportedPeptideId_psmIdList_List.add( entry );
+    			if ( reportedPeptideId_psmIdsList_List != null ) {
+    				
+    				WebserviceResult_PsmIds_Entry webserviceResult_PsmIds_Entry = new WebserviceResult_PsmIds_Entry();
+    				webserviceResult_PsmIds_Entry.reportedPeptideId = reportedPeptideId;
+    				webserviceResult_PsmIds_Entry.psmIdList = psmIdList;
+    				reportedPeptideId_psmIdsList_List.add( webserviceResult_PsmIds_Entry );
+    			}
+    			
+				//  Filterable Ann Types
+				List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTOList =
+						psm_FilterableAnnotationData_Searcher
+						.getPsmFilterableAnnotationDTOList( psmIdList, webserviceRequest.annotationTypeIds );
+
+				for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
+
+	    			WebserviceResult_AnnValue_Entry entry = new WebserviceResult_AnnValue_Entry();
+	    			entry.repPId = reportedPeptideId;
+	    			entry.psmId = item.getPsmId();
+	    			entry.anTpId = item.getAnnotationTypeId();
+	    			entry.vlDbl = item.getValueDouble();
+	    			entry.vlStr = item.getValueString();
+	    			annValue_Entries_List.add( entry );
+				}
     		}
-    		
+
     		WebserviceResult result = new WebserviceResult();
-    		result.reportedPeptideId_psmIdList_List = reportedPeptideId_psmIdList_List;
+    		result.annValue_Entries_List = annValue_Entries_List;
+    		result.reportedPeptideId_psmIdsList_List = reportedPeptideId_psmIdsList_List;
+    				
+//    				reportedPeptideId_psmIdList_List;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -257,7 +297,9 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
 
     	private Integer projectSearchId;
     	private List<Integer> reportedPeptideIds;
+    	private List<Integer> annotationTypeIds;
     	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
+    	private Boolean return_reportedPeptideId_psmIdsList_List;
     	
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
@@ -269,6 +311,12 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
 				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
 			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
 		}
+		public void setAnnotationTypeIds(List<Integer> annotationTypeIds) {
+			this.annotationTypeIds = annotationTypeIds;
+		}
+		public void setReturn_reportedPeptideId_psmIdsList_List(Boolean return_reportedPeptideId_psmIdsList_List) {
+			this.return_reportedPeptideId_psmIdsList_List = return_reportedPeptideId_psmIdsList_List;
+		}
     }
     
     /**
@@ -277,10 +325,14 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
      */
     public static class WebserviceResult {
     	
-    	List<WebserviceResult_Entry> reportedPeptideId_psmIdList_List;
-
-		public List<WebserviceResult_Entry> getReportedPeptideId_psmIdList_List() {
-			return reportedPeptideId_psmIdList_List;
+    	List<WebserviceResult_AnnValue_Entry> annValue_Entries_List;
+    	List<WebserviceResult_PsmIds_Entry> reportedPeptideId_psmIdsList_List;
+    	
+		public List<WebserviceResult_AnnValue_Entry> getAnnValue_Entries_List() {
+			return annValue_Entries_List;
+		}
+		public List<WebserviceResult_PsmIds_Entry> getReportedPeptideId_psmIdsList_List() {
+			return reportedPeptideId_psmIdsList_List;
 		}
     }
 
@@ -288,7 +340,38 @@ public class Psm_IDs_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Si
      * 
      *
      */
-    public static class WebserviceResult_Entry {
+    public static class WebserviceResult_AnnValue_Entry {
+    	
+    	int repPId;
+    	long psmId;
+    	int anTpId;
+    	Double vlDbl;
+    	String vlStr;
+    	
+		public int getRepPId() {
+			return repPId;
+		}
+		public long getPsmId() {
+			return psmId;
+		}
+		public int getAnTpId() {
+			return anTpId;
+		}
+		public String getVlStr() {
+			return vlStr;
+		}
+		public Double getVlDbl() {
+			return vlDbl;
+		}
+    }
+    
+
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResult_PsmIds_Entry {
     	
     	int reportedPeptideId;
     	List<Long> psmIdList;

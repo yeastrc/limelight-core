@@ -357,6 +357,9 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 
+	public static final String PSM_FILT_ANN_VALUES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_ANN_TYPE_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/psm-filt-ann-values-per-reported-peptide-id-for-rep-pept-ids-ann-type-ids-searchcriteria-single-project-search-id";
+
 	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 

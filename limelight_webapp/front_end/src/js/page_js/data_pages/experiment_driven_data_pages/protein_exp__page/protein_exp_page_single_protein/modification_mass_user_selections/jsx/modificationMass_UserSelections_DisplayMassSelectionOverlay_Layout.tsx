@@ -32,6 +32,18 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterCo
     updated_selectedModificationMasses_Map : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 }
 
+// Internal class
+/**
+ * Table tableRowClickHandlerParameter value
+ */
+class TableRowClickHandlerParameter_Class {
+    mass : number
+
+    constructor({ mass } : { mass : number }) {
+        this.mass = mass
+    }
+}
+
 /**
  *
  */
@@ -153,6 +165,14 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         const rowClicked_Left = param.rowDOM_Rect.left
         const rowClicked_Bottom = param.rowDOM_Rect.bottom
 
+        const tableRowClickHandlerParameter : TableRowClickHandlerParameter_Class = param.tableRowClickHandlerParameter as TableRowClickHandlerParameter_Class
+
+        if ( ! ( tableRowClickHandlerParameter instanceof TableRowClickHandlerParameter_Class ) ) {
+            const msg = "( ! ( tableRowClickHandlerParameter instanceof TableRowClickHandlerParameter_Class ) ) in _dataRowClickHandler in get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout"
+            console.warn( msg )
+            throw Error( msg )
+        }
+
         const windowScroll_X = window.scrollX;
         const windowScroll_Y = window.scrollY;
 
@@ -161,7 +181,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
         let current_selection_SelectionType : SingleProtein_Filter_SelectionType = undefined
 
-        const mass = param.tableRowClickHandlerParameter.mass;
+        const mass = tableRowClickHandlerParameter.mass;
 
         {
             const selectionEntry = this._modificationMasses_Selected_InProgress.get(mass);
@@ -395,6 +415,10 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     }
                 }
 
+                const tableRowClickHandlerParameter = new TableRowClickHandlerParameter_Class({
+                    mass : modUniqueMassesWithTheirPsmCountsEntry.mass
+                })
+
                 const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                     uniqueId : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     sortOrder_OnEquals : modUniqueMassesWithTheirPsmCountsEntry.mass,
@@ -404,7 +428,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     highlightRowWithBorderDash,
                     // row_CSS_Additions,
                     // styleOverrides_innerContainingDiv,
-                    tableRowClickHandlerParameter : { mass : modUniqueMassesWithTheirPsmCountsEntry.mass }
+                    tableRowClickHandlerParameter
                 })
 
                 dataTable_DataRowEntries.push( dataTable_DataRowEntry );

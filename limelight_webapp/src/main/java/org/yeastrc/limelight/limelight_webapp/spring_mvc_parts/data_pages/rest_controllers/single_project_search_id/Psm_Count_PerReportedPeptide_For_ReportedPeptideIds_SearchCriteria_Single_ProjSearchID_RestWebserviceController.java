@@ -43,12 +43,12 @@ import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Ca
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.PSM_Count_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Single_ProjSearchID_RequestRoot;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -149,21 +149,21 @@ public class Psm_Count_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		PSM_Count_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Single_ProjSearchID_RequestRoot webserviceRequest =
-    				unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, PSM_Count_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_Single_ProjSearchID_RequestRoot.class );
+    		WebserviceRequest webserviceRequest =
+    				unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
-    		Integer projectSearchId = webserviceRequest.getProjectSearchId();
+    		Integer projectSearchId = webserviceRequest.projectSearchId;
 
     		if ( projectSearchId == null ) {
     			log.warn( "No Project Search Ids" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-			if ( webserviceRequest.getReportedPeptideIds() == null || webserviceRequest.getReportedPeptideIds().isEmpty() ) {
+			if ( webserviceRequest.reportedPeptideIds == null || webserviceRequest.reportedPeptideIds.isEmpty() ) {
 				String msg = "No ReportedPeptideIds or is empty: " + projectSearchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-			if ( webserviceRequest.getSearchDataLookupParams_For_Single_ProjectSearchId() == null ) {
+			if ( webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId == null ) {
 				String msg = "No Search Criteria: " + projectSearchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -203,16 +203,16 @@ public class Psm_Count_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_
 			
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
-    		
+
     		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel =
     				searcherCutoffValuesRootLevel_Factory
     				.createSearcherCutoffValuesSearchLevel(
     						projectSearchIdMapToSearchId, 
-    						webserviceRequest.getSearchDataLookupParams_For_Single_ProjectSearchId() );
+    						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
-    		Map<Integer,Integer> numPsms_KeyReportedPeptideId = new HashMap<>();
+    		Map<Integer,Integer> numPsms_KeyReportedPeptideId = new HashMap<>( webserviceRequest.reportedPeptideIds.size() );
 
-    		for ( Integer reportedPeptideId : webserviceRequest.getReportedPeptideIds() ) {
+    		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
     			int numPsms = 
     					psmCountForSearchIdReportedPeptideIdSearcher
@@ -243,6 +243,28 @@ public class Psm_Count_PerReportedPeptide_For_ReportedPeptideIds_SearchCriteria_
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
+    }
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceRequest {
+
+    	private Integer projectSearchId;
+    	private List<Integer> reportedPeptideIds;
+    	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
+    	
+		public void setProjectSearchId(Integer projectSearchId) {
+			this.projectSearchId = projectSearchId;
+		}
+		public void setReportedPeptideIds(List<Integer> reportedPeptideIds) {
+			this.reportedPeptideIds = reportedPeptideIds;
+		}
+		public void setSearchDataLookupParams_For_Single_ProjectSearchId(
+				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
+			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
+		}
     }
     
     /**

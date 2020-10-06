@@ -150,7 +150,7 @@ class DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect {
 class DataTable_TableOptions_dataRowClickHandler_RequestParm {
     event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
     rowDOM_Rect : DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect
-    tableRowClickHandlerParameter : any  //  From property DataTable_DataRowEntry.tableRowClickHandlerParameter
+    tableRowClickHandlerParameter : unknown  //  From property DataTable_DataRowEntry.tableRowClickHandlerParameter
 }
 
 /**
@@ -158,7 +158,7 @@ class DataTable_TableOptions_dataRowClickHandler_RequestParm {
  */
 class DataTable_TableOptions_dataRow_GetChildTableData_RequestParm {
     event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
-    dataRow_GetChildTableDataParameter : any  //  From property DataTable_DataRowEntry.dataRow_GetChildTableDataParameter
+    dataRow_GetChildTableDataParameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTableDataParameter
 }
 
 /**
@@ -166,7 +166,7 @@ class DataTable_TableOptions_dataRow_GetChildTableData_RequestParm {
  */
 class DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm {
     event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
-    dataRow_GetChildTable_ReturnReactComponent_Parameter : any  //  From property DataTable_DataRowEntry.dataRow_GetChildTable_ReturnReactComponent_Parameter
+    dataRow_GetChildTable_ReturnReactComponent_Parameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTable_ReturnReactComponent_Parameter
 }
 
 
@@ -274,7 +274,7 @@ class DataTable_Column {
 
     //  object where it's properties are copied over the values to be assigned to the DOM element style property
     //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-    style_override_DataRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+    style_override_DataRowCell_React?: React.CSSProperties; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
     //  graphWidth : number;  //  Not Supported Yet
 
@@ -351,7 +351,7 @@ class DataTable_Column {
 
             //  object where it's properties are copied over the values to be assigned to the DOM element style property
             //      For values that React accepts as numbers like fontSize, just assign the number instead of a string with "px" at the end
-            style_override_HeaderRowCell_React?: any; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
+            style_override_HeaderRowCell_React?: React.CSSProperties; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
         }) {
         this.id = id;
@@ -497,11 +497,11 @@ class DataTable_DataRowEntry {
     styleOverrides_innerContainingDiv : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
     columnEntries : Array<DataTable_DataRow_ColumnEntry>
 
-    tableRowClickHandlerParameter? : any  //  Data passed to DataTable_TableOptions.dataRowClickHandler
-    dataRow_GetChildTableDataParameter? : any  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
+    tableRowClickHandlerParameter? : unknown  //  Data passed to DataTable_TableOptions.dataRowClickHandler
+    dataRow_GetChildTableDataParameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
 
      // Data passed to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent as well as to the React Component as prop dataRow_GetChildTable_ReturnReactComponent_Parameter
-    dataRow_GetChildTable_ReturnReactComponent_Parameter? : any
+    dataRow_GetChildTable_ReturnReactComponent_Parameter? : unknown
 
     // Child Table:
     //    A Child Table is a sub table tied to this row in this table.
@@ -531,11 +531,11 @@ class DataTable_DataRowEntry {
         row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
         styleOverrides_innerContainingDiv? : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
         columnEntries : Array<DataTable_DataRow_ColumnEntry>,
-        tableRowClickHandlerParameter? : any,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
-        dataRow_GetChildTableDataParameter? : any,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
+        tableRowClickHandlerParameter? : unknown,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
+        dataRow_GetChildTableDataParameter? : unknown,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
 
          // Data passed to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent as well as to the React Component as prop dataRow_GetChildTable_ReturnReactComponent_Parameter
-        dataRow_GetChildTable_ReturnReactComponent_Parameter? : any 
+        dataRow_GetChildTable_ReturnReactComponent_Parameter? : unknown
 
         // Child Table:
         //    A Child Table is a sub table tied to this row in this table.
@@ -612,8 +612,8 @@ class DataTable_DataRow_ColumnEntry {
 
     //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
 
-    cellMgmt_External_Data?: any;
-    cellMgmt_ExternalReactComponent_Data?: any;
+    cellMgmt_External_Data?: unknown;
+    cellMgmt_ExternalReactComponent_Data?: unknown;
 
     //  graphFraction : number;  //  Not Supported Yet
 
@@ -633,8 +633,8 @@ class DataTable_DataRow_ColumnEntry {
 
         //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
 
-        cellMgmt_External_Data?: any,
-        cellMgmt_ExternalReactComponent_Data?: any
+        cellMgmt_External_Data?: unknown,
+        cellMgmt_ExternalReactComponent_Data?: unknown
     }) {
         this.valueDisplay = valueDisplay
         this.valueSort = valueSort
@@ -681,7 +681,7 @@ interface DataTable_cellMgmt_External {
  */
 class DataTable_cellMgmt_External_PopulateRequest {
 
-    cellMgmt_External_Data : any
+    cellMgmt_External_Data : unknown
     domObjectInCell : HTMLElement
     columnWidth : number
     columnHeightInitial : number
@@ -689,7 +689,7 @@ class DataTable_cellMgmt_External_PopulateRequest {
 }
 
 class DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params {
-    cellMgmt_External_Data : any
+    cellMgmt_External_Data : unknown
 }
 
 /**

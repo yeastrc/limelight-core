@@ -19,20 +19,18 @@ import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_
 
 import { ProteinView_LoadedDataCommonHolder } from '../protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from '../protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
-import { ProteinViewDataLoader } from '../protein_page/protein_page_common/proteinViewDataLoader';
-import { ReportedPeptideStringData_For_ReportedPeptideId } from '../protein_page/protein_page_common/reportedPeptideStringData_For_ReportedPeptideId';
 import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
-import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { ReportedPeptides_DataTableObjects_ForSingleSearch_PeptidePage_Result, reportedPeptides_DataTableOjbects_ForSingleSearch_PeptidePage_createChildTableObjects } from './peptidePage_Display_SingleSearch_ReportedPeptideListSection_Create_TableData';
-import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from '../protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
 import {
 	ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
 	ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 import {create_dataTable_Root_React, remove_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
+import {loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 /**
  * 
@@ -62,12 +60,7 @@ export class PeptideViewPage_Display_SingleSearch {
 	//   this._loadedDataPerProjectSearchIdHolder is shared with this._proteinViewPage_Display_SingleProtein_SingleSearch
 
 	private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
-	
 
-	private _proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer;
-	
-	private _proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer : ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer;
-	
 	private _projectSearchId : number;
 
 	private _loadData_For_PeptideList_LoadInProgress = false;
@@ -154,19 +147,6 @@ export class PeptideViewPage_Display_SingleSearch {
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server } );
 
-		this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder
-		});
-
-		this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer({
-			loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
-			loadedDataCommonHolder : this._loadedDataCommonHolder,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing, //  Used in loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch(...) if param is not passed
-			proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer
-		});
-
-		
 		const promise_loadData_For_PeptideList = this._loadData_For_PeptideList();
 
 		promise_loadData_For_PeptideList.catch( (reason) => {  })
@@ -213,7 +193,9 @@ export class PeptideViewPage_Display_SingleSearch {
 				}
 				
 				const promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = (
-					this._proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.getDataFromServer( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, forPeptidePage : true } )
+					loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder( {
+						projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, forPeptidePage : true, loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder
+					} )
 				);
 
 				promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer.catch( (reason) => {} );
@@ -235,12 +217,22 @@ export class PeptideViewPage_Display_SingleSearch {
 
 						const promises = [];
 
-						const promise_getReportedPeptideStringsFromReportedPeptideIds = this._getReportedPeptideStringsFromReportedPeptideIds();
-						promises.push( promise_getReportedPeptideStringsFromReportedPeptideIds );
+						{
+							const promise = loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder({
+								reportedPeptideIds, projectSearchId, loadedDataCommonHolder : this._loadedDataCommonHolder
+							});
+							if ( promise ) {
+								promises.push(promise);
+							}
+						}
 
-						const promise_loadDataAfterInitialOverlayShow = this._proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.loadDataAfterInitialOverlayShow( { 
+						const promise_loadDataAfterInitialOverlayShow = loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
 		
-							retrieveForSingleSearch : true, retrieveForMultipleSearches : false, proteinSequenceVersionId : undefined, projectSearchId, 
+							retrieveForSingleSearch : true, retrieveForMultipleSearches : false, proteinSequenceVersionId : undefined, projectSearchId,
+							searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing, //  Used in loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch(...) if param is not passed
+							loadedDataPerProjectSearchIdHolder : this._loadedDataPerProjectSearchIdHolder,
+							loadedDataCommonHolder : this._loadedDataCommonHolder,
+							dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 							// Optional
 							searchDataLookupParamsRoot, 
 							reportedPeptideIds_Override : this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds()
@@ -284,70 +276,15 @@ export class PeptideViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-	private _getReportedPeptideStringsFromReportedPeptideIds() : Promise<any> {
-
-		return new Promise( (resolve, reject) => {
-			try {
-				const reportedPeptideIds = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
-
-				const promise_getReportedPeptideStringsFromReportedPeptideIds = ProteinViewDataLoader.getReportedPeptideStringsFromReportedPeptideIds( { 
-					projectSearchIds : [ this._projectSearchId ], reportedPeptideIds 
-				} );
-
-				promise_getReportedPeptideStringsFromReportedPeptideIds.
-				then( ( { reportedPeptideStrings_Key_reportedPeptideId, foundAllReportedPeptideIdsForProjectSearchIds } ) => {
-					try {
-						const loadedDataCommonHolder = this._loadedDataCommonHolder;
-
-						for ( const reportedPeptideId of reportedPeptideIds ) {
-
-							const reportedPeptideString = reportedPeptideStrings_Key_reportedPeptideId[ reportedPeptideId ];
-							if ( reportedPeptideString === undefined ) {
-								throw Error("No reportedPeptideString for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + this._projectSearchId );
-							}
-
-							const reportedPeptideStringData = new ReportedPeptideStringData_For_ReportedPeptideId( { reportedPeptideString : reportedPeptideString.reportedPeptideString } );
-
-							loadedDataCommonHolder.add_reportedPeptideStringData_KeyReportedPeptideId( { reportedPeptideStringData, reportedPeptideId } );
-						}
-
-						resolve();
-
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				});
-				promise_getReportedPeptideStringsFromReportedPeptideIds.catch(function(reason) {
-					try {
-						reject(reason);
-
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				})
-
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-	}
-
-
-	/**
-	 * 
-	 */
 	private _displayOnPage_PeptideList( loadData_PromiseResult : { noReportedPeptideIds : boolean } ) {
 
 		// loadData_PromiseResult may be undefined
 
-		let noReportedPeptideIds = false ;
+		// let noReportedPeptideIds = false ;
 
 		if ( loadData_PromiseResult && loadData_PromiseResult.noReportedPeptideIds ) {
 
-			noReportedPeptideIds = true;
+			// noReportedPeptideIds = true;
 		}
 
 		const reportedPeptideIdsForDisplay = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();

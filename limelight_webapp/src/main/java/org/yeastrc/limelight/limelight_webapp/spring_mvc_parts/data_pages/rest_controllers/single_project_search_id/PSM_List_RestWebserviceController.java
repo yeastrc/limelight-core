@@ -386,11 +386,13 @@ public class PSM_List_RestWebserviceController {
     			{
     				//  Add in PSM Annotation data for Ann Type Display
     				{
+    					List<Long> psmList = new ArrayList<>( 1 );
+    					psmList.add( psmWebDisplay.getPsmId() );
+    					
     					//  Filterable Ann Types
     					List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTOList =
     							psm_FilterableAnnotationData_Searcher
-    							.getPsmFilterableAnnotationDTOList( 
-    									psmWebDisplay.getPsmId(), annTypeIdsToRetrieve );
+    							.getPsmFilterableAnnotationDTOList( psmList, annTypeIdsToRetrieve );
 
     					for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
 

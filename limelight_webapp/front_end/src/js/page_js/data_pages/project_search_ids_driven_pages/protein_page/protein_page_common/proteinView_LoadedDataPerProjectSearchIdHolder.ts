@@ -233,6 +233,13 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._data_AtCurrentCutoffs_Or_DisplayData._psmIdsForReportedPeptideIdMap = psmIdsForReportedPeptideIdMap;
 	}
 
+	get_psmFilterableAnnotationValuesForReportedPeptideIdMap() {
+		return this._data_AtCurrentCutoffs_Or_DisplayData._psmFilterableAnnotationValuesForReportedPeptideIdMap
+	}
+	set_psmFilterableAnnotationValuesForReportedPeptideIdMap( psmFilterableAnnotationValuesForReportedPeptideIdMap ) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._psmFilterableAnnotationValuesForReportedPeptideIdMap = psmFilterableAnnotationValuesForReportedPeptideIdMap
+	}
+
 	///
 
 	get_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs() {
@@ -408,6 +415,9 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 
 	//  	PSM Ids per Reported Peptide for Reported Peptides for Current Cutoffs/Filters
 	_psmIdsForReportedPeptideIdMap : Map<number, Array<number>>; // - Map<integer, Array [ integer ] > : Map<ReportedPeptideId, [ Psm Id ] >
+
+	//  	PSM Filterable Annotation Values per Reported Peptide for Reported Peptides for Current Cutoffs/Filters
+	_psmFilterableAnnotationValuesForReportedPeptideIdMap : Map<number, Map<number,Map<number,number>>>; // Map<ReportedPeptideId, Map< Psm Id, Map< Annotation Type id, Annotation Value > > >
 
 	//  	PSM: Open Modification Mass Values for each PSM for current cutoffs per PSM Id per Reported Peptide Id
 	// 				- Map<Reported Peptide Id, { reportedPeptideId, Map<PsmId, { psmId, Map<openModificationMass_Rounded, [{ openModificationMass : number, positions: Map<position, {...} >] >

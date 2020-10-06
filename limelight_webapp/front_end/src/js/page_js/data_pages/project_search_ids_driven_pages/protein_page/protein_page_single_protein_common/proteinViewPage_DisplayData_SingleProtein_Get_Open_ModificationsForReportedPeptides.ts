@@ -10,8 +10,8 @@
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { ProteinViewDataLoader } from '../protein_page_common/proteinViewDataLoader';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from '../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 
 
 /**
@@ -106,7 +106,7 @@ const _get_OpenModificationsForReportedPeptideIds_RetrieveFromDB = function( { l
 
     return new Promise(function(resolve, reject) {
         try {
-            ProteinViewDataLoader.getOpenModificationsForReportedPeptideids(
+            _getOpenModificationsForReportedPeptideids(
                     { projectSearchId, 
                         reportedPeptideIds : reportedPeptideIds } )
                         .then( ( openModificationData_KeyReportedPeptideIdFromServer ) => {
@@ -190,6 +190,51 @@ const _populateLoadedData_With_OpenModificationsForReportedPeptideidsFromServer 
     // }
     
 }
-		
+
+
+/**
+ * Get Open Modification Data From Reported Peptide Ids
+ */
+const _getOpenModificationsForReportedPeptideids = function ( { projectSearchId, reportedPeptideIds } ) : Promise<unknown> {
+
+    let promise = new Promise( function( resolve, reject ) {
+        try {
+            let requestObject = {
+                projectSearchId : projectSearchId,
+                reportedPeptideIds : reportedPeptideIds
+            };
+
+            console.log("AJAX Call to get open-modifications-per-reported-peptide-id START, Now: " + new Date() );
+
+            const url = "d/rws/for-page/psb/open-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
+
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+            promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                try {
+                    console.log("AJAX Call to get open-modifications-per-reported-peptide-id END, Now: " + new Date() );
+
+                    //  JS Object.  <Reported Peptide Id, [{}]>
+
+                    resolve( responseData.openModification_KeyReportedPeptideId );
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    });
+
+    return promise;
+}
+
 
 export { getOpenModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId, get_OpenModificationsForReportedPeptideIds }

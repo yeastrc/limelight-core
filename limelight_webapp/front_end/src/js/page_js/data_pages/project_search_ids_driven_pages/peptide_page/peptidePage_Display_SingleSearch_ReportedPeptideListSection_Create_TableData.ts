@@ -510,13 +510,13 @@ const _create_dataTable_RootTableObject = function({
                 {  //  Reported Peptide Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null ) {
+                        if ( peptideEntry.peptideAnnotationMap_KeyAnnType === undefined || peptideEntry.peptideAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null )"
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        const annotationEntry = peptideEntry.peptideAnnotationMap[ annotationType.annotationTypeId ];
-                        let valueSort = annotationEntry.valueDouble;
+                        const annotationEntry = peptideEntry.peptideAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
+                        let valueSort : any = annotationEntry.valueDouble;
                         if ( valueSort === undefined || valueSort === null ) {
                             valueSort = annotationEntry.valueString; //  Needed for Descriptive Annotation Types
                         }
@@ -530,12 +530,12 @@ const _create_dataTable_RootTableObject = function({
                 {  //  PSM Best Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null ) {
+                        if ( peptideEntry.psmAnnotationMap_KeyAnnType === undefined || peptideEntry.psmAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null )"
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        const annotationEntry = peptideEntry.psmAnnotationMap[ annotationType.annotationTypeId ];
+                        const annotationEntry = peptideEntry.psmAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
                             valueDisplay : annotationEntry.valueString,
                             valueSort : annotationEntry.valueDouble

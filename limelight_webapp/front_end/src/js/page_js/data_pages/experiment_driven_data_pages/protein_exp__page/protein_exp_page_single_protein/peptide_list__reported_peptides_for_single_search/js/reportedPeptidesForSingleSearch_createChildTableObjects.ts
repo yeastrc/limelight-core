@@ -16,31 +16,13 @@ import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerP
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 
-import { ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page//protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer';
-
-import { ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page//protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer';
-
 import {
-
-    DataTable_RootTableObject,
-    
+   DataTable_RootTableObject,
     DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-    
     DataTable_Column,
-
     DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
-    
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent, PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__psm_list_for_reported_peptide_container_component/js/psmList_Wrapper_ReturnChildReactComponent';
@@ -50,9 +32,9 @@ import { psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_Return
 import { ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter } from '../js/reportedPeptidesForSingleSearch_ReturnChildReactComponent'
 
 import { createReportedPeptideDisplayData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_create_createReportedPeptideDisplayData';
-import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 ////////////////
 
@@ -128,23 +110,15 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
         reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId  //  Reported Peptide Ann Type Ids To Display
     }; 
 
-    const proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer({
-        loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
-    });
-        
-    const proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer = new ProteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer({
-        loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder ,
-        loadedDataCommonHolder,
-        dataPageStateManager_DataFrom_Server : dataPageStateManager,
-        searchDetailsBlockDataMgmtProcessing : undefined , // not provided
-        proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer : proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer
-    });
-
     const promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch = (
-        proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer.loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch( { 
+        loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
             reportedPeptideIds : reportedPeptideIds_ForDisplay,
             projectSearchId,
-            reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param
+            reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param,
+            searchDetailsBlockDataMgmtProcessing : undefined , // not provided
+            loadedDataPerProjectSearchIdHolder,
+            loadedDataCommonHolder,
+            dataPageStateManager_DataFrom_Server : dataPageStateManager
         } )
     );
 
@@ -418,13 +392,13 @@ const _create_dataTable_RootTableObject = function({
                 {  //  Reported Peptide Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null ) {
+                        if ( peptideEntry.peptideAnnotationMap_KeyAnnType === undefined || peptideEntry.peptideAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null )"
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        const annotationEntry = peptideEntry.peptideAnnotationMap[ annotationType.annotationTypeId ];
-                        let valueSort = annotationEntry.valueDouble;
+                        const annotationEntry = peptideEntry.peptideAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
+                        let valueSort : any = annotationEntry.valueDouble;
                         if ( valueSort === undefined || valueSort === null ) {
                             valueSort = annotationEntry.valueString; //  Needed for Descriptive Annotation Types
                         }
@@ -438,12 +412,12 @@ const _create_dataTable_RootTableObject = function({
                 {  //  PSM Best Scores
                     const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null ) {
+                        if ( peptideEntry.psmAnnotationMap_KeyAnnType === undefined || peptideEntry.psmAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null )"
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        const annotationEntry = peptideEntry.psmAnnotationMap[ annotationType.annotationTypeId ];
+                        const annotationEntry = peptideEntry.psmAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
                             valueDisplay : annotationEntry.valueString,
                             valueSort : annotationEntry.valueDouble

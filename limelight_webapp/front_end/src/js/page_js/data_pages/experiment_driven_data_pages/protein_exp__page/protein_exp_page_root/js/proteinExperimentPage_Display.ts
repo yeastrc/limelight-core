@@ -68,11 +68,11 @@ import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {proteinExperiment__createProteinList_DataTable_RootTableDataObject} from "./proteinExperiment__createProteinList_DataTable_RootTableDataObject";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 import {get_DynamicModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides";
-import {loadPeptideIdsIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleProtein_SingleSearch_LoadProcessDataFromServer";
 import {ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
 import {ProteinExperiment__CreateProteinDataTableColumns_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ColumnObject";
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 
 
@@ -552,7 +552,9 @@ export class ProteinExperimentPage_Display {
                 for ( const dataObject of rootTableDataObject.dataTable_DataRowEntries ) {
 
                     //  Cast in this assignment. Will validate the type next with ( tableRowClickHandlerParameter instanceof ProteinExperimentPage_Display_tableRowClickHandlerParameter_Value )
-                    const proteinExperimentPage_Display_tableRowClickHandlerParameter_Value : ProteinExperimentPage_Display_tableRowClickHandlerParameter_Value = dataObject.tableRowClickHandlerParameter;
+                    const proteinExperimentPage_Display_tableRowClickHandlerParameter_Value : ProteinExperimentPage_Display_tableRowClickHandlerParameter_Value = (
+                        dataObject.tableRowClickHandlerParameter as ProteinExperimentPage_Display_tableRowClickHandlerParameter_Value
+                    );
                     if ( ! proteinExperimentPage_Display_tableRowClickHandlerParameter_Value ) {
                         const msg = "ProteinExperimentPage_Display._formatAndRenderData: no value for tableRowClickHandlerParameter";
                         console.warn( msg );
@@ -945,7 +947,7 @@ const _loadDataFor_ComputedReportedPeptides_AllProteins = function( { projectSea
             }
         }
         {
-            const promise_get__ = loadPeptideIdsIfNeeded( { reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder } );
+            const promise_get__ = loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( { reportedPeptideIds, projectSearchId, loadedDataPerProjectSearchIdHolder } );
 
             if ( promise_get__ ) { //  May return null so test before add to array
                 promises__get_Array.push( promise_get__ );

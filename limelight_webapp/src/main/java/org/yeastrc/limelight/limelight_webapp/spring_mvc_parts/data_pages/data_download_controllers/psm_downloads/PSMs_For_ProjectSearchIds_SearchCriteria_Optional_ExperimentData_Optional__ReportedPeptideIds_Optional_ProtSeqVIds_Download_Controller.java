@@ -1494,11 +1494,14 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							{
 								//  Add in PSM Annotation data for Ann Type Display
 								{
+			    					List<Long> psmList = new ArrayList<>( 1 );
+			    					psmList.add( psmWebDisplay.getPsmId() );
+			    					
 									//  Filterable Ann Types
 									List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTOList =
 											psm_FilterableAnnotationData_Searcher
 											.getPsmFilterableAnnotationDTOList( 
-													psmWebDisplay.getPsmId(), annTypeIdsToRetrieve );
+													psmList, annTypeIdsToRetrieve );
 
 									for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
 										

@@ -429,11 +429,14 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			{
     				//  Add in PSM Annotation data for Ann Type Display
     				{
+    					List<Long> psmList = new ArrayList<>( 1 );
+    					psmList.add( psmFromDBItem.getPsmId() );
+    					
     					//  Filterable Ann Types
     					List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTOList =
     							psm_FilterableAnnotationData_Searcher
     							.getPsmFilterableAnnotationDTOList( 
-    									psmFromDBItem.getPsmId(), annTypeIdsToRetrieve );
+    									psmList, annTypeIdsToRetrieve );
 
     					for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
 

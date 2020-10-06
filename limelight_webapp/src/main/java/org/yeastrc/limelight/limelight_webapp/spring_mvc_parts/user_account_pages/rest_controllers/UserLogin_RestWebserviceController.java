@@ -291,7 +291,12 @@ public class UserLogin_RestWebserviceController {
 
 		userDAO.updateLastLogin( thisAppUserId, remoteIP );
 		userLoginResult.setSuccess( true );
-		log.info( "Logging into web app SUCCESSFUL!!! username: " + userLoginRequest.getUsername() );
+		log.info( 
+				"Logging into web app SUCCESSFUL!!! username: \t" 
+				+ userLoginRequest.getUsername()
+				+ "\t, Remote IP address: \t"
+				+ httpServletRequest.getRemoteAddr()
+				);
 
 		//    				log.info( "webserviceResponse.isSuccess(): " + webserviceResponse.isSuccess() );
 		//    				log.info( "webserviceResponse.isPasswordInvalid(): " + webserviceResponse.isPasswordInvalid() );
