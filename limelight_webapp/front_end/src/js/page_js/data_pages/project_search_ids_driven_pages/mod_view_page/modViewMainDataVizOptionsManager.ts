@@ -217,6 +217,8 @@ export class ModViewDataVizRendererOptionsHandler {
                 $formToUpdate.find("input#data-transformation-per-mod-zscore").attr('checked', 'checked');
             } else if( option === 'global-zscore') {
                 $formToUpdate.find("input#data-transformation-global-zscore").attr('checked', 'checked');
+            }  else if( option === 'global-pvalue') {
+                $formToUpdate.find("input#data-transformation-global-pvalue").attr('checked', 'checked');
             }
         }
 

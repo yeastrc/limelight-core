@@ -6,6 +6,7 @@ import * as d3 from "d3";
 import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
 import {ModStatsUtils} from "./modStatsUtils";
+import jStat from 'jstat'
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -89,24 +90,26 @@ export class ModViewDataVizRenderer_MultiSearch {
             .domain(vizOptionsData.data.projectSearchIds)
             .range([0, height]);
 
-        // let colorScale = d3.scaleSqrt()
-        //     .domain([0, maxPsmCount])
-        //     .range([d3.rgb(255,255,255), d3.rgb(255,0,0)]);
-
-        // const colorScale = d3.scaleSequential(d3.interpolateYlGn)
-        //     .domain([0, maxPsmCount])
-
-        let logScale;
         let colorScale;
 
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
-            logScale = d3.scaleSqrt().domain([minCount, maxCount]);
-            colorScale = d3.scalePow()
-                .exponent(1.4)
-                .domain([minCount, minCount/2, 0, maxCount/2, maxCount])
-                .range(["#db4325", "#eda247", "white", "#57c4ad", "#006164"]);
+
+            if( vizOptionsData.data.dataTransformation === 'global-pvalue') {
+                minCount = 0;
+                maxCount = 1;
+
+                colorScale = d3.scalePow()
+                    .exponent(0.25)
+                    .domain([1, 0.05, 0])
+                    .range(["white", "#57c4ad", "#006164"]);
+            } else {
+                colorScale = d3.scalePow()
+                    .exponent(1.4)
+                    .domain([minCount, minCount / 2, 0, maxCount / 2, maxCount])
+                    .range(["#db4325", "#eda247", "white", "#57c4ad", "#006164"]);
+            }
         } else {
-            logScale = d3.scaleSqrt().domain([minCount, maxCount]);
+            const logScale = d3.scaleSqrt().domain([minCount, maxCount]);
             colorScale = d3.scaleSequential((d) => d3.interpolatePlasma(logScale(d)));
         }
 
@@ -1025,6 +1028,26 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
+        const showRatiosBoolean = (vizOptionsData.data.psmQuant === 'ratios');
+
+        let labelText;
+
+        if( vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') {
+            labelText = showRatiosBoolean ? "<p>" + quantTypeString + " Ratio:" : "<p>" + quantTypeString + " Ratio:";
+        } else {
+            switch(vizOptionsData.data.dataTransformation) {
+                case 'per-mod-zscore':
+                case 'global-zscore':
+                    labelText = "Z-Score:";
+                    break;
+                case 'global-pvalue':
+                    labelText = "P-Value:";
+                    break;
+                case 'scaled-mean-diff':
+                    labelText = "Scaled mean diff.:";
+                    break;
+            }
+        }
 
         // @ts-ignore
         const pageY = event.pageY
@@ -1048,12 +1071,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 }
 
                 if(psmCount !== undefined) {
-
-                    if( vizOptionsData.data.psmQuant === 'ratios' ) {
-                        txt += "<p>" + quantTypeString + " Ratio: " + psmCount.toExponential(2) + "</p>";
-                    } else {
-                        txt += "<p>" + quantTypeString + " Count: " + psmCount + "</p>";
-                    }
+                    txt += labelText + " " + psmCount.toExponential(2) + "</p>";
                 }
 
                 return txt;
@@ -1249,6 +1267,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                 ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
                 break;
 
+            case 'global-pvalue':
+                ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalPValue(modMap);
+                break;
+
             case 'scaled-mean-diff':
                 ModViewDataVizRenderer_MultiSearch.convertModMapToPerModScaledMeanDelta(modMap);
                 break;
@@ -1268,6 +1290,10 @@ export class ModViewDataVizRenderer_MultiSearch {
 
             case 'global-zscore':
                 return "Global Z-Score"
+                break;
+
+            case 'global-pvalue':
+                return "Global P-Value"
                 break;
 
             case 'scaled-mean-diff':
@@ -1298,12 +1324,36 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     static convertModMapToGlobalZScore(modMap) {
+
         const globalMean = ModViewDataVizRenderer_MultiSearch.getGlobalMean(modMap);
         const globalStandardDeviation = ModViewDataVizRenderer_MultiSearch.getGlobalStandardDeviation(modMap, globalMean);
 
         for(const [modMass, searchCountMap] of modMap) {
             for (const [projectSearchId, count] of searchCountMap) {
                 modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getZScoreForModMassProjectSearchId({ modMap, modMass, mean:globalMean, standardDeviation:globalStandardDeviation, projectSearchId }));
+            }
+        }
+    }
+
+    /**
+     * Get Bonferroni corrected p-values from global zscores
+     * @param modMap
+     */
+    static convertModMapToGlobalPValue(modMap) {
+        ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
+        let numTests = 0;
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                numTests++;
+                modMap.get(modMass).set(projectSearchId, jStat.ztest( count, 2));
+            }
+        }
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                const correctedPvalue = (count * numTests) > 1 ? 1 : (count * numTests);
+                modMap.get(modMass).set(projectSearchId, correctedPvalue);
             }
         }
     }
