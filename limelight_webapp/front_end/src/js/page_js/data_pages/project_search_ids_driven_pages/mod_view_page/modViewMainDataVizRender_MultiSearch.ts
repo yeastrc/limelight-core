@@ -1225,7 +1225,6 @@ export class ModViewDataVizRenderer_MultiSearch {
             }
         }
 
-
         // convert to a map of counts/ratios
         for(const [modMass, searchCountMap] of modMap) {
             for(const [projectSearchId, idSet] of searchCountMap) {
@@ -1242,12 +1241,25 @@ export class ModViewDataVizRenderer_MultiSearch {
             }
         }
 
-        console.log('Done with buildModMap()')
+        // add in zero for missing values
+        // assumes if a mod mass isn't present in a search then the count is 0 for that mod mass in that search
+        // this is needed for subsequent z-score and p-value calculations
+        for(const [modMass, searchCountMap] of modMap) {
+            for(const projectSearchId of projectSearchIds) {
+                if (!(modMap.get(modMass).has(projectSearchId))) {
+                    modMap.get(modMass).set(projectSearchId, 0);
+                }
+            }
+        }
+
 
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
             // convert the data into zscores
             ModViewDataVizRenderer_MultiSearch.convertModMapToDataTransformation(modMap, vizOptionsData);
         }
+
+        console.log('Done with buildModMap()')
+
 
         return modMap;
     }
