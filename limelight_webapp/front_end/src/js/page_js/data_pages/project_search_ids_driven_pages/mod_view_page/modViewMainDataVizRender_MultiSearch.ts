@@ -1033,7 +1033,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         let labelText;
 
         if( vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') {
-            labelText = showRatiosBoolean ? "<p>" + quantTypeString + " Ratio:" : "<p>" + quantTypeString + " Ratio:";
+            labelText = showRatiosBoolean ? "<p>" + quantTypeString + " Ratio:" : "<p>" + quantTypeString + " Count:";
         } else {
             switch(vizOptionsData.data.dataTransformation) {
                 case 'per-mod-zscore':
