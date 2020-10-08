@@ -8,17 +8,13 @@ export class ModViewDataVizRendererOptionsHandler {
     static showOptionsOnPage({
                                  reportedPeptideModData,
                                  proteinPositionResidues,
-                                 totalPSMCount,
-                                 totalScanCount,
                                  aminoAcidModStats,
                                  proteinData,
                                  proteinPositionFilterStateManager,
                                  searchDetailsBlockDataMgmtProcessing,
                                  dataPageStateManager_DataFrom_Server,
                                  vizOptionsData,
-                                 projectSearchIds,
-                                 psmModData,
-                                 scanModData
+                                 modViewDataManager
                              }) {
 
         // defaults for the viz
@@ -33,8 +29,6 @@ export class ModViewDataVizRendererOptionsHandler {
         ModViewDataVizRendererOptionsHandler.addProteinPositionFilterToPage({
             reportedPeptideModData,
             proteinPositionResidues,
-            totalPSMCount,
-            totalScanCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
@@ -42,8 +36,7 @@ export class ModViewDataVizRendererOptionsHandler {
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             projectSearchIds : undefined,
-            psmModData,
-            scanModData
+            modViewDataManager
         });
 
         // add section to page
@@ -59,32 +52,26 @@ export class ModViewDataVizRendererOptionsHandler {
         ModViewDataVizRendererOptionsHandler.addChangeHandlerToFormElements({
             reportedPeptideModData,
             proteinPositionResidues,
-            totalPSMCount,
-            totalScanCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
-            psmModData,
-            scanModData
+            modViewDataManager
         })
     }
 
     static addChangeHandlerToFormElements({
                                               reportedPeptideModData,
                                               proteinPositionResidues,
-                                              totalPSMCount,
-                                              totalScanCount,
                                               aminoAcidModStats,
                                               proteinData,
                                               proteinPositionFilterStateManager,
                                               searchDetailsBlockDataMgmtProcessing,
                                               dataPageStateManager_DataFrom_Server,
                                               vizOptionsData,
-                                              psmModData,
-                                              scanModData
+                                              modViewDataManager
                                           }) {
 
         const $formDiv = $('div#data-viz-form');
@@ -171,16 +158,13 @@ export class ModViewDataVizRendererOptionsHandler {
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
                 reportedPeptideModData,
                 proteinPositionResidues,
-                totalPSMCount,
-                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
                 vizOptionsData,
-                psmModData,
-                scanModData
+                modViewDataManager
             });
 
         });
@@ -279,19 +263,17 @@ export class ModViewDataVizRendererOptionsHandler {
         $mainContentDiv.empty();
     }
 
-    static addProteinPositionFilterToPage({ psmModData,
-                                              scanModData,
+    static addProteinPositionFilterToPage({
                                               vizOptionsData,
                                               reportedPeptideModData,
                                               proteinPositionFilterStateManager,
-                                              totalPSMCount,
-                                              totalScanCount,
                                               proteinData,
                                               proteinPositionResidues,
                                               aminoAcidModStats,
                                               projectSearchIds,
                                               searchDetailsBlockDataMgmtProcessing,
-                                              dataPageStateManager_DataFrom_Server
+                                              dataPageStateManager_DataFrom_Server,
+                                              modViewDataManager
                                             }) {
 
         const $mainContentDiv = $('#mod_list_container');
@@ -307,16 +289,12 @@ export class ModViewDataVizRendererOptionsHandler {
                 vizOptionsData,
                 reportedPeptideModData,
                 proteinPositionResidues,
-                totalPSMCount,
-                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
-                projectSearchIds,
                 dataPageStateManager_DataFrom_Server,
-                psmModData,
-                scanModData
+                modViewDataManager
             });
 
             // add the viz to the page using these viz options
@@ -324,15 +302,12 @@ export class ModViewDataVizRendererOptionsHandler {
                 vizOptionsData,
                 reportedPeptideModData,
                 proteinPositionResidues,
-                totalPSMCount,
-                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server,
-                psmModData,
-                scanModData
+                modViewDataManager
             });
         }
 
@@ -346,8 +321,15 @@ export class ModViewDataVizRendererOptionsHandler {
             }
 
             ProteinPositionFilterOverlayDisplayManager.displayOverlay( {
-                callbackOnClickedHide, reportedPeptideModData, proteinPositionFilterStateManager, totalPSMCount, proteinData, proteinPositionResidues, aminoAcidModStats, projectSearchId : undefined,
-                searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server
+                callbackOnClickedHide,
+                reportedPeptideModData,
+                proteinPositionFilterStateManager,
+                proteinData,
+                proteinPositionResidues,
+                aminoAcidModStats,
+                projectSearchId : undefined,
+                searchDetailsBlockDataMgmtProcessing,
+                dataPageStateManager_DataFrom_Server
             } );
             return false;
         });

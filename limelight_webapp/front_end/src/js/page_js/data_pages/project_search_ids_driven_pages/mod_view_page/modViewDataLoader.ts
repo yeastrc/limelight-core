@@ -70,7 +70,7 @@ export class ModViewPage_DataLoader {
 	/**
 	 * Get total number of PSMs for search
 	 */
-	getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+	getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
 
         let objectThis = this;
 
@@ -82,16 +82,15 @@ export class ModViewPage_DataLoader {
 
 			const url = "d/rws/for-page/psb/psm-count-searchcriteria";
 
-      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+          const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+          const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
 			promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
-                    loadedData.totalPSMCount = responseData;
-                    resolve();
+                    resolve(responseData);
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -185,7 +184,7 @@ export class ModViewPage_DataLoader {
     /**
      * Get total number of scans for search
      */
-    getTotalScanCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+    getTotalScanCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
 
         let objectThis = this;
 
@@ -205,8 +204,7 @@ export class ModViewPage_DataLoader {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
-                        loadedData.totalScanCount = responseData;
-                        resolve();
+                        resolve(responseData);
 
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -454,7 +452,7 @@ export class ModViewPage_DataLoader {
         return requestObject;
     }
 
-    getPSMModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+    getPSMModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
 
         let objectThis = this;
 
@@ -471,8 +469,7 @@ export class ModViewPage_DataLoader {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
-                        loadedData.psmModData = responseData.resultRoot;
-                        resolve();
+                        resolve(responseData.resultRoot);
 
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -486,7 +483,7 @@ export class ModViewPage_DataLoader {
         });
     }
 
-    getScanModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } ) {
+    getScanModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
 
         let objectThis = this;
 
@@ -503,9 +500,7 @@ export class ModViewPage_DataLoader {
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
-
-                        loadedData.scanModData = responseData.resultRoot;
-                        resolve();
+                        resolve(responseData.resultRoot);
 
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

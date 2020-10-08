@@ -1,20 +1,18 @@
 import jStat from 'jstat'
 import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
+import {ModViewDataManager} from "./modViewDataManager";
 
 export class ModStatsUtils {
 
-    static downloadSummaryStatistics({
+    static async downloadSummaryStatistics({
                                          reportedPeptideModData,
                                          aminoAcidModStats,
                                          vizOptionsData,
                                          sortedModMasses,
-                                         totalPSMCount,
-                                         totalScanCount,
                                          projectSearchIds,
                                          searchDetailsBlockDataMgmtProcessing,
-                                         psmModData,
-                                         scanModData
+                                         modViewDataManager
                                      }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
@@ -41,17 +39,14 @@ export class ModStatsUtils {
 
         output += "\n";
 
-        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             reportedPeptideModData,
             aminoAcidModStats,
             projectSearchIds,
-            totalPSMCount,
-            totalScanCount,
             vizOptionsData,
             countsOverride: false,
             proteinPositionFilterStateManager : undefined,
-            psmModData,
-            scanModData
+            modViewDataManager,
         });
 
         for (const modMass of sortedModMasses) {
@@ -75,18 +70,23 @@ export class ModStatsUtils {
     }
 
 
-    static downloadSignificantMods({
+    static async downloadSignificantMods({
                                        reportedPeptideModData,
                                        aminoAcidModStats,
                                        vizOptionsData,
                                        sortedModMasses,
-                                       totalPSMCount,
-                                       totalScanCount,
                                        projectSearchIds,
                                        searchDetailsBlockDataMgmtProcessing,
-                                       psmModData,
-                                       scanModData
-    }) {
+                                       modViewDataManager
+                                   } : {
+                                        reportedPeptideModData,
+                                        aminoAcidModStats,
+                                        vizOptionsData,
+                                        sortedModMasses,
+                                        projectSearchIds,
+                                        searchDetailsBlockDataMgmtProcessing,
+                                        modViewDataManager:ModViewDataManager
+        }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -94,17 +94,14 @@ export class ModStatsUtils {
         let output = "Currently NOT filtered on Protein and Position selection\n";
         output += "search1\tsearch2\tmod mass\t" + quantTypeString + " count 1\t" + quantTypeString + " count 2\tz-score\tp-value\n";
 
-        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             reportedPeptideModData,
             aminoAcidModStats,
             projectSearchIds,
-            totalPSMCount,
-            totalScanCount,
             vizOptionsData,
             countsOverride: true,
             proteinPositionFilterStateManager : undefined,
-            psmModData,
-            scanModData
+            modViewDataManager
         });
 
         console.log('modMap', modMap);
@@ -124,7 +121,7 @@ export class ModStatsUtils {
                 continue;
             }
 
-            let n1 = psmQuantType ? totalPSMCount[projectSearchId1].psmCount : totalScanCount[projectSearchId1].scanCount;
+            const n1 = psmQuantType ? modViewDataManager.getTotalPSMCount(projectSearchId1) : modViewDataManager.getTotalScanCount(projectSearchId1);
 
             for( let k = 0; k < projectSearchIds.length; k++ ) {
 
@@ -137,7 +134,7 @@ export class ModStatsUtils {
                         continue;
                     }
 
-                    let n2 = psmQuantType ? totalPSMCount[projectSearchId2].psmCount : totalScanCount[projectSearchId2].scanCount;
+                    const n2 = psmQuantType ? modViewDataManager.getTotalPSMCount(projectSearchId2) : modViewDataManager.getTotalScanCount(projectSearchId2);
 
                     for (const modMass of sortedModMasses) {
 

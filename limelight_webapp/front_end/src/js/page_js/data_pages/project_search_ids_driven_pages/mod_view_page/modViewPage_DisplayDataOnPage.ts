@@ -15,6 +15,7 @@ import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_sear
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
 import {ModViewDataVizRendererOptionsHandler} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizOptionsManager';
 import {ModMultiSearch_DataVizPageStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMultiSearchDataViz_StateManager';
+import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 //  Import for typing only
 import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
@@ -144,7 +145,7 @@ export class ModViewPage_DisplayDataOnPage {
 	loadDataForAllProjectSearchIds( { 
 		projectSearchIds, 
 		searchDetailsBlockDataMgmtProcessing, 
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay 
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
 	} : { 
 		projectSearchIds, 
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
@@ -155,6 +156,7 @@ export class ModViewPage_DisplayDataOnPage {
 
 		let projectSearchIdPromisesArray = [ ];
 		let loadedData = { };
+		const modViewDataManager = new ModViewDataManager(searchDetailsBlockDataMgmtProcessing);
 
 		for (let projectSearchId of projectSearchIds) {
 			loadedData[ projectSearchId ] = { };
@@ -167,7 +169,7 @@ export class ModViewPage_DisplayDataOnPage {
 
 		Promise.all( projectSearchIdPromisesArray ).then( function( resolvedPromisesArray ) {
 			try {
-				objectThis.renderModDataPage( { projectSearchIds, loadedData, searchDetailsBlockDataMgmtProcessing } );		
+				objectThis.renderModDataPage( { projectSearchIds, loadedData, searchDetailsBlockDataMgmtProcessing, modViewDataManager } );
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -235,21 +237,12 @@ export class ModViewPage_DisplayDataOnPage {
 				// load the protein annotations (names and descriptions) for proteins in this experiment
 				let proteinDataPromise = dataLoader.getProteinAnnotationDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing,
 					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, loadedData } );
-		
-				// get the total number of PSMs for this experiment that meet the cutoffs
-				let totalPSMCountPromise = dataLoader.getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-
-				// get the total number of scans for this experiment that meet the cutoffs
-				let totalScanCountPromise = dataLoader.getTotalScanCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-
-				let scanModDataPromise = dataLoader.getScanModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-				let psmModDataPromise = dataLoader.getPSMModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
 
 				// get the open mod data
 				//let openModDataPromise = dataLoader.getOpenModDataForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing, loadedData });
 
 				// after we get all the data, move on to rendering the page.
-				Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise, totalPSMCountPromise, totalScanCountPromise, scanModDataPromise, psmModDataPromise ] ).then( function( resolvedPromisesArray ) {
+				Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise ] ).then( function( resolvedPromisesArray ) {
 					try {
 						resolve();
 					} catch( e ) {
@@ -274,24 +267,28 @@ export class ModViewPage_DisplayDataOnPage {
 	renderModDataPage( { 
 		loadedData, 
 		projectSearchIds, 
-		searchDetailsBlockDataMgmtProcessing 
+		searchDetailsBlockDataMgmtProcessing,
+		modViewDataManager
 	} : { 
 		loadedData, 
 		projectSearchIds, 
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		modViewDataManager : ModViewDataManager
 	} ) {
 
-		this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds } );
+		this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds, modViewDataManager } );
 	}
 
 	renderModDataPageMultiSearch({ 
 		loadedData, 
 		projectSearchIds, 
-		searchDetailsBlockDataMgmtProcessing 
+		searchDetailsBlockDataMgmtProcessing,
+		modViewDataManager
 	} : { 
 		loadedData, 
 		projectSearchIds, 
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
+		modViewDataManager : ModViewDataManager
 	} ) {
 
 		// enable click handler for filtering proteins and positions overlay
@@ -299,13 +296,9 @@ export class ModViewPage_DisplayDataOnPage {
 
 		let reportedPeptideModData = {};
 		let proteinPositionResidues = {};
-		let totalPSMCount = {};
-		let totalScanCount = {};
 		let aminoAcidModStats = {};
 		let proteinData = {};
 		let reportedPeptideProteinMap = {};
-		let psmModData = {};
-		let scanModData = {};
 
 		console.log('loadedData', loadedData);
 
@@ -313,12 +306,8 @@ export class ModViewPage_DisplayDataOnPage {
 
 			reportedPeptideModData[projectSearchId] = loadedData[projectSearchId].modData.reportedPeptides;
 			proteinPositionResidues[projectSearchId] = loadedData[projectSearchId].proteinPositionResidues;
-			totalPSMCount[projectSearchId] = loadedData[projectSearchId].totalPSMCount;
-			totalScanCount[projectSearchId] = loadedData[projectSearchId].totalScanCount;
 			aminoAcidModStats[projectSearchId] = loadedData[projectSearchId].aminoAcidModStats.reportedPeptideData;
 			proteinData[projectSearchId] = loadedData[projectSearchId].proteinData;
-			scanModData[projectSearchId] = loadedData[projectSearchId].scanModData;
-			psmModData[projectSearchId] = loadedData[projectSearchId].psmModData;
 			reportedPeptideProteinMap[projectSearchId] = loadedData[projectSearchId].openModReportedPeptideProteinMap;
 		}
 
@@ -339,16 +328,12 @@ export class ModViewPage_DisplayDataOnPage {
 			vizOptionsData,
 			reportedPeptideModData,
 			proteinPositionResidues,
-			totalPSMCount,
-			totalScanCount,
 			aminoAcidModStats,
 			proteinData,
 			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
-			projectSearchIds,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
-			psmModData,
-			scanModData
+			modViewDataManager
 		});
 
 		// add the viz to the page using these viz options
@@ -356,15 +341,12 @@ export class ModViewPage_DisplayDataOnPage {
 			vizOptionsData,
 			reportedPeptideModData,
 			proteinPositionResidues,
-			totalPSMCount,
-			totalScanCount,
 			aminoAcidModStats,
 			proteinData,
 			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
-			psmModData,
-			scanModData
+			modViewDataManager
 		});
 	}
 

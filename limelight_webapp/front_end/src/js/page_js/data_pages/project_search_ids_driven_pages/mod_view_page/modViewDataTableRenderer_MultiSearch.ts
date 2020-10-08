@@ -66,7 +66,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 								vizSelectedStateObject,
 								reportedPeptideModData,
 								proteinPositionResidues,
-								totalPSMCount,
 								aminoAcidModStats,
 								proteinData,
 								proteinPositionFilterStateManager,
@@ -74,7 +73,8 @@ export class ModViewDataTableRenderer_MultiSearch {
 								dataPageStateManager_DataFrom_Server,
 								sortedModMasses,
 								modMap,
-								projectSearchIds
+								projectSearchIds,
+								modViewDataManager
 	}) {
 
 		// based on user filter, these are the mods to show in the table
@@ -108,7 +108,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 					vizSelectedStateObject,
 					reportedPeptideModData,
 					proteinPositionResidues,
-					totalPSMCount,
 					aminoAcidModStats,
 					proteinData,
 					proteinPositionFilterStateManager,
@@ -118,7 +117,8 @@ export class ModViewDataTableRenderer_MultiSearch {
 					modMassStatusObject,
 					modMass,
 					$modDiv,
-					projectSearchIds
+					projectSearchIds,
+					modViewDataManager
 				})
 			});
 		}
@@ -128,7 +128,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 									vizSelectedStateObject,
 									reportedPeptideModData,
 									proteinPositionResidues,
-									totalPSMCount,
 									aminoAcidModStats,
 									proteinData,
 									proteinPositionFilterStateManager,
@@ -138,7 +137,8 @@ export class ModViewDataTableRenderer_MultiSearch {
 									modMassStatusObject,
 									modMass,
 									$modDiv,
-									projectSearchIds
+									projectSearchIds,
+									modViewDataManager
 								}) {
 
 
@@ -204,7 +204,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 				let functionParams : any = { };
 				functionParams.reportedPeptideModData = reportedPeptideModData;
 				functionParams.proteinPositionResidues = proteinPositionResidues;
-				functionParams.totalPSMCount = totalPSMCount;
+				functionParams.modViewDataManager = modViewDataManager;
 				functionParams.aminoAcidModStats = aminoAcidModStats;
 				functionParams.proteinData = proteinData;
 				functionParams.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;

@@ -7,36 +7,33 @@ import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
 import {ModStatsUtils} from "./modStatsUtils";
 import jStat from 'jstat'
+import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
-    static renderDataViz({
+    static async renderDataViz({
                              reportedPeptideModData,
                              proteinPositionResidues,
-                             totalPSMCount,
-                             totalScanCount,
                              aminoAcidModStats,
                              proteinData,
                              proteinPositionFilterStateManager,
                              searchDetailsBlockDataMgmtProcessing,
                              dataPageStateManager_DataFrom_Server,
                              vizOptionsData,
-                             psmModData,
-                             scanModData
+                             modViewDataManager
     }) {
 
-        const modMap = ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             reportedPeptideModData,
             aminoAcidModStats,
             projectSearchIds:vizOptionsData.data.projectSearchIds,
-            totalPSMCount,
-            totalScanCount,
             vizOptionsData,
             proteinPositionFilterStateManager,
             countsOverride : undefined,
-            psmModData,
-            scanModData
+            modViewDataManager,
         });
+
+        console.log('got modmap:', modMap);
 
         if(modMap.size < 1) {
             $('div#data-viz-container').empty();
@@ -173,21 +170,29 @@ export class ModViewDataVizRenderer_MultiSearch {
             selectedStateObject,
             reportedPeptideModData,
             proteinPositionResidues,
-            totalPSMCount,
-            totalScanCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
             dataPageStateManager_DataFrom_Server,
             modMap,
             vizOptionsData,
-            psmModData,
-            scanModData
+            modViewDataManager
         });
 
         ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
         ModViewDataVizRenderer_MultiSearch.addModLabelsHeader({ svg, width, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({ svg, rectAreaHeight: height, colorScale, maxPsmCount: maxCount, minPsmCount: minCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData });
+        ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({
+            svg,
+            rectAreaHeight: height,
+            colorScale,
+            maxPsmCount: maxCount,
+            minPsmCount: minCount,
+            minLegendWidth,
+            legendHeight,
+            yScale,
+            labelFontSize,
+            vizOptionsData
+        });
 
         ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
             svg,
@@ -198,26 +203,23 @@ export class ModViewDataVizRenderer_MultiSearch {
             selectedStateObject,
             reportedPeptideModData,
             proteinPositionResidues,
-            totalPSMCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             modMap,
-            vizOptionsData
+            vizOptionsData,
+            modViewDataManager
         });
 
         ModViewDataVizRenderer_MultiSearch.addDataDownloadLinks({
             reportedPeptideModData,
-            totalPSMCount,
-            totalScanCount,
             aminoAcidModStats,
             searchDetailsBlockDataMgmtProcessing,
             sortedModMasses,
             vizOptionsData,
-            psmModData,
-            scanModData
+            modViewDataManager
         })
 
         // show the data table under the vizualization by default
@@ -226,27 +228,24 @@ export class ModViewDataVizRenderer_MultiSearch {
             vizSelectedStateObject: selectedStateObject,
             reportedPeptideModData,
             proteinPositionResidues,
-            totalPSMCount,
             aminoAcidModStats,
             proteinData,
             proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             modMap,
-            sortedModMasses
+            sortedModMasses,
+            modViewDataManager
         });
     }
 
     static addDataDownloadLinks({
                                     reportedPeptideModData,
-                                    totalPSMCount,
-                                    totalScanCount,
                                     aminoAcidModStats,
                                     searchDetailsBlockDataMgmtProcessing,
                                     sortedModMasses,
                                     vizOptionsData,
-                                    psmModData,
-                                    scanModData
+                                    modViewDataManager
                                 }) {
 
 
@@ -261,12 +260,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 aminoAcidModStats,
                 vizOptionsData,
                 sortedModMasses,
-                totalPSMCount,
-                totalScanCount,
                 searchDetailsBlockDataMgmtProcessing,
                 projectSearchIds: vizOptionsData.data.projectSearchIds,
-                psmModData,
-                scanModData
+                modViewDataManager
             });
 
         });
@@ -284,12 +280,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 aminoAcidModStats,
                 vizOptionsData,
                 sortedModMasses,
-                totalPSMCount,
-                totalScanCount,
                 searchDetailsBlockDataMgmtProcessing,
                 projectSearchIds: vizOptionsData.data.projectSearchIds,
-                psmModData,
-                scanModData
+                modViewDataManager
             });
 
         });
@@ -422,14 +415,14 @@ export class ModViewDataVizRenderer_MultiSearch {
                               selectedStateObject,
                               reportedPeptideModData,
                               proteinPositionResidues,
-                              totalPSMCount,
                               aminoAcidModStats,
                               proteinData,
                               proteinPositionFilterStateManager,
                               searchDetailsBlockDataMgmtProcessing,
                               dataPageStateManager_DataFrom_Server,
                               modMap,
-                              vizOptionsData
+                              vizOptionsData,
+                              modViewDataManager
     }) {
 
         svg.select('#rect-group')
@@ -504,7 +497,13 @@ export class ModViewDataVizRenderer_MultiSearch {
                     };
 
                     // update final opacity for viz
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject });
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg,
+                        sortedModMasses,
+                        projectSearchIds,
+                        xScale,
+                        yScale,
+                        rectParams,
+                        selectedStateObject });
 
                     // remove selection frame
                     s.remove();
@@ -513,7 +512,18 @@ export class ModViewDataVizRenderer_MultiSearch {
                     vizOptionsData.stateManagementObject.updateState();
 
                     // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds,
+                        vizSelectedStateObject:selectedStateObject,
+                        reportedPeptideModData,
+                        proteinPositionResidues,
+                        aminoAcidModStats,
+                        proteinData,
+                        proteinPositionFilterStateManager,
+                        searchDetailsBlockDataMgmtProcessing,
+                        dataPageStateManager_DataFrom_Server,
+                        modMap,
+                        sortedModMasses,
+                        modViewDataManager} );
                 }
 
             });
@@ -531,7 +541,20 @@ export class ModViewDataVizRenderer_MultiSearch {
                     ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject });
 
                     // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( { projectSearchIds, vizSelectedStateObject:selectedStateObject, reportedPeptideModData, proteinPositionResidues, totalPSMCount, aminoAcidModStats, proteinData, proteinPositionFilterStateManager, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server, modMap, sortedModMasses } );
+                    ModViewDataTableRenderer_MultiSearch.renderDataTable( {
+                        projectSearchIds,
+                        vizSelectedStateObject:selectedStateObject,
+                        reportedPeptideModData,
+                        proteinPositionResidues,
+                        aminoAcidModStats,
+                        proteinData,
+                        proteinPositionFilterStateManager,
+                        searchDetailsBlockDataMgmtProcessing,
+                        dataPageStateManager_DataFrom_Server,
+                        modMap,
+                        sortedModMasses,
+                        modViewDataManager
+                    } );
 
                 }
             });
@@ -666,16 +689,13 @@ export class ModViewDataVizRenderer_MultiSearch {
                                selectedStateObject,
                                reportedPeptideModData,
                                proteinPositionResidues,
-                               totalPSMCount,
-                               totalScanCount,
                                aminoAcidModStats,
                                proteinData,
                                proteinPositionFilterStateManager,
                                dataPageStateManager_DataFrom_Server,
                                modMap,
                                vizOptionsData,
-                               psmModData,
-                               scanModData
+                               modViewDataManager,
     }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -720,14 +740,14 @@ export class ModViewDataVizRenderer_MultiSearch {
                     vizSelectedStateObject: selectedStateObject,
                     reportedPeptideModData,
                     proteinPositionResidues,
-                    totalPSMCount,
                     aminoAcidModStats,
                     proteinData,
                     proteinPositionFilterStateManager,
                     searchDetailsBlockDataMgmtProcessing,
                     dataPageStateManager_DataFrom_Server,
                     modMap,
-                    sortedModMasses
+                    sortedModMasses,
+                    modViewDataManager
                 });
             })
             .call(Drag.drag()
@@ -739,8 +759,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                         yScale,
                         reportedPeptideModData,
                         proteinPositionResidues,
-                        totalPSMCount,
-                        totalScanCount,
                         aminoAcidModStats,
                         proteinData,
                         proteinPositionFilterStateManager,
@@ -750,8 +768,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         vizOptionsData,
                         draggedProjectSearchId:d,
                         draggedObject: this,
-                        psmModData,
-                        scanModData
+                        modViewDataManager
                     });
                 }));
     }
@@ -767,8 +784,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                                         yScale,
                                         reportedPeptideModData,
                                         proteinPositionResidues,
-                                        totalPSMCount,
-                                        totalScanCount,
                                         aminoAcidModStats,
                                         proteinData,
                                         proteinPositionFilterStateManager,
@@ -778,8 +793,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                                         vizOptionsData,
                                         draggedProjectSearchId,
                                         draggedObject,
-                                        psmModData,
-                                        scanModData
+                                        modViewDataManager
                                     }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -815,16 +829,13 @@ export class ModViewDataVizRenderer_MultiSearch {
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
                 reportedPeptideModData,
                 proteinPositionResidues,
-                totalPSMCount,
-                totalScanCount,
                 aminoAcidModStats,
                 proteinData,
                 proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
                 vizOptionsData,
-                psmModData,
-                scanModData
+                modViewDataManager
             });
         }
     }
@@ -1130,35 +1141,43 @@ export class ModViewDataVizRenderer_MultiSearch {
      * @param psmModData
      * @param scanModData
      */
-    static buildModMap({
-                           reportedPeptideModData,
-                           aminoAcidModStats,
-                           projectSearchIds,
-                           totalPSMCount,
-                           totalScanCount,
-                           vizOptionsData,
-                           countsOverride,
-                           proteinPositionFilterStateManager,
-                           psmModData,
-                           scanModData,
-                       }) {
+    static async buildModMap(
+        {
+            reportedPeptideModData,
+            aminoAcidModStats,
+            projectSearchIds,
+            vizOptionsData,
+            countsOverride,
+            proteinPositionFilterStateManager,
+            modViewDataManager,
+        } : {
+            reportedPeptideModData,
+            aminoAcidModStats,
+            projectSearchIds,
+            vizOptionsData,
+            countsOverride,
+            proteinPositionFilterStateManager,
+            modViewDataManager:ModViewDataManager,
+        }) : Promise<Map<number,Map<number,any>>> {
+
+        const modMap:Map<number,Map<number,any>> = new Map();
 
         console.log('called buildModMap');
-        console.log('psmModData', psmModData);
-        console.log('scanModData', scanModData);
 
         const includeOpenMod = vizOptionsData.data.includeOpenMods === undefined || vizOptionsData.data.includeOpenMods === true;
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
 
-        const countdata = psmQuantType ? psmModData : scanModData;
+        //const countdata = psmQuantType ? modViewDataManager.getPSMModData() : scanModData;
 
-        const modMap = new Map();
 
         for(const projectSearchId of projectSearchIds) {
-            for (const reportedPeptideId of Object.keys(psmModData[projectSearchId])) {
+
+            let countData = psmQuantType ? await modViewDataManager.getPSMModData(projectSearchId) : await modViewDataManager.getScanModData(projectSearchId);
+
+            for (const reportedPeptideId of Object.keys(countData)) {
 
                 // will be a psm or a scan
-                for (const item of countdata[projectSearchId][reportedPeptideId]) {
+                for (const item of countData[reportedPeptideId]) {
 
                     // add in the variable mods
                     for (const modMass of item['variable']) {
@@ -1231,14 +1250,19 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         // convert to a map of counts/ratios
+        const denominatorMap:Map<number, number> = new Map();
+
         for(const [modMass, searchCountMap] of modMap) {
             for(const [projectSearchId, idSet] of searchCountMap) {
                 let count = idSet.size;
 
                 if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
 
-                    const ratioDenominator = psmQuantType ? totalPSMCount[projectSearchId].psmCount : totalScanCount[projectSearchId].scanCount;
+                    if(!denominatorMap.has(projectSearchId)) {
+                        denominatorMap.set(projectSearchId, (psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId) : await modViewDataManager.getTotalScanCount(projectSearchId)));
+                    }
 
+                    const ratioDenominator = denominatorMap.get(projectSearchId);
                     count = count / ratioDenominator;
                 }
 
@@ -1263,9 +1287,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             ModViewDataVizRenderer_MultiSearch.convertModMapToDataTransformation(modMap, vizOptionsData);
         }
 
-        console.log('Done with buildModMap()')
-
-
+        console.log('Done with buildModMap()', modMap)
         return modMap;
     }
 
