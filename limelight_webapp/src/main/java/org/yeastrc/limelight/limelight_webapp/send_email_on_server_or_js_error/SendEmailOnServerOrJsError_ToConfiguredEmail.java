@@ -19,15 +19,14 @@ package org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
-import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailIF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig.SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig_Response;
 
 /**
  * Send Email On Server Or Javacript Error - To Configured Email
@@ -35,7 +34,12 @@ import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
  * Send at most once an hour
  */
 @Component
-public class SendEmailOnServerOrJsError_ToConfiguredEmail implements SendEmailOnServerOrJsError_ToConfiguredEmail_IF {
+public class SendEmailOnServerOrJsError_ToConfiguredEmail 
+
+implements 
+SendEmailOnServerOrJsError_ToConfiguredEmail_IF, 
+InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
 
 	private static final Logger log = LoggerFactory.getLogger( SendEmailOnServerOrJsError_ToConfiguredEmail.class );
 	
@@ -43,13 +47,33 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail implements SendEmailOn
 
 	private AtomicLong lastEmailSent_SystemTime = new AtomicLong( 0 );
 	
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig_Response configuration;
+	
 	
 	@Autowired
-	private ConfigSystemDAO_IF configSystemDAO;
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig_IF sendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig;
 
 	@Autowired
 	private SendEmailIF sendEmail;
 	
+
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			initializeObject_AfterPropertiesSetBySpring();
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+	}
 	
 	/**
 	 * Send at most once an hour
@@ -58,79 +82,46 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail implements SendEmailOn
 	public void sendEmailOnServerOrJsError_ToConfiguredEmail() {
 
 		try {
-
-			//  Send to emails specified in config table
-
-			String to_emailAddresses_CommaDelim =
-					configSystemDAO
-					.getConfigValueForConfigKey( ConfigSystemsKeysConstants.SERVER_OR_JAVASCRIPT_ERROR_EMAILS_TO_SEND_TO_KEY );
-
-			String from_emailAddress =
-					configSystemDAO
-					.getConfigValueForConfigKey( ConfigSystemsKeysConstants.SERVER_OR_JAVASCRIPT_ERROR_EMAILS_FROM_ADDRESS_KEY );
-
-			String serverIdentifier =
-					configSystemDAO
-					.getConfigValueForConfigKey( ConfigSystemsKeysConstants.SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER_KEY );
-			
-
-			if ( StringUtils.isNotEmpty( to_emailAddresses_CommaDelim )
-					&& ( StringUtils.isEmpty( from_emailAddress )
-							|| StringUtils.isEmpty( serverIdentifier ) ) ) {
+			if ( configuration == null ) {
 				
-				log.error( "sendEmailOnServerOrJsError_ToConfiguredEmail configuration error.  Config table key '" 
-						+ ConfigSystemsKeysConstants.SERVER_OR_JAVASCRIPT_ERROR_EMAILS_TO_SEND_TO_KEY
-						+ "' has value but one of following Config table keys not populated: '"
-						+ ConfigSystemsKeysConstants.SERVER_OR_JAVASCRIPT_ERROR_EMAILS_FROM_ADDRESS_KEY
-						+ "' or '"
-						+ ConfigSystemsKeysConstants.SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER_KEY
-						+ "'.");
+				//  Not configured or configured incorrectly
+				
+				return; // EARLY RETURN
 			}
-			
 
-			if ( StringUtils.isNotEmpty( to_emailAddresses_CommaDelim )
-					&& StringUtils.isNotEmpty( from_emailAddress )
-					&& StringUtils.isNotEmpty( serverIdentifier ) ) {
-				
-				long lastEmailSent_SystemTime_CurrentValue = this.lastEmailSent_SystemTime.get();
-				
-				long currentTimeMillis = System.currentTimeMillis();
-				
-				long currentTime_Minus_OneHour = currentTimeMillis - ONE_HOUR_IN_MILLISECONDS;
-				
-				if ( currentTime_Minus_OneHour > lastEmailSent_SystemTime_CurrentValue ) {
-				
-//				if ( true ) {
-				
-					long lastEmailSent_SystemTime_OldValue = this.lastEmailSent_SystemTime.getAndSet( currentTimeMillis );
-					
-					//  lastEmailSent_SystemTime_OldValue != lastEmailSent_SystemTime_CurrentValue
-					//      - Means that this.lastEmailSent_SystemTime was updated between .get() and .getAndSet(...)
-					
-					if ( lastEmailSent_SystemTime_OldValue == lastEmailSent_SystemTime_CurrentValue ) {
-					
-//					if ( true ) {
-						
-						String emailSubject = "Limelight Webapp running on server: " + serverIdentifier 
-								+ ".  An error has occurred in server or Javascript code.";
-						
-						String emailBody = 
-								"Limelight Webapp running on server: " + serverIdentifier + "\n\n"
-								+ "An error has occurred in server or Javascript code.\n"
-								+ "\n"
-								+ "Emails will be sent at most once per hour";
-						
-						SendEmailItem sendEmailItem = new SendEmailItem();
-						sendEmailItem.setEmailBody( emailBody );
-						sendEmailItem.setEmailSubject( emailSubject );
-						sendEmailItem.setFromEmailAddress( from_emailAddress );
-		
-						String[] extraEmailAddressesToSendTo_Array = to_emailAddresses_CommaDelim.split( "," );
-						for ( String extraEmailAddressesToSendTo : extraEmailAddressesToSendTo_Array ) {
-							
-							sendEmailItem.setToEmailAddress( extraEmailAddressesToSendTo );
-							sendEmail.sendEmail( sendEmailItem );
-						}
+			long lastEmailSent_SystemTime_CurrentValue = this.lastEmailSent_SystemTime.get();
+
+			long currentTimeMillis = System.currentTimeMillis();
+
+			long currentTime_Minus_OneHour = currentTimeMillis - ONE_HOUR_IN_MILLISECONDS;
+
+			if ( currentTime_Minus_OneHour > lastEmailSent_SystemTime_CurrentValue ) {
+
+				long lastEmailSent_SystemTime_OldValue = this.lastEmailSent_SystemTime.getAndSet( currentTimeMillis );
+
+				//  lastEmailSent_SystemTime_OldValue != lastEmailSent_SystemTime_CurrentValue
+				//      - Means that this.lastEmailSent_SystemTime was updated between .get() and .getAndSet(...)
+
+				if ( lastEmailSent_SystemTime_OldValue == lastEmailSent_SystemTime_CurrentValue ) {
+
+					String emailSubject = "Limelight Webapp running on server: " + configuration.getServerIdentifier() 
+					+ ".  An error has occurred in server or Javascript code.";
+
+					String emailBody = 
+							"Limelight Webapp running on server: " + configuration.getServerIdentifier() + "\n\n"
+									+ "An error has occurred in server or Javascript code.\n"
+									+ "\n"
+									+ "Emails will be sent at most once per hour";
+
+					SendEmailItem sendEmailItem = new SendEmailItem();
+					sendEmailItem.setEmailBody( emailBody );
+					sendEmailItem.setEmailSubject( emailSubject );
+					sendEmailItem.setFromEmailAddress( configuration.getFrom_emailAddress() );
+
+					for ( String extraEmailAddressesToSendTo : configuration.getTo_emailAddresses() ) {
+
+						sendEmailItem.setToEmailAddress( extraEmailAddressesToSendTo );
+						sendEmail.sendEmail( sendEmailItem );
 					}
 				}
 			}
@@ -142,4 +133,30 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail implements SendEmailOn
 			
 		}
 	}
+	
+	
+	/**
+	 * Called from afterPropertiesSet() on object initialization
+	 * 
+	 * @throws Exception
+	 */
+	private void initializeObject_AfterPropertiesSetBySpring() throws Exception {
+		
+		configuration =
+				sendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig.sendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig();
+	}
 }
+
+//  Removed:
+//	
+//	class ConfigSystemsKeysConstants:
+//
+//	/////////   Send Email on Server or JS Error - Emails Config
+//	
+//	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_TO_SEND_TO_KEY = "server_or_javascript_error_emails_to_send_to";
+//
+//	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_FROM_ADDRESS_KEY = "server_or_javascript_error_emails_from_address";
+//	
+//	public static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER_KEY = "server_or_javascript_error_emails_server_identifier";
+
+

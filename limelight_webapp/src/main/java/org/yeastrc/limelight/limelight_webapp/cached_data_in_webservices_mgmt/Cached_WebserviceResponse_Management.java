@@ -1,6 +1,7 @@
 package org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt;
 
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -8,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_ReadFile.CachedDataInFileMgmt_ReadFile_Parameters;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_ReadFile_IF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_WriteFile.CachedDataInFileMgmt_WriteFile_Parameters;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_WriteFile_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.Cache_InMemory_CurrentSizeMaxSizeResult;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CentralRegistry_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CommonIF;
@@ -40,47 +45,19 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	@Autowired
 	private CachedData_InMemory_CentralRegistry_IF cachedData_InMemory_CentralRegistry;
+	
+	@Autowired
+	private CachedDataInFileMgmt_ReadFile_IF cachedDataInFileMgmt_ReadFile;
+	
+	@Autowired
+	private CachedDataInFileMgmt_WriteFile_IF cachedDataInFileMgmt_WriteFile;
 
 	
 	private volatile Cache<LocalCacheKey, LocalCacheValue> dataCache = null;
 	
 	private volatile int cacheMaxSize;
 	
-	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#getCachedResponse(java.lang.String, byte[])
-	 */
-	@Override
-	public byte[] getCachedResponse( String controllerPath, byte[] requestPostBody ) {
-		
-		LocalCacheKey localCacheKey = new LocalCacheKey();
-		localCacheKey.controllerPath = controllerPath;
-		localCacheKey.requestBodyBytes = requestPostBody;
-		
-		LocalCacheValue localCacheValue = dataCache.getIfPresent( localCacheKey );
-		
-		if ( localCacheValue == null ) {
-			return null;
-		}
-		
-		return localCacheValue.responseBodyBytes;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#putCachedResponse(java.lang.String, byte[], byte[])
-	 */
-	@Override
-	public void putCachedResponse( String controllerPath, byte[] requestPostBody, byte[] responseBodyBytes ) {
-		
-		LocalCacheKey localCacheKey = new LocalCacheKey();
-		localCacheKey.controllerPath = controllerPath;
-		localCacheKey.requestBodyBytes = requestPostBody;
-		
-		LocalCacheValue localCacheValue = new LocalCacheValue();
-		localCacheValue.responseBodyBytes = responseBodyBytes;
-		
-		dataCache.put( localCacheKey, localCacheValue );
-	}
-	
+	private ConcurrentHashMap<String, Object> registered_ControllerPathForCachedResponse_Map = new ConcurrentHashMap<>();
 
 	/* 
 	 * Spring LifeCycle Method
@@ -112,8 +89,116 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			log.error(msg);
 			throw e;
 		}
-		
 	}
+
+	//////////////
+	
+	/**
+	 * @param controllerPathForCachedResponse
+	 */
+	@Override
+	public void registerControllerPathForCachedResponse( String controllerPathForCachedResponse, Object registeringObject ) {
+		
+		Object prevValue = registered_ControllerPathForCachedResponse_Map.put( controllerPathForCachedResponse, registeringObject );
+		
+		if ( prevValue != null ) {
+			
+			String msg = "Duplicate controllerPathForCachedResponse value passed to registerControllerPathForCachedResponse(...): " + controllerPathForCachedResponse;
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#getCachedResponse(java.lang.String, byte[])
+	 */
+	@Override
+	public byte[] getCachedResponse( String controllerPathForCachedResponse, byte[] requestPostBody, Object callingObject ) throws Exception {
+		
+		{
+			Object registeringObject = registered_ControllerPathForCachedResponse_Map.get( controllerPathForCachedResponse );
+			if ( registeringObject == null  ) {
+
+				String msg = "controllerPathForCachedResponse passed to getCachedResponse(...) is NOT registered: " + controllerPathForCachedResponse;
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			if ( registeringObject != callingObject ) {
+
+				String msg = "callingObject passed to getCachedResponse(...) is NOT same object used when registerering controllerPathForCachedResponse: " + controllerPathForCachedResponse;
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+		}
+		
+		LocalCacheKey localCacheKey = new LocalCacheKey();
+		localCacheKey.controllerPathForCachedResponse = controllerPathForCachedResponse;
+		localCacheKey.requestBodyBytes = requestPostBody;
+		
+		LocalCacheValue localCacheValue = dataCache.getIfPresent( localCacheKey );
+		
+		if ( localCacheValue == null ) {
+			
+			CachedDataInFileMgmt_ReadFile_Parameters parameters = new CachedDataInFileMgmt_ReadFile_Parameters();
+			parameters.setControllerPath(controllerPathForCachedResponse);
+			parameters.setRequestPostBody( requestPostBody );
+			byte[] fromCacheOnFile = cachedDataInFileMgmt_ReadFile.cachedDataInFileMgmt_ReadFile( parameters );
+			
+			if ( fromCacheOnFile != null ) {
+				
+				//  Put fromCacheOnFile into the in memory cache
+				LocalCacheValue localCacheValueToStore = new LocalCacheValue();
+				localCacheValueToStore.responseBodyBytes = fromCacheOnFile;
+						
+				dataCache.put( localCacheKey, localCacheValueToStore );
+			}
+			
+			return fromCacheOnFile;
+		}
+		
+		return localCacheValue.responseBodyBytes;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#putCachedResponse(java.lang.String, byte[], byte[])
+	 */
+	@Override
+	public void putCachedResponse( String controllerPathForCachedResponse, byte[] requestPostBody, byte[] responseBodyBytes, Object callingObject ) throws Exception {
+
+		{
+			Object registeringObject = registered_ControllerPathForCachedResponse_Map.get( controllerPathForCachedResponse );
+			if ( registeringObject == null  ) {
+
+				String msg = "controllerPathForCachedResponse passed to putCachedResponse(...) is NOT registered: " + controllerPathForCachedResponse;
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			if ( registeringObject != callingObject ) {
+
+				String msg = "callingObject passed to putCachedResponse(...) is NOT same object used when registerering controllerPathForCachedResponse: " + controllerPathForCachedResponse;
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+		}
+		
+		LocalCacheKey localCacheKey = new LocalCacheKey();
+		localCacheKey.controllerPathForCachedResponse = controllerPathForCachedResponse;
+		localCacheKey.requestBodyBytes = requestPostBody;
+		
+		LocalCacheValue localCacheValue = new LocalCacheValue();
+		localCacheValue.responseBodyBytes = responseBodyBytes;
+		
+		dataCache.put( localCacheKey, localCacheValue );
+		
+		CachedDataInFileMgmt_WriteFile_Parameters cachedDataInFileMgmt_WriteFile_Parameters = new CachedDataInFileMgmt_WriteFile_Parameters();
+		cachedDataInFileMgmt_WriteFile_Parameters.setControllerPath( controllerPathForCachedResponse );
+		cachedDataInFileMgmt_WriteFile_Parameters.setRequestPostBody( requestPostBody );
+		cachedDataInFileMgmt_WriteFile_Parameters.setResponseBodyBytes( responseBodyBytes );
+		
+		cachedDataInFileMgmt_WriteFile.cachedDataInFileMgmt_WriteFile( cachedDataInFileMgmt_WriteFile_Parameters );
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CommonIF#clearCacheData()
@@ -153,14 +238,14 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	private static class LocalCacheKey {
 		
-		String controllerPath;
+		String controllerPathForCachedResponse;
 		byte[] requestBodyBytes;
 		
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((controllerPath == null) ? 0 : controllerPath.hashCode());
+			result = prime * result + ((controllerPathForCachedResponse == null) ? 0 : controllerPathForCachedResponse.hashCode());
 			result = prime * result + Arrays.hashCode(requestBodyBytes);
 			return result;
 		}
@@ -173,10 +258,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			if (getClass() != obj.getClass())
 				return false;
 			LocalCacheKey other = (LocalCacheKey) obj;
-			if (controllerPath == null) {
-				if (other.controllerPath != null)
+			if (controllerPathForCachedResponse == null) {
+				if (other.controllerPathForCachedResponse != null)
 					return false;
-			} else if (!controllerPath.equals(other.controllerPath))
+			} else if (!controllerPathForCachedResponse.equals(other.controllerPathForCachedResponse))
 				return false;
 			if (!Arrays.equals(requestBodyBytes, other.requestBodyBytes))
 				return false;

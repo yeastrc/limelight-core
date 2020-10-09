@@ -45,6 +45,10 @@
     <!-- 
     <Logger name="org.yeastrc.limelight.limelight_webapp.services.BrowserIs_MicrosoftEdgeLegacy_Detection_Service" level="debug"/>
     -->
+     <!-- Log Read Config File to save cached files to disk if this is set to info. -->
+    <!-- 
+    <Logger name="org.yeastrc.limelight.limelight_webapp.cached_data_in_file" level="debug"/>
+    -->
     
 	<!-- 
     <Logger name="org.springframework.transaction.interceptor" level="TRACE"/>

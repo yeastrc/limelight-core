@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
@@ -61,7 +62,11 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  *
  */
 @RestController
-public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceController {
+public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceController 
+
+implements
+InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
   
 	private static final Logger log = LoggerFactory.getLogger( Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceController.class );
 
@@ -109,6 +114,24 @@ public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceContr
 	public Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
+	}
+
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
 	}
 	
 	//  Convert result object graph to JSON in byte[] in the controller body so can cache it
@@ -183,7 +206,7 @@ public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceContr
 
     		{ // Return cached value if available
     			
-    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody );
+    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, this );
     			
     			if ( cachedResponse != null ) {
     				
@@ -235,7 +258,7 @@ public class Psm_Count_ForSearchCriteria_Single_ProjSearchID_RestWebserviceContr
 
     		{ // Save cached value 
     			
-    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON );
+    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON, this );
     		}
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
