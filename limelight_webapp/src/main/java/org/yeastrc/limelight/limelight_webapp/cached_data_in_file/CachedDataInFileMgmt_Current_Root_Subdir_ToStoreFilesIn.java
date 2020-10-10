@@ -98,6 +98,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		CachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response cachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response  =
 				cachedDataInFileMgmt_Read_ConfigFile_OnStartup.cachedDataInFileMgmt_Read_ConfigFile_OnStartup();
 
+		if ( cachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response == null ) {
+			
+			//  Either no config file or sub dir not configured so exit
+			
+			return; // EARLY RETURN
+		}
+		
 		//   From Config:
 		File root_Subdirectory_ToStoreFilesIn = cachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response.getRoot_Subdirectory_ToStoreFilesIn();
 			
