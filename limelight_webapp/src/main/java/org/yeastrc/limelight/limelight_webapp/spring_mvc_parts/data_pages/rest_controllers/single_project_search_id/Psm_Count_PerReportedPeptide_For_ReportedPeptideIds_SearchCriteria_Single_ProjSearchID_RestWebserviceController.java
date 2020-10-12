@@ -233,7 +233,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
-    		Map<Integer,Integer> numPsms_KeyReportedPeptideId = new HashMap<>( webserviceRequest.reportedPeptideIds.size() );
+    		List<WebserviceResult_Item> psmCount_PerReportedPeptideId = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
 
     		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
@@ -241,11 +241,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     					psmCountForSearchIdReportedPeptideIdSearcher
     					.getPsmCountForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
 
-    			numPsms_KeyReportedPeptideId.put(reportedPeptideId, numPsms );
+    			WebserviceResult_Item resultItem = new WebserviceResult_Item();
+    			resultItem.reportedPeptideId = reportedPeptideId;
+    			resultItem.psmCount = numPsms;
+    			
+    			psmCount_PerReportedPeptideId.add( resultItem );
     		}
     		
     		WebserviceResult result = new WebserviceResult();
-    		result.numPsms_KeyReportedPeptideId = numPsms_KeyReportedPeptideId;
+    		result.psmCount_PerReportedPeptideId = psmCount_PerReportedPeptideId;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -296,17 +300,30 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult {
     	
-    	Map<Integer,Integer> numPsms_KeyReportedPeptideId;
+    	List<WebserviceResult_Item> psmCount_PerReportedPeptideId;
 
-		public Map<Integer, Integer> getNumPsms_KeyReportedPeptideId() {
-			return numPsms_KeyReportedPeptideId;
+		public List<WebserviceResult_Item> getPsmCount_PerReportedPeptideId() {
+			return psmCount_PerReportedPeptideId;
 		}
-		public void setNumPsms_KeyReportedPeptideId(Map<Integer, Integer> numPsms_KeyReportedPeptideId) {
-			this.numPsms_KeyReportedPeptideId = numPsms_KeyReportedPeptideId;
-		}
-
-
     }
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResult_Item {
+    	
+    	private int reportedPeptideId;
+    	private int psmCount;
+    	
+		public int getReportedPeptideId() {
+			return reportedPeptideId;
+		}
+		public int getPsmCount() {
+			return psmCount;
+		}
+    }
+    
 }
 
 
