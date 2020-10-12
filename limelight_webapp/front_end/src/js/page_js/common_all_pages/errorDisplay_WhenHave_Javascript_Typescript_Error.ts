@@ -18,7 +18,7 @@ export const errorDisplay_WhenHave_Javascript_Typescript_Error = function () {
             + '<h1 style="color: red;">Error in Page Code</h1>'
 
             + '<h3>Please reload the page and try again.</h3>'
-            + '<h3>If this error continues to occur, please contact the person at the bottom of the page.</h3>'
+            + '<h3>If this error continues to occur, please contact the person at the bottom of the page, if someone is listed there.</h3>'
 
             + '<br><br>'
 

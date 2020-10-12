@@ -12,7 +12,11 @@ import { SearchDetailsBlockDataMgmtProcessing } from "page_js/data_pages/search_
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from "../protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItem } from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
+import {
+    SearchDataLookupParameters_Root,
+    SearchDataLookupParams_Filter_Per_AnnotationType,
+    SearchDataLookupParams_For_Single_ProjectSearchId
+} from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 /**
  * returned from function createProteinDisplayData
@@ -104,6 +108,9 @@ export const createProteinDisplayData = function( {
     if ( ! loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() ) {
         throw Error("loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() not populated"); // Must have num PSMs populated
     }
+
+    const searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId =
+        searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId({ projectSearchId, dataPageStateManager : undefined /* use value in dataPageStateManager object */ })
 
     //  Get Annotation Types
 
@@ -237,10 +244,14 @@ export const createProteinDisplayData = function( {
     
         for ( let reportedPeptideId of reportedPeptideIds ) {
 
-            let numberOfPSMsForReportedPeptide = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap().get( reportedPeptideId );
+            const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+            if ( ! numPsmsForReportedPeptideIdMap ) {
+                throw Error( "createProteinDisplayData: loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() not populated" );
+            }
+            let numberOfPSMsForReportedPeptide = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
 
             if ( numberOfPSMsForReportedPeptide === undefined || numberOfPSMsForReportedPeptide === null ) {
-                throw Error( "number of PSMs Not Found for reportedPeptideId: " + reportedPeptideId );
+                throw Error( "createProteinDisplayData: number of PSMs Not Found for reportedPeptideId: " + reportedPeptideId );
             }
 
             numReportedPeptides++;
@@ -263,32 +274,58 @@ export const createProteinDisplayData = function( {
             if ( proteinSequenceVersionIds.length === 1 ) {
                 numReportedPeptidesUnique++
             }
+
             ////////////
-            
-            if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
-                //  Skip if Not Populated if no User cutoffs for type
+            {
+                if ( searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideFilters && searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideFilters.length > 0  ) {
+                    //  Skip if Not Populated if no User cutoffs for type
 
-                let peptideAnnotationMap = loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
+                    if ( ! loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
+                        const msg = "createProteinDisplayData(...): No value in loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() when have searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideFilters"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
 
-                //  Update Reported Peptide Best Values
-                _updateBestAnnotationValues( {
-                    bestAnnotationDataMap : annotationBestData_ForReportedPeptidesMap, // best values 
-                    entryAnnotationDataMap : peptideAnnotationMap, // values for current Reported Peptide Entry
-                    filterableAnnotationTypes_Map : reportedPeptideFilterableAnnotationTypes_Map // Reported Peptide or PSM Filterable Annotation type records
-                } );
+                    let peptideAnnotationMap = loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
+                    if ( ! peptideAnnotationMap ) {
+                        const msg = "createProteinDisplayData(...): if ( ! loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId ) )"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                    //  Update Reported Peptide Best Values
+                    _updateBestAnnotationValues( {
+                        bestAnnotationDataMap : annotationBestData_ForReportedPeptidesMap, // best values
+                        filtersToProcess : searchDataLookupParams_For_Single_ProjectSearchId.reportedPeptideFilters,
+                        entryAnnotationDataMap : peptideAnnotationMap, // values for current Reported Peptide Entry
+                        filterableAnnotationTypes_Map : reportedPeptideFilterableAnnotationTypes_Map // Reported Peptide or PSM Filterable Annotation type records
+                    } );
+                }
             }
+            {
+                if ( searchDataLookupParams_For_Single_ProjectSearchId.psmFilters && searchDataLookupParams_For_Single_ProjectSearchId.psmFilters.length > 0  ) {
+                    //  Skip if Not Populated if no User cutoffs for type
 
-            if ( loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
-                //  Skip if Not Populated if no User cutoffs for type
+                    if ( ! loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() ) {
+                        const msg = "createProteinDisplayData(...): No value in loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() when have searchDataLookupParams_For_Single_ProjectSearchId.psmFilters"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
 
-                let psmBestAnnotationMap = loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
+                    let psmBestAnnotationMap = loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId );
 
-                //  Update PSM Best Values
-                _updateBestAnnotationValues( {
-                    bestAnnotationDataMap : annotationBestData_ForPsmsMap, // best values 
-                    entryAnnotationDataMap : psmBestAnnotationMap, // values for current Reported Peptide Entry
-                    filterableAnnotationTypes_Map : psmFilterableAnnotationTypes_Map // Reported Peptide or PSM Filterable Annotation type records
-                } );
+                    if ( ! psmBestAnnotationMap ) {
+                        const msg = "createProteinDisplayData(...): if ( ! loadedDataPerProjectSearchIdHolder.get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId().get( reportedPeptideId ) )"
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                    //  Update PSM Best Values
+                    _updateBestAnnotationValues( {
+                        bestAnnotationDataMap : annotationBestData_ForPsmsMap, // best values
+                        filtersToProcess : searchDataLookupParams_For_Single_ProjectSearchId.psmFilters,
+                        entryAnnotationDataMap : psmBestAnnotationMap, // values for current Reported Peptide Entry
+                        filterableAnnotationTypes_Map : psmFilterableAnnotationTypes_Map // Reported Peptide or PSM Filterable Annotation type records
+                    } );
+                }
             }
         }
         
@@ -329,30 +366,38 @@ export const createProteinDisplayData = function( {
 /**
  * Update Best Annotation Type values for a single type of Reported Peptide or PSM
  */
-const _updateBestAnnotationValues = function({
+const _updateBestAnnotationValues = function(
+    {
+        bestAnnotationDataMap, // Updated in this function: best values
+        filtersToProcess,  //  Reported Peptide or PSM filters filtering on
+        entryAnnotationDataMap, // values for current Reported Peptide - Map<annotationTypeId, {valueDouble: 0, valueString: "0.000000"}>
+        filterableAnnotationTypes_Map // Reported Peptide or PSM Filterable Annotation type records
+    } : {
+        bestAnnotationDataMap : Map<number, BestAnnotationDataEntry> // Updated in this function: best values
+        filtersToProcess : Array<SearchDataLookupParams_Filter_Per_AnnotationType>
+        entryAnnotationDataMap :  Map<number, {valueDouble: number, valueString: string}>
+        filterableAnnotationTypes_Map : Map<number, AnnotationTypeItem>
+    } ) : void {
 
-    bestAnnotationDataMap, // Updated in this function: best values
-    entryAnnotationDataMap, // values for current Reported Peptide - Map<annotationTypeId, {valueDouble: 0, valueString: "0.000000"}>
-    filterableAnnotationTypes_Map // Reported Peptide or PSM Filterable Annotation type records
-} : {
-    bestAnnotationDataMap : Map<number, BestAnnotationDataEntry> // Updated in this function: best values
-    entryAnnotationDataMap 
-    filterableAnnotationTypes_Map : Map<number, AnnotationTypeItem>
-} ) : void {
+    for ( const filtersToProcess_Entry of filtersToProcess ) {
 
-    for ( const entryAnnotationData_Entry of entryAnnotationDataMap ) {
+        const annotationTypeId = filtersToProcess_Entry.annTypeId;
+        const entryAnnotationData = entryAnnotationDataMap.get( annotationTypeId )
+        if ( ! entryAnnotationData ) {
+            const msg = "_updateBestAnnotationValues:  entryAnnotationDataMap.get( annotationTypeId ) not return a value. annotationTypeId: " + annotationTypeId;
+            console.warn( msg )
+            throw Error( msg );
+        }
 
-        const annotationTypeId = entryAnnotationData_Entry[ 0 ]; // key
-        const entryAnnotationData = entryAnnotationData_Entry[ 1 ]; // Value
         const entryAnnotationData_valueDouble = entryAnnotationData.valueDouble;
         // const entryAnnotationData_valueString = entryAnnotationData.valueString;
         
-        if ( ! variable_is_type_number_Check( annotationTypeId ) ) {
-            throw Error("_updateBestAnnotationValues(...): annotationTypeId not number: " + annotationTypeId );
-        }
-        if ( ! variable_is_type_number_Check( entryAnnotationData_valueDouble ) ) {
-            throw Error("_updateBestAnnotationValues(...): entryAnnotationData_valueDouble not number: " + annotationTypeId );
-        }
+        // if ( ! variable_is_type_number_Check( annotationTypeId ) ) {
+        //     throw Error("_updateBestAnnotationValues(...): annotationTypeId not number: " + annotationTypeId );
+        // }
+        // if ( ! variable_is_type_number_Check( entryAnnotationData_valueDouble ) ) {
+        //     throw Error("_updateBestAnnotationValues(...): entryAnnotationData_valueDouble not number: " + annotationTypeId );
+        // }
 
         const entryAnnotationData_valueDouble_Number_PostNumberCheck : number = entryAnnotationData_valueDouble;
 

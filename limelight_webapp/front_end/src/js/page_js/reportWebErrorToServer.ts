@@ -28,13 +28,18 @@ var reportWebErrorToServer = {
 		 */
 		reportErrorObjectToServer : function( params ) {
 
-			var errorException = params.errorException;
+			const errorException = params.errorException;
+
+			const react_devtools_backend_String = "react_devtools_backend";
 			
 			let errorException_stack_Contains_react_devtools_backend = false;
 			
 			if ( errorException.stack ) {
+
+				const stack = errorException.stack
+				const index = stack.indexOf( react_devtools_backend_String );
 				
-				if ( errorException.stack.indexOf( "react_devtools_backend" ) ) {
+				if ( index != -1 ) {
 					
 					errorException_stack_Contains_react_devtools_backend = true;
 				}
@@ -46,6 +51,8 @@ var reportWebErrorToServer = {
 				} catch (e) {
 					console.warn("Exception calling errorDisplay_WhenHave_Javascript_Typescript_Error();")
 				}
+			} else {
+				console.warn("Exception Stack contains dev tools string so NOT displaying error msg to user.  dev tools string: '" + react_devtools_backend_String + "'." )
 			}
 
 			try {

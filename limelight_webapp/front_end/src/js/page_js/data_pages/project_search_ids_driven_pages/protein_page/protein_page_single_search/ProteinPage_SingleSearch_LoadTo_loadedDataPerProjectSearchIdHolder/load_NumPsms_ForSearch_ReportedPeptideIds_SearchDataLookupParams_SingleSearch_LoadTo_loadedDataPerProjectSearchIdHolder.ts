@@ -55,7 +55,9 @@ export const load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_Si
                 try {
                     console.log("AJAX Call to get psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
-                    _processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData({ numPsms_KeyReportedPeptideId : responseData, loadedDataPerProjectSearchIdHolder })
+                    const psmCount_PerReportedPeptideId = responseData.psmCount_PerReportedPeptideId;
+
+                    _processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData({ psmCount_PerReportedPeptideId, loadedDataPerProjectSearchIdHolder })
 
                     resolve( responseData.numPsms_KeyReportedPeptideId );
 
@@ -79,23 +81,21 @@ export const load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_Si
  *
  *  Set loadedDataPerProjectSearchIdHolder.set_numPsmsForReportedPeptideIdMap : Map of num PSMs : Key ReportedPeptideId
  */
-const _processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData = function ( { numPsms_KeyReportedPeptideId, loadedDataPerProjectSearchIdHolder } : {
+const _processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData = function ( { psmCount_PerReportedPeptideId, loadedDataPerProjectSearchIdHolder } : {
 
-    numPsms_KeyReportedPeptideId
+    psmCount_PerReportedPeptideId
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
 } ) : void {
 
     const numPsmsForReportedPeptideIdMap = new Map();
 
-    const numPsms_KeyReportedPeptideId_Keys = Object.keys( numPsms_KeyReportedPeptideId );
+    for ( const psmCount_PerReportedPeptideId_Entry of psmCount_PerReportedPeptideId ) {
 
-    for ( const reportedPeptideIdString of numPsms_KeyReportedPeptideId_Keys ) {
+        const reportedPeptideId = psmCount_PerReportedPeptideId_Entry.reportedPeptideId;
+        const psmCount = psmCount_PerReportedPeptideId_Entry.psmCount;
 
-        const numPsms = numPsms_KeyReportedPeptideId[ reportedPeptideIdString ];
-
-        const reportedPeptideIdInt = Number.parseInt( reportedPeptideIdString );
-        numPsmsForReportedPeptideIdMap.set( reportedPeptideIdInt, numPsms );
+        numPsmsForReportedPeptideIdMap.set( reportedPeptideId, psmCount );
     }
     loadedDataPerProjectSearchIdHolder.set_numPsmsForReportedPeptideIdMap( numPsmsForReportedPeptideIdMap );
 }
