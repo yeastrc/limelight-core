@@ -23,6 +23,7 @@ package org.yeastrc.limelight.limelight_webapp.searchers_results;
  */
 public class ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item {
 
+	private int reportedPeptideId;
 	private int proteinSequenceVersionId;
 	private int proteinStartPosition;
 	private int proteinEndPosition;
@@ -44,5 +45,11 @@ public class ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item {
 	}
 	public void setProteinEndPosition(int proteinEndPosition) {
 		this.proteinEndPosition = proteinEndPosition;
+	}
+	public int getReportedPeptideId() {
+		return reportedPeptideId;
+	}
+	public void setReportedPeptideId(int reportedPeptideId) {
+		this.reportedPeptideId = reportedPeptideId;
 	}
 }

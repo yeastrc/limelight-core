@@ -368,8 +368,8 @@ public class AA_RestWSControllerPaths_Constants {
 
 
 	//  PSM Best (at Reported Peptide level) Filterable Annotation data for Reported Peptide Ids, Annotation Type Ids, Project Search Id
-	public static final String PSM_BEST_FILTRBL_ANN_DATA_LIST_REP_PEPT_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
-			"d/rws/for-page/psb/psm-best-filtrbl-ann-data-list-rep-pept-ids-ann-type-ids-single-project-search-id";
+//	public static final String PSM_BEST_FILTRBL_ANN_DATA_LIST_REP_PEPT_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
+//	COMMENTED OUT		"d/rws/for-page/psb/psm-best-filtrbl-ann-data-list-rep-pept-ids-ann-type-ids-single-project-search-id";
 
 	
 	 /*               

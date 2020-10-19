@@ -101,6 +101,12 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 
 			const proteinCoverage_Array = proteinCoverage_KeyReportedPeptideId.get( reportedPeptideId );
 
+			if ( ! proteinCoverage_Array ) {
+				const msg = "proteinCoverage_KeyReportedPeptideId.get( reportedPeptideId ); not return a value. reportedPeptideId: " + reportedPeptideId;
+				console.warn( msg );
+				throw Error( msg );
+			}
+
 			for ( const proteinCoverage_entry of proteinCoverage_Array ) {
 
 				let proteinCoverage_NewMapEntry = proteinCoverage_KeyProteinSequenceVersionId.get( proteinCoverage_entry.proteinSequenceVersionId );

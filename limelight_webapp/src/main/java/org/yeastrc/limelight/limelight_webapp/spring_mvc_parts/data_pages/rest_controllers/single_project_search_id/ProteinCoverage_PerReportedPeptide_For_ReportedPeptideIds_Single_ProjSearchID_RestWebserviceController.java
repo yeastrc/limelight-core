@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
@@ -37,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -46,8 +49,6 @@ import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearch
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.ProteinCoverageForSearchIdReportedPeptideId_Item;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -57,15 +58,31 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  *
  */
 @RestController
-public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController {
-  
+public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController 
+
+implements
+InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
 	private static final Logger log = LoggerFactory.getLogger( ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController.class );
+
+	/**
+	 * Path for this Controller
+	 */
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER;
+	
+	/**
+	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
+	 */
+	private static final String CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT = Cached_WebserviceResponse_Management_Utils.translate_ControllerPath_For_CachedResponseMgmt( CONTROLLER_PATH );
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+
+	@Autowired
+	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
@@ -87,6 +104,24 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
 		super();
 //		log.warn( "constructor no params called" );
 	}
+
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+	}
 	
 	//  Convert result object graph to JSON in byte[] in the controller body so can cache it
 
@@ -101,7 +136,7 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER
+					+ CONTROLLER_PATH
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -133,16 +168,16 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot webserviceRequest =
-    				unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RequestRoot.class );
+    		WebserviceRequest webserviceRequest =
+    				unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
-    		Integer projectSearchId = webserviceRequest.getProjectSearchId();
+    		Integer projectSearchId = webserviceRequest.projectSearchId;
 
     		if ( projectSearchId == null ) {
     			log.warn( "No Project Search Ids" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-			if ( webserviceRequest.getReportedPeptideIds() == null ) {
+			if ( webserviceRequest.reportedPeptideIds == null ) {
 				String msg = "ReportedPeptideIds == null: " + projectSearchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -162,7 +197,16 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
     		
     		////////////////
-   		
+
+    		{ // Return cached value if available
+    			
+    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, this );
+    			
+    			if ( cachedResponse != null ) {
+    				
+    				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( cachedResponse );
+    			}
+    		}
     		
     		Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
 			if ( searchId == null ) {
@@ -176,32 +220,33 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
     		
     		ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
     				proteinCoverageForSearchIdReportedPeptideIdsSearcher
-    				.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.getReportedPeptideIds() );
+    				.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
     		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId =
     				searcherResult.getResults_Key_ReportedPeptideId();
     		
-    		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideId_Item>> proteinCoverage_KeyReportedPeptideId = new HashMap<>();
+    		List<WebserviceResult_Item> proteinCoverageList_WebserviceResponse = new ArrayList<>( searcherResult.getItemCount() + 5 );
 
     		for ( Map.Entry<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> entry : results_Key_ReportedPeptideId.entrySet() ) {
 
-    			Integer reportedPeptideId = entry.getKey();
     			List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item> dbItemList = entry.getValue();
     			
     			//  Result from WS
-    			List<ProteinCoverageForSearchIdReportedPeptideId_Item> wsItemList = new ArrayList<>( dbItemList.size() );
-    			proteinCoverage_KeyReportedPeptideId.put( reportedPeptideId, wsItemList );
     			
     			for ( ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item dbItem : dbItemList ) {
-    				ProteinCoverageForSearchIdReportedPeptideId_Item wsItem = new ProteinCoverageForSearchIdReportedPeptideId_Item( dbItem );
-    				wsItem.setReportedPeptideId( reportedPeptideId );
-    				wsItemList.add( wsItem );
+    				WebserviceResult_Item wsItem = new WebserviceResult_Item( dbItem );
+    				proteinCoverageList_WebserviceResponse.add( wsItem );
     			}
     		}
     			
     		WebserviceResult result = new WebserviceResult();
-    		result.proteinCoverage_KeyReportedPeptideId = proteinCoverage_KeyReportedPeptideId;
+    		result.proteinCoverageList = proteinCoverageList_WebserviceResponse;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
+
+    		{ // Save cached value 
+    			
+    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON, this );
+    		}
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
 
@@ -216,6 +261,24 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
     }
+
+    
+    /**
+     * 
+     *
+     */
+    public static class WebserviceRequest {
+    	
+		private Integer projectSearchId;
+		private List<Integer> reportedPeptideIds;
+		
+		public void setProjectSearchId(Integer projectSearchId) {
+			this.projectSearchId = projectSearchId;
+		}
+		public void setReportedPeptideIds(List<Integer> reportedPeptideIds) {
+			this.reportedPeptideIds = reportedPeptideIds;
+		}
+    }
     
     /**
      * 
@@ -223,15 +286,46 @@ public class ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_Pr
      */
     public static class WebserviceResult {
     	
-    	Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideId_Item>> proteinCoverage_KeyReportedPeptideId;
+    	List<WebserviceResult_Item> proteinCoverageList;
 
-		public Map<Integer, List<ProteinCoverageForSearchIdReportedPeptideId_Item>> getProteinCoverage_KeyReportedPeptideId() {
-			return proteinCoverage_KeyReportedPeptideId;
+		public List<WebserviceResult_Item> getProteinCoverageList() {
+			return proteinCoverageList;
 		}
-		public void setProteinCoverage_KeyReportedPeptideId(
-				Map<Integer, List<ProteinCoverageForSearchIdReportedPeptideId_Item>> proteinCoverage_KeyReportedPeptideId) {
-			this.proteinCoverage_KeyReportedPeptideId = proteinCoverage_KeyReportedPeptideId;
+    }
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResult_Item {
+    	
+    	private int rPId;
+    	private int pSVId;
+    	private int pSPs;
+    	private int pEPs;
+    	
+    	public WebserviceResult_Item() {}
+    	
+    	public WebserviceResult_Item( ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item item ) {
+    		this.rPId = item.getReportedPeptideId();
+    		this.pSVId = item.getProteinSequenceVersionId();
+    		this.pSPs = item.getProteinStartPosition();
+    		this.pEPs = item.getProteinEndPosition();
+    	}
+    	
+		public int getrPId() {
+			return rPId;
 		}
+		public int getpSVId() {
+			return pSVId;
+		}
+		public int getpSPs() {
+			return pSPs;
+		}
+		public int getpEPs() {
+			return pEPs;
+		}
+
+    	
     }
 }
 

@@ -17,10 +17,10 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import org.yeastrc.limelight.limelight_webapp.services.PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service.PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service_Result;
+//import java.sql.SQLException;
+//import java.util.List;
+//
+//import org.yeastrc.limelight.limelight_webapp.services.PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service.PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service_Result;
 
 /**
  * @author danj
@@ -28,14 +28,14 @@ import org.yeastrc.limelight.limelight_webapp.services.PsmBestFilterableAnnotati
  */
 public interface PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_ServiceIF {
 
-	/**
-	 * @param searchId
-	 * @param reportedPeptideIds
-	 * @param annotationTypeIds
-	 * @return
-	 * @throws SQLException 
-	 */
-	PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service_Result getPsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service(
-			int searchId, List<Integer> reportedPeptideIds, List<Integer> annotationTypeIds) throws SQLException;
+//	/**
+//	 * @param searchId
+//	 * @param reportedPeptideIds
+//	 * @param annotationTypeIds
+//	 * @return
+//	 * @throws SQLException 
+//	 */
+//	PsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service_Result getPsmBestFilterableAnnotationTypeData_For_RepPeptIds_AnnTypeIds_SearchId_Service(
+//			int searchId, List<Integer> reportedPeptideIds, List<Integer> annotationTypeIds) throws SQLException;
 
 }

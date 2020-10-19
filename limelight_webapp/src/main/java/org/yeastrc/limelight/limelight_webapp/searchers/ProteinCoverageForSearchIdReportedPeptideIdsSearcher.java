@@ -54,13 +54,13 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 	public static class ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result {
 		
 		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId;
+		int itemCount;
 
 		public Map<Integer, List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> getResults_Key_ReportedPeptideId() {
 			return results_Key_ReportedPeptideId;
 		}
-		public void setResults_Key_ReportedPeptideId(
-				Map<Integer, List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId) {
-			this.results_Key_ReportedPeptideId = results_Key_ReportedPeptideId;
+		public int getItemCount() {
+			return itemCount;
 		}
 	}
 	
@@ -81,11 +81,17 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 		}
 
 		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId = new HashMap<>();
+		
+		int itemCount = 0;
 
 		if ( reportedPeptideIds.isEmpty() ) {
+			
 			//  No Reported Peptides
+			
 			ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result result = new ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result();
 			result.results_Key_ReportedPeptideId = results_Key_ReportedPeptideId;
+			result.itemCount = itemCount;
+			
 			return result; //  EARLY RETURN
 		}
 		
@@ -117,8 +123,12 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
+					
+					itemCount++;
+					
 					Integer reportedPeptideId = rs.getInt( "reported_peptide_id" );
 					ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item item = new ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item();
+					item.setReportedPeptideId( reportedPeptideId );
 					item.setProteinSequenceVersionId( rs.getInt( "protein_sequence_version_id" ) );
 					item.setProteinStartPosition( rs.getInt( "protein_start_position" ) );
 					item.setProteinEndPosition( rs.getInt( "protein_end_position" ) );

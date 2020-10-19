@@ -28,7 +28,6 @@ import { psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_Return
 //  Local
 
 import { createReportedPeptideDisplayData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_create_createReportedPeptideDisplayData';
-import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
@@ -125,7 +124,7 @@ export const reportedPeptides_DataTableObjects_ForSingleSearch_SingleProtein_cre
 }
 
 /**
- * Sort the Reported Peptide List.
+ *
  * 
  */
 const _create_dataTable_RootTableObject = function({
@@ -161,12 +160,6 @@ const _create_dataTable_RootTableObject = function({
         loadedDataCommonHolder,
         dataPageStateManager
     });
-
-    // createReportedPeptideDisplayData_result:
-    //     annotationTypeRecords_DisplayOrder:Object {psmAnnotationTypesForPeptideListEntries: Array(1), reportedPeptideAnnotationTypesForPeptideListEntries: Array(2)}
-    //     numberOfPsmsForReportedPeptides:1
-    //     numberOfReportedPeptides:1
-    //     peptideList:Array(1) [Object]
 
     if ( ! variable_is_type_number_Check( createReportedPeptideDisplayData_result.numberOfPsmsForReportedPeptides ) ) {
         const msg = "createReportedPeptideDisplayData_result.numberOfPsmsForReportedPeptides is not a number.  is: " + createReportedPeptideDisplayData_result.numberOfPsmsForReportedPeptides;
@@ -218,7 +211,6 @@ const _create_dataTable_RootTableObject = function({
         }
         //  Score Columns
         const annotationTypeRecords_DisplayOrder = createReportedPeptideDisplayData_result.annotationTypeRecords_DisplayOrder;
-        // annotationTypeRecords_DisplayOrder { psmAnnotationTypesForPeptideListEntries, reportedPeptideAnnotationTypesForPeptideListEntries
 
         {  //  Reported Peptide Scores
             const reportedPeptideAnnotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
@@ -227,20 +219,6 @@ const _create_dataTable_RootTableObject = function({
                 const dataTable_Column = new DataTable_Column({
                     id : "rp_" + reportedPeptideAnnotationType.name, // Used for tracking sort order. Keep short
                     displayName : reportedPeptideAnnotationType.name,
-                    width : 105,
-                    sortable : true,
-                    style_override_DataRowCell_React : { fontSize: 12 }
-                });
-                dataTable_Columns.push( dataTable_Column );
-            }
-        }
-        {  //  PSM Scores
-            const psmAnnotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-            for ( const psmAnnotationType of psmAnnotationTypesForPeptideListEntries ) {
-                
-                const dataTable_Column = new DataTable_Column({
-                    id : "psm_" + psmAnnotationType.name, // Used for tracking sort order. Keep short
-                    displayName : "Best PSM: " + psmAnnotationType.name,
                     width : 105,
                     sortable : true,
                     style_override_DataRowCell_React : { fontSize: 12 }
@@ -262,12 +240,6 @@ const _create_dataTable_RootTableObject = function({
             const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId =
                 peptideEntry.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 
-    // peptideList array element:
-    //     reportedPeptideId: 141285
-    //     reportedPeptideSequence: "EKKLE[9945.4689]ERRKRRRFLSPQQPPLLLPL - FAKE, has Isotope Label - commented out"
-    //     numPsms: 4
-    //     peptideAnnotationMap: {3750: {…}}
-    //     psmAnnotationMap: {3756: {…}}
             const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
             {
                 { // reportedPeptideSequence
@@ -309,23 +281,9 @@ const _create_dataTable_RootTableObject = function({
                         columnEntries.push( columnEntry );
                     }
                 }
-                {  //  PSM Best Scores
-                    const annotationTypes = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-                    for ( const annotationType of annotationTypes ) {
-                        if ( peptideEntry.psmAnnotationMap_KeyAnnType === undefined || peptideEntry.psmAnnotationMap_KeyAnnType === null ) {
-                            const msg = "( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null )"
-                            console.warn( msg );
-                            throw Error( msg );
-                        }
-                        const annotationEntry = peptideEntry.psmAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
-                        const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay : annotationEntry.valueString,
-                            valueSort : annotationEntry.valueDouble
-                        })
-                        columnEntries.push( columnEntry );
-                    }
-                }
             }
+
+            //  Create for Row Expand to Child Table
 
             const psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter = new PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter({
                 projectSearchId,

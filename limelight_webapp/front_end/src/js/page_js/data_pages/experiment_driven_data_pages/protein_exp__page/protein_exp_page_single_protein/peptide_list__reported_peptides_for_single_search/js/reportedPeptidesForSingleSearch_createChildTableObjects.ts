@@ -11,7 +11,7 @@ import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_C
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
-import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
@@ -221,46 +221,6 @@ const _create_dataTable_RootTableObject = function({
         dataPageStateManager
     });
 
-    // createReportedPeptideDisplayData_result:
-    //     peptideList: [{…}]
-    //     numberOfReportedPeptides: 1
-    //     numberOfPsmsForReportedPeptides: 4
-    //     annotationTypeRecords_DisplayOrder { psmAnnotationTypesForPeptideListEntries, reportedPeptideAnnotationTypesForPeptideListEntries }:
-    // peptideList array element:
-    //     reportedPeptideId: 141285
-    //     reportedPeptideSequence: "EKKLE[9945.4689]ERRKRRRFLSPQQPPLLLPL - FAKE, has Isotope Label - commented out"
-    //     numPsms: 4
-    //     peptideAnnotationMap: {3750: {…}}
-    //     psmAnnotationMap: {3756: {…}}
-
-    // peptideAnnotationMap: Object
-    //     One Entry:
-    //     3750: Object Property Key
-    //     {  Object Property Value
-    //         annotationTypeId: 3750
-    //         valueDouble: 0
-    //         valueString: "0.000000"
-    //     }
-    // psmAnnotationMap: Same as peptideAnnotationMap
-
-    // reportedPeptideAnnotationTypesForPeptideListEntries: Array
-    // One entry {
-    //     annotationTypeId: 3750
-    //     searchProgramsPerSearchId: 438
-    //     name: "q-value"
-    //     defaultVisible: true
-    //     displayOrder: 1
-    //     description: "The minimum false discovery among all predictions with this score or better."
-    //     filterDirectionAbove: false
-    //     filterDirectionBelow: true
-    //     defaultFilter: true
-    //     defaultFilterValue: 0.05
-    //     defaultFilterValueString: "0.05"
-    //     sortOrder: null
-    //     sorttype: "number"
-    // }
-    // psmAnnotationTypesForPeptideListEntries : same as reportedPeptideAnnotationTypesForPeptideListEntries
-
     //  Columns
 
     const dataTable_Columns : Array<DataTable_Column> = [];
@@ -312,35 +272,6 @@ const _create_dataTable_RootTableObject = function({
                 dataTable_Columns.push( dataTable_Column );
             }
         }
-        {  //  PSM Scores
-            const psmAnnotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-            for ( const psmAnnotationType of psmAnnotationTypesForPeptideListEntries ) {
-                
-                const dataTable_Column = new DataTable_Column({
-                    id : "psm_" + psmAnnotationType.name, // Used for tracking sort order. Keep short
-                    displayName : "Best PSM: " + psmAnnotationType.name,
-                    width : 105,
-                    sortable : true,
-                    style_override_DataRowCell_React : { fontSize: 12 }
-                });
-                dataTable_Columns.push( dataTable_Column );
-            }
-        }
-        // One entry {
-            //     annotationTypeId: 3750
-            //     searchProgramsPerSearchId: 438
-            //     name: "q-value"
-            //     defaultVisible: true
-            //     displayOrder: 1
-            //     description: "The minimum false discovery among all predictions with this score or better."
-            //     filterDirectionAbove: false
-            //     filterDirectionBelow: true
-            //     defaultFilter: true
-            //     defaultFilterValue: 0.05
-            //     defaultFilterValueString: "0.05"
-            //     sortOrder: null
-            //     sorttype: "number"
-            // }
     }
 
     //  Data Rows
@@ -360,13 +291,6 @@ const _create_dataTable_RootTableObject = function({
             const reportedPeptideId = peptideEntry.reportedPeptideId;
 
             const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = peptideEntry.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
-
-    // peptideList array element:
-    //     reportedPeptideId: 141285
-    //     reportedPeptideSequence: "EKKLE[9945.4689]ERRKRRRFLSPQQPPLLLPL - FAKE, has Isotope Label - commented out"
-    //     numPsms: 4
-    //     peptideAnnotationMap: {3750: {…}}
-    //     psmAnnotationMap: {3756: {…}}
 
             const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
             {
@@ -409,22 +333,6 @@ const _create_dataTable_RootTableObject = function({
                         columnEntries.push( columnEntry );
                     }
                 }
-                {  //  PSM Best Scores
-                    const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPeptideListEntries;
-                    for ( const annotationType of annotationTypesForPeptideListEntries ) {
-                        if ( peptideEntry.psmAnnotationMap_KeyAnnType === undefined || peptideEntry.psmAnnotationMap_KeyAnnType === null ) {
-                            const msg = "( peptideEntry.psmAnnotationMap === undefined || peptideEntry.psmAnnotationMap === null )"
-                            console.warn( msg );
-                            throw Error( msg );
-                        }
-                        const annotationEntry = peptideEntry.psmAnnotationMap_KeyAnnType.get( annotationType.annotationTypeId );
-                        const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay : annotationEntry.valueString,
-                            valueSort : annotationEntry.valueDouble
-                        })
-                        columnEntries.push( columnEntry );
-                    }
-                }
             }
 
             const psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter = new PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter({
@@ -452,16 +360,10 @@ const _create_dataTable_RootTableObject = function({
         columns : dataTable_Columns,
         dataTable_DataRowEntries
     });
-    
-// import { psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent, PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__psm_list_for_reported_peptide_container_component/js/psmList_Wrapper_ReturnChildReactComponent';
 
     const tableOptions = new DataTable_TableOptions({
-        //  Comment out since no further drill down to child table
-        // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
         dataRow_GetChildTable_ReturnReactComponent : psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent
     });
-
-    //  psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent, PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,
@@ -471,132 +373,3 @@ const _create_dataTable_RootTableObject = function({
 
     return dataTable_RootTableObject;
 }
-
-
-//////////////////////////
-
-
-/**
- * Sort the Reported Peptide List.
- * 
- */
-const _sort_reportedPeptideList = function({
-
-    reportedPeptideList,
-    projectSearchId,
-    dataPageStateManager
-} : {
-    reportedPeptideList
-    projectSearchId : number
-    dataPageStateManager : DataPageStateManager 
-}) {
-
-    //   Sort Reported Peptide Array on Reported Peptide Ann Types Sort Order then Reported Peptide Id
-
-    /**
-     * Return array ann type entries, sorted on sortOrder
-     */
-    let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated : Array<AnnotationTypeItem> = _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated({ projectSearchId, dataPageStateManager });
-
-    let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Length = reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated.length;
-
-    reportedPeptideList.sort( function( a, b ) {
-
-        //  Compare Reported Peptide Ann Values, if they are populated
-        let a_reportedPeptideAnnotationMap = a.reportedPeptideAnnotationMap;
-        let b_reportedPeptideAnnotationMap = b.reportedPeptideAnnotationMap;
-        if ( a_reportedPeptideAnnotationMap && b_reportedPeptideAnnotationMap ) {
-
-            for ( let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Index = 0; reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Index < reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Length; reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Index++ ) {
-                let reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Entry = reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated[ reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Index ];
-                let annotationTypeId = reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Entry.annotationTypeId;
-                let a_reportedPeptideAnnotationMap_ForAnnType = a_reportedPeptideAnnotationMap[ annotationTypeId ];
-                let b_reportedPeptideAnnotationMap_ForAnnType = b_reportedPeptideAnnotationMap[ annotationTypeId ];
-                
-                if ( a_reportedPeptideAnnotationMap_ForAnnType && b_reportedPeptideAnnotationMap_ForAnnType ) {
-                    if ( reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Entry.filterDirectionBelow ) {
-                        if ( a_reportedPeptideAnnotationMap_ForAnnType.valueDouble < b_reportedPeptideAnnotationMap_ForAnnType.valueDouble ) {
-                            return -1;
-                        }
-                        if ( a_reportedPeptideAnnotationMap_ForAnnType.valueDouble > b_reportedPeptideAnnotationMap_ForAnnType.valueDouble ) {
-                            return 1;
-                        }
-                        //  Values match so go to next ann type values
-                    } else if ( reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated_Entry.filterDirectionAbove ) {
-                        if ( a_reportedPeptideAnnotationMap_ForAnnType.valueDouble > b_reportedPeptideAnnotationMap_ForAnnType.valueDouble ) {
-                            return -1;
-                        }
-                        if ( a_reportedPeptideAnnotationMap_ForAnnType.valueDouble < b_reportedPeptideAnnotationMap_ForAnnType.valueDouble ) {
-                            return 1;
-                        }
-                        //  Values match so go to next ann type values
-                    } else {
-                        throw Error( "filterDirectionBelow, filterDirectionAbove: Neither is true. annotationTypeId: " + annotationTypeId );
-                    }
-                }
-            }
-        }
-        
-        //  All Reported Peptide Ann Type Values match so order on reportedPeptide id
-        if ( a.reportedPeptideId < b.reportedPeptideId ) {
-            return -1;
-        }
-        if ( a.reportedPeptideId > b.reportedPeptideId ) {
-            return 1;
-        }
-        return 0;
-    });
-}
-
-/**
- * Return array ann type entries, sorted on sortOrder
- */
-const _get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated = function({ 
-    
-    projectSearchId, 
-    dataPageStateManager
-} : { 
-    projectSearchId : number, 
-    dataPageStateManager : DataPageStateManager 
-}) : Array<AnnotationTypeItem> {
-
-    //   Get all ReportedPeptide annotation type records with sortOrder set
-
-    let annotationTypeData_Root : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
-
-    let annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
-    if ( annotationTypeDataForProjectSearchId === undefined || annotationTypeDataForProjectSearchId === null ) {
-        throw Error("No annotation type data for projectSearchId: " + projectSearchId );
-    }
-
-    let reportedPeptideFilterableAnnotationTypes_Map : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes;
-    if ( ! reportedPeptideFilterableAnnotationTypes_Map ) {
-        //  No data so return empty array
-        return []; //  EARLY RETURN
-    }
-    
-    //  Get AnnotationType Records where sortOrder is populated
-    
-    let reportedPeptideFilterableAnnotationTypes_SortOrderPopulated : Array<AnnotationTypeItem> = [];
-    
-    for ( const reportedPeptideFilterableAnnotationTypes_MapEntry of reportedPeptideFilterableAnnotationTypes_Map.entries() ) {
-        let annotationTypeEntry = reportedPeptideFilterableAnnotationTypes_MapEntry[ 1 ]; // Map Entry Value
-        if ( annotationTypeEntry.sortOrder ) {
-            reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.push( annotationTypeEntry );
-        }
-    }
-    
-    //  Sort on sort order
-    
-    reportedPeptideFilterableAnnotationTypes_SortOrderPopulated.sort(function(a, b) {
-        if ( a.sortOrder < b.sortOrder ) {
-            return -1;
-        }
-        if ( a.sortOrder > b.sortOrder ) {
-            return 1;
-        }
-        return 0;
-    })
-    
-    return reportedPeptideFilterableAnnotationTypes_SortOrderPopulated;
-};

@@ -24,7 +24,6 @@ import {load_ReportedPeptideIds_ForSearch_SearchDataLookupParams_SingleSearch_Lo
 import {load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {load_ProteinData_Including_ProteinSequenceVersionIds_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/load_ProteinData_Including_ProteinSequenceVersionIds_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
-import {loadBestPSMAnnotationFilterableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadBestPSMAnnotationFilterableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 
 /**
@@ -136,31 +135,6 @@ export const loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataP
 						promiseAllArray.push( promise_get_ProteinCoverage_FromReportedPeptideIds );
 					}
 
-					{
-						const promise =
-							_get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter({
-								projectSearchId,
-								filtersAnnTypeDisplay_For_ProjectSearchId: searchDataLookupParams_For_Single_ProjectSearchId,
-								loadedDataPerProjectSearchIdHolder
-							});
-
-						if ( promise ) {
-							promiseAllArray.push(promise);
-						}
-					}
-					{
-						const promise =
-							_get_BestPsmFilterableAnnTypeDataForCurrentFilter( {
-								projectSearchId,
-								filtersAnnTypeDisplay_For_ProjectSearchId: searchDataLookupParams_For_Single_ProjectSearchId,
-								loadedDataPerProjectSearchIdHolder
-							} );
-
-						if ( promise ) {
-							promiseAllArray.push(promise);
-						}
-					}
-
 					return Promise.all( promiseAllArray );
 
 				} catch( e ) {
@@ -260,61 +234,6 @@ const _get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter = function (
 	return loadReportedPeptideAnnotationFilterableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder({
 		reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
 		annTypeIds, projectSearchId,
-		loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
-	})
-}
-
-/**
- * Get All  Best PSM Data For Building Protein Display from Reported Peptide Ids
- *
- * Get Best PSM Filterable Annotation data For Current Filter
- */
-const _get_BestPsmFilterableAnnTypeDataForCurrentFilter = function (
-	{
-		projectSearchId, filtersAnnTypeDisplay_For_ProjectSearchId,
-		loadedDataPerProjectSearchIdHolder
-	} : {
-		projectSearchId
-		filtersAnnTypeDisplay_For_ProjectSearchId
-		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-	} ) : Promise<unknown> {
-
-	if ( ( ! filtersAnnTypeDisplay_For_ProjectSearchId.psmFilters ) ||
-		( filtersAnnTypeDisplay_For_ProjectSearchId.psmFilters.length === 0 ) ) {
-
-		//  No psmFilters to get data for
-
-		// console.log("No PSM Cutoffs");
-
-		return null;     // EARLY EXIT
-	}
-
-	if ( ! loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() ||
-		loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length === 0 ) {
-
-		//  No Reported Peptide Ids
-
-		// console.log("No Reported Peptide Ids");
-
-		return null;     // EARLY EXIT
-	}
-
-	const annTypeIds = [];
-	for ( const filterEntry of filtersAnnTypeDisplay_For_ProjectSearchId.psmFilters ) {
-		annTypeIds.push( filterEntry.annTypeId );
-	}
-
-	if ( annTypeIds.length === 0 ) {
-
-		//  No ann type Ids
-
-		return null;     // EARLY EXIT
-	}
-
-	return loadBestPSMAnnotationFilterableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder({
-		projectSearchId,
-		reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
-		annTypeIds : annTypeIds,
 		loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
 	})
 }

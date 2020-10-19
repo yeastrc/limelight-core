@@ -175,36 +175,6 @@ export const getProteinDataTableColumns_SingleSearch = function( { psmAnnotation
         columns.push( column );
     }
 
-    for( let annotation of reportedPeptideAnnotationTypes ) {
-
-        const column = new DataTable_Column({
-            id :           annotation.annotationTypeId,
-            displayName :  'Best Peptide: ' + annotation.name,
-            width :        100,
-            sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 }, // React format Style overrides
-            style_override_HeaderRowCell_React : { fontSize: 12 }, //  React format Style Overrides for Header Row Cells
-            // css_class : ' clickable ' 
-        });
-
-        columns.push( column );
-    }
-
-    for( let annotation of psmAnnotationTypes ) {
-
-        const column = new DataTable_Column({
-            id :           annotation.annotationTypeId,
-            displayName :  'Best PSM: ' + annotation.name,
-            width :        100,
-            sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 }, // React format Style overrides
-            style_override_HeaderRowCell_React : { fontSize: 12 }, //  React format Style Overrides for Header Row Cells
-            // css_class : ' clickable ' 
-        });
-
-        columns.push( column );
-    }
-
     return columns;
 }
 
@@ -531,38 +501,6 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
             valueSort : proteinListItem.numPsms
         })
         columnEntries.push( columnEntry );
-    }
-
-    //  Put Reported Peptide and Best PSM annotations into the context per ann type id for display matching table headers
-
-    const peptideAnnotationMap = proteinListItem.peptideAnnotationMap;
-    if ( peptideAnnotationMap ) {
-        for ( const annTypeItem of annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForProteinListEntries ) {
-                
-            const entryForAnnTypeId = peptideAnnotationMap.get( annTypeItem.annotationTypeId );
-            if ( entryForAnnTypeId === undefined || entryForAnnTypeId === null ) {
-                throw Error("No entry in peptideAnnotationMap for annTypeItem.annotationTypeId: " + annTypeItem.annotationTypeId );
-            }
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay : entryForAnnTypeId.valueString,
-                valueSort : entryForAnnTypeId.valueDouble
-            })
-            columnEntries.push( columnEntry );
-        }
-    }
-    const psmAnnotationMap = proteinListItem.psmAnnotationMap;
-    if ( psmAnnotationMap ) {
-        for ( const annTypeItem of annotationTypeRecords_DisplayOrder.psmAnnotationTypesForProteinListEntries ) {
-            const entryForAnnTypeId = psmAnnotationMap.get( annTypeItem.annotationTypeId );
-            if ( entryForAnnTypeId === undefined || entryForAnnTypeId === null ) {
-                throw Error("No entry in psmAnnotationMap for annTypeItem.annotationTypeId: " + annTypeItem.annotationTypeId );
-            }
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay : entryForAnnTypeId.valueString,
-                valueSort : entryForAnnTypeId.valueDouble
-            })
-            columnEntries.push( columnEntry );
-        }
     }
 
     const proteinRow_tableRowClickHandlerParameter = new ProteinRow_tableRowClickHandlerParameter_SingleSearch({

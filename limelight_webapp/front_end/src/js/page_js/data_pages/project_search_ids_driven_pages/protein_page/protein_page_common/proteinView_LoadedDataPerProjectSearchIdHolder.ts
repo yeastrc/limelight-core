@@ -164,12 +164,6 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 
-	get_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() {
-		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
-	}
-	set_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId(psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId) : void {
-		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
-	}
 
 	get_proteinCoverage_KeyReportedPeptideId() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinCoverage_KeyReportedPeptideId;
@@ -370,10 +364,6 @@ class Data__NOT__AtCurrentCutoffs_Or_DisplayData {
 		//  	Reported Peptide Level Descriptive Annotation Data Per Reported Peptide Id
 		// 					- Map <integer,<integer,Object>> <reportedPeptideId,<<annTypeId,{ valueDouble, valueString }>>
 		_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId : Map<number,Map<number,{valueDouble: number, valueString : string}>>;
-
-		//  	PSM Best Annotation Data at Reported Peptide Level Per Reported Peptide Id - Current Cutoffs/
-		// 					- Map <integer,<integer,Object>> <reportedPeptideId,<<annTypeId,{ valueDouble, valueString }>>
-		_psmBestFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId : Map<number,Map<number,{valueDouble : number, valueString : string}>>;
 
 		//  	Protein Coverage Data Per Reported Peptide Id
 		// 					- Map <integer,[Object]> <Reported Peptide Id, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
