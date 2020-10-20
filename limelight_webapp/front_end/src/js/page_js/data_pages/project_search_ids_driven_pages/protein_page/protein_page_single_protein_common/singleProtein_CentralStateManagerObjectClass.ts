@@ -1,5 +1,5 @@
 /**
- * singleProtein_CentralStateManagerObjectClass.js
+ * singleProtein_CentralStateManagerObjectClass.ts
  * 
  * Holds the state of the Single Protein Overlay.  Registers with CentralPageStateManager
  * 
@@ -13,6 +13,7 @@
 
 
 import { SINGLE_PROTEIN__CENTRAL_STATE_MANAGER_OBJECT_CLASS__CENTRAL_STATE_MANAGER_KEY } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
+import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
 
 
 
@@ -39,6 +40,16 @@ const _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME =
  * 
  */
 export class SingleProtein_CentralStateManagerObjectClass {
+
+	private _value : {
+		proteinSequenceVersionId? : any
+		proteinSequenceFormattedDisplayWidgetEncodedStateData? : any
+		reporterIonMassesSelectedEncodedStateData? : any
+		modsSelectedEncodedStateData? : any
+		peptideSequenceFilterSelectedEncodedStateData? : any
+	}
+
+	_centralPageStateManager? : CentralPageStateManager
 
 	/**
 	 * IMPORTANT:

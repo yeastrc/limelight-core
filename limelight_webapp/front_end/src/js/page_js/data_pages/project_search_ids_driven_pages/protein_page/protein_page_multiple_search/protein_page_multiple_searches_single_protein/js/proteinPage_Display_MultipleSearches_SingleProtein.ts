@@ -370,7 +370,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : this._searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
 			searchNamesMap_KeyProjectSearchId : searchNamesMap_KeyProjectSearchId ,
 			searchDataLookupParamsRoot : this._searchDataLookupParamsRoot ,
-			singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_CentralStateManagerObject,
+			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			modificationMass_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject ,
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject ,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
