@@ -307,7 +307,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
         //  An array in the same order as projectSearchIds
         // let filtersAnnTypeDisplayPerProjectSearchIds = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
 
-        const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
+        let searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
             this._searchDetailsBlockDataMgmtProcessing.
             getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
 
@@ -385,12 +385,18 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
                 }
             }
 
-            paramsForProjectSearchIds.paramsForProjectSearchIdsList = paramsForProjectSearchIdsListNew
+            if ( paramsForProjectSearchIdsListNew.length > 0 ) {
+
+                paramsForProjectSearchIds.paramsForProjectSearchIdsList = paramsForProjectSearchIdsListNew
+            } else {
+                //  All Existing Searches removed so remove
+                searchDataLookupParamsRoot = undefined
+            }
         }
 
         const promise = new Promise((resolve,reject) => {
             try {
-                let requestObj = {
+                const requestObj = {
                     projectSearchIds_CreateDefault : projectSearchIds_Additions_Final_Ordered,
                     searchDataLookupParamsRoot,
                     sjklwuiowerzUIryhnIOWzq : true
