@@ -53,6 +53,11 @@ import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {ProteinPageSearchesSummarySectionCreator_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySectionCreator_MultipleSearches";
+import {
+	ProteinPageSearchesSummarySectionData_PerSearchEntry,
+	ProteinPageSearchesSummarySectionData_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySection";
 
 /**
  * Entry in proteinList
@@ -73,6 +78,20 @@ export class ProteinDataDisplay_ProteinListItem_MultipleSearch {
 	}>
 }
 
+
+/**
+ * !! InternalClass
+ *
+ * Summary Data Per Search
+ */
+class ProteinDataDisplay_MultipleSearch_Summary_PerSearch {
+
+	projectSearchId : number
+
+	proteinCount_TotalForSearch : number;
+	reportedPeptideCount_TotalForSearch : number;
+	psmCount_TotalForSearch : number;
+}
 
 	
 /**
@@ -131,6 +150,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 		numReportedPeptidesUnique: number,
 		numPsms: number
 	}> = undefined;
+
+	private _proteinPageSearchesSummarySectionCreator_MultipleSearches = new ProteinPageSearchesSummarySectionCreator_MultipleSearches({});
 
 	private _proteinViewPage_Display_MultipleSearches_SingleProtein: ProteinPage_Display_MultipleSearches_SingleProtein;
 
@@ -592,7 +613,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	}): {
 		proteinList: Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>;
 		proteinGroups_ArrayOf_ProteinGroup: Array<ProteinGroup>
-
+		summaryMap_Key_ProjectSearchId : Map<number, ProteinDataDisplay_MultipleSearch_Summary_PerSearch>
 	} {
 
 
@@ -627,13 +648,14 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		//  TODO  Currently not used
 
-		//  Get Totals for All Searches: Search Values: Reported Peptide Count and PSM Count
+		//  Get Totals Per Search:
 
 		// let reportedPeptideCount_TotalForSearch_AllSearches = 0;
-		// let psmCount_TotalForSearch_AllSearches = 0;		
+		// let psmCount_TotalForSearch_AllSearches = 0;
 		//  Track reported peptide ids to skip ones already processed under other proteins
 		// const reportedPeptideIds_SetForTrackingAlreadyAddedToTotalForSearch_AllSearches = new Set();
 
+		const summaryMap_Key_ProjectSearchId : Map<number, ProteinDataDisplay_MultipleSearch_Summary_PerSearch> = new Map();
 
 		//  Process for all projectSearchIds
 		for (const projectSearchId of projectSearchIds) {
@@ -655,7 +677,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 
 			//  Get Totals for Search Values: Reported Peptide Count and PSM Count
-
+			let proteinCount_TotalForSearch = 0;
 			let reportedPeptideCount_TotalForSearch = 0;
 			let psmCount_TotalForSearch = 0;
 			//  Track reported peptide ids to skip ones already processed under other proteins
@@ -758,9 +780,18 @@ export class ProteinViewPage_Display_MultipleSearches {
 					throw Error("Already have entry in proteinItemRecordsMap_Key_projectSearchId_Key_proteinSequenceVersionId for proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId);
 				}
 
+				proteinCount_TotalForSearch++;
+
 				proteinItemRecordsMap_Key_projectSearchId.set(projectSearchId, proteinItemForProjectSearch);
 
 			}
+
+			const summary_ForSearch = new ProteinDataDisplay_MultipleSearch_Summary_PerSearch();
+			summaryMap_Key_ProjectSearchId.set( projectSearchId, summary_ForSearch )
+			summary_ForSearch.projectSearchId = projectSearchId
+			summary_ForSearch.proteinCount_TotalForSearch = proteinCount_TotalForSearch;
+			summary_ForSearch.reportedPeptideCount_TotalForSearch = reportedPeptideCount_TotalForSearch;
+			summary_ForSearch.psmCount_TotalForSearch = psmCount_TotalForSearch;
 		}
 
 		let proteinGroups_ArrayOf_ProteinGroup: Array<ProteinGroup> = undefined;
@@ -1060,7 +1091,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		this._sortProteinList({proteinList: proteinResultListResult});
 
-		return {proteinList: proteinResultListResult, proteinGroups_ArrayOf_ProteinGroup};
+		return {proteinList: proteinResultListResult, proteinGroups_ArrayOf_ProteinGroup, summaryMap_Key_ProjectSearchId};
 	}
 
 	//   Maybe not valid sort since not displaying the sorted on number of numPsms (Total across searches)
@@ -1118,6 +1149,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		proteinDisplayData: {
 			proteinList: Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>;
 			proteinGroups_ArrayOf_ProteinGroup: Array<ProteinGroup>
+			summaryMap_Key_ProjectSearchId : Map<number, ProteinDataDisplay_MultipleSearch_Summary_PerSearch>
 		}
 	}): void {
 
@@ -1147,6 +1179,43 @@ export class ProteinViewPage_Display_MultipleSearches {
 					throw e;
 				}
 			});
+		}
+		{
+			const searchNames_AsMap = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap()
+
+			const summarySectionData = new ProteinPageSearchesSummarySectionData_Root();
+			summarySectionData.perSearchEntries = [];
+
+			for ( const projectSearchId of this._projectSearchIds ) {
+
+				const searchNameEntry = searchNames_AsMap.get( projectSearchId );
+				if ( ! searchNameEntry ) {
+					const msg = "Building ProteinPageSearchesSummarySectionData_Root: searchNames_AsMap.get( projectSearchId ); return nothing. projectSearchId: " + projectSearchId;
+					console.warn( msg )
+					throw Error( msg )
+				}
+
+				const summarySectionData_PerSearchEntry = new ProteinPageSearchesSummarySectionData_PerSearchEntry()
+				summarySectionData_PerSearchEntry.searchId = searchNameEntry.searchId;
+				summarySectionData_PerSearchEntry.searchName = searchNameEntry.name;
+
+				const summaryMap_Key_ProjectSearchId = proteinDisplayData.summaryMap_Key_ProjectSearchId;
+
+				const summary_For_ProjectSearchId = summaryMap_Key_ProjectSearchId.get( projectSearchId );
+
+				if ( summary_For_ProjectSearchId ) {
+					summarySectionData_PerSearchEntry.proteinCount_TotalForSearch = summary_For_ProjectSearchId.proteinCount_TotalForSearch;
+					summarySectionData_PerSearchEntry.reportedPeptideCount_TotalForSearch = summary_For_ProjectSearchId.reportedPeptideCount_TotalForSearch;
+					summarySectionData_PerSearchEntry.psmCount_TotalForSearch = summary_For_ProjectSearchId.psmCount_TotalForSearch;
+				} else {
+					console.warn( "No value returned from summaryMap_Key_ProjectSearchId.get( projectSearchId ) projectSearchId: " + projectSearchId )
+				}
+
+				summarySectionData.perSearchEntries.push( summarySectionData_PerSearchEntry );
+			}
+
+			this._proteinPageSearchesSummarySectionCreator_MultipleSearches.addDisplayClickHandler()
+			this._proteinPageSearchesSummarySectionCreator_MultipleSearches.setSummaryData({ summarySectionData })
 		}
 
 		const proteinList = proteinDisplayData.proteinList;

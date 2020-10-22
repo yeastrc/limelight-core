@@ -60,7 +60,7 @@
 	</div>
 
 	<h3> Protein List:</h3>
-
+	
 	<div id="protein_counts_download_assoc_psms_block" style=" margin-bottom: 10px; display: none;">
 	
 		<span id="protein_group_list_size_section_display" style="padding-right: 10px; white-space: nowrap; display: none;">Protein Group Count: 
@@ -78,10 +78,21 @@
 	
 		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_assoc_psms" class=" fake-link " >Download PSMs</span>
 		
+		<%-- Single Search Only --%>
 		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="show_status_link" class=" fake-link " >Show Stats</span>
+
+		<%-- Combined/Merged Searches Only --%>
+		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="combined_searches_show_summary_data_per_search_link" class=" fake-link " >
+			Show Summary Data Per Search
+		</span>
 	</div>
 	
 	<div id="stats_data_container" style=" display: none;">
+
+	</div>
+
+	<%-- Container for PSM Counts Per Search Only displayed for Combined/Merged Searches  --%>
+	<div id="combined_searches_psm_counts_per_search_container">
 
 	</div>
 	
