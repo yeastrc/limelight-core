@@ -65,7 +65,7 @@ export class ProteinViewPage_StatsSection extends React.Component< ProteinViewPa
                     id : "psmNum", // Used for tracking sort order. Keep short
                     displayName : "Total #PSMs",
                     width : 87,
-                    sortable : true,
+                    // sortable : true,
                     style_override_DataRowCell_React : { fontSize: 12 },
                     // style_override_header_React : {},  // Optional
                     // style_override_React : {},  // Optional
@@ -79,7 +79,7 @@ export class ProteinViewPage_StatsSection extends React.Component< ProteinViewPa
                     id : "peptideNum", // Used for tracking sort order. Keep short
                     displayName : "Total #peptides",
                     width : 107,
-                    sortable : true,
+                    // sortable : true,
                     style_override_DataRowCell_React : { fontSize: 12 },
                     // style_override_header_React : {},  // Optional
                     // style_override_React : {},  // Optional
