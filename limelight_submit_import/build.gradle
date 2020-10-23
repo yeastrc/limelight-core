@@ -149,8 +149,9 @@ println("GIT Tag at HEAD: " + repoTagName )
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.yeastrc.limelight.limelight_submit_import.program.SubmitImportProgram'
-        attributes([ 'Project-Title': project.name,
+        attributes([ 'Main-Class': 'org.yeastrc.limelight.limelight_submit_import.program.SubmitImportProgram',
+        			"Multi-Release": true,
+         			'Project-Title': project.name,
 					'Build-Timestamp': new Date().format("yyyy-MM-dd HH:mm:ssZ"),
 					'Git-Commit': gitCommit,
 					'GIT-Full-HASH': gitHeadId,
