@@ -51,37 +51,60 @@ public class SubmitImportProgram {
 			"--" + USER_SUBMIT_IMPORT_KEY_PARAM_STRING + "=";
 	
 	
+	public static final String LIST_COMMAND_LINE_PARAMS_PARAM_STRING = "list-command-line-params";
+	public static final String LIST_COMMAND_LINE_PARAMS_PARAM_STRING_WITH_LEADING_DASHES =
+			"--" + LIST_COMMAND_LINE_PARAMS_PARAM_STRING;
+	
 	/**
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		System.out.println( "Command Line Parameters (START):" );
-		
-		for ( String arg : args ) {
-			if ( arg.startsWith( USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS ) ) {
+		if ( args.length == 0 ) {
+			System.out.println( "Run with '-h' to view help" );
+			System.exit( 1 );
+		}
 
-				String keyValue = arg.substring( USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS.length() );
-				if ( keyValue.length() == 0 ) {
-					System.out.println( "param '" 
-							+ USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS 
-							+ "' provided. but with no value"  );
-				} else {
-					int firstXshowing = 5;
-					if ( keyValue.length() < firstXshowing ) {
-						firstXshowing = keyValue.length();
-					}
-					System.out.println( "param '" 
-							+ USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS 
-							+ "' provided.  First " + firstXshowing + " of value: " 
-							+ keyValue.substring( 0, firstXshowing ) );
+		{
+			boolean listCommandLineArgsToSysout = false;
+			for ( String arg : args ) {
+				if ( arg.startsWith( LIST_COMMAND_LINE_PARAMS_PARAM_STRING_WITH_LEADING_DASHES ) ) {
+
+					listCommandLineArgsToSysout = true;
+					break;
 				}
-			} else {
-				System.out.println( arg );
+			}
+
+			if ( listCommandLineArgsToSysout ) {
+
+				System.out.println( "Command Line Parameters (One Per Line) (START):" );
+
+				for ( String arg : args ) {
+					if ( arg.startsWith( USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS ) ) {
+
+						String keyValue = arg.substring( USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS.length() );
+						if ( keyValue.length() == 0 ) {
+							System.out.println( "param '" 
+									+ USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS 
+									+ "' provided. but with no value"  );
+						} else {
+							int firstXshowing = 5;
+							if ( keyValue.length() < firstXshowing ) {
+								firstXshowing = keyValue.length();
+							}
+							System.out.println( "param '" 
+									+ USER_SUBMIT_IMPORT_KEY_PARAM_STRING_WITH_LEADING_DASHES_TRAILING_EQUALS 
+									+ "' provided.  First " + firstXshowing + " of value: " 
+									+ keyValue.substring( 0, firstXshowing ) );
+						}
+					} else {
+						System.out.println( arg );
+					}
+				}
+				System.out.println( "Command Line Parameters (END):" );
 			}
 		}
-		System.out.println( "Command Line Parameters (END):" );
 		
 		String userSubmitImportProgramKeyFromCommandLine = null;
 
@@ -118,7 +141,13 @@ public class SubmitImportProgram {
 					cmdLineParser.addStringOption( 'Z', USER_SUBMIT_IMPORT_KEY_PARAM_STRING );
 
 			CmdLineParser.Option versionOpt = cmdLineParser.addBooleanOption('V', "version"); 
-
+			
+			{
+				// listParamsflag_OnlyUsedAbove_Opt only here so jargs parser does not complain.  
+				//    value not used below this point
+				CmdLineParser.Option listParamsflag_OnlyUsedAbove_Opt = cmdLineParser.addBooleanOption('Z', LIST_COMMAND_LINE_PARAMS_PARAM_STRING );
+			}
+			
 			CmdLineParser.Option helpOpt = cmdLineParser.addBooleanOption('h', "help"); 
 
 			CmdLineParser.Option helpConfigurationFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "help-configuration-file" );
@@ -374,8 +403,6 @@ public class SubmitImportProgram {
 			}
 			
 			
-			System.out.println( "Run with '-h' to view help" );
-
 
 			SubmitResult submitResult = 
 					SubmitUploadMain.getInstance().submitUpload(

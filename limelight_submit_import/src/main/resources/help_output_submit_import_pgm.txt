@@ -24,6 +24,11 @@ Submit Import Help:
 
 --send-search-path
 
+  ---
+  For Debugging
+  
+--list-command-line-params : List the command line parameters passed to the Java program, one per line
+
 -----------------------------------
 
 Configuration File:
