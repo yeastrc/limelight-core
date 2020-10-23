@@ -138,7 +138,7 @@ export class ProteinViewPage_StatsSection extends React.Component< ProteinViewPa
             {
                 { // MS2 scans
                     const columnEntry = new DataTable_DataRow_ColumnEntry({
-                        valueDisplay: this.props.data.ms2ScanCount,
+                        valueDisplay: this.props.data.ms2ScanCount.toLocaleString(),
                         valueSort: this.props.data.ms2ScanCount
                     })
                     columnEntries.push(columnEntry);
