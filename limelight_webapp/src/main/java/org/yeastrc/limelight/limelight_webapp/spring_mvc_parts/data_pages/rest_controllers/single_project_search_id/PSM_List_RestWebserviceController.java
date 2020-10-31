@@ -191,24 +191,27 @@ public class PSM_List_RestWebserviceController {
 
     		WebserviceRequestRoot webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequestRoot.class );
 
+    		Integer projectSearchId = webserviceRequest.getProjectSearchId();
+
+    		if ( projectSearchId == null ) {
+    			log.warn( "No Project Search Id" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+
     		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = webserviceRequest.getSearchDataLookupParams_For_Single_ProjectSearchId();
     		List<Integer> psmAnnotationTypeIdsForSorting = webserviceRequest.getPsmAnnotationTypeIdsForSorting();
+    		
+    		Integer reportedPeptideId = webserviceRequest.getReportedPeptideId();
     				
-    		if ( webserviceRequest.getReportedPeptideId() == null ) {
-    			String msg = "reported peptide id is empty.";
+    		List<Long> psmIds_Include = webserviceRequest.getPsmIds_Include();
+    		List<Long> psmIds_Exclude = webserviceRequest.getPsmIds_Exclude();
+
+    		if ( reportedPeptideId == null && ( psmIds_Include == null || psmIds_Include.isEmpty() ) ) {
+    			String msg = "reported peptide id is null and ( psmIds_Include is null or empty ).";
     			log.warn(msg);
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
-    		List<Long> psmIds_Include = webserviceRequest.getPsmIds_Include();
-    		List<Long> psmIds_Exclude = webserviceRequest.getPsmIds_Exclude();
-
-    		Integer projectSearchId = webserviceRequest.getProjectSearchId();
-
-    		if ( projectSearchId == null ) {
-    			log.warn( "No Project Search Ids" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
 
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
@@ -259,7 +262,7 @@ public class PSM_List_RestWebserviceController {
 			}
 			
     		List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, webserviceRequest.getReportedPeptideId(), psmIds_Include, psmIds_Exclude, searcherCutoffValuesSearchLevel );
+    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, psmIds_Include, psmIds_Exclude, searcherCutoffValuesSearchLevel );
 
     		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
 			

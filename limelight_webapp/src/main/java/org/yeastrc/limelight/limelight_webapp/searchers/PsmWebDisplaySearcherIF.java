@@ -37,7 +37,7 @@ public interface PsmWebDisplaySearcherIF {
 	 * @return
 	 * @throws Exception
 	 */
-	List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay(int searchId, int reportedPeptideId,
+	List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay(int searchId, Integer reportedPeptideId,
 			List<Long> psmIds_Include, List<Long> psmIds_Exclude, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

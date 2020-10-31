@@ -99,37 +99,6 @@ export class ModViewDataUtilities {
         return Array.from( uniqueModMasses );
     }
 
-    /**
-     * Get the distinct residues from the proteinPositionResidues object which has form:
-     *
-     * {  
-     *  protein_sequence_version_id :  { position : letter , position : letter },
-     *  protein_sequence_version_id :  { position : letter , position : letter },
-     *  protein_sequence_version_id :  { position : letter , position : letter },
-     *  protein_sequence_version_id :  { position : letter , position : letter },
-     *  protein_sequence_version_id :  { position : letter , position : letter },
-     *
-     *  },
-     *  foundAllProteinSequenceVersionIdsForProjectSearchIds : true
-     *
-     *  }
-     * 
-     * 
-     * @param {*} param0 
-     */
-    static getDistinctResiduesFromProteinPositionResidues( { proteinPositionResidues } ) {
-
-        let returnObject = new Set();
-
-
-        Object.keys( proteinPositionResidues ).forEach(function( proteinSequenceVersionId ) {
-            Object.keys( proteinPositionResidues[ proteinSequenceVersionId ] ).forEach(function( position ) {
-                returnObject.add( proteinPositionResidues[ proteinSequenceVersionId ][ position ] );
-            });
-        });
-
-        return Array.from( returnObject );
-    }
 
     static getTotalInstancesOfModdedResiduesInAllPSMs( { residues, modMass, reportedPeptideModData, proteinPositionResidues, aminoAcidModStats, proteinPositionFilterStateManager } ) {
 

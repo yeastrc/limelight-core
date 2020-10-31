@@ -14,10 +14,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { DataTable_RootTableObject, DataTable_ColumnId, DataTable_TableOptions, DataTable_SortColumnsInfoEntry, DataTable_RootTableDataObject, DataTable_DataRowEntry, DataTable_DataGroupRowEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-
-import { DataTable_TableRoot, DataTable_TableRoot_Props } from './dataTable_TableRoot_React'
+import {
+    DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM,
+    DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM_Props
+} from "page_js/data_pages/data_table_react/DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM";
 
 /**
  * Create a Data Table on the Page  - using React
@@ -78,13 +80,15 @@ const create_dataTable_Root_React = function({ tableObject, resortTableOnUpdate,
         // }, 5000 );
     }
 
+    const props : DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM_Props = {
+        tableObject,
+        resortTableOnUpdate
+    }
+
     const projectPage_ExperimentsSectionRoot_Component = (
         React.createElement(
-            DataTable_TableRoot,
-            {
-                tableObject,
-                resortTableOnUpdate
-            },
+            DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM,
+            props,
             null
         )
     );
@@ -95,7 +99,6 @@ const create_dataTable_Root_React = function({ tableObject, resortTableOnUpdate,
         renderCompletecallbackFcn_Local 
     );
 
-    // return renderedReactComponent;
 }
 
 /**

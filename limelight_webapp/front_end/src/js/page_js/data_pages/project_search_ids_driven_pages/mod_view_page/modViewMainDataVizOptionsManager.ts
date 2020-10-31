@@ -1,16 +1,9 @@
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
-
-import {ProteinPositionFilterOverlayDisplayManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterOverlayDisplayManager";
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
 
 export class ModViewDataVizRendererOptionsHandler {
 
     static showOptionsOnPage({
-                                 reportedPeptideModData,
-                                 proteinPositionResidues,
-                                 aminoAcidModStats,
-                                 proteinData,
-                                 proteinPositionFilterStateManager,
                                  searchDetailsBlockDataMgmtProcessing,
                                  dataPageStateManager_DataFrom_Server,
                                  vizOptionsData,
@@ -25,19 +18,15 @@ export class ModViewDataVizRendererOptionsHandler {
         // clear the div
         ModViewDataVizRendererOptionsHandler.clearDiv();
 
-        // add protein position filter info
-        ModViewDataVizRendererOptionsHandler.addProteinPositionFilterToPage({
-            reportedPeptideModData,
-            proteinPositionResidues,
-            aminoAcidModStats,
-            proteinData,
-            proteinPositionFilterStateManager,
-            searchDetailsBlockDataMgmtProcessing,
-            dataPageStateManager_DataFrom_Server,
-            vizOptionsData,
-            projectSearchIds : undefined,
-            modViewDataManager
-        });
+        // // add protein position filter info
+        // ModViewDataVizRendererOptionsHandler.addProteinPositionFilterToPage({
+        //     proteinPositionFilterStateManager,
+        //     searchDetailsBlockDataMgmtProcessing,
+        //     dataPageStateManager_DataFrom_Server,
+        //     vizOptionsData,
+        //     projectSearchIds : undefined,
+        //     modViewDataManager
+        // });
 
         // add section to page
         ModViewDataVizRendererOptionsHandler.addFormToPage();
@@ -50,11 +39,6 @@ export class ModViewDataVizRendererOptionsHandler {
 
         // add handlers to fields
         ModViewDataVizRendererOptionsHandler.addChangeHandlerToFormElements({
-            reportedPeptideModData,
-            proteinPositionResidues,
-            aminoAcidModStats,
-            proteinData,
-            proteinPositionFilterStateManager,
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
@@ -63,11 +47,6 @@ export class ModViewDataVizRendererOptionsHandler {
     }
 
     static addChangeHandlerToFormElements({
-                                              reportedPeptideModData,
-                                              proteinPositionResidues,
-                                              aminoAcidModStats,
-                                              proteinData,
-                                              proteinPositionFilterStateManager,
                                               searchDetailsBlockDataMgmtProcessing,
                                               dataPageStateManager_DataFrom_Server,
                                               vizOptionsData,
@@ -156,11 +135,6 @@ export class ModViewDataVizRendererOptionsHandler {
             vizOptionsData.stateManagementObject.updateState();
 
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
-                reportedPeptideModData,
-                proteinPositionResidues,
-                aminoAcidModStats,
-                proteinData,
-                proteinPositionFilterStateManager,
                 searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
                 vizOptionsData,
@@ -263,77 +237,60 @@ export class ModViewDataVizRendererOptionsHandler {
         $mainContentDiv.empty();
     }
 
-    static addProteinPositionFilterToPage({
-                                              vizOptionsData,
-                                              reportedPeptideModData,
-                                              proteinPositionFilterStateManager,
-                                              proteinData,
-                                              proteinPositionResidues,
-                                              aminoAcidModStats,
-                                              projectSearchIds,
-                                              searchDetailsBlockDataMgmtProcessing,
-                                              dataPageStateManager_DataFrom_Server,
-                                              modViewDataManager
-                                            }) {
-
-        const $mainContentDiv = $('#mod_list_container');
-
-        const template = Handlebars.templates.currentProteinPositionFilterList;
-        let props = ProteinPositionFilterOverlayDisplayManager.getPropsForProteinPositionFilterList( { proteinPositionFilterStateManager, proteinData } );
-        const html = template( props );
-        $mainContentDiv.append( html );
-
-        const callbackOnClickedHide = function() {
-
-            ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
-                vizOptionsData,
-                reportedPeptideModData,
-                proteinPositionResidues,
-                aminoAcidModStats,
-                proteinData,
-                proteinPositionFilterStateManager,
-                searchDetailsBlockDataMgmtProcessing,
-                dataPageStateManager_DataFrom_Server,
-                modViewDataManager
-            });
-
-            // add the viz to the page using these viz options
-            ModViewDataVizRenderer_MultiSearch.renderDataViz({
-                vizOptionsData,
-                reportedPeptideModData,
-                proteinPositionResidues,
-                aminoAcidModStats,
-                proteinData,
-                proteinPositionFilterStateManager,
-                searchDetailsBlockDataMgmtProcessing,
-                dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server,
-                modViewDataManager
-            });
-        }
-
-        $( 'div#protein-position-filter-launch' ).click( function(e) {
-
-            {
-                // const msg = "Error in $( 'div#protein-position-filter-launch' ).click(:  The call to ProteinPositionFilterOverlayDisplayManager.displayOverlay requires param 'projectSearchId' but there is no 'projectSearchId' available, only 'projectSearchIds'"
-                // console.warn( msg )
-                //  Comment out throw to allow the code to continue since it seems to have worked before without projectSearchId being passed
-                // throw Error( msg )
-            }
-
-            ProteinPositionFilterOverlayDisplayManager.displayOverlay( {
-                callbackOnClickedHide,
-                reportedPeptideModData,
-                proteinPositionFilterStateManager,
-                proteinData,
-                proteinPositionResidues,
-                aminoAcidModStats,
-                projectSearchId : undefined,
-                searchDetailsBlockDataMgmtProcessing,
-                dataPageStateManager_DataFrom_Server
-            } );
-            return false;
-        });
-    }
+    // static addProteinPositionFilterToPage({
+    //                                           vizOptionsData,
+    //                                           proteinPositionFilterStateManager,
+    //                                           searchDetailsBlockDataMgmtProcessing,
+    //                                           dataPageStateManager_DataFrom_Server,
+    //                                           modViewDataManager
+    //                                         }) {
+    //
+    //     const $mainContentDiv = $('#mod_list_container');
+    //
+    //     const template = Handlebars.templates.currentProteinPositionFilterList;
+    //     let props = ProteinPositionFilterOverlayDisplayManager.getPropsForProteinPositionFilterList( { proteinPositionFilterStateManager, proteinData } );
+    //     const html = template( props );
+    //     $mainContentDiv.append( html );
+    //
+    //     const callbackOnClickedHide = function() {
+    //
+    //         ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
+    //             vizOptionsData,
+    //             proteinPositionFilterStateManager,
+    //             searchDetailsBlockDataMgmtProcessing,
+    //             dataPageStateManager_DataFrom_Server,
+    //             modViewDataManager
+    //         });
+    //
+    //         // add the viz to the page using these viz options
+    //         ModViewDataVizRenderer_MultiSearch.renderDataViz({
+    //             vizOptionsData,
+    //             proteinPositionFilterStateManager,
+    //             searchDetailsBlockDataMgmtProcessing,
+    //             dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server,
+    //             modViewDataManager
+    //         });
+    //     }
+    //
+    //     $( 'div#protein-position-filter-launch' ).click( function(e) {
+    //
+    //         {
+    //             // const msg = "Error in $( 'div#protein-position-filter-launch' ).click(:  The call to ProteinPositionFilterOverlayDisplayManager.displayOverlay requires param 'projectSearchId' but there is no 'projectSearchId' available, only 'projectSearchIds'"
+    //             // console.warn( msg )
+    //             //  Comment out throw to allow the code to continue since it seems to have worked before without projectSearchId being passed
+    //             // throw Error( msg )
+    //         }
+    //
+    //         ProteinPositionFilterOverlayDisplayManager.displayOverlay( {
+    //             callbackOnClickedHide,
+    //             proteinPositionFilterStateManager,
+    //             projectSearchId : undefined,
+    //             searchDetailsBlockDataMgmtProcessing,
+    //             dataPageStateManager_DataFrom_Server
+    //         } );
+    //         return false;
+    //     });
+    // }
 
     /**
      * Save the default option values to vizOptionsData if there are no values set for those options

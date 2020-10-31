@@ -16,6 +16,7 @@ import { DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_Reque
 
 //  React Component that will be returned
 import { PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent } from '../jsx/psmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent';
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 
@@ -25,8 +26,8 @@ import { PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent } from 
 class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter {
     
     projectSearchId : number
-    reportedPeptideId : number
-    searchDataLookupParamsRoot
+    reportedPeptideId : number                                      // NOT required if have psmIds_Include
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager
     psmIds_Include : ReadonlySet<number> // Optional
     psmIds_Exclude : ReadonlySet<number> // Optional
@@ -38,7 +39,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
     constructor({ 
         
         projectSearchId,
-        reportedPeptideId,
+        reportedPeptideId,    // NOT required if have psmIds_Include
         searchDataLookupParamsRoot,
         dataPageStateManager,
         psmIds_Include,
@@ -46,8 +47,8 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
 
     } : { 
         projectSearchId : number
-        reportedPeptideId : number
-        searchDataLookupParamsRoot
+        reportedPeptideId : number    // NOT required if have psmIds_Include
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         dataPageStateManager : DataPageStateManager
         psmIds_Include? : ReadonlySet<number> // Optional
         psmIds_Exclude? : ReadonlySet<number> // Optional

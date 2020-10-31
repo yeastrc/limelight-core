@@ -33,6 +33,7 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJa
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 
 /**
@@ -53,7 +54,9 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			+ " FROM psm_tbl  "
 			+ " LEFT OUTER JOIN search_scan_file_tbl ON psm_tbl.search_scan_file_id = search_scan_file_tbl.id ";
 	
-	private static final String SQL_WHERE_START =  " WHERE psm_tbl.search_id = ? AND psm_tbl.reported_peptide_id = ?  ";
+	private static final String SQL_WHERE_START =  " WHERE psm_tbl.search_id = ? ";
+	
+	  
 
 	/**
 	 * @param searchId
@@ -66,10 +69,16 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	@Override
 	public List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay( 
 			int searchId, 
-			int reportedPeptideId, 
+			Integer reportedPeptideId, 
 			List<Long> psmIds_Include, //  Optional
 			List<Long> psmIds_Exclude, //  Optional
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel  ) throws Exception {
+
+		if ( reportedPeptideId == null && ( psmIds_Include == null || psmIds_Include.isEmpty() ) ) {
+			String msg = "reported peptide id is null and ( psmIds_Include is null or empty ).";
+			log.warn(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
 		
 //		if ( psmIds_Include != null && ( ! psmIds_Include.isEmpty() )
 //				&& psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
@@ -105,6 +114,10 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		///////////
 		sqlSB.append( SQL_WHERE_START );
 		//////////
+		
+		if ( reportedPeptideId != null ) {
+			sqlSB.append( " AND psm_tbl.reported_peptide_id = ?  " );
+		}
 		
 		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
 
@@ -174,8 +187,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			int paramCounter = 0;
 			paramCounter++;
 			preparedStatement.setInt( paramCounter, searchId );
-			paramCounter++;
-			preparedStatement.setInt( paramCounter, reportedPeptideId );
+			
+			if ( reportedPeptideId != null ) {
+				paramCounter++;
+				preparedStatement.setInt( paramCounter, reportedPeptideId );
+			}
 			
 			if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
 

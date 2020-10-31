@@ -16,7 +16,8 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import { WebserviceCallStandardPost_ApiObject_Class, WebserviceCallStandardPost_ApiObject_Holder_Class } from 'page_js/webservice_call_common/webserviceCallStandardPost_ApiObject_Class';
 
 //   From data_pages_common
-import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters"; // dataPageStateManager.ts
 
 
 /**
@@ -25,18 +26,18 @@ import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerP
 export const getPSMDataFromServer = function({ 
     
     projectSearchId, 
-    reportedPeptideId,
+    reportedPeptideId,  // NOT required if have psmIds_Include
     psmIds_Include, // Optional
     psmIds_Exclude, // Optional
     searchDataLookupParamsRoot,
     dataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class
 } : { 
-    projectSearchId : number, 
-    reportedPeptideId : number,
+    projectSearchId : number
+    reportedPeptideId : number  // NOT required if have psmIds_Include
     psmIds_Include: ReadonlySet<number>
     psmIds_Exclude: ReadonlySet<number>
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class : WebserviceCallStandardPost_ApiObject_Holder_Class
 }) : Promise<any> {
@@ -62,7 +63,7 @@ export const getPSMDataFromServer = function({
                 projectSearchId,
                 psmIds_Include : psmIds_Include_Array, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
                 psmIds_Exclude : psmIds_Exclude_Array, // Optional.  If provided, Additive to
-                reportedPeptideId,
+                reportedPeptideId,    // NOT required if have psmIds_Include
                 searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,
                 psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting
             };

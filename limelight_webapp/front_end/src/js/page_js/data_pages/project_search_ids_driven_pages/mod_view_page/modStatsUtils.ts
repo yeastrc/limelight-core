@@ -6,8 +6,6 @@ import {ModViewDataManager} from "./modViewDataManager";
 export class ModStatsUtils {
 
     static async downloadSummaryStatistics({
-                                         reportedPeptideModData,
-                                         aminoAcidModStats,
                                          vizOptionsData,
                                          sortedModMasses,
                                          projectSearchIds,
@@ -40,12 +38,9 @@ export class ModStatsUtils {
         output += "\n";
 
         const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
-            reportedPeptideModData,
-            aminoAcidModStats,
             projectSearchIds,
             vizOptionsData,
             countsOverride: false,
-            proteinPositionFilterStateManager : undefined,
             modViewDataManager,
         });
 
@@ -71,16 +66,12 @@ export class ModStatsUtils {
 
 
     static async downloadSignificantMods({
-                                       reportedPeptideModData,
-                                       aminoAcidModStats,
                                        vizOptionsData,
                                        sortedModMasses,
                                        projectSearchIds,
                                        searchDetailsBlockDataMgmtProcessing,
                                        modViewDataManager
                                    } : {
-                                        reportedPeptideModData,
-                                        aminoAcidModStats,
                                         vizOptionsData,
                                         sortedModMasses,
                                         projectSearchIds,
@@ -95,12 +86,9 @@ export class ModStatsUtils {
         output += "search1\tsearch2\tmod mass\t" + quantTypeString + " count 1\t" + quantTypeString + " count 2\tz-score\tp-value\n";
 
         const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
-            reportedPeptideModData,
-            aminoAcidModStats,
             projectSearchIds,
             vizOptionsData,
             countsOverride: true,
-            proteinPositionFilterStateManager : undefined,
             modViewDataManager
         });
 

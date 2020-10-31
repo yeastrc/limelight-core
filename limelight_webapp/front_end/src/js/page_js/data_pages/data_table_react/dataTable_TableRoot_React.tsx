@@ -590,7 +590,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         let divCssClass = " data-table-container-react ";
 
-        if ( this.state.tableOptions.dataRow_GetChildTableData || this.state.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
+        if ( this.state.tableOptions.dataRow_GetChildTableData || this.state.tableOptions.dataRow_GetChildTableData_ViaPromise || this.state.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
             //  Adding show/hide child table icons to left of each row 
             //     so need to add padding to provide space for them on the left since 
             //     the icons are positioned with a negative value for 'left' css property

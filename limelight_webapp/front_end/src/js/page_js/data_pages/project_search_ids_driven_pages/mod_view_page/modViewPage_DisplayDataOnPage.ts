@@ -7,11 +7,7 @@
 
 "use strict";
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
-import {ModViewPage_DataLoader} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataLoader';
-import {ModViewDataUtilities} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities';
-import {ProteinPositionFilterStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/proteinPositionFilterStateManager';
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
 import {ModViewDataVizRendererOptionsHandler} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizOptionsManager';
 import {ModMultiSearch_DataVizPageStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMultiSearchDataViz_StateManager';
@@ -125,138 +121,14 @@ export class ModViewPage_DisplayDataOnPage {
 	 * 
 	 */
 	populateModDataBlock() {
-		
-		let objectThis = this;
 
 		let projectSearchIds = // array
 			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 				
 		let searchDetailsBlockDataMgmtProcessing = this._searchDetailsBlockDataMgmtProcessing;
-		let dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
 
-		this.loadDataForAllProjectSearchIds( { projectSearchIds, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay } );
-	}
-
-	/**
-	 * Load data for all the project search Ids and go to render page when all are done
-	 * 
-	 * @param {*} param0 
-	 */
-	loadDataForAllProjectSearchIds( { 
-		projectSearchIds, 
-		searchDetailsBlockDataMgmtProcessing, 
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
-	} : { 
-		projectSearchIds, 
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
-	} ) {
-
-		let objectThis = this;
-
-		let projectSearchIdPromisesArray = [ ];
-		let loadedData = { };
 		const modViewDataManager = new ModViewDataManager(searchDetailsBlockDataMgmtProcessing);
-
-		for (let projectSearchId of projectSearchIds) {
-			loadedData[ projectSearchId ] = { };
-
-			projectSearchIdPromisesArray.push( this.loadDataForProjectSearchId( { loadedData : loadedData[ projectSearchId ],
-																				  projectSearchId,
-																				  searchDetailsBlockDataMgmtProcessing,
-																				  dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay } ) );
-		}
-
-		Promise.all( projectSearchIdPromisesArray ).then( function( resolvedPromisesArray ) {
-			try {
-				objectThis.renderModDataPage( { projectSearchIds, loadedData, searchDetailsBlockDataMgmtProcessing, modViewDataManager } );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-
-	}
-
-	/**
-	 * Load the data for a single project search id, return a Promise that resolves when all data for project
-	 * search id are loaded.
-	 * 
-	 * @param {*} param0 
-	 */
-	loadDataForProjectSearchId({ 
-		loadedData, 
-		projectSearchId, 
-		searchDetailsBlockDataMgmtProcessing, 
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay 
-	} : { 
-		loadedData, 
-		projectSearchId, 
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, 
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
-	} ) {
-
-		let dataLoader = new ModViewPage_DataLoader();
-
-		return new Promise( function( resolve, reject ) {
-			try {
-				// Get all mod data: modded proteins, positions in those proteins, list of reported peptide and psm ids for those locations
-				let modDataPromise = dataLoader.getModDataForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId, loadedData } );
-		
-				// A chain of promises, each dependant on successful completion of the previous one
-				let modDataPromiseChainFinalPromise = modDataPromise.then( function( result ) {
-					try {
-						/*
-						* Now that we have loaded the mod data, get all amino acid residues at modded locations
-						*/
-						let proteinsAndPositions = ModViewDataUtilities.getProteinsAndPositionsFromModData( { modData: loadedData.modData } );
-						let proteinPositionResiduesPromise = dataLoader.getProteinPositionResidues( { projectSearchId, proteinsAndPositions, loadedData } );
-						return proteinPositionResiduesPromise;
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				}).then( function( result ) {
-					try {
-						/*
-						* Now that we have all amino acid residues at modded locations,
-						* let's get modification stats associated with those residues
-						* in this search at these cutoffs.
-						*/
-						let proteinPositionResidues = loadedData.proteinPositionResidues;
-						let distinctResidues = ModViewDataUtilities.getDistinctResiduesFromProteinPositionResidues( { proteinPositionResidues } );
-						let aminoAcidModStatsPromise = dataLoader.getAminoAcidModStatsForSearch( { projectSearchId, searchDetailsBlockDataMgmtProcessing, loadedData, residueArray : distinctResidues } );
-			
-						return aminoAcidModStatsPromise;
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				});
-		
-				// load the protein annotations (names and descriptions) for proteins in this experiment
-				let proteinDataPromise = dataLoader.getProteinAnnotationDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing,
-					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, loadedData } );
-
-				// get the open mod data
-				//let openModDataPromise = dataLoader.getOpenModDataForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing, loadedData });
-
-				// after we get all the data, move on to rendering the page.
-				Promise.all( [modDataPromiseChainFinalPromise, proteinDataPromise ] ).then( function( resolvedPromisesArray ) {
-					try {
-						resolve();
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-				});
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-			
-		});
-
+		this.renderModDataPage( { projectSearchIds, searchDetailsBlockDataMgmtProcessing, modViewDataManager } );
 	}
 
 	/**
@@ -265,52 +137,27 @@ export class ModViewPage_DisplayDataOnPage {
 	 * @param {*} param0 
 	 */
 	renderModDataPage( { 
-		loadedData, 
-		projectSearchIds, 
+		projectSearchIds,
 		searchDetailsBlockDataMgmtProcessing,
 		modViewDataManager
 	} : { 
-		loadedData, 
-		projectSearchIds, 
+		projectSearchIds,
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		modViewDataManager : ModViewDataManager
 	} ) {
 
-		this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, loadedData, projectSearchIds, modViewDataManager } );
+		this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, projectSearchIds, modViewDataManager } );
 	}
 
 	renderModDataPageMultiSearch({ 
-		loadedData, 
-		projectSearchIds, 
+		projectSearchIds,
 		searchDetailsBlockDataMgmtProcessing,
 		modViewDataManager
 	} : { 
-		loadedData, 
-		projectSearchIds, 
+		projectSearchIds,
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		modViewDataManager : ModViewDataManager
 	} ) {
-
-		// enable click handler for filtering proteins and positions overlay
-		let proteinPositionFilterStateManager = new ProteinPositionFilterStateManager();
-
-		let reportedPeptideModData = {};
-		let proteinPositionResidues = {};
-		let aminoAcidModStats = {};
-		let proteinData = {};
-		let reportedPeptideProteinMap = {};
-
-		console.log('loadedData', loadedData);
-
-		for(const projectSearchId of projectSearchIds) {
-
-			reportedPeptideModData[projectSearchId] = loadedData[projectSearchId].modData.reportedPeptides;
-			proteinPositionResidues[projectSearchId] = loadedData[projectSearchId].proteinPositionResidues;
-			aminoAcidModStats[projectSearchId] = loadedData[projectSearchId].aminoAcidModStats.reportedPeptideData;
-			proteinData[projectSearchId] = loadedData[projectSearchId].proteinData;
-			reportedPeptideProteinMap[projectSearchId] = loadedData[projectSearchId].openModReportedPeptideProteinMap;
-		}
-
 
 		let vizOptionsData : { data: { selectedStateObject? : any, projectSearchIds? : any }, stateManagementObject? : ModMultiSearch_DataVizPageStateManager } = { data: { } };
 		vizOptionsData.data.selectedStateObject = { data: { } };
@@ -326,11 +173,6 @@ export class ModViewPage_DisplayDataOnPage {
 		// add the options section to the page using these viz options
 		ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
 			vizOptionsData,
-			reportedPeptideModData,
-			proteinPositionResidues,
-			aminoAcidModStats,
-			proteinData,
-			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			modViewDataManager
@@ -339,11 +181,6 @@ export class ModViewPage_DisplayDataOnPage {
 		// add the viz to the page using these viz options
 		ModViewDataVizRenderer_MultiSearch.renderDataViz({
 			vizOptionsData,
-			reportedPeptideModData,
-			proteinPositionResidues,
-			aminoAcidModStats,
-			proteinData,
-			proteinPositionFilterStateManager,
 			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			modViewDataManager

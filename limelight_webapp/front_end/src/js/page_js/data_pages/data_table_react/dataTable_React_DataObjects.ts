@@ -88,8 +88,11 @@ class DataTable_TableOptions {
      */
     dataRowClickHandler?( param : DataTable_TableOptions_dataRowClickHandler_RequestParm ) : void; 
 
-    //    If  dataRow_GetChildTableData is populated, then the row will have the expansion indicator to the left and 
-    //      clicking on the row will show/hide the child data table under the row
+    //    If  'dataRow_GetChildTableData', 'dataRow_GetChildTableData_ViaPromise', or 'dataRow_GetChildTable_ReturnReactComponent' is populated,
+    //      then the row will have the expansion indicator to the left and
+    //      clicking on the row will show/hide the child data table under the row.
+
+    //          !!  A MAX 1 of those 3 properties is allowed to be set  !!
 
     /**
      * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
@@ -98,22 +101,31 @@ class DataTable_TableOptions {
     dataRow_GetChildTableData?( param : DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject;
 
     /**
+     * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
+     * @returns Promise that resolves to object of class DataTable_RootTableObject
+     */
+    dataRow_GetChildTableData_ViaPromise?( param : DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm ) : Promise<DataTable_RootTableObject>;
+
+    /**
      * Call to get Data Table data for a Child table of this row in table, returning object of class that extends React.Component
      * @returns object of class that extends React.Component
      */
     dataRow_GetChildTable_ReturnReactComponent?( param : DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm ) : React.Component;
 
-    constructor({ dataRowClickHandler, dataRow_GetChildTableData, dataRow_GetChildTable_ReturnReactComponent } : {
+    constructor({ dataRowClickHandler, dataRow_GetChildTableData, dataRow_GetChildTableData_ViaPromise, dataRow_GetChildTable_ReturnReactComponent } : {
 
         //  If dataRowClickHandler is populated, then the row will have CSS class clickable so mouse pointer will show ...
 
         /**
          * General User clicked the row, call this function.
          */
-        dataRowClickHandler?( param : DataTable_TableOptions_dataRowClickHandler_RequestParm ) : void; 
+        dataRowClickHandler?( param : DataTable_TableOptions_dataRowClickHandler_RequestParm ) : void;
 
-        //    If  dataRow_GetChildTableData is populated, then the row will have the expansion indicator to the left and 
-        //      clicking on the row will show/hide the child data table under the row
+        //    If  'dataRow_GetChildTableData', 'dataRow_GetChildTableData_ViaPromise', or 'dataRow_GetChildTable_ReturnReactComponent' is populated,
+        //      then the row will have the expansion indicator to the left and
+        //      clicking on the row will show/hide the child data table under the row.
+
+        //          !!  A MAX 1 of those 3 properties is allowed to be set  !!
 
         /**
          * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
@@ -122,14 +134,37 @@ class DataTable_TableOptions {
         dataRow_GetChildTableData?( param : DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject;
 
         /**
+         * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
+         * @returns Promise that resolves to object of class DataTable_RootTableObject
+         */
+        dataRow_GetChildTableData_ViaPromise?( param : DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm ) : Promise<DataTable_RootTableObject>;
+
+        /**
          * Call to get Data Table data for a Child table of this row in table, returning object of class that extends React.Component
          * @returns object of class that extends React.Component
          */
         dataRow_GetChildTable_ReturnReactComponent?( param : DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm ) : React.Component;
 
     }) {
+        if ( dataRow_GetChildTableData && ( dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTable_ReturnReactComponent ) ) {
+            const msg = "DataTable_TableOptions: dataRow_GetChildTableData cannot have a value if dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTable_ReturnReactComponent has a value"
+            console.warn( msg )
+            throw Error( msg )
+        }
+        if ( dataRow_GetChildTableData_ViaPromise && ( dataRow_GetChildTableData || dataRow_GetChildTable_ReturnReactComponent ) ) {
+            const msg = "DataTable_TableOptions: dataRow_GetChildTableData_ViaPromise cannot have a value if dataRow_GetChildTableData || dataRow_GetChildTable_ReturnReactComponent has a value"
+            console.warn( msg )
+            throw Error( msg )
+        }
+        if ( dataRow_GetChildTable_ReturnReactComponent && ( dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTableData ) ) {
+            const msg = "DataTable_TableOptions: dataRow_GetChildTable_ReturnReactComponent cannot have a value if dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTableData has a value"
+            console.warn( msg )
+            throw Error( msg )
+        }
+
         this.dataRowClickHandler = dataRowClickHandler;
         this.dataRow_GetChildTableData = dataRow_GetChildTableData;
+        this.dataRow_GetChildTableData_ViaPromise = dataRow_GetChildTableData_ViaPromise;
         this.dataRow_GetChildTable_ReturnReactComponent = dataRow_GetChildTable_ReturnReactComponent;
     }
 }
@@ -157,12 +192,18 @@ class DataTable_TableOptions_dataRowClickHandler_RequestParm {
  * Param to DataTable_TableOptions.dataRow_GetChildTableData
  */
 class DataTable_TableOptions_dataRow_GetChildTableData_RequestParm {
-    event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
     dataRow_GetChildTableDataParameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTableDataParameter
 }
 
 /**
- * Param to DataTable_TableOptions.dataRow_GetChildTableData
+ * Param to DataTable_TableOptions.dataRow_GetChildTableData_ViaPromise
+ */
+class DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm {
+    dataRow_GetChildTableData_ViaPromise_Parameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter
+}
+
+/**
+ * Param to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent
  */
 class DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm {
     event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
@@ -499,6 +540,7 @@ class DataTable_DataRowEntry {
 
     tableRowClickHandlerParameter? : unknown  //  Data passed to DataTable_TableOptions.dataRowClickHandler
     dataRow_GetChildTableDataParameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
+    dataRow_GetChildTableData_ViaPromise_Parameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData_ViaPromise
 
      // Data passed to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent as well as to the React Component as prop dataRow_GetChildTable_ReturnReactComponent_Parameter
     dataRow_GetChildTable_ReturnReactComponent_Parameter? : unknown
@@ -520,7 +562,7 @@ class DataTable_DataRowEntry {
         {
             uniqueId, sortOrder_OnEquals, greyOutRow, highlightRowWithBackgroundColor, highlightRowWithBorderSolid, highlightRowWithBorderDash, row_CSS_Additions, styleOverrides_innerContainingDiv,
             columnEntries,
-            tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTable_ReturnReactComponent_Parameter
+            tableRowClickHandlerParameter, dataRow_GetChildTableDataParameter, dataRow_GetChildTableData_ViaPromise_Parameter, dataRow_GetChildTable_ReturnReactComponent_Parameter
         } : {
         uniqueId : DataTable_UniqueId,
         sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
@@ -531,8 +573,11 @@ class DataTable_DataRowEntry {
         row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
         styleOverrides_innerContainingDiv? : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
         columnEntries : Array<DataTable_DataRow_ColumnEntry>,
+
         tableRowClickHandlerParameter? : unknown,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
+
         dataRow_GetChildTableDataParameter? : unknown,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
+        dataRow_GetChildTableData_ViaPromise_Parameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData_ViaPromise
 
          // Data passed to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent as well as to the React Component as prop dataRow_GetChildTable_ReturnReactComponent_Parameter
         dataRow_GetChildTable_ReturnReactComponent_Parameter? : unknown
@@ -556,6 +601,7 @@ class DataTable_DataRowEntry {
         this.columnEntries = columnEntries;
         this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
         this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter
+        this.dataRow_GetChildTableData_ViaPromise_Parameter = dataRow_GetChildTableData_ViaPromise_Parameter
         this.dataRow_GetChildTable_ReturnReactComponent_Parameter = dataRow_GetChildTable_ReturnReactComponent_Parameter;
 
         DataTable_DataRowEntry.constructorDataValidation( this )
@@ -723,6 +769,7 @@ export {
     DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect,
     DataTable_TableOptions_dataRowClickHandler_RequestParm,
     DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
+    DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm,
     DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
 
     DataTable_Column,

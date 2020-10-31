@@ -188,8 +188,13 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
             console.warn( msg )
             throw Error( msg )
         }
-        if ( dataTable_TableOptions.dataRow_GetChildTableData && ( ! dataTable_DataRowEntry.childTableData ) ) {
-            const msg = "dataTable_TableOptions.dataRow_GetChildTableData has value BUT dataTable_DataRowEntry.childTableData does NOT have a value. dataTableId: " + dataTableId
+        if ( dataTable_TableOptions.dataRow_GetChildTableData && ( ! dataTable_DataRowEntry.dataRow_GetChildTableDataParameter ) ) {
+            const msg = "dataTable_TableOptions.dataRow_GetChildTableData has value BUT dataTable_DataRowEntry.dataRow_GetChildTableDataParameter does NOT have a value. dataTableId: " + dataTableId
+            console.warn( msg )
+            throw Error( msg )
+        }
+        if ( dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise && ( ! dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter ) ) {
+            const msg = "dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise has value BUT dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter does NOT have a value. dataTableId: " + dataTableId
             console.warn( msg )
             throw Error( msg )
         }
@@ -199,8 +204,13 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
             console.warn( msg )
             throw Error( msg )
         }
-        if ( dataTable_DataRowEntry.childTableData && ( ! dataTable_TableOptions.dataRow_GetChildTableData ) ) {
-            const msg = "dataTable_DataRowEntry.childTableData has value BUT dataTable_TableOptions.dataRow_GetChildTableData does NOT have a value. dataTableId: " + dataTableId
+        if ( dataTable_DataRowEntry.dataRow_GetChildTableDataParameter && ( ! dataTable_TableOptions.dataRow_GetChildTableData ) ) {
+            const msg = "dataTable_DataRowEntry.dataRow_GetChildTableDataParameter has value BUT dataTable_TableOptions.dataRow_GetChildTableData does NOT have a value. dataTableId: " + dataTableId
+            console.warn( msg )
+            throw Error( msg )
+        }
+        if ( dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter && ( ! dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise ) ) {
+            const msg = "dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter has value BUT dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise does NOT have a value. dataTableId: " + dataTableId
             console.warn( msg )
             throw Error( msg )
         }
