@@ -62,6 +62,8 @@ export const sort_dataRows_on_sortColumnsInfo = function({
             // const columnId = dataRowEntrySortDataEntry.sortColumnsInfoEntry.columnId;
             const column_sortDirection = dataRowEntrySortDataEntry.sortColumnsInfoEntry.sortDirection;
 
+            const dataTable_Column_ForIndex : DataTable_Column = columns[ dataRowEntrySortDataEntry.columnIndex ];
+
             let a_ColumnValue = undefined;
             let b_ColumnValue = undefined;
 
@@ -98,21 +100,49 @@ export const sort_dataRows_on_sortColumnsInfo = function({
                 throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
             }
 
-            if ( a_ColumnValue < b_ColumnValue ) {
-                if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                    return -1;
-                } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                    return 1;
+            if ( dataTable_Column_ForIndex.sortFunction ) {
+
+                //  custom sort function
+
+                const sortOrderResponse = dataTable_Column_ForIndex.sortFunction({ sortValue_A : a_ColumnValue, sortValue_B : b_ColumnValue });
+
+                if ( sortOrderResponse < 0 ) {
+                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                        return -1;
+                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                        return 1;
+                    }
+                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                 }
-                throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-            }
-            if ( a_ColumnValue > b_ColumnValue ) {
-                if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                    return 1;
-                } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                    return -1;
+                if ( sortOrderResponse > 0 ) {
+                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                        return 1;
+                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                        return -1;
+                    }
+                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                 }
-                throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+
+            } else {
+
+                // NO custom sort function
+
+                if ( a_ColumnValue < b_ColumnValue ) {
+                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                        return -1;
+                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                        return 1;
+                    }
+                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+                }
+                if ( a_ColumnValue > b_ColumnValue ) {
+                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                        return 1;
+                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                        return -1;
+                    }
+                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+                }
             }
         }
         //  All sort columns match so sort on sortOrder_OnEquals
