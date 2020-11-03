@@ -309,7 +309,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         const $dataTableContainer = $( html );
         $mainContentDiv.append( $dataTableContainer );
 
-        return $dataTableContainer[0];
+        return $dataTableContainer.children('div#data-table-container')[0];
     }
 
     static addColorScaleLegend({ svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData }) {
