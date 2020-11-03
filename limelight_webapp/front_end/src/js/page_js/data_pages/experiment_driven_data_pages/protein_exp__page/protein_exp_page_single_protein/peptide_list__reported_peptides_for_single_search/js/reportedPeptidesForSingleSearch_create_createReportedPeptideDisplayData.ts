@@ -21,6 +21,7 @@ import {
 
 export class CreateReportedPeptideDisplayData_PeptideItem {
     reportedPeptideId : number
+    peptideUnique : boolean
     proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
     reportedPeptideSequence? : string
     numPsms? : number
@@ -94,8 +95,21 @@ export const createReportedPeptideDisplayData = function({
             throw Error("_createReportedPeptideDisplayData: No proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
         }
 
+        //  Is this Reported Peptide Unique?
+        let peptideUnique = true;
+        {
+            // proteinSequenceVersionIds array of proteinSequenceVersionIds for this reported peptide id
+            const proteinSequenceVersionIds = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId().get( reportedPeptideId );
+            if ( ! proteinSequenceVersionIds ) {
+                throw Error( "No proteinSequenceVersionIds for reportedPeptideId: " + reportedPeptideId );
+            }
+            if ( proteinSequenceVersionIds.length !== 1 ) {
+                peptideUnique = false;
+            }
+        }
+
         const peptideItem : CreateReportedPeptideDisplayData_PeptideItem = {
-            reportedPeptideId, proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+            reportedPeptideId, peptideUnique, proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
         };
 
         const reportedPeptideStringData : ReportedPeptideStringData_For_ReportedPeptideId = loadedDataCommonHolder.get_reportedPeptideStringData_For_reportedPeptideId( { reportedPeptideId } );

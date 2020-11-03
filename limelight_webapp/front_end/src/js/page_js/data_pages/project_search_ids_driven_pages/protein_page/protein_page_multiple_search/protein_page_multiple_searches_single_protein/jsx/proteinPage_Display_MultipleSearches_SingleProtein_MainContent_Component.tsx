@@ -2010,19 +2010,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                 <div className="box-line" >
                                     { this.state.protein_percentageCovered_Unfiltered_Rounded }%
                                 </div>
-                                
-                                <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
-                                    Peptides:
-                                </div>
-                                <div className="box-line"  >
-                                    
-                                </div>
-                                <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
-                                    Unique peptides:
-                                </div>
-                                <div className="box-line"  >
-                                    
-                                </div>
 
                                 <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
                                     Spectral count:

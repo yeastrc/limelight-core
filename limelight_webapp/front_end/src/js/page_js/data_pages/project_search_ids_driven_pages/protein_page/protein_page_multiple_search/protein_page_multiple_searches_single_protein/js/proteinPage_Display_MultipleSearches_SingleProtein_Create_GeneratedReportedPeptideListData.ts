@@ -66,6 +66,7 @@ export class Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
  */
 export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry {
     peptideSequenceDisplay : string
+    peptideUnique : boolean;
     numPsmsTotal : number = 0;
     psmCountsMap_KeyProjectSearchId : Map<number, number>
     reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
@@ -149,6 +150,19 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
 
             const reportedPeptideId =  reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.reportedPeptideId
 
+            //  Is this Reported Peptide Unique?
+            let peptideUnique = true;
+            {
+                // proteinSequenceVersionIds array of proteinSequenceVersionIds for this reported peptide id
+                const proteinSequenceVersionIds = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId().get( reportedPeptideId );
+                if ( ! proteinSequenceVersionIds ) {
+                    throw Error( "No proteinSequenceVersionIds for reportedPeptideId: " + reportedPeptideId );
+                }
+                if ( proteinSequenceVersionIds.length !== 1 ) {
+                    peptideUnique = false;
+                }
+            }
+
             let numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include_Exclude;
 
             numberOfPsmsForReportedPeptides += numPsms;
@@ -178,6 +192,11 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
 
                 peptideItemInMap.numPsmsTotal += numPsms;
 
+                {
+                    if ( ! peptideUnique ) {
+                        peptideItemInMap.peptideUnique = false;  // Set to false since can no longer be true
+                    }
+                }
                 {
                     const psmCountsFromMap = peptideItemInMap.psmCountsMap_KeyProjectSearchId.get( projectSearchId );
                     if ( ! psmCountsFromMap ) {
@@ -214,6 +233,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
 
             const peptideItem = new CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry();
             peptideItem.peptideSequenceDisplay = peptideSequenceDisplay;
+            peptideItem.peptideUnique = peptideUnique;
             peptideItem.psmCountsMap_KeyProjectSearchId = new Map();
             peptideItem.psmCountsMap_KeyProjectSearchId.set( projectSearchId, numPsms );
             peptideItem.reportedPeptideIdsMap_KeyProjectSearchId = new Map();
