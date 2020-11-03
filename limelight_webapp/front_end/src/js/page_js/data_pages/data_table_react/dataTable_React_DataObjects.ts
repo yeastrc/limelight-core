@@ -297,6 +297,14 @@ class DataTable_RootTableDataObject {
 }
 
 /**
+ * Param to DataTable_TableOptions.dataRowClickHandler
+ */
+class DataTable_Column_sortFunction_Param {
+    sortValue_A : unknown  //  From DataTable_DataRow_ColumnEntry.valueSort
+    sortValue_B : unknown  //  From DataTable_DataRow_ColumnEntry.valueSort
+}
+
+/**
  * A column in the Table.  Data for how to process the column and header content
  */
 class DataTable_Column {
@@ -332,6 +340,7 @@ class DataTable_Column {
     displayName: string
 
     sortable?: boolean  // Assumed false if missing
+    sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell sortValue for custom sorting
 
     hideColumnHeader?: boolean  // Assumed false if missing
 
@@ -356,7 +365,7 @@ class DataTable_Column {
             cellMgmt_External, cellMgmt_ExternalReactComponent,
 
             //  For Header
-            sortable, hideColumnHeader, style_override_HeaderRowCell_React
+            sortable, sortFunction, hideColumnHeader, style_override_HeaderRowCell_React
         }: {
             id: DataTable_ColumnId,
             displayName: string
@@ -387,6 +396,7 @@ class DataTable_Column {
             //  For Header:
 
             sortable?: boolean  // Assumed false if missing
+            sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell sortValue for custom sorting
 
             hideColumnHeader?: boolean  // Assumed false if missing
 
@@ -413,6 +423,7 @@ class DataTable_Column {
         this.cellMgmt_External = cellMgmt_External;
         this.cellMgmt_ExternalReactComponent = cellMgmt_ExternalReactComponent;
         this.sortable = sortable;
+        this.sortFunction = sortFunction;
         this.hideColumnHeader = hideColumnHeader
         this.style_override_HeaderRowCell_React = style_override_HeaderRowCell_React
     }
@@ -453,6 +464,11 @@ class DataTable_Column {
                 console.warn(msg)
                 throw Error(msg);
             }
+        }
+        if ( dataTable_Column.sortFunction && ( ! dataTable_Column.sortable ) ) {
+            const msg = "DataTable_Column.constructorDataValidation: dataTable_Column.sortFunction has a value and dataTable_Column.sortable is not true";
+            console.warn(msg)
+            throw Error(msg);
         }
 
     }
@@ -654,6 +670,8 @@ class DataTable_DataRow_ColumnEntry {
 
     valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
     valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
+                        //  Passed to DataTable_Column.sortFunction if that is populated
+
     tooltipText?: string; // tooltipText is set on 'title' attribute of cell
 
     //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
@@ -773,6 +791,7 @@ export {
     DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
 
     DataTable_Column,
+    DataTable_Column_sortFunction_Param,
     DataTable_SortColumnsInfoEntry,
 
     DataTable_RootTableDataObject,
