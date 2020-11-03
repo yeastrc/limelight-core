@@ -9,11 +9,10 @@ import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_sea
 import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
-import {ModProteinList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator";
 import {ModProteinSearchPeptideList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
-import {ModProteinList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableProperties";
 import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableProperties";
-
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 export class ModProteinSearchList_SubTableGenerator {
 
@@ -31,11 +30,7 @@ export class ModProteinSearchList_SubTableGenerator {
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
         // create the columns for the table
-        const dataTableColumns : Array<DataTable_Column> = await ModProteinSearchList_SubTableGenerator.getDataTableColumns({
-            vizOptionsData,
-            modMass,
-            searchDetailsBlockDataMgmtProcessing,
-        });
+        const dataTableColumns : Array<DataTable_Column> = await ModProteinSearchList_SubTableGenerator.getDataTableColumns();
 
         // create the rows for the table
         const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchList_SubTableGenerator.getDataTableRows({
@@ -54,10 +49,6 @@ export class ModProteinSearchList_SubTableGenerator {
         });
 
         const tableOptions = new DataTable_TableOptions({
-            //  Comment out since no further drill down to child table
-            // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
-            //dataRow_GetChildTable_ReturnReactComponent : psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent
-            //dataRow_GetChildTableData_ViaPromise:ModProteinList_SubTableGenerator.getProteinListSubTable
             dataRow_GetChildTableData_ViaPromise:ModProteinSearchPeptideList_SubTableGenerator.getSearchListSubTable
         });
 
@@ -76,15 +67,7 @@ export class ModProteinSearchList_SubTableGenerator {
         return dataTable_RootTableObject;
     }
 
-    static async getDataTableColumns({
-                                         vizOptionsData,
-                                         modMass,
-                                         searchDetailsBlockDataMgmtProcessing
-                                     }: {
-        vizOptionsData:any,
-        modMass:number,
-        searchDetailsBlockDataMgmtProcessing
-    }) : Promise<Array<DataTable_Column>> {
+    static async getDataTableColumns() : Promise<Array<DataTable_Column>> {
 
         const dataTableColumns : Array<DataTable_Column> = [];
 
@@ -136,14 +119,24 @@ export class ModProteinSearchList_SubTableGenerator {
         return dataTableColumns;
     }
 
-    static async getDataTableRows({
-                                      modViewDataManager,
-                                      vizOptionsData,
-                                      modMass,
-                                      proteinId,
-                                      searchDetailsBlockDataMgmtProcessing,
-                                      dataPageStateManager_DataFrom_Server
-                                  }) : Promise<Array<DataTable_DataRowEntry>> {
+    static async getDataTableRows(
+        {
+            modViewDataManager,
+            vizOptionsData,
+            modMass,
+            proteinId,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server
+        } : {
+            modViewDataManager:ModViewDataManager,
+            vizOptionsData:any,
+            modMass:number,
+            proteinId:number,
+            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
+        }
+    ) : Promise<Array<DataTable_DataRowEntry>> {
+
         const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
         const allProteinDataForModMass:Array<SearchProteinDataForModMass> = await ModProteinSearchList_SubTableGenerator.getSearchProteinDataForModMass({
@@ -231,17 +224,19 @@ export class ModProteinSearchList_SubTableGenerator {
     }
 
 
-    static async getSearchProteinDataForModMass({
-                                              modViewDataManager,
-                                              vizOptionsData,
-                                              modMass,
-                                              proteinId
-                                          }: {
-        modViewDataManager:ModViewDataManager,
-        vizOptionsData:any,
-        modMass:number,
-        proteinId:number
-    }) : Promise<Array<SearchProteinDataForModMass>> {
+    static async getSearchProteinDataForModMass(
+        {
+            modViewDataManager,
+            vizOptionsData,
+            modMass,
+            proteinId
+        }:{
+            modViewDataManager:ModViewDataManager,
+            vizOptionsData:any,
+            modMass:number,
+            proteinId:number
+        }
+    ) : Promise<Array<SearchProteinDataForModMass>> {
 
         const proteinDataForModMass:Array<SearchProteinDataForModMass> = new Array();
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -280,23 +275,25 @@ export class ModProteinSearchList_SubTableGenerator {
         return proteinDataForModMass;
     }
 
-    static async rollupProteinData({
-                                                             proteinPositionMapByProjectSearchId,
-                                                             proteinResidueMapByProjectSearchId,
-                                                             psmCountMapByProjectSearchId,
-                                                             modViewDataManager,
-                                                             projectSearchIds,
-                                                             modMass,
-                                                             proteinId
-                                                         } : {
-        proteinPositionMapByProjectSearchId:Map<number, Set<number>>,
-        proteinResidueMapByProjectSearchId:Map<number, Set<string>>,
-        psmCountMapByProjectSearchId:Map<number, number>,
-        modViewDataManager:ModViewDataManager,
-        projectSearchIds,
-        modMass:number,
-        proteinId:number
-    }) {
+    static async rollupProteinData(
+        {
+            proteinPositionMapByProjectSearchId,
+            proteinResidueMapByProjectSearchId,
+            psmCountMapByProjectSearchId,
+            modViewDataManager,
+            projectSearchIds,
+            modMass,
+            proteinId
+        }:{
+            proteinPositionMapByProjectSearchId:Map<number, Set<number>>,
+            proteinResidueMapByProjectSearchId:Map<number, Set<string>>,
+            psmCountMapByProjectSearchId:Map<number, number>,
+            modViewDataManager:ModViewDataManager,
+            projectSearchIds,
+            modMass:number,
+            proteinId:number
+        }
+    ) : Promise<void> {
 
         for(const projectSearchId of projectSearchIds) {
 
@@ -342,23 +339,25 @@ export class ModProteinSearchList_SubTableGenerator {
 
     }
 
-    static rollupProteinDataForProjectSearchIdAndProtein({
-                                                         proteinPositionMapByProjectSearchId,
-                                                         proteinResidueMapByProjectSearchId,
-                                                         projectSearchId,
-                                                         reportedPeptidePSMMap,
-                                                         proteinId,
-                                                         psmCountMapByProjectSearchId,
-                                                         reportedPeptidesForProtein
-                                                     } : {
-        proteinPositionMapByProjectSearchId:Map<number, Set<number>>,
-        proteinResidueMapByProjectSearchId:Map<number, Set<string>>,
-        projectSearchId:any,
-        reportedPeptidePSMMap:Map<number, Set<any>>,
-        proteinId:number,
-        psmCountMapByProjectSearchId:Map<number, number>,
-        reportedPeptidesForProtein:Set<ReportedPeptide>
-    }) : void {
+    static rollupProteinDataForProjectSearchIdAndProtein(
+        {
+            proteinPositionMapByProjectSearchId,
+            proteinResidueMapByProjectSearchId,
+            projectSearchId,
+            reportedPeptidePSMMap,
+            proteinId,
+            psmCountMapByProjectSearchId,
+            reportedPeptidesForProtein
+        }:{
+            proteinPositionMapByProjectSearchId:Map<number, Set<number>>,
+            proteinResidueMapByProjectSearchId:Map<number, Set<string>>,
+            projectSearchId:number,
+            reportedPeptidePSMMap:Map<number, Set<any>>,
+            proteinId:number,
+            psmCountMapByProjectSearchId:Map<number, number>,
+            reportedPeptidesForProtein:Set<ReportedPeptide>
+        }
+    ) : void {
 
 
         if(!(psmCountMapByProjectSearchId.has(projectSearchId))) {
@@ -484,20 +483,21 @@ class SearchProteinDataForModMass {
     private readonly _psmCounts:number;
     private readonly _proteinId:number;
 
-    constructor({
-                    projectSearchId,
-                    modifiedResidues,
-                    modifiedPositions,
-                    psmCounts,
-                    proteinId
-                } : {
-        modifiedResidues:Set<string>,
-        modifiedPositions:Set<number>,
-        psmCounts:number,
-        projectSearchId:number,
-        proteinId:number
-    })
-    {
+    constructor(
+        {
+            projectSearchId,
+            modifiedResidues,
+            modifiedPositions,
+            psmCounts,
+            proteinId
+        }:{
+            modifiedResidues:Set<string>,
+            modifiedPositions:Set<number>,
+            psmCounts:number,
+            projectSearchId:number,
+            proteinId:number
+        }
+    ) {
         this._modifiedResidues = modifiedResidues;
         this._modifiedPositions = modifiedPositions;
         this._psmCounts = psmCounts;

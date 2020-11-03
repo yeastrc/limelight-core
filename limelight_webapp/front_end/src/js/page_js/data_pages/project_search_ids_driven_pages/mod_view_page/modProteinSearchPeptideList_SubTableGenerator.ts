@@ -26,7 +26,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const projectSearchId:number = params.projectSearchId;
         const proteinId:number = params.proteinId;
         const modViewDataManager:ModViewDataManager = params.modViewDataManager;
-        const vizOptionsData:any = params.vizOptionsData;
         const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
@@ -37,7 +36,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchPeptideList_SubTableGenerator.getDataTableRows({
             projectSearchId,
             modViewDataManager,
-            vizOptionsData,
             modMass,
             proteinId,
             searchDetailsBlockDataMgmtProcessing,
@@ -125,20 +123,21 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return dataTableColumns;
     }
 
-    static async getDataTableRows({
-                                      modViewDataManager,
-                                      vizOptionsData,
-                                      modMass,
-                                      proteinId,
-                                      projectSearchId,
-                                      searchDetailsBlockDataMgmtProcessing,
-                                      dataPageStateManager_DataFrom_Server
-                                  }) : Promise<Array<DataTable_DataRowEntry>> {
+    static async getDataTableRows(
+        {
+            modViewDataManager,
+            modMass,
+            proteinId,
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server
+        }
+    ) : Promise<Array<DataTable_DataRowEntry>> {
+
         const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
         const allProteinDataForModMass:Array<PeptideDataForModProteinSearch> = await ModProteinSearchPeptideList_SubTableGenerator.getPeptideDataForModProteinSearch({
             modMass,
-            vizOptionsData,
             modViewDataManager,
             proteinId,
             projectSearchId
@@ -182,10 +181,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 columnEntries.push( columnEntry );
             }
 
-            console.log('dataPageStateManager_DataFrom_Server', dataPageStateManager_DataFrom_Server);
-            console.log('searchDetailsBlockDataMgmtProcessing', searchDetailsBlockDataMgmtProcessing);
-            console.log('searchDataLookupParamsRoot', searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : dataPageStateManager_DataFrom_Server }));
-
             const subTableData = new PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter({
                 dataPageStateManager: dataPageStateManager_DataFrom_Server,
                 projectSearchId: projectSearchId,
@@ -209,19 +204,19 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
     }
 
 
-    static async getPeptideDataForModProteinSearch({
-                                                    modViewDataManager,
-                                                    vizOptionsData,
-                                                    modMass,
-                                                    proteinId,
-                                                    projectSearchId
-                                                }: {
-        modViewDataManager:ModViewDataManager,
-        vizOptionsData:any,
-        modMass:number,
-        proteinId:number,
-        projectSearchId:number
-    }) : Promise<Array<PeptideDataForModProteinSearch>> {
+    static async getPeptideDataForModProteinSearch(
+        {
+            modViewDataManager,
+            modMass,
+            proteinId,
+            projectSearchId
+        }:{
+            modViewDataManager:ModViewDataManager,
+            modMass:number,
+            proteinId:number,
+            projectSearchId:number
+        }
+    ) : Promise<Array<PeptideDataForModProteinSearch>> {
 
         const searchPeptideDataForModMassProtein:Array<PeptideDataForModProteinSearch> = new Array();
 
@@ -258,23 +253,25 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return searchPeptideDataForModMassProtein;
     }
 
-    static async rollupProteinData({
-                                       proteinPositionMapByPeptideString,
-                                       proteinResidueMapByPeptideString,
-                                       psmIdsByPeptideString,
-                                       modViewDataManager,
-                                       projectSearchId,
-                                       modMass,
-                                       proteinId
-                                   } : {
-        proteinPositionMapByPeptideString:Map<string, Set<number>>,
-        proteinResidueMapByPeptideString:Map<string, Set<string>>,
-        psmIdsByPeptideString:Map<string, Set<number>>,
-        modViewDataManager:ModViewDataManager,
-        projectSearchId:number,
-        modMass:number,
-        proteinId:number
-    }) {
+    static async rollupProteinData(
+        {
+            proteinPositionMapByPeptideString,
+            proteinResidueMapByPeptideString,
+            psmIdsByPeptideString,
+            modViewDataManager,
+            projectSearchId,
+            modMass,
+            proteinId
+        }:{
+            proteinPositionMapByPeptideString:Map<string, Set<number>>,
+            proteinResidueMapByPeptideString:Map<string, Set<string>>,
+            psmIdsByPeptideString:Map<string, Set<number>>,
+            modViewDataManager:ModViewDataManager,
+            projectSearchId:number,
+            modMass:number,
+            proteinId:number
+        }
+    ) : Promise<void> {
 
 
         const psmsForProjectSearchIdAndModMass:Array<any> = await modViewDataManager.getPsmsForModMass({ modMass, projectSearchId })
@@ -309,7 +306,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             proteinPositionMapByPeptideString,
             proteinResidueMapByPeptideString,
             psmIdsByPeptideString,
-            projectSearchId,
             reportedPeptidePSMMap,
             proteinId,
             reportedPeptidesForProtein,
@@ -320,28 +316,27 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 
     }
 
-    static rollupProteinDataForProjectSearchIdAndProtein({
-                                                             proteinPositionMapByPeptideString,
-                                                             proteinResidueMapByPeptideString,
-                                                             projectSearchId,
-                                                             reportedPeptidePSMMap,
-                                                             proteinId,
-                                                             psmIdsByPeptideString,
-                                                             reportedPeptidesForProtein,
-                                                             reportedPeptides,
-                                                             modMass
-                                                         } : {
-        proteinPositionMapByPeptideString:Map<string, Set<number>>,
-        proteinResidueMapByPeptideString:Map<string, Set<string>>,
-        projectSearchId:number,
-        reportedPeptidePSMMap:Map<number, Set<any>>,
-        proteinId:number,
-        psmIdsByPeptideString:Map<string, Set<number>>,
-        reportedPeptidesForProtein:Set<ReportedPeptide>,
-        reportedPeptides:Map<number, ReportedPeptide>,
-        modMass:number
-    }) : void {
-
+    static rollupProteinDataForProjectSearchIdAndProtein(
+        {
+            proteinPositionMapByPeptideString,
+            proteinResidueMapByPeptideString,
+            reportedPeptidePSMMap,
+            proteinId,
+            psmIdsByPeptideString,
+            reportedPeptidesForProtein,
+            reportedPeptides,
+            modMass
+        }:{
+            proteinPositionMapByPeptideString:Map<string, Set<number>>,
+            proteinResidueMapByPeptideString:Map<string, Set<string>>,
+            reportedPeptidePSMMap:Map<number, Set<any>>,
+            proteinId:number,
+            psmIdsByPeptideString:Map<string, Set<number>>,
+            reportedPeptidesForProtein:Set<ReportedPeptide>,
+            reportedPeptides:Map<number, ReportedPeptide>,
+            modMass:number
+        }
+    ) : void {
 
 
         // add the # of psms for the found for each reported peptide to the psm count for this protein for this mod
@@ -507,15 +502,17 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      * @param psm
      * @param reportedPeptides
      */
-    static getReportedPeptideStringsForPsm({
-                                              psm,
-                                              reportedPeptides,
-                                              modMass
-    } : {
-        psm:any,
-        reportedPeptides:Map<number, ReportedPeptide>,
-        modMass:number
-    }) : Set<string> {
+    static getReportedPeptideStringsForPsm(
+        {
+            psm,
+            reportedPeptides,
+            modMass
+        }:{
+            psm:any,
+            reportedPeptides:Map<number, ReportedPeptide>,
+            modMass:number
+        }
+    ) : Set<string> {
 
         const reportedPeptideStrings:Set<string> = new Set();
 
@@ -624,27 +621,29 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return reportedPeptideStrings;
     }
 
-    static addModsToPeptideSequence({
-                                        peptideSequence,
-                                        variableModsByPosition,
-                                        nTermMods,
-                                        cTermMods,
-                                        openModPos,
-                                        openModNTerm,
-                                        openModCTerm,
-                                        openModUnloc,
-                                        openModMass
-    } : {
-        peptideSequence:string,
-        variableModsByPosition:Map<number, Set<number>>,
-        nTermMods:Set<number>,
-        cTermMods:Set<number>,
-        openModPos:number,
-        openModNTerm:boolean,
-        openModCTerm:boolean,
-        openModUnloc:boolean,
-        openModMass:number
-    }) : string {
+    static addModsToPeptideSequence(
+        {
+            peptideSequence,
+            variableModsByPosition,
+            nTermMods,
+            cTermMods,
+            openModPos,
+            openModNTerm,
+            openModCTerm,
+            openModUnloc,
+            openModMass
+        }:{
+            peptideSequence:string,
+            variableModsByPosition:Map<number, Set<number>>,
+            nTermMods:Set<number>,
+            cTermMods:Set<number>,
+            openModPos:number,
+            openModNTerm:boolean,
+            openModCTerm:boolean,
+            openModUnloc:boolean,
+            openModMass:number
+        }
+    ) : string {
 
         let moddedPeptideString:string = '';
 
@@ -853,22 +852,23 @@ class PeptideDataForModProteinSearch {
     private readonly _modMass:number;
     private readonly _psmIds:Set<number>;
 
-    constructor({
-                    peptideString,
-                    modifiedResidues,
-                    modifiedPositions,
-                    psmIds,
-                    projectSearchId,
-                    modMass
-                } : {
-        peptideString:string
-        modifiedResidues:Set<string>,
-        modifiedPositions:Set<number>,
-        psmIds:Set<number>,
-        projectSearchId:number,
-        modMass:number
-    })
-    {
+    constructor(
+        {
+            peptideString,
+            modifiedResidues,
+            modifiedPositions,
+            psmIds,
+            projectSearchId,
+            modMass
+        }:{
+            peptideString:string
+            modifiedResidues:Set<string>,
+            modifiedPositions:Set<number>,
+            psmIds:Set<number>,
+            projectSearchId:number,
+            modMass:number
+        }
+    ) {
         this._peptideString = peptideString;
         this._modifiedResidues = modifiedResidues;
         this._modifiedPositions = modifiedPositions;

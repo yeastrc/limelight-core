@@ -166,13 +166,10 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 			// data to pass in for the sub table
 			const subTableData = new ModProteinList_SubTableProperties({
-				vizSelectedStateObject,
 				searchDetailsBlockDataMgmtProcessing,
 				dataPageStateManager_DataFrom_Server,
-				projectSearchIds,
 				modViewDataManager,
 				vizOptionsData,
-				colorScale,
 				modMass
 			});
 

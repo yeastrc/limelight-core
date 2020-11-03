@@ -1,35 +1,32 @@
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 
 export class ModProteinList_SubTableProperties {
 
     private readonly _modMass:number;
     private readonly _vizOptionsData: any;
     private readonly _modViewDataManager: ModViewDataManager;
-    private readonly _searchDetailsBlockDataMgmtProcessing: any;
+    private readonly _searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing;
     private readonly _dataPageStateManager_DataFrom_Server: DataPageStateManager;
 
-    constructor({
+    constructor(
+        {
 
-                    vizSelectedStateObject,
-                    searchDetailsBlockDataMgmtProcessing,
-                    dataPageStateManager_DataFrom_Server,
-                    projectSearchIds,
-                    modViewDataManager,
-                    vizOptionsData,
-                    colorScale,
-                    modMass
-                }:{
-                    vizSelectedStateObject,
-                    searchDetailsBlockDataMgmtProcessing,
-                    dataPageStateManager_DataFrom_Server,
-                    projectSearchIds,
-                    modViewDataManager:ModViewDataManager,
-                    vizOptionsData,
-                    colorScale,
-                    modMass:number
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            modViewDataManager,
+            vizOptionsData,
+            modMass
+        }:{
+            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager,
+            modViewDataManager:ModViewDataManager,
+            vizOptionsData:any,
+            modMass:number
 
-                }) {
+        }
+    ) {
 
 
         this._modMass = modMass;
@@ -44,7 +41,7 @@ export class ModProteinList_SubTableProperties {
         return this._dataPageStateManager_DataFrom_Server;
     }
 
-    get searchDetailsBlockDataMgmtProcessing(): any {
+    get searchDetailsBlockDataMgmtProcessing(): SearchDetailsBlockDataMgmtProcessing {
         return this._searchDetailsBlockDataMgmtProcessing;
     }
 

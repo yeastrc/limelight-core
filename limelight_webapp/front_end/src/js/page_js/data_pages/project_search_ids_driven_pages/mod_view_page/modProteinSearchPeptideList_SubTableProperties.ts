@@ -1,5 +1,6 @@
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 
 export class ModProteinSearchPeptideList_SubTableProperties {
 
@@ -8,27 +9,29 @@ export class ModProteinSearchPeptideList_SubTableProperties {
     private readonly _projectSearchId:number;
     private readonly _vizOptionsData: any;
     private readonly _modViewDataManager: ModViewDataManager;
-    private readonly _searchDetailsBlockDataMgmtProcessing: any;
-    private readonly _dataPageStateManager_DataFrom_Server:DataPageStateManager;
+    private readonly _searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing;
+    private readonly _dataPageStateManager_DataFrom_Server: DataPageStateManager;
 
-    constructor({
+    constructor(
+        {
 
-                    searchDetailsBlockDataMgmtProcessing,
-                    modViewDataManager,
-                    vizOptionsData,
-                    modMass,
-                    proteinId,
-                    projectSearchId,
-                    dataPageStateManager_DataFrom_Server
-                }:{
-        searchDetailsBlockDataMgmtProcessing,
-        modViewDataManager:ModViewDataManager,
-        vizOptionsData,
-        modMass:number,
-        proteinId:number,
-        projectSearchId:number,
-        dataPageStateManager_DataFrom_Server:DataPageStateManager
-    }) {
+            searchDetailsBlockDataMgmtProcessing,
+            modViewDataManager,
+            vizOptionsData,
+            modMass,
+            proteinId,
+            projectSearchId,
+            dataPageStateManager_DataFrom_Server
+        }:{
+            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
+            modViewDataManager:ModViewDataManager,
+            vizOptionsData,
+            modMass:number,
+            proteinId:number,
+            projectSearchId:number,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
+        }
+    ) {
 
 
         this._modMass = modMass;
@@ -65,7 +68,7 @@ export class ModProteinSearchPeptideList_SubTableProperties {
         return this._modViewDataManager;
     }
 
-    get searchDetailsBlockDataMgmtProcessing(): any {
+    get searchDetailsBlockDataMgmtProcessing(): SearchDetailsBlockDataMgmtProcessing {
         return this._searchDetailsBlockDataMgmtProcessing;
     }
 }
