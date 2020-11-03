@@ -266,13 +266,15 @@ const _create_dataTable_RootTableObject = function({
 
                 { // Unique
                     let value = "";
+                    let valueSort = 1;
                     if (  peptideEntry.peptideUnique ) {
                         value = "*";  //  Display '*' if peptide unique
+                        valueSort = 0;  // Sort unique above not unique
                     }
                     const columnEntry = new DataTable_DataRow_ColumnEntry({
                         valueDisplay : value,
-                        valueSort : value
-                    })
+                        valueSort : valueSort
+                    });
                     columnEntries.push( columnEntry );
                 }
                 { // numPsms
