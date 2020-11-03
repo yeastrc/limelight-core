@@ -224,6 +224,17 @@ export class ModProteinList_SubTableGenerator {
             dataTableRows.push( dataTable_DataRowEntry );
         }
 
+        // sort by protein name
+        dataTableRows.sort((function(a, b) {
+            if(a.columnEntries[0].valueSort < b.columnEntries[0].valueSort) {
+                return -1;
+            }
+            if(a.columnEntries[0].valueSort > b.columnEntries[0].valueSort) {
+                return 1;
+            }
+            return 0;
+        }));
+
         return dataTableRows;
     }
 

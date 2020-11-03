@@ -102,7 +102,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 id : "searchProteinModPos", // Used for tracking sort order. Keep short
                 displayName : "Positions",
                 width : 100,
-                sortable : false,
+                sortable : true,
                 style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
             });
             dataTableColumns.push( dataTableColumn );
@@ -113,7 +113,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 id : "searchProteinModRes", // Used for tracking sort order. Keep short
                 displayName : "Residues",
                 width : 100,
-                sortable : false,
+                sortable : true,
                 style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
             });
             dataTableColumns.push( dataTableColumn );
@@ -167,16 +167,22 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 
             // add modded positions
             {
+                const valueString:string = Array.from(proteinData.modifiedPositions).sort((a, b) => a - b).join(', ');
+
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : Array.from(proteinData.modifiedPositions).sort((a, b) => a - b).join(', ')
+                    valueDisplay : valueString,
+                    valueSort : valueString
                 });
                 columnEntries.push( columnEntry );
             }
 
             // add modded residues
             {
+                const valueString:string = Array.from(proteinData.modifiedResidues).sort().join(', ');
+
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : Array.from(proteinData.modifiedResidues).sort().join(', ')
+                    valueDisplay : valueString,
+                    valueSort : valueString
                 });
                 columnEntries.push( columnEntry );
             }
@@ -196,6 +202,17 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 columnEntries,
                 dataRow_GetChildTable_ReturnReactComponent_Parameter:subTableData
             });
+
+            // sort by protein name
+            dataTableRows.sort((function(a, b) {
+                if(a.columnEntries[1].valueSort > b.columnEntries[1].valueSort) {
+                    return -1;
+                }
+                if(a.columnEntries[1].valueSort < b.columnEntries[1].valueSort) {
+                    return 1;
+                }
+                return 0;
+            }));
 
             dataTableRows.push( dataTable_DataRowEntry );
         }
