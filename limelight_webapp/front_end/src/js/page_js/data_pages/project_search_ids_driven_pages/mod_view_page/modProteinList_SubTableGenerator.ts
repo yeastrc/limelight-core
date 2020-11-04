@@ -12,6 +12,8 @@ import {ModProteinSearchList_SubTableGenerator} from "page_js/data_pages/project
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ModProteinSearchPeptideList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
+import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableProperties";
 
 
 export class ModProteinList_SubTableGenerator {
@@ -50,8 +52,10 @@ export class ModProteinList_SubTableGenerator {
             dataTable_DataRowEntries: dataTableRows
         });
 
+        const projectSearchIds = vizOptionsData.data.projectSearchIds;
+        const subTableGenerator = projectSearchIds.length === 1 ? ModProteinSearchPeptideList_SubTableGenerator.getSearchListSubTable : ModProteinSearchList_SubTableGenerator.getSearchListSubTable
         const tableOptions = new DataTable_TableOptions({
-            dataRow_GetChildTableData_ViaPromise:ModProteinSearchList_SubTableGenerator.getSearchListSubTable
+            dataRow_GetChildTableData_ViaPromise:subTableGenerator
         });
 
         const dataTable_RootTableObject = new DataTable_RootTableObject({
@@ -204,14 +208,28 @@ export class ModProteinList_SubTableGenerator {
             }
 
             // data to pass in for the sub table
-            const subTableData = new ModProteinSearchList_SubTableProperties({
-                modViewDataManager,
-                vizOptionsData,
-                modMass,
-                proteinId: proteinData.proteinId,
-                searchDetailsBlockDataMgmtProcessing,
-                dataPageStateManager_DataFrom_Server
-            });
+            let subTableData;
+
+            if(projectSearchIds.length !== 1) {
+                subTableData = new ModProteinSearchList_SubTableProperties({
+                    modViewDataManager,
+                    vizOptionsData,
+                    modMass,
+                    proteinId: proteinData.proteinId,
+                    searchDetailsBlockDataMgmtProcessing,
+                    dataPageStateManager_DataFrom_Server
+                });
+            } else {
+                subTableData = new ModProteinSearchPeptideList_SubTableProperties({
+                    modViewDataManager,
+                    vizOptionsData,
+                    modMass,
+                    proteinId: proteinData.proteinId,
+                    searchDetailsBlockDataMgmtProcessing,
+                    dataPageStateManager_DataFrom_Server,
+                    projectSearchId:projectSearchIds[0]
+                });
+            }
 
             // add this row to the rows
             const dataTable_DataRowEntry = new DataTable_DataRowEntry({
