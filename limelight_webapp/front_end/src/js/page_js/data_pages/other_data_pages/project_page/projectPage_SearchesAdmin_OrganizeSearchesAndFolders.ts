@@ -24,7 +24,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
 
-import { sortSearchesOnDisplayOrder_OrDefaultOrder } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder';
+import {sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList} from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder';
 
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
@@ -427,6 +427,9 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 	_addSearchesToPage({ searchesToDisplay }) {
 
 		const objectThis = this;
+
+		//  Sort the searches, the same way as on the main project page
+		sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList({ searchList : searchesToDisplay });
 		
 		// Reposition the Folder list at the top of the draggable space
 		const $organize_searches_folder_total_block = $("#organize_searches_folder_total_block");
