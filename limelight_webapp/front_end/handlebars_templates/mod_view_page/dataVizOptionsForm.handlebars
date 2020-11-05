@@ -1,82 +1,83 @@
 <div id="data-viz-options-container">
-    <div id="data-viz-title">Data Visualization Options:</div>
+    <div id="data-viz-title" style="margin-bottom:0px;">Data Visualization Options:</div>
+    <div id="data-viz-subtitle" style="margin-top:0px;font-size:10pt;">Mouse over items for help.</div>
     <div id="data-viz-form">
 
         <div id="form-sections" style="width:900px;">
 
                 <div class="viz-form-section">
-                Quant method:
+                    <span data-tooltip="Choose how modification masses are quantified in each search. Either as PSM or scan counts and either as raw counts or ratios." class="selector_tool_tip_attached">Quant method:</span>
 
                 <div style="margin-top:10px;">
-                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" checked>Ratios<br>
-                    <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts">Counts
+                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" checked><span data-tooltip="View as ratio of # of PSMs or scans with mod mass / total number of PSMs/scans in search." class="selector_tool_tip_attached">Ratios</span><br>
+                    <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts"><span data-tooltip="View as count of PSMs or scans with mod mass in search." class="selector_tool_tip_attached">Counts</span>
                 </div>
 
                     <div style="margin-top:10px;">
-                        <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms" checked>PSMs<br>
-                        <input type="radio" name="quant-type" id="quant-type-option-scans" value="scans">Scans
+                        <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms" checked><span data-tooltip="Counts are based on # of distinct peptide-spectrum matches containing a mod mass. Each scan may result in multiple PSMs if multiple peptides are IDed by the same scan." class="selector_tool_tip_attached">PSMs</span><br>
+                        <input type="radio" name="quant-type" id="quant-type-option-scans" value="scans"><span data-tooltip="Counts are based on the # of distinct scans that were IDed as a peptide containing a mod mass. A scan will only count once even if multiple peptides are IDed by the same scan." class="selector_tool_tip_attached">Scans</span>
                     </div>
 
                 <div style="margin-top:10px;">
-                    <input type="button" id="update-viz-button" class="button" value="Update Visualization"/>
+                    <input type="button" id="update-viz-button" class="button selector_tool_tip_attached" value="Update Visualization" data-tooltip="Update the data visualization and table below with new options." class="selector_tool_tip_attached" />
                 </div>
             </div>
 
             <div class="viz-form-section">
-                Max cutoff for color scale:<br>
+                <span data-tooltip="Override maximum values used when determining the color scale in the visualization." class="selector_tool_tip_attached">Max cutoff for color scale:</span><br>
                 <span style="font-size:10px">(Leave blank to use defaults.)</span>
 
                 <table style="margin-top:10px;">
                     <tr>
-                        <td>Ratio:</td>
+                        <td><span data-tooltip="Override maximum value for ratio when scaling color in visualization. Only used when quant method is set to ratios." class="selector_tool_tip_attached">Ratio:</span></td>
                         <td><input type="text" id="color-cutoff-ratio" name="color-cutoff-ratio" size="4"/></td>
                     </tr>
                     <tr>
-                        <td>Count:</td>
+                        <td><span data-tooltip="Override maximum value for PSM/scan count when scaling color in visualization. Only used when quant method is set to counts." class="selector_tool_tip_attached">Count:</span></td>
                         <td><input type="text" id="color-cutoff-count" name="color-cutoff-count" size="4"/></td>
                     </tr>
                 </table>
             </div>
 
             <div class="viz-form-section">
-                Min and max mod masses:<br>
+                <span data-tooltip="Override the minimum and maximum modification masses to be shown in the visualization and data table. Masses outside this range are also excluded from Z-score and P-value calculations." class="selector_tool_tip_attached">Min and max mod masses:</span><br>
                 <span style="font-size:10px">(Leave blank to use defaults.)</span>
 
                 <table style="margin-top:10px;">
                     <tr>
-                        <td>Minimum:</td>
+                        <td><span data-tooltip="Override the minimum modification mass to be shown in the visualization and data table. Masses below this value are also excluded from Z-score and P-value calculations." class="selector_tool_tip_attached">Minimum:</span></td>
                         <td><input type="text" id="modmass-cutoff-min" name="modmass-cutoff-min" size="4"/></td>
                     </tr>
                     <tr>
-                        <td>Maximum:</td>
+                        <td><span data-tooltip="Override the maximum modification mass to be shown in the visualization and data table. Masses greater than this value are also excluded from Z-score and P-value calculations." class="selector_tool_tip_attached">Maximum:</span></td>
                         <td><input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size="4"/></td>
                     </tr>
                 </table>
             </div>
 
             <div class="viz-form-section">
-                <div>Transformations:</div>
+                <div><span data-tooltip="Instead of raw data show a transformation of the data, typically the result of a statistical test. For example, show p-values associated with the PSM count for each mod mass in each search." class="selector_tool_tip_attached">Transformations:</span></div>
 
                 <div style="margin-top:5px;">
-                    <input type="radio" name="data-transformation" id="data-transformation-none" value="none" checked>None
+                    <input type="radio" name="data-transformation" id="data-transformation-none" value="none" checked><span data-tooltip="No data transformation." class="selector_tool_tip_attached">None</span>
                 </div>
                 <div style="margin-top:5px;">
-                    <input type="radio" name="data-transformation" id="data-transformation-scaled-mean-diff" value="scaled-mean-diff">Scaled Mean Diff.
+                    <input type="radio" name="data-transformation" id="data-transformation-scaled-mean-diff" value="scaled-mean-diff"><span data-tooltip="For each mod mass and search display: (x - μ) / μ, where x is the count/ratio for a mod mass in a search and μ is the mean for a mod mass across all searches. ." class="selector_tool_tip_attached">Scaled Mean Diff.</span>
                 </div>
                 <div style="margin-top:5px;">
-                    <input type="radio" name="data-transformation" id="data-transformation-per-mod-zscore" value="per-mod-zscore">Per-mod Z-Score
+                    <input type="radio" name="data-transformation" id="data-transformation-per-mod-zscore" value="per-mod-zscore"><span data-tooltip="For each mod mass and search display: (x - μ) / s, where x is the count/ratio for a mod mass in a search, μ is the mean for a mod mass across all searches, and s is the standard deviation for this mod mass across all searches." class="selector_tool_tip_attached">Per-mod Z-Score</span>
                 </div>
                 <div style="margin-top:5px;">
-                    <input type="radio" name="data-transformation" id="data-transformation-global-zscore" value="global-zscore">Global Z-Score
+                    <input type="radio" name="data-transformation" id="data-transformation-global-zscore" value="global-zscore"><span data-tooltip="For each mod mass and search display: (x - μ) / s, where x is the count/ratio for a mod mass in a search, μ is the mean for all mod masses across all searches, and s is the standard deviation across all mod masses in all searches.." class="selector_tool_tip_attached">Global Z-Score</span>
                 </div>
                 <div style="margin-top:5px;">
-                    <input type="radio" name="data-transformation" id="data-transformation-global-pvalue" value="global-pvalue">Global P-Value
+                    <input type="radio" name="data-transformation" id="data-transformation-global-pvalue" value="global-pvalue"><span data-tooltip="For each mod mass and search display: p, where p is the Bonferroni-corrected p-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation." class="selector_tool_tip_attached">Global P-Value</span>
                 </div>
             </div>
 
             <div class="viz-form-section">
                 <div style="margin-top:10px;">
-                    <input type="checkbox" name="include-open-mods" id="include-open-mods-checkbox" value="include-open-mods" checked>Include open mods
+                    <input type="checkbox" name="include-open-mods" id="include-open-mods-checkbox" value="include-open-mods" checked><span data-tooltip="If checked, include modifications identified by open modification search. (Recommended)" class="selector_tool_tip_attached">Include open mods</span>
                 </div>
             </div>
 

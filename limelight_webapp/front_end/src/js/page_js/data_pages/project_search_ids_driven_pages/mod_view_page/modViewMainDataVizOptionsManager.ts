@@ -1,5 +1,6 @@
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
+import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
 
 export class ModViewDataVizRendererOptionsHandler {
 
@@ -229,7 +230,9 @@ export class ModViewDataVizRendererOptionsHandler {
 
         const template = _mod_table_template_bundle.dataVizOptionsForm;
         const html = template( {  } );
-        $mainContentDiv.append(  $( html ) );
+        $mainContentDiv.append(  $(html) );
+
+        addToolTips($mainContentDiv.find('div#data-viz-options-container'));
     }
 
     static clearDiv() {
