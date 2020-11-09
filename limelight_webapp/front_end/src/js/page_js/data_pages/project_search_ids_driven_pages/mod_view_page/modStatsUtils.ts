@@ -109,7 +109,7 @@ export class ModStatsUtils {
                 continue;
             }
 
-            const n1 = psmQuantType ? modViewDataManager.getTotalPSMCount(projectSearchId1) : modViewDataManager.getTotalScanCount(projectSearchId1);
+            const n1:number = psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId1) : await modViewDataManager.getTotalScanCount(projectSearchId1);
 
             for( let k = 0; k < projectSearchIds.length; k++ ) {
 
@@ -122,7 +122,7 @@ export class ModStatsUtils {
                         continue;
                     }
 
-                    const n2 = psmQuantType ? modViewDataManager.getTotalPSMCount(projectSearchId2) : modViewDataManager.getTotalScanCount(projectSearchId2);
+                    const n2:number = psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId2) : await modViewDataManager.getTotalScanCount(projectSearchId2);
 
                     for (const modMass of sortedModMasses) {
 
@@ -132,12 +132,12 @@ export class ModStatsUtils {
                         }
 
 
-                        let x1 = modMap.get(modMass).get(projectSearchId1); // modMap[modMass][projectSearchId1];
+                        let x1:number = modMap.get(modMass).get(projectSearchId1); // modMap[modMass][projectSearchId1];
                         if (x1 === undefined) {
                             x1 = 0;
                         }
 
-                        let x2 = modMap.get(modMass).get(projectSearchId2); // modMap[modMass][projectSearchId2];
+                        let x2:number = modMap.get(modMass).get(projectSearchId2); // modMap[modMass][projectSearchId2];
                         if (x2 === undefined) {
                             x2 = 0;
                         }
@@ -177,6 +177,8 @@ export class ModStatsUtils {
     }
 
     static getZScoreForTwoRatios({ x1, n1, x2, n2 }) {
+
+        //console.log('getZScoreForTwoRatios', x1, n1, x2, n2);
 
         x1 = parseInt(x1);
         n1 = parseInt(n1);
