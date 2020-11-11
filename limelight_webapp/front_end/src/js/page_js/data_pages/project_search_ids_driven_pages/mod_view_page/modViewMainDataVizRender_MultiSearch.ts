@@ -8,6 +8,7 @@ import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_s
 import {ModStatsUtils} from "./modStatsUtils";
 import jStat from 'jstat'
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {QValueCalculator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/QValueCalculator";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -86,7 +87,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
 
-            if( vizOptionsData.data.dataTransformation === 'global-pvalue') {
+            if( vizOptionsData.data.dataTransformation === 'global-pvalue-bonf' || vizOptionsData.data.dataTransformation === 'global-qvalue-bh') {
                 minCount = 0;
                 maxCount = 1;
 
@@ -1033,8 +1034,11 @@ export class ModViewDataVizRenderer_MultiSearch {
                 case 'global-zscore':
                     labelText = "Z-Score:";
                     break;
-                case 'global-pvalue':
+                case 'global-pvalue-bonf':
                     labelText = "P-Value:";
+                    break;
+                case 'global-qvalue-bh':
+                    labelText = "Q-Value:";
                     break;
                 case 'scaled-mean-diff':
                     labelText = "Scaled mean diff.:";
@@ -1106,7 +1110,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     /**
      * Get a map of:
      *
-     * mod mass => project search id => count/ratio/zscore
+     * mod mass => project search id => count/ratio/zscore/pvalue/qvalue
      *
      * @param reportedPeptideModData
      * @param aminoAcidModStats
@@ -1276,12 +1280,16 @@ export class ModViewDataVizRenderer_MultiSearch {
                 ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
                 break;
 
-            case 'global-pvalue':
+            case 'global-pvalue-bonf':
                 ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalPValue(modMap);
                 break;
 
             case 'scaled-mean-diff':
                 ModViewDataVizRenderer_MultiSearch.convertModMapToPerModScaledMeanDelta(modMap);
+                break;
+
+            case 'global-qvalue-bh':
+                ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalQValue(modMap);
                 break;
         }
 
@@ -1301,8 +1309,12 @@ export class ModViewDataVizRenderer_MultiSearch {
                 return "Global Z-Score"
                 break;
 
-            case 'global-pvalue':
+            case 'global-pvalue-bonf':
                 return "Global P-Value"
+                break;
+
+            case 'global-qvalue-bh':
+                return "Q-Value"
                 break;
 
             case 'scaled-mean-diff':
@@ -1365,6 +1377,33 @@ export class ModViewDataVizRenderer_MultiSearch {
                 modMap.get(modMass).set(projectSearchId, correctedPvalue);
             }
         }
+    }
+
+    /**
+     * Get Benjamini-Hochberg q-values from global zscores
+     * @param modMap
+     */
+    static convertModMapToGlobalQValue(modMap) {
+        ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
+        const pValueArray = new Array<number>();
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                const pvalue = jStat.ztest( count, 2);
+                modMap.get(modMass).set(projectSearchId, pvalue);
+                pValueArray.push(pvalue)
+            }
+        }
+
+        const qvalueCalculator = new QValueCalculator({pValueArray});
+
+        for(const [modMass, searchCountMap] of modMap) {
+            for (const [projectSearchId, count] of searchCountMap) {
+                const pvalue = modMap.get(modMass).get(projectSearchId);
+                modMap.get(modMass).set(projectSearchId, qvalueCalculator.getQvalueForPValue(pvalue));
+            }
+        }
+
     }
 
     static getGlobalMean(modMap) {

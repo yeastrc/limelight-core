@@ -69,13 +69,13 @@ export class ModViewDataVizRendererOptionsHandler {
             // update ratios vs/ counts
             {
                 // value of psm quant choice
-                const choice = $formDiv.find("input:radio[name='psm-quant']:checked").val()
+                const choice = $formDiv.find("input:radio[name='psm-quant']:checked").val();
                 vizOptionsData.data.psmQuant = choice;
             }
 
             // update what kind of transformation we're applying to the data (e.g. zscore)
             {
-                const choice = $formDiv.find("input:radio[name='data-transformation']:checked").val()
+                const choice = $formDiv.find("select#transformation-pulldown").val();
                 vizOptionsData.data.dataTransformation = choice;
             }
 
@@ -169,15 +169,17 @@ export class ModViewDataVizRendererOptionsHandler {
             const option = vizOptionsData.data.dataTransformation;
 
             if( option === undefined || option === 'none' ) {
-                $formToUpdate.find("input#data-transformation-none").attr('checked', 'checked');
+                $formToUpdate.find('option[value="none"]').prop('selected', 'selected');
             } else if( option === 'scaled-mean-diff') {
-                $formToUpdate.find("input#data-transformation-scaled-mean-diff").attr('checked', 'checked');
+                $formToUpdate.find('option[value="scaled-mean-diff"]').prop('selected', 'selected');
             } else if( option === 'per-mod-zscore') {
-                $formToUpdate.find("input#data-transformation-per-mod-zscore").attr('checked', 'checked');
+                $formToUpdate.find('option[value="per-mod-zscore"]').prop('selected', 'selected');
             } else if( option === 'global-zscore') {
-                $formToUpdate.find("input#data-transformation-global-zscore").attr('checked', 'checked');
-            }  else if( option === 'global-pvalue') {
-                $formToUpdate.find("input#data-transformation-global-pvalue").attr('checked', 'checked');
+                $formToUpdate.find('option[value="global-zscore"]').prop('selected', 'selected');
+            } else if( option === 'global-pvalue-bonf') {
+                $formToUpdate.find('option[value="global-pvalue-bonf"]').prop('selected', 'selected');
+            } else if( option === 'global-qvalue-bh') {
+                $formToUpdate.find('option[value="global-qvalue-bh"]').prop('selected', 'selected');
             }
         }
 

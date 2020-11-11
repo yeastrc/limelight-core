@@ -62,14 +62,16 @@ const _DATA_TRANSFORMATION_ENCODING_KEYS = {
     'scaled-mean-diff': 0,
     'per-mod-zscore': 1,
     'global-zscore': 2,
-    'global-pvalue': 3,
+    'global-pvalue-bonf': 3,
+    'global-qvalue-bh': 4,
 };
 
 const _DATA_TRANSFORMATION_DECODING_KEYS = [
     'scaled-mean-diff',
     'per-mod-zscore',
     'global-zscore',
-    'global-pvalue',
+    'global-pvalue-bonf',
+    'global-qvalue-bh',
 ];
 
 export class ModMultiSearch_DataVizPageStateManager {
