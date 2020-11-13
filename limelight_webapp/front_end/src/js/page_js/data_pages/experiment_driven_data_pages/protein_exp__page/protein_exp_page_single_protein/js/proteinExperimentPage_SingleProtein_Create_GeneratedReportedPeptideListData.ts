@@ -137,7 +137,7 @@ export const create_GeneratedReportedPeptideListData = function( {
         // const reportedPeptideIdsForProjectSearchId_ObjectPropertyName = _REPORTED_PEPTIDE_IDS_JS_OBJECT_PROPERTY_NAME_PREFIX + projectSearchId;
 
         //  Various Maps, key Reported Peptide Id
-        const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+        // const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
 
         //  reportedPeptideIds filtered if applicable so now create display peptide row objects
@@ -147,7 +147,7 @@ export const create_GeneratedReportedPeptideListData = function( {
 
             const reportedPeptideId =  reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.reportedPeptideId
 
-            let numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include_Exclude;
+            let numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
 
             numberOfPsmsForReportedPeptides += numPsms;
 
@@ -168,7 +168,11 @@ export const create_GeneratedReportedPeptideListData = function( {
             //   Call external function
             const peptideSequenceDisplay = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches({
                 peptideSequence : peptideSequenceString,
-                variableModificationsRoundedArray_KeyPosition, staticModificationsRounded_KeyPosition
+                variable_Modifications_RoundedArray_KeyPosition: variableModificationsRoundedArray_KeyPosition,
+                open_Modification_Rounded : undefined,
+                open_Modification_Rounded_Position : undefined,
+                open_Modification_Rounded_NoPosition : undefined,
+                staticModificationsRounded_KeyPosition
             });
 
             let peptideItemInMap : CreateReportedPeptideDisplayData_Result_Entry = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
@@ -326,7 +330,11 @@ const _get_selectedStaticModificationsForProjectSearchId = function({
  * 
  * @returns  Map<(position),(mod mass rounded string)>
  */	
-const _get_staticModificationsRounded_KeyPosition_ForSelectedStaticModsAndPeptideSequence = function({ peptideSequenceString, selectedStaticModificationsForProjectSearchId }) {
+const _get_staticModificationsRounded_KeyPosition_ForSelectedStaticModsAndPeptideSequence = function(
+    {
+        peptideSequenceString,
+        selectedStaticModificationsForProjectSearchId
+    }) {
 
     const staticModificationsRounded_KeyPosition = new Map();
 

@@ -52,7 +52,6 @@ export class Filter_selectionItem_Any_All_SelectionItem_Container extends React.
         // this.state = {  };
     }
 
-
     /**
      * @returns true if should update, false otherwise
      */
@@ -69,7 +68,6 @@ export class Filter_selectionItem_Any_All_SelectionItem_Container extends React.
 
         //  If Comment out prev code, comment out this method
     }
-
 
     /**
      *

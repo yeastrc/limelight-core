@@ -142,7 +142,7 @@ const _get_OpenModificationsForReportedPeptideIds_RetrieveFromDB = function( { l
  * @param openModificationData_KeyReportedPeptideIdFromServer - data from server
  * 
  * 	Set:  loadedDataPerProjectSearchIdHolder.set_openModificationsOnReportedPeptide_KeyReportedPeptideId : 
- * 			Map <integer,Object> <reportedPeptideId,<[{ reportedPeptideId, position, mass, is_N_Terminal : boolean, is_C_Terminal : boolean }]>>   position is int, mass is double
+ * 			Map <integer,Object> <reportedPeptideId,<[{ reportedPeptideId, position, mass }]>>   position is int, mass is int (rounded PSM masses)
  */
 const _populateLoadedData_With_OpenModificationsForReportedPeptideidsFromServer = function( {
     

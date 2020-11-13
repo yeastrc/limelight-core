@@ -154,6 +154,7 @@ const _create_dataTable_RootTableObject = function({
 
     const createReportedPeptideDisplayData_result = createReportedPeptideDisplayData({
         reportedPeptideIds_ForDisplay,
+        dataPerReportedPeptideId_Map_Key_reportedPeptideId : undefined,
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         proteinSequenceVersionId : undefined/* Only for error reporting */,
         projectSearchId, 

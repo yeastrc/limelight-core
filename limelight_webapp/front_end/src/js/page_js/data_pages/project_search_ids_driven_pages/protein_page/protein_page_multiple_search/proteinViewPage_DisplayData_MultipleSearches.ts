@@ -9,7 +9,13 @@
  * 
  */
 
-import { Handlebars, _protein_table_template_bundle } from './proteinViewPage_DisplayData_MultipleSearches_ImportHandlebarsTemplates';
+//  !! Next 2 imports import AMD format code so use import ... = require('...');
+
+import Handlebars = require('handlebars/runtime');
+
+import _protein_table_template_bundle =
+	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
@@ -53,6 +59,7 @@ import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ProteinPageSearchesSummarySectionCreator_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySectionCreator_MultipleSearches";
 import {
 	ProteinPageSearchesSummarySectionData_PerSearchEntry,
@@ -128,6 +135,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass;
+	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
 	private _annotationTypeData_ReturnSpecifiedTypes: AnnotationTypeData_ReturnSpecifiedTypes;
 
@@ -167,25 +175,28 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	constructor({
-					dataPages_LoggedInUser_CommonObjectsFactory,
-					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-					dataPageStateManager_DataFrom_Server,
-					searchDetailsBlockDataMgmtProcessing,
-					centralPageStateManager,
-					singleProtein_CentralStateManagerObject,
-					proteinList_CentralStateManagerObjectClass,
-					proteinGrouping_CentralStateManagerObjectClass
-				}: {
-		dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory,
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager,
-		dataPageStateManager_DataFrom_Server: DataPageStateManager,
-		searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing,
-		centralPageStateManager: CentralPageStateManager,
-		singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass,
-		proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass
-		proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
-	}) {
+	constructor(
+		{
+			dataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing,
+			centralPageStateManager,
+			singleProtein_CentralStateManagerObject,
+			proteinList_CentralStateManagerObjectClass,
+			proteinGrouping_CentralStateManagerObjectClass,
+			generatedPeptideContents_UserSelections_StateObject
+		}: {
+			dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager,
+			dataPageStateManager_DataFrom_Server: DataPageStateManager,
+			searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing,
+			centralPageStateManager: CentralPageStateManager,
+			singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass,
+			proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass
+			proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
+			generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+		}) {
 
 		//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
 
@@ -213,6 +224,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
+		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes({
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
@@ -1442,27 +1454,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		//  Current Window Scroll position
 		const currentWindowScrollY = window.scrollY;
 
-		//  Create callback function to call on single protein close
-
-		const singleProteinCloseCallback = function () {
-
-			const proteinSequenceVersionIdLocal = proteinSequenceVersionId;
-
-			//  Show Main Div inside of header/footer
-			const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-			$data_page_overall_enclosing_block_div.show();
-
-			if (currentWindowScrollY) {
-
-				//  Scroll window down to original position when protein was clicked to open Single Protein view
-
-				//  Web standard, should be supported in Edge but doesn't seem to work in Edge
-				// window.scrollTo({ top : currentWindowScrollY });
-
-				$(window).scrollTop(currentWindowScrollY);
-			}
-		}
-
 		//  Hide Main Div inside of header/footer
 		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
 		$data_page_overall_enclosing_block_div.hide();
@@ -1473,7 +1464,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
 			proteinSequenceVersionId,
-			proteinNameDescription: proteinNameDescriptionParam
+			proteinNameDescription: proteinNameDescriptionParam,
+			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
 		});
 	}
 
@@ -1484,7 +1476,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		//  Create callback function to call on single protein close
 
-		const singleProteinCloseCallback = () => {
+		const singleProteinCloseCallback = () : void => {
 
 			this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
 
@@ -1509,9 +1501,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinPage_Display_MultipleSearches_SingleProtein({
 
-			proteinSequenceVersionId: undefined,
-			proteinListItem: undefined,
-
 			projectSearchIds: this._projectSearchIds,
 			searchDataLookupParamsRoot,
 
@@ -1522,29 +1511,10 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			loadedDataCommonHolder: this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+			proteinList_CentralStateManagerObjectClass: this._proteinList_CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
 			singleProteinCloseCallback
 		});
-
-		// projectSearchIds,
-		// searchDataLookupParamsRoot,
-
-		//////
-		// proteinSequenceVersionId,
-		// proteinListItem,
-
-		// singleProteinCloseCallback,
-
-		// loadedDataCommonHolder,
-		// loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-
-		// dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
-		// dataPageStateManager_DataFrom_Server,
-		// searchDetailsBlockDataMgmtProcessing, 
-		// projectSearchIds,
-		// searchDataLookupParamsRoot,
-		// singleProtein_CentralStateManagerObject,
-		// dataPages_LoggedInUser_CommonObjectsFactory
 	}
 
 	/**

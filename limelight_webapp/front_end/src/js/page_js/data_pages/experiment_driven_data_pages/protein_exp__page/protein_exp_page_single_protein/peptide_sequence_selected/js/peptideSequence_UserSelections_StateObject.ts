@@ -1,5 +1,5 @@
 /**
- * reporterIonMass_UserSelections_StateObject.ts
+ * peptideSequence_UserSelections_StateObject.ts
  * 
  * Peptide Sequence Selection - State Object
  * 
@@ -11,9 +11,6 @@
  */
 
 ////////////////////
-
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
-
 
 ///  Constants for encoding/decoding state for storage on URL
 
@@ -36,7 +33,7 @@ const _ENCODED_DATA__PEPTIDE_SEQUENCE_SEARCH_STRINGS_ENCODING_PROPERTY_NAME = 'b
  */
 export class PeptideSequence_UserSelections_StateObject {
 
-	private _initializeCalled : boolean = false;
+	// private _initializeCalled : boolean = false;
 
     private _peptideSearchStrings : Array<string> = undefined; //  Set to undefined if no selections
 

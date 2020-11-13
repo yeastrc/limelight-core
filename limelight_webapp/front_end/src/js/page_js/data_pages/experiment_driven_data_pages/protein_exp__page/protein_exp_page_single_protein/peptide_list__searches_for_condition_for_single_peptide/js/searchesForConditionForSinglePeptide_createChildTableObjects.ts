@@ -158,6 +158,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
             const reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter = new ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter({
                 projectSearchId,
                 reportedPeptideIds_ForDisplay,
+                dataPerReportedPeptideId_Map_Key_reportedPeptideId : undefined,
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId,
                 searchDataLookupParamsRoot : dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot,
                 loadedDataPerProjectSearchIdHolder,

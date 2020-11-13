@@ -92,11 +92,13 @@ export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Compo
     render() {
 
         return (
+            // <div style={ { width: "100%", backgroundColor: "orange"}} >
             <span className="table-data-cell-property-value fake-link"
                 onClick={ this._viewSpectrumFakeLinkClicked_BindThis }
             >
                 View Scan
             </span>
+            // </div>
         );
     }
 }

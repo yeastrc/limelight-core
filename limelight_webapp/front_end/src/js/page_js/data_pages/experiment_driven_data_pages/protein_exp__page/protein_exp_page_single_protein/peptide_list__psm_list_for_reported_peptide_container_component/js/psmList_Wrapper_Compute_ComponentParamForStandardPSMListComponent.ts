@@ -45,7 +45,6 @@ export const psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent =
         reportedPeptideId,
         searchDataLookupParamsRoot,
         psmIds_Include : proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include,
-        psmIds_Exclude : proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Exclude,
         dataPageStateManager
     });
 

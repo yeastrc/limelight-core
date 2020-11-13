@@ -28,7 +28,6 @@ export const getPSMDataFromServer = function({
     projectSearchId, 
     reportedPeptideId,  // NOT required if have psmIds_Include
     psmIds_Include, // Optional
-    psmIds_Exclude, // Optional
     searchDataLookupParamsRoot,
     dataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class
@@ -36,7 +35,6 @@ export const getPSMDataFromServer = function({
     projectSearchId : number
     reportedPeptideId : number  // NOT required if have psmIds_Include
     psmIds_Include: ReadonlySet<number>
-    psmIds_Exclude: ReadonlySet<number>
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class : WebserviceCallStandardPost_ApiObject_Holder_Class
@@ -46,13 +44,9 @@ export const getPSMDataFromServer = function({
         try {
 
             let psmIds_Include_Array : Array<number> = undefined
-            let psmIds_Exclude_Array : Array<number> = undefined
 
             if ( psmIds_Include ) {
                 psmIds_Include_Array = Array.from(psmIds_Include)
-            }
-            if ( psmIds_Exclude ) {
-                psmIds_Exclude_Array = Array.from(psmIds_Exclude)
             }
 
             let searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId = _getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId({ projectSearchId, searchDataLookupParamsRoot });
@@ -62,7 +56,7 @@ export const getPSMDataFromServer = function({
             let requestObject = {
                 projectSearchId,
                 psmIds_Include : psmIds_Include_Array, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
-                psmIds_Exclude : psmIds_Exclude_Array, // Optional.  If provided, Additive to
+                psmIds_Exclude : undefined, // Optional.  If provided, Additive to
                 reportedPeptideId,    // NOT required if have psmIds_Include
                 searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,
                 psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting

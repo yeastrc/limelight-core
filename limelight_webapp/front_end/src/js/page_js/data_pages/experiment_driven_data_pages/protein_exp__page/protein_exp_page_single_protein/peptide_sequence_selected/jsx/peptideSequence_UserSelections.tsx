@@ -13,6 +13,7 @@ import { userSearchString_LocationsOn_ProteinSequence_Compute } from 'page_js/da
 
 import { PeptideSequence_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject';
 import { PeptideSequence_UserSelections_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_ComponentData';
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 
 //  Delay after input change before call callback, to wait for additional keyboard input
@@ -167,41 +168,48 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
      * 
      */    
     _inputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+        try {
+            const target_htmlElement = event.target as HTMLInputElement;
+            const value_htmlElement = target_htmlElement.value;  //  New Value
 
-        const target_htmlElement = event.target as HTMLInputElement;
-        const value_htmlElement = target_htmlElement.value;  //  New Value
+            const peptideSequence_UserSelection = value_htmlElement;
 
-        const peptideSequence_UserSelection = value_htmlElement;
+            // console.log( "_inputFieldChanged: target.value: " + value_htmlElement + ", this.state.peptideSequence_UserSelection: " + this.state.peptideSequence_UserSelection );
 
-        // console.log( "_inputFieldChanged: target.value: " + value_htmlElement + ", this.state.peptideSequence_UserSelection: " + this.state.peptideSequence_UserSelection );
+            this.setState( (state : PeptideSequence_UserSelections_State, props : PeptideSequence_UserSelections_Props ) : PeptideSequence_UserSelections_State => {
 
-        this.setState( (state : PeptideSequence_UserSelections_State, props : PeptideSequence_UserSelections_Props ) : PeptideSequence_UserSelections_State => {
+                return { peptideSequence_UserSelection };
+            });
 
-            return { peptideSequence_UserSelection };
-        });
+            if ( this._inputFieldChanged_TimeoutId ) {
+                window.clearTimeout( this._inputFieldChanged_TimeoutId );
+            }
 
-        if ( this._inputFieldChanged_TimeoutId ) {
-            window.clearTimeout( this._inputFieldChanged_TimeoutId );
+            this._inputFieldChanged_TimeoutId = window.setTimeout( () => {
+                try {
+                    this.props.peptideSequence_UserSelections_StateObject.setPeptideSearchStringFirstEntry( peptideSequence_UserSelection );
+
+                    const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({
+
+                        searchString : peptideSequence_UserSelection,
+                        proteinSequenceString : this.state.proteinSequenceString
+                    });
+
+                    this.setState( (state : PeptideSequence_UserSelections_State, props : PeptideSequence_UserSelections_Props) : PeptideSequence_UserSelections_State => {
+
+                        return { userSearchString_LocationsOn_ProteinSequence_Root };
+                    });
+
+                    this.props.updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback({ userSearchString_LocationsOn_ProteinSequence_Root });
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, CALL_CALLBACK_DELAY );
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
         }
-
-        this._inputFieldChanged_TimeoutId = window.setTimeout( () => {
-
-            this.props.peptideSequence_UserSelections_StateObject.setPeptideSearchStringFirstEntry( peptideSequence_UserSelection );
-
-            const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({ 
-    
-                searchString : peptideSequence_UserSelection, 
-                proteinSequenceString : this.state.proteinSequenceString
-            });
-
-            this.setState( (state : PeptideSequence_UserSelections_State, props : PeptideSequence_UserSelections_Props) : PeptideSequence_UserSelections_State => {
-
-                return { userSearchString_LocationsOn_ProteinSequence_Root };
-            });
-
-            this.props.updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback({ userSearchString_LocationsOn_ProteinSequence_Root });
-
-        }, CALL_CALLBACK_DELAY );
     }
 
     /**

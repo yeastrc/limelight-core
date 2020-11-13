@@ -36,6 +36,7 @@ import {
 	ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_ProteinGroupingFilterSelectionComponent";
 import {proteinViewPage_MainPageProteinList_createSearchDetailsSection} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_search_and_other_filters_block/proteinViewPage_MainPageProteinList_createSearchAndOtherFiltersSection";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 
 
 /**
@@ -57,6 +58,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
+	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
 	private _proteinViewPage_Display_SingleSearch : ProteinViewPage_Display_SingleSearch;
 	private _proteinViewPage_Display_MultipleSearches : ProteinViewPage_Display_MultipleSearches;
@@ -72,7 +74,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 		centralPageStateManager,
 		singleProtein_CentralStateManagerObject,
 		proteinList_CentralStateManagerObjectClass,
-		proteinGrouping_CentralStateManagerObjectClass
+		proteinGrouping_CentralStateManagerObjectClass,
+		generatedPeptideContents_UserSelections_StateObject
 	 } : { 
 		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory, 
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
@@ -82,6 +85,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass,
 		proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
 		proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
+		generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 	 }) {
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
@@ -96,6 +100,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
+		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
 		this._proteinViewPage_Display_SingleSearch = new ProteinViewPage_Display_SingleSearch( {
 
@@ -106,7 +111,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 			centralPageStateManager : this._centralPageStateManager,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
-			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
+			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
 		});
 
 		this._proteinViewPage_Display_MultipleSearches = new ProteinViewPage_Display_MultipleSearches( {
@@ -118,7 +124,8 @@ export class ProteinViewPage_DisplayDataOnPage {
 			centralPageStateManager : this._centralPageStateManager,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
-			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
+			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
 		});
 	}
 
@@ -384,8 +391,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 		$protein_counts_download_assoc_psms_block.show();
 		
 		this._proteinViewPage_Display_SingleSearch.populateProteinList({ projectSearchId });
-
-		
 	}
 	
 }

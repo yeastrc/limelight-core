@@ -379,9 +379,8 @@ export class PeptideViewPage_Display_SingleSearch {
 					const entry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
 						reportedPeptideId,
 						psmIds_Include: undefined,
-						psmIds_Exclude: undefined,
 						psmIds_UnionSelection_ExplicitSelectAll: false,
-						psmCount_after_Include_Exclude : numPsms
+						psmCount_after_Include : numPsms
 					})
 					reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry)
 				}

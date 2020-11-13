@@ -18,6 +18,7 @@ import {
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import {CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
 
 export class CreateReportedPeptideDisplayData_PeptideItem {
     reportedPeptideId : number
@@ -43,24 +44,32 @@ export class CreateReportedPeptideDisplayData_Item_For_AnnotationTypeId {
  *    Number of Reported Peptides
  *    Number of PSMs total
  */
-export const createReportedPeptideDisplayData = function({
+export const createReportedPeptideDisplayData = function(
+    {
+        reportedPeptideIds_ForDisplay,
+        dataPerReportedPeptideId_Map_Key_reportedPeptideId,
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+        proteinSequenceVersionId, //  Only for error reporting
+        projectSearchId,
+        loadedDataPerProjectSearchIdHolder,
+        loadedDataCommonHolder,
+        dataPageStateManager
+    } :  {
+        reportedPeptideIds_ForDisplay : Set<number>
+        dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
+        proteinSequenceVersionId : number // Only for error reporting
+        projectSearchId : number
+        loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
+        dataPageStateManager : DataPageStateManager
 
-    reportedPeptideIds_ForDisplay,
-    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
-    proteinSequenceVersionId, //  Only for error reporting
-    projectSearchId, 
-    loadedDataPerProjectSearchIdHolder,
-    loadedDataCommonHolder,
-    dataPageStateManager
-} :  {
-    reportedPeptideIds_ForDisplay : Set<number>
-    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
-    proteinSequenceVersionId : number // Only for error reporting
-    projectSearchId : number
-    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
-    dataPageStateManager : DataPageStateManager
-}  ) {
+    } ) : {
+    peptideList : Array<CreateReportedPeptideDisplayData_PeptideItem>
+    numberOfReportedPeptides : number
+    numberOfPsmsForReportedPeptides : number
+    annotationTypeRecords_DisplayOrder : AnnotationTypeRecords_DisplayOrder
+} {
 
     const peptideListResult : Array<CreateReportedPeptideDisplayData_PeptideItem> = [];
     
@@ -69,30 +78,67 @@ export const createReportedPeptideDisplayData = function({
     const reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId();
     const reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId();
 
+    let reportedPeptideIds_ToProcess = reportedPeptideIds_ForDisplay;
+    if ( dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+        reportedPeptideIds_ToProcess = new Set( dataPerReportedPeptideId_Map_Key_reportedPeptideId.keys() );
+    }
 
     let filteringOn_PsmIds = false;  //  Track for different functionality below
 
-    for ( const reportedPeptideId of reportedPeptideIds_ForDisplay ) {
+    if ( dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
 
-        const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId =
-            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId(reportedPeptideId);
+        for ( const mapEntry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries() ) {
+            const mapEntry_Value = mapEntry[ 1 ];
+            if ( mapEntry_Value.psmIdsSet ) {
 
-        if ( proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include
-            || proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Exclude ) {
+                filteringOn_PsmIds = true;
+                break;
+            }
+        }
+    } else {
+        for ( const reportedPeptideId of reportedPeptideIds_ForDisplay ) {
 
-            filteringOn_PsmIds = true;
-            break;
+            const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId =
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId(reportedPeptideId);
+
+            if ( proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include ) {
+
+                filteringOn_PsmIds = true;
+                break;
+            }
         }
     }
 
     //  reportedPeptideIds filtered if applicable so now create display peptide row objects
 
-    for ( const reportedPeptideId of reportedPeptideIds_ForDisplay ) {
+    for ( const reportedPeptideId of reportedPeptideIds_ToProcess ) {
 
-        const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId =
+        let proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = undefined
+
+        proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId =
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId( reportedPeptideId );
         if ( ! proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId ) {
             throw Error("_createReportedPeptideDisplayData: No proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
+        }
+
+        if ( dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+
+            const dataPerReportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId.get( reportedPeptideId )
+            if ( ! dataPerReportedPeptideId ) {
+                throw Error("_createReportedPeptideDisplayData: No dataPerReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId );
+            }
+            let psmIds_Include : Set<number> = undefined;
+            let psmCount_after_Include : number = undefined;
+            if (  dataPerReportedPeptideId.psmIdsSet !== undefined ) {
+                psmIds_Include = dataPerReportedPeptideId.psmIdsSet;
+                psmCount_after_Include = dataPerReportedPeptideId.psmIdsSet.size;
+            }  else {
+                psmIds_Include = new Set( proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include );
+                psmCount_after_Include = proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
+            }
+            proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
+                reportedPeptideId, psmIds_Include, psmCount_after_Include, psmIds_UnionSelection_ExplicitSelectAll : false
+            });
         }
 
         //  Is this Reported Peptide Unique?
@@ -118,7 +164,7 @@ export const createReportedPeptideDisplayData = function({
         }
         peptideItem.reportedPeptideSequence = reportedPeptideStringData.getReportedPeptideString();
 
-        peptideItem.numPsms = proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include_Exclude;
+        peptideItem.numPsms = proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
 
         {
             //  Reported Peptide Ann Values

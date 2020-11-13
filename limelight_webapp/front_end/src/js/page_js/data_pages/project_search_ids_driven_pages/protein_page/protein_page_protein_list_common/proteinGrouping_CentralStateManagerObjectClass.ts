@@ -68,7 +68,10 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
      * 
      * A value in initialProteinSequenceVersionId will be overlaid by any values on the URL for this component
 	 */
-	constructor({ centralPageStateManager, proteinList_CentralStateManagerObjectClass } : { centralPageStateManager : CentralPageStateManager, proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass } ) {
+	constructor({ centralPageStateManager, proteinList_CentralStateManagerObjectClass } : {
+
+		centralPageStateManager : CentralPageStateManager, proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
+	} ) {
 
 		this._value = {};
 

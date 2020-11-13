@@ -48,7 +48,7 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
      */
     shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState) {
 
-        //  Only update if changed: props: 
+        //  Only update if changed: props:
 
         if ( this.props.reporterIons_UserSelections_ComponentData !== nextProps.reporterIons_UserSelections_ComponentData ) {
             return true;
@@ -147,6 +147,16 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
     constructor(props : SingleReporterIon_Entry_Props) {
         super(props);
 
+        let selection_SelectionType = SingleReporterIon_Entry._compute_new_selection_SelectionType_StateValue( props );
+
+        this.state = { selection_SelectionType, prev_reporterIonEntry : props.reporterIonEntry };
+    }
+
+    /**
+     *
+     */
+    private static _compute_new_selection_SelectionType_StateValue( props : SingleReporterIon_Entry_Props ) : SingleProtein_Filter_SelectionType {
+
         let selection_SelectionType : SingleProtein_Filter_SelectionType = null;
 
         {
@@ -157,7 +167,7 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
             }
         }
 
-        this.state = { selection_SelectionType, prev_reporterIonEntry : props.reporterIonEntry };
+        return selection_SelectionType;
     }
 
     /**
@@ -176,9 +186,11 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
 
         if ( props.reporterIonEntry !== state.prev_reporterIonEntry ) {
 
-            //   reporterIonEntry changed so update checked
+            //   reporterIonEntry changed so update SelectionType
 
-            return { prev_reporterIonEntry : props.reporterIonEntry };
+            let selection_SelectionType = SingleReporterIon_Entry._compute_new_selection_SelectionType_StateValue( props );
+
+            return { selection_SelectionType, prev_reporterIonEntry : props.reporterIonEntry };
         }
             
         return null;
@@ -189,7 +201,7 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
      */
     shouldComponentUpdate(nextProps : SingleReporterIon_Entry_Props, nextState : SingleReporterIon_Entry_State ) {
 
-        //  Only update if changed: props or state: 
+        //  Only update if changed: props or state:
 
         if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
             return true;

@@ -35,6 +35,7 @@ import { createReportedPeptideDisplayData } from 'page_js/data_pages/experiment_
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
 
 ////////////////
 
@@ -73,6 +74,8 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
 
     const projectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchId;
     const reportedPeptideIds_ForDisplay = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_ForDisplay;
+    const dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry> =
+        dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPerReportedPeptideId_Map_Key_reportedPeptideId;
     const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
     const searchDataLookupParamsRoot = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot;
 
@@ -106,13 +109,18 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
         }
     }
 
+    let reportedPeptideIds_LoadDataFor = reportedPeptideIds_ForDisplay;
+    if ( dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+        reportedPeptideIds_LoadDataFor = new Set( dataPerReportedPeptideId_Map_Key_reportedPeptideId.keys() );
+    }
+
     let reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param = {
         reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId  //  Reported Peptide Ann Type Ids To Display
     }; 
 
     const promise_loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch = (
         loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
-            reportedPeptideIds : reportedPeptideIds_ForDisplay,
+            reportedPeptideIds : reportedPeptideIds_LoadDataFor,
             projectSearchId,
             reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param,
             searchDetailsBlockDataMgmtProcessing : undefined , // not provided
@@ -127,6 +135,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
         const dataTable_RootTableObject : DataTable_RootTableObject = _create_dataTable_RootTableObject({
             projectSearchId,
             reportedPeptideIds_ForDisplay,
+            dataPerReportedPeptideId_Map_Key_reportedPeptideId,
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
             loadedDataPerProjectSearchIdHolder,
             loadedDataCommonHolder,
@@ -156,6 +165,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
                     const dataTable_RootTableObject : DataTable_RootTableObject = _create_dataTable_RootTableObject({
                         projectSearchId,
                         reportedPeptideIds_ForDisplay,
+                        dataPerReportedPeptideId_Map_Key_reportedPeptideId,
                         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
                         loadedDataPerProjectSearchIdHolder,
                         loadedDataCommonHolder,
@@ -190,29 +200,33 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
  * Sort the Reported Peptide List.
  * 
  */
-const _create_dataTable_RootTableObject = function({
-    projectSearchId,
-    reportedPeptideIds_ForDisplay,
-    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
-    searchDataLookupParamsRoot,
-    loadedDataPerProjectSearchIdHolder,
-    loadedDataCommonHolder,
-    dataPageStateManager
+const _create_dataTable_RootTableObject = function(
+    {
+        projectSearchId,
+        reportedPeptideIds_ForDisplay,
+        dataPerReportedPeptideId_Map_Key_reportedPeptideId,
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+        searchDataLookupParamsRoot,
+        loadedDataPerProjectSearchIdHolder,
+        loadedDataCommonHolder,
+        dataPageStateManager
 
-} : {
-    projectSearchId : number
-    reportedPeptideIds_ForDisplay : Set<number>
-    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
-    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
-    dataPageStateManager : DataPageStateManager
+    } : {
+        projectSearchId : number
+        reportedPeptideIds_ForDisplay : Set<number>
+        dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
+        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+        loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+        dataPageStateManager : DataPageStateManager
 
-}) : DataTable_RootTableObject {
+    }) : DataTable_RootTableObject {
 
 
     const createReportedPeptideDisplayData_result = createReportedPeptideDisplayData({
         reportedPeptideIds_ForDisplay,
+        dataPerReportedPeptideId_Map_Key_reportedPeptideId,
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         proteinSequenceVersionId : undefined/* Only for error reporting */, 
         projectSearchId, 

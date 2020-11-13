@@ -28,6 +28,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
@@ -40,15 +41,17 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
  *
  */
 @Component
-public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher extends Limelight_JDBC_Base implements PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF  {
+public class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher extends Limelight_JDBC_Base implements PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_IF {
 
-	private static final Logger log = LoggerFactory.getLogger( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher.class );
+	private static final Logger log = LoggerFactory.getLogger( PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher.class );
 	
-	public static class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry {
+	public static class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry {
 		
 		private long psmId;
-		private long psmOpenModificationId;
 		private double openModificationMass;
+		private Integer openModificationPosition;
+		private Boolean is_N_Terminal;
+		private Boolean is_C_Terminal;
 		
 		public long getPsmId() {
 			return psmId;
@@ -56,17 +59,26 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 		public double getOpenModificationMass() {
 			return openModificationMass;
 		}
-		public long getPsmOpenModificationId() {
-			return psmOpenModificationId;
+		public Integer getOpenModificationPosition() {
+			return openModificationPosition;
+		}
+		public Boolean getIs_N_Terminal() {
+			return is_N_Terminal;
+		}
+		public Boolean getIs_C_Terminal() {
+			return is_C_Terminal;
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_IF#getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs(int, int, org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel)
+	 */
 	@Override
-	public List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs(
+	public List<PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs(
 			
 			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
 		
-		List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> resultList = new ArrayList<>();
+		List<PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> resultList = new ArrayList<>();
 
 		//  Create reversed version of list
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList_Reversed = 
@@ -81,17 +93,18 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 		StringBuilder sqlSB = new StringBuilder( 10000 );
 		
 		if ( psmCutoffValuesList_Reversed.isEmpty() ) {
-			sqlSB.append( "SELECT psm_tbl.id AS psm_id, psm_open_modification_tbl.mass, psm_open_modification_tbl.id " );
-			sqlSB.append( " psm_open_modification_tbl.id AS psm_open_modification_id " );
+			sqlSB.append( "SELECT psm_tbl.id as psm_id, psm_open_modification_tbl.mass, " );
+			sqlSB.append( " psm_open_modification_position_tbl.position, psm_open_modification_position_tbl.is_n_terminal, psm_open_modification_position_tbl.is_c_terminal " );
 			sqlSB.append( " FROM psm_tbl " );
 			sqlSB.append( " INNER JOIN psm_open_modification_tbl ON psm_tbl.id = psm_open_modification_tbl.psm_id " );
+			sqlSB.append( " LEFT OUTER JOIN psm_open_modification_position_tbl ON psm_open_modification_tbl.id = psm_open_modification_position_tbl.psm_open_modification_id " );
 			sqlSB.append( " WHERE psm_tbl.search_id = ? AND psm_tbl.reported_peptide_id = ? " );
 			
 		} else {
 			{
 				//  Main Select
 				sqlSB.append( " SELECT psm_ids.psm_id as psm_id, psm_open_modification_tbl.mass, " ); 
-				sqlSB.append( " psm_open_modification_tbl.id AS psm_open_modification_id " );
+				sqlSB.append( " psm_open_modification_position_tbl.position, psm_open_modification_position_tbl.is_n_terminal, psm_open_modification_position_tbl.is_c_terminal " );
 				sqlSB.append( " FROM " );
 				{
 					//  Start Subselect
@@ -141,6 +154,7 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 			}
 //			sqlSB.append( " AS psm_ids " );
 			sqlSB.append( " INNER JOIN psm_open_modification_tbl ON psm_ids.psm_id = psm_open_modification_tbl.psm_id " );
+			sqlSB.append( " LEFT OUTER JOIN psm_open_modification_position_tbl ON psm_open_modification_tbl.id = psm_open_modification_position_tbl.psm_open_modification_id " );
 
 		}
 		
@@ -175,10 +189,36 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while( rs.next() ) {
-					PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry result = new PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry();
+					PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry result = new PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry();
 					result.psmId = rs.getLong( "psm_id" );
-					result.psmOpenModificationId = rs.getLong( "psm_open_modification_id" );
 					result.openModificationMass = rs.getDouble( "mass" );
+					/// following only populated if psm_open_modification_position_tbl record joined in via Left Outer Join
+					{
+						int position = rs.getInt( "position" );
+						if ( ! rs.wasNull() ) {
+							result.openModificationPosition = position;
+						}
+					}
+					{
+						int is_n_terminalInt = rs.getInt( "is_n_terminal" );
+						if ( ! rs.wasNull() ) {
+							if ( Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE == is_n_terminalInt ) {
+								result.is_N_Terminal = true;
+							} else {
+								result.is_N_Terminal = false;
+							}
+						}
+					}
+					{
+						int is_c_terminalInt = rs.getInt( "is_c_terminal" );
+						if ( ! rs.wasNull() ) {
+							if ( Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE == is_c_terminalInt ) {
+								result.is_C_Terminal = true;
+							} else {
+								result.is_C_Terminal = false;
+							}
+						}
+					}
 					resultList.add( result );
 				}
 			}
@@ -191,5 +231,6 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 		}
 		return resultList;		
 	}
+
 
 }

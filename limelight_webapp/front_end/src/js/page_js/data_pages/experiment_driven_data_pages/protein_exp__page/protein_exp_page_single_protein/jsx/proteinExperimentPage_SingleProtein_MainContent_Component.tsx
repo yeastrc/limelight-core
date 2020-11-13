@@ -120,9 +120,6 @@ import {Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass} 
 import {ProteinExperimentPage_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_SingleProtein_ProteinNameDescription_Component";
 import {load_PsmOpenModificationMasses_IfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search_single_protein/jsx/proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_nonClass_Functions";
 import {ModificationMass_UserSelections_DisplayMassSelectionOverlay} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_DisplayMassSelectionOverlay";
-import {ProteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_Props} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search_single_protein/jsx/proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component";
-
-// import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 
 
 ////
@@ -663,6 +660,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
             
             not_filtered_position_modification_selections : true, //  Required to be true for Download "All"
+            forMultipleSearch_OrExperiment : true,
+            forSingleSearch : false,
 
             proteinSequenceVersionId,
             projectSearchIds,
@@ -838,7 +837,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
             //  Data in Map
             const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
-                not_filtered_position_modification_selections : true, 
+                not_filtered_position_modification_selections : true,
+                forMultipleSearch_OrExperiment : true,
+                forSingleSearch : false,
                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                 projectSearchIds : this.props.propsValue.projectSearchIds,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -914,6 +915,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             //  Data in Map
             const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
                 not_filtered_position_modification_selections : false,
+                forMultipleSearch_OrExperiment : true,
+                forSingleSearch : false,
                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                 projectSearchIds : this.state.projectSearchIds_PossiblyFiltered,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -945,22 +948,17 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                     const reportedPeptideId = entryFor_reportedPeptideId.reportedPeptideId
 
-                    if ( entryFor_reportedPeptideId.psmIds_Include || entryFor_reportedPeptideId.psmIds_Exclude  ) {
+                    if ( entryFor_reportedPeptideId.psmIds_Include ) {
 
                         let psmIds_Include = undefined
-                        let psmIds_Exclude = undefined
 
                         if ( entryFor_reportedPeptideId.psmIds_Include  ) {
                             psmIds_Include = Array.from( entryFor_reportedPeptideId.psmIds_Include )
                         }
-                        if ( entryFor_reportedPeptideId.psmIds_Exclude  ) {
-                            psmIds_Exclude = Array.from( entryFor_reportedPeptideId.psmIds_Exclude )
-                        }
 
                         const reportedPeptideIdAndPsmIds = {
                             reportedPeptideId,
-                            psmIds_Include,
-                            psmIds_Exclude
+                            psmIds_Include
                         };
 
                         reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
@@ -1793,7 +1791,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     window.setTimeout( () => {
                         try {
                             const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
-                                not_filtered_position_modification_selections : false, 
+                                not_filtered_position_modification_selections : false,
+                                forMultipleSearch_OrExperiment : true,
+                                forSingleSearch : false,
                                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                                 projectSearchIds : this.state.projectSearchIds_PossiblyFiltered,
                                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -2333,19 +2333,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 <div className="box-line" >
                                     { this.state.protein_percentageCovered_Unfiltered_Rounded }%
                                 </div>
-                                
-                                {/* <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
-                                    Peptides:
-                                </div>
-                                <div className="box-line"  >
-                                    
-                                </div>
-                                <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
-                                    Unique peptides:
-                                </div>
-                                <div className="box-line"  >
-                                    
-                                </div> */}
 
                                 <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
                                     Spectral count:
