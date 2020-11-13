@@ -128,19 +128,9 @@ const _combine_OpenModificationsForRepPeptIds_AndStoreForProtSeqVId = function({
 
     const proteinCoverage_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
     const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
-    
-    //  Add openModificationsOnProtein_KeyProteinSequenceVersionId to holder if not exist
-    let openModificationsOnProtein_KeyProteinSequenceVersionId : Map<number, Array<{ mass : number, reportedPeptideId : number }>> = (
-        loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId()
-    );
-    if ( ! openModificationsOnProtein_KeyProteinSequenceVersionId ) {
-        openModificationsOnProtein_KeyProteinSequenceVersionId = new Map();
-        loadedDataPerProjectSearchIdHolder.set_openModificationsOnProtein_KeyProteinSequenceVersionId( openModificationsOnProtein_KeyProteinSequenceVersionId );
-    }
 
     const openModificationsOnProtein : Array<{ mass : number, reportedPeptideId : number }> = [];
-    openModificationsOnProtein_KeyProteinSequenceVersionId.set( proteinSequenceVersionId, openModificationsOnProtein );
-    
+
     const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
     if ( proteinCoverageObject === undefined ) {
         throw Error("_combine_OpenModificationsForRepPeptIds_AndStoreForProtSeqVId(): proteinCoverageObject === undefined: proteinSequenceVersionId: " + proteinSequenceVersionId );
@@ -167,7 +157,20 @@ const _combine_OpenModificationsForRepPeptIds_AndStoreForProtSeqVId = function({
                 }
             }
         }
-        
+    }
+
+    if ( openModificationsOnProtein.length > 0 ) {
+
+        //  Add openModificationsOnProtein_KeyProteinSequenceVersionId to holder if not exist
+        let openModificationsOnProtein_KeyProteinSequenceVersionId : Map<number, Array<{ mass : number, reportedPeptideId : number }>> = (
+            loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId()
+        );
+        if ( ! openModificationsOnProtein_KeyProteinSequenceVersionId ) {
+            openModificationsOnProtein_KeyProteinSequenceVersionId = new Map();
+            loadedDataPerProjectSearchIdHolder.set_openModificationsOnProtein_KeyProteinSequenceVersionId( openModificationsOnProtein_KeyProteinSequenceVersionId );
+        }
+
+        openModificationsOnProtein_KeyProteinSequenceVersionId.set(proteinSequenceVersionId, openModificationsOnProtein);
     }
 
 }

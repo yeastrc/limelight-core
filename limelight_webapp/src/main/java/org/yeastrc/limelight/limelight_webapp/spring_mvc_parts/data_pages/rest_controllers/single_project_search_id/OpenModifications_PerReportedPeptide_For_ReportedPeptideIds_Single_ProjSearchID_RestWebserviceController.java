@@ -262,7 +262,7 @@ public class OpenModifications_PerReportedPeptide_For_ReportedPeptideIds_Single_
     public static class WebserviceResult_Item {
 
     	private int reportedPeptideId;
-    	private double mass;
+    	private int mass;
 
     	public WebserviceResult_Item() {}
 
@@ -278,11 +278,11 @@ public class OpenModifications_PerReportedPeptide_For_ReportedPeptideIds_Single_
     		this.reportedPeptideId = reportedPeptideId;
     	}
 
-    	public double getMass() {
+    	public int getMass() {
     		return mass;
     	}
 
-    	public void setMass(double mass) {
+    	public void setMass(int mass) {
     		this.mass = mass;
     	}
     }

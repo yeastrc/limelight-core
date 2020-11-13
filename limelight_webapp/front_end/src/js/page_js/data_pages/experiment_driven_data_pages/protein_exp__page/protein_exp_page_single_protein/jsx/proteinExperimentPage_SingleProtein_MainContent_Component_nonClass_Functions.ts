@@ -152,7 +152,9 @@ const initialPopulate = function({
 
 
     const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({
-        not_filtered_position_modification_selections : false, 
+        not_filtered_position_modification_selections : false,
+        forMultipleSearch_OrExperiment : true,
+        forSingleSearch : false,
         proteinSequenceVersionId,
         projectSearchIds : projectSearchIds_PossiblyFiltered,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -712,6 +714,8 @@ const load_ReporterIonMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
+                        for_MultipleSearch_Or_Experiment : true,
+                        for_SingleSearch : false,
                         anyReporterIonMassesSelected : true,
                         anyOpenModificationMassesSelected : false,
                         proteinSequenceVersionId : proteinSequenceVersionId,
@@ -796,6 +800,8 @@ const load_OpenModificationMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
+                        for_MultipleSearch_Or_Experiment : true,
+                        for_SingleSearch : false,
                         anyReporterIonMassesSelected : false,
                         anyOpenModificationMassesSelected : true,
                         proteinSequenceVersionId : proteinSequenceVersionId,

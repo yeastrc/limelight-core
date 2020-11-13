@@ -10,19 +10,12 @@
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import {
-	modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnNumber,
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 //   Reporter Ion Mass Rounding to provide some level of commonality between searches
 import { 
-    reporterIonMass_CommonRounding_ReturnNumber_Function,
-    reporterIonMass_CommonRounding_ReturnString_Function,
-    reporterIonMass_CommonRounding_ReturnNumber, 
-    reporterIonMass_CommonRounding_ReturnString, 
-    _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
+    reporterIonMass_CommonRounding_ReturnNumber,
 } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
 
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
@@ -134,9 +127,19 @@ const initialPopulate = function({
     });
 
 
+    let forMultipleSearch_OrExperiment = true;
+    let forSingleSearch = false;
+
+    if ( projectSearchIds.length === 1 ) {
+
+        forMultipleSearch_OrExperiment = false;
+        forSingleSearch = true;
+    }
 
     const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({
-        not_filtered_position_modification_selections : false, 
+        not_filtered_position_modification_selections : false,
+        forMultipleSearch_OrExperiment,
+        forSingleSearch,
         proteinSequenceVersionId,
         projectSearchIds,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -391,12 +394,18 @@ const create_ModificationMass_UserSelections_ComponentData = function({
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
 }) : ModificationMass_UserSelections_ComponentData {
 
+    let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
+
+    if ( projectSearchIds.length === 1 ) {
+        modificationMass_CommonRounding_ReturnNumber_Param = undefined;  //  NO Rounding for Single Search
+    }
+
     const modificationMass_UserSelections_ComponentData = modificationMass_UserSelections_BuildData_ForReactComponent({ 
         modificationMass_UserSelections_StateObject : modificationMass_UserSelections_StateObject, 
         proteinSequenceVersionId : proteinSequenceVersionId, 
         projectSearchIds : projectSearchIds, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-        modificationMass_CommonRounding_ReturnNumber
+        modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Param
     });
     
     return modificationMass_UserSelections_ComponentData;
@@ -418,13 +427,19 @@ const create_ReporterIons_UserSelections_ComponentData = function( {
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
 }) : ReporterIonMass_UserSelections_ComponentData {
 
+    let reporterIonMass_CommonRounding_ReturnNumber_Param = reporterIonMass_CommonRounding_ReturnNumber;
+
+    if ( projectSearchIds.length === 1 ) {
+        reporterIonMass_CommonRounding_ReturnNumber_Param = undefined;  // No Rounding for Single Search
+    }
+
     const reporterIons_UserSelections_ComponentData = reporterIonMass_UserSelections_BuildData_ForReactComponent({ 
 
         reporterIonMass_UserSelections_StateObject : reporterIonMass_UserSelections_StateObject, 
         proteinSequenceVersionId : proteinSequenceVersionId, 
         projectSearchIds : projectSearchIds,  
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-        reporterIonMass_CommonRounding_ReturnNumber // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
+        reporterIonMass_CommonRounding_ReturnNumber : reporterIonMass_CommonRounding_ReturnNumber_Param // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
     });
 
     return reporterIons_UserSelections_ComponentData;
@@ -681,6 +696,8 @@ const load_ReporterIonMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
+                        for_MultipleSearch_Or_Experiment : true,
+                        for_SingleSearch : false,
                         anyReporterIonMassesSelected : true,
                         anyOpenModificationMassesSelected : false,
                         proteinSequenceVersionId : proteinSequenceVersionId,
@@ -765,6 +782,8 @@ const load_OpenModificationMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
+                        for_MultipleSearch_Or_Experiment : true,
+                        for_SingleSearch : false,
                         anyReporterIonMassesSelected : false,
                         anyOpenModificationMassesSelected : true,
                         proteinSequenceVersionId : proteinSequenceVersionId,

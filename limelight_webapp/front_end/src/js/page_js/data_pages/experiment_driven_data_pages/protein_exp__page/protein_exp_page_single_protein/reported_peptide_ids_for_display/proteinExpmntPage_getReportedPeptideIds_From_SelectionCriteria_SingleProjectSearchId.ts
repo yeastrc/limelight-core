@@ -101,35 +101,28 @@ export class ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjec
 
     readonly reportedPeptideId: number
 
-    //  psmIds_Include and psmIds_Exclude may both be NOT SET, which is always true when not filtering on something at PSM level
-    //  Planning that only Include or Exclude will be set but code assuming both may be set
     readonly psmIds_Include: ReadonlySet<number>
-    readonly psmIds_Exclude: ReadonlySet<number>
     readonly psmIds_UnionSelection_ExplicitSelectAll: boolean //  The UNION/ANY selection of PSM Ids has resulted in All PSM Ids for the Reported Peptide being selected.
 
-    readonly psmCount_after_Include_Exclude: number  //  Computed PSM Count after take into account Include and Exclude PSM Ids
+    readonly psmCount_after_Include: number  //  Computed PSM Count after take into account Include and Exclude PSM Ids
 
     /**
      * @param psmIds_UnionSelection_ExplicitSelectAll - The UNION/ANY selection of PSM Ids has resulted in All PSM Ids for the Reported Peptide being selected.
      */
     constructor(
         {
-            reportedPeptideId, psmIds_Include, psmIds_Exclude, psmIds_UnionSelection_ExplicitSelectAll, psmCount_after_Include_Exclude
+            reportedPeptideId, psmIds_Include, psmIds_UnionSelection_ExplicitSelectAll, psmCount_after_Include
         }: {
             reportedPeptideId: number
             psmIds_Include: Set<number>
-            psmIds_Exclude: Set<number>
             psmIds_UnionSelection_ExplicitSelectAll: boolean
-            psmCount_after_Include_Exclude: number
+            psmCount_after_Include: number
         }) {
         this.reportedPeptideId = reportedPeptideId
         this.psmIds_Include = psmIds_Include
-        this.psmIds_Exclude = psmIds_Exclude
         this.psmIds_UnionSelection_ExplicitSelectAll = psmIds_UnionSelection_ExplicitSelectAll
-        this.psmCount_after_Include_Exclude = psmCount_after_Include_Exclude
+        this.psmCount_after_Include = psmCount_after_Include
     }
-
-
 }
 
 
@@ -151,27 +144,28 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
     /**
      *
      */
-    constructor({
+    constructor(
+        {
+            //  First 2 params (for...) are mutually exclusive.  Exactly 1 must be true.
+            forSingleSearch,
+            forMultipleSearch,
+            proteinSequenceVersionId,
+            loadedDataCommonHolder,
+            proteinSequenceWidget_StateObject,
+            modificationMass_UserSelections_StateObject,
+            reporterIonMass_UserSelections_StateObject,
+            userSearchString_LocationsOn_ProteinSequence_Root
+        }: {
+            forSingleSearch: boolean
+            forMultipleSearch: boolean
+            proteinSequenceVersionId: number,
+            loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder,
+            proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject,
+            modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject,
+            reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject,
+            userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
+        }) {
 
-                    //  First 2 params (for...) are mutually exclusive.  Exactly 1 must be true.
-                    forSingleSearch,
-                    forMultipleSearch,
-                    proteinSequenceVersionId,
-                    loadedDataCommonHolder,
-                    proteinSequenceWidget_StateObject,
-                    modificationMass_UserSelections_StateObject,
-                    reporterIonMass_UserSelections_StateObject,
-                    userSearchString_LocationsOn_ProteinSequence_Root
-                }: {
-        forSingleSearch: boolean
-        forMultipleSearch: boolean
-        proteinSequenceVersionId: number,
-        loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder,
-        proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject,
-        modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject,
-        reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject,
-        userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
-    }) {
         if (forSingleSearch && forMultipleSearch) {
             const msg = "ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId::constructor:  forSingleSearch & forMultipleSearch cannot both be true"
             console.warn(msg);
@@ -210,15 +204,16 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
      *
      *
      */
-    getReportedPeptideIdsForDisplay_SingleProjectSearchId({
-                                                              not_filtered_position_modification_selections,
-                                                              loadedDataPerProjectSearchIdHolder,
-                                                              projectSearchId
-                                                          }: {
-        not_filtered_position_modification_selections: boolean,
-        loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-        projectSearchId: number
-    }): {
+    getReportedPeptideIdsForDisplay_SingleProjectSearchId(
+        {
+            not_filtered_position_modification_selections,
+            loadedDataPerProjectSearchIdHolder,
+            projectSearchId
+        }: {
+            not_filtered_position_modification_selections: boolean,
+            loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
+            projectSearchId: number
+        }): {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
     } {
 
@@ -260,7 +255,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
                     throw Error("numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId ): numPsms === undefined || numPsms === null: reportedPeptideId: " + reportedPeptideId)
                 }
                 const entry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-                    reportedPeptideId, psmCount_after_Include_Exclude: numPsms, psmIds_Include: undefined, psmIds_Exclude: undefined, psmIds_UnionSelection_ExplicitSelectAll: false
+                    reportedPeptideId, psmCount_after_Include: numPsms, psmIds_Include: undefined, psmIds_UnionSelection_ExplicitSelectAll: false
                 })
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry)
             }
@@ -360,7 +355,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
                     throw Error("numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId ): numPsms === undefined || numPsms === null: reportedPeptideId: " + reportedPeptideId)
                 }
                 const entry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-                    reportedPeptideId, psmCount_after_Include_Exclude: numPsms, psmIds_Include: undefined, psmIds_Exclude: undefined, psmIds_UnionSelection_ExplicitSelectAll: false
+                    reportedPeptideId, psmCount_after_Include: numPsms, psmIds_Include: undefined, psmIds_UnionSelection_ExplicitSelectAll: false
                 })
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry)
             }
@@ -403,7 +398,8 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
             this._updateFor__SelectionType_ANY___For__Unmodified_Selected_In_OpenModificationMassSection({ //  Open Mod Unmodified type ANY selection
                 reportedPeptideIds_All,
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
-                loadedDataPerProjectSearchIdHolder
+                loadedDataPerProjectSearchIdHolder,
+                projectSearchId
             })
         }
         if (is_Any_OpenModification__ANY__Modification_Selected_Excludes_UnmodifiedSelection) {  //  Open Mod type ANY selection (excludes unmodified)
@@ -584,46 +580,70 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
         {
             reportedPeptideIds_All,
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,  // Add to this object
-            loadedDataPerProjectSearchIdHolder
+            loadedDataPerProjectSearchIdHolder,
+            projectSearchId
         } : {
             reportedPeptideIds_All : Array<number>
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
             loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+            projectSearchId: number // for error logging
         }) {
 
         const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
 
         const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
+
+        //  All PSM IDs for each reported peptide id for current cutoffs
+        const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
         const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
         for ( const reportedPeptideId of reportedPeptideIds_All ) {
 
-            const modificationsForReportedPeptide = openModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
-            if ( ! modificationsForReportedPeptide ) {
+            const openModificationsForReportedPeptide = openModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
+            if ( ! openModificationsForReportedPeptide ) {
                 //  No Open Modification for reportedPeptideId so add whole reportedPeptideId to result
 
-                if ( ! reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId( reportedPeptideId ) ) {
+                //  Delete any existing entry that may may have a PSM Includes Set
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId(reportedPeptideId)
 
-                    //  Not already in Result so add to Result
+                const entry = _create__ForSingleReportedPeptideId__For_ReportedPeptideId_numPSMsAllForReportedPeptideId({reportedPeptideId, loadedDataPerProjectSearchIdHolder})
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry);
 
-                    const entry = _create__ForSingleReportedPeptideId__For_ReportedPeptideId_numPSMsAllForReportedPeptideId({reportedPeptideId, loadedDataPerProjectSearchIdHolder})
-                    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry);
-                }
             } else {
                 //  Have at least one Open Modification for reportedPeptideId so Add reportedPeptideId and exclude PSM Ids that have Open Modifications
 
                 const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                 const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
                 if ( numPsmsForReportedPeptideId && psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId ) {
-                    if (numPsmsForReportedPeptideId > psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass.size) {
+                    if (numPsmsForReportedPeptideId === psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass.size) {
+
+                        //  All PSM IDs for reportedPeptideId have Open Mods so skip processing
+
+                    } else {
+
+                        //  Create a Set of PSM IDs for reportedPeptideId that are NOT in psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass
+
+                        const psmIdsForReportedPeptideId = psmIdsForReportedPeptideIdMap.get( reportedPeptideId );
+                        if ( ! psmIdsForReportedPeptideId ) {
+                            const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId
+                            console.warn( msg )
+                            throw Error( msg )
+                        }
+
+                        const psmIds_NOT_Containing_AnyOpenModificationMass = new Set<number>( psmIdsForReportedPeptideId );
+
+                        //  Remove psmId that contains open mod mass
+                        for ( const psmId_ContainAnyOpenModificationMass of psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass ) {
+                            psmIds_NOT_Containing_AnyOpenModificationMass.delete( psmId_ContainAnyOpenModificationMass );
+                        }
 
                         const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId( reportedPeptideId )
                         if ( reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry ) {
 
-                            //  Merge existing entry for reportedPeptideId with new PSM Ids to Exclude
-                            const newEntry = _merge_new_psmIds_Exclude_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
+                            //  Merge existing entry for reportedPeptideId with new PSM Ids to Include
+                            const newEntry = _merge_new_psmIds_Include_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                                 entry : reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry,
-                                psmIds_Exclude : psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass,
+                                psmIds_Include : psmIds_NOT_Containing_AnyOpenModificationMass,
                                 numPsmsForReportedPeptideId
                             })
                             if (newEntry) {
@@ -639,10 +659,9 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
 
                             const resultEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                                 reportedPeptideId,
-                                psmIds_Include : undefined,
-                                psmIds_Exclude : psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass,
+                                psmIds_Include : psmIds_NOT_Containing_AnyOpenModificationMass,
                                 psmIds_UnionSelection_ExplicitSelectAll : false,
-                                psmCount_after_Include_Exclude
+                                psmCount_after_Include: psmCount_after_Include_Exclude
                             })
                             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(resultEntry);
                         }
@@ -738,9 +757,8 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
                 const resultEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                     reportedPeptideId,
                     psmIds_Include,
-                    psmIds_Exclude: undefined,
                     psmIds_UnionSelection_ExplicitSelectAll: false,
-                    psmCount_after_Include_Exclude: psmIds_Include.size
+                    psmCount_after_Include: psmIds_Include.size
                 })
 
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(resultEntry);
@@ -845,9 +863,8 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
                 const resultEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                     reportedPeptideId,
                     psmIds_Include : psmIds_For_SelectedReporterIonMasses,
-                    psmIds_Exclude: undefined,
                     psmIds_UnionSelection_ExplicitSelectAll: false,
-                    psmCount_after_Include_Exclude: psmIds_For_SelectedReporterIonMasses.size
+                    psmCount_after_Include: psmIds_For_SelectedReporterIonMasses.size
                 })
 
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(resultEntry);
@@ -948,7 +965,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
         if ( is_OpenModification_Unmodified___SelectionType__ALL__Selected) { // 'unmodified' ANY  in the Open Modification mass filter section
 
             this._updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificationMassSection({
-                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId, loadedDataPerProjectSearchIdHolder
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId, loadedDataPerProjectSearchIdHolder, projectSearchId
             });
         }
         if ( is_Any_OpenModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection ) {
@@ -1211,59 +1228,80 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
     private _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificationMassSection(
         {
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
-            loadedDataPerProjectSearchIdHolder
+            loadedDataPerProjectSearchIdHolder,
+            projectSearchId
         }: {
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
             loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+            projectSearchId: number // for error logging
         }): void {
 
         // const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
 
         const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
-        const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+
+        //  All PSM IDs for each reported peptide id for current cutoffs
+        const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
 
         const existing_reportedPeptideIds_All = new Set(reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds())
 
         for ( const reportedPeptideId of existing_reportedPeptideIds_All ) {
 
-            //  Processing to find entries in reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId to Delete or Update
+            const psmIdsForReportedPeptideId = psmIdsForReportedPeptideIdMap.get( reportedPeptideId );
+            if ( ! psmIdsForReportedPeptideId ) {
+                const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId
+                console.warn( msg )
+                throw Error( msg )
+            }
 
             const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
+            if ( ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId )
+                || psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass.size === 0 ) {
+                //  No Open Modification for reportedPeptideId so nothing needs to happen to entry for reportedPeptideId
 
-            // if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId ) {
-            //     //  No Open Modification for reportedPeptideId so No changes required
-            // }
+            } else {
+                //  Have at least one Open Modification for reportedPeptideId so Add reportedPeptideId and exclude PSM Ids that have Open Modifications
 
-            if ( psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId ) {
-                //  Have at least one Open Modification for reportedPeptideId so Update reportedPeptideId and exclude PSM Ids that have Open Modifications
+                //  Get Existing entry
+                const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId( reportedPeptideId )
+                if ( ! reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry ) {
 
-                const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get(reportedPeptideId);
-                if (numPsmsForReportedPeptideId === undefined) {
-                    const msg = "numPsmsForReportedPeptideIdMap.get( reportedPeptideId ) === undefined: _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificationMassSection: reportedPeptideId: " + reportedPeptideId
-                    console.warn(msg)
-                    throw Error(msg)
-                }
+                    //  NO Existing Entry so skip
+                } else {
+                    //  Process Existing Entry for this filter
 
-                const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId(reportedPeptideId)
-                if (!reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry) {
-                    const msg = "reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId( reportedPeptideId ) === undefined: _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificationMassSection: reportedPeptideId: " + reportedPeptideId
-                    console.warn(msg)
-                    throw Error(msg)
-                }
+                    if (psmIdsForReportedPeptideId.length === psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass.size) {
+                        //  All PSM IDs for reportedPeptideId have Open Mods so remove reportedPeptideId entry
+                        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId(reportedPeptideId)
 
-                //  Merge existing entry for reportedPeptideId with new PSM Ids to Exclude
-                const { newEntry, deleteEntry } = _merge_new_psmIds_Exclude_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-                    entry: reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry,
-                    psmIds_Exclude: psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass,
-                    numPsmsForReportedPeptideId
-                })
-                if ( deleteEntry ) {
-                    //   delete existing entry
-                    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId(reportedPeptideId)
-                }
-                if (newEntry) {
-                    //  Have new updated entry so insert new entry
-                    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(newEntry);
+                    } else {
+                        //  Remove PSM IDs that have Open Modifications
+
+                        let psmIncludes_New: Set<number> = undefined;
+
+                        if (reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry.psmIds_Include) {
+                            psmIncludes_New = new Set(reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry.psmIds_Include)
+                        } else {
+                            psmIncludes_New = new Set(psmIdsForReportedPeptideId);
+                        }
+
+                        for (const psmId_ContainAnyOpenModificationMass of psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass) {
+                            psmIncludes_New.delete(psmId_ContainAnyOpenModificationMass);
+                        }
+
+                        //  Merge existing entry for reportedPeptideId with new PSM Ids to Include
+                        const {newEntry, deleteEntry} = _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
+                            entry: reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry,
+                            psmIds_Include: psmIncludes_New
+                        })
+                        if (deleteEntry) {
+                            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId(reportedPeptideId)
+                        }
+                        if (newEntry) {
+                            //  Have new entry so insert it
+                            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(newEntry);
+                        }
+                    }
                 }
             }
         }
@@ -1390,8 +1428,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
 
                 const { newEntry, deleteEntry } = _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                     entry : reportedPeptideIds_AndTheir_PSM_IDs_Entry,
-                    psmIds_Include : mapEntry_perReportedPeptideId_psmIds_Include,
-                    numPsmsForReportedPeptideId
+                    psmIds_Include : mapEntry_perReportedPeptideId_psmIds_Include
                 })
                 if ( deleteEntry ) {
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId( reportedPeptideId )
@@ -1520,8 +1557,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
 
                 const { newEntry, deleteEntry } = _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                     entry : reportedPeptideIds_AndTheir_PSM_IDs_Entry_Local_To_ProcessEachMass_Loop,
-                    psmIds_Include,
-                    numPsmsForReportedPeptideId
+                    psmIds_Include
                 })
                 if ( deleteEntry ) {
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId( reportedPeptideId )
@@ -1693,9 +1729,8 @@ const _create__ForSingleReportedPeptideId__For_ReportedPeptideId_numPSMsAllForRe
 
     const entry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
         reportedPeptideId: reportedPeptideId,
-        psmCount_after_Include_Exclude: numPsms,
+        psmCount_after_Include: numPsms,
         psmIds_Include: undefined,
-        psmIds_Exclude: undefined,
         psmIds_UnionSelection_ExplicitSelectAll: false
     })
 
@@ -1708,90 +1743,10 @@ const _create__ForSingleReportedPeptideId__For_ReportedPeptideId_numPSMsAllForRe
 
 //    Merge Rules for merging UNION/ANY:
 
-//   When add Exclude, remove Include and update the Exclude to remove any entries that were in the Include
-
-/**
- * Merge in contents of psmIds_Exclude As UNION to support "ANY" to existing entry.  Used for "Unmodified" selection of Open Modification
- *
- * @return null or new value
- */
-const _merge_new_psmIds_Exclude_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = function(
-    {
-        entry, psmIds_Exclude, numPsmsForReportedPeptideId
-    }: {
-
-        entry: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
-        psmIds_Exclude: Set<number>
-        numPsmsForReportedPeptideId: number
-
-    }): ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId {
-
-    let new_psmIds_Include : Set<number> = undefined  //  new psmIds_Include is always undefined after add Exclude
-
-    if ( entry.psmIds_Include ) {
-        const msg = "Not supported or tested that entry.psmIds_Include is set when this function is called. _merge_new_psmIds_Exclude_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId "
-        console.warn( msg )
-        throw Error( msg )
-        //  Not used since not tested.
-        // //  Since union, remove any PSM ID from Exclude that is already in Include and remove include from result
-        // for ( const psmId_Include of entry.psmIds_Include ) {
-        //     psmIds_Exclude.delete( psmId_Include )
-        // }
-    }
-    if ( psmIds_Exclude.size === 0 ) {
-        // NO Changes
-        return null; // EARLY RETURN
-    }
-
-    if ( ( ! entry.psmIds_Include ) && ( ! entry.psmIds_Exclude ) ) {
-        //  Already added for ReportedPeptideId with NO Include and NO Exclude so for All PSMs for UNION/ANY so no changes needed
-        // NO Changes
-        return null; // EARLY RETURN
-    }
-
-    if ( entry.psmIds_UnionSelection_ExplicitSelectAll ) {
-        //  Already explicitly added all PSM Ids for ReportedPeptideId for UNION/ANY so no changes needed
-        // NO Changes
-        return null; // EARLY RETURN
-    }
-
-    //  Still have exclude entries to process
-    const new_psmIds_Exclude = new Set( psmIds_Exclude )
-
-    //  New Excludes are the excludes in both the existing and the new excludes
-    if ( entry.psmIds_Exclude ) {
-        const msg = "Not supported or tested that entry.psmIds_Exclude is set when this function is called. _merge_new_psmIds_Exclude_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId "
-        console.warn( msg )
-        throw Error( msg )
-        //  Not used since not tested.
-        //  Possible Solution is this but not confirmed: New Excludes are the excludes in both the existing and the new excludes (intersection of the excludes)
-    }
-
-    //  Not used since not tested.  replaced with code after it
-    // let psmCount_after_Include_Exclude = 0;
-    // if ( entry.psmIds_Include ) {
-    //     psmCount_after_Include_Exclude = entry.psmIds_Include.size
-    // } else {
-    //     psmCount_after_Include_Exclude = numPsmsForReportedPeptideId - new_psmIds_Exclude.size
-    // }
-
-    const psmCount_after_Include_Exclude = numPsmsForReportedPeptideId - new_psmIds_Exclude.size
-
-    const newEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-        reportedPeptideId : entry.reportedPeptideId,
-        psmIds_Include : new_psmIds_Include,
-        psmIds_Exclude : new_psmIds_Exclude,
-        psmIds_UnionSelection_ExplicitSelectAll: false,
-        psmCount_after_Include_Exclude
-    })
-
-    return newEntry
-}
-
 /**
  * Merge in contents of psmIds_Include As UNION to support "ANY" to existing entry.  Used for selection of Open Modification and Reporter Ion Masses
  *
- * @return null or new value
+ * @return new value or null if no chnages
  */
 const _merge_new_psmIds_Include_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = function(
     {
@@ -1804,17 +1759,12 @@ const _merge_new_psmIds_Include_As_UNION__For_ANY___To_ProteinExpmntPage_Reporte
 
     }): ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId {
 
-    if ( entry.psmIds_Include && entry.psmIds_Exclude ) {
-        const msg = "Not valid to have value for both entry.psmIds_Include && entry.psmIds_Exclude: _merge_new_psmIds_Include_As_UNION__For_ANY___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId"
-        console.warn( msg )
-        throw Error( msg )
-    }
     if (psmIds_Include.size === 0) {
         // NO Changes
         return null; // EARLY RETURN
     }
 
-    if (( ! entry.psmIds_Include ) && ( ! entry.psmIds_Exclude ) ) {
+    if ( ! entry.psmIds_Include ) {
         //  Already added for ReportedPeptideId with NO Include or Exclude so for All PSMs for UNION/ANY so no changes needed
         // NO Changes
         return null; // EARLY RETURN
@@ -1827,59 +1777,35 @@ const _merge_new_psmIds_Include_As_UNION__For_ANY___To_ProteinExpmntPage_Reporte
     }
 
     let new_psmIds_Include : Set<number> = undefined
-    let new_psmIds_Exclude : Set<number> = undefined
     let psmIds_UnionSelection_ExplicitSelectAll = false
 
-    if ( entry.psmIds_Exclude ) {
-        //  Have Existing Exclude:
-
-        new_psmIds_Exclude = new Set( entry.psmIds_Exclude )
-
-        for (const psmId_Include of psmIds_Include) {
-            new_psmIds_Exclude.delete(psmId_Include)  //  Shrink the Exclude to grow the selected by the contents of psmIds_Include since this is UNION/ANY
-        }
-        if (new_psmIds_Exclude.size === entry.psmIds_Exclude.size) {  // since only delete can just compare size
-            // NO Changes
-            return null; // EARLY RETURN
-        }
-        if ( new_psmIds_Exclude.size === 0 ) {
-            //  Nothing to exclude so remove
-            new_psmIds_Exclude = undefined
-            psmIds_UnionSelection_ExplicitSelectAll = true
-        }
-
+    if (entry.psmIds_Include) {
+        //  Have Existing Include:
+        new_psmIds_Include = new Set(entry.psmIds_Include)
     } else {
-        if (entry.psmIds_Include) {
-            //  Have Existing Include:
-            new_psmIds_Include = new Set(entry.psmIds_Include)
-        } else {
-            new_psmIds_Include = new Set()
-        }
-
-        for (const psmId_Include of psmIds_Include) {
-            new_psmIds_Include.add(psmId_Include)  //  Add to the Include to grow the selected by the contents of psmIds_Include since this is UNION/ANY
-        }
-        if ( entry.psmIds_Include && entry.psmIds_Include.size === new_psmIds_Include.size) {  // Have Existing and since only add can just compare size
-            // NO Changes
-            return null; // EARLY RETURN
-        }
+        new_psmIds_Include = new Set()
     }
 
-    let psmCount_after_Include_Exclude = 0;
+    for (const psmId_Include of psmIds_Include) {
+        new_psmIds_Include.add(psmId_Include)  //  Add to the Include to grow the selected by the contents of psmIds_Include since this is UNION/ANY
+    }
+    if ( entry.psmIds_Include && entry.psmIds_Include.size === new_psmIds_Include.size) {  // Have Existing and since only add can just compare size
+        // NO Changes
+        return null; // EARLY RETURN
+    }
+
+    let psmCount_after_Include = 0;
     if ( new_psmIds_Include ) {
-        psmCount_after_Include_Exclude = new_psmIds_Include.size
-    } else if ( new_psmIds_Exclude ) {
-        psmCount_after_Include_Exclude = numPsmsForReportedPeptideId - new_psmIds_Exclude.size
+        psmCount_after_Include = new_psmIds_Include.size
     } else {
-        psmCount_after_Include_Exclude = numPsmsForReportedPeptideId
+        psmCount_after_Include = numPsmsForReportedPeptideId
     }
 
     const newEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
         reportedPeptideId : entry.reportedPeptideId,
         psmIds_Include : new_psmIds_Include,
-        psmIds_Exclude : new_psmIds_Exclude,
         psmIds_UnionSelection_ExplicitSelectAll,
-        psmCount_after_Include_Exclude
+        psmCount_after_Include: psmCount_after_Include
     })
 
     return newEntry
@@ -1891,160 +1817,49 @@ const _merge_new_psmIds_Include_As_UNION__For_ANY___To_ProteinExpmntPage_Reporte
 
 //    Merge Rules for merging INTERSECTION/ALL:
 
-
-/**
- * Merge in contents of psmIds_Exclude As INTERSECTION to support "ALL" to existing entry.  Used for "Unmodified" selection of Open Modification
- *
- * Subtract from existing Include or Add to existing Exclude
- *
- * @param psmIds_Exclude - PSM Ids to Exclude (Use for Unmodified)
- * @return null or new value
- */
-const _merge_new_psmIds_Exclude_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = function(
-    {
-        entry, psmIds_Exclude, numPsmsForReportedPeptideId
-    }: {
-        entry: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
-        psmIds_Exclude: Set<number>
-        numPsmsForReportedPeptideId: number
-
-    }): {
-    newEntry : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
-    deleteEntry : boolean
-} {
-    if (entry.psmIds_Include && entry.psmIds_Exclude) {
-        const msg = "Not valid to have value for both entry.psmIds_Include && entry.psmIds_Exclude: _merge_new_psmIds_Exclude_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId"
-        console.warn(msg)
-        throw Error(msg)
-    }
-
-    if (psmIds_Exclude.size === 0) {
-        // NO Changes
-        return {newEntry: null, deleteEntry: false}; // EARLY RETURN
-    }
-
-    if (psmIds_Exclude.size === numPsmsForReportedPeptideId) {
-        //  All PSM IDs are now excluded so remove entry
-        return {newEntry: null, deleteEntry: true}; // EARLY RETURN
-    }
-
-    let new_psmIds_Include : Set<number> = undefined
-    let new_psmIds_Exclude : Set<number> = undefined
-
-    if ( entry.psmIds_Include ) {
-        //  Have Existing Include:
-
-        new_psmIds_Include = new Set( entry.psmIds_Include )
-
-        for (const psmId_Exclude of psmIds_Exclude) {
-            new_psmIds_Include.delete(psmId_Exclude)  //  Shrink the Include to shrink the selected by the contents of psmIds_Exclude since this is INTERSECTION/ALL
-        }
-        if (new_psmIds_Include.size === entry.psmIds_Include.size) {  // since only delete can just compare size
-            // NO Changes
-            return {newEntry: null, deleteEntry: false}; // EARLY RETURN
-        }
-
-    } else {
-        if (entry.psmIds_Exclude) {
-            //  Have Existing Exclude:
-            new_psmIds_Exclude = new Set(entry.psmIds_Exclude)
-        } else {
-            new_psmIds_Exclude = new Set()
-        }
-
-        for (const psmId_Exclude of psmIds_Exclude) {
-            new_psmIds_Exclude.add(psmId_Exclude)  //  Grow the Exclude to shrink the selected by the contents of psmIds_Exclude since this is INTERSECTION/ALL
-        }
-        if ( entry.psmIds_Exclude && entry.psmIds_Exclude.size === new_psmIds_Exclude.size) {  // Have Existing and since only add can just compare size
-            // NO Changes
-            return {newEntry: null, deleteEntry: false}; // EARLY RETURN
-        }
-    }
-
-    let psmCount_after_Include_Exclude = 0
-    if ( new_psmIds_Include ) {
-        psmCount_after_Include_Exclude = new_psmIds_Include.size
-    } else {
-        psmCount_after_Include_Exclude = numPsmsForReportedPeptideId - new_psmIds_Exclude.size
-    }
-
-    if (psmCount_after_Include_Exclude === 0) {
-        //  No PSM IDs are now included OR All PSM IDs are now excluded so remove entry
-        return {newEntry: null, deleteEntry: true}; // EARLY RETURN
-    }
-
-    const newEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-        reportedPeptideId : entry.reportedPeptideId,
-        psmIds_Include : new_psmIds_Include,
-        psmIds_Exclude : new_psmIds_Exclude,
-        psmIds_UnionSelection_ExplicitSelectAll : false,
-        psmCount_after_Include_Exclude
-    })
-
-    return { newEntry, deleteEntry : false }
-}
-
 /**
  * Merge in contents of psmIds_Include As INTERSECTION to support "ALL" to existing entry.  Used for selection of Open Modification and Reporter Ion Masses
  *
  * When have existing Exclude, to add Include, remove Exclude and update the Include to remove any entries that were in the Exclude
  *
- * @return null or new value
+ * @return newEntry === null if no changes
  */
 const _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = function(
     {
-        entry, psmIds_Include, numPsmsForReportedPeptideId
+        entry, psmIds_Include
     }: {
 
         entry: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
         psmIds_Include: Set<number>
-        numPsmsForReportedPeptideId: number
 
     }): {
     newEntry : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
     deleteEntry : boolean
 } {
 
-    if ( entry.psmIds_Include && entry.psmIds_Exclude ) {
-        const msg = "Not valid to have value for both entry.psmIds_Include && entry.psmIds_Exclude: _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId"
-        console.warn( msg )
-        throw Error( msg )
-    }
     if (psmIds_Include.size === 0) {
         //  No PSM IDs are now included so remove entry
         return { newEntry : null, deleteEntry : true }; // EARLY RETURN
     }
 
     let new_psmIds_Include : Set<number> = undefined
-    let new_psmIds_Exclude : Set<number> = undefined
 
-    if ( entry.psmIds_Exclude ) {
-        //  Have Existing Exclude:
-
-        new_psmIds_Include = new Set( psmIds_Include )
-
-        for (const psmId_Exclude of entry.psmIds_Exclude) {
-            new_psmIds_Include.delete(psmId_Exclude)  //  Shrink the Include to shrink the selected by the contents of entry.psmIds_Exclude since this is INTERSECTION/ALL
+    if (entry.psmIds_Include) {
+        //  Have Existing Include:
+        new_psmIds_Include = new Set()
+        for (const psmId_Include of psmIds_Include) {
+            if ( entry.psmIds_Include.has( psmId_Include) ) {
+                //  psmId_Include is in both existing and new psmIds_Include so is added to result new_psmIds_Include since this is INTERSECTION/ALL
+                new_psmIds_Include.add(psmId_Include)
+            }
         }
-
+        if ( entry.psmIds_Include.size === new_psmIds_Include.size) {  // Have Existing and since only add can just compare size
+            // NO Changes
+            return { newEntry: null, deleteEntry: false }; // EARLY RETURN
+        }
     } else {
-        if (entry.psmIds_Include) {
-            //  Have Existing Include:
-            new_psmIds_Include = new Set()
-            for (const psmId_Include of psmIds_Include) {
-                if ( entry.psmIds_Include.has( psmId_Include) ) {
-                    //  psmId_Include is in both existing and new psmIds_Include so is added to result new_psmIds_Include since this is INTERSECTION/ALL
-                    new_psmIds_Include.add(psmId_Include)
-                }
-            }
-            if ( entry.psmIds_Include.size === new_psmIds_Include.size) {  // Have Existing and since only add can just compare size
-                // NO Changes
-                return { newEntry: null, deleteEntry: false }; // EARLY RETURN
-            }
-        } else {
-            //  No Existing Includes
-            new_psmIds_Include = psmIds_Include
-        }
+        //  No Existing Includes
+        new_psmIds_Include = psmIds_Include
     }
 
     let psmCount_after_Include_Exclude = new_psmIds_Include.size
@@ -2057,9 +1872,8 @@ const _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_ProteinExpmntPage_
     const newEntry = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
         reportedPeptideId : entry.reportedPeptideId,
         psmIds_Include : new_psmIds_Include,
-        psmIds_Exclude : new_psmIds_Exclude,
         psmIds_UnionSelection_ExplicitSelectAll : false,
-        psmCount_after_Include_Exclude
+        psmCount_after_Include: psmCount_after_Include_Exclude
     })
 
     return { newEntry, deleteEntry : false }

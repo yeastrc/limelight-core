@@ -520,6 +520,8 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 
 						const promise = (
 								loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
+									for_MultipleSearch_Or_Experiment : true,
+									for_SingleSearch : false,
 									anyReporterIonMassesSelected,
 									anyOpenModificationMassesSelected,
 									proteinSequenceVersionId : proteinSequenceVersionId,

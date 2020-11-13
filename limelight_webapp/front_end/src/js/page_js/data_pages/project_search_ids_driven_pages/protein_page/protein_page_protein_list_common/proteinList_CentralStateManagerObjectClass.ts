@@ -34,6 +34,8 @@ const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 //   V1 Group Proteins.  Kept for Backwards compatibility.   Now Handled in proteinGrouping_CentralStateManagerObjectClass.ts.
 const _GROUP_PROTEINS_PROPERTY_NAME = 'b';
 
+const _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'c';
+
 /**
  * 
  */
@@ -41,14 +43,15 @@ export class ProteinList_CentralStateManagerObjectClass {
 
 	private _value : { 
 		groupProteins_OLD_V1? : any //  OLD V1 value for groupProteins.  Only here for Backwards compatibility.   Now Handled in proteinGrouping_CentralStateManagerObjectClass.ts.
+		generatedPeptideContentsSelectedEncodedStateData? : any
 	};
 
-	private _centralPageStateManager;
+	private _centralPageStateManager : CentralPageStateManager;
 
 	/**
 	 * 
 	 */
-	constructor( { centralPageStateManager } ) {
+	constructor( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) {
 
 		this._value = {};
 
@@ -67,6 +70,7 @@ export class ProteinList_CentralStateManagerObjectClass {
             this._value = {
 				// groupProteins_OLD_V1? : any //  OLD V1 value for groupProteins.  Only here for Backwards compatibility.   Now Handled in proteinGrouping_CentralStateManagerObjectClass.ts.
 				groupProteins_OLD_V1 : encodedStateData[ _GROUP_PROTEINS_PROPERTY_NAME ],
+				generatedPeptideContentsSelectedEncodedStateData : encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
             };
 		}
 	}
@@ -102,6 +106,19 @@ export class ProteinList_CentralStateManagerObjectClass {
 		return this._value.groupProteins_OLD_V1;
 	}
 
+	setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData } ) {
+		this._value.generatedPeptideContentsSelectedEncodedStateData = generatedPeptideContentsSelectedEncodedStateData;
+
+		if ( ! this._centralPageStateManager ) {
+			throw Error( "this._centralPageStateManager not set" );
+		}
+		this._centralPageStateManager.setState( { component : this } );
+	}
+
+	getGeneratedPeptideContentsSelectedEncodedStateData() {
+		return this._value.generatedPeptideContentsSelectedEncodedStateData;
+	}
+
     /**
      * Called by Central State Manager and maybe other code
 	 */
@@ -121,6 +138,10 @@ export class ProteinList_CentralStateManagerObjectClass {
 		// if ( this._value.groupProteins !== undefined ) {
 		// 	dataForEncoding[ _GROUP_PROTEINS_PROPERTY_NAME ] = this._value.groupProteins;
 		// }
+
+		if ( this._value.generatedPeptideContentsSelectedEncodedStateData !== undefined ) {
+			dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.generatedPeptideContentsSelectedEncodedStateData;
+		}
 
 		return dataForEncoding;
 	}

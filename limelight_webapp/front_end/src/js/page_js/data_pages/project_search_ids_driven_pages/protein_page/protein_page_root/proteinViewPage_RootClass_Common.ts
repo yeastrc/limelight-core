@@ -57,6 +57,7 @@ import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveVie
 //  From local dir
 import { ProteinViewPage_DisplayDataOnPage }  from './proteinViewPage_DisplayDataOnPage';
 import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 	
 //  From Testing
 	
@@ -81,6 +82,7 @@ export class ProteinViewPage_RootClass_Common {
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
+	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
@@ -112,6 +114,7 @@ export class ProteinViewPage_RootClass_Common {
 		this._singleProtein_CentralStateManagerObject = new SingleProtein_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined } );
 		this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 		this._proteinGrouping_CentralStateManagerObjectClass = new ProteinGrouping_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager, proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass });
+		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject();
 
 		//  Instances of class DataPageStateManager
 		
@@ -140,14 +143,15 @@ export class ProteinViewPage_RootClass_Common {
 			centralPageStateManager : this._centralPageStateManager,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
-			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
+			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
 		
 		this._sharePage_dataPages = new SharePage_dataPages();
 	}
-	
+
 
 	/**
 	 * 
@@ -163,6 +167,12 @@ export class ProteinViewPage_RootClass_Common {
 		this._singleProtein_CentralStateManagerObject.initialize();
 		this._proteinList_CentralStateManagerObjectClass.initialize();
 		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
+		{
+			const encodedStateData = this._proteinList_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 		
 		let referrerFromURL = initialStateFromURL.referrer;
 		

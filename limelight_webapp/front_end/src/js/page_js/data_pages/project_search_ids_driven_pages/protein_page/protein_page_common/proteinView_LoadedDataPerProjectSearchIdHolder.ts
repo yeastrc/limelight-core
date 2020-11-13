@@ -236,11 +236,11 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 
 	///
 
-	get_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs() {
-		return this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs;
+	get_psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs() {
+		return this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs;
 	}
-	set_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs(psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap) : void {
-		this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap;
+	set_psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs(psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap;
 	}
 
 	get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs() {
@@ -410,10 +410,12 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 	_psmFilterableAnnotationValuesForReportedPeptideIdMap : Map<number, Map<number,Map<number,number>>>; // Map<ReportedPeptideId, Map< Psm Id, Map< Annotation Type id, Annotation Value > > >
 
 	//  	PSM: Open Modification Mass Values for each PSM for current cutoffs per PSM Id per Reported Peptide Id
-	// 				- Map<Reported Peptide Id, { reportedPeptideId, Map<PsmId, { psmId, Map<openModificationMass_Rounded, [{ openModificationMass : number, positions: Map<position, {...} >] >
-	_psmOpenModificationMassesPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs :
-		Map<number, { reportedPeptideId : number, psmOpenModificationMassesPerPSM_ForPsmIdMap :
-				Map<number,{ psmId : number, openModificationEntries_ForMassMap : Map<number, Array<{ openModificationMass : number, openModificationMass_Rounded : number, positions: Map<number, { position : number, isNTerminal : boolean, isCTerminal : boolean}> }>> }> }>;
+	// 				- Map<Reported Peptide Id, { reportedPeptideId, Map<PsmId, { psmId, openModificationMass : number, openModificationMass_Rounded: number, positions: Map<position, [{...}] >] >
+	//					- positionsMap_KeyPosition has Map values of Array to handle entry position 1 and entry n-term true that has position of 1
+	_psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs :
+		Map<number, { reportedPeptideId : number, psmOpenModificationMassPerPSM_ForPsmIdMap :
+				Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
+					positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> }>;
 
 	//  	PSM: Open Modification: Psm Ids per Rounded Mass for current cutoffs per Reported Peptide Id
 	// 				- Map<Reported Peptide Id, { reportedPeptideId, Set<psm id has any open Mod mass>, Map<openModificationMass_Rounded, { openModificationMass_Rounded, Set<psmId> } > } >

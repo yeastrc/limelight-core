@@ -13,32 +13,14 @@ import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/data
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 
-import {
-
-    DataTable_ColumnId,
-
-    DataTable_RootTableObject,
-    
-    DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-    
+import { DataTable_RootTableObject, DataTable_TableOptions,
     DataTable_Column,
-    DataTable_SortColumnsInfoEntry,
-
     DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
-    
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry } from './proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
+import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry } from './proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
 
 
 //  Child Data Searches for Single Peptide show/hide
@@ -46,6 +28,10 @@ import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Re
 import { ProteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter, proteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent } from '../protein_page_multiple_searches_single_protein_searches_for_generated_reported_peptide/js/proteinPage_SingleProtein_searchesForGeneratedSinglePeptide_ReturnChildReactComponent';
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {
+    reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent,
+    ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_ReturnChildReactComponent";
 
 
 //////////////////
@@ -98,7 +84,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_MultipleSearch_SingleProtein_Result();
 
-    const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
+    const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
 
     if ( peptideList.length === 0 ) {
         //  No data found so return
@@ -117,8 +103,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
     {  // Generated Peptide sequence, including variable mods, etc
         const dataTable_Column = new DataTable_Column({
-            id : "Sequence", // Used for tracking sort order. Keep short
-            displayName : "Sequence",
+            id : "Peptide_Sequence", // Used for tracking sort order. Keep short
+            displayName : "Peptide Sequence",
             width : 500,
             sortable : true,
             style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
@@ -155,12 +141,21 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
             console.warn( msg );
             throw Error( msg );
         }
-        const searchName = searchNameObj.name;
-        const searchId = searchNameObj.searchId;
+
+        let displayName : string = undefined;
+
+        if ( projectSearchIds.length > 1 ) {
+            const searchName = searchNameObj.name;
+            const searchId = searchNameObj.searchId;
+            displayName = "PSM Count (" + searchId + ")";
+        } else {
+            // Special value when only 1 search for Single Search
+            displayName = "PSM Count";
+        }
 
         const dataTable_Column = new DataTable_Column({
             id : "psmCount_" + projectSearchId, // Used for tracking sort order. Keep short
-            displayName : "PSM Count (" + searchId + ")",
+            displayName,
             width : 70,
             sortable : true
         });
@@ -210,6 +205,24 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                 let psmCount = peptideEntry.psmCountsMap_KeyProjectSearchId.get( projectSearchId );
                 if ( ! psmCount ) {
                     psmCount = 0;
+                    const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId );
+                    if ( dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+                        for ( const dataPerReportedPeptideId_MapEntry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries() ) {
+                            const dataPerReportedPeptideId_MapEntry_Value = dataPerReportedPeptideId_MapEntry[ 1 ];
+                            const psmIdsSet = dataPerReportedPeptideId_MapEntry_Value.psmIdsSet;
+                            if ( psmIdsSet ) {
+                                psmCount += psmIdsSet.size;
+                            } else {
+                                const msg = (
+                                    "No Value in dataPerReportedPeptideId_MapEntry_Value.psmIdsSet: reportedPeptideId: "
+                                    + dataPerReportedPeptideId_MapEntry_Value.reportedPeptideId
+                                    + ", projectSearchId: " + projectSearchId
+                                );
+                                console.warn( msg );
+                                throw new Error( msg );
+                            }
+                        }
+                    }
                 }
 
                 const psmCountDisplay = psmCount.toLocaleString();
@@ -231,27 +244,77 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
             // Data for Child Tables for this row of this table
 
-            const createReportedPeptideDisplayData_Result_Entry_ForThisRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry = (
-                create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay.get( peptideEntry.peptideSequenceDisplay )
-            );
-            if ( ! createReportedPeptideDisplayData_Result_Entry_ForThisRow ) {
-                throw Error("proteinPage_Display_MultipleSearches__SingleProteinReportedPeptideListSection_CreateListData.ts: No value for peptideEntry.peptideSequenceDisplay: " + peptideEntry.peptideSequenceDisplay );
-            }
+            let dataRow_GetChildTable_ReturnReactComponent_Parameter : any = undefined;
 
-            const dataRow_GetChildTable_ReturnReactComponent_Parameter = ( 
-                new ProteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter({
-                    
-                    createReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry_ForParentRow : createReportedPeptideDisplayData_Result_Entry_ForThisRow,
-                    
-                    projectSearchIds,
-                    reportedPeptideIdsMap_KeyProjectSearchId_ForParentPeptide : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
-                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                    searchDataLookupParamsRoot,
-                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                    loadedDataCommonHolder,
-                    dataPageStateManager
-                })
-            );
+            if ( projectSearchIds.length > 1 ) {
+
+                const createReportedPeptideDisplayData_Result_Entry_ForThisRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = (
+                    create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay.get( peptideEntry.peptideSequenceDisplay )
+                );
+                if ( ! createReportedPeptideDisplayData_Result_Entry_ForThisRow ) {
+                    throw Error("proteinPage_Display_MultipleSearches__SingleProteinReportedPeptideListSection_CreateListData.ts: No value for peptideEntry.peptideSequenceDisplay: " + peptideEntry.peptideSequenceDisplay );
+                }
+
+                dataRow_GetChildTable_ReturnReactComponent_Parameter = (
+                    new ProteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter({
+
+                        createReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry_ForParentRow: createReportedPeptideDisplayData_Result_Entry_ForThisRow,
+
+                        projectSearchIds,
+                        dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId: peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId,
+                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                        searchDataLookupParamsRoot,
+                        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+                        loadedDataCommonHolder,
+                        dataPageStateManager
+                    })
+                );
+
+            } else {
+
+                //  Special Value for when only 1 search
+
+                if ( ! ( projectSearchIds.length > 0 ) ) {
+                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein: ( ! ( projectSearchIds.length > 0 ) )";
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const projectSearchId = projectSearchIds[ 0 ];
+
+                const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId )
+                if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein: peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId ); returned no value. projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+                const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId );
+                if ( ! reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId ) {
+                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId ); returned no value. projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+                if ( ! loadedDataPerProjectSearchIdHolder ) {
+                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein: loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId ); returned no value. projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                dataRow_GetChildTable_ReturnReactComponent_Parameter = (
+                    new ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter({
+                        projectSearchId,
+                        reportedPeptideIds_ForDisplay : undefined,
+                        dataPerReportedPeptideId_Map_Key_reportedPeptideId,
+                        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+                        searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+                        loadedDataPerProjectSearchIdHolder,
+                        loadedDataCommonHolder : loadedDataCommonHolder,
+                        dataPageStateManager : dataPageStateManager
+                    })
+                );
+            }
 
             //////////
 
@@ -273,7 +336,24 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
         dataTable_DataRowEntries
     });
 
-    let dataRow_GetChildTable_ReturnReactComponent = proteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent;
+    let dataRow_GetChildTable_ReturnReactComponent = undefined;
+
+    if ( projectSearchIds.length > 1 ) {
+
+        dataRow_GetChildTable_ReturnReactComponent = proteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent;
+
+    } else {
+
+        //  Special Value for when only 1 search
+
+        if ( ! ( projectSearchIds.length > 0 ) ) {
+            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein: ( ! ( projectSearchIds.length > 0 ) )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+
+        dataRow_GetChildTable_ReturnReactComponent = reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent
+    }
 
     const tableOptions = new DataTable_TableOptions({
         // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing

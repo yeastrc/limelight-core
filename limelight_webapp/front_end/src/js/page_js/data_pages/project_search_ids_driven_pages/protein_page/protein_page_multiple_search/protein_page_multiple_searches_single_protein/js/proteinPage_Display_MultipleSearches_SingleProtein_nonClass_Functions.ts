@@ -17,6 +17,11 @@ import {loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_R
 import {loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SingleProtein_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {loadData_PeptideSequences_LoadTo_loadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/loadPeptideSequencesForReportedPeptideIds_SingleSearch_LoadTo_loadedDataCommonHolder";
 import {loadProteinSequences_LoadTo_loadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/loadProteinSequences_LoadTo_loadedDataCommonHolder";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
+import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 //  Constants
@@ -196,19 +201,21 @@ const _loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 	searchDataLookupParamsRoot,
 	reporterIonMass_UserSelections_StateObject,
-	open_Modifications_Subpart_UserSelections_StateObject
+	open_Modifications_Subpart_UserSelections_StateObject,
+	generatedPeptideContents_UserSelections_StateObject
 } : { 
 	proteinSequenceVersionId, 
-	projectSearchIds, 
-	dataPageStateManager_DataFrom_Server, 
-	loadedDataCommonHolder, 
-	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-	searchDataLookupParamsRoot,
+	projectSearchIds :  number[]
+	dataPageStateManager_DataFrom_Server : DataPageStateManager
+	loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds :  Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+	searchDataLookupParamsRoot : SearchDataLookupParameters_Root
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
+	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 }) {
 
-	//  NOT valid test to determine if skip loading. Broken if user changes PSM/Peptide FIlters and thus loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is cleared
+	//  NOT valid test to determine if skip loading. Broken if user changes PSM/Peptide Filters and thus loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is cleared
 
 	// if ( loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId( { proteinSequenceVersionId } ) !== undefined ) {
 	// 	return null;
@@ -224,7 +231,8 @@ const _loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 		loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 		searchDataLookupParamsRoot,
 		reporterIonMass_UserSelections_StateObject,
-		open_Modifications_Subpart_UserSelections_StateObject
+		open_Modifications_Subpart_UserSelections_StateObject,
+		generatedPeptideContents_UserSelections_StateObject
 	});
 
 	//  Returned Promise
@@ -310,7 +318,8 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 	searchDataLookupParamsRoot,
 	reporterIonMass_UserSelections_StateObject,
-	open_Modifications_Subpart_UserSelections_StateObject
+	open_Modifications_Subpart_UserSelections_StateObject,
+	generatedPeptideContents_UserSelections_StateObject
 } : { 
 	proteinSequenceVersionId, 
 	projectSearchIds, 
@@ -320,6 +329,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	searchDataLookupParamsRoot,
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
+	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 }) {
 
 	//  NOT valid test to determine if skip loading. Broken if user changes PSM/Peptide FIlters and thus loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is cleared
@@ -383,7 +393,8 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 			dataPageStateManager_DataFrom_Server,
 			searchDataLookupParamsRoot,
 			reporterIonMass_UserSelections_StateObject,
-			open_Modifications_Subpart_UserSelections_StateObject
+			open_Modifications_Subpart_UserSelections_StateObject,
+			generatedPeptideContents_UserSelections_StateObject
 		});
 
 		if ( promise ) {
@@ -417,7 +428,8 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 	dataPageStateManager_DataFrom_Server,
 	searchDataLookupParamsRoot,
 	reporterIonMass_UserSelections_StateObject,
-	open_Modifications_Subpart_UserSelections_StateObject
+	open_Modifications_Subpart_UserSelections_StateObject,
+	generatedPeptideContents_UserSelections_StateObject
 } : { 
 	proteinSequenceVersionId, 
 	projectSearchId, 
@@ -427,6 +439,7 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 	searchDataLookupParamsRoot
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
+	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 }) {
 
 	const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
@@ -495,7 +508,11 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 				{  //  Run here if any selected Reporter Ion Mass entries OR selected Open Modifications Mass entries in URL at time of load
 
 					const anyReporterIonMassesSelected = reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected();
-					const anyOpenModificationMassesSelected = open_Modifications_Subpart_UserSelections_StateObject.is_Any_Modification_Selected();
+					const anyOpenModificationMassesSelected = (
+						open_Modifications_Subpart_UserSelections_StateObject.is_Any_Modification_Selected()
+						|| generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
+						|| generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected()
+					)
 
 					if ( anyReporterIonMassesSelected || anyOpenModificationMassesSelected ) {
 
@@ -520,6 +537,8 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 
 						const promise = (
 							loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
+								for_MultipleSearch_Or_Experiment : true,
+								for_SingleSearch : false,
 								anyReporterIonMassesSelected,
 								anyOpenModificationMassesSelected,
 								proteinSequenceVersionId : proteinSequenceVersionId,

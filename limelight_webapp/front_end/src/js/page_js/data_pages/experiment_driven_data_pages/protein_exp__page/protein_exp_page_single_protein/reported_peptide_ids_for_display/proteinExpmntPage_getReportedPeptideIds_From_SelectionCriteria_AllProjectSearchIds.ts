@@ -75,37 +75,52 @@ export class ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSe
  * 
  * 
  */
-export const getReportedPeptideIdsForDisplay_AllProjectSearchIds = function( { 
-    not_filtered_position_modification_selections, 
-    proteinSequenceVersionId,
-    projectSearchIds,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-    loadedDataCommonHolder,
-    proteinSequenceWidget_StateObject,
-    modificationMass_UserSelections_StateObject,
-    reporterIonMass_UserSelections_StateObject,
-    userSearchString_LocationsOn_ProteinSequence_Root
-} : { 
-    not_filtered_position_modification_selections : boolean, 
-    proteinSequenceVersionId : number,
-    projectSearchIds : Array<number>,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
-    proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject,
-    modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
-    reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
-    userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root,
-} ) : {
+export const getReportedPeptideIdsForDisplay_AllProjectSearchIds = function(
+    {
+        not_filtered_position_modification_selections,
+        forMultipleSearch_OrExperiment,
+        forSingleSearch,
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        loadedDataCommonHolder,
+        proteinSequenceWidget_StateObject,
+        modificationMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject,
+        userSearchString_LocationsOn_ProteinSequence_Root
+    } : {
+        not_filtered_position_modification_selections : boolean;
+        forMultipleSearch_OrExperiment : boolean;
+        forSingleSearch : boolean;
+        proteinSequenceVersionId : number;
+        projectSearchIds : Array<number>;
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
+        proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject,
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+        userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root,
+    } ) : {
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 } {
 
+    if (forSingleSearch && forMultipleSearch_OrExperiment) {
+        const msg = "getReportedPeptideIdsForDisplay_AllProjectSearchIds:  forSingleSearch & forMultipleSearch_OrExperiment cannot both be true"
+        console.warn(msg);
+        throw Error(msg)
+    }
+    if ((!forSingleSearch) && (!forMultipleSearch_OrExperiment)) {
+        const msg = "getReportedPeptideIdsForDisplay_AllProjectSearchIds:  forSingleSearch & forMultipleSearch_OrExperiment cannot both be false (or not set)"
+        console.warn(msg);
+        throw Error(msg)
+    }
 
     //  return item:
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = new ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds( undefined );
 
     const proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId = new ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId({
-        forMultipleSearch : true,
-        forSingleSearch : false,
+        forMultipleSearch : forMultipleSearch_OrExperiment,
+        forSingleSearch,
         proteinSequenceVersionId,
 		loadedDataCommonHolder,
 		proteinSequenceWidget_StateObject, 

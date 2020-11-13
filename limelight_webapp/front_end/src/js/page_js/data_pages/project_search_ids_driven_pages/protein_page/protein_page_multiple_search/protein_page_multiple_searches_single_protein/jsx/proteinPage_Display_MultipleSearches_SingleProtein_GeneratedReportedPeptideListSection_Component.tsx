@@ -311,7 +311,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         let noPeptidesMessage = undefined;
         let peptideListTable = undefined;
 
-        if ( this.props.create_GeneratedReportedPeptideListData_Result.numberOfReportedPeptides === 0 ) {
+        if ( this.props.create_GeneratedReportedPeptideListData_Result.peptideList_Length === 0 ) {
 
             noPeptidesMessage = (
                 <div className=" padding-for-room-for-child-table-show-hide-icon "> 
@@ -328,8 +328,9 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
             );
         }
 
-        const numberOfPeptidesShown = this.props.create_GeneratedReportedPeptideListData_Result.numberOfReportedPeptides.toLocaleString();
-        const numberOfPSMsForReportedPeptidesShown = this.props.create_GeneratedReportedPeptideListData_Result.numberOfPsmsForReportedPeptides.toLocaleString();
+        const numberOfPeptidesShown = this.props.create_GeneratedReportedPeptideListData_Result.peptideList_Length.toLocaleString();
+        const numberOfUniquePeptides = this.props.create_GeneratedReportedPeptideListData_Result.numberOfUniquePeptides.toLocaleString();
+        const numberOfPSMsForReportedPeptidesShown = this.props.create_GeneratedReportedPeptideListData_Result.numberOfPsmIds_NonRedundant_AcrossAllPeptides.toLocaleString();
 
         return (
             
@@ -346,8 +347,8 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                     <div >
                         <span >Currently showing: </span>
                         <span >{ numberOfPeptidesShown }</span>
-                        <span > peptides </span>
-                        <span >({ numberOfPSMsForReportedPeptidesShown } PSMs)</span>
+                        <span > peptides ({ numberOfUniquePeptides } unique) </span>
+                        <span >{ numberOfPSMsForReportedPeptidesShown } PSMs</span>
                     </div>
                 </div>
 
