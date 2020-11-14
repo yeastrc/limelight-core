@@ -110,6 +110,90 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 		return this._get_AnnotationTypeRecords_InDisplayOrder( { projectSearchId, uniqueAnnotationTypeIds, filterableAnnotationTypes_Map, descriptiveAnnotationTypes_Map } );
 	}
 
+	/////
+
+
+	/**
+	 * Return array ann type ids, sorted on sortOrder
+	 */
+	get_Psm_AnnotationTypeIds_WhereSortOrderPopulated({ projectSearchId } : { projectSearchId : number }) : Array<number> {
+
+		let psmFilterableAnnotationTypes_SortOrderPopulated =
+			this.get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated( { projectSearchId } );
+
+		let result : Array<number> = [];
+
+		psmFilterableAnnotationTypes_SortOrderPopulated.forEach(function( element, i, array) {
+			result.push( element.annotationTypeId );
+		}, this );
+
+		return result;
+	}
+
+	/**
+	 * Return array ann type entries, sorted on sortOrder
+	 */
+	get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated({ projectSearchId } : { projectSearchId : number }) : Array<AnnotationTypeItem> {
+
+		//   Get all Psm annotation type records with sortOrder set
+
+		let annotationTypeData_Root : AnnotationTypeData_Root = this._dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
+
+		let annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+		if ( ( ! annotationTypeDataForProjectSearchId ) ) {
+			throw Error("No annotation type data for projectSearchId: " + projectSearchId );
+		}
+
+
+		const psmFilterableAnnotationTypes_Map : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes;
+		const psmDescriptiveAnnotationTypes_Map : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmDescriptiveAnnotationTypes;
+
+		if ( ( ! psmFilterableAnnotationTypes_Map ) && ( ! psmDescriptiveAnnotationTypes_Map ) ) {
+			//  No data so return empty array
+			return []; //  EARLY RETURN
+		}
+
+		//  Get AnnotationType Records where sortOrder is populated
+
+		let psmAnnotationTypes_SortOrderPopulated : Array<AnnotationTypeItem> = [];
+
+		{
+			for ( const psmFilterableAnnotationTypes_MapEntry of psmFilterableAnnotationTypes_Map.entries() ) {
+
+				const psmFilterableAnnotationType : AnnotationTypeItem = psmFilterableAnnotationTypes_MapEntry[ 1 ];
+
+				if ( psmFilterableAnnotationType.sortOrder ) {
+					psmAnnotationTypes_SortOrderPopulated.push( psmFilterableAnnotationType );
+				}
+			}
+		}
+		{
+			for ( const psmDescriptiveAnnotationTypes_MapEntry of psmDescriptiveAnnotationTypes_Map.entries() ) {
+
+				const psmDescriptiveAnnotationType : AnnotationTypeItem = psmDescriptiveAnnotationTypes_MapEntry[ 1 ];
+
+				if ( psmDescriptiveAnnotationType.sortOrder ) {
+					psmAnnotationTypes_SortOrderPopulated.push( psmDescriptiveAnnotationType );
+				}
+			}
+		}
+
+		//  Sort on sort order
+
+		psmAnnotationTypes_SortOrderPopulated.sort(function(a, b) {
+			if ( a.sortOrder < b.sortOrder ) {
+				return -1;
+			}
+			if ( a.sortOrder > b.sortOrder ) {
+				return 1;
+			}
+			return 0;
+		})
+
+		return psmAnnotationTypes_SortOrderPopulated;
+	}
+
+
 	/**
 	 * uniqueAnnotationTypeIds is type Set
 	 */

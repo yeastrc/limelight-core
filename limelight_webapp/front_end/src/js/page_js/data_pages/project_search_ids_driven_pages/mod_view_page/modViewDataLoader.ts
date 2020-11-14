@@ -6,7 +6,6 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils';
 import {
     ReportedPeptide,
     ReportedPeptideVariableMod

@@ -27,7 +27,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { AnnotationTypeDataRetrieval } from 'page_js/data_pages/data_pages_common/annotationTypeDataRetrieval';
 
-import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils';
+import {AnnotationTypeData_ReturnSpecifiedTypes} from "page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes";
 
 
 export class LorikeetSpectrumViewer_LoadDataFromServer {
@@ -167,7 +167,9 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                         const psmDefaultAnnTypeDisplay : Array<number> = this._get_psmDefaultAnnTypeDisplay({ projectSearchId, dataPageStateManager_DataFrom_Server });
 
-                        let psmAnnotationTypeIdsForSorting = PageStateUtils.getPsmAnnotationTypeIdsWhereSortOrderPopulated( { dataPageStateManager_DataFrom_Server, projectSearchId } );
+                        const annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes({ dataPageStateManager_DataFrom_Server })
+
+                        let psmAnnotationTypeIdsForSorting = annotationTypeData_ReturnSpecifiedTypes.get_Psm_AnnotationTypeIds_WhereSortOrderPopulated( { projectSearchId } );
                         
                         let requestObject = {
                             psmId : psmId,
