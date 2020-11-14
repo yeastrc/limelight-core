@@ -30,6 +30,7 @@ import {
     UserSearchString_LocationsOn_ProteinSequence_Root
 } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/userSearchString_LocationsOn_ProteinSequence/userSearchString_LocationsOn_ProteinSequence_ComponentData';
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 
 /**
  *
@@ -139,6 +140,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
     private _proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject;
     private _modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject;
     private _reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject;
+    private _peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     private _userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root;
 
     /**
@@ -154,6 +156,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
             proteinSequenceWidget_StateObject,
             modificationMass_UserSelections_StateObject,
             reporterIonMass_UserSelections_StateObject,
+            peptideUnique_UserSelection_StateObject,   //  May Be undefined (currently for experiment protein page)
             userSearchString_LocationsOn_ProteinSequence_Root
         }: {
             forSingleSearch: boolean
@@ -163,6 +166,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
             proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject,
             modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject,
             reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject,
+            peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
             userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
         }) {
 
@@ -184,6 +188,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
         this._proteinSequenceWidget_StateObject = proteinSequenceWidget_StateObject;
         this._modificationMass_UserSelections_StateObject = modificationMass_UserSelections_StateObject;
         this._reporterIonMass_UserSelections_StateObject = reporterIonMass_UserSelections_StateObject;
+        this._peptideUnique_UserSelection_StateObject = peptideUnique_UserSelection_StateObject;
         this._userSearchString_LocationsOn_ProteinSequence_Root = userSearchString_LocationsOn_ProteinSequence_Root;
     }
 
@@ -926,6 +931,10 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
         }
 
         //  Implicit ALL
+        let is_peptideUniqueSelected = undefined;
+        if ( this._peptideUnique_UserSelection_StateObject && this._peptideUnique_UserSelection_StateObject.getPeptideUnique() ) {
+            is_peptideUniqueSelected = true;
+        }
         const is_UserSearchString = ! this._userSearchString_LocationsOn_ProteinSequence_Root.noUserSearchString //  true if have User Search String
         const is_Any_selectedProteinSequencePosition = this._proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition()
 
@@ -935,6 +944,7 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
             && (!is_Any_ReporterIons_Selected__SelectionType__ALL)
             && (!is_VariableModification_Unmodified___SelectionType__ALL__Selected)
             && (!is_OpenModification_Unmodified___SelectionType__ALL__Selected)
+            && (!is_peptideUniqueSelected)
             && (!is_UserSearchString)
             && (!is_Any_selectedProteinSequencePosition)
         ) {
@@ -978,6 +988,11 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
             this._updateFor__SelectionType_ALL___For__ReporterIonMassesSelected({
                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId, loadedDataPerProjectSearchIdHolder
             });
+        }
+        if ( is_peptideUniqueSelected ) {
+            this._updateFor_peptideUniqueSelected({
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId, loadedDataPerProjectSearchIdHolder
+            })
         }
 
         if ( is_UserSearchString ) {
@@ -1574,8 +1589,36 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
         }
     }
 
-
     /**
+     * User has selected 'Filter on Unique Peptides:'
+     *
+     */
+    private _updateFor_peptideUniqueSelected(
+        {
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+            loadedDataPerProjectSearchIdHolder
+        }: {
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
+            loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+        }): void {
+
+        const proteinSequenceVersionIdsKeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId()
+
+        const existing_reportedPeptideIds = new Set( reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds() )
+        for ( const existing_reportedPeptideId of existing_reportedPeptideIds ) {
+
+            const proteinSequenceVersionIds_For_ReportedPeptideId = proteinSequenceVersionIdsKeyReportedPeptideId.get( existing_reportedPeptideId );
+            if ( ! proteinSequenceVersionIds_For_ReportedPeptideId ) {
+                throw Error("_updateFor_peptideUniqueSelected: proteinSequenceVersionIdsKeyReportedPeptideId.get( existing_reportedPeptideId ); returned nothing existing_reportedPeptideId: " + existing_reportedPeptideId )
+            }
+            if ( proteinSequenceVersionIds_For_ReportedPeptideId.length > 1 ) {
+                //  Peptide is not unique
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId( existing_reportedPeptideId )
+            }
+        }
+    }
+
+        /**
      * User has entered Protein Sequence "Filter On Peptide:" to filter on
      *
      */

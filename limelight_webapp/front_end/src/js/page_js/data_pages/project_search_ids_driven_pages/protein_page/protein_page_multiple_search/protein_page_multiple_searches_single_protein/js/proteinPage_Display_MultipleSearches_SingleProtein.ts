@@ -42,6 +42,7 @@ import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ProteinList_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 
 
 /**
@@ -87,6 +88,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
 	private _reporterIonMass_UserSelections_StateObject = new ReporterIonMass_UserSelections_StateObject();
+
+	private _peptideUnique_UserSelection_StateObject = new PeptideUnique_UserSelection_StateObject();
 
 	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
 
@@ -225,6 +228,12 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
                 this._proteinSequenceWidget_StateObject.set_encodedStateData({ encodedStateData });
             }
         }
+		{
+			const encodedStateData = this._singleProtein_CentralStateManagerObject.getPeptideUniqueFilterSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideUnique_UserSelection_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
         {
             const encodedStateData = this._singleProtein_CentralStateManagerObject.getPeptideSequenceFilterSelectedEncodedStateData();
             if ( encodedStateData ) {
@@ -392,6 +401,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			modificationMass_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject ,
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject ,
+			peptideUnique_UserSelection_StateObject : this._peptideUnique_UserSelection_StateObject ,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
 			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject ,

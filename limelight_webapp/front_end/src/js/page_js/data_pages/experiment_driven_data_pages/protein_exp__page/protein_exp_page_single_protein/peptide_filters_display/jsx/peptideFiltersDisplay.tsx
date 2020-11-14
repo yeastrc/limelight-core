@@ -104,6 +104,11 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
             const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
 
+            let peptideUniqueSelected : boolean = undefined;
+            if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
+                peptideUniqueSelected = this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
+            }
+
             const peptideSearchString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
 
             if ( ( ( ! selectedProteinSequencePositionsSet ) || ( selectedProteinSequencePositionsSet.size === 0 ) )
@@ -111,6 +116,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 && ( ! is_Any_OpenModification_Selected )
                 && ( ! is_Any_StaticModification_Selected )
                 && ( ( ! reporterIonssSelectedsSet ) || ( reporterIonssSelectedsSet.size === 0 ) )
+                && ( ! peptideUniqueSelected )
                 && ( ! peptideSearchString )
             ) {
 
@@ -135,8 +141,8 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             }
         }
 
-        const AND_SEPERATOR_STRING = "AND"
-        const OR_SEPERATOR_STRING = "OR"
+        const AND_SEPARATOR_STRING = "AND"
+        const OR_SEPARATOR_STRING = "OR"
 
         let selection_AND_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
         let selection_OR_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
@@ -153,10 +159,10 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     const key = "Var_NoMod"
                     const display = <span key={ key } style={ { whiteSpace: "nowrap" } }>no variable modification mass(es)</span>
                     if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
                         selection_OR_Group_Display_Entries.push( display )
                     } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString: AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
                         selection_AND_Group_Display_Entries.push( display )
                     } else {
                         const msg = "variable_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL"
@@ -178,7 +184,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     })
                     for ( const selectedModMass of selectedModMasses ) {
                         const key = "Var_Mod_" + selectedModMass
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
                         const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Variable mod: </span><span> </span><span>{ selectedModMass }</span></span>
                         selection_OR_Group_Display_Entries.push( display )
                     }
@@ -197,7 +203,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     })
                     for (const selectedModMass of selectedModMasses) {
                         const key = "Var_Mod_" + selectedModMass
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString: AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries})
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries})
                         const display = <span key={key} style={{whiteSpace: "nowrap"}}><span>Variable mod: </span><span> </span><span>{selectedModMass}</span></span>
                         selection_AND_Group_Display_Entries.push(display)
                     }
@@ -212,10 +218,10 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     const key = "Open_NoMod"
                     const display = <span key={ key } style={ { whiteSpace: "nowrap" } }>no open modification mass(es)</span>
                     if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
                         selection_OR_Group_Display_Entries.push( display )
                     } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString: AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
                         selection_AND_Group_Display_Entries.push( display )
                     } else {
                         const msg = "open_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL"
@@ -237,7 +243,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     })
                     for ( const selectedModMass of selectedModMasses ) {
                         const key = "Open_Mod_" + selectedModMass
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
                         const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Open mod: </span><span> </span><span>{ selectedModMass }</span></span>
                         selection_OR_Group_Display_Entries.push( display )
                     }
@@ -256,7 +262,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     })
                     for (const selectedModMass of selectedModMasses) {
                         const key = "Open_Mod_" + selectedModMass
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
                         const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Open mod: </span><span> </span><span>{selectedModMass}</span></span>
                         selection_AND_Group_Display_Entries.push(display)
                     }
@@ -271,13 +277,13 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
                 _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
                     staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ANY,
-                    seperatorString : OR_SEPERATOR_STRING,
+                    seperatorString : OR_SEPARATOR_STRING,
                     selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries
                 })
 
                 _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
                     staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ALL,
-                    seperatorString : AND_SEPERATOR_STRING,
+                    seperatorString : AND_SEPARATOR_STRING,
                     selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries
                 })
             }
@@ -299,7 +305,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     })
                     for ( const selectedReporterIonMass of selectedReporterIonMasses ) {
                         const key = "Reporter_Ion_" + selectedReporterIonMass
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : OR_SEPERATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
                         const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Reporter ion: </span><span> </span><span>{ selectedReporterIonMass }</span></span>
                         selection_OR_Group_Display_Entries.push( display )
                     }
@@ -318,7 +324,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     })
                     for (const selectedReporterIonMass of selectedReporterIonMasses) {
                         const key = "Reporter_Ion_" + selectedReporterIonMass
-                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
                         const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Reporter ion: </span><span> </span><span>{selectedReporterIonMass}</span></span>
                         selection_AND_Group_Display_Entries.push(display)
                     }
@@ -327,7 +333,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
             if ( selection_OR_Group_Display_Entries.length === 1 && selection_AND_Group_Display_Entries.length > 0 ) {
                 //  OR only has 1 entry so move to AND and delete OR
-                _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString : AND_SEPERATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
                 selection_AND_Group_Display_Entries.push( selection_OR_Group_Display_Entries[ 0 ] )
                 selection_OR_Group_Display_Entries = undefined //  delete OR entry
             }
@@ -345,6 +351,8 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
         {
             peptideSequenceSearchStrings_DisplayString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
         }
+
+        let peptideUniqueSelected : boolean =  this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
 
         return (
             <div style={ { marginTop: 10 } }>
@@ -371,6 +379,12 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     { ( selection_OR_Group_Display_Entries ) ? //  Filter Values "OR" relationship
                         <div>
                             All peptides must contain: { selection_OR_Group_Display_Entries }
+                        </div>
+                        : null /* Display nothing */ }
+
+                    { ( peptideUniqueSelected ) ?
+                        <div >
+                            <span style={{whiteSpace: "nowrap"}}>Peptides must be Unique</span>
                         </div>
                         : null /* Display nothing */ }
 
@@ -441,7 +455,7 @@ const _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL = f
 
     //  Add to list using toString()
     for ( const modification of modificationsSelectedEntriesArray ) {
-        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ seperatorString, selection_Group_Display_Entries_Local })
+        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: seperatorString, selection_Group_Display_Entries_Local })
         const modificationFormatted = modification.modMass.toString() + " (" + modification.residue + ")";
         const key = seperatorString + "_StaticMod_" + modificationFormatted
         const entry = <span key={ key }  style={{whiteSpace: "nowrap"}}><span >Static mod:</span><span > </span><span >{ modificationFormatted }</span></span>
@@ -452,13 +466,13 @@ const _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL = f
 /**
  *
  */
-const _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local = function({ seperatorString, selection_Group_Display_Entries_Local } : {
-    seperatorString : string
+const _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local = function({ separatorString, selection_Group_Display_Entries_Local } : {
+    separatorString : string
     selection_Group_Display_Entries_Local : Array<JSX.Element>
 }) : void {
     if ( selection_Group_Display_Entries_Local.length > 0 ) {
-        const key = seperatorString + "_Seperator_" + selection_Group_Display_Entries_Local.length
-        const entry = <span key={ key } ><span > </span><span>{ seperatorString }</span><span> </span></span>
+        const key = separatorString + "_Seperator_" + selection_Group_Display_Entries_Local.length
+        const entry = <span key={ key } ><span > </span><span>{ separatorString }</span><span> </span></span>
         selection_Group_Display_Entries_Local.push( entry )
     }
 }

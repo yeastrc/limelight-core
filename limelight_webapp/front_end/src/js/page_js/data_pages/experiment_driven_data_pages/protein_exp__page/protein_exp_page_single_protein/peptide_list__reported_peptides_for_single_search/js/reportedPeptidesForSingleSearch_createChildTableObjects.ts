@@ -256,6 +256,20 @@ const _create_dataTable_RootTableObject = function(
         }
         {
             const dataTable_Column = new DataTable_Column({
+                id : "unique", // Used for tracking sort order. Keep short
+                displayName : "Unique",
+                width : 55,
+                sortable : true,
+                style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+                // style_override_header_React : {},  // Optional
+                // style_override_React : {},  // Optional
+                // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
+                // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            });
+            dataTable_Columns.push( dataTable_Column );
+        }
+        {
+            const dataTable_Column = new DataTable_Column({
                 id : "psmCount", // Used for tracking sort order. Keep short
                 displayName : "PSMs",
                 width : 75,
@@ -313,6 +327,20 @@ const _create_dataTable_RootTableObject = function(
                         valueDisplay : peptideEntry.reportedPeptideSequence,
                         valueSort : peptideEntry.reportedPeptideSequence
                     })
+                    columnEntries.push( columnEntry );
+                }
+
+                { // Unique
+                    let value = "";
+                    let valueSort = 1;
+                    if (  peptideEntry.peptideUnique ) {
+                        value = "*";  //  Display '*' if peptide unique
+                        valueSort = 0;  // Sort unique above not unique
+                    }
+                    const columnEntry = new DataTable_DataRow_ColumnEntry({
+                        valueDisplay : value,
+                        valueSort : valueSort
+                    });
                     columnEntries.push( columnEntry );
                 }
 

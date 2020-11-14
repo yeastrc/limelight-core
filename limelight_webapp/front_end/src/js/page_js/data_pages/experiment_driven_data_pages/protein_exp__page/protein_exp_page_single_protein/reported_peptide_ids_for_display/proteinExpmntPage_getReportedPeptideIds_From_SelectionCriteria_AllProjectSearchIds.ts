@@ -29,6 +29,7 @@ import {
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId';
+import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 
 /**
  *
@@ -87,6 +88,7 @@ export const getReportedPeptideIdsForDisplay_AllProjectSearchIds = function(
         proteinSequenceWidget_StateObject,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
+        peptideUnique_UserSelection_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root
     } : {
         not_filtered_position_modification_selections : boolean;
@@ -99,6 +101,7 @@ export const getReportedPeptideIdsForDisplay_AllProjectSearchIds = function(
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject,
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+        peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root,
     } ) : {
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
@@ -126,6 +129,7 @@ export const getReportedPeptideIdsForDisplay_AllProjectSearchIds = function(
 		proteinSequenceWidget_StateObject, 
 		modificationMass_UserSelections_StateObject,
 		reporterIonMass_UserSelections_StateObject,
+        peptideUnique_UserSelection_StateObject,
 		userSearchString_LocationsOn_ProteinSequence_Root
     });
 

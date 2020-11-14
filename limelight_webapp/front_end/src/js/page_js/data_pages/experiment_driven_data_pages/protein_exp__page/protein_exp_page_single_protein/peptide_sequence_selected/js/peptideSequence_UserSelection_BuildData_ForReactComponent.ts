@@ -1,7 +1,7 @@
 /**
  * peptideSequence_UserSelection_BuildData_ForReactComponent.ts
  * 
- * Peptide Squence Selection - Build Data for React Component
+ * Peptide Sequence Selection - Build Data for React Component
  * 
  *  !!!! React Version !!!!
  * 
