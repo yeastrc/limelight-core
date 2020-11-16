@@ -142,10 +142,7 @@ task createHandlebarsOutputDirs {
   	  
   	  dirToCreate = rootDir + "search_detail_section_main_page_logged_in_users"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-  	  dirToCreate = rootDir + "search_detail_section_user_input_section"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
+
   	  dirToCreate = rootDir + "lorikeet_overlay"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
 
@@ -367,30 +364,6 @@ task handlebarsPrecompile_search_detail_section_main_page_logged_in_users(type: 
 
   def precompile_Input_Directory = "handlebars_templates/search_detail_section_main_page_logged_in_users"
   def precompile_Output_File = "handlebars_templates_precompiled/search_detail_section_main_page_logged_in_users/search_detail_section_main_page_logged_in_users_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
-//  Handlebars Precompile for input handlebars_templates/search_detail_section_user_input_section
-
-task handlebarsPrecompile_search_detail_section_user_input_section(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/search_detail_section_user_input_section"
-  def precompile_Output_File = "handlebars_templates_precompiled/search_detail_section_user_input_section/search_detail_section_user_input_section_template-bundle.js"
   
   // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
   inputs.dir( precompile_Input_Directory )
@@ -875,7 +848,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
      'handlebarsPrecompile_share_page',
      'handlebarsPrecompile_search_detail_section_main_page',
      'handlebarsPrecompile_search_detail_section_main_page_logged_in_users',
-     'handlebarsPrecompile_search_detail_section_user_input_section',
      'handlebarsPrecompile_lorikeet_overlay',
      'handlebarsPrecompile_project_page__project_info_section_all_users_interaction',
      'handlebarsPrecompile_project_page__project_info_section_logged_in_users_interaction',

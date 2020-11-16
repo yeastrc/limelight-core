@@ -27,19 +27,18 @@ import {
 } from "../../data_pages__common_data_classes/searchDataLookupParameters";
 import {
     SearchDetailsAndFilterBlock_UserInputInOverlay,
-    SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param,
-    USER_CLICKED_IN_TYPE_PEPTIDE, USER_CLICKED_IN_TYPE_PROTEIN,
-    USER_CLICKED_IN_TYPE_PSM
+    SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
 import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
 import {SearchDetailsAndFilterBlock_ChangeSearches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_ChangeSearches";
 import {SearchDetailsAndFilterBlock_Re_Order_Searches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_Re_Order_Searches";
+import {SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS";
 
 
 /**
  * Internal class for function passed to child components
  */
-class OpenUserChangeFiltersOverlay_Params {
+export class SearchDetailsAndFilterBlock_UserInputInOverlay_OpenUserChangeFiltersOverlay_Params {
     projectSearchId_UserClickedIn : number
     userClickedInTypeIdentifier : string
     userClickedOnAnnotationTypeId : number
@@ -49,7 +48,7 @@ class OpenUserChangeFiltersOverlay_Params {
 /**
  *
  */
-type OpenUserChangeFiltersOverlay_Callback = ( params : OpenUserChangeFiltersOverlay_Params ) => void
+type OpenUserChangeFiltersOverlay_Callback = ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_OpenUserChangeFiltersOverlay_Params ) => void
 
 /**
  * Create new Instance of this class whenever any value changes in any of these properties so that this component will re-render
@@ -153,7 +152,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
     /**
      * Called from child components
      */
-    private _openUserChangeFiltersOverlay_Callback( params : OpenUserChangeFiltersOverlay_Params ) : void {
+    private _openUserChangeFiltersOverlay_Callback( params : SearchDetailsAndFilterBlock_UserInputInOverlay_OpenUserChangeFiltersOverlay_Params ) : void {
 
         const searchDetailsAndFilterBlock_UserInputInOverlay =
             new SearchDetailsAndFilterBlock_UserInputInOverlay( {
@@ -164,11 +163,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
             } );
 
         try {
-            searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay({
-                projectSearchId_UserClickedIn : params.projectSearchId_UserClickedIn,
-                userClickedInTypeIdentifier : params.userClickedInTypeIdentifier,
-                userClickedOnAnnTypeId : params.userClickedOnAnnotationTypeId
-            });
+            searchDetailsAndFilterBlock_UserInputInOverlay.openOverlay( params );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -915,7 +910,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
                     forMultipleSearches={ this.props.forMultipleSearches }
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
-                    typeIdentifierForOpenOverlay={ USER_CLICKED_IN_TYPE_PSM }
+                    typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_PSM }
                     type_label={"PSM"}
                     cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.psmFilters}
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
@@ -932,7 +927,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
                     forMultipleSearches={ this.props.forMultipleSearches }
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
-                    typeIdentifierForOpenOverlay={ USER_CLICKED_IN_TYPE_PEPTIDE }
+                    typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_PEPTIDE }
                     type_label={"Peptide"}
                     cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.reportedPeptideFilters}
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
@@ -949,7 +944,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
                     forMultipleSearches={ this.props.forMultipleSearches }
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
-                    typeIdentifierForOpenOverlay={ USER_CLICKED_IN_TYPE_PROTEIN }
+                    typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_PROTEIN }
                     type_label={"Protein"}
                     cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.matchedProteinFilters}
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
