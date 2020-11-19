@@ -227,11 +227,15 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
 
 
     /**
-     * User Clicked Save or hit enter in a field
+     * User Clicked Save (type="submit") or hit enter in a field
      */
     _save( event ) {
         try {
-            console.warn("_save(...) called in searchDetailsAndFilterBlock_UserInput_OverlayContents.tsx")
+            // console.warn("_save(...) called in searchDetailsAndFilterBlock_UserInput_OverlayContents.tsx")
+
+            // Stop form submit from submit page to server
+            event.preventDefault();
+
             //  Update URL and get new ... key from server for new cutoffs
 
             //  Update searchDetails_Filters_AnnTypeDisplayRootObject in page state with user entered data
@@ -694,7 +698,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
                     <div className=" top-level fixed-height modal-overlay-body-standard-padding-left modal-overlay-body-standard-padding-right "
                          style={ { marginTop : 15, marginBottom: 10 } } >
                         <div style={ { position: "relative", display: "inline-block" } }>
-                            <input type="submit" value="Save" onClick={ this._save_BindThis } disabled={ ! this.state.saveButtonEnabled } />
+                            <input type="submit" value="Save" disabled={ ! this.state.saveButtonEnabled } />
                             { ( ! this.state.saveButtonEnabled ?
                                 <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
                                      title="All entered values must be valid for Save to be enabled."></div>

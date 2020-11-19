@@ -419,7 +419,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
                         <div className=" top-level fixed-height modal-overlay-body-standard-padding-top modal-overlay-body-standard-padding-left modal-overlay-body-standard-padding-right " 
                             style={ { marginBottom: 10 } } >
                             <div style={ { position: "relative", display: "inline-block" } }>
-                                <input type="submit" value="Save" onClick={ this._save_BindThis } disabled={ ! this.state.saveButtonEnabled } />
+                                <input type="submit" value="Save" disabled={ ! this.state.saveButtonEnabled } />
                                 { ( ! this.state.saveButtonEnabled ? 
                                     <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
                                         title="All entered values must be valid for Save to be enabled."></div> 
