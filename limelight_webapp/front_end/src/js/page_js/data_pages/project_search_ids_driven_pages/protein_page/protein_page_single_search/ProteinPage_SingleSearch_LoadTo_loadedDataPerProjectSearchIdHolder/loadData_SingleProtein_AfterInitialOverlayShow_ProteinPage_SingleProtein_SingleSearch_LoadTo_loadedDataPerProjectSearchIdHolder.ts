@@ -96,11 +96,6 @@ export const loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SinglePr
             if ( retrieveForSingleSearch ) {
                 //  Called from display of Single Search
 
-                const promise_loadReportedPeptideStringsIfNeeded = loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( { reportedPeptideIds, projectSearchId, loadedDataCommonHolder } );
-                if ( promise_loadReportedPeptideStringsIfNeeded ) {
-                    promises_LoadData_Array.push( promise_loadReportedPeptideStringsIfNeeded );
-                }
-
                 //  Get Ann Type Ids for Ann Types that are to be displayed, Default or User chosen
 
                 let searchDataLookupParams_For_Single_ProjectSearchId = undefined;
