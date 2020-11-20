@@ -124,7 +124,8 @@ public class DataPageDefaultViewProjectSearchPagesDAO extends Limelight_JDBC_Bas
 		
 		try {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
-			int rowsUpdated = this.getJdbcTemplate().update(
+//			int rowsUpdated = 
+				this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
@@ -160,6 +161,16 @@ public class DataPageDefaultViewProjectSearchPagesDAO extends Limelight_JDBC_Bas
 			}
 			
 			item.setId( (int) insertedKeyLong ); // Inserted auto-increment primary key for the inserted record
+			
+		} catch ( org.springframework.dao.DuplicateKeyException e ) {
+			
+			//  Only minimal warn logging since will likely handle the DuplicateKeyException in the calling code in SetDefaultView_ProjectSearchPages_Insert_Service
+			
+			log.warn( "Insert results in Duplicate Key which will likely next be handled.  ProjectSearchId: " + item.getProjectSearchId()
+				+ ", PageControllerPath: " + item.getPageControllerPath()
+				+ ", Exception text: " + e.toString() );
+			
+			throw e;
 			
 		} catch ( RuntimeException e ) {
 			String msg = "DTO: " + item + ", SQL: " + INSERT_SQL;

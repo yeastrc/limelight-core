@@ -3,7 +3,6 @@ package org.yeastrc.limelight.limelight_webapp.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.yeastrc.limelight.limelight_webapp.dao.DataPageDefaultViewProjectSearchPagesDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageDefaultViewProjectSearchPagesDTO;
@@ -38,9 +37,12 @@ public class SetDefaultView_ProjectSearchPages_Insert_Service implements SetDefa
 
 			return; // Exit method
 
-		} catch ( DuplicateKeyException e ) {
+		} catch ( org.springframework.dao.DuplicateKeyException e ) {
 			
 			//  Already exists so update
+			
+			log.warn( "Handle Insert Fail on Duplicate Key from dataPageDefaultViewProjectSearchPagesDAO.save( item ); by updating the record instead. ProjectSearchId: " + item.getProjectSearchId()
+					+ ", PageControllerPath: " + item.getPageControllerPath() );
 
 			dataPageDefaultViewProjectSearchPagesDAO.update_UrlStartPath_And_SrchDataLkpParams( item );
 		}
