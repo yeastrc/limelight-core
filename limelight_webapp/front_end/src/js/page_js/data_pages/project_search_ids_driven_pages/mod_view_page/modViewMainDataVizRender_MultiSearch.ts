@@ -1059,7 +1059,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 let txt = "";
 
-                if(modMass) {
+                if(modMass !== undefined && modMass !== null) {
                     txt += "<p>Mod mass: " + modMass + "</p>";
                 }
 
