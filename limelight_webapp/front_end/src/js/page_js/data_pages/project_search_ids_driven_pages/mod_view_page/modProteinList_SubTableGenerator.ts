@@ -12,8 +12,12 @@ import {ModProteinSearchList_SubTableGenerator} from "page_js/data_pages/project
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {ModProteinSearchPeptideList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
+import {
+    ModProteinSearchPeptideList_SubTableGenerator,
+    UnlocalizedStartEnd
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
 import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableProperties";
+import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 
 
 export class ModProteinList_SubTableGenerator {
@@ -178,8 +182,26 @@ export class ModProteinList_SubTableGenerator {
 
             // add modded positions
             {
+                const positions:Array<UnlocalizedStartEnd> = new Array();
+
+                for(const loc of ModDataUtils.compressUnlocalizedRanges(proteinData.unlocalizedPositionRanges)) {
+                    positions.push(loc);
+                }
+
+                for(const loc of proteinData.modifiedPositions) {
+                    positions.push(new UnlocalizedStartEnd({start:loc, end:loc}));
+                }
+
+                positions.sort( function(a, b):number {
+                    if(a.start === b.start) {
+                        return a.end - b.end;
+                    }
+
+                    return a.start - b.start;
+                });
+
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : Array.from(proteinData.modifiedPositions).sort((a, b) => a - b).join(', ')
+                    valueDisplay : positions.map(e => e.toString()).join(", ")
                 });
                 columnEntries.push( columnEntry );
             }
@@ -286,6 +308,8 @@ export class ModProteinList_SubTableGenerator {
         const proteinPositionMap:Map<number, Set<number>> =  new Map();
         const proteinResidueMap:Map<number, Set<string>> =  new Map();
         const proteinPSMCountsByProjectSearchId:Map<number, Map<number, number>> = new Map();
+        const unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>> = new Map();
+
         const namesForProtein:Map<number, Set<string>> = new Map();
 
         // populate the data structures above
@@ -293,6 +317,7 @@ export class ModProteinList_SubTableGenerator {
             proteinPositionMap,
             proteinResidueMap,
             proteinPSMCountsByProjectSearchId,
+            unlocalizedRangesByProteinId,
             modViewDataManager,
             projectSearchIds,
             modMass,
@@ -309,6 +334,7 @@ export class ModProteinList_SubTableGenerator {
                 modifiedResidues:proteinResidueMap.get(proteinId),
                 modifiedPositions:proteinPositionMap.get(proteinId),
                 psmCounts:proteinPSMCountsByProjectSearchId.get(proteinId),
+                unlocalizedPositionRanges:Array.from(unlocalizedRangesByProteinId.get(proteinId).values())
             });
 
             proteinDataForModMass.push(proteinData);
@@ -322,6 +348,7 @@ export class ModProteinList_SubTableGenerator {
             proteinPositionMap,
             proteinResidueMap,
             proteinPSMCountsByProjectSearchId,
+            unlocalizedRangesByProteinId,
             modViewDataManager,
             projectSearchIds,
             modMass,
@@ -330,6 +357,7 @@ export class ModProteinList_SubTableGenerator {
             proteinPositionMap:Map<number, Set<number>>,
             proteinResidueMap:Map<number, Set<string>>,
             proteinPSMCountsByProjectSearchId:Map<number, Map<number, number>>,
+            unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>>,
             modViewDataManager:ModViewDataManager,
             projectSearchIds,
             modMass:number,
@@ -372,6 +400,7 @@ export class ModProteinList_SubTableGenerator {
                 proteinPositionMap,
                 proteinResidueMap,
                 proteinPSMCountsByProjectSearchId,
+                unlocalizedRangesByProteinId,
                 proteinIdReportedPeptideMap,
                 projectSearchId,
                 reportedPeptidePSMMap,
@@ -388,6 +417,7 @@ export class ModProteinList_SubTableGenerator {
             proteinPositionMap,
             proteinResidueMap,
             proteinPSMCountsByProjectSearchId,
+            unlocalizedRangesByProteinId,
             proteinIdReportedPeptideMap,
             projectSearchId,
             reportedPeptidePSMMap,
@@ -397,6 +427,7 @@ export class ModProteinList_SubTableGenerator {
             proteinPositionMap:Map<number, Set<number>>,
             proteinResidueMap:Map<number, Set<string>>,
             proteinPSMCountsByProjectSearchId:Map<number, Map<number, number>>,
+            unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>>,
             proteinIdReportedPeptideMap:Map<number, Set<ReportedPeptide>>,
             projectSearchId:number,
             reportedPeptidePSMMap:Map<number, Set<any>>,
@@ -418,6 +449,10 @@ export class ModProteinList_SubTableGenerator {
 
             if(!(proteinResidueMap.has(proteinId))) {
                 proteinResidueMap.set(proteinId, new Set<string>());
+            }
+
+            if(!(unlocalizedRangesByProteinId.has(proteinId))) {
+                unlocalizedRangesByProteinId.set(proteinId, new Map<string, UnlocalizedStartEnd>());
             }
 
             // initialize the count for this projectSearchId to 0
@@ -528,6 +563,19 @@ export class ModProteinList_SubTableGenerator {
                                 proteinPositionMap.get(proteinId).add(finalPosition);
                             }
                         }
+
+                        // add in the unlocalized start stop for this unlocalized open mod if appropriate
+                        if(ModProteinSearchPeptideList_SubTableGenerator.getIsUnlocalizedOpenMod({psm})) {
+
+                            for (const proteinPosition of reportedPeptidePositionsInProtein) {
+                                const start = proteinPosition;
+                                const end = proteinPosition + reportedPeptide.sequence.length - 1;
+
+                                const unlocalizedPos = new UnlocalizedStartEnd({start, end});
+
+                                unlocalizedRangesByProteinId.get(proteinId).set(unlocalizedPos.toString(), unlocalizedPos);
+                            }
+                        }
                     }
 
                 }
@@ -549,6 +597,7 @@ class ProteinDataForModMass {
     private readonly _modifiedResidues:Set<string>;
     private readonly _modifiedPositions:Set<number>;
     private readonly _psmCounts:Map<number, number>;
+    private readonly _unlocalizedPositionRanges:Array<UnlocalizedStartEnd>;
 
 
     constructor(
@@ -557,13 +606,15 @@ class ProteinDataForModMass {
             proteinName,
             modifiedResidues,
             modifiedPositions,
-            psmCounts
+            psmCounts,
+            unlocalizedPositionRanges
         } : {
             proteinId:number,
             proteinName:string,
             modifiedResidues:Set<string>,
             modifiedPositions:Set<number>,
-            psmCounts:Map<number,number>
+            psmCounts:Map<number,number>,
+            unlocalizedPositionRanges:Array<UnlocalizedStartEnd>
         }
     ) {
         this._proteinId = proteinId;
@@ -571,8 +622,12 @@ class ProteinDataForModMass {
         this._modifiedResidues = modifiedResidues;
         this._modifiedPositions = modifiedPositions;
         this._psmCounts = psmCounts;
+        this._unlocalizedPositionRanges = unlocalizedPositionRanges;
     }
 
+    get unlocalizedPositionRanges(): Array<UnlocalizedStartEnd> {
+        return this._unlocalizedPositionRanges;
+    }
 
     get proteinId(): number {
         return this._proteinId;

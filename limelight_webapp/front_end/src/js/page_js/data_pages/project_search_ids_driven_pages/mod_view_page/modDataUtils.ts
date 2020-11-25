@@ -1,4 +1,4 @@
-import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {UnlocalizedStartEnd} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
 
 export class ModDataUtils {
 
@@ -22,6 +22,38 @@ export class ModDataUtils {
         const searchName = searchNameObject.name;
 
         return searchName;
+    }
+
+    static compressUnlocalizedRanges(unlocalizedRanges:Array<UnlocalizedStartEnd>):Array<UnlocalizedStartEnd> {
+
+        unlocalizedRanges.sort( function(a, b):number {
+            if(a.start === b.start) {
+                return a.end - b.end;
+            }
+
+            return a.start - b.start;
+        });
+
+        const retArray:Array<UnlocalizedStartEnd> = new Array();
+
+        for(const loc of unlocalizedRanges) {
+            if(retArray.length === 0) {
+                retArray.push(loc);
+            } else {
+
+                if(loc.start <= retArray[retArray.length - 1].end) {
+                    const start = retArray[retArray.length - 1].start;
+                    const end = loc.end;
+
+                    retArray.pop();
+                    retArray.push(new UnlocalizedStartEnd({start, end}));
+                } else {
+                    retArray.push(loc);
+                }
+            }
+        }
+
+        return retArray;
     }
 
 

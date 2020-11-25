@@ -992,7 +992,7 @@ class PeptideDataForModProteinSearch {
     }
 }
 
-class UnlocalizedStartEnd {
+export class UnlocalizedStartEnd {
     private readonly _start;
     private readonly _end;
 
@@ -1009,6 +1009,13 @@ class UnlocalizedStartEnd {
         this._end = end;
     }
 
+    toString():string {
+        if(this.start === this.end) {
+            return this.start.toString();
+        }
+
+        return "[" + this.start + "-" + this.end + "]";
+    }
 
     get start() {
         return this._start;
