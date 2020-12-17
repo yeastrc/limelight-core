@@ -28,9 +28,12 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
 import org.yeastrc.limelight.limelight_webapp.objects.ProteinInfoPerProteinVersionId;
 import org.yeastrc.limelight.limelight_webapp.objects.ProteinInfoProteinAnnotationEntry;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinSequenceLengths_For_SearchID_ProteinVersionIds_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceVersionAnnotationItem;
 
 /**
@@ -45,6 +48,9 @@ public class ProteinVersionInfoFor_SearchID_SearchCriteriaService implements Pro
 
 	@Autowired
 	private ProteinVersionIdsFor_SearchID_SearchCriteriaServiceIF proteinVersionIdsFor_SearchID_SearchCriteria;
+	
+	@Autowired
+	private ProteinSequenceLengths_For_SearchID_ProteinVersionIds_SearcherIF proteinSequenceLengths_For_SearchID_ProteinVersionIds_Searcher;
 	
 	@Autowired
 	private ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF proteinAnnotations_For_SearchID_ProteinVersionId_Searcher;
@@ -63,7 +69,25 @@ public class ProteinVersionInfoFor_SearchID_SearchCriteriaService implements Pro
 		Set<Integer> proteinVersionIds = 
 				proteinVersionIdsFor_SearchID_SearchCriteria.getProteinVersionIdsFor_ProjSearchID_SearchCriteria( searchId, searcherCutoffValuesSearchLevel );
 		
+		Map<Integer, Integer> proteinSequenceLength_Map_Key_ProteinVersionId = null;
+		{
+			List<ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item> resultList = 
+					proteinSequenceLengths_For_SearchID_ProteinVersionIds_Searcher.getProteinSequences_For_ProteinVersionIdsSearchId( proteinVersionIds, searchId );
+			
+			proteinSequenceLength_Map_Key_ProteinVersionId = new HashMap<>( resultList.size() );
+			for ( ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item item : resultList ) {
+				proteinSequenceLength_Map_Key_ProteinVersionId.put( item.getProteinVersionId() , item.getProteinSequenceLength() );
+			}
+		}
+		
 		for ( Integer proteinVersionId : proteinVersionIds ) {
+			
+			Integer proteinLength = proteinSequenceLength_Map_Key_ProteinVersionId.get( proteinVersionId );
+			if ( proteinLength == null ) {
+				String msg = "proteinLength not found for proteinVersionId: " + proteinVersionId;
+				log.error(msg);
+				throw new LimelightDatabaseException(msg);
+			}
 			
 			List<ProteinSequenceVersionAnnotationItem> proteinAnnotationDBList = 
 					proteinAnnotations_For_SearchID_ProteinVersionId_Searcher
@@ -82,6 +106,7 @@ public class ProteinVersionInfoFor_SearchID_SearchCriteriaService implements Pro
 			
 			ProteinInfoPerProteinVersionId proteinInfoPerProteinVersionId = new ProteinInfoPerProteinVersionId();
 			proteinInfoPerProteinVersionId.setAnnotations( annotations );
+			proteinInfoPerProteinVersionId.setProteinLength( proteinLength );
 			
 			result.put( proteinVersionId, proteinInfoPerProteinVersionId );
 		}
