@@ -418,8 +418,19 @@ export class ModViewDataVizRendererOptionsHandler {
             allProjectSearchIds
         });
 
+        const genericProteinObjects = new Array<any>();
+        for(const prot of sortedProteinObjects) {
+            const ob = {
+                name: prot.name,
+                id: prot.id,
+                description: prot.description
+            };
+
+            genericProteinObjects.push(ob);
+        }
+
         const template = Handlebars.templates.addProteinPositionForm;
-        const html = template( {proteins:sortedProteinObjects} );
+        const html = template( {proteins:genericProteinObjects} );
 
         return html;
     }
