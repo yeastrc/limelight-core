@@ -175,7 +175,8 @@ export class ModViewPage_DisplayDataOnPage {
 			vizOptionsData,
 			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
-			modViewDataManager
+			modViewDataManager,
+			allProjectSearchIds:projectSearchIds
 		});
 
 		// add the viz to the page using these viz options

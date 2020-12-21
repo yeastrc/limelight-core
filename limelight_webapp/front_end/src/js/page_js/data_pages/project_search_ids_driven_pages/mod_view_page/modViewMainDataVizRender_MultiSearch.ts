@@ -9,6 +9,7 @@ import {ModStatsUtils} from "./modStatsUtils";
 import jStat from 'jstat'
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {QValueCalculator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/QValueCalculator";
+import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -18,6 +19,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                              vizOptionsData,
                              modViewDataManager
     }) {
+
+        console.log('called renderDataViz()');
+        $('div#data-viz-container').hide();
+        $('div#data-table-container-container').hide();
 
         const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds:vizOptionsData.data.projectSearchIds,
@@ -29,7 +34,8 @@ export class ModViewDataVizRenderer_MultiSearch {
         console.log('got modmap:', modMap);
 
         if(modMap.size < 1) {
-            $('div#data-viz-container').empty();
+            ModViewDataVizRenderer_MultiSearch.addEmptyDataVizContainerToPage();
+            $('div#data-viz-container').show();
             return;
         }
 
@@ -54,9 +60,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // add a div for this viz to the page
         ModViewDataVizRenderer_MultiSearch.addDataVizContainerToPage();
+        $('div#data-viz-container').show();
+
 
         // add a div for the data table to the page
         const $dataTableContainer = ModViewDataVizRenderer_MultiSearch.addDataTableContainerToPage();
+        $('div#data-table-container-container').show();
 
         // some defaults for the viz
         const margin = {top: 60, right: 30, bottom: 78, left: 300};
@@ -291,6 +300,27 @@ export class ModViewDataVizRenderer_MultiSearch {
             const $dataVizContainer = $( html );
             $mainContentDiv.append( $dataVizContainer );
         }
+    }
+
+    static addEmptyDataVizContainerToPage() {
+        const $mainContentDiv = $('#mod_list_container');
+
+        // blow away loading message if it exists
+        $mainContentDiv.find("h2#loading-message").remove();
+
+        // if an existing viz is here, blow it away
+        let $vizDiv = $mainContentDiv.find("div#data-viz-container");
+        if($vizDiv.length !== 0) {
+            $vizDiv.empty();
+        } else {
+            const template = Handlebars.templates.dataVizContainer;
+            const html = template( {  } );
+            const $dataVizContainer = $( html );
+            $mainContentDiv.append( $dataVizContainer );
+        }
+
+        $vizDiv = $mainContentDiv.find("div#data-viz-container");
+        $vizDiv.html('<span style=\"font-size:12pt;\">No modifications found for filters.</span>')
     }
 
     static addDataTableContainerToPage() {
@@ -1139,7 +1169,6 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         console.log('called buildModMap');
 
-        const includeOpenMod = vizOptionsData.data.includeOpenMods === undefined || vizOptionsData.data.includeOpenMods === true;
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
 
         //const countdata = psmQuantType ? modViewDataManager.getPSMModData() : scanModData;
@@ -1166,15 +1195,17 @@ export class ModViewDataVizRenderer_MultiSearch {
                             continue;
                         }
 
-                        // if (!ModViewDataVizRenderer_MultiSearch.shouldReportedPeptideBeIncludedForModMass({
-                        //     projectSearchId,
-                        //     reportedPeptideId,
-                        //     modMass:parseFloat( modMass + '.0' ),
-                        //     proteinPositionFilterStateManager,
-                        // })) {
-                        //     console.log('skipped ' + modMass);
-                        //     continue;
-                        // }
+                        // decide if this psm should be included based on projectSearchId, mod mass and reported peptide id (and where that mod mass maps to a protein)
+                        if(vizOptionsData.data.proteinPositionFilter !== undefined && !(await ModViewDataUtilities.variableModPositionInProteinPositionFilter({
+                            projectSearchId,
+                            modMass,
+                            reportedPeptideId:parseInt(reportedPeptideId),
+                            vizOptionsData,
+                            modViewDataManager
+                        }))) {
+                            continue;
+                        }
+
 
                         if(!modMap.has(modMass)) {
                             modMap.set(modMass, new Map());
@@ -1191,32 +1222,66 @@ export class ModViewDataVizRenderer_MultiSearch {
                     }
 
                     // add in the open mods
-                    if(includeOpenMod) {
-                        for (const modMass of item.open) {
+                    for (const modMass of item.open) {
 
-                            // enforce requested mod mass cutoffs
-                            if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
-                                continue;
-                            }
-
-                            if (vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
-                                continue;
-                            }
-
-                            if(!modMap.has(modMass)) {
-                                modMap.set(modMass, new Map());
-                            }
-
-                            if(!modMap.get(modMass).has(projectSearchId)) {
-                                modMap.get(modMass).set(projectSearchId, new Set());
-                            }
-
-                            // get a unique id for this item
-                            const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
-
-                            // use sets to ensure we're not double counting psms or scans for a mod mass
-                            modMap.get(modMass).get(projectSearchId).add(uniqueId);
+                        // enforce requested mod mass cutoffs
+                        if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
+                            continue;
                         }
+
+                        if (vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                            continue;
+                        }
+
+                        // should this item be included for this mod mass given the protein position filters?
+
+                        if(psmQuantType) {
+
+                            // if it's a psm
+                            if(!(await ModViewDataUtilities.openModPSMInProteinPositionFilter(
+                                {
+                                    projectSearchId,
+                                    modMass,
+                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    vizOptionsData,
+                                    modViewDataManager,
+                                    psmId:item.psmId
+                                }
+                            ))) {
+                               continue;
+                            }
+
+                        } else {
+
+                            // if it's a scan
+                            if(!(await ModViewDataUtilities.anyOpenModPSMInProteinPositionFilter(
+                                {
+                                    projectSearchId,
+                                    modMass,
+                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    vizOptionsData,
+                                    modViewDataManager,
+                                    psmIds:item.psmIds
+                                }
+                            ))) {
+                                continue;
+                            }
+
+                        }
+
+                        if(!modMap.has(modMass)) {
+                            modMap.set(modMass, new Map());
+                        }
+
+                        if(!modMap.get(modMass).has(projectSearchId)) {
+                            modMap.get(modMass).set(projectSearchId, new Set());
+                        }
+
+                        // get a unique id for this item
+                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+
+                        // use sets to ensure we're not double counting psms or scans for a mod mass
+                        modMap.get(modMass).get(projectSearchId).add(uniqueId);
                     }
 
                 }

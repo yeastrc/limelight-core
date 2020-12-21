@@ -3,9 +3,9 @@
     <div id="data-viz-subtitle" style="margin-top:0px;font-size:10pt;">Mouse over items for help.</div>
     <div id="data-viz-form">
 
-        <div id="form-sections" style="width:900px;">
+        <div id="form-sections" style="width:1500px;">
 
-                <div class="viz-form-section">
+                <div class="viz-form-section" style="white-space:nowrap;">
                     <span data-tooltip="Choose how modification masses are quantified in each search. Either as PSM or scan counts and either as raw counts or ratios." class="selector_tool_tip_attached">Quant method:</span>
 
                 <div style="margin-top:10px;">
@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <div class="viz-form-section">
+            <div class="viz-form-section" style="white-space:nowrap;">
                 <span data-tooltip="Override maximum values used when determining the color scale in the visualization." class="selector_tool_tip_attached">Max cutoff for color scale:</span><br>
                 <span style="font-size:10px">(Leave blank to use defaults.)</span>
 
@@ -39,7 +39,7 @@
                 </table>
             </div>
 
-            <div class="viz-form-section">
+            <div class="viz-form-section" style="white-space:nowrap;">
                 <span data-tooltip="Override the minimum and maximum modification masses to be shown in the visualization and data table. Masses outside this range are also excluded from Z-score and P-value calculations." class="selector_tool_tip_attached">Min and max mod masses:</span><br>
                 <span style="font-size:10px">(Leave blank to use defaults.)</span>
 
@@ -55,7 +55,7 @@
                 </table>
             </div>
 
-            <div class="viz-form-section">
+            <div class="viz-form-section" style="white-space:nowrap;">
                 <div><span data-tooltip="Instead of raw data show a transformation of the data, typically the result of a statistical test. For example, show p-values associated with the PSM count for each mod mass in each search." class="selector_tool_tip_attached">Transformations:</span></div>
 
                 <div id="transformation-pulldown-div">
@@ -72,12 +72,16 @@
             </div>
 
             <div class="viz-form-section">
-                <div style="margin-top:10px;">
-                    <input type="checkbox" name="include-open-mods" id="include-open-mods-checkbox" value="include-open-mods" checked><span data-tooltip="If checked, include modifications identified by open modification search. (Recommended)" class="selector_tool_tip_attached">Include open mods</span>
+                <span data-tooltip="Filter results to only include specific proteins or positions in proteins." class="selector_tool_tip_attached">Protein position filters:</span><br>
+
+                <div style="margin-top:5px;">
+                    <div style="margin-bottom:5px;" id="current-protein-position-filters">Show all proteins and positions.</div>
+                    <div id="add-protein-filter-button-container"><input type="button" value="Add Protein Filter" id="add-protein-filter-button"/></div>
+                    <div id="add-protein-filter-form-container" style="display:none;"></div>
                 </div>
             </div>
 
-        </div> <!-- end form sections -->
+            </div> <!-- end form sections -->
 
     </div>
 

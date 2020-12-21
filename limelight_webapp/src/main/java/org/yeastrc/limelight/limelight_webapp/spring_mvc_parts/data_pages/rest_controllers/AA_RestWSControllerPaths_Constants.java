@@ -432,6 +432,10 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String MOD_PAGE_SPECIAL__GET_MOD_INFO_FOR_Rounded_MOD_MASS_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-mass-cutoffs-single-project-search-id";
 
+	//  !! SPECIAL !!  for MOD PAGE Open Mod Data All PSMs for cutoffs in request
+	public static final String MOD_PAGE_SPECIAL__GET_OPEN_MOD_INFO_FOR_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id";
+
 	//  !! SPECIAL !!  for MOD PAGE Mod Data Per Scans in request
 	public static final String MOD_PAGE_SPECIAL__GET_MODS_FOR_SCANS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id";

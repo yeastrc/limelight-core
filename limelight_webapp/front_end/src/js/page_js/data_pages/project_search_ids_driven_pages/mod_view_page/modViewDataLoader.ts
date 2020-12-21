@@ -366,5 +366,72 @@ export class ModViewPage_DataLoader {
         });
     }
 
+    __createRequestForOpenModPSMDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+
+        let searchDataLookupParams_For_Single_ProjectSearchId =
+            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
+
+        let requestObject = {
+            projectSearchId : projectSearchId,
+            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
+        };
+
+        return requestObject;
+    }
+    getOpenModPSMDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ): Promise<Map<number, Map<number, Map<number, any>>>> {
+
+	    console.log('called getOpenModPSMDataForProjectSearchId()');
+
+        let objectThis = this;
+
+        return new Promise<Map<number, Map<number, Map<number, any>>>>( function( resolve, reject ) {
+            try {
+                let requestObject = objectThis.__createRequestForOpenModPSMDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
+
+                const url = "d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+
+                        console.log('responseData', responseData);
+
+                        // keyed on mod mass, reported peptide id
+                        const myResponse = new Map<number, Map<number, Map<number, any>>>();
+
+                        for(const modMass of Object.keys(responseData.resultRoot)) {
+                            const modMassInt = parseInt(modMass);
+                            myResponse.set(modMassInt, new Map());
+
+                            for(const psmItem of responseData.resultRoot[modMass]) {
+                                const reportedPeptideId = psmItem.reportedPeptideId;
+                                const psmId = psmItem.psmId;
+                                if(!(myResponse.get(modMassInt).has(reportedPeptideId))) {
+                                    myResponse.get(modMassInt).set(reportedPeptideId, new Map());
+                                }
+
+                                myResponse.get(modMassInt).get(reportedPeptideId).set(psmId, psmItem);
+                            }
+                        }
+
+                        console.log('myresponse', myResponse);
+                        resolve(myResponse);
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
 }
 

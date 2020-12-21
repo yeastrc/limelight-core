@@ -12,6 +12,7 @@ import {
     psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent,
     PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent";
+import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 
 
 export class ModProteinSearchPeptideList_SubTableGenerator {
@@ -28,6 +29,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const modViewDataManager:ModViewDataManager = params.modViewDataManager;
         const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
+        const vizOptionsData = params.vizOptionsData;
 
         // create the columns for the table
         const dataTableColumns : Array<DataTable_Column> = await ModProteinSearchPeptideList_SubTableGenerator.getDataTableColumns();
@@ -39,7 +41,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modMass,
             proteinId,
             searchDetailsBlockDataMgmtProcessing,
-            dataPageStateManager_DataFrom_Server
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData
         });
 
         // assemble the table
@@ -145,7 +148,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             proteinId,
             projectSearchId,
             searchDetailsBlockDataMgmtProcessing,
-            dataPageStateManager_DataFrom_Server
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData
         }
     ) : Promise<Array<DataTable_DataRowEntry>> {
 
@@ -155,7 +159,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modMass,
             modViewDataManager,
             proteinId,
-            projectSearchId
+            projectSearchId,
+            vizOptionsData
         });
 
         for(const proteinData of allProteinDataForModMass) {
@@ -263,12 +268,14 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modViewDataManager,
             modMass,
             proteinId,
-            projectSearchId
+            projectSearchId,
+            vizOptionsData
         }:{
             modViewDataManager:ModViewDataManager,
             modMass:number,
             proteinId:number,
-            projectSearchId:number
+            projectSearchId:number,
+            vizOptionsData
         }
     ) : Promise<Array<PeptideDataForModProteinSearch>> {
 
@@ -289,7 +296,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modViewDataManager,
             projectSearchId,
             modMass,
-            proteinId
+            proteinId,
+            vizOptionsData
         });
 
         for(const peptideString of proteinPositionMapByPeptideString.keys()) {
@@ -319,7 +327,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modViewDataManager,
             projectSearchId,
             modMass,
-            proteinId
+            proteinId,
+            vizOptionsData
         }:{
             proteinPositionMapByPeptideString:Map<string, Set<number>>,
             proteinResidueMapByPeptideString:Map<string, Set<string>>,
@@ -328,7 +337,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modViewDataManager:ModViewDataManager,
             projectSearchId:number,
             modMass:number,
-            proteinId:number
+            proteinId:number,
+            vizOptionsData:any
         }
     ) : Promise<void> {
 
@@ -339,6 +349,19 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const reportedPeptidePSMMap:Map<number, Set<any>> = new Map();
         for(const psm of psmsForProjectSearchIdAndModMass) {
             const reportedPeptideId:number = psm.reportedPeptideId;
+
+            // if psm doesn't have this mod in a position that passes the protein position filter, skip it
+            if(!(await ModViewDataUtilities.psmHasModInProteinPositionFilter({
+                modMass,
+                reportedPeptideId,
+                psm,
+                projectSearchId,
+                modViewDataManager,
+                vizOptionsData
+            }))) {
+                continue;
+            }
+
             if(!(reportedPeptidePSMMap.has(reportedPeptideId))) {
                 reportedPeptidePSMMap.set(reportedPeptideId, new Set());
             }

@@ -18,6 +18,8 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
 import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableProperties";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
+import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 
 
 export class ModProteinList_SubTableGenerator {
@@ -321,7 +323,8 @@ export class ModProteinList_SubTableGenerator {
             modViewDataManager,
             projectSearchIds,
             modMass,
-            namesForProtein
+            namesForProtein,
+            vizOptionsData
         });
 
         // get the names of the proteins
@@ -352,7 +355,8 @@ export class ModProteinList_SubTableGenerator {
             modViewDataManager,
             projectSearchIds,
             modMass,
-            namesForProtein
+            namesForProtein,
+            vizOptionsData
         } : {
             proteinPositionMap:Map<number, Set<number>>,
             proteinResidueMap:Map<number, Set<string>>,
@@ -361,9 +365,12 @@ export class ModProteinList_SubTableGenerator {
             modViewDataManager:ModViewDataManager,
             projectSearchIds,
             modMass:number,
-            namesForProtein:Map<number, Set<string>>
+            namesForProtein:Map<number, Set<string>>,
+            vizOptionsData
         }
     ) : Promise<void> {
+
+        const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
 
         for(const projectSearchId of projectSearchIds) {
 
@@ -373,6 +380,19 @@ export class ModProteinList_SubTableGenerator {
             const reportedPeptidePSMMap:Map<number, Set<any>> = new Map();
             for(const psm of psmsForProjectSearchIdAndModMass) {
                 const reportedPeptideId:number = psm.reportedPeptideId;
+
+                // if psm doesn't have this mod in a position that passes the protein position filter, skip it
+                if(!(await ModViewDataUtilities.psmHasModInProteinPositionFilter({
+                    modMass,
+                    reportedPeptideId,
+                    psm,
+                    projectSearchId,
+                    modViewDataManager,
+                    vizOptionsData
+                }))) {
+                    continue;
+                }
+
                 if(!(reportedPeptidePSMMap.has(reportedPeptideId))) {
                     reportedPeptidePSMMap.set(reportedPeptideId, new Set());
                 }
@@ -388,6 +408,12 @@ export class ModProteinList_SubTableGenerator {
                 const reportedPeptide = reportedPeptides.get(reportedPeptideId);
 
                 for(const proteinId of reportedPeptide.proteinMatches.keys()) {
+
+                    // skip this protein if we have defined protein position filters that don't include it
+                    if(proteinPositionFilter !== undefined && !(proteinPositionFilter.isProteinInFilter({proteinId}))) {
+                        continue;
+                    }
+
                     if(!(proteinIdReportedPeptideMap.has(proteinId))) {
                         proteinIdReportedPeptideMap.set(proteinId, new Set());
                     }
@@ -422,7 +448,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchId,
             reportedPeptidePSMMap,
             namesForProtein,
-            modViewDataManager
+            modViewDataManager,
         } : {
             proteinPositionMap:Map<number, Set<number>>,
             proteinResidueMap:Map<number, Set<string>>,
@@ -432,7 +458,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchId:number,
             reportedPeptidePSMMap:Map<number, Set<any>>,
             namesForProtein:Map<number, Set<string>>,
-            modViewDataManager:ModViewDataManager
+            modViewDataManager:ModViewDataManager,
         }
     ) : Promise<void> {
 

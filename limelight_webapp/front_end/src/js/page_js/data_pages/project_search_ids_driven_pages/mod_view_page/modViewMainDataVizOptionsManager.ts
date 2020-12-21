@@ -1,14 +1,23 @@
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
 import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {Protein} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/Protein";
+import {
+    ProteinPositionFilterDataManager,
+    ProteinRange
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 
 export class ModViewDataVizRendererOptionsHandler {
 
-    static showOptionsOnPage({
+    static async showOptionsOnPage({
                                  searchDetailsBlockDataMgmtProcessing,
                                  dataPageStateManager_DataFrom_Server,
                                  vizOptionsData,
-                                 modViewDataManager
+                                 modViewDataManager,
+                                 allProjectSearchIds
                              }) {
 
         // defaults for the viz
@@ -18,16 +27,6 @@ export class ModViewDataVizRendererOptionsHandler {
 
         // clear the div
         ModViewDataVizRendererOptionsHandler.clearDiv();
-
-        // // add protein position filter info
-        // ModViewDataVizRendererOptionsHandler.addProteinPositionFilterToPage({
-        //     proteinPositionFilterStateManager,
-        //     searchDetailsBlockDataMgmtProcessing,
-        //     dataPageStateManager_DataFrom_Server,
-        //     vizOptionsData,
-        //     projectSearchIds : undefined,
-        //     modViewDataManager
-        // });
 
         // add section to page
         ModViewDataVizRendererOptionsHandler.addFormToPage();
@@ -43,19 +42,458 @@ export class ModViewDataVizRendererOptionsHandler {
             searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
+            modViewDataManager,
+            allProjectSearchIds
+        });
+
+        await ModViewDataVizRendererOptionsHandler.updateProteinPositionFilterProteinListing({
+            vizOptionsData,
+            modViewDataManager,
+            $formDiv:$('div#data-viz-form'),
+            allProjectSearchIds
+        });
+
+    }
+
+    static async showProteinPositionFilterForm(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData,
+            modViewDataManager,
+            $formDiv,
+            allProjectSearchIds
+        } : {
+            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager,
+            vizOptionsData:any,
+            modViewDataManager:ModViewDataManager,
+            $formDiv:any,
+            allProjectSearchIds:Array<number>
+        }) : Promise<void>
+    {
+
+        // add text saying data are loading
+        const $addButtonContainer = $formDiv.find('div#add-protein-filter-button-container');
+        const $addProteinForm = $formDiv.find('div#add-protein-filter-form-container');
+
+        $addButtonContainer.hide();
+
+        $addProteinForm.show();
+        $addProteinForm.html("Loading protein data...");
+
+        const formHTML = await ModViewDataVizRendererOptionsHandler.getAddProteinFormHTML({
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData,
+            modViewDataManager,
+            allProjectSearchIds
+        });
+
+        $addProteinForm.empty();
+        $addProteinForm.append($(formHTML));
+
+        // update the end position for the default-selected protein
+        await ModViewDataVizRendererOptionsHandler.updateEndPositionForProteinPositionProtein({
+            formDiv: $formDiv,
+            projectSearchIds: allProjectSearchIds,
             modViewDataManager
+        });
+
+        const $newform = $formDiv.find('form#add-protein-position-form');
+
+        // add click handler for cancel
+        $newform.find('input#protein-position-filter-cancel').click( function() {
+            ModViewDataVizRendererOptionsHandler.proteinPositionCancelClicked({formDiv:$formDiv});
+        });
+
+        // add click handler for add
+        $newform.find('input#protein-position-filter-add').click( function() {
+            ModViewDataVizRendererOptionsHandler.proteinPositionAddClicked({$formDiv, vizOptionsData, modViewDataManager, allProjectSearchIds});
+        });
+
+        // add change handler for select field
+        $newform.find('select#add-protein-position-select').change( function() {
+            ModViewDataVizRendererOptionsHandler.updateEndPositionForProteinPositionProtein({
+                formDiv: $formDiv,
+                projectSearchIds: allProjectSearchIds,
+                modViewDataManager
+            });
+        });
+
+    }
+
+    static proteinPositionAddClicked(
+        {
+            vizOptionsData,
+            modViewDataManager,
+            $formDiv,
+            allProjectSearchIds
+        } : {
+            vizOptionsData:any,
+            modViewDataManager:ModViewDataManager,
+            $formDiv:any,
+            allProjectSearchIds:Array<number>
+        }):void {
+
+        const $addButtonContainer = $formDiv.find('div#add-protein-filter-button-container');
+        const $addProteinForm = $formDiv.find('div#add-protein-filter-form-container');
+
+        const proteinIdString = $formDiv.find("select#add-protein-position-select").val();
+        let startString = $formDiv.find("input#protein-position-filter-start-position").val();
+        let endString = $formDiv.find("input#protein-position-filter-end-position").val();
+
+        // do some form validation.
+        // all of these returns should be producing some kind of error message to the user
+
+        if(startString.length < 1 && endString.length < 1) { return; }
+        if(startString.length < 1) { startString = endString; }
+        if(endString.length < 1) { endString = startString; }
+
+        // should produce error messages for these cases
+        if(!(/^\d+$/.test(startString))) { return; }
+        if(!(/^\d+$/.test(endString))) { return; }
+
+        const proteinId = parseInt(proteinIdString);
+        const start = parseInt(startString);
+        const end = parseInt(endString);
+
+        if(end < start) { return; }
+
+        // data checks out if we got here, add it to the page
+        if(vizOptionsData.data.proteinPositionFilter === undefined) {
+            vizOptionsData.data.proteinPositionFilter = new ProteinPositionFilterDataManager();
+        }
+
+        const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+        proteinPositionFilter.addProteinRange({proteinId, start, end});
+
+        // update the listed protein positions
+        ModViewDataVizRendererOptionsHandler.updateProteinPositionFilterProteinListing(
+            {
+                vizOptionsData,
+                modViewDataManager,
+                $formDiv,
+                allProjectSearchIds
+            }
+        );
+
+    }
+
+    static async updateProteinPositionFilterProteinListing(
+        {
+            vizOptionsData,
+            modViewDataManager,
+            $formDiv,
+            allProjectSearchIds
+        } : {
+            vizOptionsData:any,
+            modViewDataManager:ModViewDataManager,
+            $formDiv:any,
+            allProjectSearchIds:Array<number>
+        }) : Promise<void> {
+
+        const $divToUpdate = $formDiv.find('div#current-protein-position-filters');
+        $divToUpdate.empty();
+
+        const proteinPositionFilterManager: ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+
+        if (proteinPositionFilterManager === undefined) {
+            $divToUpdate.html('Show all proteins and positions.');
+            return;
+        }
+
+        const currentRanges = await ModViewDataVizRendererOptionsHandler.sortRanges({
+            ranges:proteinPositionFilterManager.getProteinRanges(),
+            allProjectSearchIds,
+            modViewDataManager
+        });
+
+        if(currentRanges.length < 1) {
+            $divToUpdate.html('Show all proteins and positions.');
+            return;
+        }
+
+        for(const range of currentRanges) {
+            const idString:string = 'delete-protein-position-filter-' + range.proteinId + '-' + range.start + '-' + range.end;
+            let html = '<div class=\"protein-position-filter-listing\">';
+            html += await ModViewDataVizRendererOptionsHandler.getStringForRangeListing({modViewDataManager, allProjectSearchIds, range});
+            html += '<img id=\"' + idString + '\" style=\"margin-left:2px;\" src=\"static/images/icon-circle-delete.png\" class=\"icon-small clickable\" />';
+            html += '</div>';
+
+            $divToUpdate.append($(html));
+
+            // add deletion click handler to this
+            $formDiv.find('img#' + idString).click(function() {
+                if(vizOptionsData.data.proteinPositionFilter !== undefined) {
+                    const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+                    proteinPositionFilter.deleteProteinRange({proteinId:range.proteinId, start:range.start, end:range.end});
+
+                    ModViewDataVizRendererOptionsHandler.updateProteinPositionFilterProteinListing({
+                        vizOptionsData,
+                        modViewDataManager,
+                        $formDiv,
+                        allProjectSearchIds
+                    });
+                }
+            });
+        }
+
+    }
+
+    static async getStringForRangeListing(
+        {
+            modViewDataManager,
+            allProjectSearchIds,
+            range
+        } : {
+            modViewDataManager:ModViewDataManager,
+            allProjectSearchIds:Array<number>,
+            range:ProteinRange
+        }) : Promise<String> {
+
+        const name = await ModViewDataVizRendererOptionsHandler.getNameForProteinId({modViewDataManager, allProjectSearchIds, proteinId:range.proteinId});
+        const protein = await modViewDataManager.getDataForProteinMultipleSearches({proteinId:range.proteinId, projectSearchIds:allProjectSearchIds});
+        const length = protein.length;
+
+        if(range.start === 1 && range.end >= length) {
+            return name;
+        }
+
+        return name + ' (' + range.start + '-' + range.end + ')';
+    }
+
+
+    /**
+     * Sort the protein ranges by protein name first, then by start position of the range
+     *
+     * @param modViewDataManager
+     * @param allProjectSearchIds
+     * @param ranges
+     */
+    static async sortRanges(
+        {
+            modViewDataManager,
+            allProjectSearchIds,
+            ranges
+        } : {
+            modViewDataManager:ModViewDataManager,
+            allProjectSearchIds:Array<number>,
+            ranges:Array<ProteinRange>
+        }) : Promise<Array<ProteinRange>> {
+
+        // sort the ranges by protein name then start position
+        const proteinNamesMap = new Map<number, string>();
+        for(const range of ranges) {
+            if(!(proteinNamesMap.has(range.proteinId))) {
+                proteinNamesMap.set(range.proteinId, await ModViewDataVizRendererOptionsHandler.getNameForProteinId({proteinId:range.proteinId, allProjectSearchIds, modViewDataManager}));
+            }
+        }
+
+        ranges.sort(function(a,b) {
+            const nameA = proteinNamesMap.get(a.proteinId);
+            const nameB = proteinNamesMap.get(b.proteinId);
+
+            if(nameA < nameB) { return -1; }
+            if(nameA > nameB) { return 1; }
+
+            return a.start - b.start;
+        });
+
+        return ranges;
+    }
+
+
+
+    static async getNameForProteinId(
+        {
+            modViewDataManager,
+            allProjectSearchIds,
+            proteinId
+        } : {
+            modViewDataManager:ModViewDataManager,
+            allProjectSearchIds:Array<number>,
+            proteinId:number
+        }) : Promise<string> {
+
+        try {
+            const combinedProtein = await modViewDataManager.getDataForProteinMultipleSearches({
+                proteinId,
+                projectSearchIds: allProjectSearchIds
+            });
+
+            const sortedNames = Array.from(combinedProtein.annotations.keys()).sort();
+
+            let name = sortedNames.join(", ");
+            if (name.length > 20) {
+                name = name.substring(0, 20);
+            }
+
+            return name;
+        } catch (e) {
+            console.error("Could not find name for proteinId", proteinId);
+            return "Name not found";
+        }
+    }
+
+
+    static async updateEndPositionForProteinPositionProtein(
+        {
+            formDiv,
+            projectSearchIds,
+            modViewDataManager
+        } : {
+            formDiv:any,
+            projectSearchIds:Array<number>,
+            modViewDataManager:ModViewDataManager
+        }
+    ) : Promise<void> {
+
+        const length = await ModViewDataVizRendererOptionsHandler.getLengthOfSelectedProteinPositionProtein({
+            formDiv,
+            projectSearchIds,
+            modViewDataManager
+        });
+
+        formDiv.find("input#protein-position-filter-end-position").val(length);
+        formDiv.find("input#protein-position-filter-start-position").val(1);
+    }
+
+    static proteinPositionCancelClicked({formDiv}:{formDiv:any}):void {
+
+        const $addButtonContainer = formDiv.find('div#add-protein-filter-button-container');
+        const $addProteinForm = formDiv.find('div#add-protein-filter-form-container');
+
+        $addButtonContainer.show();
+
+        $addProteinForm.hide();
+        $addProteinForm.empty();
+    }
+
+    static getSelectedProteinPositionProtein({formDiv}:{formDiv:any}):number {
+        const proteinIdString = formDiv.find("select#add-protein-position-select").val();
+        return parseInt(proteinIdString);
+    }
+
+    static async getLengthOfSelectedProteinPositionProtein(
+        {
+            formDiv,
+            projectSearchIds,
+            modViewDataManager
+        }:{
+            formDiv:any,
+            projectSearchIds:Array<number>,
+            modViewDataManager:ModViewDataManager
+        }
+        ):Promise<number> {
+
+        const proteinId = ModViewDataVizRendererOptionsHandler.getSelectedProteinPositionProtein({formDiv});
+        const protein = await modViewDataManager.getDataForProteinMultipleSearches({proteinId, projectSearchIds});
+
+        return protein.length;
+    }
+
+
+    static async getAddProteinFormHTML(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData,
+            modViewDataManager,
+            allProjectSearchIds
+        } : {
+            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager,
+            vizOptionsData:any,
+            modViewDataManager:ModViewDataManager,
+            allProjectSearchIds:Array<number>
         })
+    {
+
+        console.log('called getAddProteinForm()');
+
+        // load the data
+        const sortedProteinObjects = await ModViewDataVizRendererOptionsHandler.getProteinsForForm({
+            modViewDataManager,
+            allProjectSearchIds
+        });
+
+        const template = Handlebars.templates.addProteinPositionForm;
+        const html = template( {proteins:sortedProteinObjects} );
+
+        return html;
+    }
+
+    static async getProteinsForForm(
+        {
+            modViewDataManager,
+            allProjectSearchIds
+        } : {
+            modViewDataManager:ModViewDataManager,
+            allProjectSearchIds:Array<number>
+        }) : Promise<Array<SimplifiedProtein>>
+    {
+
+        console.log('called getProteinsForForm()');
+
+        const proteinIds = await modViewDataManager.getAllProteinIdsInSearches({projectSearchIds:allProjectSearchIds});
+        const simplifiedProteinArray = new Array<SimplifiedProtein>();
+
+        for(const proteinId of proteinIds) {
+            const combinedProtein = await modViewDataManager.getDataForProteinMultipleSearches({proteinId, projectSearchIds:allProjectSearchIds});
+            const sortedNames = Array.from(combinedProtein.annotations.keys()).sort();
+            const allAnnotations = new Set<string>();
+
+            for(const sn of sortedNames) {
+                for(const sd of combinedProtein.annotations.get(sn)) {
+                    allAnnotations.add(sd);
+                }
+            }
+
+            let name = sortedNames.join(", ");
+            if(name.length > 20) { name = name.substring(0, 20); }
+
+            let description = Array.from(allAnnotations).sort().join(", ");
+            if(description === null || description.length < 1) { description = "No description found."; }
+
+            const protein = new SimplifiedProtein({id:proteinId, name, description, length});
+            simplifiedProteinArray.push(protein);
+        }
+
+        simplifiedProteinArray.sort(function(a, b) {
+            if(a.name < b.name) { return -1; }
+            if(a.name == b.name) { return 0; }
+            return 1;
+        });
+
+        return simplifiedProteinArray;
     }
 
     static addChangeHandlerToFormElements({
                                               searchDetailsBlockDataMgmtProcessing,
                                               dataPageStateManager_DataFrom_Server,
                                               vizOptionsData,
-                                              modViewDataManager
+                                              modViewDataManager,
+                                              allProjectSearchIds
                                           }) {
 
         const $formDiv = $('div#data-viz-form');
 
+        // add click handler to "Add Protein Filter"
+        $formDiv.find('input#add-protein-filter-button').click( function() {
+            console.log('clicked update data viz');
+            ModViewDataVizRendererOptionsHandler.showProteinPositionFilterForm({
+                $formDiv,
+                vizOptionsData,
+                modViewDataManager,
+                dataPageStateManager_DataFrom_Server,
+                searchDetailsBlockDataMgmtProcessing,
+                allProjectSearchIds
+            });
+        });
+
+
+        // add click handler to "Update Visualization"
         $formDiv.find('input#update-viz-button').click( function() {
 
             console.log('clicked update data viz');
@@ -114,10 +552,6 @@ export class ModViewDataVizRendererOptionsHandler {
                 } else if( cutoff !== undefined && !isNaN(cutoff) ) {
                     vizOptionsData.data.modMassCutoffMax = parseInt(cutoff);
                 }
-            }
-            {
-
-                vizOptionsData.data.includeOpenMods = $formDiv.find("input#include-open-mods-checkbox").prop('checked');
             }
 
             // update whether we're showing psms or scan data
@@ -203,14 +637,6 @@ export class ModViewDataVizRendererOptionsHandler {
             }
         }
 
-        // update whether or not to include open mods
-        {
-            if( vizOptionsData.data.includeOpenMods !== undefined ) {
-                $formToUpdate.find("input#include-open-mods-checkbox").prop( "checked", vizOptionsData.data.includeOpenMods);
-            }
-
-        }
-
         // update whether we're counting psms or scans
         {
             if( vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms' ) {
@@ -235,67 +661,13 @@ export class ModViewDataVizRendererOptionsHandler {
         $mainContentDiv.append(  $(html) );
 
         addToolTips($mainContentDiv.find('div#data-viz-options-container'));
+
     }
 
     static clearDiv() {
         const $mainContentDiv = $('#mod_list_container');
         $mainContentDiv.empty();
     }
-
-    // static addProteinPositionFilterToPage({
-    //                                           vizOptionsData,
-    //                                           proteinPositionFilterStateManager,
-    //                                           searchDetailsBlockDataMgmtProcessing,
-    //                                           dataPageStateManager_DataFrom_Server,
-    //                                           modViewDataManager
-    //                                         }) {
-    //
-    //     const $mainContentDiv = $('#mod_list_container');
-    //
-    //     const template = Handlebars.templates.currentProteinPositionFilterList;
-    //     let props = ProteinPositionFilterOverlayDisplayManager.getPropsForProteinPositionFilterList( { proteinPositionFilterStateManager, proteinData } );
-    //     const html = template( props );
-    //     $mainContentDiv.append( html );
-    //
-    //     const callbackOnClickedHide = function() {
-    //
-    //         ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
-    //             vizOptionsData,
-    //             proteinPositionFilterStateManager,
-    //             searchDetailsBlockDataMgmtProcessing,
-    //             dataPageStateManager_DataFrom_Server,
-    //             modViewDataManager
-    //         });
-    //
-    //         // add the viz to the page using these viz options
-    //         ModViewDataVizRenderer_MultiSearch.renderDataViz({
-    //             vizOptionsData,
-    //             proteinPositionFilterStateManager,
-    //             searchDetailsBlockDataMgmtProcessing,
-    //             dataPageStateManager_DataFrom_Server: dataPageStateManager_DataFrom_Server,
-    //             modViewDataManager
-    //         });
-    //     }
-    //
-    //     $( 'div#protein-position-filter-launch' ).click( function(e) {
-    //
-    //         {
-    //             // const msg = "Error in $( 'div#protein-position-filter-launch' ).click(:  The call to ProteinPositionFilterOverlayDisplayManager.displayOverlay requires param 'projectSearchId' but there is no 'projectSearchId' available, only 'projectSearchIds'"
-    //             // console.warn( msg )
-    //             //  Comment out throw to allow the code to continue since it seems to have worked before without projectSearchId being passed
-    //             // throw Error( msg )
-    //         }
-    //
-    //         ProteinPositionFilterOverlayDisplayManager.displayOverlay( {
-    //             callbackOnClickedHide,
-    //             proteinPositionFilterStateManager,
-    //             projectSearchId : undefined,
-    //             searchDetailsBlockDataMgmtProcessing,
-    //             dataPageStateManager_DataFrom_Server
-    //         } );
-    //         return false;
-    //     });
-    // }
 
     /**
      * Save the default option values to vizOptionsData if there are no values set for those options
@@ -311,4 +683,35 @@ export class ModViewDataVizRendererOptionsHandler {
         }
     }
 
+}
+
+export class SimplifiedProtein {
+
+    private readonly _id:number;
+    private readonly _name:string;
+    private readonly _description:string;
+    private readonly _length:number;
+
+    constructor({id, name, description, length}:{id:number, name:string, description:string, length:number}) {
+        this._id = id;
+        this._name = name;
+        this._description = description;
+        this._length = length;
+    }
+
+    get id(): number {
+        return this._id;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    get description(): string {
+        return this._description;
+    }
+
+    get length(): number {
+        return this._length;
+    }
 }

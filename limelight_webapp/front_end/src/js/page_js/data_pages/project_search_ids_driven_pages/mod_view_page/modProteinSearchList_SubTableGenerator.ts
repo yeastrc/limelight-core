@@ -16,6 +16,7 @@ import {
 import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableProperties";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 
 export class ModProteinSearchList_SubTableGenerator {
 
@@ -277,7 +278,8 @@ export class ModProteinSearchList_SubTableGenerator {
             modViewDataManager,
             projectSearchIds,
             modMass,
-            proteinId
+            proteinId,
+            vizOptionsData
         });
 
         // get the names of the proteins
@@ -308,7 +310,8 @@ export class ModProteinSearchList_SubTableGenerator {
             modViewDataManager,
             projectSearchIds,
             modMass,
-            proteinId
+            proteinId,
+            vizOptionsData
         }:{
             proteinPositionMapByProjectSearchId:Map<number, Set<number>>,
             proteinResidueMapByProjectSearchId:Map<number, Set<string>>,
@@ -317,7 +320,8 @@ export class ModProteinSearchList_SubTableGenerator {
             modViewDataManager:ModViewDataManager,
             projectSearchIds,
             modMass:number,
-            proteinId:number
+            proteinId:number,
+            vizOptionsData
         }
     ) : Promise<void> {
 
@@ -329,6 +333,19 @@ export class ModProteinSearchList_SubTableGenerator {
             const reportedPeptidePSMMap:Map<number, Set<any>> = new Map();
             for(const psm of psmsForProjectSearchIdAndModMass) {
                 const reportedPeptideId:number = psm.reportedPeptideId;
+
+                // if psm doesn't have this mod in a position that passes the protein position filter, skip it
+                if(!(await ModViewDataUtilities.psmHasModInProteinPositionFilter({
+                    modMass,
+                    reportedPeptideId,
+                    psm,
+                    projectSearchId,
+                    modViewDataManager,
+                    vizOptionsData
+                }))) {
+                    continue;
+                }
+
                 if(!(reportedPeptidePSMMap.has(reportedPeptideId))) {
                     reportedPeptidePSMMap.set(reportedPeptideId, new Set());
                 }

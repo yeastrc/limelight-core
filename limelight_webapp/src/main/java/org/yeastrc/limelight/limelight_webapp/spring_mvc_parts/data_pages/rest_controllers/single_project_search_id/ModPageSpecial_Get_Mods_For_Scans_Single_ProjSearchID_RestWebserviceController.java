@@ -405,6 +405,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	    					}
 	    				}
 	    				
+	    				webserviceResultItem.psmIds.add( psmWebDisplayWebServiceResult.getPsmId() );
+	    				
 	    				webserviceResultItem.variable.add( variableModMassRounded );
 	    			}
 	
@@ -438,6 +440,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    						webserviceResultItem.sfid = searchScanFileId;
 		    					}
 		    				}
+		    				
+		    				webserviceResultItem.psmIds.add( psmWebDisplayWebServiceResult.getPsmId() );
 		    				
 		    				for ( Integer variableModMassRounded : variableModMassesRounded_AtReportedPeptideLevel ) {
 		    					webserviceResultItem.variable.add( variableModMassRounded );
@@ -491,6 +495,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	    					}
 	    				}
 	    				
+	    				webserviceResultItem.psmIds.add( psmWebDisplayWebServiceResult.getPsmId() );
+	    				
 	    				webserviceResultItem.open.add( openModMass );
     				}
     			}
@@ -510,8 +516,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         				scans.add( entryInner.getValue() );
         			}
         		}
+        		
+        		if ( ! scans.isEmpty() ) {
         			
-        		webserviceResultItem_List_Map_Key_ReportedPeptideId.put( reportedPeptideId, scans );
+        			webserviceResultItem_List_Map_Key_ReportedPeptideId.put( reportedPeptideId, scans );
+        		}
     		}
 
     		WebserviceResult result = new WebserviceResult();
@@ -587,7 +596,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	
     	Set<Integer> variable = new HashSet<>();
     	Set<Integer> open = new HashSet<>();
-    	int scnm; // scan number
+    	Set<Long> psmIds = new HashSet<>();
+		int scnm; // scan number
     	Integer sfid; // search scan filename id 
     	
 		public Set<Integer> getVariable() {
@@ -595,6 +605,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		public Set<Integer> getOpen() {
 			return open;
+		}
+    	public Set<Long> getPsmIds() {
+			return psmIds;
 		}
 		public int getScnm() {
 			return scnm;

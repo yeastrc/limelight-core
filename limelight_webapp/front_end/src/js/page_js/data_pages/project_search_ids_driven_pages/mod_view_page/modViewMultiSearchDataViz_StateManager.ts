@@ -5,6 +5,7 @@
  */
 
 import {MOD_VIEW_MULTI_SEARCH_DATA_VIZ__CENTRAL_STATE_MANAGER_KEY} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
+import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 
 // definitions used for saving state to URL
 const _COMPONENT_UNIQUE_ID = MOD_VIEW_MULTI_SEARCH_DATA_VIZ__CENTRAL_STATE_MANAGER_KEY; // Key for use in Central State Manager
@@ -21,8 +22,8 @@ const _SAVE_STATE_KEYS = {
     'MOD_MASS_MAX_CUTOFF': 'x',
     'MOD_MASS_MIN_CUTOFF': 'n',
     'SELECTED_RECTS': 's',
-    'INCLUDE_OPEN_MODS' : 'o',
     'DATA_TRANSFORMATION' : 't',
+    'PROTEIN_POSITION_FILTER' : 'pp'
 };
 
 const _LOAD_STATE_KEYS = {
@@ -34,8 +35,8 @@ const _LOAD_STATE_KEYS = {
     'MOD_MASS_MAX_CUTOFF': 'modMassCutoffMax',
     'MOD_MASS_MIN_CUTOFF': 'modMassCutoffMin',
     'SELECTED_RECTS': 'selectedStateObject',
-    'INCLUDE_OPEN_MODS' : 'includeOpenMods',
     'DATA_TRANSFORMATION' : 'dataTransformation',
+    'PROTEIN_POSITION_FILTER' : 'proteinPositionFilter',
 };
 
 const _PSM_QUANT_METHOD_ENCODING_KEYS = {
@@ -140,11 +141,39 @@ export class ModMultiSearch_DataVizPageStateManager {
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS].data = this.getDecodedSelectedRects( encodedStateData[_SAVE_STATE_KEYS.SELECTED_RECTS] );
             }
 
-            if(encodedDataKeys.includes(_SAVE_STATE_KEYS.INCLUDE_OPEN_MODS)) {
-                this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS] = encodedStateData[_SAVE_STATE_KEYS.INCLUDE_OPEN_MODS];
+            if(encodedDataKeys.includes(_SAVE_STATE_KEYS.PROTEIN_POSITION_FILTER)) {
+                this._vizOptionsData.data[_LOAD_STATE_KEYS.PROTEIN_POSITION_FILTER] = this.getDecodedProteinPositionFilter( encodedStateData[_SAVE_STATE_KEYS.PROTEIN_POSITION_FILTER] );
             }
+
+        }
+    }
+
+    getDecodedProteinPositionFilter(encodedProteinRanges:Array<number>):ProteinPositionFilterDataManager {
+
+        const proteinPositionFilter = new ProteinPositionFilterDataManager();
+
+        for(let i = 0; i < encodedProteinRanges.length; i+=3) {
+            const proteinId = encodedProteinRanges[i];
+            const start = encodedProteinRanges[i+1];
+            const end = encodedProteinRanges[i+2];
+
+            proteinPositionFilter.addProteinRange({proteinId, start, end});
         }
 
+        return proteinPositionFilter;
+    }
+
+    getEncodedProteinPositionFilter(proteinPositionFilter:ProteinPositionFilterDataManager):Array<number> {
+
+        const encodedArray = new Array<number>();
+
+        for (const range of proteinPositionFilter.getProteinRanges()) {
+            encodedArray.push(range.proteinId);
+            encodedArray.push(range.start);
+            encodedArray.push(range.end);
+        }
+
+        return encodedArray;
     }
 
     getDecodedSelectedRects(encodedSelectedRects) {
@@ -260,17 +289,16 @@ export class ModMultiSearch_DataVizPageStateManager {
             dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF] = this._vizOptionsData.data[_LOAD_STATE_KEYS.MOD_MASS_MIN_CUTOFF];
         }
 
-        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS] !== undefined && this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS] === false) {
-            dataForEncoding[_SAVE_STATE_KEYS.INCLUDE_OPEN_MODS] = this._vizOptionsData.data[_LOAD_STATE_KEYS.INCLUDE_OPEN_MODS];
-        }
-
         if( this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS] !== undefined
             && this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS].data !== undefined
             && Object.keys(this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS].data).length > 0) {
 
 
             dataForEncoding[_SAVE_STATE_KEYS.SELECTED_RECTS] = this.getEncodedSelectedRects(this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS]);
+        }
 
+        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.PROTEIN_POSITION_FILTER] !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.PROTEIN_POSITION_FILTER] = this.getEncodedProteinPositionFilter(this._vizOptionsData.data[_LOAD_STATE_KEYS.PROTEIN_POSITION_FILTER]);
         }
 
         return dataForEncoding;
