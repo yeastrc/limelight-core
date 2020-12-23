@@ -304,6 +304,8 @@ class DataTable_Column_sortFunction_Param {
     sortValue_B : unknown  //  From DataTable_DataRow_ColumnEntry.valueSort
 }
 
+type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
+
 /**
  * A column in the Table.  Data for how to process the column and header content
  */
@@ -339,6 +341,11 @@ class DataTable_Column {
 
     displayName: string
 
+    //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
+
+    columnHeader_Tooltip_HTML_TitleAttribute?: string //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
+    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
+
     sortable?: boolean  // Assumed false if missing
     sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell sortValue for custom sorting
 
@@ -364,7 +371,10 @@ class DataTable_Column {
             cssClassNameAdditions_HeaderRowCell, cssClassNameAdditions_DataRowCell, style_override_DataRowCell_React,
             cellMgmt_External, cellMgmt_ExternalReactComponent,
 
-            //  For Header
+            //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
+            columnHeader_Tooltip_HTML_TitleAttribute, //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,  // Function that takes no params and returns JSX.Element
+
             sortable, sortFunction, hideColumnHeader, style_override_HeaderRowCell_React
         }: {
             id: DataTable_ColumnId,
@@ -395,6 +405,10 @@ class DataTable_Column {
 
             //  For Header:
 
+            //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
+            columnHeader_Tooltip_HTML_TitleAttribute?: string //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
+
             sortable?: boolean  // Assumed false if missing
             sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell sortValue for custom sorting
 
@@ -422,6 +436,8 @@ class DataTable_Column {
         this.style_override_DataRowCell_React = style_override_DataRowCell_React;
         this.cellMgmt_External = cellMgmt_External;
         this.cellMgmt_ExternalReactComponent = cellMgmt_ExternalReactComponent;
+        this.columnHeader_Tooltip_HTML_TitleAttribute = columnHeader_Tooltip_HTML_TitleAttribute;
+        this.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element;
         this.sortable = sortable;
         this.sortFunction = sortFunction;
         this.hideColumnHeader = hideColumnHeader
@@ -467,6 +483,11 @@ class DataTable_Column {
         }
         if ( dataTable_Column.sortFunction && ( ! dataTable_Column.sortable ) ) {
             const msg = "DataTable_Column.constructorDataValidation: dataTable_Column.sortFunction has a value and dataTable_Column.sortable is not true";
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if ( dataTable_Column.columnHeader_Tooltip_HTML_TitleAttribute && dataTable_Column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
+            const msg = "DataTable_Column.constructorDataValidation: dataTable_Column.columnHeader_Tooltip_HTML_TitleAttribute and dataTable_Column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element CANNOT BOTH have a value";
             console.warn(msg)
             throw Error(msg);
         }
