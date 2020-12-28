@@ -110,13 +110,23 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
         {
             const $selector_comments_outer_container = $selector_search_details_container.find(".selector_comments_outer_container");
-            if ($selector_comments_outer_container.length === 0) {
-                throw Error("Failed to find DOM element with class 'selector_comments_outer_container' searchDetails_AdditionsForLoggedInUsers(...) projectSearchId: " + projectSearchId);
-            }
 
-            const htmlAddComment = this._project_search_details_add_comment_template();
-            const $htmlAddComment = $(htmlAddComment);
-            $htmlAddComment.appendTo($selector_comments_outer_container);
+            //  $selector_comments_outer_container.length === 0 : true when User is NO LONGER Logged In
+
+            //      The Page will reload if the project is not public.
+            //      If the project is public, the search details are displayed for the public user, with no update options.
+
+            //   For Public project, probably should reload the page instead of continuing so more obvious that the user is no longer logged in.
+
+            // if ($selector_comments_outer_container.length === 0) {
+            //     throw Error("Failed to find DOM element with class 'selector_comments_outer_container' searchDetails_AdditionsForLoggedInUsers(...) projectSearchId: " + projectSearchId);
+            // }
+
+            if ($selector_comments_outer_container.length > 0) {
+                const htmlAddComment = this._project_search_details_add_comment_template();
+                const $htmlAddComment = $(htmlAddComment);
+                $htmlAddComment.appendTo($selector_comments_outer_container);
+            }
         }
         
 
