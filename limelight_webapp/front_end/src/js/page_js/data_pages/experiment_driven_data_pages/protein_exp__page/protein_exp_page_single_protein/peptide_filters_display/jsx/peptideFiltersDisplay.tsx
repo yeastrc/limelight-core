@@ -352,7 +352,11 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             peptideSequenceSearchStrings_DisplayString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
         }
 
-        let peptideUniqueSelected : boolean =  this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
+        let peptideUniqueSelected : boolean = false;
+
+        if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
+            peptideUniqueSelected = this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
+        }
 
         return (
             <div style={ { marginTop: 10 } }>
