@@ -103,6 +103,7 @@ import {PeptideUnique_UserSelection} from "page_js/data_pages/experiment_driven_
 import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_BuildData_ForReactComponent";
+import {userSearchString_LocationsOn_ProteinSequence_Compute} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/userSearchString_LocationsOn_ProteinSequence/userSearchString_LocationsOn_ProteinSequence_Compute";
 
 
 /////////////////////////
@@ -853,6 +854,19 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             this._peptideUnique_Update_PeptideUnique_UserSelection_ComponentData();
             
                             this._peptideSequence_Update_peptideSequence_UserSelections_ComponentData();
+
+                            {
+                                //  Create Updated instance for "Clear All"
+                                const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = userSearchString_LocationsOn_ProteinSequence_Compute({
+                                    proteinSequenceString : this.props.propsValue.proteinSequenceString,
+                                    searchStrings : this.props.propsValue.peptideSequence_UserSelections_StateObject.getPeptideSearchStrings()
+                                });
+
+                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+
+                                    return { userSearchString_LocationsOn_ProteinSequence_Root };
+                                });
+                            }
             
                             this._proteinSequenceWidgetDisplay_Update_proteinSequenceWidgetDisplay_Component_Data();
 
