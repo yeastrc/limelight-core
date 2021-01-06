@@ -16,8 +16,7 @@ export class ModStatsUtils {
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
-        let output = "# Currently NOT filtered on Protein and Position selection\n";
-        output += "# Search Id Key:\n"
+        let output = "# Search Id Key:\n"
 
         for(const projectSearchId of projectSearchIds) {
             const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
@@ -82,8 +81,7 @@ export class ModStatsUtils {
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
-        let output = "Currently NOT filtered on Protein and Position selection\n";
-        output += "search1\tsearch2\tmod mass\t" + quantTypeString + " count 1\t" + quantTypeString + " count 2\tz-score\tp-value\n";
+        let output = "search1\tsearch2\tmod mass\t" + quantTypeString + " count 1\t" + quantTypeString + " count 2\tz-score\tp-value\n";
 
         const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
