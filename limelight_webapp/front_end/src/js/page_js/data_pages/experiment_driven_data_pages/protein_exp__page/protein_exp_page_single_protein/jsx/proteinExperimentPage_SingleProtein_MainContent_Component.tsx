@@ -2332,7 +2332,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                             <div className="header-label">
                                 Summary Statistics:
                             </div>
-                            <div className="box-contents" style={ { display: "grid", gridTemplateColumns: "150px 55px" } }>
+                            <div className="box-contents" style={ { display: "grid", gridTemplateColumns: "160px 55px" } }>
                                 <div className="box-line" style={ { textAlign: "right", paddingRight: 10 } }>
                                     Sequence coverage:
                                 </div>
