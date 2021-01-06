@@ -35,7 +35,7 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 //  Modal Dialog for selecting mod masses when count > _MAX_MODS_DISPLAY_NON_SELECTED
 
 const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH = 800;
-const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT = 700;
+const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT = 600;
 
 /**
  *
