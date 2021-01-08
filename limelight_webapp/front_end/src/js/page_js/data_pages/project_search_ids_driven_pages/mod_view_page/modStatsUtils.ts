@@ -166,8 +166,14 @@ export class ModStatsUtils {
                                 projectSearchId: projectSearchId2,
                                 searchDetailsBlockDataMgmtProcessing
                             }),
-                            search1:projectSearchId1,
-                            search2:projectSearchId2,
+                            search1:ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
+                                projectSearchId: projectSearchId1,
+                                searchDetailsBlockDataMgmtProcessing
+                            }),
+                            search2:ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
+                                projectSearchId: projectSearchId2,
+                                searchDetailsBlockDataMgmtProcessing
+                            }),
                             modMass:modMass,
                             count1:x1,
                             count2:x2,
