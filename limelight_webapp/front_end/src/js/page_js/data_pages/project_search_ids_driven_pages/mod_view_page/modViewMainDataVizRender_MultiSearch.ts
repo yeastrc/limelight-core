@@ -260,6 +260,25 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         $("div#data-viz-container").append($html);
 
+        html = "<div class=\"clickable\">[View ZScore Report]</div>"
+        $html = $(html)
+
+        $html.click(function() {
+
+            // calculate and show stats
+            ModStatsUtils.viewSignificantMods({
+                vizOptionsData,
+                sortedModMasses,
+                searchDetailsBlockDataMgmtProcessing,
+                projectSearchIds: vizOptionsData.data.projectSearchIds,
+                modViewDataManager
+            });
+
+        });
+
+        $("div#data-viz-container").append($html);
+
+
         html = "<div class=\"clickable\">[Download Data Table]</div>"
         $html = $(html)
 
@@ -277,6 +296,10 @@ export class ModViewDataVizRenderer_MultiSearch {
         });
 
         $("div#data-viz-container").append($html);
+
+
+
+
 
     }
 
