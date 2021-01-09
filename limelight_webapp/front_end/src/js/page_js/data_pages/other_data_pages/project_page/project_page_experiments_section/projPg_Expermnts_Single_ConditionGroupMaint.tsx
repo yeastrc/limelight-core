@@ -517,6 +517,14 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
      */
     _add( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
 
+        for ( const conditionContainer of this.state.conditionContainers ) {
+
+            if ( conditionContainer.conditionLabel === "" ) {
+
+                return;  // EARLY RETURN
+            }
+        }
+
         const conditionContainers = this.state.conditionContainers;
         const conditionGroupFlags = this.state.conditionGroupFlags;
 
@@ -545,6 +553,14 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
      * 
      */
     _save( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
+
+        for ( const conditionContainer of this.state.conditionContainers ) {
+
+            if ( conditionContainer.conditionLabel === "" ) {
+
+                return;  // EARLY RETURN
+            }
+        }
 
         const conditionContainers = this.state.conditionContainers;
         const conditionGroupFlags = this.state.conditionGroupFlags;
@@ -709,12 +725,12 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
             label_Conditions = "Time Points";
         }
 
-
         let addButton : JSX.Element = undefined;
         let saveButton : JSX.Element = undefined;
         let labelTypeEntry : JSX.Element = undefined;
 
         {
+            let conditionHasEmptyLabel = false;
             let addSave_Disabled : boolean = false;
             let addSave_Disabled_Flag : boolean = false;
 
@@ -723,14 +739,37 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
                 addSave_Disabled = true;
             }
 
+            for ( const conditionContainer of this.state.conditionContainers ) {
+
+                if ( conditionContainer.conditionLabel === "" ) {
+
+                    conditionHasEmptyLabel = true;
+                    addSave_Disabled_Flag = true;
+                    addSave_Disabled = true;
+
+                    break;
+                }
+            }
+
             if ( this.props.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint.add ) {
                 
                 let disabledCoverDiv : JSX.Element = undefined;
                 if ( addSave_Disabled_Flag ) {
 
-                    let title = "The label must be populated and at least 1 condition added before the Condition Group can be added";
+                    let title = undefined;
+
                     if ( this.props.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint.isTimePoints ) {
-                        title = "At least 1 time point must be added before the Time Points can be added";
+                        if ( conditionHasEmptyLabel ) {
+                            title = "Every time point Must have a Label (Text String) before the Time Points can be added";
+                        } else {
+                            title = "At least 1 time point must be added before the Time Points can be added";
+                        }
+                    } else {
+                        if ( conditionHasEmptyLabel ) {
+                            title = "Every condition Must have a Label (Text String) before the Condition Group can be added";
+                        } else {
+                            title = "The label must be populated and at least 1 condition added before the Condition Group can be added";
+                        }
                     }
                     disabledCoverDiv = (
                         <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } title={ title }>
@@ -1038,7 +1077,8 @@ interface ConditionListEntry_DraggableContents_Props {
 
 interface ConditionListEntry_DraggableContents_State {
 
-    editLabel : boolean
+    editLabel? : boolean
+    emptyConditionString? : boolean
 }
 
 class ConditionListEntry_DraggableContents extends React.Component< ConditionListEntry_DraggableContents_Props, ConditionListEntry_DraggableContents_State > {
@@ -1048,12 +1088,16 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
     private _labelChanged_BindThis = this._labelChanged.bind(this);
     private _deleteCondition_BindThis = this._deleteCondition.bind(this);
 
+    private readonly _inputField_Ref :  React.RefObject<HTMLInputElement>
 
     constructor(props : ConditionListEntry_DraggableContents_Props) {
         super(props);
 
+        this._inputField_Ref = React.createRef();
+
         this.state = {
-            editLabel : false
+            editLabel : false,
+            emptyConditionString : false
         };
     }
 
@@ -1066,17 +1110,54 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
 
     _labelEdit_LabelInputBlur( event: React.MouseEvent<HTMLElement, MouseEvent> ) { 
         //  End Label Edit
-        this.setState( (state : ConditionListEntry_DraggableContents_State, props : ConditionListEntry_DraggableContents_Props ) : ConditionListEntry_DraggableContents_State => {
-            return { editLabel : false };
-        });
+
+        // console.warn("FAKE Exit _labelEdit_LabelInputBlur Immediately.")
+        //
+        // return; // TODO
+
+        const label = this._inputField_Ref.current.value;
+
+        if ( label === "" ) {
+
+            // this._inputField_Ref.current.focus()
+
+            this.setState( (state : ConditionListEntry_DraggableContents_State, props : ConditionListEntry_DraggableContents_Props ) : ConditionListEntry_DraggableContents_State => {
+                return {emptyConditionString: true};
+            });
+        } else {
+            this.setState( (state : ConditionListEntry_DraggableContents_State, props : ConditionListEntry_DraggableContents_Props ) : ConditionListEntry_DraggableContents_State => {
+                return {emptyConditionString: false};
+            });
+
+            this.setState( (state : ConditionListEntry_DraggableContents_State, props : ConditionListEntry_DraggableContents_Props ) : ConditionListEntry_DraggableContents_State => {
+                return { editLabel : false };
+            });
+        }
+
     }
 
     //  Rendered input value is this.props.condition.label so _labelChanged is not correct.
 
     _labelChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
-        const target_htmlElement = event.target as HTMLInputElement;
-        const label = target_htmlElement.value;
+        // const target_htmlElement = event.target as HTMLInputElement;
+        // const label = target_htmlElement.value;
+
+        const label = this._inputField_Ref.current.value;
+
+
+        if ( label === "" ) {
+
+            this._inputField_Ref.current.focus()
+
+            this.setState( (state : ConditionListEntry_DraggableContents_State, props : ConditionListEntry_DraggableContents_Props ) : ConditionListEntry_DraggableContents_State => {
+                return {emptyConditionString: true};
+            });
+        } else {
+            this.setState( (state : ConditionListEntry_DraggableContents_State, props : ConditionListEntry_DraggableContents_Props ) : ConditionListEntry_DraggableContents_State => {
+                return {emptyConditionString: false};
+            });
+        }
 
         this.props.changeConditionContainerConditionLabel({ conditionContainer : this.props.conditionContainer, label });
     }
@@ -1120,25 +1201,60 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
 
             const inputFieldWidth = conditionItemPartsWidths.labelWidth - 10;
 
+            const inputFieldStyle : React.CSSProperties = { width: inputFieldWidth };
+            let inputFieldTitleAttr = "Enter Condition Label";
+
+            if ( this.state.emptyConditionString ) {
+                inputFieldStyle.backgroundColor = "#ffcccc";
+                inputFieldTitleAttr = "Condition Label Cannot Be Empty";
+            }
+
             labelInput = (
-                <input value={ conditionContainer.conditionLabel } style={ { width: inputFieldWidth } }
-                    onChange={ this._labelChanged_BindThis }
-                    autoFocus
-                    onBlur={ this._labelEdit_LabelInputBlur_BindThis }
-                />
+                <div >
+                    <input ref={ this._inputField_Ref }
+                           title={ inputFieldTitleAttr }
+                           value={ conditionContainer.conditionLabel }
+                           style={ inputFieldStyle }
+                           onChange={ this._labelChanged_BindThis }
+                           autoFocus
+                           onBlur={ this._labelEdit_LabelInputBlur_BindThis }
+                    />
+                </div>
             );
         } else {
 
-            let title = "Click to change Condition Label\n\nDrag to change Condition Order";
+            let title = undefined;
             if ( this.props.isTimePoints ) {
-                title = "Click to change Time Point Label\n\nDrag to change Time Point Order";
+                if ( this.state.emptyConditionString ) {
+                    title = "Click to change Time Point Label\n\nTime Point Label Cannot Be Empty";
+                } else {
+                    title = "Click to change Time Point Label\n\nDrag to change Time Point Order";
+                }
+            } else {
+                if ( this.state.emptyConditionString ) {
+                    title = "Click to change Condition Label\n\nCondition Label Cannot Be Empty";
+                } else {
+                    title = "Click to change Condition Label\n\nDrag to change Condition Order";
+                }
             }
+
+            let containerStyle : React.CSSProperties = {};
+
+            if ( this.state.emptyConditionString ) {
+                containerStyle.backgroundColor = "#ffcccc";
+            }
+
             labelDisplay = (
-                <div style={ { maxWidth: conditionItemPartsWidths.labelWidth, overflowX: "hidden", textOverflow: "ellipsis" } }
+                <div
+                    style={ containerStyle }
                     title={ title }
                     onClick={ this._labelEdit_LabelClicked_BindThis }
-                    >
-                    { conditionContainer.conditionLabel }
+                >
+                    <div style={ { maxWidth: conditionItemPartsWidths.labelWidth, overflowX: "hidden", textOverflow: "ellipsis" } }
+                        onClick={ this._labelEdit_LabelClicked_BindThis }
+                        >
+                        { conditionContainer.conditionLabel }
+                    </div>
                 </div>
             );
         }
@@ -1171,10 +1287,10 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
                     <img className=" icon-small " src="static/images/icon-draggable.png"
                         title={ dragIconTitle } ></img> {/*  Replace with draggable icon */}
                 </div>
-                <div >
+                {/*<div >*/}
                     { labelInput }
                     { labelDisplay }
-                </div>
+                {/*</div>*/}
                 <div style={ { maxWidth: conditionItemPartsWidths.deleteIconWidth, overflowX: "hidden" } }>
                     { deleteIconComponent }
                 </div>
