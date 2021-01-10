@@ -8,6 +8,11 @@ import React from 'react'
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
 
 import { DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {
+    tooltip_Limelight_Create_Tooltip,
+    Tooltip_Limelight_Created_Tooltip
+} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 /**
  * 
@@ -25,11 +30,17 @@ export interface DataTable_Table_DataRowEntry_Props {
  */
 export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Table_DataRowEntry_Props, {} > {
 
+    private _cellContentsSpan_onMouseEnterCallback_BindThis = this._cellContentsSpan_onMouseEnterCallback.bind(this);
+    private _cellContentsSpan_onMouseLeaveCallback_BindThis = this._cellContentsSpan_onMouseLeaveCallback.bind(this);
 
+    private readonly _displayNameValueSpan_Ref :  React.RefObject<HTMLElement>
+
+    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
   constructor(props : DataTable_Table_DataRowEntry_Props) {
     super(props);
-    // this.rowDivRef = React.createRef();
+
+      this._displayNameValueSpan_Ref = React.createRef();
 
     // this.state = {};
   }
@@ -88,8 +99,48 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
   // }
 
+    /**
+     *
+     */
+  private _cellContentsSpan_onMouseEnterCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+      try {
+          const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed();
 
-  /**
+          this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueSpan_Ref.current })
+
+      } catch( e ) {
+          console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsSpan_onMouseEnterCallback: ", e )
+          reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+          throw e;
+      }
+  }
+
+    /**
+     *
+     */
+    private _cellContentsSpan_onMouseLeaveCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+        try {
+            this._removeTooltip();
+
+        } catch( e ) {
+            console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsSpan_onMouseLeaveCallback: ", e )
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _removeTooltip() {
+
+        if ( this._tooltip_Limelight_Created_Tooltip ) {
+            this._tooltip_Limelight_Created_Tooltip.removeTooltip()
+        }
+        this._tooltip_Limelight_Created_Tooltip = undefined
+    }
+
+    /**
    * 
    * 
    * 
@@ -170,10 +221,11 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       }
 
       const valueDisplay = dataObject_columnEntry.valueDisplay;
+      const valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed = dataObject_columnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
 
       const tooltipText = dataObject_columnEntry.tooltipText;
 
-      if ( valueDisplay === undefined || valueDisplay === null ) {
+      if ( ( ! valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) && ( valueDisplay === undefined || valueDisplay === null ) ) {
         const msg = "DataTable_Table_DataRowEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null) is true: valueDisplay: " + valueDisplay + ", column.id " + column.id + ", dataObject_columnEntry: ";
         console.warn( msg, dataObject_columnEntry );
         throw Error( msg )
@@ -192,6 +244,24 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       //  React auto escapes '"' to &quot; for contents of 'title' property
 
+      let valueDisplay_ForCell = valueDisplay;
+      let cellDisplayContents_FromCallback : JSX.Element = null;
+      if ( valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) {
+          cellDisplayContents_FromCallback = valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed();
+          valueDisplay_ForCell = null;
+      }
+
+      //  Cell tooltip
+
+      let cellContentsSpan_onMouseEnterCallback = undefined;
+      let cellContentsSpan_onMouseLeaveCallback = undefined;
+
+      if ( dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) {
+
+          cellContentsSpan_onMouseEnterCallback = this._cellContentsSpan_onMouseEnterCallback_BindThis;
+          cellContentsSpan_onMouseLeaveCallback = this._cellContentsSpan_onMouseLeaveCallback_BindThis;
+      }
+
       return (
           <td 
               className={ " data-table-data-cell data-table-cell " }
@@ -203,7 +273,11 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
             <div style={ styleContainerDiv } className={ column.cssClassNameAdditions_DataRowCell } title={ tooltipText } >
               { horizontalGraph }
               { horizontalGraph_SpaceAfter }
-              <span className=" table-data-cell-property-value ">{ valueDisplay }</span>
+              <span ref={ this._displayNameValueSpan_Ref }
+                  className=" table-data-cell-property-value "
+                    onMouseEnter={ cellContentsSpan_onMouseEnterCallback }
+                    onMouseLeave={ cellContentsSpan_onMouseLeaveCallback }
+              >{ valueDisplay }{ cellDisplayContents_FromCallback }</span>
             </div>
           </td>
       )

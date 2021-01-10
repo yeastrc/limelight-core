@@ -672,10 +672,14 @@ class DataTable_DataRowEntry {
     }
 }
 
+type DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed = () => JSX.Element;
+
+type DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed = () => JSX.Element;
+
 /**
  * A column in a Data Row
  *
- * valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+ * valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed, cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
  * valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
  * tooltipText is set on 'title' attribute of cell
  *
@@ -684,21 +688,34 @@ class DataTable_DataRowEntry {
  */
 class DataTable_DataRow_ColumnEntry {
 
-    //  valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
     //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+
+    valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
+    //  Passed to DataTable_Column.sortFunction if that is populated
+
+    ///////
+
+    //  valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
     //  cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
     //  cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
 
-    valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
-    valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
-                        //  Passed to DataTable_Column.sortFunction if that is populated
+    //  Cell Contents is determined by one of the following (The first one that meets the rule is used)
 
-    tooltipText?: string; // tooltipText is set on 'title' attribute of cell
 
     //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
 
     cellMgmt_External_Data?: unknown;
     cellMgmt_ExternalReactComponent_Data?: unknown;
+    valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed? : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
+    valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
+
+    ///////////////
+
+    //  Can only have a value in ONE of the following parameters (tooltipText or tooltipDisplay_...):
+
+    tooltipText?: string; // tooltipText is set on 'title' attribute of cell
+
+    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed? : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
 
     //  graphFraction : number;  //  Not Supported Yet
 
@@ -711,19 +728,43 @@ class DataTable_DataRow_ColumnEntry {
      * cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
      * cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
      */
-    constructor({valueDisplay, valueSort, tooltipText, cellMgmt_External_Data, cellMgmt_ExternalReactComponent_Data}: {
-        valueDisplay?: string, // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
-        valueSort?: any,  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
-        tooltipText?: string, // tooltipText is set on 'title' attribute of cell
+    constructor({valueDisplay, valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed, valueSort, tooltipText, tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed, cellMgmt_External_Data, cellMgmt_ExternalReactComponent_Data}: {
+
+        //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+
+        valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
+        //  Passed to DataTable_Column.sortFunction if that is populated
+
+        ///////
+
+        //  valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+        //  cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
+        //  cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
+
+        //  Cell Contents is determined by one of the following (The first one that meets the rule is used)
+
 
         //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
 
-        cellMgmt_External_Data?: unknown,
-        cellMgmt_ExternalReactComponent_Data?: unknown
+        cellMgmt_External_Data?: unknown;
+        cellMgmt_ExternalReactComponent_Data?: unknown;
+        valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed? : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
+        valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent is populated
+
+        ///////////////
+
+        //  Can only have a value in ONE of the following parameters (tooltipText or tooltipDisplay_...):
+
+        tooltipText?: string; // tooltipText is set on 'title' attribute of cell
+
+        tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed? : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
+
     }) {
         this.valueDisplay = valueDisplay
+        this.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed = valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
         this.valueSort = valueSort
         this.tooltipText = tooltipText
+        this.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed = tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
         this.cellMgmt_External_Data = cellMgmt_External_Data
         this.cellMgmt_ExternalReactComponent_Data = cellMgmt_ExternalReactComponent_Data
 
@@ -741,8 +782,14 @@ class DataTable_DataRow_ColumnEntry {
             throw Error(msg);
         }
         if (((!dataTable_DataRow_ColumnEntry.cellMgmt_External_Data) && (!dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data))
-            && (dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null)) {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" ) )';
+            && (dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null)
+            && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed() === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed === null) ) {
+            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" )&& (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed() === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed === null)  )';
+            console.warn(msg)
+            throw Error(msg);
+        }
+        if (dataTable_DataRow_ColumnEntry.tooltipText && dataTable_DataRow_ColumnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed) {
+            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: values in both tooltipText && tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed';
             console.warn(msg)
             throw Error(msg);
         }
@@ -819,6 +866,8 @@ export {
     DataTable_DataGroupRowEntry,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed,
+    DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed,
 
     DataTable_cellMgmt_External,
     DataTable_cellMgmt_External_PopulateRequest,

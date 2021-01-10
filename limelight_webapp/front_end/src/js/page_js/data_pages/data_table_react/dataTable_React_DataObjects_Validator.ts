@@ -263,8 +263,9 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
                     throw Error(msg)
                 }
             } else {
-                if ( dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null ) {
-                    const msg = "dataTable_DataRow_ColumnEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null) is true: valueDisplay: " +
+                if ( ( dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null )
+                    && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed() === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed === null) ) {
+                    const msg = "dataTable_DataRow_ColumnEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null)&& (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed() === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed === null)  is true: valueDisplay: " +
                         dataTable_DataRow_ColumnEntry.valueDisplay + ", dataTable_ColumnEntry.id " + dataTable_ColumnEntry.id + ", dataTableId: " + dataTableId + ", dataTable_DataRow_ColumnEntry: ";
                     console.warn(msg, dataTable_DataRow_ColumnEntry);
                     throw Error(msg)
