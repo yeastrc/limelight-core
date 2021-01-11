@@ -30,17 +30,17 @@ export interface DataTable_Table_DataRowEntry_Props {
  */
 export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Table_DataRowEntry_Props, {} > {
 
-    private _cellContentsSpan_onMouseEnterCallback_BindThis = this._cellContentsSpan_onMouseEnterCallback.bind(this);
-    private _cellContentsSpan_onMouseLeaveCallback_BindThis = this._cellContentsSpan_onMouseLeaveCallback.bind(this);
+    private _cellContentsDiv_onMouseEnterCallback_BindThis = this._cellContentsDiv_onMouseEnterCallback.bind(this);
+    private _cellContentsDiv_onMouseLeaveCallback_BindThis = this._cellContentsDiv_onMouseLeaveCallback.bind(this);
 
-    private readonly _displayNameValueSpan_Ref :  React.RefObject<HTMLElement>
+    private readonly _displayNameValueDiv_Ref :  React.RefObject<HTMLDivElement>
 
     private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
   constructor(props : DataTable_Table_DataRowEntry_Props) {
     super(props);
 
-      this._displayNameValueSpan_Ref = React.createRef();
+      this._displayNameValueDiv_Ref = React.createRef();
 
     // this.state = {};
   }
@@ -102,14 +102,14 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
     /**
      *
      */
-  private _cellContentsSpan_onMouseEnterCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+  private _cellContentsDiv_onMouseEnterCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
       try {
           const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed();
 
-          this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueSpan_Ref.current })
+          this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueDiv_Ref.current })
 
       } catch( e ) {
-          console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsSpan_onMouseEnterCallback: ", e )
+          console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsDiv_onMouseEnterCallback: ", e )
           reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
           throw e;
       }
@@ -118,12 +118,12 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
     /**
      *
      */
-    private _cellContentsSpan_onMouseLeaveCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    private _cellContentsDiv_onMouseLeaveCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
         try {
             this._removeTooltip();
 
         } catch( e ) {
-            console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsSpan_onMouseLeaveCallback: ", e )
+            console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsDiv_onMouseLeaveCallback: ", e )
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }
@@ -253,13 +253,13 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       //  Cell tooltip
 
-      let cellContentsSpan_onMouseEnterCallback = undefined;
-      let cellContentsSpan_onMouseLeaveCallback = undefined;
+      let cellContentsDiv_onMouseEnterCallback = undefined;
+      let cellContentsDiv_onMouseLeaveCallback = undefined;
 
       if ( dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) {
 
-          cellContentsSpan_onMouseEnterCallback = this._cellContentsSpan_onMouseEnterCallback_BindThis;
-          cellContentsSpan_onMouseLeaveCallback = this._cellContentsSpan_onMouseLeaveCallback_BindThis;
+          cellContentsDiv_onMouseEnterCallback = this._cellContentsDiv_onMouseEnterCallback_BindThis;
+          cellContentsDiv_onMouseLeaveCallback = this._cellContentsDiv_onMouseLeaveCallback_BindThis;
       }
 
       return (
@@ -270,13 +270,18 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
               >
                 {/* Removed since property not set: data-row-id={ columnEntry.uniqueId } */}
 
-            <div style={ styleContainerDiv } className={ column.cssClassNameAdditions_DataRowCell } title={ tooltipText } >
+            <div  ref={ this._displayNameValueDiv_Ref }
+                  //  Set onMouse... if have tooltip callback
+                  onMouseEnter={ cellContentsDiv_onMouseEnterCallback }
+                  onMouseLeave={ cellContentsDiv_onMouseLeaveCallback }
+                  // Set title attribute if have text tooltip
+                  title={ tooltipText }
+                  style={ styleContainerDiv } className={ column.cssClassNameAdditions_DataRowCell } 
+            >
               { horizontalGraph }
               { horizontalGraph_SpaceAfter }
-              <span ref={ this._displayNameValueSpan_Ref }
+              <span
                   className=" table-data-cell-property-value "
-                    onMouseEnter={ cellContentsSpan_onMouseEnterCallback }
-                    onMouseLeave={ cellContentsSpan_onMouseLeaveCallback }
               >{ valueDisplay }{ cellDisplayContents_FromCallback }</span>
             </div>
           </td>

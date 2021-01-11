@@ -35,10 +35,10 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
   private _headerColumnClicked_BindThis = this._headerColumnClicked.bind(this);
 
-  private _displayNameValueSpan_onMouseEnter_BindThis = this._displayNameValueSpan_onMouseEnter.bind(this);
-  private _displayNameValueSpan_onMouseLeave_BindThis = this._displayNameValueSpan_onMouseLeave.bind(this);
+  private _displayNameValueDOMElement_onMouseEnter_BindThis = this._displayNameValueDOMElement_onMouseEnter.bind(this);
+  private _displayNameValueDOMElement_onMouseLeave_BindThis = this._displayNameValueDOMElement_onMouseLeave.bind(this);
 
-  private readonly _displayNameValueSpan_Ref :  React.RefObject<HTMLElement>
+  private readonly _displayNameValueDiv_Ref :  React.RefObject<HTMLDivElement>
 
   private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
@@ -46,7 +46,7 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
   constructor(props : DataTable_Table_HeaderRowEntry_Props ) {
     super(props);
 
-    this._displayNameValueSpan_Ref = React.createRef();
+    this._displayNameValueDiv_Ref = React.createRef();
   }
 
   /**
@@ -115,14 +115,14 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
   /**
    *
    */
-  private _displayNameValueSpan_onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+  private _displayNameValueDOMElement_onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
     try {
       const tooltipContents = this.props.column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element();
 
-      this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueSpan_Ref.current })
+      this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueDiv_Ref.current })
 
     } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry._displayNameValueSpan_onMouseEnter: ", e )
+      console.warn( "Error in DataTable_Table_HeaderRowEntry._displayNameValueDOMElement_onMouseEnter: ", e )
       reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
       throw e;
     }
@@ -131,12 +131,12 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
   /**
    *
    */
-  private _displayNameValueSpan_onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+  private _displayNameValueDOMElement_onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
     try {
         this._removeTooltip();
 
     } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry._displayNameValueSpan_onMouseLeave: ", e )
+      console.warn( "Error in DataTable_Table_HeaderRowEntry._displayNameValueDOMElement_onMouseLeave: ", e )
       reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
       throw e;
     }
@@ -271,13 +271,13 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
           spanTitle = column.columnHeader_Tooltip_HTML_TitleAttribute;
       }
 
-      let displayNameValueSpan_onMouseEnter = null;
-      let displayNameValueSpan_onMouseLeave = null;
+      let displayNameValueDOMElement_onMouseEnter = null;
+      let displayNameValueDOMElement_onMouseLeave = null;
 
       if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
 
-        displayNameValueSpan_onMouseEnter = this._displayNameValueSpan_onMouseEnter_BindThis;
-        displayNameValueSpan_onMouseLeave = this._displayNameValueSpan_onMouseLeave_BindThis;
+        displayNameValueDOMElement_onMouseEnter = this._displayNameValueDOMElement_onMouseEnter_BindThis;
+        displayNameValueDOMElement_onMouseLeave = this._displayNameValueDOMElement_onMouseLeave_BindThis;
       }
 
 
@@ -288,13 +288,15 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
             data-columnid={ column.id }>
           <div style={ cellOuterContainerDivStyle }>
             <div style={ cellInnerContainerDivStyle }>
-              <div style= { styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName } >
+              <div
+                  title={ spanTitle }
+                  ref={ this._displayNameValueDiv_Ref }
+                  onMouseEnter={ displayNameValueDOMElement_onMouseEnter }
+                  onMouseLeave={ displayNameValueDOMElement_onMouseLeave }
+
+                  style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName } >
 
                   <span className=" display-name-value "
-                       title={ spanTitle }
-                        ref={ this._displayNameValueSpan_Ref }
-                        onMouseEnter={ displayNameValueSpan_onMouseEnter }
-                        onMouseLeave={ displayNameValueSpan_onMouseLeave }
                   >{ column.displayName }</span>
               </div>
 
