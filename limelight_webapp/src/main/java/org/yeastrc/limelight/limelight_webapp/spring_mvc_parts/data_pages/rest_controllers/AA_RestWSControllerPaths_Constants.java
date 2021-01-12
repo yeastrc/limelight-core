@@ -49,6 +49,8 @@ public class AA_RestWSControllerPaths_Constants {
 	//   General
 
 	public static final String LOG_BROWSER_JAVASCRIPT_ERROR_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/log-browser-javascript-error";
+
+	public static final String USER_SESSION_KEEP_ALIVE_IF_EXISTS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/user-session-keep-alive-if-exists";
 	
 	
 

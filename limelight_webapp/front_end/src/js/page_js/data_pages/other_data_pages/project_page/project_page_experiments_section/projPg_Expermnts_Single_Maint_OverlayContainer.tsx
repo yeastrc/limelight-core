@@ -11,6 +11,8 @@ import React from 'react'
 
 
 import { ProjectPage_Experiments_SingleExperimentMaintRoot } from './projPg_Expermnts_Single_MaintRoot';
+import {keep_UserSession_AliveIfExists_OnServer_WebserviceCall} from "page_js/keep_UserSession_AliveIfExists_OnServer_WebserviceCall";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 /**
  * 
@@ -85,7 +87,9 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
 
         this._beforeunload_eventListener = beforeUnload_EventHandler;
 
-        console.warn( "beforeUnload_EventHandler: ", beforeUnload_EventHandler )
+        this._call_keep_UserSession_AliveIfExists_OnServer_WebserviceCall();
+
+        // console.warn( "beforeUnload_EventHandler: ", beforeUnload_EventHandler )
     }
 
     /**
@@ -93,12 +97,45 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
      */
     componentWillUnmount() {
 
-        console.warn( "this._beforeunload_eventListener: ", this._beforeunload_eventListener )
+        // console.warn( "this._beforeunload_eventListener: ", this._beforeunload_eventListener )
 
         if ( this._beforeunload_eventListener ) {
             window.removeEventListener( "beforeunload", this._beforeunload_eventListener );
         }
         this._beforeunload_eventListener = null;
+
+        if ( this._keep_UserSession_AliveIfExists_OnServer_WebserviceCall_SetTimeout ) {
+            window.clearTimeout( this._keep_UserSession_AliveIfExists_OnServer_WebserviceCall_SetTimeout );
+        }
+    }
+
+    /**
+     *
+     */
+    private _keep_UserSession_AliveIfExists_OnServer_WebserviceCall_SetTimeout : any;
+
+    /**
+     *
+     */
+    private _call_keep_UserSession_AliveIfExists_OnServer_WebserviceCall() {
+
+        keep_UserSession_AliveIfExists_OnServer_WebserviceCall();
+
+        const _keep_UserSession_AliveIfExists_OnServer_WebserviceCall_INTERVAL = 3000; // 1 * 60 * 60 * 1000; // 1 hour
+
+        this._keep_UserSession_AliveIfExists_OnServer_WebserviceCall_SetTimeout = window.setTimeout( () => {
+            try {
+                this._keep_UserSession_AliveIfExists_OnServer_WebserviceCall_SetTimeout = null;
+
+                this._call_keep_UserSession_AliveIfExists_OnServer_WebserviceCall();
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({
+                    errorException : e
+                });
+                throw e;
+            }
+        }, _keep_UserSession_AliveIfExists_OnServer_WebserviceCall_INTERVAL )
     }
 
     /**
