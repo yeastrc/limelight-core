@@ -39,6 +39,8 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
     private _closeClickHandler_BindThis = this._closeClickHandler.bind(this);
     private _closeOverlay_BindThis = this._closeOverlay.bind(this);
 
+    private _beforeunload_eventListener : any;
+
     private _projectPage_ExperimentsSection_LoggedInUsersInteraction;
     private _dialogTop;
 
@@ -67,6 +69,37 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
         };
     }
 
+    /**
+     *
+     */
+    componentDidMount() {
+
+        const beforeUnload_EventHandler = (event) => {
+            // Cancel the event
+            event.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+            // Chrome requires returnValue to be set
+            event.returnValue = '';
+        };
+
+        window.addEventListener("beforeunload", beforeUnload_EventHandler );
+
+        this._beforeunload_eventListener = beforeUnload_EventHandler;
+
+        console.warn( "beforeUnload_EventHandler: ", beforeUnload_EventHandler )
+    }
+
+    /**
+     *
+     */
+    componentWillUnmount() {
+
+        console.warn( "this._beforeunload_eventListener: ", this._beforeunload_eventListener )
+
+        if ( this._beforeunload_eventListener ) {
+            window.removeEventListener( "beforeunload", this._beforeunload_eventListener );
+        }
+        this._beforeunload_eventListener = null;
+    }
 
     /**
      * 
