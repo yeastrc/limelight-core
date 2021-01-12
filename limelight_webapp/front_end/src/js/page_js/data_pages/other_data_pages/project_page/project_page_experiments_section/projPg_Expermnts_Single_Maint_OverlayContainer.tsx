@@ -121,7 +121,7 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
 
         keep_UserSession_AliveIfExists_OnServer_WebserviceCall();
 
-        const _keep_UserSession_AliveIfExists_OnServer_WebserviceCall_INTERVAL = 3000; // 1 * 60 * 60 * 1000; // 1 hour
+        const _keep_UserSession_AliveIfExists_OnServer_WebserviceCall_INTERVAL = 1 * 60 * 60 * 1000; // 1 hour
 
         this._keep_UserSession_AliveIfExists_OnServer_WebserviceCall_SetTimeout = window.setTimeout( () => {
             try {
