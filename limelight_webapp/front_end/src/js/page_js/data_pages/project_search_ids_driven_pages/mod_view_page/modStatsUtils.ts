@@ -92,6 +92,7 @@ export class ModStatsUtils {
         output += "<th style='text-align: left;'>" + quantTypeString + "count 2</th>";
         output += "<th style='text-align: left;'>z-score</th>";
         output += "<th style='text-align: left;'>p-value</th>";
+        output += "<th style='text-align: left;'>rank</th>";
         output += "</tr>";
 
 
@@ -203,6 +204,7 @@ export class ModStatsUtils {
         });
 
         // assemble the table rows
+        let rank = 1;
         for(const ob of resultsArray) {
             output += "<tr>";
             output += "<td>" + ob.search1 + "</td>";
@@ -212,7 +214,10 @@ export class ModStatsUtils {
             output += "<td>" + ob.count2 + "</td>";
             output += "<td>" + ob.zscore + "</td>";
             output += "<td>" + ob.pvalue + "</td>";
+            output += "<td>" + rank + "</td>";
             output += "</tr>";
+
+            rank++;
         }
 
         // close table and div
