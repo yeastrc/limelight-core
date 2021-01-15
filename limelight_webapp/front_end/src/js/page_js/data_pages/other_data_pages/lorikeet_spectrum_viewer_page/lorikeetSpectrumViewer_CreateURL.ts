@@ -12,7 +12,9 @@
 /**
  * 
  */
-const lorikeetSpectrumViewer_CreateURL = function({ projectSearchId, psmId }) {
+const lorikeetSpectrumViewer_CreateURL = function({ projectSearchId, psmId, openModPosition } : {projectSearchId:number, psmId:number, openModPosition:any}) {
+
+    console.log('openModPosition', openModPosition);
 
     if ( ! main_page_lorikeet_page_controller_path ) {
         const main_page_lorikeet_page_controller_pathDOMElement = document.getElementById("main_page_lorikeet_page_controller_path");
@@ -22,7 +24,10 @@ const lorikeetSpectrumViewer_CreateURL = function({ projectSearchId, psmId }) {
         main_page_lorikeet_page_controller_path = main_page_lorikeet_page_controller_pathDOMElement.innerText;
     }
 
-    const url = main_page_lorikeet_page_controller_path + "/ps/" + projectSearchId + "/psm/" + psmId;
+    let url = main_page_lorikeet_page_controller_path + "/ps/" + projectSearchId + "/psm/" + psmId;
+    if(openModPosition !== undefined && openModPosition !== null) {
+        url += '?openmod-position=' + openModPosition;
+    }
 
     return url;
 }

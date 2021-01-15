@@ -67,6 +67,14 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 			throw Error("DOM element with id 'initial_url_psm_id' does not contain a number.  contains: " + psmIdString );
 		}
 
+		console.log( "window.location.search: ", window.location.search );
+
+		const urlSearchParams = new URLSearchParams( window.location.search )
+
+		const openmodPosition = urlSearchParams.get( "openmod-position" ); //  null if not found
+
+		console.log( "openmodPosition: ", openmodPosition );
+
 		if ( ! window.opener ) {
 			this._populateProjectAndSearchInfo({ projectSearchId });
 		}
@@ -76,15 +84,18 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 		const lorikeetSpectrumViewer_LoadDataFromServer = new LorikeetSpectrumViewer_LoadDataFromServer();
 		const promise_lorikeetSpectrumViewer_LoadDataFromServer = 
 			lorikeetSpectrumViewer_LoadDataFromServer.lorikeetSpectrumViewer_LoadDataFromServer({ 
-				projectSearchId, psmId, dataPageStateManager_DataFrom_Server });
+				projectSearchId, psmId, openmodPosition, dataPageStateManager_DataFrom_Server });
 
 		promise_lorikeetSpectrumViewer_LoadDataFromServer.catch( () => { });
 
 		promise_lorikeetSpectrumViewer_LoadDataFromServer.then( ({ loadedDataFromServer }) => {
 			try {
+				let dataTable_RootTableDataObject : DataTable_RootTableDataObject = undefined;
 
-				const dataTable_RootTableDataObject : DataTable_RootTableDataObject =
-					lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData( { psmId_Selection : psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
+				if ( openmodPosition === undefined || openmodPosition === null ) {
+					dataTable_RootTableDataObject =
+						lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData( { psmId_Selection : psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
+				}
 
 				const lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded = new LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded({ projectSearchId, psmId });
 				lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.initialize();

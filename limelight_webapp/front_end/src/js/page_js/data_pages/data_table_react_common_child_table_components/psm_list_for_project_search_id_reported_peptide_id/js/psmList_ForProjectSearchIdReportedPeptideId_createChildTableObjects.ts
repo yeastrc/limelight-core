@@ -77,6 +77,7 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             const searchDataLookupParamsRoot = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot;
             const dataPageStateManager = dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager;
             const alwaysShow_ReporterIonMasses_Column = dataRow_GetChildTable_ReturnReactComponent_Parameter.alwaysShow_ReporterIonMasses_Column;
+            const openModPositionOverride = dataRow_GetChildTable_ReturnReactComponent_Parameter.openModPositionOverride;
 
             const loadPromise = getPSMDataFromServer({ projectSearchId, psmIds_Include, reportedPeptideId, searchDataLookupParamsRoot, dataPageStateManager, webserviceCallStandardPost_ApiObject_Holder_Class });
 
@@ -90,7 +91,8 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
                         alwaysShow_ReporterIonMasses_Column,
                         ajaxResponse, 
                         dataPageStateManager, 
-                        projectSearchId
+                        projectSearchId,
+                        openModPositionOverride
                     });
 
                     const promiseResult = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult();
@@ -125,13 +127,15 @@ const _create_DataTable_RootTableObject = function({
     alwaysShow_ReporterIonMasses_Column,
     ajaxResponse, 
     dataPageStateManager, 
-    projectSearchId
+    projectSearchId,
+    openModPositionOverride
 
 } : {
     alwaysShow_ReporterIonMasses_Column : boolean,
     ajaxResponse, 
     dataPageStateManager : DataPageStateManager, 
-    projectSearchId : number
+    projectSearchId : number,
+    openModPositionOverride : any
 
 }) : DataTable_RootTableObject {
 
@@ -149,7 +153,7 @@ const _create_DataTable_RootTableObject = function({
     let annotationTypeRecords_DisplayOrder : { psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> } = _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, psmList, dataPageStateManager } );
     let psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem> = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPsmListEntries;
 
-    const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, ajaxResponse });
+    const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, ajaxResponse, openModPositionOverride });
     const dataTable_DataRowEntries = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries;
 
     const dataTable_Columns : Array<DataTable_Column> = _getDataTableColumns({ 
@@ -385,13 +389,15 @@ const _get_DataTable_DataRowEntries = function({
     projectSearchId,
     dataPageStateManager,
     psmAnnotationTypesForPsmListEntries_DisplayOrder,
+    openModPositionOverride,
     ajaxResponse
 } : { 
     psmList : Array<any>,
     projectSearchId : number,
     dataPageStateManager : DataPageStateManager
     psmAnnotationTypesForPsmListEntries_DisplayOrder,
-    ajaxResponse
+    ajaxResponse,
+    openModPositionOverride:any
 
 }) : Get_DataTable_DataRowEntries_Result {
 
@@ -450,7 +456,39 @@ const _get_DataTable_DataRowEntries = function({
 
             const psmId = psmListItem.psmId
 
-            const cellMgmt_ExternalReactComponent_Data = { psmId, projectSearchId }
+            /*
+                If there is an open mod mass associated w/ this PSM and it localizes to a single position,
+                pass that position through to the lorikeet spectrum viewer link construction
+
+                Mike Riffle (01-2021)
+             */
+            let openModPosition:any = null;
+            if ( anyPsmsHave_openModificationMassesDisplay ) {
+
+                if(openModPositionOverride) {
+                    openModPosition = openModPositionOverride;
+
+                } else {
+
+                    if (psmListItem.openModificationMassAndPositionsList && psmListItem.openModificationMassAndPositionsList.length === 1) {
+                        const positionEntries_Optional = psmListItem.openModificationMassAndPositionsList[0].positionEntries_Optional;
+
+                        if (positionEntries_Optional && positionEntries_Optional.length === 1) {
+                            const positionEntry = positionEntries_Optional[0];
+
+                            if (positionEntry.is_N_Terminal) {
+                                openModPosition = 'n';
+                            } else if (positionEntry.is_C_Terminal) {
+                                openModPosition = 'c';
+                            } else {
+                                openModPosition = positionEntry.position;
+                            }
+                        }
+                    }
+                }
+            }
+
+            const cellMgmt_ExternalReactComponent_Data = { psmId, projectSearchId, openModPosition }
 
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 cellMgmt_ExternalReactComponent_Data

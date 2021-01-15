@@ -27,6 +27,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
     
     projectSearchId : number
     reportedPeptideId : number                                      // NOT required if have psmIds_Include
+    openModPositionOverride : any
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager
     psmIds_Include : ReadonlySet<number> // Optional
@@ -42,6 +43,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
         searchDataLookupParamsRoot,
         dataPageStateManager,
         psmIds_Include,
+        openModPositionOverride
 
     } : { 
         projectSearchId : number
@@ -49,6 +51,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         dataPageStateManager : DataPageStateManager
         psmIds_Include? : ReadonlySet<number> // Optional
+        openModPositionOverride? : any  // optional
     }) {
 
         this.projectSearchId = projectSearchId;
@@ -56,6 +59,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
         this.dataPageStateManager = dataPageStateManager;
         this.psmIds_Include = psmIds_Include;
+        this.openModPositionOverride = openModPositionOverride;
     }
 
 

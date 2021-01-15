@@ -76,12 +76,12 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	/**
 	 * 
 	 */
-	viewSpectrum_NewWindow( { psmId, projectSearchId /*, searchDetailsBlockDataMgmtProcessing, dataPageStateManager_DataFrom_Server */ } ) {
+	viewSpectrum_NewWindow( { psmId, projectSearchId, openModPosition } ) {
 
 		let objectThis = this;
 
 
-		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId, psmId });
+		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId, psmId, openModPosition });
 		
 
 		let lorikeetNewWindowWidth = LORIKEET_VIEWER_NEW_WINDOW_SIZE_WIDTH;

@@ -19,6 +19,7 @@ export interface PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
     cellMgmt_ExternalReactComponent_Data : {
         psmId : number
         projectSearchId : number
+        openModPosition : any
     }
 }
 
@@ -73,11 +74,13 @@ export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Compo
    
         const projectSearchId = this.props.cellMgmt_ExternalReactComponent_Data.projectSearchId;
         const psmId = this.props.cellMgmt_ExternalReactComponent_Data.psmId;
+        const openModPosition = this.props.cellMgmt_ExternalReactComponent_Data.openModPosition;
+
         
         const spectrumRetrieveAndDisplay_Use_lorikeet = new SpectrumRetrieveAndDisplay_Use_lorikeet( undefined ); // Params not used in constructor
 
         spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_NewWindow( { 
-          psmId, projectSearchId
+          psmId, projectSearchId, openModPosition
         } );
 
   

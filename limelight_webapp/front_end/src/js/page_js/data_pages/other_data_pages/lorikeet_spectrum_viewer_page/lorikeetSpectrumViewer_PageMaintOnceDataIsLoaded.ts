@@ -127,11 +127,9 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			console.log('lorikeet options:');
 			console.log(lorikeetOptions);
 
+			this._savePsmPeptideDataToLocalVariableForLookup( { loadedDataFromServer } );
 
 			if ( dataTable_RootTableDataObject ) {
-
-				this._savePsmPeptideDataToLocalVariableForLookup( { loadedDataFromServer } );
-
 				this._addPsmPeptideListToPage( { dataTable_RootTableDataObject, loadedDataFromServer } );
 			}
 
@@ -289,7 +287,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		this._psmId_Displayed = psmIdOfClicked; //  Save to instance variable
 
 		//  Update URL in browser
-		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed });
+		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed, openModPosition:null });
 		window.history.replaceState( null, null, lorikeetSpectrumViewer_newWindowURL );
 
 		//  Update Table for new selection

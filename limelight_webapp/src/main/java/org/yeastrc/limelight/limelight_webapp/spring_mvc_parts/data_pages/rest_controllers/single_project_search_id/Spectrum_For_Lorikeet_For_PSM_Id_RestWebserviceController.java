@@ -55,6 +55,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -97,6 +99,9 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 
 	@Autowired
 	private ScanFileDAO_IF scanFileDAO;
+	
+	@Autowired
+	private OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF openModificationMasses_PsmLevel_ForPsmIds_Searcher;
 	
 	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
@@ -191,9 +196,33 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
     		Integer projectSearchId = webserviceRequest.getProjectSearchId();
 
     		if ( projectSearchId == null ) {
-    			log.warn( "No Project Search Ids" );
+    			log.warn( "No Project Search Id" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		
+    		Integer openmodPositionNumber = null;
+    		boolean openmodPosition_N_Term = false;
+    		boolean openmodPosition_C_Term = false;
+    		
+    		if ( StringUtils.isNotEmpty(webserviceRequest.openmodPosition) ) {
+
+        		//  openmodPositionString must be a number, 'n' or 'c'
+        		
+        		if ( "n".equals(webserviceRequest.openmodPosition) ) {
+        			openmodPosition_N_Term = true;
+        		} else if ( "c".equals(webserviceRequest.openmodPosition) ) {
+        			openmodPosition_C_Term = true;
+        		} else {
+        			try {
+        				openmodPositionNumber = Integer.parseInt( webserviceRequest.openmodPosition );
+        			} catch ( Exception e ) {
+        				log.warn( "webserviceRequest.openmodPosition is not 'n', 'c' or a integer.  webserviceRequest.openmodPosition: " + webserviceRequest.openmodPosition );
+            			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+        			}
+        		}
+    		}
+    		
+    		
 
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
@@ -301,6 +330,29 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 				throw new LimelightInternalErrorException(msg);
 			}
 			
+			Double openmodMass = null;
+			if ( openmodPositionNumber != null || openmodPosition_N_Term || openmodPosition_C_Term ) {
+				// Get Open Mod Mass for PSM (Per Limelight XML Schema, can only be 1 value
+				
+				List<Long> psmIds = new ArrayList<>( 2 );
+				psmIds.add(psmId);
+				List<PsmOpenModificationDTO> dbResult = openModificationMasses_PsmLevel_ForPsmIds_Searcher.get_OpenModificationMasses_PsmLevel_ForPsmIds( psmIds );
+
+				if ( dbResult.isEmpty() ) {
+					String msg = "( openmodPosition != null ) PsmOpenModificationDTO List is Empty: psm id: " + psmId;
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				if ( dbResult.size() > 1 ) {
+					String msg = "( openmodPosition != null ) PsmOpenModificationDTO List Size > 1: psm id: " + psmId;
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				PsmOpenModificationDTO entry = dbResult.get(0);
+				openmodMass = entry.getMass();
+			}
+			
         	///////////////////////
         	String scanFilename = searchScanFileDTO.getFilename();
         	
@@ -331,14 +383,18 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 			    throw new LimelightInternalErrorException( msg );
 			}
 			lorikeetRootData.setSequence( peptideSequence );
-				
+			
 			{
-		        // Variable Mods, N and C terminus Mods
+		        // Variable Mods, N and C terminus Mods.  
+				
+				
+				//  !!!  ALSO See Next Code Block "Store Open Mod Mass in Variable Mods"
+				
 				
 				List<LorikeetVariableMod> variableMods = null;
 	
-				double ntermMod = 0; // additional mass to be added to the n-term
-				double ctermMod = 0; // additional mass to be added to the c-term
+				BigDecimal ntermMod = BigDecimal.ZERO; // additional mass to be added to the n-term
+				BigDecimal ctermMod = BigDecimal.ZERO; // additional mass to be added to the c-term
 				
 	
 				if ( psmDTO.isHasModifications() ) {
@@ -359,9 +415,9 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 							throw new LimelightInternalErrorException(msg);
 						}
 						if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
-							ntermMod += psmDynamicModificationDTO.getMass();
+							ntermMod = ntermMod.add( BigDecimal.valueOf( psmDynamicModificationDTO.getMass() ) );
 						} else if ( psmDynamicModificationDTO.isIs_N_Terminal() ) {
-							ctermMod += psmDynamicModificationDTO.getMass();
+							ctermMod = ctermMod.add( BigDecimal.valueOf( psmDynamicModificationDTO.getMass() ) );
 						} else {
 							int dynamicModPosition = psmDynamicModificationDTO.getPosition();
 							String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
@@ -391,9 +447,9 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 							throw new LimelightInternalErrorException(msg);
 						}
 						if ( srchRepPeptDynamicModDTO.isIs_N_Terminal() ) {
-							ntermMod += srchRepPeptDynamicModDTO.getMass();
+							ntermMod = ntermMod.add( BigDecimal.valueOf( srchRepPeptDynamicModDTO.getMass() ) );
 						} else if ( srchRepPeptDynamicModDTO.isIs_C_Terminal() ) {
-							ctermMod += srchRepPeptDynamicModDTO.getMass();
+							ctermMod = ctermMod.add( BigDecimal.valueOf( srchRepPeptDynamicModDTO.getMass() ) );
 						} else {
 							int dynamicModPosition = srchRepPeptDynamicModDTO.getPosition();
 							String aminoAcid = peptideSequence.substring( dynamicModPosition - 1 /* chg to zero based */, dynamicModPosition );
@@ -405,12 +461,81 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 						}
 					}
 				}
-		        
+
+				if ( openmodMass != null && openmodPosition_N_Term ) {
+					ntermMod = ntermMod.add( BigDecimal.valueOf( openmodMass ) );
+				}
+				if ( openmodMass != null && openmodPosition_C_Term ) {
+					ctermMod = ctermMod.add( BigDecimal.valueOf( openmodMass ) );
+				}
+
 		        lorikeetRootData.setVariableMods( variableMods );
 		        
-		        lorikeetRootData.setNtermMod( ntermMod );
-		        lorikeetRootData.setCtermMod( ctermMod );
+		        lorikeetRootData.setNtermMod( ntermMod.doubleValue() );
+		        lorikeetRootData.setCtermMod( ctermMod.doubleValue() );
 	    	}
+
+			{
+				//  Store Open Mod Mass in Variable Mods
+				
+				if ( openmodMass != null && openmodPositionNumber != null ) {
+
+					List<LorikeetVariableMod> variableMods = lorikeetRootData.getVariableMods();
+					
+					LorikeetVariableMod lorikeetVariableMod = null;
+			        
+					if ( variableMods == null ) {
+						variableMods = new ArrayList<>( 5 );
+				        lorikeetRootData.setVariableMods( variableMods );
+					} else {
+						for ( LorikeetVariableMod entry : variableMods ) {
+							if ( entry.getIndex() == openmodPositionNumber ) {
+								lorikeetVariableMod = entry;
+							}
+						}
+					}
+					
+					if ( lorikeetVariableMod == null ) {
+
+						String aminoAcid = peptideSequence.substring( openmodPositionNumber - 1 /* chg to zero based */, openmodPositionNumber );
+
+						lorikeetVariableMod = new LorikeetVariableMod();
+						lorikeetVariableMod.setAminoAcid( aminoAcid );
+						lorikeetVariableMod.setIndex( openmodPositionNumber );
+						lorikeetVariableMod.setModMass( openmodMass );
+
+						variableMods.add( lorikeetVariableMod );
+					} else {
+						
+						BigDecimal modMassBigDecimal = BigDecimal.valueOf( lorikeetVariableMod.getModMass() );
+						BigDecimal openmodMassBigDecimal = BigDecimal.valueOf( openmodMass );
+						
+						BigDecimal totalModMassBigDecimal = modMassBigDecimal.add(openmodMassBigDecimal);
+						double totalModMass = totalModMassBigDecimal.doubleValue();				
+						
+						lorikeetVariableMod.setModMass( totalModMass );
+					}
+				}
+			}
+			
+			//  Sort Variable Mods on Position if not null
+			
+			if ( lorikeetRootData.getVariableMods() != null ) {
+				Collections.sort( lorikeetRootData.getVariableMods(), new Comparator<LorikeetVariableMod>() {
+
+					@Override
+					public int compare(LorikeetVariableMod o1, LorikeetVariableMod o2) {
+						if ( o1.getIndex() < o2.getIndex() ) {
+							return -1;
+						}
+						if ( o1.getIndex() > o2.getIndex() ) {
+							return 1;
+						}
+						return 0;
+					}
+				});
+			}
+			
 			
 			{  //  PSM Open Modifications
 				
@@ -637,7 +762,14 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
     public static class WebserviceRequest {
     	Long psmId;
     	Integer projectSearchId;
+    	String openmodPosition;
 
+		public String getOpenmodPosition() {
+			return openmodPosition;
+		}
+		public void setOpenmodPosition(String openmodPosition) {
+			this.openmodPosition = openmodPosition;
+		}
 		public Long getPsmId() {
 			return psmId;
 		}

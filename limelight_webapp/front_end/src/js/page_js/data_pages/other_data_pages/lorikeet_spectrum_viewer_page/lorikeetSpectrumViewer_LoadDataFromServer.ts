@@ -35,10 +35,11 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
     /**
      * 
      */
-    lorikeetSpectrumViewer_LoadDataFromServer({ psmId, projectSearchId, dataPageStateManager_DataFrom_Server } : { 
+    lorikeetSpectrumViewer_LoadDataFromServer({ psmId, projectSearchId, openmodPosition, dataPageStateManager_DataFrom_Server } : {
         
         psmId, 
-        projectSearchId, 
+        projectSearchId,
+        openmodPosition
         dataPageStateManager_DataFrom_Server  : DataPageStateManager
     }) {
 
@@ -46,7 +47,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
             try {
                 const loadedDataFromServer = {};
 
-                const loadSpectrumDataPromise = this._loadSpectrumData( { psmId, projectSearchId, loadedDataFromServer } );
+                const loadSpectrumDataPromise = this._loadSpectrumData( { psmId, projectSearchId, openmodPosition, loadedDataFromServer } );
 
                 const loadPSMPeptideDataPromise = this._loadPSMPeptideData( { psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
                                 
@@ -71,15 +72,16 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
     /**
      * 
      */
-    _loadSpectrumData( { psmId, projectSearchId, loadedDataFromServer } ) {
+    _loadSpectrumData( { psmId, projectSearchId, openmodPosition, loadedDataFromServer } ) {
         
         return new Promise( function( resolve, reject ) {
                 try {
                         console.log("AJAX Call to get Spectrum Data START, Now: " + new Date() );
 
                         let requestObject = {
-                                psmId : psmId,
-                                projectSearchId : projectSearchId
+                            psmId,
+                            projectSearchId,
+                            openmodPosition
                         };
 
                         const url = "d/rws/for-page/psb/spectrum-for-psm-id";
