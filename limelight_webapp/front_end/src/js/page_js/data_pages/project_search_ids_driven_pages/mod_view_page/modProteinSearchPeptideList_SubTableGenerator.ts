@@ -13,6 +13,7 @@ import {
     PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
+import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 
 
 export class ModProteinSearchPeptideList_SubTableGenerator {
@@ -289,7 +290,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>> = new Map();
 
         // the open mod localization associated with a specific peptide--a peptide can have max 1--can be a number or 'n' or 'c'
-        const openModPositionOverrideByPeptideString:Map<string, any> = new Map();
+        const openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType> = new Map();
 
         // populate the data structures above
         await ModProteinSearchPeptideList_SubTableGenerator.rollupProteinData({
@@ -341,7 +342,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             proteinResidueMapByPeptideString:Map<string, Set<string>>,
             psmIdsByPeptideString:Map<string, Set<number>>,
             unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>>,
-            openModPositionOverrideByPeptideString:Map<string, number>,
+            openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType>,
             modViewDataManager:ModViewDataManager,
             projectSearchId:number,
             modMass:number,
@@ -427,7 +428,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             proteinId:number,
             psmIdsByPeptideString:Map<string, Set<number>>,
             unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>>,
-            openModPositionOverrideByPeptideString:Map<string, number>,
+            openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType>,
             reportedPeptidesForProtein:Set<ReportedPeptide>,
             reportedPeptides:Map<number, ReportedPeptide>,
             modMass:number
@@ -628,7 +629,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             psm:any,
             reportedPeptides:Map<number, ReportedPeptide>,
             modMass:number,
-            openModPositionOverrideByPeptideString:Map<string, any>
+            openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType>
         }
     ) : Set<string> {
 
@@ -976,7 +977,7 @@ class PeptideDataForModProteinSearch {
     private readonly _modMass:number;
     private readonly _psmIds:Set<number>;
     private readonly _unlocalizedPositionRanges:Array<UnlocalizedStartEnd>;
-    private readonly _openModPositionOverride:any;
+    private readonly _openModPositionOverride:OpenModPosition_DataType;
 
     constructor(
         {
@@ -996,7 +997,7 @@ class PeptideDataForModProteinSearch {
             projectSearchId:number,
             modMass:number,
             unlocalizedPositionRanges:Array<UnlocalizedStartEnd>,
-            openModPositionOverride:any
+            openModPositionOverride:OpenModPosition_DataType
         }
     ) {
         this._peptideString = peptideString;
@@ -1038,7 +1039,7 @@ class PeptideDataForModProteinSearch {
         return this._psmIds;
     }
 
-    get openModPositionOverride(): any {
+    get openModPositionOverride(): OpenModPosition_DataType {
         return this._openModPositionOverride;
     }
 }

@@ -4,6 +4,12 @@
  * Javascript for  page lorikeetSpectrumViewerView.jsp 
  * 
  * Lorikeet Spectrum Viewer on it's own page
+ *
+ *
+ *   !!!   Optional URL Query String Parameter 'openmod-position' - the position as a number OR 'n' OR 'c'
+ *   			- Short term fix to get open mod added to variable mods at passed in position.  Assumes PSM only has ONE Open Mod Mass
+ *
+ *
  */
 
 
@@ -71,6 +77,7 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 
 		const urlSearchParams = new URLSearchParams( window.location.search )
 
+		//  openmodPosition - the position as a number OR 'n' OR 'c'
 		const openmodPosition = urlSearchParams.get( "openmod-position" ); //  null if not found
 
 		console.log( "openmodPosition: ", openmodPosition );

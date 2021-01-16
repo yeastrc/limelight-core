@@ -8,6 +8,7 @@ import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { SpectrumRetrieveAndDisplay_Use_lorikeet } from 'page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet';
+import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 
 
 
@@ -19,7 +20,7 @@ export interface PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
     cellMgmt_ExternalReactComponent_Data : {
         psmId : number
         projectSearchId : number
-        openModPosition : any
+        openModPosition : OpenModPosition_DataType
     }
 }
 

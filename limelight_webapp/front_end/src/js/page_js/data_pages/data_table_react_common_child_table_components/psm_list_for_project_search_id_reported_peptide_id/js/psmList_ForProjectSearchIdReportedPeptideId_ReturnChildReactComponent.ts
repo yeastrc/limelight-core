@@ -17,6 +17,7 @@ import { DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_Reque
 //  React Component that will be returned
 import { PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent } from '../jsx/psmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent';
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 
 
 
@@ -27,7 +28,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
     
     projectSearchId : number
     reportedPeptideId : number                                      // NOT required if have psmIds_Include
-    openModPositionOverride : any
+    openModPositionOverride : OpenModPosition_DataType
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager
     psmIds_Include : ReadonlySet<number> // Optional
@@ -51,7 +52,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         dataPageStateManager : DataPageStateManager
         psmIds_Include? : ReadonlySet<number> // Optional
-        openModPositionOverride? : any  // optional
+        openModPositionOverride? : OpenModPosition_DataType  // optional
     }) {
 
         this.projectSearchId = projectSearchId;

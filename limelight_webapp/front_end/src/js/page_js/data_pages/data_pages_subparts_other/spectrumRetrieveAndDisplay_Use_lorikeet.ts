@@ -33,6 +33,7 @@
 // import { PageStateUtils } from 'page_js/data_pages/data_tables/pageStateUtils';
 
 import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL'
+import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 
 
 //   !!!  Constants visible in this file/module
@@ -76,10 +77,12 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	/**
 	 * 
 	 */
-	viewSpectrum_NewWindow( { psmId, projectSearchId, openModPosition } ) {
+	viewSpectrum_NewWindow( { psmId, projectSearchId, openModPosition } : {
 
-		let objectThis = this;
-
+		psmId
+		projectSearchId
+		openModPosition : OpenModPosition_DataType
+	} ) {
 
 		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId, psmId, openModPosition });
 		
@@ -113,10 +116,7 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		
 		const windowWidthHeight = "width=" + lorikeetNewWindowWidth + ", height=" + lorikeetNewWindowHeight;
 		
-		const strWindowFeatures = 
-			"toolbar=no,status=no,menubar=no,resizable=yes,scrollbars=yes," + windowWidthHeight;
-		
-		// const newWindowURL = "d/pg/spectrum-viewer";
+		const strWindowFeatures = "toolbar=no,status=no,menubar=no,resizable=yes,scrollbars=yes," + windowWidthHeight;
 
 		const newWindowURL = lorikeetSpectrumViewer_newWindowURL;
 		

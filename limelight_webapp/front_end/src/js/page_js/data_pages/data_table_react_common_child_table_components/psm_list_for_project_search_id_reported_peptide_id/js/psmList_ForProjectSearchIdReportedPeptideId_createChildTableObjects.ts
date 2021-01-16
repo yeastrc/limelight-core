@@ -31,6 +31,7 @@ import { PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_Retu
 
 import { getPSMDataFromServer } from './psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer';
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -135,7 +136,7 @@ const _create_DataTable_RootTableObject = function({
     ajaxResponse, 
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number,
-    openModPositionOverride : any
+    openModPositionOverride : OpenModPosition_DataType
 
 }) : DataTable_RootTableObject {
 
@@ -397,7 +398,7 @@ const _get_DataTable_DataRowEntries = function({
     dataPageStateManager : DataPageStateManager
     psmAnnotationTypesForPsmListEntries_DisplayOrder,
     ajaxResponse,
-    openModPositionOverride:any
+    openModPositionOverride: OpenModPosition_DataType
 
 }) : Get_DataTable_DataRowEntries_Result {
 
@@ -462,7 +463,7 @@ const _get_DataTable_DataRowEntries = function({
 
                 Mike Riffle (01-2021)
              */
-            let openModPosition:any = null;
+            let openModPosition: OpenModPosition_DataType = null;
             if ( anyPsmsHave_openModificationMassesDisplay ) {
 
                 if(openModPositionOverride) {
