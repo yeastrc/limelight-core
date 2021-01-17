@@ -3,16 +3,25 @@ import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/download
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
 import {ModViewDataManager} from "./modViewDataManager";
 import {ModalOverlay} from 'page_js/data_pages/display_utilities/modalOverlay.js';
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 export class ModStatsUtils {
 
-    static async downloadSummaryStatistics({
-                                         vizOptionsData,
-                                         sortedModMasses,
-                                         projectSearchIds,
-                                         searchDetailsBlockDataMgmtProcessing,
-                                         modViewDataManager
-                                     }) {
+    static async downloadSummaryStatistics(
+        {
+            vizOptionsData,
+            sortedModMasses,
+            projectSearchIds,
+            searchDetailsBlockDataMgmtProcessing,
+            modViewDataManager
+        } : {
+            vizOptionsData: ModView_VizOptionsData
+            sortedModMasses,
+            projectSearchIds: Array<number>,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            modViewDataManager : ModViewDataManager
+        }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -65,19 +74,20 @@ export class ModStatsUtils {
     }
 
 
-    static async viewSignificantMods({
-                                             vizOptionsData,
-                                             sortedModMasses,
-                                             projectSearchIds,
-                                             searchDetailsBlockDataMgmtProcessing,
-                                             modViewDataManager
-                                         } : {
-        vizOptionsData,
-        sortedModMasses,
-        projectSearchIds,
-        searchDetailsBlockDataMgmtProcessing,
-        modViewDataManager:ModViewDataManager
-    }) {
+    static async viewSignificantMods(
+        {
+            vizOptionsData,
+            sortedModMasses,
+            projectSearchIds,
+            searchDetailsBlockDataMgmtProcessing,
+            modViewDataManager
+        } : {
+            vizOptionsData: ModView_VizOptionsData
+            sortedModMasses,
+            projectSearchIds: Array<number>,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            modViewDataManager:ModViewDataManager
+        }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -241,18 +251,19 @@ export class ModStatsUtils {
     }
 
 
-    static async downloadSignificantMods({
-                                       vizOptionsData,
-                                       sortedModMasses,
-                                       projectSearchIds,
-                                       searchDetailsBlockDataMgmtProcessing,
-                                       modViewDataManager
-                                   } : {
-                                        vizOptionsData,
-                                        sortedModMasses,
-                                        projectSearchIds,
-                                        searchDetailsBlockDataMgmtProcessing,
-                                        modViewDataManager:ModViewDataManager
+    static async downloadSignificantMods(
+        {
+            vizOptionsData,
+            sortedModMasses,
+            projectSearchIds,
+            searchDetailsBlockDataMgmtProcessing,
+            modViewDataManager
+        } : {
+            vizOptionsData: ModView_VizOptionsData
+            sortedModMasses,
+            projectSearchIds: Array<number>,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            modViewDataManager:ModViewDataManager
         }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';

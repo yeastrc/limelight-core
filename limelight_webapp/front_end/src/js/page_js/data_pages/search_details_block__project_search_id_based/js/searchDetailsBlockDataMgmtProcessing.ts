@@ -26,7 +26,7 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 
 	//  Added only since Mod page code is referencing this.  Otherwise, it is not used in this class
-	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	readonly _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
 	/**
 	 * 
@@ -110,7 +110,10 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	 */
 	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( 
 		{ projectSearchId, dataPageStateManager }  : 
-		{ projectSearchId : number, dataPageStateManager : DataPageStateManager }
+		{
+			projectSearchId : number,
+			dataPageStateManager? : DataPageStateManager // Optional
+		}
 	) : SearchDataLookupParams_For_Single_ProjectSearchId {
 
 		let dataPageStateManager_Local : DataPageStateManager = dataPageStateManager;

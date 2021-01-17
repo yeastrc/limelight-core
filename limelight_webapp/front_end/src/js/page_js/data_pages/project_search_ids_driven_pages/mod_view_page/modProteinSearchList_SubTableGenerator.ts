@@ -17,6 +17,7 @@ import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
+import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 export class ModProteinSearchList_SubTableGenerator {
 
@@ -29,7 +30,7 @@ export class ModProteinSearchList_SubTableGenerator {
         const modMass:number = params.modMass;
         const proteinId:number = params.proteinId;
         const modViewDataManager:ModViewDataManager = params.modViewDataManager;
-        const vizOptionsData:any = params.vizOptionsData;
+        const vizOptionsData: ModView_VizOptionsData = params.vizOptionsData;
         const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
@@ -133,7 +134,7 @@ export class ModProteinSearchList_SubTableGenerator {
             dataPageStateManager_DataFrom_Server
         } : {
             modViewDataManager:ModViewDataManager,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData
             modMass:number,
             proteinId:number,
             searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
@@ -254,7 +255,7 @@ export class ModProteinSearchList_SubTableGenerator {
             proteinId
         }:{
             modViewDataManager:ModViewDataManager,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData
             modMass:number,
             proteinId:number
         }
@@ -318,10 +319,10 @@ export class ModProteinSearchList_SubTableGenerator {
             psmCountMapByProjectSearchId:Map<number, number>,
             unlocalizedRangesByProjectSearchId:Map<number, Map<string, UnlocalizedStartEnd>>,
             modViewDataManager:ModViewDataManager,
-            projectSearchIds,
+            projectSearchIds : Array<number>,
             modMass:number,
             proteinId:number,
-            vizOptionsData
+            vizOptionsData: ModView_VizOptionsData
         }
     ) : Promise<void> {
 

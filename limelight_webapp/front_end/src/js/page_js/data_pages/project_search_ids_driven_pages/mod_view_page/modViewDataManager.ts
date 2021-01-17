@@ -7,6 +7,7 @@ import {
     ReportedPeptide,
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {Protein} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/Protein";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 
 export class ModViewDataManager {
 
@@ -24,10 +25,10 @@ export class ModViewDataManager {
 
     private readonly _reportedPeptides : Map<number, Map<number, ReportedPeptide>>;
 
-    private readonly _searchDetailsBlockDataMgmtProcessing: any;
+    private readonly _searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing;
     private readonly _dataLoader: ModViewPage_DataLoader;
 
-    constructor(searchDetailsBlockDataMgmtProcessing) {
+    constructor(searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing) {
         this._psmCountData = new Map();
         this._scanCountData = new Map();
         this._psmModData = new Map();

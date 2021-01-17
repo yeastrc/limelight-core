@@ -1,15 +1,31 @@
 import {UnlocalizedStartEnd} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
 export class ModDataUtils {
 
-    static getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
+    static getSearchNameForProjectSearchId(
+        {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing
+        } : {
+            projectSearchId: number,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+        }) {
 
-        const projectSearchIdInt = Number.parseInt( projectSearchId ); // projectSearchId is string
+        let projectSearchIdInt = projectSearchId;
 
-        if ( Number.isNaN( projectSearchIdInt ) ) {
-            const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): projectSearchId does not parse to int. projectSearchId: " + projectSearchId;
-            console.warn( msg );
-            throw Error( msg );
+        if ( ! variable_is_type_number_Check( projectSearchId ) ) {
+            const projectSearchIdString = projectSearchId as unknown as string;
+            const projectSearchIdInt = Number.parseInt( projectSearchIdString ); // projectSearchId is string
+
+            if ( Number.isNaN( projectSearchIdInt ) ) {
+                const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): projectSearchId does not parse to int. projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            console.warn( "getSearchNameForProjectSearchId(...) projectSearchId param is declared number but is not a number ")
         }
 
         const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );

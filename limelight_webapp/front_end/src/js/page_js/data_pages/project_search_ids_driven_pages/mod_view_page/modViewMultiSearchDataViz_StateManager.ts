@@ -6,6 +6,8 @@
 
 import {MOD_VIEW_MULTI_SEARCH_DATA_VIZ__CENTRAL_STATE_MANAGER_KEY} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
 import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
 
 // definitions used for saving state to URL
 const _COMPONENT_UNIQUE_ID = MOD_VIEW_MULTI_SEARCH_DATA_VIZ__CENTRAL_STATE_MANAGER_KEY; // Key for use in Central State Manager
@@ -77,10 +79,14 @@ const _DATA_TRANSFORMATION_DECODING_KEYS = [
 
 export class ModMultiSearch_DataVizPageStateManager {
 
-    private _centralPageStateManager
-    private _vizOptionsData
+    private _centralPageStateManager : CentralPageStateManager
+    private _vizOptionsData: ModView_VizOptionsData
 
-    constructor({centralPageStateManager, vizOptionsData}) {
+    constructor({centralPageStateManager, vizOptionsData} : {
+
+        centralPageStateManager : CentralPageStateManager
+        vizOptionsData: ModView_VizOptionsData
+    }) {
         if (centralPageStateManager) {
             this._centralPageStateManager = centralPageStateManager;
             this._centralPageStateManager.unregister({componentUniqueId: this.getUniqueId()});

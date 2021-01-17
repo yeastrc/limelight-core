@@ -4,24 +4,35 @@ import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-import {Protein} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/Protein";
 import {
     ProteinPositionFilterDataManager,
     ProteinRange
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {
+    ModView_VizOptionsData,
+    ModView_VizOptionsData_SubPart_data
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 export class ModViewDataVizRendererOptionsHandler {
 
-    static async showOptionsOnPage({
-                                 searchDetailsBlockDataMgmtProcessing,
-                                 dataPageStateManager_DataFrom_Server,
-                                 vizOptionsData,
-                                 modViewDataManager,
-                                 allProjectSearchIds
-                             }) {
+    static async showOptionsOnPage(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData,
+            modViewDataManager,
+            allProjectSearchIds
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server :  DataPageStateManager
+            vizOptionsData : ModView_VizOptionsData
+            modViewDataManager : ModViewDataManager
+            allProjectSearchIds : Array<number>
+    }) {
 
         // defaults for the viz
-        const defaults = {
+        const defaults : ModView_VizOptionsData_SubPart_data = {
             psmQuant: 'ratios',
         };
 
@@ -66,7 +77,7 @@ export class ModViewDataVizRendererOptionsHandler {
         } : {
             searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server:DataPageStateManager,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             $formDiv:any,
             allProjectSearchIds:Array<number>
@@ -130,7 +141,7 @@ export class ModViewDataVizRendererOptionsHandler {
             $formDiv,
             allProjectSearchIds
         } : {
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             $formDiv:any,
             allProjectSearchIds:Array<number>
@@ -187,7 +198,7 @@ export class ModViewDataVizRendererOptionsHandler {
             $formDiv,
             allProjectSearchIds
         } : {
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             $formDiv:any,
             allProjectSearchIds:Array<number>
@@ -404,7 +415,7 @@ export class ModViewDataVizRendererOptionsHandler {
         } : {
             searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server:DataPageStateManager,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             allProjectSearchIds:Array<number>
         })
@@ -480,13 +491,20 @@ export class ModViewDataVizRendererOptionsHandler {
         return simplifiedProteinArray;
     }
 
-    static addChangeHandlerToFormElements({
-                                              searchDetailsBlockDataMgmtProcessing,
-                                              dataPageStateManager_DataFrom_Server,
-                                              vizOptionsData,
-                                              modViewDataManager,
-                                              allProjectSearchIds
-                                          }) {
+    static addChangeHandlerToFormElements(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData,
+            modViewDataManager,
+            allProjectSearchIds
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server :  DataPageStateManager
+            vizOptionsData: ModView_VizOptionsData,
+            modViewDataManager : ModViewDataManager
+            allProjectSearchIds : Array<number>
+        }) {
 
         const $formDiv = $('div#data-viz-form');
 
@@ -519,13 +537,23 @@ export class ModViewDataVizRendererOptionsHandler {
             {
                 // value of psm quant choice
                 const choice = $formDiv.find("input:radio[name='psm-quant']:checked").val();
-                vizOptionsData.data.psmQuant = choice;
+                if ( ! limelight__IsVariableAString( choice ) ) {
+                    const msg = "Value from '$formDiv.find(\"input:radio[name='psm-quant']:checked\").val();' is NOT a string."
+                    console.warn( msg + " value: ", choice )
+                    throw Error( msg + " value: " + choice )
+                }
+                vizOptionsData.data.psmQuant = choice as string;  // Cast as String since just validated it is a string
             }
 
             // update what kind of transformation we're applying to the data (e.g. zscore)
             {
                 const choice = $formDiv.find("select#transformation-pulldown").val();
-                vizOptionsData.data.dataTransformation = choice;
+                if ( ! limelight__IsVariableAString( choice ) ) {
+                    const msg = "Value from '$formDiv.find(\"select#transformation-pulldown\").val();' is NOT a string."
+                    console.warn( msg + " value: ", choice )
+                    throw Error( msg + " value: " + choice )
+                }
+                vizOptionsData.data.dataTransformation = choice as string;
             }
 
             // update cutoffs for color scale
@@ -591,7 +619,10 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static updateFormSelectionsToReflectState({ vizOptionsData }) {
+    static updateFormSelectionsToReflectState({ vizOptionsData } : {
+
+        vizOptionsData: ModView_VizOptionsData
+    }) {
 
         // get a handle to the form
         const $formToUpdate = $('div#data-viz-form');
@@ -685,7 +716,11 @@ export class ModViewDataVizRendererOptionsHandler {
      * @param defaults
      * @param vizOptionsData
      */
-    static populateDefaultOptions({ defaults, vizOptionsData }) {
+    static populateDefaultOptions({ defaults, vizOptionsData } : {
+
+        defaults: ModView_VizOptionsData_SubPart_data
+        vizOptionsData: ModView_VizOptionsData
+    }) {
 
         for(const optionName of Object.keys(defaults)) {
             if( !Object.keys(vizOptionsData.data).includes(optionName)) {
@@ -693,7 +728,6 @@ export class ModViewDataVizRendererOptionsHandler {
             }
         }
     }
-
 }
 
 export class SimplifiedProtein {

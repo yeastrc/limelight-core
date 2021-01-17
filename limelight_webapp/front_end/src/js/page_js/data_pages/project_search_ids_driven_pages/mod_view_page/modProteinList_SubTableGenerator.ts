@@ -20,6 +20,7 @@ import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
+import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 
 export class ModProteinList_SubTableGenerator {
@@ -32,7 +33,7 @@ export class ModProteinList_SubTableGenerator {
 
         const modMass:number = params.modMass;
         const modViewDataManager:ModViewDataManager = params.modViewDataManager;
-        const vizOptionsData:any = params.vizOptionsData;
+        const vizOptionsData = params.vizOptionsData;
         const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
@@ -70,12 +71,6 @@ export class ModProteinList_SubTableGenerator {
             tableDataObject : dataTable_RootTableDataObject
         });
 
-        // draw the table
-
-        const renderCompleteCallbackFcn = () => {
-            console.log("Rendering Mod List END, Now: " + new Date() );
-        };
-
         return dataTable_RootTableObject;
     }
 
@@ -85,9 +80,9 @@ export class ModProteinList_SubTableGenerator {
             modMass,
             searchDetailsBlockDataMgmtProcessing
         }:{
-            vizOptionsData:any,
+            vizOptionsData : ModView_VizOptionsData,
             modMass:number,
-            searchDetailsBlockDataMgmtProcessing
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
         }
     ) : Promise<Array<DataTable_Column>> {
 
@@ -141,8 +136,7 @@ export class ModProteinList_SubTableGenerator {
             dataTableColumns.push( dataTableColumn );
         }
 
-
-            return dataTableColumns;
+        return dataTableColumns;
     }
 
     static async getDataTableRows(
@@ -154,7 +148,7 @@ export class ModProteinList_SubTableGenerator {
             dataPageStateManager_DataFrom_Server
         } : {
             modViewDataManager:ModViewDataManager,
-            vizOptionsData:any,
+            vizOptionsData : ModView_VizOptionsData
             modMass:number,
             searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
@@ -298,7 +292,7 @@ export class ModProteinList_SubTableGenerator {
             modMass
         }:{
             modViewDataManager:ModViewDataManager,
-            vizOptionsData:any,
+            vizOptionsData : ModView_VizOptionsData
             modMass:number
         }
     ) : Promise<Array<ProteinDataForModMass>> {
@@ -363,10 +357,10 @@ export class ModProteinList_SubTableGenerator {
             proteinPSMCountsByProjectSearchId:Map<number, Map<number, number>>,
             unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>>,
             modViewDataManager:ModViewDataManager,
-            projectSearchIds,
+            projectSearchIds : Array<number>,
             modMass:number,
             namesForProtein:Map<number, Set<string>>,
-            vizOptionsData
+            vizOptionsData : ModView_VizOptionsData
         }
     ) : Promise<void> {
 

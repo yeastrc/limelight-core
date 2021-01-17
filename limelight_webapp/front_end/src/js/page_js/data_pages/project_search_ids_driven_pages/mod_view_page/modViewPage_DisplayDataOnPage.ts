@@ -23,6 +23,7 @@ import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
 import {Simulate} from "react-dom/test-utils";
 import load = Simulate.load;
+import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 /**
  * 
@@ -101,7 +102,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 * Called when the user updates the filter cutoffs and the page needs to be re-rendered
 	 */
 	_filterValuesChanged_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
-		
+
 		//  This is a blunt approach.  A better approach could be taken that preserves other User Input.
 
 		this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
@@ -141,7 +142,7 @@ export class ModViewPage_DisplayDataOnPage {
 		searchDetailsBlockDataMgmtProcessing,
 		modViewDataManager
 	} : { 
-		projectSearchIds,
+		projectSearchIds : Array<number>
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		modViewDataManager : ModViewDataManager
 	} ) {
@@ -154,12 +155,12 @@ export class ModViewPage_DisplayDataOnPage {
 		searchDetailsBlockDataMgmtProcessing,
 		modViewDataManager
 	} : { 
-		projectSearchIds,
+		projectSearchIds : Array<number>
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		modViewDataManager : ModViewDataManager
 	} ) {
 
-		let vizOptionsData : { data: { selectedStateObject? : any, projectSearchIds? : any }, stateManagementObject? : ModMultiSearch_DataVizPageStateManager } = { data: { } };
+		let vizOptionsData : ModView_VizOptionsData = { data: { } };
 		vizOptionsData.data.selectedStateObject = { data: { } };
 		const stateManagementObject = new ModMultiSearch_DataVizPageStateManager( { centralPageStateManager : this._centralPageStateManager, vizOptionsData } );
 		vizOptionsData.stateManagementObject = stateManagementObject;
@@ -170,7 +171,7 @@ export class ModViewPage_DisplayDataOnPage {
 			vizOptionsData.data.projectSearchIds = [...projectSearchIds];	// ordered list of project ids to show is considered a viz option
 		}
 
-		// add the options section to the page using these viz options
+		// add the options section to the page using these viz options  -  IDE warning message: Promise returned from showOptionsOnPage is ignored
 		ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
 			vizOptionsData,
 			searchDetailsBlockDataMgmtProcessing,

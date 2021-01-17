@@ -1,5 +1,6 @@
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 
 export class ModViewDataUtilities {
@@ -27,7 +28,7 @@ export class ModViewDataUtilities {
             projectSearchId:number,
             modMass:number,
             reportedPeptideId:number,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             psm:any
         }
@@ -72,7 +73,7 @@ export class ModViewDataUtilities {
             projectSearchId:number,
             modMass:number,
             reportedPeptideId:number,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager
         }
     ):Promise<boolean> {
@@ -144,7 +145,7 @@ export class ModViewDataUtilities {
             projectSearchId:number,
             modMass:number,
             reportedPeptideId:number,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             psmId:number
         }
@@ -235,7 +236,7 @@ export class ModViewDataUtilities {
             projectSearchId:number,
             modMass:number,
             reportedPeptideId:number,
-            vizOptionsData:any,
+            vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
             psmIds:Array<number>
         }

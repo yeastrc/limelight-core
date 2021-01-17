@@ -10,15 +10,29 @@ import jStat from 'jstat'
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {QValueCalculator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/QValueCalculator";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    ModView_VizOptionsData,
+    ModView_VizOptionsData_SubPart_selectedStateObject
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_pages/limelight__Input_NumberOrString_ReturnNumber";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
-    static async renderDataViz({
-                             searchDetailsBlockDataMgmtProcessing,
-                             dataPageStateManager_DataFrom_Server,
-                             vizOptionsData,
-                             modViewDataManager
-    }) {
+    static async renderDataViz(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            vizOptionsData,
+            modViewDataManager
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server :  DataPageStateManager
+            vizOptionsData: ModView_VizOptionsData
+            modViewDataManager : ModViewDataManager
+        }) {
 
         console.log('called renderDataViz()');
         $('div#data-viz-container').hide();
@@ -145,7 +159,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .style("max-width", "250px");
 
         // keep track of what the user has selected to see
-        let selectedStateObject = vizOptionsData.data.selectedStateObject;
+        let selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject = vizOptionsData.data.selectedStateObject;
 
         ModViewDataVizRenderer_MultiSearch.addColoredRectangles({
             svg,
@@ -234,13 +248,18 @@ export class ModViewDataVizRenderer_MultiSearch {
         });
     }
 
-    static addDataDownloadLinks({
-                                    searchDetailsBlockDataMgmtProcessing,
-                                    sortedModMasses,
-                                    vizOptionsData,
-                                    modViewDataManager
-                                }) {
-
+    static addDataDownloadLinks(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            sortedModMasses,
+            vizOptionsData,
+            modViewDataManager
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            sortedModMasses,
+            vizOptionsData: ModView_VizOptionsData,
+            modViewDataManager : ModViewDataManager
+        }) {
 
         let html = "<div class=\"clickable\">[Download ZScore Report]</div>"
         let $html = $(html)
@@ -366,7 +385,13 @@ export class ModViewDataVizRenderer_MultiSearch {
         return $dataTableContainer.children('div#data-table-container')[0];
     }
 
-    static addColorScaleLegend({ svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData }) {
+    static addColorScaleLegend(
+        {
+            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData
+        } : {
+            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize,
+            vizOptionsData: ModView_VizOptionsData
+        }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantType = psmQuantType ? 'PSM' : 'Scan';
@@ -464,20 +489,36 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static addDragHandlerToRects({ svg,
-                              xScale,
-                              yScale,
-                              sortedModMasses,
-                              projectSearchIds,
-                              selectedStateObject,
-                              searchDetailsBlockDataMgmtProcessing,
-                              dataPageStateManager_DataFrom_Server,
-                              modMap,
-                              vizOptionsData,
-                              modViewDataManager,
-                              $tableContainer,
-                              colorScale
-    }) {
+    static addDragHandlerToRects(
+        {
+            svg,
+            xScale,
+            yScale,
+            sortedModMasses,
+            projectSearchIds,
+            selectedStateObject,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            modMap,
+            vizOptionsData,
+            modViewDataManager,
+            $tableContainer,
+            colorScale
+        } : {
+            svg,
+            xScale,
+            yScale,
+            sortedModMasses,
+            projectSearchIds : Array<number>
+            selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server : DataPageStateManager
+            modMap,
+            vizOptionsData: ModView_VizOptionsData,
+            modViewDataManager : ModViewDataManager
+            $tableContainer,
+            colorScale
+        }) {
 
         svg.select('#rect-group')
             .on( "mousedown", function() {
@@ -611,7 +652,11 @@ export class ModViewDataVizRenderer_MultiSearch {
             });
     }
 
-    static updateShownRectOpacities({ svg, selectedStateObject }) {
+    static updateShownRectOpacities({ svg, selectedStateObject } : {
+
+        svg,
+        selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
+    }) {
 
         if( !selectedStateObject.data || Object.keys(selectedStateObject.data).length < 1) {
             svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
@@ -628,7 +673,15 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    static updateSelectedRectIndicators({ svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject }) {
+    static updateSelectedRectIndicators(
+        {
+            svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject
+        } : {
+            svg, sortedModMasses,
+            projectSearchIds : Array<number>,
+            xScale, yScale, rectParams,
+            selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
+        }) {
 
         // reset selected state object unless control is being held down
         if(!d3.event || (!d3.event.ctrlKey && !d3.event.metaKey)) {
@@ -729,22 +782,38 @@ export class ModViewDataVizRenderer_MultiSearch {
             .text((d,i) => ( i % interval == 0 ? sortedModMasses[i] : '' ));
     }
 
-    static addSearchLabels({
-                               svg,
-                               yScale,
-                               searchDetailsBlockDataMgmtProcessing,
-                               maxSearchLabelLength,
-                               labelFontSize,
-                               tooltip,
-                               sortedModMasses,
-                               selectedStateObject,
-                               dataPageStateManager_DataFrom_Server,
-                               modMap,
-                               vizOptionsData,
-                               modViewDataManager,
-                               $tableContainer,
-                               colorScale
-    }) {
+    static addSearchLabels(
+        {
+            svg,
+            yScale,
+            searchDetailsBlockDataMgmtProcessing,
+            maxSearchLabelLength,
+            labelFontSize,
+            tooltip,
+            sortedModMasses,
+            selectedStateObject,
+            dataPageStateManager_DataFrom_Server,
+            modMap,
+            vizOptionsData,
+            modViewDataManager,
+            $tableContainer,
+            colorScale
+        } : {
+            svg,
+            yScale,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            maxSearchLabelLength,
+            labelFontSize,
+            tooltip,
+            sortedModMasses,
+            selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
+            dataPageStateManager_DataFrom_Server : DataPageStateManager
+            modMap,
+            vizOptionsData: ModView_VizOptionsData,
+            modViewDataManager : ModViewDataManager
+            $tableContainer,
+            colorScale
+        }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
 
@@ -760,7 +829,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('font-family', 'sans-serif')
             .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength})))
             .on("mousemove", function (d, i) {
-                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId:d, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData, modMass : undefined, psmCount : undefined })
+                const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( d );
+                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData, modMass : undefined, psmCount : undefined })
             })
             .on("mouseout", function (d, i) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
@@ -821,16 +891,26 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr("y", d3.event.y)
     }
 
-    static handleSearchLabelDragEnd({
-                                        yScale,
-                                        searchDetailsBlockDataMgmtProcessing,
-                                        dataPageStateManager_DataFrom_Server,
-                                        labelFontSize,
-                                        vizOptionsData,
-                                        draggedProjectSearchId,
-                                        draggedObject,
-                                        modViewDataManager
-                                    }) {
+    static handleSearchLabelDragEnd(
+        {
+            yScale,
+            searchDetailsBlockDataMgmtProcessing,
+            dataPageStateManager_DataFrom_Server,
+            labelFontSize,
+            vizOptionsData,
+            draggedProjectSearchId,
+            draggedObject,
+            modViewDataManager
+        } : {
+            yScale,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server : DataPageStateManager
+            labelFontSize,
+            vizOptionsData: ModView_VizOptionsData,
+            draggedProjectSearchId,
+            draggedObject,
+            modViewDataManager : ModViewDataManager
+        }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
 
@@ -916,7 +996,16 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
 
-    static getTruncatedSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing, maxSearchLabelLength}) {
+    static getTruncatedSearchNameForProjectSearchId(
+        {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing,
+            maxSearchLabelLength
+        } : {
+            projectSearchId : number
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            maxSearchLabelLength
+        }) {
 
         let searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
 
@@ -928,21 +1017,20 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
+    static getSearchNameForProjectSearchId(
+        {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing
+        } : {
+            projectSearchId : number
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+        }) {
 
         // const maxLength = 30;
 
-		const projectSearchIdInt = Number.parseInt( projectSearchId ); // projectSearchId is number but do this to ensure always a number
-
-		if ( Number.isNaN( projectSearchIdInt ) ) {
-			const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): projectSearchId does not parse to int. projectSearchId: " + projectSearchId;
-			console.warn( msg );
-			throw Error( msg );
-		}
-
-		const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );
+		const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId );
 		if ( ! searchNameObject ) {
-			const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchIdInt: " + projectSearchIdInt;
+			const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchId: " + projectSearchId;
 			console.warn( msg );
 			throw Error( msg );
 		}
@@ -956,21 +1044,20 @@ export class ModViewDataVizRenderer_MultiSearch {
         return retName;
     }
 
-    static getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}) {
+    static getSearchIdForProjectSearchId(
+        {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing
+        } : {
+            projectSearchId : number
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+        }) {
 
         // const maxLength = 30;
 
-		const projectSearchIdInt = Number.parseInt( projectSearchId ); // projectSearchId is number but do this to ensure always a number
-
-		if ( Number.isNaN( projectSearchIdInt ) ) {
-			const msg = "getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): projectSearchId does not parse to int. projectSearchId: " + projectSearchId;
-			console.warn( msg );
-			throw Error( msg );
-		}
-
-		const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );
+		const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchId );
 		if ( ! searchNameObject ) {
-			const msg = "getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchIdInt: " + projectSearchIdInt;
+			const msg = "getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchId: " + projectSearchId;
 			console.warn( msg );
 			throw Error( msg );
 		}
@@ -1016,7 +1103,16 @@ export class ModViewDataVizRenderer_MultiSearch {
         return height;
     }
 
-    static addColoredRectangles({ svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData }) {
+    static addColoredRectangles(
+        {
+            svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData
+        } : {
+            svg, modMatrix, xScale, yScale, colorScale, sortedModMasses,
+            projectSearchIds : Array<number>,
+            width, height, tooltip,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            vizOptionsData: ModView_VizOptionsData
+        }) {
 
         // add a group to hold the data rects
         const svgRectGroup = svg.append('g')
@@ -1043,8 +1139,10 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('fill', (d) => (colorScale(d.psmCount)))
             .on("mousemove", function (d, i) {
 
+                const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( d.projectSearchId );
+
                     ModViewDataVizRenderer_MultiSearch.showToolTip({
-                        projectSearchId: d.projectSearchId,
+                        projectSearchId,
                         modMass: d.modMass,
                         psmCount: d.psmCount,
                         tooltip,
@@ -1071,7 +1169,15 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    static showToolTip({ projectSearchId, modMass, psmCount, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData }) {
+    static showToolTip(
+        {
+            projectSearchId, modMass, psmCount, tooltip, searchDetailsBlockDataMgmtProcessing, vizOptionsData
+        } : {
+            projectSearchId : number,
+            modMass, psmCount, tooltip,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            vizOptionsData: ModView_VizOptionsData
+        }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -1108,6 +1214,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .style("top", (pageY + 20)+"px")
             .style("left",(pageX + 20)+"px")
             .style("visibility", "visible")
+            .style("word-break", "break-word")
             .html( function() {
 
                 let txt = "";
@@ -1182,8 +1289,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             countsOverride,
             modViewDataManager,
         } : {
-            projectSearchIds,
-            vizOptionsData,
+            projectSearchIds : Array<number>,
+            vizOptionsData: ModView_VizOptionsData,
             countsOverride,
             modViewDataManager:ModViewDataManager,
         }) : Promise<Map<number,Map<number,any>>> {
@@ -1353,7 +1460,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return modMap;
     }
 
-    static convertModMapToDataTransformation(modMap, vizOptionsData) {
+    static convertModMapToDataTransformation(modMap, vizOptionsData: ModView_VizOptionsData) {
 
         if(vizOptionsData.data.dataTransformation === undefined) {
             return;
@@ -1383,7 +1490,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static getDataTransformationTypeString(vizOptionsData) {
+    static getDataTransformationTypeString(vizOptionsData: ModView_VizOptionsData) {
         if(vizOptionsData.data.dataTransformation === undefined) {
             return 'None';
         }
@@ -1611,7 +1718,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return max;
     }
 
-    static getMinPSMCount(modMatrix, vizOptionsData) {
+    static getMinPSMCount(modMatrix, vizOptionsData: ModView_VizOptionsData) {
 
         let min = 0;
 
@@ -1626,7 +1733,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return min;
     }
 
-    static getMaxPSMCount(modMatrix, vizOptionsData) {
+    static getMaxPSMCount(modMatrix, vizOptionsData: ModView_VizOptionsData) {
 
         if(!vizOptionsData.data.showZScore) {
             if (vizOptionsData.data.psmQuant === 'ratios' && vizOptionsData.data.colorCutoffRatio !== undefined) {

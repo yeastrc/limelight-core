@@ -10,13 +10,14 @@ import {
     ReportedPeptide,
     ReportedPeptideVariableMod
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 
 export class ModViewPage_DataLoader {
 
 	/**
 	 * Called by getModData_SingleProjectSearchId to create a request
 	 */
-	__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId ) {
+	__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, projectSearchId: number ) {
 
 		let searchDataLookupParams_For_Single_ProjectSearchId =
 			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -35,7 +36,14 @@ export class ModViewPage_DataLoader {
 	/**
 	 * Get total number of PSMs for search
 	 */
-	getTotalPSMCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+	getTotalPSMCountForSingleProjectSearchId(
+	    {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+	    } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+	    } ) {
 
         let objectThis = this;
 
@@ -73,7 +81,14 @@ export class ModViewPage_DataLoader {
     /**
      * Get reported peptides for a search
      */
-    getReportedPeptidesForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) : Promise<Map<number, ReportedPeptide>> {
+    getReportedPeptidesForProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        } ) : Promise<Map<number, ReportedPeptide>> {
 
         let objectThis = this;
 
@@ -151,7 +166,14 @@ export class ModViewPage_DataLoader {
     /**
      * Get total number of scans for search
      */
-    getTotalScanCountForSingleProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+    getTotalScanCountForSingleProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        } ) {
 
         let objectThis = this;
 
@@ -190,10 +212,16 @@ export class ModViewPage_DataLoader {
 	/**
 	 * Called by getProteinInfoList_SingleProjectSearchId to create a request.
 	 */
-	__createRequestForProteinDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing } ) {
+	__createRequestForProteinDataForSingleProjectSearchId(
+	    {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing
+	    } : {
+            projectSearchId: number
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+        } ) {
 
-
-		// Validate that only 1 project search id since that is what this supports
+        // Validate that only 1 project search id since that is what this supports
 
 		let searchDataLookupParams_For_Single_ProjectSearchId = 
 			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -211,7 +239,14 @@ export class ModViewPage_DataLoader {
 	/**
 	 * Get Protein Info List For Single Project Search Id
 	 */
-	getProteinAnnotationDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing } ) {
+	getProteinAnnotationDataForSingleProjectSearchId(
+        {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing
+        } : {
+            projectSearchId: number
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+        } ) {
 		
 		let objectThis = this;
         
@@ -245,7 +280,15 @@ export class ModViewPage_DataLoader {
     }
 
 
-    __createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+    __createRequestForOpenModDataForProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        }
+    ) {
 
         let searchDataLookupParams_For_Single_ProjectSearchId =
             searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -258,7 +301,14 @@ export class ModViewPage_DataLoader {
         return requestObject;
     }
 
-    getPSMModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+    getPSMModDataForProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        }) {
 
         let objectThis = this;
 
@@ -289,7 +339,14 @@ export class ModViewPage_DataLoader {
         });
     }
 
-    getScanModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+    getScanModDataForProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        } ) {
 
         let objectThis = this;
 
@@ -321,7 +378,16 @@ export class ModViewPage_DataLoader {
     }
 
 
-    __createRequestForPSMDataForProjectSearchIdModMass( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMass } ) {
+    __createRequestForPSMDataForProjectSearchIdModMass(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId,
+            modMass
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number,
+            modMass
+        } ) {
 
         let searchDataLookupParams_For_Single_ProjectSearchId =
             searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -335,7 +401,16 @@ export class ModViewPage_DataLoader {
         return requestObject;
     }
 
-    getPSMDataForProjectSearchIdModMass( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMass } ) {
+    getPSMDataForProjectSearchIdModMass(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId,
+            modMass
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number,
+            modMass
+        } ) {
 
         let objectThis = this;
 
@@ -366,7 +441,14 @@ export class ModViewPage_DataLoader {
         });
     }
 
-    __createRequestForOpenModPSMDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ) {
+    __createRequestForOpenModPSMDataForProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        } ) {
 
         let searchDataLookupParams_For_Single_ProjectSearchId =
             searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -378,7 +460,14 @@ export class ModViewPage_DataLoader {
 
         return requestObject;
     }
-    getOpenModPSMDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } ): Promise<Map<number, Map<number, Map<number, any>>>> {
+    getOpenModPSMDataForProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        } ): Promise<Map<number, Map<number, Map<number, any>>>> {
 
 	    console.log('called getOpenModPSMDataForProjectSearchId()');
 

@@ -32,23 +32,42 @@ import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/d
 import {wholeModTable_ShowCount_ExternalReactComponent} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/whole_mod_table_show_count_External_Component";
 import {ModProteinList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator";
 import {ModProteinList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableProperties";
+import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {
+	ModView_VizOptionsData,
+	ModView_VizOptionsData_SubPart_selectedStateObject
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 export class ModViewDataTableRenderer_MultiSearch {
 
 
 
-	static renderDataTable({
-								vizSelectedStateObject,
-								searchDetailsBlockDataMgmtProcessing,
-								dataPageStateManager_DataFrom_Server,
-								sortedModMasses,
-								modMap,
-								projectSearchIds,
-								modViewDataManager,
-		                        vizOptionsData,
-								$tableContainer,
-							    colorScale
-	}) {
+	static renderDataTable(
+		{
+			vizSelectedStateObject,
+			searchDetailsBlockDataMgmtProcessing,
+			dataPageStateManager_DataFrom_Server,
+			sortedModMasses,
+			modMap,
+			projectSearchIds,
+			modViewDataManager,
+			vizOptionsData,
+			$tableContainer,
+			colorScale
+		} : {
+			vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
+			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+			dataPageStateManager_DataFrom_Server : DataPageStateManager
+			sortedModMasses,
+			modMap,
+			projectSearchIds: Array<number>,
+			modViewDataManager : ModViewDataManager
+			vizOptionsData: ModView_VizOptionsData,
+			$tableContainer,
+			colorScale
+		}) {
 
 		const dataTableId_ThisTable = "Mod View Show Mods Table";
 
@@ -110,17 +129,28 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 	}//end renderDataTable
 
-	static getDataTableRows({
-								   vizSelectedStateObject,
-								   searchDetailsBlockDataMgmtProcessing,
-								   dataPageStateManager_DataFrom_Server,
-								   sortedModMasses,
-								   modMap,
-								   projectSearchIds,
-								   modViewDataManager,
-								   vizOptionsData,
-								   colorScale
-							   }) : Array<DataTable_DataRowEntry> {
+	static getDataTableRows(
+		{
+			vizSelectedStateObject,
+			searchDetailsBlockDataMgmtProcessing,
+			dataPageStateManager_DataFrom_Server,
+			sortedModMasses,
+			modMap,
+			projectSearchIds,
+			modViewDataManager,
+			vizOptionsData,
+			colorScale
+		} : {
+			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
+			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+			dataPageStateManager_DataFrom_Server : DataPageStateManager
+			sortedModMasses,
+			modMap,
+			projectSearchIds: Array<number>,
+			modViewDataManager : ModViewDataManager
+			vizOptionsData: ModView_VizOptionsData,
+			colorScale
+		}) : Array<DataTable_DataRowEntry> {
 
 		const sortedModsToDisplay = ModViewDataTableRenderer_MultiSearch.getSortedModsToDisplay({sortedModMasses, vizSelectedStateObject});
 		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
@@ -187,16 +217,26 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return dataTableRows;
 	}
 
-	static getDataTableColumns({
-								   vizSelectedStateObject,
-								   searchDetailsBlockDataMgmtProcessing,
-								   dataPageStateManager_DataFrom_Server,
-								   sortedModMasses,
-								   modMap,
-								   projectSearchIds,
-								   modViewDataManager,
-		                           vizOptionsData,
-							   }) : Array<DataTable_Column> {
+	static getDataTableColumns(
+		{
+			vizSelectedStateObject,
+			searchDetailsBlockDataMgmtProcessing,
+			dataPageStateManager_DataFrom_Server,
+			sortedModMasses,
+			modMap,
+			projectSearchIds,
+			modViewDataManager,
+			vizOptionsData,
+		} : {
+			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
+			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+			dataPageStateManager_DataFrom_Server: DataPageStateManager
+			sortedModMasses,
+			modMap,
+			projectSearchIds: Array<number>,
+			modViewDataManager : ModViewDataManager
+			vizOptionsData: ModView_VizOptionsData,
+		}) : Array<DataTable_Column> {
 
 		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
 
@@ -240,7 +280,11 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 	static getDisplayNameForModMassColumn(
 		{ projectSearchId, vizOptionsData, searchDetailsBlockDataMgmtProcessing } :
-		{ projectSearchId:number, vizOptionsData:any, searchDetailsBlockDataMgmtProcessing:object }) : string  {
+		{
+			projectSearchId:number,
+			vizOptionsData: ModView_VizOptionsData,
+			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+		}) : string  {
 
 		const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
 
@@ -259,7 +303,11 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return displayString;
 	}
 
-	static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject }) : Array<number> {
+	static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject } : {
+
+		sortedModMasses,
+		vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
+	}) : Array<number> {
 
 		console.log('called getSortedModsToDisplay()');
 		console.log('sortedModMasses', sortedModMasses);
@@ -271,6 +319,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 		let sortedModsToDisplay : Array<number> = [ ];
 		for( const modMass of sortedModMasses ) {
+			//  projectSearchId is a string in this 'for' loop
 			for( const projectSearchId of Object.keys(vizSelectedStateObject.data) ) {
 				if(vizSelectedStateObject.data[projectSearchId].includes(modMass)) {
 					sortedModsToDisplay.push(modMass);
@@ -282,7 +331,10 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return sortedModsToDisplay;
 	}
 
-	static getProjectSearchIdsToDisplay({ projectSearchIds, vizSelectedStateObject }) : Array<number> {
+	static getProjectSearchIdsToDisplay({ projectSearchIds, vizSelectedStateObject } : {
+		projectSearchIds: Array<number>,
+		vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
+	}) : Array<number> {
 
 		if(ModViewDataTableRenderer_MultiSearch.isObjectEmpty( vizSelectedStateObject.data )) {
 			return projectSearchIds;
@@ -292,7 +344,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 		for( const projectSearchId of projectSearchIds ) {
 			if(vizSelectedStateObject.data[projectSearchId] !== undefined && vizSelectedStateObject.data[projectSearchId].length > 0) {
-				projectSearchIdsToDisplay.push(parseInt(projectSearchId));
+				projectSearchIdsToDisplay.push( projectSearchId );
 			}
 		}
 
