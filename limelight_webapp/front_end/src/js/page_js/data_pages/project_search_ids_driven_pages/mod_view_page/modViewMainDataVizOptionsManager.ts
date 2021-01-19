@@ -210,7 +210,7 @@ export class ModViewDataVizRendererOptionsHandler {
         const proteinPositionFilterManager: ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
 
         if (proteinPositionFilterManager === undefined) {
-            $divToUpdate.html('Show all proteins and positions.');
+            $divToUpdate.html('Showing all proteins and positions.');
             return;
         }
 
@@ -221,7 +221,7 @@ export class ModViewDataVizRendererOptionsHandler {
         });
 
         if(currentRanges.length < 1) {
-            $divToUpdate.html('Show all proteins and positions.');
+            $divToUpdate.html('Showing all proteins and positions.');
             return;
         }
 
