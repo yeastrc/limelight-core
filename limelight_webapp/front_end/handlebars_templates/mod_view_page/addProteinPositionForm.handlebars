@@ -5,7 +5,8 @@
             <select id="add-protein-position-select">
 
                 {{#each proteins as |protein| }}
-                    <option value="{{protein.id}}" title="{{protein.description}}">{{protein.name}}</option>
+                    <option value="{{protein.id}}" title="Name: {{protein.name}}
+Description: {{protein.description}}">{{protein.name}}</option>
                 {{/each}}
 
             </select>
