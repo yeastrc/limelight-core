@@ -1268,6 +1268,141 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     /**
+     * Get the number of PSMs or scans that fall within the current min/max mod masses and protein position filters
+     * for each projectSearchId
+     *
+     * @param projectSearchIds
+     * @param vizOptionsData
+     * @param countsOverride
+     * @param modViewDataManager
+     */
+    static async getFilteredTotalCountForEachSearch(
+        {
+            projectSearchIds,
+            vizOptionsData,
+            modViewDataManager,
+        } : {
+            projectSearchIds : Array<number>,
+            vizOptionsData: ModView_VizOptionsData,
+            modViewDataManager:ModViewDataManager,
+        }) : Promise<Map<number,number>> {
+
+        console.log('called getFilteredDenominators');
+
+        // a map of project search id => set of scan/psm id strings, used to calculate total unique PSMs or scans within our filters
+        const denominatorMap:Map<number, Set<string>> = new Map();
+
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
+
+        for(const projectSearchId of projectSearchIds) {
+
+            denominatorMap.set(projectSearchId, new Set());
+
+            let countData = psmQuantType ? await modViewDataManager.getPSMModData(projectSearchId) : await modViewDataManager.getScanModData(projectSearchId);
+
+            for (const reportedPeptideId of Object.keys(countData)) {
+
+                // will be a psm or a scan
+                for (const item of countData[reportedPeptideId]) {
+
+                    // add in the variable mods
+                    for (const modMass of item['variable']) {
+
+                        // enforce requested mod mass cutoffs
+                        if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
+                            continue;
+                        }
+
+                        if (vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                            continue;
+                        }
+
+                        // decide if this psm should be included based on projectSearchId, mod mass and reported peptide id (and where that mod mass maps to a protein)
+                        if(vizOptionsData.data.proteinPositionFilter !== undefined && !(await ModViewDataUtilities.variableModPositionInProteinPositionFilter({
+                            projectSearchId,
+                            modMass,
+                            reportedPeptideId:parseInt(reportedPeptideId),
+                            vizOptionsData,
+                            modViewDataManager
+                        }))) {
+                            continue;
+                        }
+
+                        // get a unique id for this item
+                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+
+                        denominatorMap.get(projectSearchId).add(uniqueId);
+                    }
+
+                    // add in the open mods
+                    for (const modMass of item.open) {
+
+                        // enforce requested mod mass cutoffs
+                        if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
+                            continue;
+                        }
+
+                        if (vizOptionsData.data.modMassCutoffMax !== undefined && modMass > vizOptionsData.data.modMassCutoffMax) {
+                            continue;
+                        }
+
+                        // should this item be included for this mod mass given the protein position filters?
+
+                        if(psmQuantType) {
+
+                            // if it's a psm
+                            if(!(await ModViewDataUtilities.openModPSMInProteinPositionFilter(
+                                {
+                                    projectSearchId,
+                                    modMass,
+                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    vizOptionsData,
+                                    modViewDataManager,
+                                    psmId:item.psmId
+                                }
+                            ))) {
+                                continue;
+                            }
+
+                        } else {
+
+                            // if it's a scan
+                            if(!(await ModViewDataUtilities.anyOpenModPSMInProteinPositionFilter(
+                                {
+                                    projectSearchId,
+                                    modMass,
+                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    vizOptionsData,
+                                    modViewDataManager,
+                                    psmIds:item.psmIds
+                                }
+                            ))) {
+                                continue;
+                            }
+
+                        }
+
+                        // get a unique id for this item
+                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+
+                        denominatorMap.get(projectSearchId).add(uniqueId);
+                    }
+
+                }
+            }
+        }
+
+        const denominatorCountMap:Map<number, number> = new Map();
+        for(const [projectSearchId, idSet] of denominatorMap) {
+            denominatorCountMap.set(projectSearchId, idSet.size);
+        }
+
+        console.log('Done with getFilteredDenominators()', denominatorCountMap)
+        return denominatorCountMap;
+    }
+
+
+    /**
      * Get a map of:
      *
      * mod mass => project search id => count/ratio/zscore/pvalue/qvalue

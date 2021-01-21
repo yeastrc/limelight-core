@@ -102,6 +102,8 @@ export class ModStatsUtils {
         output += "<th style='text-align: left;'>" + quantTypeString + "count 2</th>";
         output += "<th style='text-align: left;'>z-score</th>";
         output += "<th style='text-align: left;'>p-value</th>";
+        output += "<th style='text-align: left;'>filtered z-score</th>";
+        output += "<th style='text-align: left;'>filtered p-value</th>";
         output += "<th style='text-align: left;'>rank</th>";
         output += "</tr>";
 
@@ -112,6 +114,12 @@ export class ModStatsUtils {
             countsOverride: true,
             modViewDataManager
         });
+
+        const filteredCountMap:Map<number,number> = await ModViewDataVizRenderer_MultiSearch.getFilteredTotalCountForEachSearch({
+            projectSearchIds,
+            vizOptionsData,
+            modViewDataManager
+        })
 
         let selectedData = undefined;
         if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
@@ -128,6 +136,7 @@ export class ModStatsUtils {
             }
 
             const n1:number = psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId1) : await modViewDataManager.getTotalScanCount(projectSearchId1);
+            const filteredn1:number = filteredCountMap.get(projectSearchId1);
 
             for( let k = 0; k < projectSearchIds.length; k++ ) {
 
@@ -141,6 +150,7 @@ export class ModStatsUtils {
                     }
 
                     const n2:number = psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId2) : await modViewDataManager.getTotalScanCount(projectSearchId2);
+                    const filteredn2:number = filteredCountMap.get(projectSearchId2);
 
                     for (const modMass of sortedModMasses) {
 
@@ -148,7 +158,6 @@ export class ModStatsUtils {
                         if (selectedData !== undefined && (!selectedData[projectSearchId1].includes(modMass) || !selectedData[projectSearchId2].includes(modMass))) {
                             continue;
                         }
-
 
                         let x1:number = modMap.get(modMass).get(projectSearchId1); // modMap[modMass][projectSearchId1];
                         if (x1 === undefined) {
@@ -167,6 +176,17 @@ export class ModStatsUtils {
                         if (pvalue > 1) {
                             pvalue = 1;
                         }
+
+                        let filteredZscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1:filteredn1, x2, n2:filteredn2});
+
+                        let filteredPvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1:filteredn1, x2, n2:filteredn2});
+                        filteredPvalue = filteredPvalue * sortedModMasses.length;
+                        if (filteredPvalue > 1) {
+                            filteredPvalue = 1;
+                        }
+
+                        console.log('modMass', 'search1', 'n1', 'filteredn1', 'search2', 'n2', 'filteredn2', 'x1', 'x2', 'zscore', 'filteredZscore');
+                        console.log(modMass, projectSearchId1, n1, filteredn1, projectSearchId2, n2, filteredn2, x1, x2, zscore, filteredZscore);
 
                         const ob = {
                             name1:ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({
@@ -189,7 +209,9 @@ export class ModStatsUtils {
                             count1:x1,
                             count2:x2,
                             zscore:zscore,
-                            pvalue:pvalue
+                            pvalue:pvalue,
+                            filteredZscore:filteredZscore,
+                            filteredPvalue:filteredPvalue
                         };
 
                         resultsArray.push(ob);
@@ -224,6 +246,8 @@ export class ModStatsUtils {
             output += "<td>" + ob.count2 + "</td>";
             output += "<td>" + ob.zscore + "</td>";
             output += "<td>" + ob.pvalue + "</td>";
+            output += "<td>" + ob.filteredZscore + "</td>";
+            output += "<td>" + ob.filteredPvalue + "</td>";
             output += "<td>" + rank + "</td>";
             output += "</tr>";
 
