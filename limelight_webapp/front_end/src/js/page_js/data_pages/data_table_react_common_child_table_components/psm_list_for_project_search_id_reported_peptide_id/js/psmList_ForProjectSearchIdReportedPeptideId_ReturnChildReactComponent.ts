@@ -28,6 +28,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
     
     projectSearchId : number
     reportedPeptideId : number                                      // NOT required if have psmIds_Include
+    searchSubGroupId : number                                       // Optional, only allowed if reportedPeptideId is populated
     openModPositionOverride : OpenModPosition_DataType
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager
@@ -41,6 +42,7 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
         
         projectSearchId,
         reportedPeptideId,    // NOT required if have psmIds_Include
+        searchSubGroupId,     // Optional, only allowed if reportedPeptideId is populated
         searchDataLookupParamsRoot,
         dataPageStateManager,
         psmIds_Include,
@@ -49,14 +51,20 @@ class PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnR
     } : { 
         projectSearchId : number
         reportedPeptideId : number    // NOT required if have psmIds_Include
+        searchSubGroupId? : number     // Optional, only allowed if reportedPeptideId is populated
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         dataPageStateManager : DataPageStateManager
         psmIds_Include? : ReadonlySet<number> // Optional
         openModPositionOverride? : OpenModPosition_DataType  // optional
     }) {
 
+        if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
+            throw Error("ERROR: reportedPeptideId === undefined && searchSubGroupId !== undefined : PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter::constructor");
+        }
+
         this.projectSearchId = projectSearchId;
         this.reportedPeptideId = reportedPeptideId;
+        this.searchSubGroupId = searchSubGroupId;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
         this.dataPageStateManager = dataPageStateManager;
         this.psmIds_Include = psmIds_Include;

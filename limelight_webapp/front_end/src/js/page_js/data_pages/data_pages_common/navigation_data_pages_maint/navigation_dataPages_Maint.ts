@@ -146,11 +146,11 @@ class Navigation_dataPages_Maint {
 	 */
 	public updateNavLinks() {
 
-		if ( ! this._isSingleSearch ) {
+		if ( ( ! this._isSingleSearch ) && ( ! this._isMultipleSearches ) ) {
 
 			//  Not Single Search so skip
 
-			console.warn( "ONLY Single Search supported for Nav for Now");
+			console.warn( "ONLY Single Search or Multiple Searches supported for Nav for Now");
 
 			return; // EARLY RETURN
 		}
@@ -175,10 +175,10 @@ class Navigation_dataPages_Maint {
 
 		let perSearchExperimentType; // per single search, multiple search, or experiment type
 
-		if ( this._isSingleSearch ) {
+		if ( this._isSingleSearch || this._isMultipleSearches ) {
 			perSearchExperimentType = this._page_navigation_links_data.single_search
 		} else {
-			const msg = "ONLY Single Search supported for Nav for Now. Should NOT get here.";
+			const msg = "ONLY Single Search or Multiple Searches supported for Nav for Now. Should NOT get here.";
 			console.warn( msg );
 			throw Error( msg )
 		}

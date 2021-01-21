@@ -202,6 +202,7 @@ public class PSM_List_RestWebserviceController {
     		List<Integer> psmAnnotationTypeIdsForSorting = webserviceRequest.getPsmAnnotationTypeIdsForSorting();
     		
     		Integer reportedPeptideId = webserviceRequest.getReportedPeptideId();
+    		Integer searchSubGroupId = webserviceRequest.searchSubGroupId;  // Optional
     				
     		List<Long> psmIds_Include = webserviceRequest.getPsmIds_Include();
     		List<Long> psmIds_Exclude = webserviceRequest.getPsmIds_Exclude();
@@ -211,7 +212,12 @@ public class PSM_List_RestWebserviceController {
     			log.warn(msg);
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-    		
+
+    		if ( reportedPeptideId == null && searchSubGroupId != null ) {
+    			String msg = "reported peptide id is null and searchSubGroupId != null.";
+    			log.warn(msg);
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
 
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
@@ -262,7 +268,7 @@ public class PSM_List_RestWebserviceController {
 			}
 			
     		List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, psmIds_Include, psmIds_Exclude, searcherCutoffValuesSearchLevel );
+    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, searchSubGroupId, psmIds_Include, psmIds_Exclude, searcherCutoffValuesSearchLevel );
 
     		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
 			
@@ -656,8 +662,9 @@ public class PSM_List_RestWebserviceController {
 	
 		private Integer projectSearchId;
 		private List<Long> psmIds_Include; // Optional
-		private List<Long> psmIds_Exclude; // Optional
-		private Integer reportedPeptideId;
+		private List<Long> psmIds_Exclude; // Optional - Not Currently Used
+		private Integer reportedPeptideId; // Optional
+		private Integer searchSubGroupId;  // Optional
 		private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
 		private List<Integer> psmAnnotationTypeIdsForSorting;
 		
@@ -708,6 +715,14 @@ public class PSM_List_RestWebserviceController {
 
 		public void setPsmIds_Exclude(List<Long> psmIds_Exclude) {
 			this.psmIds_Exclude = psmIds_Exclude;
+		}
+
+		public Integer getSearchSubGroupId() {
+			return searchSubGroupId;
+		}
+
+		public void setSearchSubGroupId(Integer searchSubGroupId) {
+			this.searchSubGroupId = searchSubGroupId;
 		}
 	
 	

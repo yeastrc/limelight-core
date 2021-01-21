@@ -43,20 +43,18 @@ interface ReporterIonMass_UserSelections_ComponentData {
 const reporterIonMass_UserSelections_BuildData_ForReactComponent = function({ 
     
     reporterIonMass_UserSelections_StateObject, 
-    proteinSequenceVersionId, 
-    projectSearchIds, 
+    projectSearchIds,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     reporterIonMass_CommonRounding_ReturnNumber // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
 } : { 
     
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject, 
-    proteinSequenceVersionId : number, 
-    projectSearchIds : Array<number>, 
+    projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     reporterIonMass_CommonRounding_ReturnNumber : reporterIonMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
 }) : ReporterIonMass_UserSelections_ComponentData {
 
-    const reporterIonsUniqueMassesSet = _create_reporterIonsUniqueMassesSet({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, reporterIonMass_CommonRounding_ReturnNumber });
+    const reporterIonsUniqueMassesSet = _create_reporterIonsUniqueMassesSet({ projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, reporterIonMass_CommonRounding_ReturnNumber });
 
     if ( ( ! reporterIonsUniqueMassesSet ) || reporterIonsUniqueMassesSet.size === 0 ) {
 
@@ -105,13 +103,11 @@ const reporterIonMass_UserSelections_BuildData_ForReactComponent = function({
  * Get Unique Reporter Ions Set for all searches
  */
 const _create_reporterIonsUniqueMassesSet = function({ 
-    proteinSequenceVersionId, 
-    projectSearchIds, 
+    projectSearchIds,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
     reporterIonMass_CommonRounding_ReturnNumber 
 } : { 
-    proteinSequenceVersionId : number, 
-    projectSearchIds : Array<number>, 
+    projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
     reporterIonMass_CommonRounding_ReturnNumber : reporterIonMass_CommonRounding_ReturnNumber_Function
 }) : Set<number> {

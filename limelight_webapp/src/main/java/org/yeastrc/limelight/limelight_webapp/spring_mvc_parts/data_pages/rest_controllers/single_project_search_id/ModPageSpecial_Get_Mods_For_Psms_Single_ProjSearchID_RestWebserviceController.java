@@ -347,7 +347,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         		Map<Long, WebserviceResultItem> modMassesPerScan_Key_PsmId = new HashMap<>();
 
     			List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
-    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
+    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
     			
     			Map<Long, PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_Map_Key_PsmId = new HashMap<>( psmWebDisplayWebServiceResult_List.size() );
 

@@ -16,12 +16,22 @@
 
 //  Import Handlebars templates
 
+import _search_detail_section_main_page_logged_in_users_template = require("../../../../../../handlebars_templates_precompiled/search_detail_section_main_page_logged_in_users/search_detail_section_main_page_logged_in_users_template-bundle.js");
+
+import _search_detail_section_bundle =
+    require("../../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
+
 import { _project_page_searches_section_researcher_user_interaction_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { showErrorMsg } from 'page_js/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {
+    searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId,
+    SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback,
+    SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback_Params
+} from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/js/search_sub_group__manage__group_names__open_overlay__pass__project_search_id";
 
 //  Local imports
 
@@ -49,6 +59,9 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         _project_page_searches_section_researcher_user_interaction_template.project_search_details_add_comment_dialog_template;
     private _project_search_details_update_comment_dialog_template =
         _project_page_searches_section_researcher_user_interaction_template.project_search_details_update_comment_dialog_template;
+    private _project_search_details_manage_sub_groups_link_template =
+        _search_detail_section_main_page_logged_in_users_template.project_search_details_manage_sub_groups_link_template;
+
 
     private _projectPage_SearchDetails_AllUsers
 
@@ -75,6 +88,13 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         if ( ! _project_page_searches_section_researcher_user_interaction_template.project_search_details_update_comment_dialog_template ) {
             throw Error("_project_page_searches_section_researcher_user_interaction_template.project_search_details_update_comment_dialog_template")
         }
+        if ( ! _search_detail_section_main_page_logged_in_users_template.project_search_details_manage_sub_groups_link_template ) {
+            throw Error("_search_detail_section_main_page_logged_in_users_template.project_search_details_manage_sub_groups_link_template")
+        }
+        if ( ! _search_detail_section_bundle.searchDetails_SubGroupEntry ) {
+            throw Error("_search_detail_section_bundle.searchDetails_SubGroupEntry")
+        }
+
     }
 
 	/**
@@ -126,6 +146,34 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
                 const htmlAddComment = this._project_search_details_add_comment_template();
                 const $htmlAddComment = $(htmlAddComment);
                 $htmlAddComment.appendTo($selector_comments_outer_container);
+            }
+        }
+
+
+        {
+            const $selector_search_details_manage_sub_groups_link_container = $selector_search_details_container.find(".selector_search_details_manage_sub_groups_link_container");
+
+            if ( $selector_search_details_manage_sub_groups_link_container.length > 0 ) {
+
+                //  Have Sub Groups Container so add "Manage" fake link
+
+                const html = this._project_search_details_manage_sub_groups_link_template();
+                const $html = $(html);
+                $html.appendTo( $selector_search_details_manage_sub_groups_link_container );
+
+                const objectThis = this;
+
+                $html.click(function(eventObject) {
+                    try {
+                        eventObject.preventDefault();
+                        objectThis._manageSubGroupsClicked({ projectSearchId, clickedThis : this });
+                    } catch (e) {
+                        reportWebErrorToServer.reportErrorObjectToServer({
+                            errorException : e
+                        });
+                        throw e;
+                    }
+                });
             }
         }
         
@@ -1165,6 +1213,82 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
             throw e;
           }
         })
+    }
+
+    /**
+     *
+     */
+    private _manageSubGroupsClicked({ projectSearchId, clickedThis }) : void {
+        try {
+
+            const searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback : SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback = (
+                ( params: SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback_Params ) : void => {
+
+                    this._manageSubGroups_UpdateSubGroupsDisplayed({ projectSearchId, clickedThis, params });
+                }
+            )
+
+            searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId({ projectSearchId, searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback });
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _manageSubGroups_UpdateSubGroupsDisplayed({ projectSearchId, clickedThis, params } : {
+
+        projectSearchId
+        clickedThis
+        params: SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback_Params
+
+    }) : void {
+        try {
+            const updatedSubGroups = params.updatedSubGroups;
+
+            const $manageSubGroupsLink = $( clickedThis );
+            const $selector_search_details_sub_groups_outer_container = $manageSubGroupsLink.closest(".selector_search_details_sub_groups_outer_container");
+            if ( $selector_search_details_sub_groups_outer_container.length === 0 ) {
+                //  cannot find parent DOM with class 'selector_search_details_sub_groups_outer_container' so reload page
+
+                window.location.reload( true );
+            }
+
+            const $selector_search_details_sub_groups_list_container = $selector_search_details_sub_groups_outer_container.find(".selector_search_details_sub_groups_list_container")
+            if ( $selector_search_details_sub_groups_list_container.length === 0 ) {
+                //  cannot find child DOM with class 'selector_search_details_sub_groups_list_container' so reload page
+
+                window.location.reload( true );
+            }
+
+            $selector_search_details_sub_groups_list_container.empty();
+
+            for ( const updatedSubGroup of updatedSubGroups ) {
+
+                const subgroupName_fromImportFile = updatedSubGroup.importedName;
+                const subgroupName_Display = updatedSubGroup.displayName;
+
+                const context = {
+                    searchSubgroupItem : {
+                        subgroupName_fromImportFile,
+                        subgroupName_Display
+                    }
+                }
+
+                const updatedSubGroupHTML = _search_detail_section_bundle.searchDetails_SubGroupEntry( context );
+
+                const $updatedSubGroupDOM = $( updatedSubGroupHTML );
+
+                $updatedSubGroupDOM.appendTo( $selector_search_details_sub_groups_list_container );
+            }
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 
 }

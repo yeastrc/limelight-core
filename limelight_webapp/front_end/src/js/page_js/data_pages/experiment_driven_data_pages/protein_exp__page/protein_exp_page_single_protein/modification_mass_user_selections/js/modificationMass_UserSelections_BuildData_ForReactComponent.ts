@@ -416,26 +416,52 @@ const _create_variableModificationsUniqueMassesSet = function({
             throw Error("No entry in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
         }
 
-        const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+        if ( proteinSequenceVersionId !== undefined && proteinSequenceVersionId !== null ) {
 
-        if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
+            const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
 
-            const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+            if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
 
-            if ( modificationsOnProtein ) {
-                for ( const modificationOnProtein of modificationsOnProtein) {
-                    //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-                    const position = modificationOnProtein.position;
-                    let mass = modificationOnProtein.mass;
-                    // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+                const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
 
-                    if ( modificationMass_CommonRounding_ReturnNumber ) {
+                if ( modificationsOnProtein ) {
+                    for ( const modificationOnProtein of modificationsOnProtein) {
+                        //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+                        const position = modificationOnProtein.position;
+                        let mass = modificationOnProtein.mass;
+                        // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-                        //  Used in multiple searches to round the modification mass
-                        mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                        if ( modificationMass_CommonRounding_ReturnNumber ) {
+
+                            //  Used in multiple searches to round the modification mass
+                            mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                        }
+
+                        variableModificationsUniqueMassesSet.add( mass );
                     }
-                    
-                    variableModificationsUniqueMassesSet.add( mass );
+                }
+            }
+        } else {
+
+            //  NO proteinSequenceVersionId
+
+            const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
+
+            if ( dynamicModificationsOnReportedPeptide_KeyReportedPeptideId ) {
+                for ( const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId_Entry of dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.entries() ) {
+
+                    const dynamicModificationsOnReportedPeptide = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId_Entry[ 1 ];
+                    for ( const dynamicModificationArrayEntry of dynamicModificationsOnReportedPeptide ) {
+                        let mass = dynamicModificationArrayEntry.mass;
+
+                        if ( modificationMass_CommonRounding_ReturnNumber ) {
+
+                            //  Used in multiple searches to round the modification mass
+                            mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                        }
+
+                        variableModificationsUniqueMassesSet.add( mass );
+                    }
                 }
             }
         }
@@ -447,18 +473,18 @@ const _create_variableModificationsUniqueMassesSet = function({
 /**
  * Get Unique Open Mods Set for whole protein
  */
-const _create_openModificationsUniqueMassesSet = function({
-
-                                                                  proteinSequenceVersionId,
-                                                                  projectSearchIds,
-                                                                  loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                                                                  modificationMass_CommonRounding_ReturnNumber
-                                                              } : {
-    proteinSequenceVersionId : number,
-    projectSearchIds : Array<number>,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
-}) : Set<number> {
+const _create_openModificationsUniqueMassesSet = function(
+    {
+        proteinSequenceVersionId,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_CommonRounding_ReturnNumber
+    } : {
+        proteinSequenceVersionId : number,
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
+    }) : Set<number> {
 
     //  Unique Variable Mod masses for the protein
     const modificationsUniqueMassesSet : Set<any> = new Set();
@@ -470,27 +496,53 @@ const _create_openModificationsUniqueMassesSet = function({
             throw Error("No entry in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
         }
 
-        const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId();
+        if ( proteinSequenceVersionId !== undefined && proteinSequenceVersionId !== null ) {
 
-        if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
+            const modificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId();
 
-            const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+            if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
 
-            if ( modificationsOnProtein ) {
-                for ( const modificationOnProtein of modificationsOnProtein) {
-                    //  Currently a single array of all  mods for the protein.
-                    let mass = modificationOnProtein.mass;
-                    // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+                const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
 
-                    if ( modificationMass_CommonRounding_ReturnNumber ) {
+                if ( modificationsOnProtein ) {
+                    for ( const modificationOnProtein of modificationsOnProtein) {
+                        //  Currently a single array of all  mods for the protein.
+                        let mass = modificationOnProtein.mass;
+                        // const reportedPeptideId = modificationOnProtein.reportedPeptideId;
 
-                        //  Used in multiple searches to round the modification mass
-                        mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                        if ( modificationMass_CommonRounding_ReturnNumber ) {
+
+                            //  Used in multiple searches to round the modification mass
+                            mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                        }
+
+                        modificationsUniqueMassesSet.add( mass );
                     }
-
-                    modificationsUniqueMassesSet.add( mass );
                 }
             }
+        } else {
+
+            //  NO proteinSequenceVersionId
+
+            const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
+            if ( openModificationsOnReportedPeptide_KeyReportedPeptideId ) {
+                for ( const openModificationsOnReportedPeptide_KeyReportedPeptideId_MapEntry of openModificationsOnReportedPeptide_KeyReportedPeptideId.entries() ) {
+                    const openModificationsOnReportedPeptide = openModificationsOnReportedPeptide_KeyReportedPeptideId_MapEntry[ 1 ];
+                    for ( const massEntry of openModificationsOnReportedPeptide ) {
+                        let mass = massEntry.mass;
+
+                        if ( modificationMass_CommonRounding_ReturnNumber ) {
+
+                            //  Used in multiple searches to round the modification mass
+                            mass = modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+                        }
+
+                        modificationsUniqueMassesSet.add( mass );
+                    }
+                }
+            }
+
+
         }
     }
 

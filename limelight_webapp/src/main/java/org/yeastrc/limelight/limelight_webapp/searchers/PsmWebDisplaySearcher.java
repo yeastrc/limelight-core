@@ -54,14 +54,19 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			+ " FROM psm_tbl  "
 			+ " LEFT OUTER JOIN search_scan_file_tbl ON psm_tbl.search_scan_file_id = search_scan_file_tbl.id ";
 	
+	private static final String SQL_INNER_JOIN_SEARCH_SUB_GROUP_TABLE =
+			" INNER JOIN psm_search_sub_group_tbl ON psm_tbl.id = psm_search_sub_group_tbl.psm_id ";
+
 	private static final String SQL_WHERE_START =  " WHERE psm_tbl.search_id = ? ";
 	
 	  
 
 	/**
 	 * @param searchId
-	 * @param reportedPeptideId
+	 * @param reportedPeptideId - Optional
+	 * @param searchSubGroupId - Optional
 	 * @param psmIds_Include - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
+	 * @param psmIds_Exclude - Optional.  Currently no value ever passed
 	 * @param searcherCutoffValuesSearchLevel - PSM and Peptide cutoffs for a search id
 	 * @return
 	 * @throws Exception
@@ -70,12 +75,19 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	public List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay( 
 			int searchId, 
 			Integer reportedPeptideId, 
+			Integer searchSubGroupId,  //  Optional
 			List<Long> psmIds_Include, //  Optional
-			List<Long> psmIds_Exclude, //  Optional
+			List<Long> psmIds_Exclude, //  Optional - Currently no value ever passed 
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel  ) throws Exception {
 
 		if ( reportedPeptideId == null && ( psmIds_Include == null || psmIds_Include.isEmpty() ) ) {
 			String msg = "reported peptide id is null and ( psmIds_Include is null or empty ).";
+			log.warn(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+
+		if ( reportedPeptideId == null && searchSubGroupId != null ) {
+			String msg = "reported peptide id is null and searchSubGroupId != null.";
 			log.warn(msg);
 			throw new LimelightInternalErrorException(msg);
 		}
@@ -97,6 +109,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		/////   Start building the SQL
 		sqlSB.append( SQL_MAIN );
 		
+		if ( searchSubGroupId != null ) {
+			
+			sqlSB.append( SQL_INNER_JOIN_SEARCH_SUB_GROUP_TABLE );
+		}
+		
 		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
 			//  Add inner join for each PSM cutoff
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
@@ -117,6 +134,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		
 		if ( reportedPeptideId != null ) {
 			sqlSB.append( " AND psm_tbl.reported_peptide_id = ?  " );
+		}
+		
+		if ( searchSubGroupId != null ) {
+			
+			sqlSB.append( " AND psm_search_sub_group_tbl.search_sub_group_id = ?  " );
 		}
 		
 		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
@@ -191,6 +213,11 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			if ( reportedPeptideId != null ) {
 				paramCounter++;
 				preparedStatement.setInt( paramCounter, reportedPeptideId );
+			}
+			
+			if ( searchSubGroupId != null ) {
+				paramCounter++;
+				preparedStatement.setInt( paramCounter, searchSubGroupId );
 			}
 			
 			if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {

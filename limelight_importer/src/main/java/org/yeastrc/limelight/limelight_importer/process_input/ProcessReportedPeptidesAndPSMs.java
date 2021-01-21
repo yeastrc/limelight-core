@@ -56,6 +56,7 @@ import org.yeastrc.limelight.limelight_importer.process_input.ProcessSave_Single
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPept_PsmOpenModRounded_Lookup_DTO;
@@ -88,6 +89,8 @@ public class ProcessReportedPeptidesAndPSMs {
 	public void processReportedPeptides( 
 			LimelightInput limelightInput, 
 			SearchDTO_Importer search,
+			boolean skip_SubGroup_Processing,
+			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel,
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			ReportedPeptideAndPsmFilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries
@@ -137,6 +140,8 @@ public class ProcessReportedPeptidesAndPSMs {
 									reportedPeptide, 
 									proteinSequenceVersionIdsAll,
 									searchId, 
+									skip_SubGroup_Processing,
+									searchSubGroupDTOMap_Key_searchSubGroupLabel,
 									searchProgramEntryMap, 
 									filterableReportedPeptideAnnotationTypesOnId,
 									uniqueDynamicModMassesForTheSearch,
@@ -167,6 +172,8 @@ public class ProcessReportedPeptidesAndPSMs {
 									reportedPeptide, 
 									searchId, 
 									savedReportedPeptideDTO, 
+									skip_SubGroup_Processing,
+									searchSubGroupDTOMap_Key_searchSubGroupLabel,
 									searchProgramEntryMap,
 									filterablePsmAnnotationTypesOnId,
 									searchScanFileEntry_AllEntries,
@@ -249,7 +256,7 @@ public class ProcessReportedPeptidesAndPSMs {
 					uniqueReporterIonMassesForTheSearch.addAll( uniqueReporterIonMassesForTheReportedPeptide );
 
 					LookupRecordsCreate_Main.getInstance()
-					.unifiedReportedPeptide_MainProcessing( 
+					.reportedPeptide_Lookup_MainProcessing( 
 							reportedPeptide, 
 							searchId, 
 							savedReportedPeptideDTO,

@@ -18,31 +18,30 @@
 import React from 'react'
 
 import { SetDefaultView_dataPages } from 'page_js/data_pages/data_pages_common/setDefaultView_dataPages';
+import {
+    Get_SetDefaultView_Component_React_Type,
+    SetDefaultView_Component_React_Params
+} from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
 
 /**
  *
  */
-export class SetDefaultView_Component_Props_Prop {
+export const setDefaultView_Create_Component_React : Get_SetDefaultView_Component_React_Type = function( params : SetDefaultView_Component_React_Params ) : JSX.Element {
 
-    projectSearchId? : number;
-    experimentId? : number
-
-    constructor({ projectSearchId, experimentId } : {
-
-        projectSearchId? : number
-        experimentId? : number
-    }) {
-        this.projectSearchId = projectSearchId
-        this.experimentId = experimentId
-    }
+    return (
+        <SetDefaultView_Component
+            propsValue={ params }
+            />
+    );
 }
+
 
 /**
  *
  */
 export class SetDefaultView_Component_Props {
 
-    propsValue : SetDefaultView_Component_Props_Prop
+    propsValue : SetDefaultView_Component_React_Params
 }
 
 /**
@@ -69,8 +68,8 @@ export class SetDefaultView_Component extends React.Component< SetDefaultView_Co
     constructor(props : SetDefaultView_Component_Props) {
         super(props);
 
-        if ( ! ( props.propsValue instanceof SetDefaultView_Component_Props_Prop ) ) {
-            const msg = "SetDefaultView_Component: props.propsValue NOT instanceof SetDefaultView_Component_Props_Prop";
+        if ( ! ( props.propsValue instanceof SetDefaultView_Component_React_Params ) ) {
+            const msg = "SetDefaultView_Component: props.propsValue NOT instanceof SetDefaultView_Component_React_Params";
             console.warn( msg );
             throw Error( msg );
         }
@@ -98,11 +97,14 @@ export class SetDefaultView_Component extends React.Component< SetDefaultView_Co
     render() {
 
         return (
-            <div className=" set-default-view-container ">
-                <input type="button" value="Set Default"
-                       onClick={ this._setDefaultViewButton_ClickHandler_BindThis }
-                />
-            </div>
+            <React.Fragment>
+                <div className=" set-default-view-container ">
+                    <input type="button" value="Set Default"
+                           onClick={ this._setDefaultViewButton_ClickHandler_BindThis }
+                    />
+                </div>
+                <span>&nbsp;</span>
+            </React.Fragment>
         );
 
     }

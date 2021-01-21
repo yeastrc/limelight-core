@@ -214,11 +214,23 @@ const _processProteinInfoFromServer_Populate_loadedData = function (
  */
 const _getProteinSequenceVersionIds = function ( { projectSearchId, reportedPeptideIds } ) {
 
+    const reportedPeptideIds_Sorted = Array.from( reportedPeptideIds );
+
+    reportedPeptideIds_Sorted.sort( (a,b ) => {
+        if ( a < b ) {
+            return -1;
+        }
+        if ( a > b ) {
+            return 1;
+        }
+        return 0;
+    });
+
     let promise = new Promise( function( resolve, reject ) {
         try {
             let requestObject = {
                 projectSearchId : projectSearchId,
-                reportedPeptideIds : reportedPeptideIds,
+                reportedPeptideIds : reportedPeptideIds_Sorted,
             };
 
             console.log("AJAX Call to get ProteinSequenceVersionIds from reportedPeptideIds START, Now: " + new Date() );

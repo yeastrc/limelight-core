@@ -42,7 +42,18 @@ public class LookupRecordsCreate_Main {
 	private LookupRecordsCreate_Main() { }
 	public static LookupRecordsCreate_Main getInstance() { return new LookupRecordsCreate_Main(); }
 	
-	public void unifiedReportedPeptide_MainProcessing(
+	/**
+	 * @param reportedPeptide
+	 * @param searchId
+	 * @param savedReportedPeptideDTO
+	 * @param savedSearchReportedPeptideDTO
+	 * @param searchReportedPeptideFilterableAnnotationDTOList
+	 * @param psmStatisticsAndBestValues
+	 * @param filterableReportedPeptideAnnotationTypesOnId
+	 * @param proteinVersionIdsForReportedPeptideCount
+	 * @throws Exception
+	 */
+	public void reportedPeptide_Lookup_MainProcessing(
 			ReportedPeptide reportedPeptide,
 			int searchId,
 			ReportedPeptideDTO savedReportedPeptideDTO,
@@ -54,7 +65,7 @@ public class LookupRecordsCreate_Main {
 
 			) throws Exception {
 
-		CreateSearchReportedPeptideLevelLookupRecords_Result createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result =
+		CreateSearchReportedPeptideLevelLookupRecords_Result createReportedPeptideLookupAndPsmAndReportedPeptideLookupRecords_Result =
 				CreateSearchReportedPeptideLevelLookupRecords.getInstance()
 				.createSearchReportedPeptideLevelLookupRecords( 
 						reportedPeptide, 
@@ -67,6 +78,6 @@ public class LookupRecordsCreate_Main {
 						proteinVersionIdsForReportedPeptideCount );
 
 		LookupRecords_SavePerSearchLookupRecords.getInstance()
-		.savePerSearchLookupRecords( createUnifiedReportedPeptideAndPsmAndReportedPeptideLookupRecords_Result );
+		.savePerSearchLookupRecords( createReportedPeptideLookupAndPsmAndReportedPeptideLookupRecords_Result );
 	}
 }

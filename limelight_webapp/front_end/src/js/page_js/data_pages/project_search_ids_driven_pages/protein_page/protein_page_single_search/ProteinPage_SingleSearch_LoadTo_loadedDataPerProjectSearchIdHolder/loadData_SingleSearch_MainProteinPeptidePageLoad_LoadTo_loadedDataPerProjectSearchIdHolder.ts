@@ -24,6 +24,8 @@ import {load_ReportedPeptideIds_ForSearch_SearchDataLookupParams_SingleSearch_Lo
 import {load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {load_ProteinData_Including_ProteinSequenceVersionIds_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/load_ProteinData_Including_ProteinSequenceVersionIds_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {load_NumPsms_By_SearchSubGroup_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_NumPsms_By_SearchSubGroups_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 
 /**
@@ -31,11 +33,12 @@ import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHol
  */
 export const loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder = function (
 	{
-		projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, forPeptidePage, loadedDataPerProjectSearchIdHolder
+		projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, load_searchSubGroupsData, forPeptidePage, loadedDataPerProjectSearchIdHolder
 	} : {
 
 		projectSearchId : number
 		searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
+		load_searchSubGroupsData : boolean
 		forPeptidePage?  : boolean
 		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
@@ -105,14 +108,40 @@ export const loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataP
 
 						// Get number of PSMs per Reported Peptide Id
 
-						const promise__get_numPsmsForReportedPeptideIds =
+						const promise =
 							load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
 								projectSearchId,
 								reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
 								searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
 							} );
 
-						promiseAllArray.push( promise__get_numPsmsForReportedPeptideIds );
+						promiseAllArray.push( promise );
+					}
+
+					if ( load_searchSubGroupsData && loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length > 0 ) {
+						if ( ! loadedDataPerProjectSearchIdHolder.get_numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map() ) {
+							const promise =
+								load_NumPsms_By_SearchSubGroup_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
+									projectSearchId,
+									reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
+									searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
+								} );
+
+							promiseAllArray.push( promise );
+						}
+					}
+
+					if ( load_searchSubGroupsData && loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length > 0 ) {
+						if ( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() ) {
+							const promise =
+								load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
+									projectSearchId,
+									searchDataLookupParams_For_Single_ProjectSearchId,
+									loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
+								} );
+
+							promiseAllArray.push( promise );
+						}
 					}
 
 					{
@@ -180,63 +209,63 @@ export const loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataP
 	});
 }
 
-/**
- * Get All Reported Peptide Data For Building Protein Display from Reported Peptide Ids
- *
- * Get Reported Peptide Filterable Annotation data For Current Filter
- */
-const _get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter = function (
-	{
-		projectSearchId,
-		filtersAnnTypeDisplay_For_ProjectSearchId,
-		loadedDataPerProjectSearchIdHolder
-	} : {
-		projectSearchId
-		filtersAnnTypeDisplay_For_ProjectSearchId
-		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-
-	}) : Promise<unknown> {
-
-	if ( ( ! filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) ||
-		( filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters.length === 0 ) ) {
-
-		//  No reportedPeptideFilters to get data for
-
-		// console.log("No reported Peptide Cutoffs");
-
-		return null;     // EARLY EXIT
-	}
-
-	if ( ! loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() ||
-		loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length === 0 ) {
-
-		//  No Reported Peptide Ids
-
-		// console.log("No Reported Peptide Ids");
-
-		return null;     // EARLY EXIT
-	}
-
-	const annTypeIds = [];
-	for ( const filterEntry of filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) {
-		annTypeIds.push( filterEntry.annTypeId );
-	}
-
-	if ( annTypeIds.length === 0 ) {
-
-		//  No Ann Type Ids
-
-		// console.log("No Reported Peptide Ids");
-
-		return null;     // EARLY EXIT
-	}
-
-	return loadReportedPeptideAnnotationFilterableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder({
-		reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
-		annTypeIds, projectSearchId,
-		loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
-	})
-}
+// /**
+//  * Get All Reported Peptide Data For Building Protein Display from Reported Peptide Ids
+//  *
+//  * Get Reported Peptide Filterable Annotation data For Current Filter
+//  */
+// const _get_ReportedPeptideFilterableAnnTypeDataForCurrentFilter = function (
+// 	{
+// 		projectSearchId,
+// 		filtersAnnTypeDisplay_For_ProjectSearchId,
+// 		loadedDataPerProjectSearchIdHolder
+// 	} : {
+// 		projectSearchId
+// 		filtersAnnTypeDisplay_For_ProjectSearchId
+// 		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+//
+// 	}) : Promise<unknown> {
+//
+// 	if ( ( ! filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) ||
+// 		( filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters.length === 0 ) ) {
+//
+// 		//  No reportedPeptideFilters to get data for
+//
+// 		// console.log("No reported Peptide Cutoffs");
+//
+// 		return null;     // EARLY EXIT
+// 	}
+//
+// 	if ( ! loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() ||
+// 		loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds().length === 0 ) {
+//
+// 		//  No Reported Peptide Ids
+//
+// 		// console.log("No Reported Peptide Ids");
+//
+// 		return null;     // EARLY EXIT
+// 	}
+//
+// 	const annTypeIds = [];
+// 	for ( const filterEntry of filtersAnnTypeDisplay_For_ProjectSearchId.reportedPeptideFilters ) {
+// 		annTypeIds.push( filterEntry.annTypeId );
+// 	}
+//
+// 	if ( annTypeIds.length === 0 ) {
+//
+// 		//  No Ann Type Ids
+//
+// 		// console.log("No Reported Peptide Ids");
+//
+// 		return null;     // EARLY EXIT
+// 	}
+//
+// 	return loadReportedPeptideAnnotationFilterableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder({
+// 		reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds(),
+// 		annTypeIds, projectSearchId,
+// 		loadedDataPerProjectSearchIdHolder : loadedDataPerProjectSearchIdHolder
+// 	})
+// }
 
 /**
  * Populate loadedData with data from dataFromServer.

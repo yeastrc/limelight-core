@@ -164,14 +164,14 @@ export class GeneratedPeptideContents_UserSelections_Root_Component extends Reac
             variableModsSelection = (
 
                 <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
-                                <label>
-                                    <input type="checkbox"
-                                           checked={ this.props.generatedPeptideContents_UserSelections_StateObject.getVariableModifications_Selected() }
-                                           onChange={ this._variableModifications_Selected_Changed_BindThis }
-                                    />
-                                    <span>Variable Modifications</span>
-                                </label>
-                            </span>
+                    <label>
+                        <input type="checkbox"
+                               checked={ this.props.generatedPeptideContents_UserSelections_StateObject.getVariableModifications_Selected() }
+                               onChange={ this._variableModifications_Selected_Changed_BindThis }
+                        />
+                        <span>Variable Modifications</span>
+                    </label>
+                </span>
             )
         }
 

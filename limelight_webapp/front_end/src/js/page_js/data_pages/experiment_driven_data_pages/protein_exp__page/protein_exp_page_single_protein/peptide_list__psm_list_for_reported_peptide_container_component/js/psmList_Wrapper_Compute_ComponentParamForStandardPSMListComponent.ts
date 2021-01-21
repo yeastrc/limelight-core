@@ -33,6 +33,7 @@ export const psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent =
 
     const projectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchId;
     const reportedPeptideId = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideId;
+    const searchSubGroupId = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchSubGroupId;
     const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = dataRow_GetChildTable_ReturnReactComponent_Parameter.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
     const loadedDataPerProjectSearchIdHolder = dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataPerProjectSearchIdHolder
 
@@ -43,6 +44,7 @@ export const psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent =
     const psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter = new PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter({
         projectSearchId,
         reportedPeptideId,
+        searchSubGroupId,
         searchDataLookupParamsRoot,
         psmIds_Include : proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include,
         dataPageStateManager

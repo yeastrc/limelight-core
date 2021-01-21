@@ -42,39 +42,9 @@
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
 	
-	<!--  Search Details and Filters (PSM, Peptide, and Protein) -->
-	<div id="search_details_and_other_filters_outer_block_react_root_container"></div>
+	<!--  Main Peptide View Container -->
+	<div id="main_peptide_view_outer_block_react_root_container"></div>
 
-
-	<!-- Outer Container for Save View Button and other buttons  -->
-	<div >
-		<!--  Save As Default Button -->
-		<div class=" selector_set_default_view_root_container set-default-view-container " style="dislay: none;" ></div>
-		<!--  Save View Button -->
-		<div class=" selector_save_view_root_container save-view-root-container " ></div>
-		<!--  Share Page Button -->
-		<div class=" selector_share_page_root_container share-page-root-container " ></div>
-	</div>
-
-	<h3>
-		Peptide List:
-	</h3>
-	<div style="margin-bottom: 10px;">
-		Peptide Count: <span id="peptide_list_size"></span>
-	</div>
-	
-		<%--  Peptides Loading Text --%>
-	<div id="peptide_table_loading_text_display">Loading Data</div>
-			
-			<%--  No Peptides Text --%>
-	<div id="peptide_table_empty_text_display" style="display: none;">No peptides meet the current filtering criteria.</div>
-	
-	<%--  Peptides are displayed here --%>
-	
-  <div id="peptide_list_container">
-  
-  	
-  </div>
   
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	

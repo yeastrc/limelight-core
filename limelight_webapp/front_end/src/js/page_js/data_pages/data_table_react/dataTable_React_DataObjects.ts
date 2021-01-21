@@ -71,6 +71,7 @@ class DataTable_RootTableObject {
     }
 }
 
+type DataTable_TableOptions_dataRow_GetChildTableData = ( param : DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) => DataTable_RootTableObject;
 
 /**
  * Table Options
@@ -850,7 +851,8 @@ export {
     DataTable_ColumnId,
 
     DataTable_RootTableObject,
-    
+
+    DataTable_TableOptions_dataRow_GetChildTableData,
     DataTable_TableOptions,
     DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect,
     DataTable_TableOptions_dataRowClickHandler_RequestParm,

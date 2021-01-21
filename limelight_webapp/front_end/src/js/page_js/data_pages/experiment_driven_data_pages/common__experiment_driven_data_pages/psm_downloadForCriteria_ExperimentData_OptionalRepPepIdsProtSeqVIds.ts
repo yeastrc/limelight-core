@@ -1,9 +1,7 @@
 /**
  * psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds.ts
  * 
- * Clone of:  psm_downloadForCriteriaAndOptionalRepPepIdsProtSeqVIds.ts but calls different server side code
- * 
- * Javascript for download PSM data 
+ * Javascript for download PSM data
  * 
  */
 
@@ -18,6 +16,8 @@
 class DownloadPSMs_PerProjectSearchId_Entry {
 
     projectSearchId : number;
+
+    searchSubGroup_Ids_Selected? : Array<number>; // Optional
 		
     reportedPeptideIdsAndTheirPsmIds? : Array<DownloadPSMs_PerReportedPeptideId>;  // Optional
 
@@ -29,7 +29,8 @@ class DownloadPSMs_PerProjectSearchId_Entry {
  */
 class DownloadPSMs_PerReportedPeptideId {
     reportedPeptideId : number;
-	psmIds? : Array<number>; // Optional to filter using psmIds instead of using searchDataLookupParamsRoot
+    psmIds_Include? : Array<number>; // Optional to filter using psmIds instead of using searchDataLookupParamsRoot
+    psmIds_Exclude? : Array<number>; // NOT CURRENTLY USED: Optional to filter using psmIds instead of using searchDataLookupParamsRoot
 }
 
 /**

@@ -49,14 +49,14 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
     private _remove_ModalOverlay_BindThis = this._remove_ModalOverlay.bind(this);
     private _updateSelectedMods_BindThis = this._updateSelectedMods.bind(this);
 
-    private _proteinNames : string
-    private _proteinDescriptions : string
+    private _proteinNames : string  //  Not populated on Peptide page
+    private _proteinDescriptions : string  //  Not populated on Peptide page
 
     private _modificationSelectionChanged_Callback : () => void;
 
     private _modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
 
-    private _proteinSequenceVersionId : number
+    private _proteinSequenceVersionId : number  //  Not populated on Peptide page
     private _projectSearchIds : Array<number> 
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     private _modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
@@ -71,9 +71,9 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             variable_Modifications_DISPLAY,
             open_Modifications_DISPLAY,
             modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
-            proteinNames,
-            proteinDescriptions,
-            proteinSequenceVersionId,
+            proteinNames,  //  Not populated on Peptide page
+            proteinDescriptions,  //  Not populated on Peptide page
+            proteinSequenceVersionId,  //  Not populated on Peptide page
             projectSearchIds,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             modificationMass_CommonRounding_ReturnNumber,
@@ -82,9 +82,9 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             variable_Modifications_DISPLAY : boolean
             open_Modifications_DISPLAY : boolean
             modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
-            proteinNames : string
-            proteinDescriptions : string
-            proteinSequenceVersionId : number,
+            proteinNames : string  //  Not populated on Peptide page
+            proteinDescriptions : string  //  Not populated on Peptide page
+            proteinSequenceVersionId : number,  //  Not populated on Peptide page
             projectSearchIds : Array<number>,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
             modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
@@ -226,29 +226,73 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
             const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
-            const modificationsOnProtein_KeyProteinSequenceVersionId : Map<number, {mass: number, reportedPeptideId: number}[]> = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+            if ( this._proteinSequenceVersionId !== undefined && this._proteinSequenceVersionId !== null ) {
 
-            if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
+                const modificationsOnProtein_KeyProteinSequenceVersionId : Map<number, {mass: number, reportedPeptideId: number}[]> =
+                    loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
 
-                const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
-            
-                if ( modificationsOnProtein ) {
-                    for ( const modificationOnProtein of modificationsOnProtein) {
-                        //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-                        // const position = modificationOnProtein.position;
-                        let mass = modificationOnProtein.mass;
+                if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
+
+                    const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
+
+                    if ( modificationsOnProtein ) {
+                        for ( const modificationOnProtein of modificationsOnProtein) {
+                            //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+                            // const position = modificationOnProtein.position;
+                            let mass = modificationOnProtein.mass;
+
+                            if ( this._modificationMass_CommonRounding_ReturnNumber ) {  //  Transform Modification masses before using
+
+                                //  Used in multiple searches to round the modification mass
+                                mass = this._modificationMass_CommonRounding_ReturnNumber( mass );
+                            }
+
+                            const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
+                            const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
+                            if ( ! numPsmsForReportedPeptideId ) {
+                                throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+                            }
+
+                            let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
+                            if ( ! modMassPsmCount ) {
+                                modMassPsmCount = { mass: mass, psmCount : 0 };
+                                modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
+                            }
+                            modMassPsmCount.psmCount += numPsmsForReportedPeptideId;
+
+                        }
+                    }
+                }
+            } else {
+
+                //  NO this._proteinSequenceVersionId
+                const reportedPeptideIds = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
+                const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId()
+
+                for ( const reportedPeptideId of reportedPeptideIds ) {
+
+                    const dynamicModificationsOnReportedPeptide = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId )
+                    if ( ! dynamicModificationsOnReportedPeptide ) {
+
+                        continue // EARLY CONTINUE
+                    }
+
+                    for ( const dynamicModificationEntry of dynamicModificationsOnReportedPeptide ) {
+
+                        let mass = dynamicModificationEntry.mass;
 
                         if ( this._modificationMass_CommonRounding_ReturnNumber ) {  //  Transform Modification masses before using
-            
+
                             //  Used in multiple searches to round the modification mass
                             mass = this._modificationMass_CommonRounding_ReturnNumber( mass );
                         }
 
-                        const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+                        const reportedPeptideId = dynamicModificationEntry.reportedPeptideId;
 
                         const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                         if ( ! numPsmsForReportedPeptideId ) {
-                            throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", proteinSequenceVersionId: " + this._proteinSequenceVersionId );
+                            throw Error("No entry found in numPsmsForReportedPeptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId + ", not filtered on protein id" );
                         }
 
                         let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
@@ -257,7 +301,6 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                             modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
                         }
                         modMassPsmCount.psmCount += numPsmsForReportedPeptideId;
-                        
                     }
                 }
             }
@@ -305,33 +348,74 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
             const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs()
 
-            const modificationsOnProtein_KeyProteinSequenceVersionId : Map<number, {mass: number, reportedPeptideId: number}[]> = loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId();
+            if ( this._proteinSequenceVersionId !== undefined && this._proteinSequenceVersionId !== null ) {
 
-            if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
+                const modificationsOnProtein_KeyProteinSequenceVersionId : Map<number, {mass: number, reportedPeptideId: number}[]> = loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId();
 
-                const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
+                if ( modificationsOnProtein_KeyProteinSequenceVersionId ) {
 
-                if ( modificationsOnProtein ) {
-                    for ( const modificationOnProtein of modificationsOnProtein) {
-                        //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-                        // const position = modificationOnProtein.position;
-                        let mass = modificationOnProtein.mass;
+                    const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
 
-                        //  No Mass rounding since for Open Mod all mass at Reported Peptide level have been rounded to whole number
+                    if ( modificationsOnProtein ) {
+                        for ( const modificationOnProtein of modificationsOnProtein) {
+                            //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+                            // const position = modificationOnProtein.position;
+                            let mass = modificationOnProtein.mass;
 
-                        let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
-                        if ( ! modMassPsmCount ) {
-                            modMassPsmCount = { mass: mass, psmCount : 0 };
-                            modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
+                            //  No Mass rounding since for Open Mod all mass at Reported Peptide level have been rounded to whole number
+
+                            let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
+                            if ( ! modMassPsmCount ) {
+                                modMassPsmCount = { mass: mass, psmCount : 0 };
+                                modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
+                            }
+
+                            const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
+                            const psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap.get( reportedPeptideId )
+                            if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject ) {
+
+                                continue // EARLY CONTINUE
+                            }
+
+                            const psmOpenModificationMasses_PsmIdSetObject = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject.openModificationMass_RoundedMap.get( mass )
+                            if ( ! psmOpenModificationMasses_PsmIdSetObject ) {
+
+                                continue // EARLY CONTINUE
+                            }
+
+                            const psmOpenModificationMasses_PsmIdSet = psmOpenModificationMasses_PsmIdSetObject.psmIds_Set
+
+
+                            modMassPsmCount.psmCount += psmOpenModificationMasses_PsmIdSet.size;
+
                         }
+                    }
+                }
+            } else {
 
-                        const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+                // NO this._proteinSequenceVersionId
 
-                        const psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap.get( reportedPeptideId )
-                        if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject ) {
+                const reportedPeptideIds = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
+                const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId()
 
-                            continue // EARLY CONTINUE
-                        }
+                for ( const reportedPeptideId of reportedPeptideIds ) {
+
+                    const psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap.get( reportedPeptideId )
+                    if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject ) {
+
+                        continue // EARLY CONTINUE
+                    }
+
+                    const openModificationsOnReportedPeptide = openModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId );
+                    if ( ! openModificationsOnReportedPeptide ) {
+
+                        continue // EARLY CONTINUE
+                    }
+
+                    for ( const openModificationEntry of openModificationsOnReportedPeptide ) {
+
+                        const mass = openModificationEntry.mass
 
                         const psmOpenModificationMasses_PsmIdSetObject = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassObject.openModificationMass_RoundedMap.get( mass )
                         if ( ! psmOpenModificationMasses_PsmIdSetObject ) {
@@ -341,9 +425,15 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
                         const psmOpenModificationMasses_PsmIdSet = psmOpenModificationMasses_PsmIdSetObject.psmIds_Set
 
+                        //  No Mass rounding since for Open Mod all mass at Reported Peptide level have been rounded to whole number
+
+                        let modMassPsmCount = modUniqueMassesWithTheirPsmCountsMap.get( mass );
+                        if ( ! modMassPsmCount ) {
+                            modMassPsmCount = { mass: mass, psmCount : 0 };
+                            modUniqueMassesWithTheirPsmCountsMap.set( mass, modMassPsmCount );
+                        }
 
                         modMassPsmCount.psmCount += psmOpenModificationMasses_PsmIdSet.size;
-
                     }
                 }
             }

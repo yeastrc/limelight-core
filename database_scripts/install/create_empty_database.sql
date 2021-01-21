@@ -137,6 +137,7 @@ CREATE TABLE  search_tbl (
   has_scan_filenames TINYINT NOT NULL DEFAULT 0,
   has_scan_data TINYINT UNSIGNED NOT NULL DEFAULT 0,
   has_isotope_label TINYINT NOT NULL DEFAULT 0,
+  has_search_sub_groups TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_dynamic_modifications TINYINT NOT NULL DEFAULT 0,
   any_psm_has_open_modificaton_masses TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -2288,6 +2289,151 @@ CREATE INDEX search_id_protein_seq_version_id ON protein_coverage_peptide_protei
 CREATE INDEX reported_peptide_id_fk_idx ON protein_coverage_peptide_protein_residue_different_tbl (reported_peptide_id ASC);
 
 CREATE INDEX search_id_reppeptide_id_pept_pos ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, reported_peptide_id ASC, peptide_position ASC);
+
+
+-- -----------------------------------------------------
+-- Table search_sub_group_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_sub_group_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
+  display_order SMALLINT UNSIGNED NULL,
+  subgroup_name_from_import_file VARCHAR(500) NOT NULL,
+  subgroup_name_display VARCHAR(75) NULL COMMENT 'User entered value or null',
+  PRIMARY KEY (search_id, search_sub_group_id),
+  CONSTRAINT search_sub_group_search_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Search Sub Group';
+
+
+-- -----------------------------------------------------
+-- Table search_rep_pept_sub_group_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_rep_pept_sub_group_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT UNSIGNED NOT NULL,
+  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (search_id, reported_peptide_id, search_sub_group_id),
+  CONSTRAINT srch_rep_pept_sub_grp_search_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT srch_rep_pept_sub_grp_rp_p_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'search sub groups per reported peptide id';
+
+CREATE INDEX srch_rep_pept_sub_grp_rp_p_fk_idx ON search_rep_pept_sub_group_tbl (reported_peptide_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table psm_search_sub_group_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_search_sub_group_tbl (
+  psm_id BIGINT UNSIGNED NOT NULL,
+  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (psm_id, search_sub_group_id),
+  CONSTRAINT psm_sub_grp_psm_fk
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'search sub group for psm id';
+
+
+-- -----------------------------------------------------
+-- Table search__rep_pept_sub_group_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__rep_pept_sub_group_lookup_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT(10) UNSIGNED NOT NULL,
+  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
+  any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has_open_modifictions TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  psm_num_at_default_cutoff INT(10) UNSIGNED NOT NULL,
+  psm_id_sequential_start BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
+  psm_id_sequential_end BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
+  PRIMARY KEY (search_id, reported_peptide_id, search_sub_group_id),
+  CONSTRAINT search__rep_pept_sg__gnrc_lkp_reported_peptide_id_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT search__rep_pept_sg__gnrc_lkp_search_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin;
+
+CREATE INDEX search__rep_pept_sg__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept_sub_group_lookup_tbl (reported_peptide_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table search__rep_pept_sub_group__best_psm_value_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__rep_pept_sub_group__best_psm_value_lookup_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT(10) UNSIGNED NOT NULL,
+  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
+  annotation_type_id INT(10) UNSIGNED NOT NULL,
+  best_psm_value_for_ann_type_id DOUBLE NOT NULL,
+  psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (search_id, reported_peptide_id, search_sub_group_id, annotation_type_id),
+  CONSTRAINT srch_rp_ppt_sg_bst_psm_vl_gnrc_lkp_rep_pept_id_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT srch_rp_ppt_sg_bst_psm_vl_gnrc_lkp_search_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (reported_peptide_id ASC);
+
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table project_search_sub_group_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_sub_group_tbl (
+  project_search_id INT UNSIGNED NOT NULL,
+  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
+  search_id MEDIUMINT UNSIGNED NULL,
+  display_order SMALLINT UNSIGNED NULL,
+  subgroup_name_display VARCHAR(75) NULL COMMENT 'User entered value or null',
+  PRIMARY KEY (project_search_id, search_sub_group_id),
+  CONSTRAINT project_search_sub_group_prj_search_fk
+    FOREIGN KEY (search_id)
+    REFERENCES project_search_tbl (search_id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT project_search_sub_group_search_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Sub Group User Editable Data';
+
+CREATE INDEX project_search_sub_group_prj_search_fk_idx ON project_search_sub_group_tbl (search_id ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

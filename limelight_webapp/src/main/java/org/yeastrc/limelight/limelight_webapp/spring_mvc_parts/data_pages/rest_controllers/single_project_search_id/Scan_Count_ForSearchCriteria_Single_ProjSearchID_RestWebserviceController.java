@@ -262,7 +262,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			Integer reportedPeptideId = reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId();
     			
     			List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
-    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
+    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
 
     			for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
 

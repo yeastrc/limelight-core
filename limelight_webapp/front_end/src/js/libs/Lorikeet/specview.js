@@ -469,7 +469,7 @@ let addLorikeetToJquery = function( $ ) {
 
         // the MS/MS plot should have been created by now.  This is a hack to get the plots aligned.
         // We will set the y-axis labelWidth to this value.
-        var labelWidth = container.data("plot").getAxes().yaxis.labelWidth;
+        var labelWidth = container.data("plot").getAxes().yaxis.display_SubGroupName_Width;
 
         var precursorSelectionWin = [];
         if(options.selWinLow && options.selWinHigh)
@@ -487,7 +487,7 @@ let addLorikeetToJquery = function( $ ) {
                 labelMargin: 1},
             selection: { mode: "xy", color: "#F0E68C" },
             xaxis: { tickLength: 2, tickColor: "#000" },
-            yaxis: { tickLength: 0, tickColor: "#fff", ticks: [], labelWidth: labelWidth }
+            yaxis: { tickLength: 0, tickColor: "#fff", ticks: [], display_SubGroupName_Width: labelWidth }
         };
 
         if(ms1zoomRange) {
@@ -680,7 +680,7 @@ let addLorikeetToJquery = function( $ ) {
 
         // the MS/MS plot should have been created by now.  This is a hack to get the plots aligned.
         // We will set the y-axis labelWidth to this value.
-        var labelWidth = container.data("plot").getAxes().yaxis.labelWidth;
+        var labelWidth = container.data("plot").getAxes().yaxis.display_SubGroupName_Width;
 
         if(data.length === 0)
         {
@@ -707,7 +707,7 @@ let addLorikeetToJquery = function( $ ) {
             yaxis:{ tickLength:0, tickColor:"#fff",
                 min:minMassError - ypadding,
                 max:maxMassError + ypadding,
-                labelWidth:labelWidth }
+                display_SubGroupName_Width:labelWidth }
         };
 
 

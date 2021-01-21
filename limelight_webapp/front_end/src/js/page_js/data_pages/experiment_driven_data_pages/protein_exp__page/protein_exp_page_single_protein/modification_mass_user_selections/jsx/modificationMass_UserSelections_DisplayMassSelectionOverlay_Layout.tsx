@@ -468,6 +468,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                 title={ this.props.title }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false }>
+
                 <div >
 
                     <div className=" modal-overlay-body-standard-padding ">
@@ -475,39 +476,41 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                         <div ref={ this._above_mod_list_block_Ref }>   {/*className=" selector_mods_selection_dialog_above_mod_list_block "*/}
                             {/* may need to measure height and adjust max-height of selector_mods_selection_dialog_list_bounding_box */}
 
-                            <div style={ { fontWeight: "bold", marginBottom: 10 } }>
-                                Protein Name (from FASTA): { this.props.proteinName }
-                            </div>
+                            { (this.props.proteinName) ? (
+                                <div style={ { fontWeight: "bold", marginBottom: 10 } }>
+                                    Protein Name (from FASTA): { this.props.proteinName }
+                                </div>
+                            ) : null }
 
                             <div style={ { fontWeight: "bold", marginBottom: 10 } }>
                                 Select Modification Masses to filter on.
                                 (Click to select/deselect)
                             </div>
-                            </div>
-                                {/* max-height: value tied to height of total modal overlay, which is specified in JS code */}
-                                {/* width: value tied to width of list entry */}
+                        </div>
+                            {/* max-height: value tied to height of total modal overlay, which is specified in JS code */}
+                            {/* width: value tied to width of list entry */}
 
-                            <div ref={ this._mods_selection_dialog_list_bounding_box_Ref }
-                                style={ {  maxHeight : 300, overflowY: "auto", width: mods_selection_dialog_list_bounding_box_Width, overflowX: "hidden" } } // max-height updated after mount
-                                // className=" mod-mass-select-dialog-bounding-box  "
-                            >
+                        <div ref={ this._mods_selection_dialog_list_bounding_box_Ref }
+                            style={ {  maxHeight : 300, overflowY: "auto", width: mods_selection_dialog_list_bounding_box_Width, overflowX: "hidden" } } // max-height updated after mount
+                            // className=" mod-mass-select-dialog-bounding-box  "
+                        >
 
-                                <div  >
+                            <div  >
 
-                                    <DataTable_TableRoot
-                                        tableObject={ this.state.massDisplay_DataTable_RootTableObject }
-                                        resortTableOnUpdate={ true }
-                                    />
+                                <DataTable_TableRoot
+                                    tableObject={ this.state.massDisplay_DataTable_RootTableObject }
+                                    resortTableOnUpdate={ true }
+                                />
 
-                                </div>
-                            </div>
-
-                            <div style={ { marginTop: 15 } }>
-                                <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
-
-                                <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
                             </div>
                         </div>
+
+                        <div style={ { marginTop: 15 } }>
+                            <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+
+                            <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
+                        </div>
+                    </div>
                 </div>
             </ModalOverlay_Limelight_Component>
         );

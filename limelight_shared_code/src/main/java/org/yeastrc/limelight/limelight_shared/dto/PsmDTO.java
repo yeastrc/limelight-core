@@ -36,7 +36,16 @@ public class PsmDTO {
 	private boolean hasReporterIons;
 	private BigDecimal precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal precursor_MZ;            // precursor_m_z
-	
+
+	@Override
+	public String toString() {
+		return "PsmDTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId + ", charge="
+				+ charge + ", scanNumber=" + scanNumber + ", searchScanFileId=" + searchScanFileId
+				+ ", hasModifications=" + hasModifications + ", hasOpenModifications=" + hasOpenModifications
+				+ ", hasReporterIons=" + hasReporterIons + ", precursor_RetentionTime=" + precursor_RetentionTime
+				+ ", precursor_MZ=" + precursor_MZ + "]";
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -102,5 +111,4 @@ public class PsmDTO {
 	}
 	public void setHasOpenModifications(boolean hasOpenModifications) {
 		this.hasOpenModifications = hasOpenModifications;
-	}
-}
+	}}

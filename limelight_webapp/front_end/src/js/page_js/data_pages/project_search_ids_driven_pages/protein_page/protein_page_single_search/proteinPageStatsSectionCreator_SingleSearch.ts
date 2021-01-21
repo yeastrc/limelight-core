@@ -14,16 +14,19 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-import { ProteinViewPage_StatsSection } from './proteinPageStatsSection';
+import {ProteinViewPage_StatsSection, ProteinViewPage_StatsSection_Props} from './proteinPageStatsSection';
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 /**
  * 
  */
 export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
+    private _show_status_linkClick_BindThis = this._show_status_linkClick.bind(this);
+
     private _loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
 
-    private _show_status_linkClick_BindThis = this._show_status_linkClick.bind(this);
+    private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
     private _projectSearchId;
 
@@ -33,12 +36,15 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 	 * 
 	 */
 	constructor({ 
-        loadedDataPerProjectSearchIdHolder 
+        loadedDataPerProjectSearchIdHolder,
+        dataPageStateManager_DataFrom_Server
     } : { 
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+        dataPageStateManager_DataFrom_Server : DataPageStateManager
     }) {
 
         this._loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
+        this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
     }
 
 	/**
@@ -97,7 +103,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 	/**
 	 * 
 	 */
-    _getDataAndPopulateStatsSection( ) {
+    _getDataAndPopulateStatsSection() {
 
         const promise_getDataStatsSection = this._getDataStatsSection();
 
@@ -258,8 +264,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 	/**
 	 * 
 	 */
-    _populateStatsSection({ statsDataFromServer }) {
-
+    _populateStatsSection({ statsDataFromServer }) : void {
 
         const containerDOMElement = document.getElementById("stats_data_container");
 
@@ -267,29 +272,71 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
             throw Error("No DOM element with id 'stats_data_container'");
         }
 
+        let searchContainsSubGroups : boolean = false;
+        {
+           const searchSubGroups_Root = this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root();
+           if ( searchSubGroups_Root ) {
+               const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( this._projectSearchId );
+               if ( searchSubGroups_ForProjectSearchId ) {
+                   searchContainsSubGroups = true;
+               }
+           }
+        }
+
         const ms2CountsFromServerResponse = statsDataFromServer.ms2CountsFromServerResponse;
         const reportedPeptideIdsHaveDynamicModificationsResult = statsDataFromServer.reportedPeptideIdsHaveDynamicModificationsResult;
 
-        const { psmCount_Modified, psmCount_NOT_Modified } = this._getPSMCountsModifiedUnModified({ reportedPeptideIdsHaveDynamicModificationsResult })
-
-        const data = Object.assign( {}, this._proteinListData ); // create new object, copying all properties 
+        const data = Object.assign( {}, this._proteinListData ); // create new object, copying all properties
 
         if ( ms2CountsFromServerResponse.searchHasScanData ) {
             data.ms2ScanCount = ms2CountsFromServerResponse.ms2Count;
         } else {
             data.ms2ScanCount = "NA";
         }
-        data.psmsNoVariableModsCount = psmCount_NOT_Modified;
-        data.psmsYesVariableModsCount = psmCount_Modified;
-        
+
+        {
+            let psmCount = 0;
+            let psmCount_Modified = 0;
+            let psmCount_NOT_Modified = 0;
+
+            const numPsmsForReportedPeptideIdMap = this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+
+            for ( const reportedPeptideIdsHaveDynamicModificationsEntry of reportedPeptideIdsHaveDynamicModificationsResult ) {
+                const reportedPeptideId = reportedPeptideIdsHaveDynamicModificationsEntry.reportedPeptideId;
+                const hasDynamicMods = reportedPeptideIdsHaveDynamicModificationsEntry.hasDynamicMods;
+
+                const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
+                if ( numPsmsForReportedPeptideId === undefined || numPsmsForReportedPeptideId === null ) {
+                    throw Error("No value in numPsmsForReportedPeptideIdMap for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + this._projectSearchId );
+                }
+                psmCount += numPsmsForReportedPeptideId;
+                if ( hasDynamicMods ) {
+                    psmCount_Modified += numPsmsForReportedPeptideId;
+                } else {
+                    psmCount_NOT_Modified += numPsmsForReportedPeptideId;
+                }
+            }
+
+            const reportedPeptideIds = this._loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
+
+            data.psmCount = psmCount
+            data.reportedPeptideCount = reportedPeptideIds.length;
+
+            data.psmsNoVariableModsCount = psmCount_NOT_Modified;
+            data.psmsYesVariableModsCount = psmCount_Modified;
+        }
+
         const callbackFcn = undefined;
+
+        const proteinViewPage_StatsSection_Props : ProteinViewPage_StatsSection_Props = {
+            searchContainsSubGroups,
+            data
+        }
 
         const proteinViewPage_StatsSection_Component = (
 			React.createElement(
                 ProteinViewPage_StatsSection,
-                {
-                    data
-                },
+                proteinViewPage_StatsSection_Props,
                 null
             )
         );
@@ -304,32 +351,5 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
     }
 
-	/**
-	 * 
-	 */
-    _getPSMCountsModifiedUnModified({ reportedPeptideIdsHaveDynamicModificationsResult }) {
-
-        let psmCount_Modified = 0;
-        let psmCount_NOT_Modified = 0;
-
-        const numPsmsForReportedPeptideIdMap = this._loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
-
-        for ( const reportedPeptideIdsHaveDynamicModificationsEntry of reportedPeptideIdsHaveDynamicModificationsResult ) {
-            const reportedPeptideId = reportedPeptideIdsHaveDynamicModificationsEntry.reportedPeptideId;
-            const hasDynamicMods = reportedPeptideIdsHaveDynamicModificationsEntry.hasDynamicMods;
-
-            const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
-            if ( numPsmsForReportedPeptideId === undefined || numPsmsForReportedPeptideId === null ) {
-                throw Error("No value in numPsmsForReportedPeptideIdMap for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + this._projectSearchId );
-            }
-            if ( hasDynamicMods ) {
-                psmCount_Modified += numPsmsForReportedPeptideId;
-            } else {
-                psmCount_NOT_Modified += numPsmsForReportedPeptideId;
-            }
-        }
-
-        return { psmCount_Modified, psmCount_NOT_Modified };
-    }
 }
 

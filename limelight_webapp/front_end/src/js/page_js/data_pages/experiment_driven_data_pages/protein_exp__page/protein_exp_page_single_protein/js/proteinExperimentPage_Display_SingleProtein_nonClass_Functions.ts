@@ -520,8 +520,7 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 
 						const promise = (
 								loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
-									for_MultipleSearch_Or_Experiment : true,
-									for_SingleSearch : false,
+									getSearchSubGroupIds : undefined,
 									anyReporterIonMassesSelected,
 									anyOpenModificationMassesSelected,
 									proteinSequenceVersionId : proteinSequenceVersionId,
@@ -570,7 +569,7 @@ const _populateStaticModificationsPositionsOnProteinSequence = function({ protei
 	//  Map < position 1 based (integer) : { Object: residue  (string), massesArray: [ mass (number) ], massesSet : Set( mass (number) ) } > 
 	//  (Format for class ProteinSequenceFormattedDisplay_Main_displayWidget)
 
-	const staticModificationMassesByProteinPosition = new Map();
+	const staticModificationMassesByProteinPosition : Map<number, { residue : string, residue_I_To_L : string, massesSet : Set<number>, massesArray : Array<number> }> = new Map();
 
 	const staticModsForSearch = loadedDataPerProjectSearchIdHolder.get_staticMods();
 
@@ -578,6 +577,8 @@ const _populateStaticModificationsPositionsOnProteinSequence = function({ protei
 		//  No Static Modifications so Exit
 		return; // EARLY EXIT
 	}
+
+	const proteinSequenceString_I_To_L = proteinSequenceString.replace('I', 'L');
 
 	for ( const staticModForSearch of staticModsForSearch ) {
 
@@ -587,12 +588,12 @@ const _populateStaticModificationsPositionsOnProteinSequence = function({ protei
 		//  Search for static mod residue in protein
 		let residueFoundIndex = undefined;
 		let searchStartIndex = 0;
-		while ( ( residueFoundIndex = proteinSequenceString.indexOf( staticModResidue, searchStartIndex ) ) != -1 ) {
+		while ( ( residueFoundIndex = proteinSequenceString_I_To_L.indexOf( staticModResidue, searchStartIndex ) ) != -1 ) {
 		
 			const proteinPosition = residueFoundIndex + 1; // '1' based
 			let staticModificationResiduesMassesForProteinPosition = staticModificationMassesByProteinPosition.get( proteinPosition );
 			if ( ! staticModificationResiduesMassesForProteinPosition ) {
-				staticModificationResiduesMassesForProteinPosition = { residue : staticModResidue, massesSet: new Set() };
+				staticModificationResiduesMassesForProteinPosition = { residue : staticModResidue, residue_I_To_L: staticModResidue, massesSet: new Set(), massesArray : undefined };
 				staticModificationMassesByProteinPosition.set( proteinPosition, staticModificationResiduesMassesForProteinPosition );
 			}
 			staticModificationResiduesMassesForProteinPosition.massesSet.add( staticModMass );

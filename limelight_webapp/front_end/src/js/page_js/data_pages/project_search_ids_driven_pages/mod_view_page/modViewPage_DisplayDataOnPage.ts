@@ -87,7 +87,8 @@ export class ModViewPage_DisplayDataOnPage {
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			filterValuesChanged_Callback : this._filterValuesChanged_Callback_BindThis
+			filterValuesChanged_Callback : this._filterValuesChanged_Callback_BindThis,
+			searchSubGroup_PropValue : undefined
 		})
 
 		const jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = (

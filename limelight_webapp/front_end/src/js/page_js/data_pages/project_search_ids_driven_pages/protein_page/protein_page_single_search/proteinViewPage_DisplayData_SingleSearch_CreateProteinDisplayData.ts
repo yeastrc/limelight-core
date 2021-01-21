@@ -15,9 +15,9 @@ import {
 } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 /**
- * returned from function createProteinDisplayData
+ * returned from function createProteinDisplayData_SingleSearch
  */
-export class ProteinDisplayData_From_createProteinDisplayData { 
+export class ProteinDisplayData_From_createProteinDisplayData_SingleSearch {
 
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch> 
     annotationTypeRecords_DisplayOrder
@@ -41,7 +41,7 @@ export class ProteinDataDisplay_ProteinListItem_SingleSearch {
 /**
  * Entry in incoming Map 
  */
-export class ProteinNameDescriptionCacheEntry {
+export class ProteinNameDescriptionCacheEntry_SingleSearch {
     name : string
     description: string
 }
@@ -49,7 +49,7 @@ export class ProteinNameDescriptionCacheEntry {
 /**
  * Entry in incoming Map 
  */
-export class CountsFor_proteinSequenceVersionIdEntry {
+export class CountsFor_proteinSequenceVersionIdEntry_SingleSearch {
     numReportedPeptides : number
     numReportedPeptidesUnique : number
     numPsms : number
@@ -66,7 +66,7 @@ export class CountsFor_proteinSequenceVersionIdEntry {
  * Number of Reported Peptides Total
  * Number of PSMs total
  */
-export const createProteinDisplayData = function( { 
+export const createProteinDisplayData_SingleSearch = function({
     
     projectSearchId, 
     loadedDataPerProjectSearchIdHolder, 
@@ -84,11 +84,11 @@ export const createProteinDisplayData = function( {
     searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes
 
-    proteinNameDescription_Key_ProteinSequenceVersionId : Map<number, ProteinNameDescriptionCacheEntry>
-    proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
-    peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId : Map<number, CountsFor_proteinSequenceVersionIdEntry>
+    proteinNameDescription_Key_ProteinSequenceVersionId : Map<number, ProteinNameDescriptionCacheEntry_SingleSearch>
+    proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_SingleSearch>>
+    peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId : Map<number, CountsFor_proteinSequenceVersionIdEntry_SingleSearch>
 
-} ) : ProteinDisplayData_From_createProteinDisplayData {
+} ) : ProteinDisplayData_From_createProteinDisplayData_SingleSearch {
     
     if ( ! loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() ) {
         throw Error("loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() not populated"); // Must have num PSMs populated
@@ -160,7 +160,7 @@ export const createProteinDisplayData = function( {
             let proteinName : string = undefined;			//  For "," delimited string
             let proteinDescription : string = undefined;		//  For "," delimited string
 
-            const proteinNamesAndDescriptionsArray : Array<ProteinNameDescriptionCacheEntry> = [];  // For Tooltip
+            const proteinNamesAndDescriptionsArray : Array<ProteinNameDescriptionCacheEntry_SingleSearch> = [];  // For Tooltip
 
             // proteinItemForProjectSearch.proteinInfo = proteinInfo;
 
@@ -217,14 +217,10 @@ export const createProteinDisplayData = function( {
     
         for ( let reportedPeptideId of reportedPeptideIds ) {
 
-            const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
-            if ( ! numPsmsForReportedPeptideIdMap ) {
-                throw Error( "createProteinDisplayData: loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() not populated" );
-            }
-            let numberOfPSMsForReportedPeptide = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
+            let numberOfPSMsForReportedPeptide = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap().get( reportedPeptideId );
 
             if ( numberOfPSMsForReportedPeptide === undefined || numberOfPSMsForReportedPeptide === null ) {
-                throw Error( "createProteinDisplayData: number of PSMs Not Found for reportedPeptideId: " + reportedPeptideId );
+                throw Error( "number of PSMs Not Found for reportedPeptideId: " + reportedPeptideId );
             }
 
             numReportedPeptides++;
@@ -250,7 +246,7 @@ export const createProteinDisplayData = function( {
         }
         
         //  Stored computed values per proteinSequenceVersionId
-        const countsFor_proteinSequenceVersionId : CountsFor_proteinSequenceVersionIdEntry = {
+        const countsFor_proteinSequenceVersionId : CountsFor_proteinSequenceVersionIdEntry_SingleSearch = {
                 numReportedPeptides,
                 numReportedPeptidesUnique,
                 numPsms

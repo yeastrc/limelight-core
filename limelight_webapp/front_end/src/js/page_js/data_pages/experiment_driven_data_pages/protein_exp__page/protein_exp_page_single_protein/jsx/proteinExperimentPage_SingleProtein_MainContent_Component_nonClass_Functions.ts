@@ -154,17 +154,18 @@ const initialPopulate = function({
 
     const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({
         not_filtered_position_modification_selections : false,
-        forMultipleSearch_OrExperiment : true,
-        forSingleSearch : false,
         proteinSequenceVersionId,
         projectSearchIds : projectSearchIds_PossiblyFiltered,
+        searchSubGroup_Ids_Selected : undefined,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         loadedDataCommonHolder,
         proteinSequenceWidget_StateObject,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
         peptideUnique_UserSelection_StateObject : undefined,
-        userSearchString_LocationsOn_ProteinSequence_Root
+        peptideSequence_UserSelections_StateObject,
+        userSearchString_LocationsOn_ProteinSequence_Root,
+        proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
     });
 
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -451,8 +452,7 @@ const create_ReporterIons_UserSelections_ComponentData = function( {
     const reporterIons_UserSelections_ComponentData = reporterIonMass_UserSelections_BuildData_ForReactComponent({ 
 
         reporterIonMass_UserSelections_StateObject : reporterIonMass_UserSelections_StateObject, 
-        proteinSequenceVersionId : proteinSequenceVersionId, 
-        projectSearchIds : projectSearchIds,  
+        projectSearchIds : projectSearchIds,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         reporterIonMass_CommonRounding_ReturnNumber // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
     });
@@ -716,8 +716,7 @@ const load_ReporterIonMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
-                        for_MultipleSearch_Or_Experiment : true,
-                        for_SingleSearch : false,
+                        getSearchSubGroupIds : undefined,
                         anyReporterIonMassesSelected : true,
                         anyOpenModificationMassesSelected : false,
                         proteinSequenceVersionId : proteinSequenceVersionId,
@@ -802,8 +801,7 @@ const load_OpenModificationMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
-                        for_MultipleSearch_Or_Experiment : true,
-                        for_SingleSearch : false,
+                        getSearchSubGroupIds : undefined,
                         anyReporterIonMassesSelected : false,
                         anyOpenModificationMassesSelected : true,
                         proteinSequenceVersionId : proteinSequenceVersionId,

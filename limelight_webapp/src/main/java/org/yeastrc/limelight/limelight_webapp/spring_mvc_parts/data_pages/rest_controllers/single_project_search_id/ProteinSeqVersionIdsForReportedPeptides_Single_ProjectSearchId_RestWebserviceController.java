@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
@@ -37,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -62,15 +65,32 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  *
  */
 @RestController
-public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_RestWebserviceController {
+public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_RestWebserviceController 
+
+implements
+InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
   
 	private static final Logger log = LoggerFactory.getLogger( ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_RestWebserviceController.class );
 
+	/**
+	 * Path for this Controller
+	 */
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER;
+	
+	/**
+	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
+	 */
+	private static final String CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT = Cached_WebserviceResponse_Management_Utils.translate_ControllerPath_For_CachedResponseMgmt( CONTROLLER_PATH );
+	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+
+	@Autowired
+	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
@@ -94,6 +114,24 @@ public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_Rest
 		super();
 //		log.warn( "constructor no params called" );
 	}
+
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+	}
 	
 	//  Convert result object graph to JSON in byte[] in the controller body so can cache it
 
@@ -108,7 +146,7 @@ public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_Rest
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER
+					+ CONTROLLER_PATH
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -163,7 +201,18 @@ public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_Rest
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
     		
     		////////////////
-   		
+
+
+    		{ // Return cached value if available
+    			
+    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, this );
+    			
+    			if ( cachedResponse != null ) {
+    				
+    				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( cachedResponse );
+    			}
+    		}
+    		
        		Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
    		
 
@@ -198,6 +247,11 @@ public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_Rest
     		webserviceResult.proteinSequenceVersionIdsPerReportedPeptideIdMap = proteinSequenceVersionIdsPerReportedPeptideIdMap;
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
+
+    		{ // Save cached value 
+    			
+    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON, this );
+    		}
     		
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body( responseAsJSON );
 

@@ -33,6 +33,9 @@ export class ProteinView_LoadedDataCommonHolder {
 	//  Per peptideId
 	private _peptideSequenceString_KeyPeptideId : Map<number, string> = undefined; // Map <integer,String> <peptideId, peptideSequence>
 
+	//  Per peptideId - 	Peptide String with replace I with L
+	private _peptideSequenceString_I_To_L_KeyPeptideId : Map<number, string> = new Map(); // Map <integer,String> <peptideId, peptideSequence (after .replace('I','L'>
+
 	/**
 	 * 
 	 */
@@ -170,4 +173,45 @@ export class ProteinView_LoadedDataCommonHolder {
 		}
 		return this._peptideSequenceString_KeyPeptideId.get( peptideId );
 	}
+
+	////  Peptide String replace I with L
+
+	/**
+	 *  Get Peptide String with replace I with L
+	 */
+	get_peptideSequenceString_I_To_L_For_peptideId( { peptideId } : { peptideId : number } ) : string {
+		if ( ! ( Number.isInteger( peptideId ) ) ) {
+			const msg = "get_peptideSequenceString_For_peptideId: ! ( Number.isInteger( peptideId )";
+			console.warn( msg, peptideId )
+			throw Error( msg );
+		}
+		if ( ! this._peptideSequenceString_KeyPeptideId ) {
+			return undefined;
+		}
+		{
+			const existing_peptideSequenceString_I_To_L = this._peptideSequenceString_I_To_L_KeyPeptideId.get( peptideId );
+			if ( existing_peptideSequenceString_I_To_L ) {
+				return existing_peptideSequenceString_I_To_L; // EARLY RETURN
+			}
+		}
+		const peptideSequenceString = this._peptideSequenceString_KeyPeptideId.get( peptideId );
+		if ( ! peptideSequenceString ) {
+			return undefined;
+		}
+
+		const findAll_I_Regex = /I/g; //  Regex with trailing 'g' is the only way to do replace all
+
+		//  The Peptide Search Strings will be used to search the protein sequence.
+		//  Reported Peptides will be selected where their Protein Coverage records fully contain
+		//     the locations of the search strings on the protein sequence.
+
+		//  The amino acid letters I and L will be equivalent.
+
+		const peptideSequenceString_I_To_L = peptideSequenceString.replace(findAll_I_Regex,'L');
+		this._peptideSequenceString_I_To_L_KeyPeptideId.set( peptideId, peptideSequenceString_I_To_L );
+		return peptideSequenceString_I_To_L;
+	}
+
+
+
 }

@@ -40,6 +40,7 @@ import org.yeastrc.limelight.limelight_importer.dao.PeptideDAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinImporterContainerDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ReportedPeptideDAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchRepPeptSubGroup_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPeptDynamicModDAO;
@@ -47,6 +48,7 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepP
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceVersionDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchReportedPeptideProteinVersionDTO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.ProteinImporterContainer;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.peptide_protein_position.ProteinCoverageDTO_SaveToDB_NoDups;
@@ -56,8 +58,10 @@ import org.yeastrc.limelight.limelight_shared.dto.PeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoveragePeptideProteinProteinResidueDifferentDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchRepPeptSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPeptDynamicModDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPept_IsotopeLabel_DTO;
 
@@ -137,6 +141,8 @@ public class ProcessSave_SingleReportedPeptide {
 			ReportedPeptide reportedPeptide,
 			Set<Integer> proteinSequenceVersionIdsAll,
 			int searchId, 
+			boolean skip_SubGroup_Processing,
+			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel,
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			Map<Integer, AnnotationTypeDTO> filterableReportedPeptideAnnotationTypesOnId,
 			Set<Double> uniqueDynamicModMassesForTheSearch,
@@ -178,6 +184,12 @@ public class ProcessSave_SingleReportedPeptide {
 		boolean anyPsmHasDynamicModifications = false;
 		boolean anyPsmHasReporterIons = false;
 		
+		Set<String> searchSubGroups_AllPSMs = null;
+		
+		if ( ! skip_SubGroup_Processing ) {
+			searchSubGroups_AllPSMs = new HashSet<>( searchSubGroupDTOMap_Key_searchSubGroupLabel.size() );
+		}
+		
 		if ( reportedPeptide.getPsms() != null ) {
 			for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
 
@@ -203,6 +215,10 @@ public class ProcessSave_SingleReportedPeptide {
 						// also found anyPsmHasDynamicModifications so exit loop
 						break;
 					}
+				}
+				
+				if ( ( ! skip_SubGroup_Processing ) && StringUtils.isNotEmpty( psm.getSubgroupName() ) ) {
+					searchSubGroups_AllPSMs.add( psm.getSubgroupName() );
 				}
 			}
 		}
@@ -381,6 +397,28 @@ public class ProcessSave_SingleReportedPeptide {
 					//  Accumulate Isotope label id values across the search
 					uniqueIsotopeLabelIdsForTheSearch.add( isotopeLabelId );
 				}
+			}
+		}
+		
+		//  Save Search Sub Groups at Reported Peptide Level
+		
+		if ( ( ! skip_SubGroup_Processing ) && ( ! searchSubGroups_AllPSMs.isEmpty() ) ) {
+			
+			for ( String searchSubGroup : searchSubGroups_AllPSMs ) {
+				SearchSubGroupDTO searchSubGroupDTO = searchSubGroupDTOMap_Key_searchSubGroupLabel.get( searchSubGroup );
+				if ( searchSubGroupDTO == null ) {
+					String msg = "Internal Importer Failure. searchSubGroupDTOMap_Key_searchSubGroupLabel.get( searchSubGroup ) return null. searchSubGroup: " + searchSubGroup;
+					log.error( msg );
+					throw new LimelightImporterInternalException( msg );
+				}
+				
+				SearchRepPeptSubGroupDTO searchRepPeptSubGroupDTO = new SearchRepPeptSubGroupDTO();
+				searchRepPeptSubGroupDTO.setSearchId( searchId );
+				searchRepPeptSubGroupDTO.setReportedPeptideId( reportedPeptideId );
+				searchRepPeptSubGroupDTO.setSearchSubGroupId( searchSubGroupDTO.getSearchSubGroupId() );
+				
+				DB_Insert_SearchRepPeptSubGroup_DAO.getInstance()
+				.saveToDatabase(searchRepPeptSubGroupDTO);
 			}
 		}
 

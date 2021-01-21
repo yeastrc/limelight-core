@@ -344,13 +344,25 @@
         z-index: 1;
     }
 
+    //  Overlay for Maint of Sub Groups
+    div.sub-group-maint-overlay-main-contents-container {
+
+      .sub-group-maint-default-border-style {
+
+        border-style: solid;
+        border-color: $site-color-gray;
+      }
+
+    }
+
+    //  Search Details Block.  Filters (PSM, Peptide) for a single search
+
     // style for display the label for a type of filter
     .filter-single-type-label-display {
     	// cursor: pointer;  // switch to add clickable class
     	line-height: 1.3em; 
     	white-space: nowrap;
     }
-
 
     // style for display blocks showing filter values
     .filter-single-value-display-block {
@@ -366,6 +378,34 @@
         border-color: $site-color-gray;
         border-width: 1px;
     }
+
+    /////
+
+    //  Filter Section: Search Sub Groups row
+
+
+   .filter-common-block-selection-outer-block {
+
+     .filter-common-selection-block {
+
+       width: 480px;
+       margin-left: 290px;
+       padding-top: 1px;
+       position: relative;
+     }
+
+     .filter-common-single-entry-outer-div {
+       display: inline-block;
+       position: relative;
+       white-space: nowrap;
+       padding-right: 10px;
+       margin-bottom: 2px;
+     }
+   }
+
+
+
+    ////////
 
     .project-text-link {
         font-size: 12px;
@@ -1050,46 +1090,53 @@
         font-size: 14px;
     }
 
-   //  Common Filter Block layout.  Overridden for specific Filter Blocks Next
+   //  "Filter On ..." Block on Peptide and Single Protein
 
-   .filter-common-block-selection-outer-block {
+   .filter-common-block-selection-container-block {
 
-       .filter-common-selection-block {
+     display: grid;
+     grid-template-columns: min-content auto;
 
-           width: 480px;
-           margin-left: 290px;
-           padding-top: 1px;
+       //  Common Filter Block layout.  Overridden for specific Filter Blocks Next
+
+       //.filter-common-block-selection-outer-block {
+
+         .filter-common-filter-label { // The "Filter On ..."
+           font-size: 18px;
+           font-weight: bold;
+           white-space: nowrap;
+           padding-right: 15px;
+           padding-top: 2px;
+         }
+         .filter-common-selection-block {
+           //width: 480px;
            position: relative;
-       }
 
-       .filter-common-single-entry-outer-div {
+           .filter-common-selection-inner-block {  // Any height adjustment to make baseline same as label "Filter On ..."
+             margin-top: 2px;
+           }
+         }
+
+         .filter-common-single-entry-outer-div {
            display: inline-block;
            position: relative;
            white-space: nowrap;
            padding-right: 10px;
            margin-bottom: 2px;
+         }
+       //}
+
+       //  Modification Mass Selection - main page (or single protein)
+
+       //  Modification Mass Selection - Modal Dialog
+
+       .mod-mass-select-dialog-bounding-box {
+         border-width: 1px;
+         border-style: solid;
+         border-color: $site-color-medium;
        }
 
    }
-
-    //  Modification Mass Selection - main page (or single protein)
-
-    .modification-mass-selection-outer-block { }
-
-    //  Modification Mass Selection - Modal Dialog
-
-    .mod-mass-select-dialog-bounding-box { border-width: 1px; border-style: solid; border-color: $site-color-medium; }
-
-    //  Reporter Ion Mass Selection - main page (or single protein)
-
-    .reporter-ion-mass-selection-outer-block {}
-
-
-    //  Peptide Sequence String Selection
-    .peptide-sequence-selection-outer-block {
-        .peptide-sequence-selection-block {}
-    }
-    
 
 	//  Single Protein Overlay boxes on right
 	

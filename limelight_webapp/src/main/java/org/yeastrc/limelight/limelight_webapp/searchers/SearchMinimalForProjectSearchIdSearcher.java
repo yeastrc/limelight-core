@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 
@@ -39,7 +40,7 @@ public class SearchMinimalForProjectSearchIdSearcher extends Limelight_JDBC_Base
 		
 	private static final String QUERY_SQL = 
 			"SELECT project_search_tbl.search_name, project_search_tbl.id AS project_search_id, search_tbl.id AS search_id, "
-			+ " project_search_tbl.project_id AS project_id "
+			+ " project_search_tbl.project_id AS project_id, search_tbl.has_search_sub_groups "
 			+ " FROM "
 			+ " project_search_tbl INNER JOIN search_tbl ON project_search_tbl.search_id = search_tbl.id "
 			+ " WHERE project_search_tbl.id = ?";
@@ -68,6 +69,12 @@ public class SearchMinimalForProjectSearchIdSearcher extends Limelight_JDBC_Base
 					result.setSearchId( rs.getInt( "search_id" ) );
 					result.setProjectId( rs.getInt( "project_id" ) );
 					result.setName( rs.getString( "search_name" ) );
+					{
+						int resultInt = rs.getInt( "has_search_sub_groups" );
+						if ( resultInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							result.setSearchHasSubgroups(true);
+						}
+					}
 				}
 			}
 		} catch ( SQLException e ) {

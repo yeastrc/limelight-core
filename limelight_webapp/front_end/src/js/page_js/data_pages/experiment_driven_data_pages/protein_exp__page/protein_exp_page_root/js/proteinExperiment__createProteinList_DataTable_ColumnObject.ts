@@ -69,7 +69,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
         {
             const column = new DataTable_Column({
                 id: 'protDesc', //  Short string that is unique for each column
-                displayName: 'Protein Descripton(s)',
+                displayName: 'Protein Description(s)',
                 sortable: true, // Will sort using Javascript < > on the 'value' property
                 width: 200, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
                 // heightInitial :        500, // pixels, must be a number.  style 'height' property, not 'maxHeight' property

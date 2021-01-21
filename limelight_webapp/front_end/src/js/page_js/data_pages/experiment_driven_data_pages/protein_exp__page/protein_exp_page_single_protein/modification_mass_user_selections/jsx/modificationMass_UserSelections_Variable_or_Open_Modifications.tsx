@@ -264,9 +264,11 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
         if ( showChange_Variable_or_Open_ModificationsSelectionLink ) {
 
             changeSelectionLink = (
-                <div style={ { whiteSpace: "nowrap", marginTop: 1, marginBottom : 2 } } className=" "> {/*  left-margin-same-as-checkbox; to align with checkbox */}
-                    <span className=" fake-link " onClick={ open_OverlaySelectionChanges }
-                    >Change Modification Filters</span>
+                <div style={ { whiteSpace: "nowrap", marginTop: 1, marginBottom : 2 } }>
+                     <div className=" left-margin-same-as-checkbox ">  {/*  left-margin-same-as-checkbox; to align with checkbox */}
+                        <span className=" fake-link " onClick={ open_OverlaySelectionChanges }
+                        >Change Modification Filters</span>
+                     </div>
                 </div>
             )
         }
@@ -280,11 +282,13 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
         return (
 
             <React.Fragment>
-                {/* Float Left */}
-                <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On { variable_Open_Label } Modifications:</div>
+
+                {/* Parent is CSS Grid with 2 Columns */}
+
+                <div className=" filter-common-filter-label ">Filter On { variable_Open_Label } Modifications:</div>
 
                 <div className="filter-common-selection-block" >
-                    <div >  {/* marginTop no longer needed since adding border around mass entries:  style={ { marginTop: 2 } }*/}
+                    <div >  {/*  className=" filter-common-selection-inner-block " no longer needed since adding border around mass entries: */}
                         { ( showNo_Variable_or_Open_ModificationsMsg ?
                             <div className="  "> {/*   left-margin-same-as-checkbox; to align with checkbox in Static Mods */}
                                 No { variable_Open_Label } Modifications
@@ -298,6 +302,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
                                         updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                                         update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
                                     /> {/* Unmodified entry is always shown */}
+
                                     { singleModification_Entries }
                                     { addModificationsLink }
                                 </div>
@@ -307,7 +312,6 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
                     </div>
                 </div> 
 
-                <div style={ { clear: "left" } }></div>
             </React.Fragment>
         );
 
@@ -344,9 +348,9 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
     constructor(props : SingleModification_Entry_Props) {
         super(props);
 
-        let checked : SingleProtein_Filter_SelectionType = props.variable_or_Open_ModificationEntry.selectionType;
+        let selection_SelectionType : SingleProtein_Filter_SelectionType = props.variable_or_Open_ModificationEntry.selectionType;
 
-        this.state = { selection_SelectionType: checked, prevProp_variable_or_Open_ModificationEntry : props.variable_or_Open_ModificationEntry };
+        this.state = { selection_SelectionType, prevProp_variable_or_Open_ModificationEntry : props.variable_or_Open_ModificationEntry };
     }
 
     /**

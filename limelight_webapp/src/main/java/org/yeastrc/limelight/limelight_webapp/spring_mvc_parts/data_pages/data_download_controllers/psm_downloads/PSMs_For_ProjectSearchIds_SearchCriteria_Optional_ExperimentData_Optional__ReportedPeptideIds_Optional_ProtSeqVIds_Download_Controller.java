@@ -47,15 +47,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
@@ -72,14 +75,18 @@ import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInRe
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectSearchIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubGroupDTOForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher.PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
@@ -89,7 +96,9 @@ import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.AA_DataDownloadControllersPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.DownloadsCharacterSetConstant;
 import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchSubGroup_Name_Display_Computation_Util;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchSubGroup_Name_Display_Computation_Util.SearchSubGroup_Name_Display_Computation_Entry;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
@@ -134,7 +143,16 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	private SearchMinimalForProjectSearchIdSearcher_IF searchMinimalForProjectSearchIdSearcher;
 
 	@Autowired
+	private ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF projectSearchSubGroupDTOForProjectSearchIdSearcher;
+	
+	@Autowired
+	private SearchSubGroupDTOForSearchIdSearcherIF searchSubGroupDTOForSearchIdSearcher;
+	
+	@Autowired
 	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
+
+	@Autowired
+	private SearchSubGroup_Name_Display_Computation_Util searchSubGroup_Name_Display_Computation_Util;
 	
 	@Autowired
 	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
@@ -171,6 +189,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private SearchProgramsPerSearchListForSearchIdSearcherIF searchProgramsPerSearchListForSearchIdSearcher;
+	
+	@Autowired
+	private PsmSearchSubGroupIdsForPsmIdsSearcher_IF psmSearchSubGroupIdsForPsmIdsSearcher;
 	
 	@Autowired
 	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
@@ -246,6 +267,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 						}
 					}
+				}
+				if ( entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty() ) {
+					log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty()" );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 				}
 			}
 
@@ -445,7 +470,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				
 				Boolean searchHasScanData = searchHasScanDataForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
 				if ( searchHasScanData == null ) {
-					String msg = "No searchHasScanData for searchId: " + searchId;
+					String msg = "searchHasScanData == null for searchId: " + searchId;
 					log.warn( msg );
 	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 				}
@@ -486,13 +511,23 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List = new ArrayList<>( projectSearchIdMapToSearchId.size() ); 
     		
     		for ( RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : projectSearchIdsReportedPeptideIdsPsmIds ) {
+    			
+    			Integer projectSearchId = singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
+    			SearchItemMinimal searchItemMinimal = searchItemMinimal_Key_projectSearchId.get( projectSearchId );
+    			if ( searchItemMinimal == null ) {
+    				String msg = "searchItemMinimal_Key_projectSearchId.get( projectSearchId ) returned null before call create_WriteOutputToResponse_Per_SearchId__For_SingleSearch. projectSearchId: " + projectSearchId;
+    				log.error( msg );
+    				throw new LimelightInternalErrorException(msg);
+    			}
     		
     			WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId =
     					create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
     							webserviceRequest, 
     							paramsForProjectSearchIdsList, 
     							projectSearchIdMapToSearchId,
-    							searchHasScanDataMap_Key_projectSearchId, searcherCutoffValuesRootLevel,
+    							searchItemMinimal,
+    							searchHasScanDataMap_Key_projectSearchId, 
+    							searcherCutoffValuesRootLevel,
     							singleprojectSearchId_ReportedPeptideIdsPsmIds );
     			
     			writeOutputToResponse_Per_SearchId_List.add( writeOutputToResponse_Per_SearchId );
@@ -504,16 +539,22 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     				writeOutputToResponse_Per_SearchId_List,
 					httpServletResponse );
     		
+		} catch ( Limelight_WS_BadRequest_InvalidParameter_Exception e ) {
+
+			log.warn( "Limelight_WS_BadRequest_InvalidParameter_Exception: " + e.toString(), e );
+
+			throw e;
+    		
 		} catch ( Limelight_WS_AuthError_Unauthorized_Exception e ) {
 
-			log.error( "Limelight_WS_AuthError_Unauthorized_Exception: " + e.toString(), e );
+			log.warn( "Limelight_WS_AuthError_Unauthorized_Exception: " + e.toString(), e );
 
 			//  TODO  No User session and not public project
 			throw e;
 			
 		} catch ( Limelight_WS_AuthError_Forbidden_Exception e ) {
 
-			log.error( "Limelight_WS_AuthError_Forbidden_Exception: " + e.toString(), e );
+			log.warn( "Limelight_WS_AuthError_Forbidden_Exception: " + e.toString(), e );
 
 			//  TODO  User Auth Error
 			throw e;
@@ -547,6 +588,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			RequestJSONParsed webserviceRequest,
 			List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList,
 			Map<Integer, Integer> projectSearchIdMapToSearchId,
+			SearchItemMinimal searchItemMinimal,
 			Map<Integer, Boolean> searchHasScanDataMap_Key_projectSearchId,
 			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
 			RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds )
@@ -562,6 +604,75 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		}
 		
 		Boolean searchHasScanData = searchHasScanDataMap_Key_projectSearchId.get( projectSearchId );
+		
+		boolean searchHasSubgroups = searchItemMinimal.isSearchHasSubgroups();
+		
+		Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId = null;
+		
+		if ( searchHasSubgroups ) {
+
+			//  Get DB Search Sub Groups from search ids
+			
+			searchSubGroupData_KeyedOn_SearchSubGroupId = new HashMap<>();
+			
+			List<Integer> searchIdList = new ArrayList<>( 2 );
+			searchIdList.add(searchId);
+			
+			List<Integer> projectSearchIdList = new ArrayList<>( 2 );
+			projectSearchIdList.add(projectSearchId);
+
+			List<SearchSubGroupDTO> searchSubGroupsDBList = 
+					searchSubGroupDTOForSearchIdSearcher.getListForSearchId( searchIdList );
+
+			List<ProjectSearchSubGroupDTO> projectSearchSubGroupsDBList = 
+					projectSearchSubGroupDTOForProjectSearchIdSearcher.getListForProjectSearchIds( projectSearchIdList );
+			
+			Map<Integer, ProjectSearchSubGroupDTO> projectSearchSubGroupDTO_Map_Key_SubGroupId = new HashMap<>();
+			
+			for ( ProjectSearchSubGroupDTO item : projectSearchSubGroupsDBList ) {
+				
+				Integer searchSubGroupId = item.getSearchSubGroupId();
+				ProjectSearchSubGroupDTO existingMapEntry = projectSearchSubGroupDTO_Map_Key_SubGroupId.put( searchSubGroupId, item );
+				if ( existingMapEntry != null ) {
+					String msg = "projectSearchSubGroupDTO_Map_Key_SubGroupId aleady has map entry for searchSubGroupId: " + searchSubGroupId 
+							+ ", searchId: " + searchId;
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+			}
+			
+			List<SearchSubGroup_Name_Display_Computation_Entry> nameDisplayComputeEntyList = new ArrayList<>( searchSubGroupsDBList.size() );
+			
+
+			for ( SearchSubGroupDTO entry : searchSubGroupsDBList ) {
+
+				
+				ProjectSearchSubGroupDTO projectSearchSubGroupDTO = null;
+				{ // projectSearchSubGroupDTO may be null after this block
+					projectSearchSubGroupDTO = projectSearchSubGroupDTO_Map_Key_SubGroupId.get( entry.getSearchSubGroupId() );
+				}
+				SearchSubGroup_Name_Display_Computation_Entry result_SearchSubgroupItem = new SearchSubGroup_Name_Display_Computation_Entry();
+				result_SearchSubgroupItem.setSearchSubGroupId( entry.getSearchSubGroupId() );
+				result_SearchSubgroupItem.setSubgroupName_fromImportFile( entry.getSubgroupName_fromImportFile() );
+				if ( projectSearchSubGroupDTO != null ) {
+					result_SearchSubgroupItem.setDisplayOrder( projectSearchSubGroupDTO.getDisplayOrder() );
+    				result_SearchSubgroupItem.setSubgroupName_Display_FromServer_IfUserEnteredAValue( projectSearchSubGroupDTO.getSubgroupName_Display() );
+				}
+
+				nameDisplayComputeEntyList.add( result_SearchSubgroupItem );
+			}
+			
+			searchSubGroup_Name_Display_Computation_Util.searchSubGroup_Name_Display_Computation__SortOn_DisplayOrder_SubGroupNameDisplay__Util( nameDisplayComputeEntyList );
+			
+			for ( SearchSubGroup_Name_Display_Computation_Entry name_Display_Computation_Entry : nameDisplayComputeEntyList ) {
+				
+				WriteOutputToResponse_Per_SearchSubGroupId response_Per_SearchSubGroupId = new WriteOutputToResponse_Per_SearchSubGroupId();
+				response_Per_SearchSubGroupId.subgroupName_fromImportFile = name_Display_Computation_Entry.getSubgroupName_fromImportFile();
+				response_Per_SearchSubGroupId.subgroupName_Display = name_Display_Computation_Entry.getSubgroupName_Display();
+				
+				searchSubGroupData_KeyedOn_SearchSubGroupId.put( name_Display_Computation_Entry.getSearchSubGroupId(), response_Per_SearchSubGroupId );
+			}
+		}
 		
 		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
 		
@@ -611,6 +722,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = null;
 
 		//  Passed from client - Optional
+		List<Integer> searchSubGroup_Ids_Selected = singleprojectSearchId_ReportedPeptideIdsPsmIds.searchSubGroup_Ids_Selected;
+		
+		//  Passed from client - Optional
 		List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
 		
 		//  Process reportedPeptideIds in request, or retrieve reportedPeptideIds for cutoffs and Process
@@ -636,30 +750,44 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				List<Long> psmIds_Exclude = reportedPeptideIdAndItsPsmIds.psmIds_Exclude;
 				
 				reportedPeptideIds_ForAdditionalProcessing.add( reportedPeptideId );
-				
-				List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-						psmWebDisplaySearcher.getPsmsWebDisplay( 
-								searchId, 
-								reportedPeptideId, 
-								psmIds_Include, 
-								psmIds_Exclude, 
-								searcherCutoffValuesSearchLevel );
-				
-				List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
-				for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
-					PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
-					psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
-					psmEntry_InternalClass_List.add(psmEntry_InternalClass);
+
+				if ( searchSubGroup_Ids_Selected != null ) {
+
+					for ( Integer searchSubGroup_Id : searchSubGroup_Ids_Selected ) {
+
+						List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+								psmWebDisplaySearcher.getPsmsWebDisplay( 
+										searchId, 
+										reportedPeptideId, 
+										searchSubGroup_Id, // searchSubGroupId, 
+										psmIds_Include, 
+										psmIds_Exclude, 
+										searcherCutoffValuesSearchLevel );
+
+						transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+								psmWebDisplayListForReportedPeptideIds, 
+								reportedPeptideId,
+								psmWebDisplayList,
+								searchSubGroupData_KeyedOn_SearchSubGroupId );
+					}
+
+				} else {
+
+					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+							psmWebDisplaySearcher.getPsmsWebDisplay( 
+									searchId, 
+									reportedPeptideId, 
+									null, // searchSubGroupId 
+									psmIds_Include, 
+									psmIds_Exclude, 
+									searcherCutoffValuesSearchLevel );
+
+					transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+							psmWebDisplayListForReportedPeptideIds, 
+							reportedPeptideId,
+							psmWebDisplayList,
+							searchSubGroupData_KeyedOn_SearchSubGroupId );
 				}
-				
-				populateReporterIonMassesForPSMs( psmEntry_InternalClass_List );
-				
-				populateOpenModificationMassesForPSMs( psmEntry_InternalClass_List );
-				
-				PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
-				psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
-				psmsForSingleReportedPeptideId.psmEntry_InternalClass_List = psmEntry_InternalClass_List;
-				psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
 			}
 
 		} else {
@@ -710,24 +838,42 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIds_ForAdditionalProcessing.size() );
 
 				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
-					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-							psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null, null, searcherCutoffValuesSearchLevel );
 
-					List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
-					for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
-						PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
-						psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
-						psmEntry_InternalClass_List.add(psmEntry_InternalClass);
+					if ( searchSubGroup_Ids_Selected != null ) {
+
+						for ( Integer searchSubGroup_Id : searchSubGroup_Ids_Selected ) {
+
+							List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+									psmWebDisplaySearcher.getPsmsWebDisplay( 
+											searchId, 
+											reportedPeptideId, 
+											searchSubGroup_Id, // searchSubGroupId, 
+											null, // psmIds_Include
+											null, // psmIds_Exclude
+											searcherCutoffValuesSearchLevel );
+
+							transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+									psmWebDisplayListForReportedPeptideIds, 
+									reportedPeptideId,
+									psmWebDisplayList,
+									searchSubGroupData_KeyedOn_SearchSubGroupId );
+						}
+						
+					} else {
+							
+						List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+								psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, 
+										null, // searchSubGroupId, 
+										null, // psmIds_Include
+										null, // psmIds_Exclude
+										searcherCutoffValuesSearchLevel );
+	
+						transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+								psmWebDisplayListForReportedPeptideIds, 
+								reportedPeptideId,
+								psmWebDisplayList,
+								searchSubGroupData_KeyedOn_SearchSubGroupId );
 					}
-					
-					populateReporterIonMassesForPSMs( psmEntry_InternalClass_List );
-					
-					populateOpenModificationMassesForPSMs( psmEntry_InternalClass_List );
-					
-					PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
-					psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
-					psmsForSingleReportedPeptideId.psmEntry_InternalClass_List = psmEntry_InternalClass_List;
-					psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
 				}
 			}
 		}
@@ -765,6 +911,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		writeOutputToResponse_Per_SearchId.searchId = searchId;
 		writeOutputToResponse_Per_SearchId.projectSearchId = projectSearchId;
 		writeOutputToResponse_Per_SearchId.searchHasScanData = searchHasScanData;
+		writeOutputToResponse_Per_SearchId.searchHasSubgroups = searchHasSubgroups;
+		writeOutputToResponse_Per_SearchId.searchSubGroupData_KeyedOn_SearchSubGroupId = searchSubGroupData_KeyedOn_SearchSubGroupId;
 		writeOutputToResponse_Per_SearchId.annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
 		writeOutputToResponse_Per_SearchId.psmWebDisplayListForReportedPeptideIds = psmWebDisplayListForReportedPeptideIds;
 		writeOutputToResponse_Per_SearchId.mods_Key_ReportedPeptideId = mods_Key_ReportedPeptideId;
@@ -774,9 +922,97 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		return writeOutputToResponse_Per_SearchId;
 	}
+
+	/**
+	 * @param psmWebDisplayListForReportedPeptideIds
+	 * @param reportedPeptideId
+	 * @param psmWebDisplayList
+	 * @throws SQLException
+	 */
+	private void transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds, 
+			Integer reportedPeptideId,
+			List<PsmWebDisplayWebServiceResult> psmWebDisplayList,
+			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException {
+		
+		if ( psmWebDisplayList.isEmpty() ) {
+			
+			//  No PSMs so exit early
+			
+			return;  // EARLY RETURN
+		}
+		
+		List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
+		for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
+			PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
+			psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
+			psmEntry_InternalClass_List.add(psmEntry_InternalClass);
+		}
+		
+		if ( searchSubGroupData_KeyedOn_SearchSubGroupId != null ) {
+
+			populate_SubGroup_Nickname_Name_ForPSMs( psmEntry_InternalClass_List, searchSubGroupData_KeyedOn_SearchSubGroupId );
+		}
+		
+		populateReporterIonMassesForPSMs( psmEntry_InternalClass_List );
+		
+		populateOpenModificationMassesForPSMs( psmEntry_InternalClass_List );
+		
+		PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
+		psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
+		psmsForSingleReportedPeptideId.psmEntry_InternalClass_List = psmEntry_InternalClass_List;
+		
+		psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
+	}
 	
 	//////////////////////////////////////
-
+	
+	/**
+	 * @param psmEntry_InternalClass_List
+	 * @param searchSubGroupData_KeyedOn_SearchSubGroupId
+	 * @throws SQLException 
+	 */
+	private void populate_SubGroup_Nickname_Name_ForPSMs( 
+			List<PsmEntry_InternalClass> psmEntry_InternalClass_List,
+			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException {
+		
+		List<Long> psmIds = new ArrayList<>( psmEntry_InternalClass_List.size() );
+		for ( PsmEntry_InternalClass psmEntry_InternalClass : psmEntry_InternalClass_List ) {
+			psmIds.add( psmEntry_InternalClass.psmWebDisplayWebServiceResult.getPsmId() );
+		}
+		
+		List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmId_SubGroupId_Mapping_List = 
+				psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
+		
+		Map<Long, PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmId_SubGroupId_MappingMap_Key_PsmId = new HashMap<>( psmId_SubGroupId_Mapping_List.size() );
+		
+		for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem dbResult : psmId_SubGroupId_Mapping_List ) {
+			psmId_SubGroupId_MappingMap_Key_PsmId.put( dbResult.getPsmId(), dbResult );
+		}
+		
+		for ( PsmEntry_InternalClass psmEntry_InternalClass : psmEntry_InternalClass_List ) {
+			
+			Long psmId = psmEntry_InternalClass.psmWebDisplayWebServiceResult.getPsmId();
+			PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem psmId_SubGroupId_Mapping = psmId_SubGroupId_MappingMap_Key_PsmId.get( psmId  );
+			if ( psmId_SubGroupId_Mapping == null ) {
+				String msg = "No entry in psmId_SubGroupId_MappingMap_Key_PsmId for psmId: " + psmId ;
+				log.error(msg);
+				throw new LimelightDatabaseException(msg);
+			}
+			
+			Integer searchSubGroupId = psmId_SubGroupId_Mapping.getSearchSubGroupId();
+			
+			WriteOutputToResponse_Per_SearchSubGroupId searchSubGroupData = searchSubGroupData_KeyedOn_SearchSubGroupId.get(searchSubGroupId);
+			if ( searchSubGroupData == null ) {
+				String msg = "No entry in searchSubGroupData_KeyedOn_SearchSubGroupId for searchSubGroupId: " + searchSubGroupId ;
+				log.error(msg);
+				throw new LimelightDatabaseException(msg);
+			}
+			
+			psmEntry_InternalClass.subGroup_Nickname = searchSubGroupData.subgroupName_Display;
+			psmEntry_InternalClass.subGroup_Name = searchSubGroupData.subgroupName_fromImportFile;
+		}
+	}
 
     /**
      * @param psmWebDisplayList
@@ -1255,7 +1491,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			BufferedOutputStream bos = new BufferedOutputStream(out);
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
-			writer.write( "SEARCH ID\tSEARCH NAME\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
+			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
 			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modifications\tSCAN FILENAME" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
@@ -1285,6 +1521,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				int searchId = writeOutputToResponse_For_SearchId.searchId;
 				int projectSearchId = writeOutputToResponse_For_SearchId.projectSearchId;
 				Boolean searchHasScanData = writeOutputToResponse_For_SearchId.searchHasScanData; 
+				Boolean searchHasSubgroups = writeOutputToResponse_For_SearchId.searchHasSubgroups;
+				Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId = writeOutputToResponse_For_SearchId.searchSubGroupData_KeyedOn_SearchSubGroupId;
+
 				Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = writeOutputToResponse_For_SearchId.annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
 				List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds = writeOutputToResponse_For_SearchId.psmWebDisplayListForReportedPeptideIds;
 				Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId = writeOutputToResponse_For_SearchId.mods_Key_ReportedPeptideId;
@@ -1367,6 +1606,14 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							writer.write( String.valueOf( searchId ) );
 							writer.write( "\t" );
 							writer.write( searchNameDisplay );
+							writer.write( "\t" );
+							if ( psmEntry_InternalClass.subGroup_Nickname != null ) {
+								writer.write( psmEntry_InternalClass.subGroup_Nickname );
+							}
+							writer.write( "\t" );
+							if ( psmEntry_InternalClass.subGroup_Name != null ) {
+								writer.write( psmEntry_InternalClass.subGroup_Name );
+							}
 							writer.write( "\t" );
 							writer.write( String.valueOf( psmWebDisplay.getScanNumber() ) );
 							writer.write( "\t" );
@@ -1618,6 +1865,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	private static class PsmEntry_InternalClass {
 		
 		private PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult;
+		
+		private String subGroup_Nickname; //  Computed or User Entered;
+		private String subGroup_Name; //  From Imported Search
 
 		private List<BigDecimal> reporterIonMassList;
 		private String openModificationMassString;
@@ -1631,12 +1881,23 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		int projectSearchId;
 		int searchId;
 		Boolean searchHasScanData; 
+		Boolean searchHasSubgroups;
+		Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId;
 		Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
 		List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds;
 		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId;
 		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
 		
 		List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch;
+	}
+	/**
+	 * Internal Data for writeOutputToResponse Per Search Sub Group Id
+	 */
+	private static class WriteOutputToResponse_Per_SearchSubGroupId {
+
+		String subgroupName_fromImportFile;
+		String subgroupName_Display; // null until user enters a value
+
 	}
 	
 	////////////////
@@ -1697,6 +1958,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		private Integer projectSearchId;
 		
+		private List<Integer> searchSubGroup_Ids_Selected; //  Optional
+		
 		private List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds; //  Optional
 		
 		private List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch; //  Optional
@@ -1709,6 +1972,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		}
 		public void setExperimentDataForSearch(List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch) {
 			this.experimentDataForSearch = experimentDataForSearch;
+		}
+		public void setSearchSubGroup_Ids_Selected(List<Integer> searchSubGroup_Ids_Selected) {
+			this.searchSubGroup_Ids_Selected = searchSubGroup_Ids_Selected;
 		}
 	}
 

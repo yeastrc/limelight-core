@@ -69,6 +69,9 @@ class ModPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Co
                 <SearchDetailsAndOtherFiltersOuterBlock_Layout >
                     <SearchDetailsAndFilterBlock_MainPage_Root
                         propValue={ this.props.searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
+                        searchSubGroup_CentralStateManagerObjectClass={ undefined }
+                        searchSubGroup_SelectionsChanged_Callback={ undefined }
+                        searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
                     />
                 </SearchDetailsAndOtherFiltersOuterBlock_Layout>
             </SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer>

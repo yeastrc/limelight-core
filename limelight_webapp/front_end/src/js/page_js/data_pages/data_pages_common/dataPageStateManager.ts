@@ -104,7 +104,11 @@ class DataPageStateManager {
 
 	/**
 	 * 
-	 * @returns 
+	 * @returns Map<ProjectSearchId, SearchNames_AsMap_Entry>
+	 *     Where Map value is SearchNames_AsMap_Entry:
+	 *
+	 *     Current value of type SearchNames_AsMap_Entry (In this file) = { projectSearchId : number, searchId : number, name : string, searchHasSubgroups : boolean }
+	 *
 	 */
 	get_searchNames_AsMap() : SearchNames_AsMap {
 		return this._PrivateProperties_MayChangeWithoutNotice._searchNames_AsMap;
@@ -114,6 +118,28 @@ class DataPageStateManager {
 	 */
 	set_searchNames_AsMap( searchNames_AsMap : SearchNames_AsMap ) : void {
 		this._PrivateProperties_MayChangeWithoutNotice._searchNames_AsMap = searchNames_AsMap;
+	}
+
+	get_userCanEditSearchSubGroups() : boolean {
+		return this._PrivateProperties_MayChangeWithoutNotice._userCanEditSearchSubGroups;
+	}
+
+	set_userCanEditSearchSubGroups( userCanEditSearchSubGroups : boolean ) : void {
+		this._PrivateProperties_MayChangeWithoutNotice._userCanEditSearchSubGroups = userCanEditSearchSubGroups;
+	}
+
+	/**
+	 *
+	 * @returns undefined IF NO searches have search sub groups
+	 */
+	get_SearchSubGroups_Root() : SearchSubGroups_Root__DataPageStateManagerEntry {
+		return this._PrivateProperties_MayChangeWithoutNotice._searchSubGroups_Root;
+	}
+	/**
+	 *
+	 */
+	set_SearchSubGroups_Root( searchSubGroups_Root : SearchSubGroups_Root__DataPageStateManagerEntry ) : void {
+		this._PrivateProperties_MayChangeWithoutNotice._searchSubGroups_Root = searchSubGroups_Root;
 	}
 
 	//  NOT SET
@@ -217,6 +243,10 @@ class PageState_InternalData_Properties {
 
 	_searchNames_AsMap : SearchNames_AsMap
 
+	_userCanEditSearchSubGroups : boolean
+
+	_searchSubGroups_Root : SearchSubGroups_Root__DataPageStateManagerEntry
+
 	//  No longer used/set
 	// _searchNames; // { <projectSearchId> : 'search name', ... }
 	// 			// Object
@@ -264,7 +294,112 @@ class PageState_InternalData_Properties {
 
 //  Types and Classes for what is stored in DataPageStateManager
 
-type SearchNames_AsMap = Map<number, { projectSearchId : number, searchId : number, name : string }> ;
+type SearchNames_AsMap_Entry = { projectSearchId : number, searchId : number, name : string, searchHasSubgroups : boolean } ;
+
+type SearchNames_AsMap = Map<number, SearchNames_AsMap_Entry> ;
+
+
+/**
+ * Search Sub Groups Entry for Project Search Id
+ */
+class SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry {
+
+	searchSubGroup_Id : Readonly<number>
+	displayOrder : Readonly<number>;  // null if not set, User specified Display Order
+	searchSubgroupName_fromImportFile : Readonly<string>
+	private _subgroupName_Display_FromServer_IfUserEnteredAValue : Readonly<string>  // null until user enters a value
+	private _subgroupName_Display : string //  Computed on data load and can be updated by user
+
+	constructor(
+		{
+			searchSubGroup_Id, displayOrder, searchSubgroupName_fromImportFile, subgroupName_Display_FromServer_IfUserEnteredAValue, subgroupName_Display
+		} : {
+			searchSubGroup_Id : Readonly<number>
+			displayOrder : Readonly<number>;  // null if not set, User specified Display Order
+			searchSubgroupName_fromImportFile : Readonly<string>
+			subgroupName_Display_FromServer_IfUserEnteredAValue : Readonly<string>
+			subgroupName_Display : string
+		}) {
+		this.searchSubGroup_Id = searchSubGroup_Id;
+		this.displayOrder = displayOrder;
+		this.searchSubgroupName_fromImportFile = searchSubgroupName_fromImportFile;
+		this._subgroupName_Display_FromServer_IfUserEnteredAValue = subgroupName_Display_FromServer_IfUserEnteredAValue;
+		this._subgroupName_Display = subgroupName_Display;
+	}
+
+	/**
+	 * Return User entered Display or Compute subgroupName_Display
+	 */
+	get subgroupName_Display() {
+
+		return this._subgroupName_Display
+	}
+	/**
+	 * Update subgroupName_Display
+	 */
+	set subgroupName_Display( subgroupName_Display: string ) {
+		this._subgroupName_Display = subgroupName_Display
+	}
+}
+
+/**
+ * Search Sub Groups Entry for Project Search Id
+ */
+class SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry {
+
+	projectSearchId : Readonly<number>
+	private searchSubGroups_Map : Readonly<Map<number, SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>>
+	private searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode : Readonly<Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>>
+
+	constructor({ projectSearchId, searchSubGroups_Array_SortedOn_subgroupName_Display_ByServerCode } : {
+		projectSearchId : Readonly<number>
+		searchSubGroups_Array_SortedOn_subgroupName_Display_ByServerCode : Readonly<Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>>
+	}) {
+		this.projectSearchId = projectSearchId
+		this.searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode = searchSubGroups_Array_SortedOn_subgroupName_Display_ByServerCode;
+
+		if ( searchSubGroups_Array_SortedOn_subgroupName_Display_ByServerCode ) {
+			const searchSubGroups_Map : Map<number, SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = new Map();
+			for ( const searchSubGroup of searchSubGroups_Array_SortedOn_subgroupName_Display_ByServerCode ) {
+				searchSubGroups_Map.set( searchSubGroup.searchSubGroup_Id, searchSubGroup );
+			}
+			this.searchSubGroups_Map = searchSubGroups_Map;
+		}
+	}
+
+	/**
+	 *
+	 */
+	get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode(){
+		return this.searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode
+	}
+	/**
+	 *
+	 */
+	get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroup_Id : Readonly<number> ) {
+		return this.searchSubGroups_Map.get( searchSubGroup_Id )
+	}
+}
+
+/**
+ * Search Sub Groups Root
+ */
+class SearchSubGroups_Root__DataPageStateManagerEntry {
+
+	private entries_PerProjectSearchId : Map<number,SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry> = new Map<number, SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry>()
+
+	public addForProjectSearchId( entry : SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry ) : void {
+
+		this.entries_PerProjectSearchId.set( entry.projectSearchId, entry )
+	}
+	/**
+	 *
+	 */
+	get_searchSubGroups_ForProjectSearchId( projectSearchId : Readonly<number> ) : SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry {
+		return this.entries_PerProjectSearchId.get( projectSearchId )
+	}
+}
+
 
 /**
  * Search Programs Per Search Data Root
@@ -272,10 +407,6 @@ type SearchNames_AsMap = Map<number, { projectSearchId : number, searchId : numb
 class SearchProgramsPerSearchData_Root {
 
 	searchProgramsPerSearchItems_PerProjectSearchId_Map : Map<number, SearchProgramsPerSearchItems_PerProjectSearchId> = new Map();
-
-	constructor() {
-
-	}
 }
 
 /**
@@ -488,7 +619,9 @@ class AnnotationTypeItem {
 
 
 export { 
-	DataPageStateManager, SearchNames_AsMap, 
-	SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItems_PerProjectSearchId, SearchProgramsPerSearchItem, 
+	DataPageStateManager, SearchNames_AsMap, SearchNames_AsMap_Entry,
+	SearchSubGroups_Root__DataPageStateManagerEntry, SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry,
+	SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry,
+	SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItems_PerProjectSearchId, SearchProgramsPerSearchItem,
 	AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem 
 }

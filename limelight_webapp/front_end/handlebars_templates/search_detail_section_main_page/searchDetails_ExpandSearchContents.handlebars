@@ -11,16 +11,39 @@
                 {{!-- Add  'word-break: break-word;' to keep path on overlay in single protein overlay.
 					  'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
 		        --}}
-                <td style="vertical-align: top; word-break: break-word;">
+                <td style="vertical-align: top; word-break: break-word; padding-bottom: 3px;">
                     {{ path }}
                 </td>
             </tr>
         {{/if}}
+
+        {{#if subGroups }}
+            <tr class=" selector_search_details_sub_groups_outer_container ">
+                <td style="vertical-align: top; padding-right: 4px; padding-top: 5px; padding-bottom: 3px;">
+                    <div style=" white-space: nowrap; " >Sub Groups:</div>
+                    {{#if canEditSearchSubGroups  }}
+                        <div class=" selector_search_details_manage_sub_groups_link_container " ></div>
+                    {{/if}}
+                </td>
+                <td style="vertical-align: top; padding-top: 5px; padding-bottom: 5px;" class=" selector_search_details_sub_groups_list_container ">
+                    {{#each subGroups.searchSubgroupItems as |searchSubgroupItem|}}
+
+                        {{!--  Duplicated in searchDetails_SubGroupEntry.handlebars (Same folder) --}}
+                        <span class=" filter-single-value-display-block "
+                                title="{{ searchSubgroupItem.subgroupName_fromImportFile }}"
+                        >
+                            {{ searchSubgroupItem.subgroupName_Display }}
+                        </span>
+                    {{/each}}
+                </td>
+            </tr>
+        {{/if}}
+
         {{#if searchProgramsPerSearchList}}
             <tr>
                 <td style="vertical-align: top; white-space: nowrap;  padding-right: 4px;">
                     Search Programs:
-                </td>        
+                </td>
                 <td style="vertical-align: top; padding-top: 0px;">
                     <table style="border-width:0px; border-spacing: 0px; padding: 0px;">
                         {{#each searchProgramsPerSearchList as |searchProgram|}}
@@ -34,9 +57,10 @@
 						    </tr>
                         {{/each}}
                     </table>
-                </td>        
+                </td>
             </tr>
         {{/if}}
+
             <tr>
                 <td>Upload:</td>
                 <td>{{ formattedLoadTime }}</td>

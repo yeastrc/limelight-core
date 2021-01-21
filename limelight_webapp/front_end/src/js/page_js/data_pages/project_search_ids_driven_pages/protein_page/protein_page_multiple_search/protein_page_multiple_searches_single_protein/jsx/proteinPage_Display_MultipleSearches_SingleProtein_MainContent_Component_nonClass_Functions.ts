@@ -50,6 +50,12 @@ import {loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_R
 import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
 import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_BuildData_ForReactComponent";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
+import {SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
+import {searchSubGroup_Get_Selected_SearchSubGroupIds} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
+import {searchSubGroup_Create__SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_Create__SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData";
+import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
+import {ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/jsx/proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component";
+import {searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Are_All_SearchSubGroupIds_Selected";
 
 
 
@@ -69,6 +75,7 @@ class LinksToExternalResources {
  */  
 const initialPopulate = function({
 
+    propsValue,
     proteinSequenceVersionId,
     proteinSequenceString,
     projectSearchIds,
@@ -80,6 +87,7 @@ const initialPopulate = function({
     peptideSequence_UserSelections_StateObject,
     proteinSequenceWidget_StateObject
 } : {
+    propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
     proteinSequenceVersionId : number,
     proteinSequenceString : string,
     projectSearchIds : Array<number>,
@@ -93,6 +101,10 @@ const initialPopulate = function({
 }  ) :
 
 {
+    searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+    searchSubGroup_Ids_Selected : Set<number>
+    searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean
+    searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
     linksToExternalResources : LinksToExternalResources,
     protein_fractionCovered_Unfiltered : number,
     psmCountForUnfiltered : number,
@@ -105,8 +117,16 @@ const initialPopulate = function({
     sequenceCoverageBooleanArray_Unfiltered : Array<boolean>,
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 }
-{    
-    const modificationMass_UserSelections_ComponentData = create_ModificationMass_UserSelections_ComponentData({ 
+{
+    const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({ propsValue });
+
+    const searchSubGroup_Ids_Selected : Set<number> = compute_searchSubGroup_Ids_Selected({ propsValue });
+
+    const searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean = compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected({ propsValue });
+
+    const searchSubGroup_PropValue: SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData = compute_searchSubGroup_PropValue({ propsValue });
+
+    const modificationMass_UserSelections_ComponentData = create_ModificationMass_UserSelections_ComponentData({
         modificationMass_UserSelections_StateObject,
         proteinSequenceVersionId,
         projectSearchIds,
@@ -136,29 +156,20 @@ const initialPopulate = function({
         searchStrings : peptideSequence_UserSelections_StateObject.getPeptideSearchStrings()
     });
 
-
-    let forMultipleSearch_OrExperiment = true;
-    let forSingleSearch = false;
-
-    if ( projectSearchIds.length === 1 ) {
-
-        forMultipleSearch_OrExperiment = false;
-        forSingleSearch = true;
-    }
-
     const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({
         not_filtered_position_modification_selections : false,
-        forMultipleSearch_OrExperiment,
-        forSingleSearch,
         proteinSequenceVersionId,
         projectSearchIds,
+        searchSubGroup_Ids_Selected,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         loadedDataCommonHolder,
         proteinSequenceWidget_StateObject,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
         peptideUnique_UserSelection_StateObject,
-        userSearchString_LocationsOn_ProteinSequence_Root
+        peptideSequence_UserSelections_StateObject,
+        userSearchString_LocationsOn_ProteinSequence_Root,
+        proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
     });
 
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds =
@@ -193,7 +204,8 @@ const initialPopulate = function({
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             modificationMass_UserSelections_StateObject,
             reporterIonMass_UserSelections_StateObject,
-            peptideUnique_UserSelection_StateObject
+            peptideUnique_UserSelection_StateObject,
+            searchSubGroup_Are_All_SearchSubGroupIds_Selected
         });
     }
 
@@ -204,6 +216,10 @@ const initialPopulate = function({
     const psmCountForUnfiltered = _computePsmCountForUnfiltered({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds });
 
     return {
+        searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
+        searchSubGroup_Ids_Selected,
+        searchSubGroup_Are_All_SearchSubGroupIds_Selected,
+        searchSubGroup_PropValue,
         linksToExternalResources,
         protein_fractionCovered_Unfiltered,
         psmCountForUnfiltered,
@@ -220,6 +236,134 @@ const initialPopulate = function({
 
 ///////////////////////////
 
+/**
+ * Create searchSubGroup_Ids_Selected
+ */
+const compute_searchSubGroup_Ids_Selected = function (
+    {
+        propsValue
+    } : {
+        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+    }) :  Set<number>
+{
+    let searchSubGroup_Ids_Selected : Set<number> = undefined;
+
+    if ( propsValue.projectSearchIds.length === 1 && propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+
+        //  Only display for 1 search
+
+        const projectSearchId = propsValue.projectSearchIds[ 0 ];
+
+        const searchSubGroups_ForProjectSearchId = propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        if ( ! searchSubGroups_ForProjectSearchId ) {
+            const msg = "returned nothing: propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
+            searchSubGroup_CentralStateManagerObjectClass : propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+        })
+    }
+
+    return searchSubGroup_Ids_Selected;
+}
+
+/**
+ * Create searchSubGroup_Are_All_SearchSubGroupIds_Selected
+ */
+const compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected = function (
+    {
+        propsValue
+    } : {
+        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+    }) :  boolean
+{
+    let searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean = true; // Default to true for when Merged Search or No Search SUb Groups
+
+    if ( propsValue.projectSearchIds.length === 1 && propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+
+        //  Only display for 1 search
+
+        const projectSearchId = propsValue.projectSearchIds[ 0 ];
+
+        const searchSubGroups_ForProjectSearchId = propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        if ( ! searchSubGroups_ForProjectSearchId ) {
+            const msg = "returned nothing: propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        searchSubGroup_Are_All_SearchSubGroupIds_Selected = searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn({
+            searchSubGroup_CentralStateManagerObjectClass : propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+        })
+    }
+
+    return searchSubGroup_Are_All_SearchSubGroupIds_Selected;
+}
+
+/**
+ * Create searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+ */
+const compute_searchSubGroup_PropValue = function (
+    {
+        propsValue
+    } : {
+        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+
+    }) : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData {
+
+    let searchSubGroup_PropValue: SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData = null;
+
+    if ( propsValue.projectSearchIds.length === 1 && propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+
+        //  Only display for 1 search
+
+        const projectSearchId = propsValue.projectSearchIds[ 0 ];
+
+        const searchSubGroups_ForProjectSearchId = propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        if ( ! searchSubGroups_ForProjectSearchId ) {
+            const msg = "returned nothing: propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        searchSubGroup_PropValue = searchSubGroup_Create__SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData({
+            searchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry : searchSubGroups_ForProjectSearchId,
+            searchSubGroup_CentralStateManagerObjectClass: propsValue.searchSubGroup_CentralStateManagerObjectClass
+        });
+    }
+
+    return searchSubGroup_PropValue;
+}
+
+
+/**
+ * Create searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+ */
+const compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = function (
+    {
+        propsValue
+    } : {
+        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+
+    }) : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+{
+
+    let searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData = undefined;
+
+    const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =  {
+        displayOnly : true,
+        dataPages_LoggedInUser_CommonObjectsFactory : propsValue.dataPages_LoggedInUser_CommonObjectsFactory,
+        dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+        dataPageStateManager_DataFrom_Server : propsValue.dataPageStateManager,
+        searchDetailsBlockDataMgmtProcessing : propsValue.searchDetailsBlockDataMgmtProcessing,
+        filterValuesChanged_Callback : undefined,
+        searchSubGroup_PropValue
+    }
+
+    return searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue;
+}
 
 
 /**
@@ -409,10 +553,6 @@ const create_ModificationMass_UserSelections_ComponentData = function({
 
     let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 
-    if ( projectSearchIds.length === 1 ) {
-        modificationMass_CommonRounding_ReturnNumber_Param = undefined;  //  NO Rounding for Single Search
-    }
-
     const modificationMass_UserSelections_ComponentData = modificationMass_UserSelections_BuildData_ForReactComponent({ 
         modificationMass_UserSelections_StateObject : modificationMass_UserSelections_StateObject, 
         proteinSequenceVersionId : proteinSequenceVersionId, 
@@ -442,15 +582,10 @@ const create_ReporterIons_UserSelections_ComponentData = function( {
 
     let reporterIonMass_CommonRounding_ReturnNumber_Param = reporterIonMass_CommonRounding_ReturnNumber;
 
-    if ( projectSearchIds.length === 1 ) {
-        reporterIonMass_CommonRounding_ReturnNumber_Param = undefined;  // No Rounding for Single Search
-    }
-
     const reporterIons_UserSelections_ComponentData = reporterIonMass_UserSelections_BuildData_ForReactComponent({ 
 
         reporterIonMass_UserSelections_StateObject : reporterIonMass_UserSelections_StateObject, 
-        proteinSequenceVersionId : proteinSequenceVersionId, 
-        projectSearchIds : projectSearchIds,  
+        projectSearchIds : projectSearchIds,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         reporterIonMass_CommonRounding_ReturnNumber : reporterIonMass_CommonRounding_ReturnNumber_Param // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
     });
@@ -493,7 +628,8 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = function({
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     modificationMass_UserSelections_StateObject,
     reporterIonMass_UserSelections_StateObject,
-    peptideUnique_UserSelection_StateObject
+    peptideUnique_UserSelection_StateObject,
+    searchSubGroup_Are_All_SearchSubGroupIds_Selected
 } : {
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
 
@@ -508,6 +644,7 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = function({
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
+    searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean
 
 }) : ProteinSequenceWidgetDisplay_Component_Data {
 
@@ -523,6 +660,7 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = function({
         || peptideUnique_UserSelection_StateObject.getPeptideUnique()
         || proteinPositions_CoveredBy_PeptideSearchStrings
         || proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition()
+        || ( ! searchSubGroup_Are_All_SearchSubGroupIds_Selected )
     ) { 
         //  Populate since have user selection
         sequenceCoverageBooleanArray_ForReportedPeptideIds = getSequenceCoverageBooleanArray_ForReportedPeptideIds({ 
@@ -665,13 +803,14 @@ const _get_variableModificationMasses_All_OnProteinByPosition = function({ prote
  */
 const load_ReporterIonMasses_IfNeeded = function({
 
+    getSearchSubGroupIds,
     proteinSequenceVersionId,
     projectSearchIds,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     loadedDataCommonHolder,
     searchDataLookupParamsRoot
 } : {
-
+    getSearchSubGroupIds : boolean
     proteinSequenceVersionId : number,
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
@@ -712,8 +851,7 @@ const load_ReporterIonMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
-                        for_MultipleSearch_Or_Experiment : true,
-                        for_SingleSearch : false,
+                        getSearchSubGroupIds,
                         anyReporterIonMassesSelected : true,
                         anyOpenModificationMassesSelected : false,
                         proteinSequenceVersionId : proteinSequenceVersionId,
@@ -751,13 +889,14 @@ const load_ReporterIonMasses_IfNeeded = function({
  */
 const load_OpenModificationMasses_IfNeeded = function({
 
+     getSearchSubGroupIds,
      proteinSequenceVersionId,
      projectSearchIds,
      loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
      loadedDataCommonHolder,
      searchDataLookupParamsRoot
  } : {
-
+    getSearchSubGroupIds : boolean
     proteinSequenceVersionId : number,
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
@@ -798,8 +937,7 @@ const load_OpenModificationMasses_IfNeeded = function({
 
                 const promise = (
                     loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
-                        for_MultipleSearch_Or_Experiment : true,
-                        for_SingleSearch : false,
+                        getSearchSubGroupIds,
                         anyReporterIonMassesSelected : false,
                         anyOpenModificationMassesSelected : true,
                         proteinSequenceVersionId : proteinSequenceVersionId,
@@ -931,7 +1069,11 @@ const _roundModificationMass_ReturnNumber_LocalFunction = function({ mass }) {
 
 
 export { 
-    initialPopulate, 
+    initialPopulate,
+    compute_searchSubGroup_Ids_Selected,
+    compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected,
+    compute_searchSubGroup_PropValue,
+    compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
     create_ModificationMass_UserSelections_ComponentData, 
     create_ReporterIons_UserSelections_ComponentData, 
     create_PeptideSequence_UserSelections_ComponentData,

@@ -93,20 +93,16 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
         return (
             <React.Fragment>
 
-                <div className=" filter-common-block-selection-outer-block reporter-ion-mass-selection-outer-block ">
+                {/* Parent is CSS Grid with 2 Columns */}
 
-                    {/* Float Left */}
-                    <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Reporter Ions:</div>
+                <div className=" filter-common-filter-label ">Filter On Reporter Ions:</div>
 
-                    <div className="filter-common-selection-block" >
-                        <div style={ { marginTop: 2 } }>
-                            <div >
-                                { singleReporterIon_Entries }
-                            </div>
-                        </div>          
-                    </div> 
-                
-                    <div style={ { clear: "left" } }></div>
+                <div className="filter-common-selection-block" >
+                    <div className=" filter-common-selection-inner-block ">
+                        <div >
+                            { singleReporterIon_Entries }
+                        </div>
+                    </div>
                 </div>
 
             </React.Fragment>

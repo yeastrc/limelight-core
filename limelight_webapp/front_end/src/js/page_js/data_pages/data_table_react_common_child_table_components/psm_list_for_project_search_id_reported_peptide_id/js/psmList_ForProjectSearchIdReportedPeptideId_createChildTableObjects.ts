@@ -75,12 +75,13 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             const projectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchId
             const psmIds_Include = dataRow_GetChildTable_ReturnReactComponent_Parameter.psmIds_Include;
             const reportedPeptideId = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideId;
+            const searchSubGroupId = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchSubGroupId;
             const searchDataLookupParamsRoot = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot;
             const dataPageStateManager = dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager;
             const alwaysShow_ReporterIonMasses_Column = dataRow_GetChildTable_ReturnReactComponent_Parameter.alwaysShow_ReporterIonMasses_Column;
             const openModPositionOverride = dataRow_GetChildTable_ReturnReactComponent_Parameter.openModPositionOverride;
 
-            const loadPromise = getPSMDataFromServer({ projectSearchId, psmIds_Include, reportedPeptideId, searchDataLookupParamsRoot, dataPageStateManager, webserviceCallStandardPost_ApiObject_Holder_Class });
+            const loadPromise = getPSMDataFromServer({ projectSearchId, psmIds_Include, reportedPeptideId, searchSubGroupId, searchDataLookupParamsRoot, dataPageStateManager, webserviceCallStandardPost_ApiObject_Holder_Class });
 
             loadPromise.catch( (reason) => { 
                 reject( reason ) 

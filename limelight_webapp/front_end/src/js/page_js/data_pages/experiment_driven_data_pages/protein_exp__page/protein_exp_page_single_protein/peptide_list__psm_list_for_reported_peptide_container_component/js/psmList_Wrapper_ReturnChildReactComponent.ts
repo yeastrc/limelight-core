@@ -30,6 +30,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
     
     projectSearchId : number
     reportedPeptideId : number
+    searchSubGroupId : number  // Optional
     proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
     searchDataLookupParamsRoot
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
@@ -44,6 +45,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
         
         projectSearchId,
         reportedPeptideId,
+        searchSubGroupId,  // Optional
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
         searchDataLookupParamsRoot,
         loadedDataPerProjectSearchIdHolder,
@@ -53,6 +55,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
     } : { 
         projectSearchId : number
         reportedPeptideId : number
+        searchSubGroupId : number  // Optional
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
         searchDataLookupParamsRoot
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
@@ -63,6 +66,7 @@ class PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnRea
 
         this.projectSearchId = projectSearchId;
         this.reportedPeptideId = reportedPeptideId;
+        this.searchSubGroupId = searchSubGroupId;
         this.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
         this.loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;

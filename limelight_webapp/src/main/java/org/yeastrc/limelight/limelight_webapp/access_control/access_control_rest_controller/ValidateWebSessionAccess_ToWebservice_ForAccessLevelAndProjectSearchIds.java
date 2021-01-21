@@ -354,7 +354,7 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearc
 			
 			if ( publicAccessLevel != null ) {
 				
-				if ( minimumAccessLevelRequired > publicAccessLevel ) {
+				if ( minimumAccessLevelRequired < publicAccessLevel ) {
 					
 					throw new Limelight_WS_AuthError_Forbidden_Exception(); //  EARLY EXIT
 				}

@@ -46,6 +46,25 @@ export class PeptideSequence_UserSelections_StateObject {
 
 	/**
 	 * @returns First string or undefined
+	 *
+	 */
+	isPeptideSearchString_AtLeastOneNotEmptyString() : boolean {
+
+		if ( ( ! this._peptideSearchStrings || this._peptideSearchStrings.length === 0 ) ) {
+			return false;
+		}
+
+		for ( const entry of this._peptideSearchStrings ) {
+			if ( entry !== undefined && entry !== null && entry !== "" ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @returns First string or undefined
 	 * 
 	 */
 	getPeptideSearchString() : string {

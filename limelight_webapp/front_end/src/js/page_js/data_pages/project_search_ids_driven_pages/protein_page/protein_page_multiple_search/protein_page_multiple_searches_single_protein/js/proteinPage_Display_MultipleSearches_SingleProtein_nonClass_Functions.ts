@@ -22,6 +22,17 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
+import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {
+	modificationMass_CommonRounding_Needed,
+	modificationMass_CommonRounding_ReturnNumber
+} from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
+import {
+	reporterIonMass_CommonRounding_Needed,
+	reporterIonMass_CommonRounding_ReturnNumber
+} from "page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding";
 
 
 //  Constants
@@ -31,12 +42,231 @@ const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120;
 
 const _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH = 1270; // Min width for upper section of protein sequence and boxes to right
 
+/**
+ *
+ * @param modificationMass_UserSelections_StateObject
+ */
+const round_Selected_ModMasses_IfNeed_modificationMass_UserSelections_StateObject = function (
+	{
+		modificationMass_UserSelections_StateObject
+	} : {
+		modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject
+	}) : void
+	{
+		{  // Variable Mods
+			const modSelection: ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject = modificationMass_UserSelections_StateObject.get_VariableModificationSelections();
+			_round_Selected_Variable_or_Open_ModMasses_IfNeed({ modSelection })
+		}
+		{ // Open Mods
+			const modSelection: ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject = modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
+			_round_Selected_Variable_or_Open_ModMasses_IfNeed({ modSelection })
+		}
+		//  Static Mods
+		_round_Selected_Static_ModMasses_IfNeed({ modificationMass_UserSelections_StateObject });
+}
 
+/**
+ * Process Variable or Open Mod values
+ * @param modSelection
+ */
+const _round_Selected_Variable_or_Open_ModMasses_IfNeed = function (
+	{
+		modSelection
+	} : {
+		modSelection : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
+	}) : void
+{
+	if ( ! modSelection ) {
+		//  No entry
+		return; // EARLY RETURN
+	}
+	if ( ! modSelection.is_Any_Modification_Selected() ) {
+		//  No selections
+		return; // EARLY RETURN
+	}
+	const modifications_SelectedModMasses = new Set( modSelection.get_ModificationsSelected__OnlyModMasses_AsSet() );
+	// const no_Modification_AKA_Unmodified_Selected = modSelection.get_NO_Modification_AKA_Unmodified_Selected();
+
+	if ( ( ! modifications_SelectedModMasses )
+		|| modifications_SelectedModMasses.size === 0 ) {
+		//  No selections other than Unmodified
+		return; // EARLY RETURN
+	}
+
+	const new_rounded_Entries = new Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry>();
+
+	for ( const modifications_SelectedModMass of modifications_SelectedModMasses) {
+
+		const modification_Selected_Entry = modSelection.get_Modification_Selected_Entry( modifications_SelectedModMass );
+		if ( ! modification_Selected_Entry ) {
+			const msg = "_round_Selected_Variable_or_Open_ModMasses_IfNeed(...): modSelection.get_Modification_Selected_Entry( modifications_SelectedModMass ); returned nothing for modifications_SelectedModMass: ";
+			console.warn( msg, modifications_SelectedModMass )
+			throw Error(msg + modifications_SelectedModMass)
+		}
+
+		let possiblyRounded_modifications_SelectedModMass = modifications_SelectedModMass;
+
+		if ( modificationMass_CommonRounding_Needed( modifications_SelectedModMass)) {
+
+			possiblyRounded_modifications_SelectedModMass = modificationMass_CommonRounding_ReturnNumber(modifications_SelectedModMass);
+		}
+
+		const existing_RoundedEntry = new_rounded_Entries.get( possiblyRounded_modifications_SelectedModMass );
+		if ( existing_RoundedEntry ) {
+			if ( existing_RoundedEntry.selectionType === SingleProtein_Filter_SelectionType.ANY
+				&& modification_Selected_Entry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+				//  Replace "ANY" with "ALL"
+				new_rounded_Entries.set(possiblyRounded_modifications_SelectedModMass, modification_Selected_Entry);
+			}
+		} else {
+			//  Store
+			new_rounded_Entries.set( possiblyRounded_modifications_SelectedModMass, modification_Selected_Entry );
+		}
+	}
+
+	modSelection.clear_selectedModifications_ExceptUnmodified();
+
+	//  Copy rounded entries into modSelection
+	for ( const mapEntry of new_rounded_Entries.entries() ) {
+
+		const rounded_modMass = mapEntry[0];
+		const modification_Selected_Entry = mapEntry[1];
+		modSelection.set_Modification_Selected( rounded_modMass,modification_Selected_Entry)
+	}
+}
+
+/**
+ * Process Static Mod values
+ * @param modSelection
+ */
+const _round_Selected_Static_ModMasses_IfNeed = function (
+	{
+		modificationMass_UserSelections_StateObject
+	} : {
+		modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject
+	}) : void
+{
+	if ( ! modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected() ) {
+		//  No selections
+		return; // EARLY RETURN
+	}
+	//   : Map<string, Set<number>>  Copy of what is in StateObject
+	const residue_Mass_Map_Set : Map<string, Set<number>> = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set();
+
+	for ( const residue_Mass_Map_Set_Entry of residue_Mass_Map_Set.entries()) {
+
+		const residueLetter = residue_Mass_Map_Set_Entry[ 0 ];
+		const modMassSet = residue_Mass_Map_Set_Entry[ 1 ];
+
+		for ( const modMass of modMassSet ) {
+
+			const modification_Selected_Entry = modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass });
+			if ( ! modification_Selected_Entry ) {
+				const msg = "_round_Selected_Static_ModMasses_IfNeed(...): modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass }); returned nothing for residueLetter: " +
+					residueLetter + ", modMass: ";
+				console.warn( msg, modMass )
+				throw Error(msg + modMass)
+			}
+
+			let possiblyRounded_modifications_SelectedModMass = modMass;
+
+			if ( modificationMass_CommonRounding_Needed( modMass)) {
+
+				possiblyRounded_modifications_SelectedModMass = modificationMass_CommonRounding_ReturnNumber(modMass);
+
+				modificationMass_UserSelections_StateObject.delete_StaticModification_Selected({ residueLetter, modMass })
+
+				const existing_RoundedEntry = modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass : possiblyRounded_modifications_SelectedModMass });
+				if ( existing_RoundedEntry ) {
+					if ( existing_RoundedEntry.selectionType === SingleProtein_Filter_SelectionType.ANY
+						&& modification_Selected_Entry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+						//  Replace "ANY" with "ALL"
+						modificationMass_UserSelections_StateObject.set_StaticModification_Selected({ residueLetter, modMass: possiblyRounded_modifications_SelectedModMass, entry: modification_Selected_Entry });
+					}
+				} else {
+					//  Store
+					modificationMass_UserSelections_StateObject.set_StaticModification_Selected({ residueLetter, modMass: possiblyRounded_modifications_SelectedModMass, entry: modification_Selected_Entry });
+				}
+			}
+		}
+	}
+}
+
+/**
+ *
+ * @param modificationMass_UserSelections_StateObject
+ */
+const round_Selected_ReporterIonMasses_IfNeed_reporterIonMass_UserSelections_StateObject = function (
+	{
+		reporterIonMass_UserSelections_StateObject
+	} : {
+		reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject
+	}) : void
+{
+
+	if ( ! reporterIonMass_UserSelections_StateObject ) {
+		//  No entry
+		return; // EARLY RETURN
+	}
+	if ( ! reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
+		//  No selections
+		return; // EARLY RETURN
+	}
+	const reporterIons_SelectedModMasses = new Set( reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet() );
+
+	if ( ( ! reporterIons_SelectedModMasses )
+		|| reporterIons_SelectedModMasses.size === 0 ) {
+		//  No selections
+		return; // EARLY RETURN
+	}
+
+	const new_rounded_Entries = new Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry>();
+
+	for ( const reporterIons_SelectedModMass of reporterIons_SelectedModMasses) {
+
+		const reporterIon_Selected_Entry = reporterIonMass_UserSelections_StateObject.get_ReporterIon_Selected_Entry( reporterIons_SelectedModMass );
+		if ( ! reporterIon_Selected_Entry ) {
+			const msg = "_round_Selected_Variable_or_Open_ModMasses_IfNeed(...): modSelection.get_Modification_Selected_Entry( reporterIons_SelectedModMass ); returned nothing for reporterIons_SelectedModMass: ";
+			console.warn( msg, reporterIons_SelectedModMass )
+			throw Error(msg + reporterIons_SelectedModMass)
+		}
+
+		let possiblyRounded_reporterIons_SelectedModMass = reporterIons_SelectedModMass;
+
+		if ( reporterIonMass_CommonRounding_Needed( reporterIons_SelectedModMass)) {
+
+			possiblyRounded_reporterIons_SelectedModMass = reporterIonMass_CommonRounding_ReturnNumber(reporterIons_SelectedModMass);
+		}
+
+		const existing_RoundedEntry = new_rounded_Entries.get( possiblyRounded_reporterIons_SelectedModMass );
+		if ( existing_RoundedEntry ) {
+			if ( existing_RoundedEntry.selectionType === SingleProtein_Filter_SelectionType.ANY
+				&& reporterIon_Selected_Entry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+				//  Replace "ANY" with "ALL"
+				new_rounded_Entries.set(possiblyRounded_reporterIons_SelectedModMass, reporterIon_Selected_Entry);
+			}
+		} else {
+			//  Store
+			new_rounded_Entries.set( possiblyRounded_reporterIons_SelectedModMass, reporterIon_Selected_Entry );
+		}
+	}
+
+	reporterIonMass_UserSelections_StateObject.clear_selectedReporterIons();
+
+	//  Copy rounded entries into reporterIonMass_UserSelections_StateObject
+	for ( const mapEntry of new_rounded_Entries.entries() ) {
+
+		const rounded_modMass = mapEntry[0];
+		const reporterIon_Selected_Entry = mapEntry[1];
+		reporterIonMass_UserSelections_StateObject.set_ReporterIons_Selected( rounded_modMass,reporterIon_Selected_Entry)
+	}
+
+}
 
 /**
  * 
  */
-const _resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein = function({ singleProteinContainer_addedDivElementDOM }) {
+const resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein = function({ singleProteinContainer_addedDivElementDOM }) {
 
 	if ( ! singleProteinContainer_addedDivElementDOM ) {
 		// Exit if no overlay
@@ -82,7 +312,7 @@ const _resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein =
 /**
  * 
  */
-const _update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function( params ) {
+const update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function( params ) {
 
 	let singleProteinContainer_addedDivElementDOM = undefined;
 	let $view_single_protein_overlay_div = undefined;
@@ -192,8 +422,9 @@ const _update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function( pa
  * 
  * 
  */
-const _loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({ 
-	
+const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
+
+	getSearchSubGroupIds,
 	proteinSequenceVersionId, 
 	projectSearchIds, 
 	dataPageStateManager_DataFrom_Server, 
@@ -203,7 +434,8 @@ const _loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	reporterIonMass_UserSelections_StateObject,
 	open_Modifications_Subpart_UserSelections_StateObject,
 	generatedPeptideContents_UserSelections_StateObject
-} : { 
+} : {
+	getSearchSubGroupIds : boolean
 	proteinSequenceVersionId, 
 	projectSearchIds :  number[]
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
@@ -223,7 +455,8 @@ const _loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 
 	// console.log("Experiment: Single Protein: _loadDataForInitialOverlayShow(...)")
 
-	const promise_FirstRetrieval = _loadDataForInitialOverlayShow_FirstRetrieval({ 
+	const promise_FirstRetrieval = _loadDataForInitialOverlayShow_FirstRetrieval({
+		getSearchSubGroupIds,
 		proteinSequenceVersionId, 
 		projectSearchIds, 
 		dataPageStateManager_DataFrom_Server, 
@@ -309,8 +542,9 @@ const _loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
  * 
  * 
  */
-const _loadDataForInitialOverlayShow_FirstRetrieval = function ({ 
-	
+const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
+
+	getSearchSubGroupIds,
 	proteinSequenceVersionId, 
 	projectSearchIds, 
 	dataPageStateManager_DataFrom_Server, 
@@ -320,7 +554,8 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	reporterIonMass_UserSelections_StateObject,
 	open_Modifications_Subpart_UserSelections_StateObject,
 	generatedPeptideContents_UserSelections_StateObject
-} : { 
+} : {
+	getSearchSubGroupIds : boolean
 	proteinSequenceVersionId, 
 	projectSearchIds, 
 	dataPageStateManager_DataFrom_Server, 
@@ -385,7 +620,8 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 
 	for ( const projectSearchId of projectSearchIds ) {
 
-		const promise = _loadDataForInitialOverlayShow_GetPer_projectSearchId({ 
+		const promise = _loadDataForInitialOverlayShow_GetPer_projectSearchId({
+			getSearchSubGroupIds,
 			proteinSequenceVersionId, 
 			projectSearchId, 
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
@@ -419,8 +655,9 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
  * 
  * 
  */
-const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({ 
-	
+const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
+
+	getSearchSubGroupIds,
 	proteinSequenceVersionId, 
 	projectSearchId, 
 	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
@@ -430,7 +667,8 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 	reporterIonMass_UserSelections_StateObject,
 	open_Modifications_Subpart_UserSelections_StateObject,
 	generatedPeptideContents_UserSelections_StateObject
-} : { 
+} : {
+	getSearchSubGroupIds : boolean
 	proteinSequenceVersionId, 
 	projectSearchId, 
 	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
@@ -537,8 +775,7 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 
 						const promise = (
 							loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder({
-								for_MultipleSearch_Or_Experiment : true,
-								for_SingleSearch : false,
+								getSearchSubGroupIds,
 								anyReporterIonMassesSelected,
 								anyOpenModificationMassesSelected,
 								proteinSequenceVersionId : proteinSequenceVersionId,
@@ -583,10 +820,11 @@ const _populateStaticModificationsPositionsOnProteinSequence = function({ protei
 		}
 	}
 
-	//  Map < position 1 based (integer) : { Object: residue  (string), massesArray: [ mass (number) ], massesSet : Set( mass (number) ) } > 
+	//  Map < position 1 based (integer) : { Object: residue  (string), massesArray: [ mass (number) ], massesSet : Set( mass (number) ) } >
+	//      - residue_I_To_L = residue.replace('I', 'L') Replace I with L
 	//  (Format for class ProteinSequenceFormattedDisplay_Main_displayWidget)
 
-	const staticModificationMassesByProteinPosition = new Map();
+	const staticModificationMassesByProteinPosition : Map<number, { residue : string, residue_I_To_L : string, massesSet : Set<number>, massesArray : Array<number> }> = new Map();
 
 	const staticModsForSearch = loadedDataPerProjectSearchIdHolder.get_staticMods();
 
@@ -595,20 +833,24 @@ const _populateStaticModificationsPositionsOnProteinSequence = function({ protei
 		return; // EARLY EXIT
 	}
 
+	const proteinSequenceString_I_To_L = proteinSequenceString.replace('I', 'L');
+
 	for ( const staticModForSearch of staticModsForSearch ) {
 
 		const staticModResidue = staticModForSearch.residue;
 		const staticModMass = staticModForSearch.mass;
 
+		const staticModResidue_I_To_L = staticModResidue.replace('I', 'L');
+
 		//  Search for static mod residue in protein
 		let residueFoundIndex = undefined;
 		let searchStartIndex = 0;
-		while ( ( residueFoundIndex = proteinSequenceString.indexOf( staticModResidue, searchStartIndex ) ) != -1 ) {
+		while ( ( residueFoundIndex = proteinSequenceString_I_To_L.indexOf( staticModResidue_I_To_L, searchStartIndex ) ) != -1 ) {
 		
 			const proteinPosition = residueFoundIndex + 1; // '1' based
 			let staticModificationResiduesMassesForProteinPosition = staticModificationMassesByProteinPosition.get( proteinPosition );
 			if ( ! staticModificationResiduesMassesForProteinPosition ) {
-				staticModificationResiduesMassesForProteinPosition = { residue : staticModResidue, massesSet: new Set() };
+				staticModificationResiduesMassesForProteinPosition = { residue : staticModResidue, residue_I_To_L: staticModResidue, massesSet: new Set(), massesArray : undefined };
 				staticModificationMassesByProteinPosition.set( proteinPosition, staticModificationResiduesMassesForProteinPosition );
 			}
 			staticModificationResiduesMassesForProteinPosition.massesSet.add( staticModMass );
@@ -757,8 +999,10 @@ const _getPeptideSequencesForPeptideIds = function({ proteinSequenceVersionId, p
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 
-export { 
-	_loadDataForInitialOverlayShow_MultipleSearch_SingleProtein, 
-	_resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein, 
-	_update_Overlay_OnWindowResize_MultipleSearch_SingleProtein 
+export {
+	round_Selected_ModMasses_IfNeed_modificationMass_UserSelections_StateObject,
+	round_Selected_ReporterIonMasses_IfNeed_reporterIonMass_UserSelections_StateObject,
+	loadDataForInitialOverlayShow_MultipleSearch_SingleProtein,
+	resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein,
+	update_Overlay_OnWindowResize_MultipleSearch_SingleProtein
 }

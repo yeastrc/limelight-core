@@ -29,6 +29,8 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGroup__Lookup__DTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide__Lookup__DTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
 
@@ -117,22 +119,43 @@ public class BestPsmFilterableAnnotationProcessing {
 	}
 	
 	/**
-	 * @param unifiedRepPep_Search_ReportedPeptide__Lookup__DTO
+	 * @param search_ReportedPeptide__Lookup__DTO
 	 * @return
 	 */
 	public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getBestPsmValues( 
-			Search_ReportedPeptide__Lookup__DTO unifiedRepPep_Search_ReportedPeptide__Lookup__DTO
+			Search_ReportedPeptide__Lookup__DTO search_ReportedPeptide__Lookup__DTO
 			) {
 		List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> results = new ArrayList<>( bestPsmFilterableAnnotationDTO_KeyedOn_AnnotationTypeId.entrySet().size() );
 		for ( Map.Entry<Integer, BestPsmFilterableAnnotationDTO> entry : bestPsmFilterableAnnotationDTO_KeyedOn_AnnotationTypeId.entrySet() ) {
 			BestPsmFilterableAnnotationDTO bestPsmFilterableAnnotationDTO = entry.getValue();
 			PsmFilterableAnnotationDTO psmAnnotationDTO = bestPsmFilterableAnnotationDTO.bestPsmFilterableAnnotationDTO;
-			Search_ReportedPeptide_BestPsmValue_Lookup__DTO unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO =
-					new Search_ReportedPeptide_BestPsmValue_Lookup__DTO( unifiedRepPep_Search_ReportedPeptide__Lookup__DTO );
-			unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO.setAnnotationTypeId( psmAnnotationDTO.getAnnotationTypeId() );
-			unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO.setBestPsmValueForAnnTypeId( psmAnnotationDTO.getValueDouble() );
-			unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO.setPsmIdForBestValue( psmAnnotationDTO.getPsmId() );
-			results.add( unifiedRepPep_Search_ReportedPeptide_BestPsmValue_Lookup__DTO );
+			Search_ReportedPeptide_BestPsmValue_Lookup__DTO search_ReportedPeptide_BestPsmValue_Lookup__DTO =
+					new Search_ReportedPeptide_BestPsmValue_Lookup__DTO( search_ReportedPeptide__Lookup__DTO );
+			search_ReportedPeptide_BestPsmValue_Lookup__DTO.setAnnotationTypeId( psmAnnotationDTO.getAnnotationTypeId() );
+			search_ReportedPeptide_BestPsmValue_Lookup__DTO.setBestPsmValueForAnnTypeId( psmAnnotationDTO.getValueDouble() );
+			search_ReportedPeptide_BestPsmValue_Lookup__DTO.setPsmIdForBestValue( psmAnnotationDTO.getPsmId() );
+			results.add( search_ReportedPeptide_BestPsmValue_Lookup__DTO );
+		}	
+		return results;
+	}
+	
+	/**
+	 * @param search_ReportedPeptide_SubGroup__Lookup__DTO
+	 * @return
+	 */
+	public List<Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO> getBestPsmValues_SearchSubGroup( 
+			Search_ReportedPeptide_SubGroup__Lookup__DTO search_ReportedPeptide_SubGroup__Lookup__DTO
+			) {
+		List<Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO> results = new ArrayList<>( bestPsmFilterableAnnotationDTO_KeyedOn_AnnotationTypeId.entrySet().size() );
+		for ( Map.Entry<Integer, BestPsmFilterableAnnotationDTO> entry : bestPsmFilterableAnnotationDTO_KeyedOn_AnnotationTypeId.entrySet() ) {
+			BestPsmFilterableAnnotationDTO bestPsmFilterableAnnotationDTO = entry.getValue();
+			PsmFilterableAnnotationDTO psmAnnotationDTO = bestPsmFilterableAnnotationDTO.bestPsmFilterableAnnotationDTO;
+			Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO =
+					new Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO( search_ReportedPeptide_SubGroup__Lookup__DTO );
+			search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO.setAnnotationTypeId( psmAnnotationDTO.getAnnotationTypeId() );
+			search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO.setBestPsmValueForAnnTypeId( psmAnnotationDTO.getValueDouble() );
+			search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO.setPsmIdForBestValue( psmAnnotationDTO.getPsmId() );
+			results.add( search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO );
 		}	
 		return results;
 	}

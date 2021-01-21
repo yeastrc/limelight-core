@@ -18,6 +18,7 @@ import { ReporterIonMass_UserSelections_StateObject } from 'page_js/data_pages/e
 
 import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {ProteinPositionFilter_UserSelections_ComponentData_SelectionDisplay_Entry} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_ComponentData";
 
 /**
  * 
@@ -94,7 +95,16 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
     render() {
         {
             // if nothing selected, return null
-            const selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
+
+            //  searchSubGroup properties not always populated
+            const searchSubGroup_Are_All_SearchSubGroupIds_Selected = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_Are_All_SearchSubGroupIds_Selected;
+            // const searchSubGroup_PropValue = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_PropValue;
+
+            let selectedProteinSequencePositionsSet : Set<number> = undefined;
+
+            if ( this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject ) {
+                selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
+            }
 
             const modificationMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
 
@@ -104,20 +114,27 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
             const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
 
-            let peptideUniqueSelected : boolean = undefined;
+            let peptideUniqueSelected = false;
             if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
                 peptideUniqueSelected = this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
             }
 
             const peptideSearchString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
 
-            if ( ( ( ! selectedProteinSequencePositionsSet ) || ( selectedProteinSequencePositionsSet.size === 0 ) )
+            let isAny_proteinPositionFilterSelections = false;
+            if ( this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject_Wrapper ) {
+                isAny_proteinPositionFilterSelections = this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject_Wrapper.isAnySelections();
+            }
+
+            if ( ( searchSubGroup_Are_All_SearchSubGroupIds_Selected )
+                && ( ( ! selectedProteinSequencePositionsSet ) || ( selectedProteinSequencePositionsSet.size === 0 ) )
                 && ( ! is_Any_VariableModification_Selected )
                 && ( ! is_Any_OpenModification_Selected )
                 && ( ! is_Any_StaticModification_Selected )
                 && ( ( ! reporterIonssSelectedsSet ) || ( reporterIonssSelectedsSet.size === 0 ) )
                 && ( ! peptideUniqueSelected )
                 && ( ! peptideSearchString )
+                && ( ! isAny_proteinPositionFilterSelections )
             ) {
 
                 // Nothing to display
@@ -127,17 +144,43 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
         }
 
+        let selectedSearchSubGroupsList : Array<JSX.Element> = null;
+        {
+            const searchSubGroup_Are_All_SearchSubGroupIds_Selected = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_Are_All_SearchSubGroupIds_Selected;
+            const searchSubGroup_PropValue = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_PropValue;
+
+            if ( ( ! searchSubGroup_Are_All_SearchSubGroupIds_Selected ) && searchSubGroup_PropValue ) {  // searchSubGroup_PropValue may not be populated
+
+                selectedSearchSubGroupsList = [];
+
+                for ( const searchSubGroupEntry of searchSubGroup_PropValue.searchSubGroupEntryArray ) {
+                    if ( ! searchSubGroupEntry.selectedEntry ) {
+                        //  Not Selected so SKIP
+                        continue;
+                    }
+
+                    const entry = (
+                        <span key={ searchSubGroupEntry.searchSubGroup_Id } style={ { paddingRight: 10 } } >{ searchSubGroupEntry.subgroupName_Display }</span>
+                    );
+
+                    selectedSearchSubGroupsList.push( entry );
+                }
+            }
+        }
+
         let selectedProteinSequencePositions_DisplayString : string = undefined;
 
         {
-            const selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
+            if ( this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject ) {
+                const selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
 
-            if ( selectedProteinSequencePositionsSet && ( selectedProteinSequencePositionsSet.size !== 0 ) ) {
+                if ( selectedProteinSequencePositionsSet && ( selectedProteinSequencePositionsSet.size !== 0 ) ) {
 
-                const selectedProteinSequencePositionsArray = Array.from( selectedProteinSequencePositionsSet );
-                selectedProteinSequencePositionsArray.sort();
+                    const selectedProteinSequencePositionsArray = Array.from( selectedProteinSequencePositionsSet );
+                    selectedProteinSequencePositionsArray.sort();
 
-                selectedProteinSequencePositions_DisplayString = _userSelectionDisplay_CombineArrayIntoFormattedString({ array : selectedProteinSequencePositionsArray });
+                    selectedProteinSequencePositions_DisplayString = _userSelectionDisplay_CombineArrayIntoFormattedString({ array : selectedProteinSequencePositionsArray });
+                }
             }
         }
 
@@ -347,16 +390,175 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             }
         }
 
-        let peptideSequenceSearchStrings_DisplayString : string = undefined;
-        {
-            peptideSequenceSearchStrings_DisplayString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
-        }
-
         let peptideUniqueSelected : boolean = false;
 
         if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
             peptideUniqueSelected = this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
         }
+
+        let peptideSequenceSearchStrings_DisplayString : string = undefined;
+        {
+            peptideSequenceSearchStrings_DisplayString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
+        }
+
+        let proteinPositionFilter_JSX : JSX.Element = null;
+        if ( this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject_Wrapper
+            && this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject_Wrapper.isAnySelections() ) {
+
+            if ( ! this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+                const msg = "this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data not populated when this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject_Wrapper is populated";
+                console.warn( msg )
+                throw Error( msg );
+            }
+
+            const proteinPosition_SelectionDisplay_Entries : Array<ProteinPositionFilter_UserSelections_ComponentData_SelectionDisplay_Entry> = [];
+
+            const selections_Ranges = this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject_Wrapper.getSelections_Ranges();
+
+            for ( const mapEntry of selections_Ranges.entriesMap_Key_proteinSequenceVersionId.entries() ) {
+                const per_proteinSequenceVersionId_Entry  = mapEntry[ 1 ];
+                const proteinSequenceVersionId = per_proteinSequenceVersionId_Entry.proteinSequenceVersionId
+                const proteins_Names_LengthsData = this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.proteins_Names_Lengths_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId );
+                if ( ! proteins_Names_LengthsData ) {
+                    const msg = "proteins_Names_Lengths_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId ); returned nothing for proteinSequenceVersionId: ";
+                    console.warn( msg, proteinSequenceVersionId )
+                    throw Error( msg + proteinSequenceVersionId )
+                }
+
+                if ( per_proteinSequenceVersionId_Entry.fullProteinSelected ){
+                    const resultEntry: ProteinPositionFilter_UserSelections_ComponentData_SelectionDisplay_Entry = {
+                        proteinSequenceVersionId,
+                        proteinName: proteins_Names_LengthsData.proteinName,
+                        proteinName_Truncated: proteins_Names_LengthsData.proteinName_Truncated,
+                        proteinDescription: proteins_Names_LengthsData.proteinDescription,
+                        proteinPosition_Start: 1,
+                        proteinPosition_End: proteins_Names_LengthsData.proteinLength,
+                        proteinFullLengthSelected : true
+                    }
+                    proteinPosition_SelectionDisplay_Entries.push(resultEntry);
+                }
+
+                if ( per_proteinSequenceVersionId_Entry.rangeEntries && per_proteinSequenceVersionId_Entry.rangeEntries.length > 0 ) {
+                    for (const entry_For_ProteinSequenceVersionId of per_proteinSequenceVersionId_Entry.rangeEntries) {
+                        let proteinFullLengthSelected = false;
+                        if (entry_For_ProteinSequenceVersionId.proteinPosition_Start === 1 && entry_For_ProteinSequenceVersionId.proteinPosition_End === proteins_Names_LengthsData.proteinLength) {
+                            proteinFullLengthSelected = true;
+                        }
+                        const resultEntry: ProteinPositionFilter_UserSelections_ComponentData_SelectionDisplay_Entry = {
+                            proteinSequenceVersionId,
+                            proteinName: proteins_Names_LengthsData.proteinName,
+                            proteinName_Truncated: proteins_Names_LengthsData.proteinName_Truncated,
+                            proteinDescription: proteins_Names_LengthsData.proteinDescription,
+                            proteinPosition_Start: entry_For_ProteinSequenceVersionId.proteinPosition_Start,
+                            proteinPosition_End: entry_For_ProteinSequenceVersionId.proteinPosition_End,
+                            proteinFullLengthSelected
+                        }
+                        proteinPosition_SelectionDisplay_Entries.push(resultEntry);
+                    }
+                }
+            }
+            proteinPosition_SelectionDisplay_Entries.sort( (a,b) => {
+                if ( a.proteinName < b.proteinName ) {
+                    return -1;
+                }
+                if ( a.proteinName > b.proteinName ) {
+                    return 1;
+                }
+                if ( a.proteinSequenceVersionId < b.proteinSequenceVersionId ) {
+                    return -1;
+                }
+                if ( a.proteinSequenceVersionId > b.proteinSequenceVersionId ) {
+                    return 1;
+                }
+                if ( a.proteinPosition_Start < b.proteinPosition_Start ) {
+                    return -1;
+                }
+                if ( a.proteinPosition_Start > b.proteinPosition_Start ) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            const proteinPositionFilter_JSX_Entries : Array<JSX.Element> = [];
+            {
+                let index = 0;
+                for (const proteinPosition_SelectionDisplay_Entry of proteinPosition_SelectionDisplay_Entries) {
+
+                    let orSeparator : JSX.Element = null;
+                    if ( index !== 0 ) {
+                        //  Add separator "OR"
+                        const separatorKey = "separator_" + index;
+                        orSeparator = (
+                            <span style={ { whiteSpace: "nowrap" } }>
+                                {/* <span>&nbsp;</span> remove since each entry has trailing space */}
+                                <span key={ separatorKey } >
+                                    OR
+                                </span>
+                                <span>&nbsp;</span>
+                            </span>
+                        );
+                    }
+
+                    const proteinNameTitle = proteinPosition_SelectionDisplay_Entry.proteinName + "\n\n" + proteinPosition_SelectionDisplay_Entry.proteinDescription;
+
+                    if ( proteinPosition_SelectionDisplay_Entry.proteinFullLengthSelected ) {
+                        const rootElement_Key = proteinPosition_SelectionDisplay_Entry.proteinSequenceVersionId
+                        const jsx = (
+                            <span key={ rootElement_Key }>
+                                <span style={ { whiteSpace: "nowrap" } }>
+
+                                    { orSeparator } {/* Populated for all entries after the first one */}
+
+                                    <span>
+                                        Any position in&nbsp;
+                                    </span>
+                                    <span title={ proteinNameTitle }>
+                                        { proteinPosition_SelectionDisplay_Entry.proteinName_Truncated }
+                                    </span>
+                                </span>
+                                <span> </span>  {/* Empty span to allow line breaks */}
+                            </span>
+                        )
+                        proteinPositionFilter_JSX_Entries.push( jsx );
+                    } else {
+                        const rootElement_Key = proteinPosition_SelectionDisplay_Entry.proteinSequenceVersionId + "_" + proteinPosition_SelectionDisplay_Entry.proteinPosition_Start;
+                        const rootElement_SpanAfter_Key = proteinPosition_SelectionDisplay_Entry.proteinSequenceVersionId + "_" + proteinPosition_SelectionDisplay_Entry.proteinPosition_Start + "_SpanAfter";
+                        const jsx = (
+                            <span key={ rootElement_Key }>
+                                <span style={ { whiteSpace: "nowrap" } }>
+
+                                    { orSeparator } {/* Populated for all entries after the first one */}
+
+                                    <span>
+                                        Any position from&nbsp;
+                                        { proteinPosition_SelectionDisplay_Entry.proteinPosition_Start }
+                                        &nbsp;to&nbsp;
+                                        { proteinPosition_SelectionDisplay_Entry.proteinPosition_End }
+                                        &nbsp;in
+                                    </span>
+                                    <span>
+                                        &nbsp;
+                                    </span>
+                                    <span title={ proteinNameTitle }>
+                                        { proteinPosition_SelectionDisplay_Entry.proteinName_Truncated }
+                                    </span>
+                                </span>
+                                <span key={ rootElement_SpanAfter_Key }> </span>  {/* Empty span to allow line breaks */}
+                            </span>
+                        )
+                        proteinPositionFilter_JSX_Entries.push( jsx );
+                    }
+                    index++;
+                }
+            }
+
+            proteinPositionFilter_JSX = (
+                <div >
+                    All peptides must cover: { proteinPositionFilter_JSX_Entries }
+                </div>
+            )
+        }
+
 
         return (
             <div style={ { marginTop: 10 } }>
@@ -368,6 +570,12 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     <span style={ { fontSize: 12 } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
                 </div>
                 <div style={ { marginLeft: 80 } }>
+
+                    { ( selectedSearchSubGroupsList ) ?
+                        <div>
+                            Filter on Sub Groups: { selectedSearchSubGroupsList }
+                        </div>
+                        : null /* Display nothing */ }
 
                     { ( selectedProteinSequencePositions_DisplayString ) ?
                         <div >
@@ -396,7 +604,15 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                         <div >
                             <span style={{whiteSpace: "nowrap"}}>Peptide sequences must contain: </span> <span>{ peptideSequenceSearchStrings_DisplayString }</span>
                         </div>
-                        : null /* Display nothing */ }
+                        : null /* Display nothing */
+                    }
+
+                    { ( proteinPositionFilter_JSX ) ?
+                        <div>
+                            { proteinPositionFilter_JSX }
+                        </div>
+                        : null /* Display nothing */
+                    }
 
                 </div>
             </div>

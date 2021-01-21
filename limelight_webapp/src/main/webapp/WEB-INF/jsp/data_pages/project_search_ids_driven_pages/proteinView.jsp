@@ -60,6 +60,13 @@
 	</div>
 
 	<h3> Protein List:</h3>
+<%-- 	
+	<div style="margin-top: 10px; margin-bottom: 10px">
+	
+		<input type="checkbox" checked="checked"> Show Data by Search Sub Groups
+		<span style="color: red">Checkbox NOT read yet.</span>
+	</div>
+--%>
 	
 	<div id="protein_counts_download_assoc_psms_block" style=" margin-bottom: 10px; display: none;">
 	

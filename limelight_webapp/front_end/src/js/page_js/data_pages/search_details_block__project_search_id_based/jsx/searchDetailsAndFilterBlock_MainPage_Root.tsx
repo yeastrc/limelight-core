@@ -33,6 +33,13 @@ import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_
 import {SearchDetailsAndFilterBlock_ChangeSearches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_ChangeSearches";
 import {SearchDetailsAndFilterBlock_Re_Order_Searches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_Re_Order_Searches";
 import {SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS";
+import {
+    SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDetailsRootBlock_Root_Component,
+    SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData,
+    SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback,
+    SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
+import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 
 
 /**
@@ -64,6 +71,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
     searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
 
+    searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
+
     constructor(  //  Not every use calls the constructor
         {
             displayOnly, // No Click Handlers for changing Filters (PSM, Peptide, Protein)
@@ -73,17 +82,19 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
             dataPageStateManager_DataFrom_Server,
             searchDetailsBlockDataMgmtProcessing,
-            filterValuesChanged_Callback
+            filterValuesChanged_Callback,
+            searchSubGroup_PropValue
         } : {
 
-    displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
-    do_NOT_Display_ChangeSearches_Link? : boolean
-    do_NOT_Display_Re_Order_Searches_Link? : boolean
-    dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
-    dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
-    dataPageStateManager_DataFrom_Server : DataPageStateManager
-    searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-    filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
+            displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+            do_NOT_Display_ChangeSearches_Link? : boolean
+            do_NOT_Display_Re_Order_Searches_Link? : boolean
+            dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
+            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
+            dataPageStateManager_DataFrom_Server : DataPageStateManager
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
+            searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
         }) {
 
         this.displayOnly = displayOnly
@@ -94,6 +105,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
         this.dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server
         this.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing
         this.filterValuesChanged_Callback = filterValuesChanged_Callback
+        this.searchSubGroup_PropValue = searchSubGroup_PropValue
     }
 }
 
@@ -103,6 +115,9 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
 export interface SearchDetailsAndFilterBlock_MainPage_Root_Props {
 
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+    searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
+    searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 }
 
 /**
@@ -277,8 +292,11 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
                 <SingleSearch_Only_Root
                     key={ projectSearchId }
                     propValue={ this.props.propValue }
+                    searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass }
                     openUserChangeFiltersOverlay_Callback={ this._openUserChangeFiltersOverlay_Callback_BindThis }
                     changeSearchesClickedCallback={ this._openUserChangeSearches_Overlay_Callback_BindThis }
+                    searchSubGroup_SelectionsChanged_Callback={ this.props.searchSubGroup_SelectionsChanged_Callback }
+                    searchSubGroup_ManageGroupNames_Clicked_Callback={ this.props.searchSubGroup_ManageGroupNames_Clicked_Callback }
                 />
             )
         } else {
@@ -306,8 +324,11 @@ interface SingleSearch_Only_Root_Props {
 
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
     changeSearchesClickedCallback
+    searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
+    searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 }
 
 /**
@@ -402,6 +423,12 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                     annotationTypeDataForProjectSearchId={ annotationTypeDataForProjectSearchId }
                     searchProgramsPerSearchDataForProjectSearchId={ searchProgramsPerSearchDataForProjectSearchId }
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={ filtersAnnTypeDisplayPerProjectSearchId }
+                />
+                <SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDetailsRootBlock_Root_Component
+                    displayData={ this.props.propValue.searchSubGroup_PropValue }
+                    searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass }
+                    searchSubGroup_SelectionsChanged_Callback={ this.props.searchSubGroup_SelectionsChanged_Callback }
+                    searchSubGroup_ManageGroupNames_Clicked_Callback={ this.props.searchSubGroup_ManageGroupNames_Clicked_Callback }
                 />
             </React.Fragment>
         )

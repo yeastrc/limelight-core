@@ -34,7 +34,10 @@ import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-import { ProteinPage_Display_MultipleSearches_SingleProtein } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein'
+import {
+	ProteinPage_Display_MultipleSearches_SingleProtein,
+	ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
+} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein'
 
 import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
 import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
@@ -65,6 +68,7 @@ import {
 	ProteinPageSearchesSummarySectionData_PerSearchEntry,
 	ProteinPageSearchesSummarySectionData_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySection";
+import {downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
 
 /**
  * Entry in proteinList
@@ -286,6 +290,61 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/////////////////////////////////////////////////
 
 	/**
+	 * attachPSMDownloadClickHandler
+	 */
+	attachPSMDownloadClickHandler({ projectSearchIds } : { projectSearchIds : Array<number> }) {
+
+		const objectThis = this;
+
+		// Wait to show and attach click handler for #protein_download_proteins until after protein list is displayed
+
+		//  Download PSMs container and link.  Only supported for 1 project search id
+
+		const $protein_download_assoc_psms = $("#protein_download_assoc_psms");
+
+		//  First remove any previous click handler
+		$protein_download_assoc_psms.off("click");
+
+		$protein_download_assoc_psms.show();
+
+		$protein_download_assoc_psms.click( function(eventObject) {
+			try {
+				eventObject.preventDefault();
+
+				const projectSearchIds_InDownloadClickHandler =
+					objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+
+				const searchDataLookupParamsRoot: SearchDataLookupParameters_Root =
+					objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined});
+
+				if (!searchDataLookupParamsRoot) {
+					throw Error("searchDataLookupParamsRoot not found");
+				}
+
+				const projectSearchIdsReportedPeptideIdsPsmIds = [];
+
+				for ( const projectSearchId_InDownloadClickHandler of projectSearchIds_InDownloadClickHandler ) {
+
+					const single_projectSearchId_ReportedPeptideIdsPsmIds = {projectSearchId: projectSearchId_InDownloadClickHandler};
+
+					projectSearchIdsReportedPeptideIdsPsmIds.push(single_projectSearchId_ReportedPeptideIdsPsmIds);
+				}
+
+				downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {
+					projectSearchIdsReportedPeptideIdsPsmIds,
+					searchDataLookupParamsRoot : searchDataLookupParamsRoot,
+					proteinSequenceVersionIds : undefined,
+					experimentId : undefined
+				} );
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+				throw e;
+			}
+		});
+
+	}
+
+	/**
 	 * Populate Protein List On Page For Multiple Project Search Ids
 	 */
 	populateProteinList({projectSearchIds}) {
@@ -400,7 +459,9 @@ export class ProteinViewPage_Display_MultipleSearches {
 			const promise_getDataFromServer = loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder({
 				projectSearchId,
 				searchDataLookupParams_For_Single_ProjectSearchId,
-				loadedDataPerProjectSearchIdHolder
+				loadedDataPerProjectSearchIdHolder,
+				load_searchSubGroupsData : false
+				//  load_searchSubGroupsData : false since for now not processing subgroup data
 			});
 
 			getDataFromServer_AllPromises.push(promise_getDataFromServer);
@@ -1476,7 +1537,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		//  Create callback function to call on single protein close
 
-		const singleProteinCloseCallback = () : void => {
+		const singleProteinCloseCallback : ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback = () : void => {
 
 			this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
 
@@ -1513,6 +1574,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			proteinList_CentralStateManagerObjectClass: this._proteinList_CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
+			searchSubGroup_CentralStateManagerObjectClass : undefined,
+
 			singleProteinCloseCallback
 		});
 	}

@@ -17,6 +17,10 @@ import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers } from
 import { SaveView_Create_Component_React_Type } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
 import { saveView_Create_Component_React } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React';
 import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_DataPageStateManager_ProjectSearchId} from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/js/search_sub_group__manage__group_names__open_overlay__pass__data_page_state_manager__project_search_id";
+import {Get_SetDefaultView_Component_React_Type} from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
+import {setDefaultView_Create_Component_React} from "page_js/data_pages/setDefaultView_React/setDefaultView_Component_React";
 
 
 /**
@@ -37,6 +41,15 @@ export class DataPages_LoggedInUser_CommonObjectsFactory {
 	initialize() {
 
 
+    }
+
+    /**
+     * Create object of class SaveView_dataPages
+     *
+     */
+    getFunctionToGet_SetDefaultView_Component_React() : Get_SetDefaultView_Component_React_Type {
+
+        return setDefaultView_Create_Component_React;
     }
 
     /**
@@ -73,5 +86,21 @@ export class DataPages_LoggedInUser_CommonObjectsFactory {
     instantiate_SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers() : SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
 
         return new SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers();
+    }
+
+    /**
+     * call searchSubGroup_Manage_GroupNames_OpenOverlay
+     *
+     */
+    call_searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_DataPageStateManager_ProjectSearchId(
+    {
+        dataPageStateManager_DataFrom_Server,
+        projectSearchId
+    } : {
+        dataPageStateManager_DataFrom_Server: DataPageStateManager
+        projectSearchId : number
+    }) : void {
+
+        searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_DataPageStateManager_ProjectSearchId({ dataPageStateManager_DataFrom_Server, projectSearchId });
     }
 }

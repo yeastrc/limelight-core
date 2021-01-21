@@ -13,6 +13,10 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
+import {
+    ModificationMass_UserSelections_ComponentData_StaticModificationsData,
+    ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData";
 
 
 /**
@@ -20,13 +24,14 @@ import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filt
  */
 export interface ModificationMass_UserSelections_StaticModifications_Props {
 
-    staticModificationsData
+    staticModificationsData :  ModificationMass_UserSelections_ComponentData_StaticModificationsData
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
 }
 
 interface ModificationMass_UserSelections_StaticModifications_State {
 
+    _placeholder
     // prev_staticModificationsData
 }
 
@@ -163,18 +168,17 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
         return (
             <React.Fragment>
 
-                {/* Float Left */}
-                <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Static Modifications:</div>
+                {/* Parent is CSS Grid with 2 Columns */}
+
+                <div className=" filter-common-filter-label ">Filter On Static Modifications:</div>
 
                 <div className=" filter-common-selection-block modification-mass-selection-block " >
-                    <div style={ { marginTop: 2 } }>
+                    <div className=" filter-common-selection-inner-block ">
                         <div >
                             { singleModification_Entries }
                         </div>
                     </div>          
                 </div> 
-            
-                <div style={ { clear: "left" } }></div>
 
             </React.Fragment>
         );
@@ -183,7 +187,7 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
 }
 
 interface SingleModification_Entry_Props {
-    staticModificationEntry
+    staticModificationEntry :  ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
 }
@@ -214,14 +218,14 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
         const residueLetter = staticModificationEntry.residueLetter;
         const modMass = staticModificationEntry.modMass;
 
-        let checked : SingleProtein_Filter_SelectionType = null
+        let selection_SelectionType : SingleProtein_Filter_SelectionType = null
 
         const selectionEntry = this.props.modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass })
         if ( selectionEntry ) {
-            checked = selectionEntry.selectionType
+            selection_SelectionType = selectionEntry.selectionType
         }
 
-        this.state = { selection_SelectionType: checked, prevProp_staticModificationEntry : props.staticModificationEntry };
+        this.state = { selection_SelectionType, prevProp_staticModificationEntry : props.staticModificationEntry };
     }
 
     /**
@@ -232,7 +236,7 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
      * 
      * Return new state (like return from setState(callback)) or null
      */
-    static getDerivedStateFromProps( props : SingleModification_Entry_Props, state : SingleModification_Entry_State ) {
+    static getDerivedStateFromProps( props : SingleModification_Entry_Props, state : SingleModification_Entry_State ) : SingleModification_Entry_State {
 
         // console.log("called: static getDerivedStateFromProps(): " );
 
@@ -240,14 +244,21 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
 
         if ( props.staticModificationEntry !== state.prevProp_staticModificationEntry ) {
 
-            //   staticModificationEntry changed so update checked
-            
-            let checked = props.staticModificationEntry.selected;
-            if ( ! checked ) {
-                checked = false; // make false if not true
+            //   staticModificationEntry changed so update selection_SelectionType
+
+            const staticModificationEntry = props.staticModificationEntry;
+
+            const residueLetter = staticModificationEntry.residueLetter;
+            const modMass = staticModificationEntry.modMass;
+
+            let selection_SelectionType : SingleProtein_Filter_SelectionType = null
+
+            const selectionEntry = props.modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass })
+            if ( selectionEntry ) {
+                selection_SelectionType = selectionEntry.selectionType
             }
 
-            return { checked, prevProp_staticModificationEntry : props.staticModificationEntry };
+            return { selection_SelectionType, prevProp_staticModificationEntry : props.staticModificationEntry };
         }
             
         return null;

@@ -177,6 +177,7 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
             }
 
             const reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter = new ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter({
+                searchSubGroup_Ids_Selected : undefined,
                 projectSearchId,
                 reportedPeptideIds_ForDisplay : undefined,
                 dataPerReportedPeptideId_Map_Key_reportedPeptideId,

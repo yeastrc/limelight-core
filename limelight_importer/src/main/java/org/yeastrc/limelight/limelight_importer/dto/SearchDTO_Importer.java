@@ -32,8 +32,10 @@ public class SearchDTO_Importer {
 	private boolean hasScanFilenames;
 	private boolean hasScanData;
 	private boolean hasIsotopeLabel;
+	private boolean hasSearchSubGroups;
 	private boolean anyPsmHasOpenModificationMasses;
 	private boolean reportedPeptideMatchedProteinMappingProvided;
+	
 	private Integer createdByUserId;
 	
 	
@@ -96,6 +98,12 @@ public class SearchDTO_Importer {
 	}
 	public void setAnyPsmHasOpenModificationMasses(boolean anyPsmHasOpenModificationMasses) {
 		this.anyPsmHasOpenModificationMasses = anyPsmHasOpenModificationMasses;
+	}
+	public boolean isHasSearchSubGroups() {
+		return hasSearchSubGroups;
+	}
+	public void setHasSearchSubGroups(boolean hasSearchSubGroups) {
+		this.hasSearchSubGroups = hasSearchSubGroups;
 	}
 
 }

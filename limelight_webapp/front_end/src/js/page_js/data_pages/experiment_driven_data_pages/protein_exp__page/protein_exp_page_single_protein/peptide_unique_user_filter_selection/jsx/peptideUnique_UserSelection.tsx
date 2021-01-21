@@ -151,21 +151,25 @@ export class PeptideUnique_UserSelection extends React.Component< PeptideUnique_
 
         const peptideUnique_UserSelection = this.state.peptideUnique_UserSelection;
 
+        const marginBottomSize = 4;
+
         return (
             <React.Fragment>
 
-                <div className=" filter-common-block-selection-outer-block peptide-sequence-selection-outer-block " style={ { marginBottom : 8 } } >
+                {/* Parent is CSS Grid with 2 Columns */}
 
-                    <div>
-                        <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter on Unique Peptides:</div>
-                        <div className=" filter-common-selection-block peptide-sequence-selection-block " >
-                            <div style={ {  marginTop: 2 } }>
-                                <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Variable and Static Mods */}
-                                    <input type="checkbox" checked={ peptideUnique_UserSelection }
-                                           onChange={ this._inputFieldChanged_BindThis }
-                                    />
-                                </div>
-                            </div>
+                <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }
+                     title="Check to only show peptides only found in this protein."
+                >
+                    Filter On Unique Peptides:
+                </div>
+                <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
+                    <div className=" filter-common-selection-inner-block ">
+                        <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                            <input type="checkbox" checked={ peptideUnique_UserSelection }
+                                   title="Check to only show peptides only found in this protein."
+                                   onChange={ this._inputFieldChanged_BindThis }
+                            />
                         </div>
                     </div>
                 </div>

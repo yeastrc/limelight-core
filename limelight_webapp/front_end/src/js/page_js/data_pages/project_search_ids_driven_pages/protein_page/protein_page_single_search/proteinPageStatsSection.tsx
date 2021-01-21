@@ -20,6 +20,7 @@ import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable
 
 export interface ProteinViewPage_StatsSection_Props {
 
+    searchContainsSubGroups : boolean
     data
 }
 
@@ -212,11 +213,20 @@ export class ProteinViewPage_StatsSection extends React.Component< ProteinViewPa
 
         const dataTable_RootTableObject = this._getDataTable_RootTableObject();
 
+        let subGroupsDisclaimer : JSX.Element = null;
+
+        if ( this.props.searchContainsSubGroups ) {
+
+            subGroupsDisclaimer = (
+                <div >
+                    The Search Stats are not filtered using the selections of "Sub Groups".
+                </div>
+            )
+        }
+
         return (
             <div style={ { marginBottom: 10 } }>
-                {/*<div style={ { fontWeight: "bold", marginBottom: 5 } }>*/}
-                {/*    Stats*/}
-                {/*</div>*/}
+                { subGroupsDisclaimer }
                 <DataTable_TableRoot
                     tableObject={ dataTable_RootTableObject }
                 />

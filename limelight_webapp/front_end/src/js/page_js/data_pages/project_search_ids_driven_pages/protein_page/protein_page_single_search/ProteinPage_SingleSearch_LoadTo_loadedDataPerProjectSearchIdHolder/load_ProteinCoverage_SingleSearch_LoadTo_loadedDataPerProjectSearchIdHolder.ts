@@ -188,6 +188,12 @@ const _getProteinCoverageData_From_ReportedPeptideIds = function ( { projectSear
                 try {
                     console.log("AJAX Call to get protein-coverage-per-reported-peptide-id END, Now: " + new Date() );
 
+                    if ( ! responseData.proteinCoverageList ) {
+                        const msg = "responseData.proteinCoverageList has no value after webservice call to " + url;
+                        console.warn( msg );
+                        throw Error( msg )
+                    }
+
                     resolve( responseData.proteinCoverageList );
 
                 } catch( e ) {

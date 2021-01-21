@@ -19,6 +19,11 @@ import {
     ProteinPage_ProteinGroupingFilterSelection_Component_Root,
     ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue
 } from "./proteinViewPage_ProteinGroupingFilterSelectionComponent";
+import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import {
+    SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback,
+    SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
 
 
 /**
@@ -27,10 +32,16 @@ import {
 export const proteinViewPage_MainPageProteinList_createSearchDetailsSection = function(
     {
         searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
-        proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue
+        proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
+        searchSubGroup_CentralStateManagerObjectClass,
+        searchSubGroup_SelectionsChanged_Callback,
+        searchSubGroup_ManageGroupNames_Clicked_Callback
     } : {
         searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
         proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue : ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue
+        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+        searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
+        searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 
     }) : JSX.Element {
 
@@ -38,6 +49,9 @@ export const proteinViewPage_MainPageProteinList_createSearchDetailsSection = fu
         <ProteinPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Component
             searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue={ searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
             proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue={ proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue }
+            searchSubGroup_CentralStateManagerObjectClass={ searchSubGroup_CentralStateManagerObjectClass }
+            searchSubGroup_SelectionsChanged_Callback={ searchSubGroup_SelectionsChanged_Callback }
+            searchSubGroup_ManageGroupNames_Clicked_Callback={ searchSubGroup_ManageGroupNames_Clicked_Callback }
         />
     );
 }
@@ -50,6 +64,9 @@ interface ProteinPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderCont
 
     searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
     proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue : ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+    searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
+    searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 }
 
 /**
@@ -79,6 +96,9 @@ class ProteinPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContaine
                 <SearchDetailsAndOtherFiltersOuterBlock_Layout >
                     <SearchDetailsAndFilterBlock_MainPage_Root
                         propValue={ this.props.searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
+                        searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass }
+                        searchSubGroup_SelectionsChanged_Callback={ this.props.searchSubGroup_SelectionsChanged_Callback }
+                        searchSubGroup_ManageGroupNames_Clicked_Callback={ this.props.searchSubGroup_ManageGroupNames_Clicked_Callback }
                     />
                     <ProteinPage_ProteinGroupingFilterSelection_Component_Root
                         propValue={ this.props.proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue }

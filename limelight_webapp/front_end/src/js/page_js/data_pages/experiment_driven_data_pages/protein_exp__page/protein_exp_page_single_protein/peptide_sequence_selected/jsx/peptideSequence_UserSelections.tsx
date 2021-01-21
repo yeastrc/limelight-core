@@ -19,6 +19,16 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 //  Delay after input change before call callback, to wait for additional keyboard input
 const CALL_CALLBACK_DELAY = 200;  // in milliseconds
 
+export class PeptideSequence_UserSelections_Component__UpdateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback_Params {
+    userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root
+}
+
+export type PeptideSequence_UserSelections_Component__UpdateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback = (
+    params : PeptideSequence_UserSelections_Component__UpdateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback_Params
+    ) => void
+
+export type PeptideSequence_UserSelections_Component__UpdateMadeTo_peptideSequence_UserSelections_StateObject = () => void;
+
 
 /**
  * 
@@ -28,11 +38,9 @@ export interface PeptideSequence_UserSelections_Props {
     peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject;
     proteinSequenceString : string;
-    updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback : ({ 
-        userSearchString_LocationsOn_ProteinSequence_Root 
-    } : { 
-        userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root
-    }) => void;
+
+    updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback : PeptideSequence_UserSelections_Component__UpdateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback
+    updateMadeTo_peptideSequence_UserSelections_StateObject_Callback : PeptideSequence_UserSelections_Component__UpdateMadeTo_peptideSequence_UserSelections_StateObject
 }
 
 interface PeptideSequence_UserSelections_State {
@@ -66,11 +74,15 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
 
         let proteinSequenceString = props.proteinSequenceString;
 
-        const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({ 
-    
-            searchString : peptideSequence_UserSelection, 
-            proteinSequenceString 
-        });
+        let userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = null;
+
+        if ( proteinSequenceString ) {
+            userSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({
+
+                searchString : peptideSequence_UserSelection,
+                proteinSequenceString
+            });
+        }
 
         this.state = { 
             peptideSequence_UserSelection, 
@@ -105,12 +117,15 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
             }
     
             let proteinSequenceString = props.proteinSequenceString;
+            let userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = null;
 
-            const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({ 
-    
-                searchString : peptideSequence_UserSelection, 
-                proteinSequenceString 
-            });
+            if ( proteinSequenceString ) {
+                userSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({
+
+                    searchString : peptideSequence_UserSelection,
+                    proteinSequenceString
+                });
+            }
 
             return { 
                 peptideSequence_UserSelection, 
@@ -189,18 +204,26 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
                 try {
                     this.props.peptideSequence_UserSelections_StateObject.setPeptideSearchStringFirstEntry( peptideSequence_UserSelection );
 
-                    const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({
+                    if ( this.state.proteinSequenceString ) {
 
-                        searchString : peptideSequence_UserSelection,
-                        proteinSequenceString : this.state.proteinSequenceString
-                    });
+                        const userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root = _compute_userSearchString_LocationsOn_ProteinSequence_Compute({
 
-                    this.setState( (state : PeptideSequence_UserSelections_State, props : PeptideSequence_UserSelections_Props) : PeptideSequence_UserSelections_State => {
+                            searchString : peptideSequence_UserSelection,
+                            proteinSequenceString : this.state.proteinSequenceString
+                        });
 
-                        return { userSearchString_LocationsOn_ProteinSequence_Root };
-                    });
+                        this.setState( (state : PeptideSequence_UserSelections_State, props : PeptideSequence_UserSelections_Props) : PeptideSequence_UserSelections_State => {
 
-                    this.props.updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback({ userSearchString_LocationsOn_ProteinSequence_Root });
+                            return { userSearchString_LocationsOn_ProteinSequence_Root };
+                        });
+
+                        this.props.updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback({ userSearchString_LocationsOn_ProteinSequence_Root });
+                    } else {
+
+                        this.props.updateMadeTo_peptideSequence_UserSelections_StateObject_Callback();
+                    }
+
+
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
@@ -219,38 +242,38 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
 
         const peptideSequence_UserSelection = this.state.peptideSequence_UserSelection;
 
-        const noUserSearchString = this.state.userSearchString_LocationsOn_ProteinSequence_Root.noUserSearchString;
+        let notFoundMessage : JSX.Element = undefined;
 
-        let notFoundMessage = undefined;
+        if ( this.state.userSearchString_LocationsOn_ProteinSequence_Root ) {
 
-        if ( ( ! noUserSearchString ) && this.state.userSearchString_LocationsOn_ProteinSequence_Root.userSearchString_LocationsOn_ProteinSequence_Entries.length === 0 ) {
-            notFoundMessage = (
-                <React.Fragment>
-                    <span > </span>
-                    <span style={ { fontSize: 10, color: "red" } }
-                    >*not found in protein</span>
-                </React.Fragment>
-            );
+            const noUserSearchString = this.state.userSearchString_LocationsOn_ProteinSequence_Root.noUserSearchString;
+
+            if ( ( ! noUserSearchString ) && this.state.userSearchString_LocationsOn_ProteinSequence_Root.userSearchString_LocationsOn_ProteinSequence_Entries.length === 0 ) {
+                notFoundMessage = (
+                    <React.Fragment>
+                        <span > </span>
+                        <span style={ { fontSize: 10, color: "red" } }
+                        >*not found in protein</span>
+                    </React.Fragment>
+                );
+            }
         }
 
         return (
             <React.Fragment>
 
+                {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-block-selection-outer-block peptide-sequence-selection-outer-block " >
+                <div className=" filter-common-filter-label ">Filter On Peptide:</div>
 
-                    <div>
-                        <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Peptide:</div>
-                        <div className=" filter-common-selection-block peptide-sequence-selection-block " >
-                            <div style={ {  marginTop: 2 } }>
-                                <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Variable and Static Mods */}
-                                    <input type="text" maxLength={ 400 } style={ { width: 180} } value={ peptideSequence_UserSelection }
-                                        onChange={ this._inputFieldChanged_BindThis }
-                                    />
-                                    { notFoundMessage }
-                                </div>
-                            </div>
-                        </div> 
+                <div className=" filter-common-selection-block " >
+                    <div className=" filter-common-selection-inner-block ">
+                        <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                            <input type="text" maxLength={ 400 } style={ { width: 180} } value={ peptideSequence_UserSelection }
+                                   onChange={ this._inputFieldChanged_BindThis }
+                            />
+                            { notFoundMessage }
+                        </div>
                     </div>
                 </div>
 

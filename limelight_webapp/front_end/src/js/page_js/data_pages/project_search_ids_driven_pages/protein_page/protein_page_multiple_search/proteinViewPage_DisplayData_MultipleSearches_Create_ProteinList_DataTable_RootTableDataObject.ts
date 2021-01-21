@@ -115,7 +115,7 @@ export const getProteinDataTableColumns = function( { projectSearchIds, dataPage
     {
         const column = new DataTable_Column({
             id :           'protein_descriptions',
-            displayName :  'Protein Descripton(s)',
+            displayName :  'Protein Description(s)',
             width :        325,
             sortable : true,
             //  copied style_override_DataRowCell_React to the component

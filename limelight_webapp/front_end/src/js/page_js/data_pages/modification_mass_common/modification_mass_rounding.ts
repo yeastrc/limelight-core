@@ -45,11 +45,35 @@ const modificationMass_CommonRounding_ReturnString : modificationMass_CommonRoun
    return modificationMassRoundedString;
 }
 
+/**
+ *
+ * @param modificationMass
+ * @returns true if more decimal places than allowed
+ */
+const modificationMass_CommonRounding_Needed = function ( modificationMass : number ) : boolean {
+
+    if ( modificationMass === undefined ) {
+        throw Error("modificationMass === undefined");
+    }
+    const modificationMassString = modificationMass.toString();
+    const decimalIndex = modificationMassString.indexOf( "." );
+    if ( decimalIndex === -1){
+        // not found
+        return false;
+    }
+    const decimalPortionLength = modificationMassString.length - decimalIndex - 1;
+    if ( decimalPortionLength > _MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT ) {
+        return true;
+    }
+    return false;
+}
+
 //////////////
 
 export { 
     modificationMass_CommonRounding_ReturnNumber_Function,
     modificationMass_CommonRounding_ReturnString_Function,
     modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnString,
+    modificationMass_CommonRounding_Needed
 }

@@ -27,6 +27,7 @@ export const getPSMDataFromServer = function({
     
     projectSearchId, 
     reportedPeptideId,  // NOT required if have psmIds_Include
+    searchSubGroupId,   // Optional, only allowed if reportedPeptideId is populated
     psmIds_Include, // Optional
     searchDataLookupParamsRoot,
     dataPageStateManager,
@@ -34,11 +35,16 @@ export const getPSMDataFromServer = function({
 } : { 
     projectSearchId : number
     reportedPeptideId : number  // NOT required if have psmIds_Include
+    searchSubGroupId : number     // Optional, only allowed if reportedPeptideId is populated
     psmIds_Include: ReadonlySet<number>
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager,
     webserviceCallStandardPost_ApiObject_Holder_Class : WebserviceCallStandardPost_ApiObject_Holder_Class
 }) : Promise<any> {
+
+    if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
+        throw Error("ERROR: reportedPeptideId === undefined && searchSubGroupId !== undefined : getPSMDataFromServer");
+    }
 
     return new Promise( ( resolve, reject ) => {
         try {
@@ -58,6 +64,7 @@ export const getPSMDataFromServer = function({
                 psmIds_Include : psmIds_Include_Array, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
                 psmIds_Exclude : undefined, // Optional.  If provided, Additive to
                 reportedPeptideId,    // NOT required if have psmIds_Include
+                searchSubGroupId,   // Optional, only allowed if reportedPeptideId is populated
                 searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,
                 psmAnnotationTypeIdsForSorting : psmAnnotationTypeIdsForSorting
             };

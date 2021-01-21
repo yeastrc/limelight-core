@@ -236,6 +236,12 @@ public class AA_RestWSControllerPaths_Constants {
 	//   Project Search Id driven Delete DB
 	public static final String DELETE_PROJECT_SEARCH_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/delete-project-search";
+	
+
+	//  SubGroup Update User Updatable Data for Project Search Id
+	public static final String SUB_GROUPS_UPDATE_USER_UPDATABLE_DATA_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/sub-groups-update-user-updatable-data-single-project-search-id";
+
 
 	//  Project Search Sub contents (search file, ...) Update DB
 	
@@ -320,11 +326,16 @@ public class AA_RestWSControllerPaths_Constants {
 
 	
 	
-	
 	// Results from Multiple Project Search Ids and Other Criteria
 
 
 	// Results from Single Project Search Id and Other Criteria
+
+	//  !!  NOT currently used
+	
+	//  Search SubGroups at Search Level for Project Search Id
+//	public static final String SEARCH_SUB_GROUPS_SEARCH_LEVEL_SINGLE_PROJECT_SEARCH_ID =
+//			"d/rws/for-page/psb/search-sub-groups-search-level-single-project-search-id";
 
 	//  Static Mods for Project Search Id
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =
@@ -344,7 +355,11 @@ public class AA_RestWSControllerPaths_Constants {
 	//     Not currently used for Reported Peptides Page, PEPTIDE_VIEW_PAGE_PEPTIDE_LIST_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER used instead there
 	public static final String REPORTED_PEPTIDE_LIST_REPORTED_PEPTIDE_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/reported-peptide-id-list-for-search-criteria-single-project-search-id";
-	
+
+	//  Search SubGroups at Reported Peptide Level for Project Search Id, Reported Peptide Ids
+	public static final String SEARCH_SUB_GROUPS_REPORTED_PEPTIDE_LEVEL_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/search-sub-groups-reported-peptide-level-single-project-search-id";
+
 	//  Reported Peptide Filterable Annotation data for Reported Peptide Ids, Annotation Type Ids, Project Search Id
 	public static final String REPORTED_PEPTIDE_FILTRBL_ANN_DATA_LIST_REP_PEPT_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/reported-peptide-filtrbl-ann-data-list-rep-pept-ids-ann-type-ids-single-project-search-id";
@@ -353,8 +368,20 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String REPORTED_PEPTIDE_DESCRIPTIVE_ANN_DATA_LIST_REP_PEPT_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/reported-peptide-descriptive-ann-data-list-rep-pept-ids-ann-type-ids-single-project-search-id";
 
+	//  PSM Info
+	
 	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+
+	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID__SUB_SEARCH_GROUP__FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+	
+	/**
+	 * Retrieve Sub Search Group Id, PSM Id, Reported Peptide Id for Reported Peptide Ids, Project Search ID, and Search Criteria
+	 * 
+	 */
+	public static final String SUB_SEARCH_GROUP_ID_PSM_ID_REPORTED_PEPTIDE_ID____FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 
 	public static final String PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
@@ -460,9 +487,10 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String OPEN_MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/open-modifications-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
 
-	
+
 	//    used on many pages 
 	
+	//  Also returns Search Sub Groups at Search level if applicable
 	public static final String SEARCH_NAME_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-name-list-from-psi";
 
 	public static final String SEARCH_PROGRAMS_PER_SEARCH_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-programs-per-search-list-from-psi";

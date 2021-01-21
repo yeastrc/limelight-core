@@ -27,22 +27,22 @@ const conditionGroupItemOuterPartsWidths = {
 
 const conditionGroupItemPartsWidths = {
     draggableIconWidth : 18,
-    labelWidth : 160,
+    display_SubGroupName_Width : 160,
     conditionCountWidth : 42,
     typeWidth : 80,
-    deleteIconWidth : 16
+    subGroupName_Width : 16
 };
 
 const conditionGroupItemStyle_gridTemplateColumns = (
     conditionGroupItemPartsWidths.draggableIconWidth
     + "px "
-    + conditionGroupItemPartsWidths.labelWidth
+    + conditionGroupItemPartsWidths.display_SubGroupName_Width
     + "px "
     + conditionGroupItemPartsWidths.conditionCountWidth
     + "px "
     + conditionGroupItemPartsWidths.typeWidth
     + "px "
-    + conditionGroupItemPartsWidths.deleteIconWidth
+    + conditionGroupItemPartsWidths.subGroupName_Width
     + "px "
 );
 
@@ -56,10 +56,10 @@ const conditionGroupsContainerWidth = (
     conditionGroupItemOuterPartsWidths.paddingWidth
     + conditionGroupItemOuterPartsWidths.borderWidth
     + conditionGroupItemPartsWidths.draggableIconWidth 
-    + conditionGroupItemPartsWidths.labelWidth
+    + conditionGroupItemPartsWidths.display_SubGroupName_Width
     + conditionGroupItemPartsWidths.conditionCountWidth
     + conditionGroupItemPartsWidths.typeWidth
-    + conditionGroupItemPartsWidths.deleteIconWidth
+    + conditionGroupItemPartsWidths.subGroupName_Width
     + 2
 );
 
@@ -266,7 +266,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
                         <div style={ { marginLeft: 2, maxWidth: conditionGroupItemPartsWidths.draggableIconWidth, overflowX: "hidden" } }>
                             
                         </div>
-                        <div style={ { maxWidth: conditionGroupItemPartsWidths.labelWidth, overflowX: "hidden", textOverflow: "ellipsis" } }
+                        <div style={ { maxWidth: conditionGroupItemPartsWidths.display_SubGroupName_Width, overflowX: "hidden", textOverflow: "ellipsis" } }
                             >
                             Label
                         </div>
@@ -288,7 +288,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
                             >
                             Type
                         </div>
-                        <div style={ { maxWidth: conditionGroupItemPartsWidths.deleteIconWidth, overflowX: "hidden" } }>
+                        <div style={ { maxWidth: conditionGroupItemPartsWidths.subGroupName_Width, overflowX: "hidden" } }>
                             
                         </div>
                     </div>
@@ -450,7 +450,7 @@ export class ConditionGroupListEntry_DraggableContents extends React.Component< 
                     <img className=" icon-small " src="static/images/icon-draggable.png"
                         title="Drag to Change Condition Group Order" ></img> {/*  Replace with draggable icon */}
                 </div>
-                <div style={ { maxWidth: conditionGroupItemPartsWidths.labelWidth, paddingRight: 5, overflowX: "hidden", textOverflow: "ellipsis" } }
+                <div style={ { maxWidth: conditionGroupItemPartsWidths.display_SubGroupName_Width, paddingRight: 5, overflowX: "hidden", textOverflow: "ellipsis" } }
                     title={ ( "Label:\n" + conditionGroup.label + "\n\nClick to change Condition Group" ) }>
                     { conditionGroup.label }
                 </div>
@@ -470,7 +470,7 @@ export class ConditionGroupListEntry_DraggableContents extends React.Component< 
                     title={ "Type: " + conditionGroupType }>
                     { conditionGroupType }
                 </div>
-                <div style={ { maxWidth: conditionGroupItemPartsWidths.deleteIconWidth, overflowX: "hidden" } }>
+                <div style={ { maxWidth: conditionGroupItemPartsWidths.subGroupName_Width, overflowX: "hidden" } }>
                     { deleteIconComponent }
                 </div>
             </div>

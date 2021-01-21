@@ -28,11 +28,13 @@ public class SearchItemMinimal {
 	private int projectId;
 	private int displayOrder;
 	private String name;
+	private boolean searchHasSubgroups;
 	
 	@Override
 	public String toString() {
 		return "SearchItemMinimal [projectSearchId=" + projectSearchId + ", searchId=" + searchId + ", projectId="
-				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + "]";
+				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + ", searchHasSubgroups="
+				+ searchHasSubgroups + "]";
 	}
 
 	/**
@@ -70,6 +72,11 @@ public class SearchItemMinimal {
 	public void setDisplayOrder(int displayOrder) {
 		this.displayOrder = displayOrder;
 	}
-
-	
+	public boolean isSearchHasSubgroups() {
+		return searchHasSubgroups;
+	}
+	public void setSearchHasSubgroups(boolean searchHasSubgroups) {
+		this.searchHasSubgroups = searchHasSubgroups;
+	}
+		
 }

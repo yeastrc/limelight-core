@@ -154,7 +154,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
 
         return (
                 
-            <div className=" filter-common-block-selection-outer-block modification-mass-selection-outer-block ">
+            <React.Fragment>
 
                 {/*   Variable Modifications */}
                 <ModificationMass_UserSelections_Variable_or_Open_Modifications
@@ -198,7 +198,8 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                 />
-            </div>
+
+            </React.Fragment>
         );
 
     }    

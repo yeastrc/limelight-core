@@ -53,7 +53,10 @@ const loadProteinDisplayData_Per_ProjectSearchId = function ( {
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set( projectSearchId, loadedDataPerProjectSearchIdHolder );
 
                 const promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer = (
-                    loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder( { projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder } )
+                    loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder( { 
+                    	projectSearchId, load_searchSubGroupsData : false, searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder 
+                    } )
+                    //  load_searchSubGroupsData : false since for now not processing subgroup data
                 );
 
                 promises_Per_projectSearchId.push( promise_proteinViewPage_DisplayData_SingleSearch_LoadProcessDataFromServer );

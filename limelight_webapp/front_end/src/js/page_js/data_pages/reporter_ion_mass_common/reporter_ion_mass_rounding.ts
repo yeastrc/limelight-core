@@ -15,13 +15,13 @@ type reporterIonMass_CommonRounding_ReturnString_Function = ( reporterIonMass : 
 
 
 /**
-* @param modificationMass
-* @returns Number with modification mass rounded
+* @param reporterIonMass
+* @returns Number with reporterIon mass rounded
 */
 const reporterIonMass_CommonRounding_ReturnNumber = function( reporterIonMass : number ) : number {
 
    if ( reporterIonMass === undefined ) {
-       throw Error("modificationMass === undefined");
+       throw Error("reporterIonMass === undefined");
    }
    const reporterIonMass_Times_places = reporterIonMass * _10_POWER_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT
    const reporterIonMass_Times_places_rounded = Math.round( reporterIonMass_Times_places );
@@ -31,8 +31,8 @@ const reporterIonMass_CommonRounding_ReturnNumber = function( reporterIonMass : 
 
 /**
  *
-* @param modificationMass
-* @returns String with modification mass rounded
+* @param reporterIonMass
+* @returns String with reporterIon mass rounded
 */
 const reporterIonMass_CommonRounding_ReturnString = function( reporterIonMass : number ) : string {
 
@@ -47,12 +47,37 @@ const reporterIonMass_CommonRounding_ReturnString = function( reporterIonMass : 
    return reporterIonMassRoundedString;
 }
 
+/**
+ *
+ * @param reporterIonMass
+ * @returns true if more decimal places than allowed
+ */
+const reporterIonMass_CommonRounding_Needed = function ( reporterIonMass : number ) : boolean {
+
+    if ( reporterIonMass === undefined ) {
+        throw Error("reporterIonMass === undefined");
+    }
+    const reporterIonMassString = reporterIonMass.toString();
+    const decimalIndex = reporterIonMassString.indexOf( "." );
+    if ( decimalIndex === -1){
+        // not found
+        return false;
+    }
+    const decimalPortionLength = reporterIonMassString.length - decimalIndex - 1;
+    if ( decimalPortionLength > _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT ) {
+        return true;
+    }
+    return false;
+
+}
+
 ////////////////////////////////
 
 export { 
     reporterIonMass_CommonRounding_ReturnNumber_Function,
     reporterIonMass_CommonRounding_ReturnString_Function,
     reporterIonMass_CommonRounding_ReturnNumber, 
-    reporterIonMass_CommonRounding_ReturnString, 
+    reporterIonMass_CommonRounding_ReturnString,
+    reporterIonMass_CommonRounding_Needed,
     _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
 }

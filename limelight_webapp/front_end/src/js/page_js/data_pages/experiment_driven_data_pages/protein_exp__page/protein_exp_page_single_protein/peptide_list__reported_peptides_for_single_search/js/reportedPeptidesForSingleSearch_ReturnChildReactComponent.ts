@@ -30,7 +30,8 @@ import {CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Pep
  * Used as class for object placed in data row object property dataRow_GetChildTable_ReturnReactComponent_Parameter
  */
 class ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter {
-    
+
+    searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
     projectSearchId : number
     reportedPeptideIds_ForDisplay : Set<number>  // reportedPeptideIds specific to ParentPeptide
     dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
@@ -45,6 +46,7 @@ class ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponen
      */
     constructor(
         {
+            searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             projectSearchId,
             reportedPeptideIds_ForDisplay,
             dataPerReportedPeptideId_Map_Key_reportedPeptideId,
@@ -54,6 +56,7 @@ class ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponen
             loadedDataCommonHolder,
             dataPageStateManager
         } : {
+            searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             projectSearchId : number
             reportedPeptideIds_ForDisplay : Set<number>  // reportedPeptideIds specific to ParentPeptide
             dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
@@ -64,6 +67,7 @@ class ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponen
             dataPageStateManager : DataPageStateManager
     }) {
 
+        this.searchSubGroup_Ids_Selected = searchSubGroup_Ids_Selected;
         this.projectSearchId = projectSearchId;
         this.reportedPeptideIds_ForDisplay = reportedPeptideIds_ForDisplay;
         this.dataPerReportedPeptideId_Map_Key_reportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId;

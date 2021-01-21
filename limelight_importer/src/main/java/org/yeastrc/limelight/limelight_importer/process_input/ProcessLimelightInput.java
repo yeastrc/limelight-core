@@ -47,7 +47,10 @@ import org.yeastrc.limelight.limelight_importer.post_insert_search_processing.Pe
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PreprocessValidate_ScanFiles_ScanFilenames;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_UpdateForSpectralStorageService_API_Key;
+import org.yeastrc.limelight.limelight_importer.search_sub_group_processing_validating.PreprocessValidate_SearchSubGroups;
+import org.yeastrc.limelight.limelight_importer.search_sub_group_processing_validating.Process_SearchSubGroups_SaveAtSearchLevel;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
@@ -103,6 +106,18 @@ public class ProcessLimelightInput {
 					PreprocessValidate_ScanFiles_ScanFilenames.getInstance()
 					.preprocessValidate_ScanFiles_ScanFilenames( limelightInput, scanFileFileContainer_KeyFilename );
 			
+			Set<String> searchSubGroupnamesLimelightXMLInputSet =
+					PreprocessValidate_SearchSubGroups.getInstance()
+					.preprocessValidate_SearchSubGroups( limelightInput );
+
+			boolean skip_SubGroup_Processing = false;
+			
+			if ( searchSubGroupnamesLimelightXMLInputSet.size() < 2 ) {
+				
+				//  Zero or One Sub Group on PSMs so SKIP Sub Group Processing
+				skip_SubGroup_Processing = true;
+			}
+			
 			SearchDTO_Importer searchDTO = new SearchDTO_Importer();
 			
 			searchDTO.setCreatedByUserId( userIdInsertingSearch );
@@ -140,6 +155,11 @@ public class ProcessLimelightInput {
 			} else {
 				searchDTO.setHasScanData( true );
 			}
+			if ( skip_SubGroup_Processing ) {
+				searchDTO.setHasSearchSubGroups( false );
+			} else {
+				searchDTO.setHasSearchSubGroups( true );
+			}
 				
 			searchDTO.setHasIsotopeLabel( peptideContainsIsotopeLabel( limelightInput ) );
 			searchDTO.setAnyPsmHasOpenModificationMasses( peptideContainsPSMWithOpenModificationMass( limelightInput ) );
@@ -173,6 +193,14 @@ public class ProcessLimelightInput {
 					Process_ScanFilenames_ScanFiles.getInstance()
 					.process_ScanFilenames_ScanFiles( searchId, scanFilenamesLimelightXMLInputSet, scanFileFileContainer_KeyFilename );
 			
+			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel = null;
+
+			if ( ! skip_SubGroup_Processing ) {
+				searchSubGroupDTOMap_Key_searchSubGroupLabel =
+					Process_SearchSubGroups_SaveAtSearchLevel.getInstance()
+					.process_SearchSubGroups_SaveAtSearchLevel( searchSubGroupnamesLimelightXMLInputSet, searchId );
+			}
+					
 			Map<String, SearchProgramEntry> searchProgramEntryMap =
 					ProcessSearchProgramEntries.getInstance()
 					.processSearchProgramEntries( limelightInput, searchDTO.getId() );
@@ -221,6 +249,8 @@ public class ProcessLimelightInput {
 			ProcessReportedPeptidesAndPSMs.getInstance().processReportedPeptides( 
 					limelightInput, 
 					searchDTO, 
+					skip_SubGroup_Processing,
+					searchSubGroupDTOMap_Key_searchSubGroupLabel,
 					searchProgramEntryMap,
 					reportedPeptideAndPsmFilterableAnnotationTypesOnId,
 					searchScanFileEntry_AllEntries
