@@ -25,7 +25,15 @@ export const errorDisplay_WhenHave_Javascript_Typescript_Error = function () {
             + '</div>';
 
 
-        $("body").append(html);
+        const addedDivElementDOM = document.createElement("div");
+
+        const documentBody = document.querySelector('body');
+
+        documentBody.appendChild( addedDivElementDOM );
+
+        addedDivElementDOM.innerHTML = html
+
+        // $("body").append(html);
 
         hasUpdatedDOM = true;
     }

@@ -30,6 +30,9 @@ var catchAndReportGlobalOnError = {
 		init : function() {
 			
 			try {
+				// Clear existing onerror set in JSP
+				window.onerror = null;
+
 				window.addEventListener('error', function(e) {
 //					var errorText = [
 //					e.message,
@@ -38,18 +41,18 @@ var catchAndReportGlobalOnError = {
 //					'Stack: ' + (e.error && e.error.stack || '(no stack trace)')
 //					].join('\n');
 
-					console.log("global error caught in catchAndReportGlobalOnError");
+					console.log("global error caught in catchAndReportGlobalOnError.  error event: ", e );
 
 					let errorException = e.error;
 					try {
 						reportWebErrorToServer.reportErrorObjectToServer ( { errorException : errorException } );
 					} catch ( e ) {
-						console.log("In catchAndReportGlobalOnError: exception calling reportWebErrorToServer.reportErrorObjectToServer(...)");
+						console.log("In catchAndReportGlobalOnError: exception calling reportWebErrorToServer.reportErrorObjectToServer(...). exception: ", e );
 					}
 
 				});
 			} catch( e ) {
-				console.log("In catchAndReportGlobalOnError: exception adding window error event listener");
+				console.log("In catchAndReportGlobalOnError: exception adding window error event listener. exception: ", e );
 			}
 		}
 }

@@ -33,6 +33,7 @@ head_section_include_every_page.jsp
     	content="script-src
     		'self' 
     		'sha256-LtIWLBFFzfYXdIGWJ2t/yMJVIYyKlWYs6JwRq0ESN9U=' <%-- inline script in this file for IE testing. --%>
+    		'sha256-zFC+///Xk4FAbxdUL7/FfF4qw3h5uHyU1+/S3dKmzLg=' <%-- inline script in this file for Page Error reporting. --%>
     		https://www.gstatic.com/  <%-- Google Charts Loader loaded from here --%>
     		'unsafe-eval'  <%--  Required for Google Charts --%> 
     		https://www.google-analytics.com/analytics.js  <%-- Google Analytics --%>
@@ -82,6 +83,62 @@ head_section_include_every_page.jsp
 </script>
 	
 </c:if>
+
+
+ <%--  !!!!!  WARNING  !!!!!!:   Any changes to this script requires changing the hash code in "Content-Security-Policy"
+ 
+ 					Otherwise, this script will not be processed.  See Chrome console for new hash.
+ 					
+		Do not change the contents of this script, even white space like indention.
+		If must change this script, need to generate a new hash for
+		'meta http-equiv="Content-Security-Policy" ' above in this file
+		
+		'inline script in this file for Page Error reporting'
+ --%>
+     <script type="text/javascript" >
+
+         window.onerror = function(message, source, lineno, colno, error) {
+
+             console.warn("In window.onerror function:")
+             console.warn("window.onerror message:", message)
+             console.warn("window.onerror source:", source)
+             console.warn("window.onerror lineno:", lineno)
+             console.warn("window.onerror colno:", colno)
+             console.warn("window.onerror error:", error)
+
+             window.setTimeout( function () {
+
+                 var html = (
+               		 '<div style="position: absolute; background-color: white; z-index: 10000; top:40px; left:40px; width:500px; padding: 10px; border-width: 5px; border-color: red; border-style: solid;" >' +
+
+                     '<h1 style="color: red;">Error in Page Code</h1>' +
+
+                     '<h3>Please reload the page and try again.</h3>' +
+                     '<h3>If this error continues to occur, please contact the person at the bottom of the page, if someone is listed there.' +
+                     '  Please include the browser and operating system used</h3>' +
+
+                     '<br><br>' +
+
+                     '</div>'
+                 );
+
+
+                 var addedDivElementDOM = document.createElement("div");
+
+                 var documentBody = document.querySelector('body');
+
+                 documentBody.appendChild( addedDivElementDOM );
+
+                 addedDivElementDOM.innerHTML = html
+
+                window.scroll(0, 0);  // scroll to top left, assuming message is in that corner
+
+             }, 2000 )
+         }
+
+     </script>
+
+
 
 <script id="webservice_sync_tracking_code" type="text/text" >${ webserviceSyncTracking }</script>
 

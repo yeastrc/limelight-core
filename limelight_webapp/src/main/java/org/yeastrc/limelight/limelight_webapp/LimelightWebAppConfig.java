@@ -22,8 +22,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.AllControllers_SpringHandlerInterceptor;
-//import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.All_Page_Controllers_SpringHandlerInterceptor;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.All_Page_Controllers_SpringHandlerInterceptor;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.Temp_AllControllersAccessControl_SpringHandlerInterceptor;
 
 /**
  * Configure paths for Controller Interceptor class AllControllersAccessControl_SpringHandlerInterceptor
@@ -36,9 +37,8 @@ public class LimelightWebAppConfig implements WebMvcConfigurer {
 	@Autowired
 	private AllControllers_SpringHandlerInterceptor allControllers_SpringHandlerInterceptor;
 	
-	//  NOT CURRENTLY USED
-//	@Autowired
-//	private All_Page_Controllers_SpringHandlerInterceptor all_Page_Controllers_SpringHandlerInterceptor;
+	@Autowired
+	private All_Page_Controllers_SpringHandlerInterceptor all_Page_Controllers_SpringHandlerInterceptor;
 	
 	@Autowired
 	private DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor dataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor;
@@ -54,11 +54,11 @@ public class LimelightWebAppConfig implements WebMvcConfigurer {
 			.addPathPatterns("/**")
 			.excludePathPatterns( AllControllers_SpringHandlerInterceptor.excludeInterceptorPaths );
 		}
-//		{  // NOT CURRENTLY USED
-//			registry.addInterceptor( all_Page_Controllers_SpringHandlerInterceptor )
-//			.addPathPatterns("/**")
-//			.excludePathPatterns( All_Page_Controllers_SpringHandlerInterceptor.excludeInterceptorPaths );
-//		}
+		{
+			registry.addInterceptor( all_Page_Controllers_SpringHandlerInterceptor )
+			.addPathPatterns("/**")
+			.excludePathPatterns( All_Page_Controllers_SpringHandlerInterceptor.excludeInterceptorPaths );
+		}
 
 		{
 			final String dataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor_Path =
