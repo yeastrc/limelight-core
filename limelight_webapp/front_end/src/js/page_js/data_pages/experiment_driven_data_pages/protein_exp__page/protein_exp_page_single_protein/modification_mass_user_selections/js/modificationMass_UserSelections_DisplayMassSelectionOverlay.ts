@@ -228,6 +228,9 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
             if ( this._proteinSequenceVersionId !== undefined && this._proteinSequenceVersionId !== null ) {
 
+                //   Only process a const reportedPeptideId / ModMass (PossiblyRounded) Combination so only process once
+                const reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed = new Map<number,number>();
+
                 const modificationsOnProtein_KeyProteinSequenceVersionId : Map<number, {mass: number, reportedPeptideId: number}[]> =
                     loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
 
@@ -236,9 +239,12 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                     const modificationsOnProtein = modificationsOnProtein_KeyProteinSequenceVersionId.get(this._proteinSequenceVersionId);
 
                     if ( modificationsOnProtein ) {
+
                         for ( const modificationOnProtein of modificationsOnProtein) {
                             //  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-                            // const position = modificationOnProtein.position;
+
+                            const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+
                             let mass = modificationOnProtein.mass;
 
                             if ( this._modificationMass_CommonRounding_ReturnNumber ) {  //  Transform Modification masses before using
@@ -247,7 +253,13 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                                 mass = this._modificationMass_CommonRounding_ReturnNumber( mass );
                             }
 
-                            const reportedPeptideId = modificationOnProtein.reportedPeptideId;
+                            if ( reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.get( reportedPeptideId ) === mass ) {
+                                //  reportedPeptideId / mass  combination has already been processed so skip
+
+                                continue; // EARLY CONTINUE
+                            }
+
+                            reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.set( reportedPeptideId, mass ); //  Add to processed
 
                             const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                             if ( ! numPsmsForReportedPeptideId ) {
@@ -264,6 +276,7 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                         }
                     }
                 }
+
             } else {
 
                 //  NO this._proteinSequenceVersionId
