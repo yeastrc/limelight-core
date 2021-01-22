@@ -172,11 +172,11 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
 
                 <div className=" filter-common-filter-label ">Filter On Static Modifications:</div>
 
-                <div className=" filter-common-selection-block modification-mass-selection-block " >
+                <div className=" filter-common-selection-block " >
                     <div className=" filter-common-selection-inner-block ">
-                        <div >
+
                             { singleModification_Entries }
-                        </div>
+
                     </div>          
                 </div> 
 

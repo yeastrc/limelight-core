@@ -349,17 +349,13 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
         return (
             <React.Fragment>
 
-                <div className=" filter-common-block-selection-outer-block peptide-sequence-selection-outer-block " >
-
-                    <div style={ { marginBottom : 2 } }>
-                        <div style={ { fontSize: 18, fontWeight: "bold", float: "left" } }>Filter On Sub Groups:</div>
-                        <div className=" filter-common-selection-block peptide-sequence-selection-block " >
-                            <div style={ {  marginTop: 2 } }>
-                                { searchSubGroupsJSX }
-                            </div>
-                        </div>
+                <div className=" filter-common-filter-label ">Filter On Sub Groups:</div>
+                <div className=" filter-common-selection-block peptide-sequence-selection-block " >
+                    <div className=" filter-common-selection-inner-block ">
+                        { searchSubGroupsJSX }
                     </div>
                 </div>
+
             </React.Fragment>
         )
     }

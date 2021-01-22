@@ -290,9 +290,14 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
                 <div className="filter-common-selection-block" >
                     <div >  {/*  className=" filter-common-selection-inner-block " no longer needed since adding border around mass entries: */}
                         { ( showNo_Variable_or_Open_ModificationsMsg ?
-                            <div className="  "> {/*   left-margin-same-as-checkbox; to align with checkbox in Static Mods */}
-                                No { variable_Open_Label } Modifications
-                            </div>
+                                <div className=" filter-common-selection-block " >
+                                    <div className=" filter-common-selection-inner-block ">
+
+                                        <div style={ { paddingTop: 2 }} className=" left-margin-same-as-checkbox "> {/*   left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                                            No { variable_Open_Label } Modifications
+                                        </div>
+                                    </div>
+                                </div>
                         :
                             <React.Fragment>
                                 <div >
