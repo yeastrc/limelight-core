@@ -229,7 +229,7 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             if ( this._proteinSequenceVersionId !== undefined && this._proteinSequenceVersionId !== null ) {
 
                 //   Only process a const reportedPeptideId / ModMass (PossiblyRounded) Combination so only process once
-                const reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed = new Map<number,number>();
+                const reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed = new Map<number,Set<number>>();
 
                 const modificationsOnProtein_KeyProteinSequenceVersionId : Map<number, {mass: number, reportedPeptideId: number}[]> =
                     loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
@@ -253,13 +253,20 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                                 mass = this._modificationMass_CommonRounding_ReturnNumber( mass );
                             }
 
-                            if ( reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.get( reportedPeptideId ) === mass ) {
-                                //  reportedPeptideId / mass  combination has already been processed so skip
+                            {
+                                let modMass_PossiblyRounded_Set = reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.get(reportedPeptideId);
+                                if ( ! modMass_PossiblyRounded_Set ) {
+                                    modMass_PossiblyRounded_Set = new Set();
+                                    reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.set(reportedPeptideId, modMass_PossiblyRounded_Set);
+                                } else {
+                                    if ( modMass_PossiblyRounded_Set.has( mass ) ) {
+                                        //  reportedPeptideId / mass  combination has already been processed so skip
 
-                                continue; // EARLY CONTINUE
+                                        continue; // EARLY CONTINUE
+                                    }
+                                }
+                                modMass_PossiblyRounded_Set.add( mass ); //  Add to processed
                             }
-
-                            reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.set( reportedPeptideId, mass ); //  Add to processed
 
                             const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                             if ( ! numPsmsForReportedPeptideId ) {
@@ -280,6 +287,10 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             } else {
 
                 //  NO this._proteinSequenceVersionId
+
+                //   Only process a const reportedPeptideId / ModMass (PossiblyRounded) Combination so only process once
+                const reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed = new Map<number,Set<number>>();
+
                 const reportedPeptideIds = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
                 const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId()
 
@@ -293,6 +304,8 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
                     for ( const dynamicModificationEntry of dynamicModificationsOnReportedPeptide ) {
 
+                        const reportedPeptideId = dynamicModificationEntry.reportedPeptideId;
+
                         let mass = dynamicModificationEntry.mass;
 
                         if ( this._modificationMass_CommonRounding_ReturnNumber ) {  //  Transform Modification masses before using
@@ -301,7 +314,20 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
                             mass = this._modificationMass_CommonRounding_ReturnNumber( mass );
                         }
 
-                        const reportedPeptideId = dynamicModificationEntry.reportedPeptideId;
+                        {
+                            let modMass_PossiblyRounded_Set = reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.get(reportedPeptideId);
+                            if ( ! modMass_PossiblyRounded_Set ) {
+                                modMass_PossiblyRounded_Set = new Set();
+                                reportedPeptideId_ModMass_PossiblyRounded_Combination_Processed.set(reportedPeptideId, modMass_PossiblyRounded_Set);
+                            } else {
+                                if ( modMass_PossiblyRounded_Set.has( mass ) ) {
+                                    //  reportedPeptideId / mass  combination has already been processed so skip
+
+                                    continue; // EARLY CONTINUE
+                                }
+                            }
+                            modMass_PossiblyRounded_Set.add( mass ); //  Add to processed
+                        }
 
                         const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                         if ( ! numPsmsForReportedPeptideId ) {
