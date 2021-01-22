@@ -28,92 +28,96 @@ import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessio
 
 /**
  * Is the Browser Microsoft Edge Legacy (EdgeHTML) which is no longer under development is deprecated
+ * 
+ * NOT CURRENTLY CALLED
  *
  */
-@Component
-public class BrowserIs_MicrosoftEdgeLegacy_Detection_Service implements BrowserIs_MicrosoftEdgeLegacy_Detection_ServiceIF {
+//@Component
+public class BrowserIs_MicrosoftEdgeLegacy_Detection_Service 
+//implements BrowserIs_MicrosoftEdgeLegacy_Detection_ServiceIF 
+{
 
-	private static final Logger log = LoggerFactory.getLogger( BrowserIs_MicrosoftEdgeLegacy_Detection_Service.class );
-
-	@Autowired
-	private UserSessionManager userSessionManager;
-	
-	/**
-	 * @param httpServletRequest
-	 * @return
-	 */
-	@Override
-	public boolean browserIs_MicrosoftEdgeLegacy_Detection_Service( HttpServletRequest httpServletRequest ) {
-		
-		try {
-			String userAgentString = httpServletRequest.getHeader("User-Agent");
-
-			if ( userAgentString != null ) {
-
-				if ( userAgentString.contains( "Edge/1" ) 
-						|| userAgentString.contains( "Edge/2" )
-						|| userAgentString.contains( "Edge/3" )
-						|| userAgentString.contains( "Edge/4" )
-						|| userAgentString.contains( "Edge/5" ) ) {
-
-					if ( log.isDebugEnabled() ) {
-
-						try {
-
-							String requestURL = httpServletRequest.getRequestURL().toString();
-
-							String userSessionUsername = "";
-
-							String username = null;
-
-							try {
-								username = getUsername( httpServletRequest );
-							} catch ( Exception e ) {
-								log.error( "Error getting username" );
-								//  Swallow any exceptions getting username
-							}
-
-							if ( username != null ) {
-								userSessionUsername = "\t, session username: \t" + username;
-							}
-
-							log.debug( "Browser is Microsoft Legacy Edge.  "
-									+ "UserAgent: \t" + userAgentString
-									+ "\t, requested URL: \t" + requestURL
-									+ "\t, remote IP: \t" + httpServletRequest.getRemoteAddr()
-									+ userSessionUsername );
-
-						} catch ( Throwable t ) {
-							log.error( "Failed logging browser/user information when is Browser is Microsoft Legacy Edge", t );
-							//  Swallow any exceptions getting username
-						}
-					}
-
-					return true;
-				}
-			}
-
-			return false;
-
-		} catch (Exception e) {
-			log.error( "Error determining if Browser is Microsoft Legacy Edge", e );
-			throw e;
-		}
-	}
-
-	/**
-	 * @param httpRequest
-	 * @return - null if no username
-	 */
-	private String getUsername( HttpServletRequest httpServletRequest ) {
-	
-		UserSession userSession = userSessionManager.getUserSession( httpServletRequest );
-		if ( userSession == null ) {
-			//  No User session 
-			return null;
-		}
-		
-		return userSession.getUsername();
-	}
+//	private static final Logger log = LoggerFactory.getLogger( BrowserIs_MicrosoftEdgeLegacy_Detection_Service.class );
+//
+//	@Autowired
+//	private UserSessionManager userSessionManager;
+//	
+//	/**
+//	 * @param httpServletRequest
+//	 * @return
+//	 */
+//	@Override
+//	public boolean browserIs_MicrosoftEdgeLegacy_Detection_Service( HttpServletRequest httpServletRequest ) {
+//		
+//		try {
+//			String userAgentString = httpServletRequest.getHeader("User-Agent");
+//
+//			if ( userAgentString != null ) {
+//
+//				if ( userAgentString.contains( "Edge/1" ) 
+//						|| userAgentString.contains( "Edge/2" )
+//						|| userAgentString.contains( "Edge/3" )
+//						|| userAgentString.contains( "Edge/4" )
+//						|| userAgentString.contains( "Edge/5" ) ) {
+//
+//					if ( log.isDebugEnabled() ) {
+//
+//						try {
+//
+//							String requestURL = httpServletRequest.getRequestURL().toString();
+//
+//							String userSessionUsername = "";
+//
+//							String username = null;
+//
+//							try {
+//								username = getUsername( httpServletRequest );
+//							} catch ( Exception e ) {
+//								log.error( "Error getting username" );
+//								//  Swallow any exceptions getting username
+//							}
+//
+//							if ( username != null ) {
+//								userSessionUsername = "\t, session username: \t" + username;
+//							}
+//
+//							log.debug( "No Redirect Performed.  Browser is Microsoft Legacy Edge.  "
+//									+ "UserAgent: \t" + userAgentString
+//									+ "\t, requested URL: \t" + requestURL
+//									+ "\t, remote IP: \t" + httpServletRequest.getRemoteAddr()
+//									+ userSessionUsername );
+//
+//						} catch ( Throwable t ) {
+//							log.error( "Failed logging browser/user information when is Browser is Microsoft Legacy Edge", t );
+//							//  Swallow any exceptions getting username
+//						}
+//					}
+//
+//					return true;
+//				}
+//			}
+//
+//			return false;
+//
+//		} catch (Exception e) {
+//			log.error( "Error determining if Browser is Microsoft Legacy Edge", e );
+//			throw e;
+//		}
+//	}
+//
+//	/**
+//	 * @param httpRequest
+//	 * @return - null if no username
+//	 */
+//	private String getUsername( HttpServletRequest httpServletRequest ) {
+//	
+//		UserSession userSession = userSessionManager.getUserSession( httpServletRequest );
+//		if ( userSession == null ) {
+//			//  No User session 
+//			return null;
+//		}
+//		
+//		return userSession.getUsername();
+//	}
 	
 }

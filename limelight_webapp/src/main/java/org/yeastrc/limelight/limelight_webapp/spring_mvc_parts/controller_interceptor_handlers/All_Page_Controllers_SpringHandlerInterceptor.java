@@ -33,86 +33,94 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_page
 /**
  * This is called before all Page Controllers, including user pages, by excluding static and rest webservices
  * 
- * 
+ * NOT CURRENTLY USED
  *
  */
-@Component
-public class All_Page_Controllers_SpringHandlerInterceptor implements HandlerInterceptor {
+//@Component
+public class All_Page_Controllers_SpringHandlerInterceptor
 
-	private final static String staticAssetsPath = "/static/**"; // Javascript, css, ...
-	
-	@Autowired
-	private BrowserIs_InternetExplorer_Detection_ServiceIF browserIs_InternetExplorer_Detection_Service;
-	
-	@Autowired
-	private BrowserIs_MicrosoftEdgeLegacy_Detection_ServiceIF browserIs_MicrosoftEdgeLegacy_Detection_Service;
-
-	/**
-	 * Used in class LimelightWebAppConfig
-	 */
-	public final static String[] excludeInterceptorPaths = { 
-			staticAssetsPath, 
-			
-			AA_RestWSControllerPaths_Constants.PATH_START_ALL
-			+ AA_RestWSControllerPaths_Constants.DATA_PAGE_REST_WEBSERVICE_CONTROLLER_START,
-			
-			AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
-			+ AA_UserAccount_RestWSControllerPaths_Constants.USER_REST_WEBSERVICE_CONTROLLER_START,
-			
-			AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
-			+ AA_ErrorPageControllerPaths_Constants.INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER
-	};
-	
-    // This method is called before the controller
-    @Override
-    public boolean preHandle( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler ) throws Exception {
-
-    	if ( browserIs_InternetExplorer_Detection_Service.browserIs_InternetExplorer_Detection_Service( httpServletRequest ) ) {
-    		
-    		String redirectPath = httpServletRequest.getContextPath() 
-    				+ AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
-    				+ AA_ErrorPageControllerPaths_Constants.INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER;
-    		
-    		httpServletResponse.sendRedirect( redirectPath );
-    		
-    		return false; // request handled here
-    	}
-    	
-    	if ( browserIs_MicrosoftEdgeLegacy_Detection_Service.browserIs_MicrosoftEdgeLegacy_Detection_Service( httpServletRequest ) ) {
-    		
-    		//  Currently commented out
-//    		String redirectPath = httpServletRequest.getContextPath() 
-//    				+ AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
-//    				+ AA_ErrorPageControllerPaths_Constants.MICROSOFT_LEGACY_EDGE_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER;
+//implements HandlerInterceptor 
+{
+//
+//	private final static String staticAssetsPath = "/static/**"; // Javascript, css, ...
+//	
+//	@Autowired
+//	private BrowserIs_InternetExplorer_Detection_ServiceIF browserIs_InternetExplorer_Detection_Service;
+//	
+//	@Autowired
+//	private BrowserIs_MicrosoftEdgeLegacy_Detection_ServiceIF browserIs_MicrosoftEdgeLegacy_Detection_Service;
+//
+//	/**
+//	 * Used in class LimelightWebAppConfig
+//	 */
+//	public final static String[] excludeInterceptorPaths = { 
+//			staticAssetsPath, 
+//			
+//			AA_RestWSControllerPaths_Constants.PATH_START_ALL
+//			+ AA_RestWSControllerPaths_Constants.DATA_PAGE_REST_WEBSERVICE_CONTROLLER_START,
+//			
+//			AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
+//			+ AA_UserAccount_RestWSControllerPaths_Constants.USER_REST_WEBSERVICE_CONTROLLER_START,
+//			
+//			AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
+//			+ AA_ErrorPageControllerPaths_Constants.INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER
+//	};
+//	
+//    // This method is called before the controller
+//    @Override
+//    public boolean preHandle( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler ) throws Exception {
+//    	
+//    	//  !!!  BOTH Redirects have been commented out since URLs 
+//
+//    	if ( browserIs_InternetExplorer_Detection_Service.browserIs_InternetExplorer_Detection_Service( httpServletRequest ) ) {
 //    		
-//    		httpServletResponse.sendRedirect( redirectPath );
+//    		//  If uncomment redirect, update BrowserIs_InternetExplorer_Detection_Service log message
+////    		
+////    		String redirectPath = httpServletRequest.getContextPath() 
+////    				+ AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
+////    				+ AA_ErrorPageControllerPaths_Constants.INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER;
+////    		
+////    		httpServletResponse.sendRedirect( redirectPath );
+////    		
+////    		return false; // request handled here
+//    	}
+//    	
+//    	if ( browserIs_MicrosoftEdgeLegacy_Detection_Service.browserIs_MicrosoftEdgeLegacy_Detection_Service( httpServletRequest ) ) {
 //    		
-//    		return false; // request handled here
-    	}
-    	
-    	return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request,
-            HttpServletResponse response, Object handler,
-            ModelAndView modelAndView) throws Exception {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request,
-            HttpServletResponse response, Object handler, Exception ex)
-            throws Exception {
-
-    }
-
-	public BrowserIs_InternetExplorer_Detection_ServiceIF getBrowserIs_InternetExplorer_Detection_Service() {
-		return browserIs_InternetExplorer_Detection_Service;
-	}
-
-	public void setBrowserIs_InternetExplorer_Detection_Service(
-			BrowserIs_InternetExplorer_Detection_ServiceIF browserIs_InternetExplorer_Detection_Service) {
-		this.browserIs_InternetExplorer_Detection_Service = browserIs_InternetExplorer_Detection_Service;
-	}
+//    		//  If uncomment redirect, update BrowserIs_MicrosoftEdgeLegacy_Detection_Service
+//    		
+////    		String redirectPath = httpServletRequest.getContextPath() 
+////    				+ AA_ErrorPageControllerPaths_Constants.PATH_START_ALL
+////    				+ AA_ErrorPageControllerPaths_Constants.MICROSOFT_LEGACY_EDGE_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER;
+////    		
+////    		httpServletResponse.sendRedirect( redirectPath );
+////    		
+////    		return false; // request handled here
+//    	}
+//    	
+//    	return true;
+//    }
+//
+//    @Override
+//    public void postHandle(HttpServletRequest request,
+//            HttpServletResponse response, Object handler,
+//            ModelAndView modelAndView) throws Exception {
+//
+//    }
+//
+//    @Override
+//    public void afterCompletion(HttpServletRequest request,
+//            HttpServletResponse response, Object handler, Exception ex)
+//            throws Exception {
+//
+//    }
+//
+//	public BrowserIs_InternetExplorer_Detection_ServiceIF getBrowserIs_InternetExplorer_Detection_Service() {
+//		return browserIs_InternetExplorer_Detection_Service;
+//	}
+//
+//	public void setBrowserIs_InternetExplorer_Detection_Service(
+//			BrowserIs_InternetExplorer_Detection_ServiceIF browserIs_InternetExplorer_Detection_Service) {
+//		this.browserIs_InternetExplorer_Detection_Service = browserIs_InternetExplorer_Detection_Service;
+//	}
 }
