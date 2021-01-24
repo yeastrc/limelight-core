@@ -7,7 +7,12 @@ import React from 'react'
 
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
 
-import { DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {
+    DataTable_Column,
+    DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params
+} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
@@ -104,7 +109,10 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
      */
   private _cellContentsDiv_onMouseEnterCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
       try {
-          const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed();
+          const params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params = {
+
+          }
+          const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough(params);
 
           this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueDiv_Ref.current })
 
@@ -217,15 +225,14 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           </svg>
         );
         horizontalGraph_SpaceAfter = " ";
-      
       }
 
       const valueDisplay = dataObject_columnEntry.valueDisplay;
-      const valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed = dataObject_columnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed;
+      const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = dataObject_columnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
 
       const tooltipText = dataObject_columnEntry.tooltipText;
 
-      if ( ( ! valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) && ( valueDisplay === undefined || valueDisplay === null ) ) {
+      if ( ( ! valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) && ( valueDisplay === undefined || valueDisplay === null ) ) {
         const msg = "DataTable_Table_DataRowEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null) is true: valueDisplay: " + valueDisplay + ", column.id " + column.id + ", dataObject_columnEntry: ";
         console.warn( msg, dataObject_columnEntry );
         throw Error( msg )
@@ -246,8 +253,11 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       let valueDisplay_ForCell = valueDisplay;
       let cellDisplayContents_FromCallback : JSX.Element = null;
-      if ( valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) {
-          cellDisplayContents_FromCallback = valueDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed();
+      if ( valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) {
+          const params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params = {
+
+          }
+          cellDisplayContents_FromCallback = valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough(params);
           valueDisplay_ForCell = null;
       }
 
@@ -256,7 +266,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       let cellContentsDiv_onMouseEnterCallback = undefined;
       let cellContentsDiv_onMouseLeaveCallback = undefined;
 
-      if ( dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoParamsPassed ) {
+      if ( dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) {
 
           cellContentsDiv_onMouseEnterCallback = this._cellContentsDiv_onMouseEnterCallback_BindThis;
           cellContentsDiv_onMouseLeaveCallback = this._cellContentsDiv_onMouseLeaveCallback_BindThis;

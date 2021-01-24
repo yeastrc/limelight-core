@@ -9,35 +9,24 @@
  ////    !!!!!!!  No Import for CreateReportedPeptideDisplayData_Result_Entry
 
 import {
-
     DataTable_RootTableObject,
-    
     DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-    
     DataTable_Column,
-
     DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
-    
+    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
+    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from '../js/searchesForConditionForSinglePeptide_ReturnChildReactComponent'
 
-import { reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent, ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_ReturnChildReactComponent';
-
-import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
-import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
-import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import { CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
+import {
+    reportedPeptidesForSingleSearch_createChildTableObjects,
+    ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__reported_peptides_for_single_search/js/reportedPeptidesForSingleSearch_createChildTableObjects";
 
 ////////////
 
@@ -155,7 +144,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
                 throw Error( msg );
             }
 
-            const reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter = new ReportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter({
+            const reportedPeptidesForSingleSearch_createChildTableObjects_Parameter = new ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter({
                 searchSubGroup_Ids_Selected : undefined,
                 projectSearchId,
                 reportedPeptideIds_ForDisplay,
@@ -167,11 +156,20 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
                 dataPageStateManager : dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager
             });
 
+            const dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject =
+                ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =>
+                {
+                    const result : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =
+                        reportedPeptidesForSingleSearch_createChildTableObjects({ dataRow_GetChildTable_ReturnReactComponent_Parameter : reportedPeptidesForSingleSearch_createChildTableObjects_Parameter });
+
+                    return result;
+                }
+
             const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                 uniqueId : projectSearchId,
                 sortOrder_OnEquals : projectSearchId,
                 columnEntries,
-                dataRow_GetChildTable_ReturnReactComponent_Parameter : reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent_Parameter
+                dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
             })
             dataTable_DataRowEntries.push( dataTable_DataRowEntry );
         }
@@ -182,11 +180,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
         dataTable_DataRowEntries
     });
     
-    const tableOptions = new DataTable_TableOptions({
-        //  Comment out since no further drill down to child table
-        // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
-        dataRow_GetChildTable_ReturnReactComponent : reportedPeptidesForSingleSearch__dataRow_GetChildTable_ReturnReactComponent
-    });
+    const tableOptions = new DataTable_TableOptions({});
 
     //  psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent, PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter
 

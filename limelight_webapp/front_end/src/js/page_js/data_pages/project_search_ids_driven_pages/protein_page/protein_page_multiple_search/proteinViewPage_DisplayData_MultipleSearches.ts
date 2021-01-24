@@ -53,7 +53,9 @@ import {
 	DataTable_TableOptions,
 	DataTable_RootTableDataObject,
 	DataTable_RootTableObject,
-	DataTable_DataRowEntry, DataTable_DataGroupRowEntry
+	DataTable_DataRowEntry,
+	DataTable_DataGroupRowEntry,
+	DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { create_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM';
 import { ProteinRow_tableRowClickHandlerParameter_MultipleSearches, renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject } from './proteinViewPage_DisplayData_MultipleSearches_Create_ProteinList_DataTable_RootTableDataObject';
@@ -89,6 +91,15 @@ export class ProteinDataDisplay_ProteinListItem_MultipleSearch {
 	}>
 }
 
+///   Callback when row in protein list table is clicked
+
+export class ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params {
+	proteinSequenceVersionId: number
+	dataTable_RowClickCallback_Params: DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params
+}
+
+export type ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler = ( params : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params ) => void
+
 
 /**
  * !! InternalClass
@@ -111,6 +122,11 @@ class ProteinDataDisplay_MultipleSearch_Summary_PerSearch {
 export class ProteinViewPage_Display_MultipleSearches {
 
 	private _singleProteinRowClickHandler_BindThis = this._singleProteinRowClickHandler.bind(this);
+
+	private _DO_NOT_CALL() { // For testing .bind functions types
+		throw Error("DO NOT CALL")
+		const singleProteinRowClickHandler : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler = this._singleProteinRowClickHandler
+	}
 
 	private _data_LoadedFor_ComputedReportedPeptides_AllProteins = false;
 
@@ -650,7 +666,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		if (proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null) {
 			//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
-			this._singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId: proteinSequenceVersionId_FromURL, $target: undefined});
+			this._singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId: proteinSequenceVersionId_FromURL});
 
 			//  Delay render Protein List since currently hidden.  Probably could skip render until close Single Protein Overlay
 			window.setTimeout(() => {
@@ -1329,14 +1345,11 @@ export class ProteinViewPage_Display_MultipleSearches {
 		// $("#reported_peptide_count_display").text( reportedPeptideCount_TotalForSearch_Display );
 		// $("#psm_count_display").text( psmCount_TotalForSearch_Display );
 
-		//  For DataTable
-
-		const tableOptions = new DataTable_TableOptions({
-			dataRowClickHandler: this._singleProteinRowClickHandler_BindThis,
-		})
+		const tableOptions = new DataTable_TableOptions({});
 
 		//   Create Data Table
 		const tableDataObject: DataTable_RootTableDataObject = renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject({ // External Function
+			singleProteinRowClickHandler_Callback : this._singleProteinRowClickHandler_BindThis,
 			proteinList,
 			proteinGroups_ArrayOf_ProteinGroup: proteinDisplayData.proteinGroups_ArrayOf_ProteinGroup,
 			proteinGrouping_CentralStateManagerObjectClass: this._proteinGrouping_CentralStateManagerObjectClass,
@@ -1436,36 +1449,27 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _singleProteinRowClickHandler(param: DataTable_TableOptions_dataRowClickHandler_RequestParm) {
+	private _singleProteinRowClickHandler( params : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params ) {
 
-		const eventObject = param.event;
+		console.log("!!!  _singleProteinRowClickHandler called: params: ", params );
 
-		const proteinRow_tableRowClickHandlerParameter = param.tableRowClickHandlerParameter as ProteinRow_tableRowClickHandlerParameter_MultipleSearches
-		if (!(proteinRow_tableRowClickHandlerParameter instanceof ProteinRow_tableRowClickHandlerParameter_MultipleSearches)) {
-			const msg = "ProteinViewPage_Display_MultipleSearches: _singleProteinRowClickHandler:  if ( ! ( proteinRow_tableRowClickHandlerParameter instanceof ProteinRow_tableRowClickHandlerParameter ) ). proteinRow_tableRowClickHandlerParameter:  ";
-			console.warn(msg, proteinRow_tableRowClickHandlerParameter);
-			throw Error(msg);
-		}
+		const proteinSequenceVersionId = params.proteinSequenceVersionId
 
-		const proteinSequenceVersionId = proteinRow_tableRowClickHandlerParameter.proteinSequenceVersionId
+		if (params.dataTable_RowClickCallback_Params.clickEventData.ctrlKey_From_ClickEvent || params.dataTable_RowClickCallback_Params.clickEventData.metaKey_From_ClickEvent) {
 
-		const $target = $(eventObject.target);
-
-		if (eventObject.ctrlKey || eventObject.metaKey) {
-
-			this._singleProteinRowShowSingleProteinNewWindow({$target, proteinSequenceVersionId});
+			this._singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId});
 			return;
 		}
 
 		this._singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({proteinSequenceVersionId});
 
-		this._singleProteinRowShowSingleProteinOverlay({$target, proteinSequenceVersionId});
+		this._singleProteinRowShowSingleProteinOverlay({ proteinSequenceVersionId});
 	}
 
 	/**
 	 *
 	 */
-	private _singleProteinRowShowSingleProteinNewWindow({$target, proteinSequenceVersionId}) {
+	private _singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId}) {
 
 		//  Create URL for new Window about to open
 
@@ -1486,7 +1490,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _singleProteinRowShowSingleProteinOverlay({$target, proteinSequenceVersionId}) {
+	private _singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId}) {
 
 		const proteinNameDescription = this._proteinNameDescription_Key_ProteinSequenceVersionId.get(proteinSequenceVersionId);
 		if (proteinNameDescription === undefined) {
@@ -1494,23 +1498,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		}
 
 		const proteinNameDescriptionParam = {name: proteinNameDescription.name, description: proteinNameDescription.description};
-
-		if ($target) {
-
-			if ($target.hasClass("selector_protein_name")) {
-				//  Hide tooltip for protein name
-
-				const $selector_table_rows_container = $target.closest(".selector_table_rows_container");
-
-				if ($selector_table_rows_container.length !== 0) {
-					// Grab the first element in the tooltips array and access its qTip API
-					const qtipAPI = $selector_table_rows_container.qtip('api');
-					if (qtipAPI) {
-						qtipAPI.toggle(false);  // ensure qtip not shown
-					}
-				}
-			}
-		}
 
 		//  Current Window Scroll position
 		const currentWindowScrollY = window.scrollY;

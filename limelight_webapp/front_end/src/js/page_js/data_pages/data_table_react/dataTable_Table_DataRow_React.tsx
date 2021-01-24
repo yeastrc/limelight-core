@@ -17,7 +17,17 @@ import {
     DataTable_RootTableObject,
     DataTable_RootTableDataObject,
     DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect,
-    DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm
+    DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm,
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_RowDOM_Rect,
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_ClickEventData,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue,
+    DataTable_DataRowEntry__Get_RowChildContent_CallParams,
+    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
+    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_TableRoot } from './dataTable_TableRoot_React';
@@ -50,11 +60,31 @@ interface DataTable_Table_DataRow_State {
     dataRow_GetChildTable_ReturnReactComponent_Parameter?
     dataRow_GetChildTable_ReturnReactComponent_Parameter_FromProps?
 
+    //  function called to get 'Row Child Content' to display when this row is expanded
+    dataRow_Get_RowChildContent_Return_ChildContent? : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent
+    dataRow_Get_RowChildContent_Return_ChildContent_FromProps? : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent
+
+    //  function called to get 'Row Child Content' Callback to display when this row is expanded
+    dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent? : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent
+    dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps? : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent
+
+    //  function called to get 'Row Child Content' Callback to display when this row is expanded, returns Promise<...>
+    dataRow_Get_RowChildContent_Return_Promise_ChildContent? : DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent
+    dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps? : DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent
+
     tableOptions? : DataTable_TableOptions
     tableOptions_FromProps? : DataTable_TableOptions
 
+    /**
+     * Called in 'render()' when populated to get 'Row Child Content'.  function called to get 'Row Child Content' to display when this row is expanded
+     *
+     * This is populated from props.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent if that is populated
+     * This can also be populated from result of calls to  dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent, dataRow_Get_RowChildContent_Return_Promise_ChildContent
+     */
+    dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender? : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent
+
     childDataTable_RootTableObject? : DataTable_RootTableObject;
-    show_Loading_childDataTable_Message? : boolean
+    show_Loading_childContent_Message? : boolean
     childDataTable_ReactComponent? : React.Component;
     displayChildTable? : boolean;
     // _placeholder //  have so not have any state properties
@@ -104,7 +134,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         if ( 
             props.dataObject.dataRow_GetChildTableDataParameter === state.dataRow_GetChildTableDataParameter_FromProps
             && props.dataObject.dataRow_GetChildTableData_ViaPromise_Parameter === state.dataRow_GetChildTableData_ViaPromise_Parameter_FromProps
-            && props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter === state.dataRow_GetChildTable_ReturnReactComponent_Parameter_FromProps 
+            && props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter === state.dataRow_GetChildTable_ReturnReactComponent_Parameter_FromProps
+            && props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent === state.dataRow_Get_RowChildContent_Return_ChildContent_FromProps
+            && props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent === state.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps
+            && props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent === state.dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps
             && props.tableOptions === state.tableOptions_FromProps 
         ) {
             //  No changes so just return
@@ -116,12 +149,19 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             dataRow_GetChildTableDataParameter : props.dataObject.dataRow_GetChildTableDataParameter,
             dataRow_GetChildTableData_ViaPromise_Parameter : props.dataObject.dataRow_GetChildTableData_ViaPromise_Parameter,
             dataRow_GetChildTable_ReturnReactComponent_Parameter : props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter,
+            dataRow_Get_RowChildContent_Return_ChildContent : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent,
+            dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
+            dataRow_Get_RowChildContent_Return_Promise_ChildContent : props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent,
             tableOptions : props.tableOptions,
             dataRow_GetChildTableDataParameter_FromProps : props.dataObject.dataRow_GetChildTableDataParameter,
             dataRow_GetChildTableData_ViaPromise_Parameter_FromProps : props.dataObject.dataRow_GetChildTableData_ViaPromise_Parameter,
             dataRow_GetChildTable_ReturnReactComponent_Parameter_FromProps : props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter,
+            dataRow_Get_RowChildContent_Return_ChildContent_FromProps : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent,
+            dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
+            dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps : props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent,
             tableOptions_FromProps : props.tableOptions,
-            //  Clear out both child table objects
+            //  Clear out all child content objects
+            dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender : null,
             childDataTable_RootTableObject : null,
             childDataTable_ReactComponent : null,
             //  Do Not Display Child Table
@@ -154,6 +194,15 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         if ( this.props.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter !== nextProps.dataObject.dataRow_GetChildTable_ReturnReactComponent_Parameter ) {
             return true;
         }
+        if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent !== nextProps.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ) {
+            return true;
+        }
+        if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent !== nextProps.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ) {
+            return true;
+        }
+        if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent !== nextProps.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+            return true;
+        }
         if ( this.props.tableOptions !== nextProps.tableOptions ) {
             return true;
         }
@@ -161,6 +210,9 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             return true;
         }
         if ( this.props.tableOptions.dataRow_GetChildTableData_ViaPromise !== nextProps.tableOptions.dataRow_GetChildTableData_ViaPromise ) {
+            return true;
+        }
+        if ( this.state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender !== nextState.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender ) {
             return true;
         }
         if ( this.state.childDataTable_RootTableObject !== nextState.childDataTable_RootTableObject ) {
@@ -221,9 +273,52 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
 
                 this.props.tableOptions.dataRowClickHandler({ event, rowDOM_Rect, tableRowClickHandlerParameter : this.props.dataObject.tableRowClickHandlerParameter });
-            } 
+            }
 
-            if ( this.props.tableOptions.dataRow_GetChildTableData ) {
+            if ( this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ) {
+
+                const targetDOMElement_domRect = this._row_OfTable_Ref.current.getBoundingClientRect();
+
+                /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
+
+                const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
+                const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
+                const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
+                const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+
+                const rowDOM_Rect : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_RowDOM_Rect = {
+                    left : targetDOMElement_domRect_Left,
+                    right : targetDOMElement_domRect_Right,
+                    top : targetDOMElement_domRect_Top,
+                    bottom : targetDOMElement_domRect_Bottom
+                }
+
+                const clickEventData : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_ClickEventData = {
+                    ctrlKey_From_ClickEvent : event.ctrlKey,
+                    metaKey_From_ClickEvent : event.metaKey
+                }
+
+                const clickHandlerParams : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params = {
+                    clickEventData,
+                    rowDOM_Rect
+                }
+
+                this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough( clickHandlerParams );
+
+            }
+
+            if ( this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+                this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ) {
+
+                this._processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject({ event });
+
+            } else if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
+                this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+                this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+
+                this._processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent({ event });
+
+            } else if ( this.props.tableOptions.dataRow_GetChildTableData ) {
 
                 this._processChildTableClick_For_dataRow_GetChildTableData({ event });
 
@@ -243,7 +338,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
     }
 
     /**
-     * 
+     * Get Child Table using function in tableOptions.dataRow_GetChildTableData
      */
     _processChildTableClick_For_dataRow_GetChildTableData({ event } : { event : React.MouseEvent<HTMLTableRowElement, MouseEvent> }) {
 
@@ -280,7 +375,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
     }
 
     /**
-     *
+     * Get Child Table using function in tableOptions.dataRow_GetChildTableData_ViaPromise
      */
     _processChildTableClick_For_dataRow_GetChildTableData_ViaPromise({ event } : { event : React.MouseEvent<HTMLTableRowElement, MouseEvent> }) {
 
@@ -299,7 +394,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
 
             this.setState( ( prevState : DataTable_Table_DataRow_State, props : DataTable_Table_DataRow_Props ) : DataTable_Table_DataRow_State => {
-                return { show_Loading_childDataTable_Message : true }
+                return { show_Loading_childContent_Message : true }
             });
 
             const dataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm = new DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm();
@@ -331,7 +426,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     }
 
                     this.setState( ( prevState : DataTable_Table_DataRow_State, props : DataTable_Table_DataRow_Props ) : DataTable_Table_DataRow_State => {
-                        return { childDataTable_RootTableObject, show_Loading_childDataTable_Message : false };
+                        return { childDataTable_RootTableObject, show_Loading_childContent_Message : false };
                     });
 
                 } catch( e ) {
@@ -340,6 +435,237 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     throw e;
                 }
             })
+        }
+    }
+
+    //////
+
+
+    /**
+     * Get Child Table using function in
+     *  Process both handlers:
+     *          this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+     *          this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
+     *
+     *  Process handlers directly on the dataObject
+     */
+    _processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject({ event } : { event : React.MouseEvent<HTMLTableRowElement, MouseEvent> }) {
+
+        // Invert state.displayChildTable to show/hide child table
+
+        this._displayChildTable = ! this._displayChildTable;
+
+        this.setState( ( prevState : DataTable_Table_DataRow_State, props : DataTable_Table_DataRow_Props ) : DataTable_Table_DataRow_State => {
+
+            return { displayChildTable : this._displayChildTable };
+        });
+
+        if ( this._displayChildTable && ( ! this.state.childDataTable_RootTableObject ) ) {
+
+            //   state.childDataTable_RootTableObject not exist so create it and set in state
+
+
+            this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
+                return {show_Loading_childContent_Message: true}
+            });
+
+            let childDataTable_RootTableObject: DataTable_RootTableObject = undefined
+            let promise_childDataTable_RootTableObject: Promise<DataTable_RootTableObject> = undefined
+
+            if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject) {
+
+                const get_RowChildTableData_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
+
+                const result: DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =
+                    this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject(get_RowChildTableData_Params);
+
+                if (result.dataTable_RootTableObject) {
+                    childDataTable_RootTableObject = result.dataTable_RootTableObject;
+                } else if (result.promise_Containing_dataTable_RootTableObject) {
+                    promise_childDataTable_RootTableObject = result.promise_Containing_dataTable_RootTableObject;
+                } else {
+                    const msg = "result has NEITHER populated: dataTable_RootTableObject, promise_Containing_dataTable_RootTableObject.  From call to this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+            } else if (this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject) {
+
+                const get_RowDataTable_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
+
+                promise_childDataTable_RootTableObject =
+                    this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject(get_RowDataTable_Params);
+
+            } else {
+                const msg = "NEITHER populated: this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject NOR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject";
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            if (childDataTable_RootTableObject) {
+
+                this.setState({
+                    childDataTable_RootTableObject: childDataTable_RootTableObject,
+                    show_Loading_childContent_Message: false
+                });
+
+            } else if (promise_childDataTable_RootTableObject) {
+
+                promise_childDataTable_RootTableObject.catch((reason) => {
+                    try {
+                        const msg = "Promise reject from this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject OR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject";
+                        console.warn(msg, reason)
+                        throw Error(msg)
+
+                    } catch (e) {
+                        console.warn("Error Caught: ", e);
+                        reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                        throw e;
+                    }
+                })
+
+                promise_childDataTable_RootTableObject.then((childDataTable_RootTableObject) => {
+                    try {
+                        if (!childDataTable_RootTableObject) {
+                            const msg = "No value returned from this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject OR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject";
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
+                            return {childDataTable_RootTableObject, show_Loading_childContent_Message: false};
+                        });
+
+                    } catch (e) {
+                        console.warn("Error Caught: ", e);
+                        reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                        throw e;
+                    }
+                })
+            } else {
+                const msg = "NEITHER childDataTable_RootTableObject NOR promise_childDataTable_RootTableObject is set"
+                console.warn(msg)
+                throw Error(msg)
+            }
+        }
+    }
+
+    ///////
+
+    /**
+     *  Process both handlers:
+     *          this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
+     *          this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+     *          this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent
+     *
+     *  Process handlers directly on the dataObject
+     */
+    _processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent({ event } : { event : React.MouseEvent<HTMLTableRowElement, MouseEvent> }) {
+
+        // Invert state.displayChildTable to show/hide child table
+
+        this._displayChildTable = !this._displayChildTable;
+
+        this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
+
+            return {displayChildTable: this._displayChildTable};
+        });
+
+        if (this._displayChildTable && (!this.state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender)) {
+
+            //   state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender not exist so create it and set in state
+
+            this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
+                return {show_Loading_childContent_Message: true}
+            });
+
+            let dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = undefined
+            let promise_childContent_Callback: Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent> = undefined
+
+            if (this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent) {
+
+                const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
+
+                dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender = this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent;
+
+            } else if (this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent) {
+
+                const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
+
+                const result: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue =
+                    this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent(get_RowChildContent_Params);
+
+                if (result.getchildContentCallback) {
+                    dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender = result.getchildContentCallback;
+                } else if (result.promise_Containing_GetChildContentCallback) {
+                    promise_childContent_Callback = result.promise_Containing_GetChildContentCallback;
+                } else {
+                    const msg = "result has NEITHER populated: childContent, promise_childContent.  From call to this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+            } else if (this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent) {
+
+                const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
+
+                promise_childContent_Callback =
+                    this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent(get_RowChildContent_Params);
+
+            } else {
+                const msg = "NEITHER populated: this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent NOR this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent";
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            if (dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender) {
+
+                this.setState({
+                    dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender,
+                    show_Loading_childContent_Message: false
+                });
+
+            } else if (promise_childContent_Callback) {
+
+                promise_childContent_Callback.catch((reason) => {
+                    try {
+                        const msg = "Promise reject from this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent OR this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent: "
+                        console.warn(msg, reason)
+                        throw Error(msg)
+
+                    } catch (e) {
+                        console.warn("Error Caught: ", e);
+                        reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                        throw e;
+                    }
+                })
+
+                promise_childContent_Callback.then((getChildContent_Callback) => {
+                    try {
+                        if (!getChildContent_Callback) {
+                            const msg = "No value returned from Promise.resolve from this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent OR this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent: ";
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
+                            return {
+                                dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: getChildContent_Callback,
+                                show_Loading_childContent_Message: false
+                            };
+                        });
+
+                    } catch (e) {
+                        console.warn("Error Caught: ", e);
+                        reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                        throw e;
+                    }
+                })
+            } else {
+                const msg = "NEITHER childContent NOR promise_childContent is set"
+                console.warn(msg)
+                throw Error(msg)
+            }
         }
     }
 
@@ -412,7 +738,14 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         if (this.props.tableOptions.dataRowClickHandler ||
             this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise ||
-            this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent) {
+            this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
+            this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+
             className_Row_classNameClickable = " clickable "
         }
 
@@ -448,7 +781,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         if (this.props.tableOptions.dataRowClickHandler ||
             this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise ||
-            this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent) {
+            this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
             rowClickHandler = this._row_onClick_BindThis;
         }
@@ -456,7 +795,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         let childTableShowHideIcon = undefined;
 
-        if (this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise  || this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent) {
+        if (this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise  ||
+            this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+            this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
             if (this.state.displayChildTable) {
 
@@ -474,22 +819,31 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             }
         }
 
-        let childTableAndContainer = undefined;
+        let childContentsAndContainer = undefined;
         {
-            let childTable = undefined;
+            let childContents = undefined;
 
-            if (this.state.show_Loading_childDataTable_Message) {
+            if (this.state.show_Loading_childContent_Message) {
 
-                childTable = (
+                childContents = (
 
                     <div>
                         LOADING
                     </div>
                 );
 
+            } else if (this.state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender ) {
+
+                const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
+
+                childContents = (
+
+                    this.state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender( get_RowChildContent_Params )
+                );
+
             } else if (this.state.childDataTable_RootTableObject) {
 
-                childTable = (
+                childContents = (
 
                     <DataTable_TableRoot
                         tableObject={this.state.childDataTable_RootTableObject}
@@ -501,7 +855,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                 //  Cast to any since would not compile without it.  Probably a way to make this work but for now:
                 let Component: any = this.state.childDataTable_ReactComponent as any //  as ChildTable;  // Make First letter capital for JSX
 
-                childTable = (
+                childContents = (
                     <Component
                         dataRow_GetChildTable_ReturnReactComponent_Parameter={this.state.dataRow_GetChildTable_ReturnReactComponent_Parameter}
                         // key={ this.state.dataRow_GetChildTable_ReturnReactComponent_Parameter }  // key={...} is required
@@ -515,7 +869,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     // This is a simpler lifecycle for <Component> than having to deal with a change to the prop dataRow_GetChildTable_ReturnReactComponent_Parameter
                 );
             }
-            if (childTable) {
+            if (childContents) {
 
                 const containerStyle = {} as React.CSSProperties;
 
@@ -531,10 +885,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
                 const className = " child-data-table-container " + classNameAddition;
 
-                childTableAndContainer = (
+                childContentsAndContainer = (
 
                     <div style={containerStyle} className={className}>
-                        {childTable}
+                        {childContents}
                     </div>
 
                 )
@@ -672,7 +1026,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                             </tbody>
                         </table>
                     </div>
-                    { childTableAndContainer }
+                    { childContentsAndContainer }
                 </div>
 
                 {/* If CSS Class 'data-table-data-rows-outer-containing-div' is changed to 'display: inline-block'

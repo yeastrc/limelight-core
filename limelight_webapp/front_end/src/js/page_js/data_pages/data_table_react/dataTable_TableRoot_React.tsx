@@ -13,7 +13,14 @@ import React from 'react'
 
 import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from "./dataTable_constants";
 
-import { DataTable_RootTableObject, DataTable_ColumnId, DataTable_TableOptions, DataTable_SortColumnsInfoEntry, DataTable_RootTableDataObject } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {
+    DataTable_RootTableObject,
+    DataTable_ColumnId,
+    DataTable_TableOptions,
+    DataTable_SortColumnsInfoEntry,
+    DataTable_RootTableDataObject,
+    DataTable_DataRowEntry
+} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 
 import { DataTable_Table_HeaderRowEntry }  from './dataTable_Table_HeaderRowEntry_React';
@@ -590,12 +597,29 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         let divCssClass = " data-table-container-react ";
 
-        if ( this.state.tableOptions.dataRow_GetChildTableData || this.state.tableOptions.dataRow_GetChildTableData_ViaPromise || this.state.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
-            //  Adding show/hide child table icons to left of each row 
-            //     so need to add padding to provide space for them on the left since 
-            //     the icons are positioned with a negative value for 'left' css property
-            
-            divCssClass += " padding-for-room-for-child-table-show-hide-icon ";
+        {
+            let addPassingForChildContent = false;
+
+            if (this.state.tableOptions.dataRow_GetChildTableData || this.state.tableOptions.dataRow_GetChildTableData_ViaPromise ||
+                this.state.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
+
+                addPassingForChildContent = true;
+
+            } else {
+                //  Check all data row entries for show child data function callback
+
+                if ( _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback( this.state.tableDataObject) ) {
+
+                    addPassingForChildContent = true;
+                }
+            }
+
+            if ( addPassingForChildContent ) {
+                //  Adding show/hide child table icons to left of each row
+                //     so need to add padding to provide space for them on the left since
+                //     the icons are positioned with a negative value for 'left' css property
+                divCssClass += " padding-for-room-for-child-table-show-hide-icon ";
+            }
         }
 
         let updatingTableOrder_Message : JSX.Element = undefined;
@@ -625,4 +649,44 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     }
 }
 
+/**
+ *
+ */
+const _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback = function( tableDataObject : DataTable_RootTableDataObject ) : boolean {
 
+    if ( tableDataObject.dataTable_DataGroupRowEntries ) {
+
+        for (const dataTable_DataGroupRowEntry of tableDataObject.dataTable_DataGroupRowEntries) {
+
+            const foundInGroupRows = _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback___Check_DataRowEntriesArray( dataTable_DataGroupRowEntry.dataTable_DataRowEntries );
+            if ( foundInGroupRows ) {
+                return true;
+            }
+        }
+
+    } else {
+
+        return _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback___Check_DataRowEntriesArray(tableDataObject.dataTable_DataRowEntries);
+    }
+}
+
+
+/**
+ *
+ */
+const _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback___Check_DataRowEntriesArray = function( dataTable_DataRowEntries :  DataTable_DataRowEntry[] ) : boolean {
+
+    for (const dataTable_DataRowEntry of dataTable_DataRowEntries) {
+
+        if ( dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ||
+            dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
+            dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+            dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ) {
+
+            return true;
+        }
+    }
+
+    return false;
+}

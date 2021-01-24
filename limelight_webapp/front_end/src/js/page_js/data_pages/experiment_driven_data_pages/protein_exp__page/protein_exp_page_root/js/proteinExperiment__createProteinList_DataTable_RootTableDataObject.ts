@@ -289,18 +289,23 @@ const _createProteinItem_DataTableEntry = function( { greyOutRow, proteinListIte
     const proteinName = proteinListItem.proteinNames;
     const proteinDescription = proteinListItem.proteinDescriptions;
 
-    const columnEntries : Array<DataTable_DataRow_ColumnEntry> = [
-        {
+    const columnEntries : Array<DataTable_DataRow_ColumnEntry> = [];
+    {
+        const entry = new DataTable_DataRow_ColumnEntry({
             valueSort : proteinName, //  for sorting
             valueDisplay : proteinName,
             tooltipText : proteinName   //  For html 'title' property for tooltip display.  Not HTML. Can have \n
-        },
-        {
-            valueSort : proteinDescription, //  for sorting
-            valueDisplay : proteinDescription,
-            tooltipText : proteinDescription   //  For html 'title' property for tooltip display  Not HTML. Can have \n
-        }
-    ];
+        });
+        columnEntries.push( entry );
+    }
+    {
+        const entry = new DataTable_DataRow_ColumnEntry({
+            valueSort: proteinDescription, //  for sorting
+            valueDisplay: proteinDescription,
+            tooltipText: proteinDescription   //  For html 'title' property for tooltip display  Not HTML. Can have \n
+        });
+        columnEntries.push( entry );
+    }
 
     const psmCountsPerCondition = [];
 
@@ -328,11 +333,11 @@ const _createProteinItem_DataTableEntry = function( { greyOutRow, proteinListIte
 
         const valueDisplay = numPsms.toLocaleString();
 
-        const columnEntry : DataTable_DataRow_ColumnEntry = {
+        const columnEntry = new DataTable_DataRow_ColumnEntry({
             valueSort : numPsms, //  for sorting
             valueDisplay,
             tooltipText : undefined
-        };
+        });
 
         columnEntries.push( columnEntry );
 
@@ -346,12 +351,12 @@ const _createProteinItem_DataTableEntry = function( { greyOutRow, proteinListIte
 
     //  Show chart with psm counts for conditions in first condition group
     if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
-        const columnEntry = {
+        const columnEntry = new DataTable_DataRow_ColumnEntry({
             cellMgmt_External_Data : {
                 proteinName_ForDiv : proteinName,
                 psmCountsPerCondition
             }
-        };
+        });
 
         columnEntries.push( columnEntry );
     }
