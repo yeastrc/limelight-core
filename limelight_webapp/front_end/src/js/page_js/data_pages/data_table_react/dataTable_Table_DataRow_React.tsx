@@ -45,7 +45,7 @@ export interface DataTable_Table_DataRow_Props {
     tableOptions : DataTable_TableOptions
     columns : Array<DataTable_Column>
     dataTable_RootTableDataObject : DataTable_RootTableDataObject
-    isLastRow : boolean
+    isLastRow : boolean   //  NOT Currently used since it changes after the user sorts the table.  Was only used for minor formatting.
 }
 
 /**
@@ -308,7 +308,8 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             }
 
             if ( this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-                this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ) {
+                this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+                this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ) {
 
                 this._processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject({ event });
 
@@ -443,7 +444,8 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
     /**
      * Get Child Table using function in
-     *  Process both handlers:
+     *  Process these handlers:
+     *          this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
      *          this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
      *          this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
      *
@@ -472,7 +474,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             let childDataTable_RootTableObject: DataTable_RootTableObject = undefined
             let promise_childDataTable_RootTableObject: Promise<DataTable_RootTableObject> = undefined
 
-            if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject) {
+            if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject) {
+
+                const get_RowChildTableData_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
+
+                childDataTable_RootTableObject = this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject(get_RowChildTableData_Params);
+
+            } else if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject) {
 
                 const get_RowChildTableData_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
 
@@ -497,7 +505,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject(get_RowDataTable_Params);
 
             } else {
-                const msg = "NEITHER populated: this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject NOR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject";
+                const msg = "NEITHER populated: this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject NOR this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject NOR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -740,6 +748,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise ||
             this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
             this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
@@ -782,6 +791,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         if (this.props.tableOptions.dataRowClickHandler ||
             this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise ||
             this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
             this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
@@ -797,6 +807,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         if (this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise  ||
             this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
+            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
             this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
@@ -879,9 +890,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
                 let classNameAddition = "";
 
-                if (!this.props.isLastRow) {
+                //  Comment out 'if' since row becomes other than last row after user sorts the table
+                // if (!this.props.isLastRow) {
                     classNameAddition = " child-data-table-container-not-last-parent-row ";
-                }
+                // }
 
                 const className = " child-data-table-container " + classNameAddition;
 

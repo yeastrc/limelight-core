@@ -605,6 +605,9 @@ class DataTable_DataRowEntry {
 
     //  function called on row click.  No properties passed from this object.
     tableRowClickHandler_Callback_NoDataPassThrough? : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough
+
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject
     //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
     //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
@@ -653,8 +656,10 @@ class DataTable_DataRowEntry {
 
             tableRowClickHandler_Callback_NoDataPassThrough,
 
-            //  Only 1 of the following 5 are allowed to be populated (and none allowed if any of Old style dataRow_GetChildTable... populated)
+            //  Only 1 of the following 6 are allowed to be populated (and none allowed if any of Old style dataRow_GetChildTable... populated)
             //   (this rule is enforced in the type DataTable_DataRowEntry__Constructor)
+            //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+            dataRow_GetChildTableData_Return_DataTable_RootTableObject,
             dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
             dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject,
             dataRow_Get_RowChildContent_Return_ChildContent,
@@ -678,6 +683,7 @@ class DataTable_DataRowEntry {
         this.dataRow_GetChildTable_ReturnReactComponent_Parameter = dataRow_GetChildTable_ReturnReactComponent_Parameter;
 
         this.tableRowClickHandler_Callback_NoDataPassThrough = tableRowClickHandler_Callback_NoDataPassThrough;
+        this.dataRow_GetChildTableData_Return_DataTable_RootTableObject = dataRow_GetChildTableData_Return_DataTable_RootTableObject;
         this.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject = dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject;
         this.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject = dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject;
         this.dataRow_Get_RowChildContent_Return_ChildContent = dataRow_Get_RowChildContent_Return_ChildContent;
@@ -736,13 +742,14 @@ class DataTable_DataRowEntry {
      * @private
      */
     private static _constructorDataValidation_Validate_OldGetChildTable_With_New_GetChildContent(dataTable_DataRowEntry : DataTable_DataRowEntry, oldGetChild_PropertyName : string ) {
-        if ( dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+        if ( dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
+            dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
             dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
             dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
             dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
             dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
             const msg = 'DataTable_DataRowEntry.constructorDataValidation: ' + oldGetChild_PropertyName + '' +
-                ' (constant searchable string starts here) cannot be populated when any of the following are populated: dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject, dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject, dataRow_Get_RowChildContent_Return_ChildContent, dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent, dataRow_Get_RowChildContent_Return_Promise_ChildContent';
+                ' (constant searchable string starts here) cannot be populated when any of the following are populated: dataRow_GetChildTableData_Return_DataTable_RootTableObject || dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject, dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject, dataRow_Get_RowChildContent_Return_ChildContent, dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent, dataRow_Get_RowChildContent_Return_Promise_ChildContent';
             console.warn(msg)
             throw Error(msg);
         }
@@ -781,8 +788,26 @@ interface DataTable_DataRowEntry__Constructor_Base {
     //  More properties are added in the extends interfaces.  Done there to limit use to exactly 1 of the properties.
 }
 
+interface DataTable_DataRowEntry__Constructor__GetChildTableData extends DataTable_DataRowEntry__Constructor_Base {
+
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject
+    //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : never
+    //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
+    dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
+
+    //  function called to get 'Row Child Content' to display when this row is expanded
+    dataRow_Get_RowChildContent_Return_ChildContent? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
+    //  function called to get 'Row Child Content' to display when this row is expanded
+    dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
+    //  function called to get 'Row Child Content' to display when this row is expanded.  Callback returns Promise<...> to be compatible with 'async' functions.
+    dataRow_Get_RowChildContent_Return_Promise_ChildContent? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
+}
 interface DataTable_DataRowEntry__Constructor__GetChildTableData_ObjOrPromise extends DataTable_DataRowEntry__Constructor_Base {
 
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : never
     //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
     //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
@@ -797,6 +822,8 @@ interface DataTable_DataRowEntry__Constructor__GetChildTableData_ObjOrPromise ex
 }
 interface DataTable_DataRowEntry__Constructor__GetChildTableData_Promise extends DataTable_DataRowEntry__Constructor_Base {
 
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : never
     //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
     //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
@@ -818,6 +845,8 @@ interface DataTable_DataRowEntry__Constructor__GetChildContent extends DataTable
     //  function called to get 'Row Child Content' to display when this row is expanded.  Callback returns Promise<...> to be compatible with 'async' functions.
     dataRow_Get_RowChildContent_Return_Promise_ChildContent? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
 
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : never
     //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
     //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
@@ -832,6 +861,8 @@ interface DataTable_DataRowEntry__Constructor__GetChildContent_FcnOrPromise exte
     //  function called to get 'Row Child Content' to display when this row is expanded.  Callback returns Promise<...> to be compatible with 'async' functions.
     dataRow_Get_RowChildContent_Return_Promise_ChildContent? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
 
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : never
     //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
     //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
@@ -846,6 +877,8 @@ interface DataTable_DataRowEntry__Constructor__GetChildContent_Promise extends D
     //  function called to get 'Row Child Content' to display when this row is expanded.  Callback returns Promise<...> to be compatible with 'async' functions.
     dataRow_Get_RowChildContent_Return_Promise_ChildContent? : DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent
 
+    //  function called to get Child DataTable. Callback returns an DataTable_RootTableObject. No properties passed from this object.
+    dataRow_GetChildTableData_Return_DataTable_RootTableObject? : never
     //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
     //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
@@ -854,7 +887,7 @@ interface DataTable_DataRowEntry__Constructor__GetChildContent_Promise extends D
 ////
 
 type DataTable_DataRowEntry__Constructor =
-    DataTable_DataRowEntry__Constructor__GetChildTableData_ObjOrPromise | DataTable_DataRowEntry__Constructor__GetChildTableData_Promise |
+    DataTable_DataRowEntry__Constructor__GetChildTableData | DataTable_DataRowEntry__Constructor__GetChildTableData_ObjOrPromise | DataTable_DataRowEntry__Constructor__GetChildTableData_Promise |
     DataTable_DataRowEntry__Constructor__GetChildContent | DataTable_DataRowEntry__Constructor__GetChildContent_FcnOrPromise | DataTable_DataRowEntry__Constructor__GetChildContent_Promise
 
 
@@ -888,7 +921,17 @@ interface DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThroug
 
 type DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough = ( params : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params ) => void;
 
+////////////
+
 interface DataTable_DataRowEntry__GetChildTableData_CallbackParams {  }
+
+////
+
+//  function called to get Child DataTable. Callback returns DataTable_RootTableObject. No properties passed from this object.
+type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject =
+    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) => DataTable_RootTableObject;
+
+////
 
 //  The follow interface and type result in a return value that contains exactly one of the 2 properties (data...  promise...)
 
@@ -1182,6 +1225,7 @@ export {
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
     DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
     DataTable_DataRow_ColumnEntry,

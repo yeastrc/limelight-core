@@ -682,6 +682,7 @@ const _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback___Check_Data
             dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
             dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
             dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
             dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ) {
 
             return true;
