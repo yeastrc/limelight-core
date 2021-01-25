@@ -822,9 +822,12 @@
             border-color: #D3D3D3 ;
          }
         
-        .view-single-protein-overlay-X-for-exit-overlay { float: right; border-color: #000000; height:33px; background-color: white; color: $site-color-very-dark; padding: 3px; margin: 0px;  cursor: pointer;  }
+        .view-single-protein-overlay-X-for-exit-overlay { border-color: #000000; height:33px; background-color: white; color: $site-color-very-dark; padding: 3px; margin: 0px;  cursor: pointer;  }
         
-        .view-single-protein-overlay-header-text { color: white; padding: 3px; margin: 0px; text-align: center;  }
+        .view-single-protein-overlay-header-text {
+          color: white; padding: 3px; margin-left: 20px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
         
         .view-single-protein-overlay-body {  padding: 20px; }
         

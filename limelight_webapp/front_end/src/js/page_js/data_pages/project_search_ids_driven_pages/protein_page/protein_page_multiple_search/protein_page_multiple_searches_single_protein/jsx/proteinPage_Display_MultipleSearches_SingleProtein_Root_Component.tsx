@@ -64,8 +64,13 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
 
     private _closeOverlayClickHandler_BindThis = this._closeOverlayClickHandler.bind(this);
     private _setWidth__view_single_protein_inner_overlay_div_BindThis = this._setWidth__view_single_protein_inner_overlay_div.bind(this);
+    private _update_OnScroll_BindThis = this._update_OnScroll.bind(this);
 
     private _view_single_protein_inner_overlay_div_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> id: view_single_protein_inner_overlay_div
+    private view_single_protein_overlay_header_inner_container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()
+
+    private _update_OnScroll_Timeout : any;
+    private _update_Header_Left_For_Scroll_X__Last_ScrollX_Position : number;
 
     private _view_single_protein_inner_overlay_div_Width : number = undefined;
 
@@ -83,6 +88,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
         super(props);
 
         this._view_single_protein_inner_overlay_div_Ref = React.createRef<HTMLDivElement>();
+        this.view_single_protein_overlay_header_inner_container_Ref = React.createRef<HTMLDivElement>();
         this._view_single_protein_overlay_body_Ref = React.createRef<HTMLDivElement>();
 
         this.state = { 
@@ -128,6 +134,12 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
      * 
      */   
     componentDidMount() {
+        {
+            //  Add a scroll event handler to hide the tooltip on scroll
+            window.addEventListener( "scroll", this._update_OnScroll_BindThis, { passive: true } );
+
+            this._update_Header_Left_For_Scroll_X(); //  Run for initial scroll position
+        }
 
         {
             //  this._view_single_protein_inner_overlay_div_Ref
@@ -202,7 +214,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
      * 
      */   
     componentWillUnmount() {
-
+        window.removeEventListener( "scroll", this._update_OnScroll_BindThis );
     }
 
     /**
@@ -233,6 +245,34 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
 
             this._view_single_protein_inner_overlay_div_Ref.current.style.width = width + 'px';
         }
+    }
+
+    /**
+     * Event Listener on 'scroll'
+     */
+    private _update_OnScroll() {
+
+        if ( this._update_OnScroll_Timeout ) {
+            window.clearTimeout( this._update_OnScroll_Timeout );
+        }
+        this._update_OnScroll_Timeout = window.setTimeout( ( ) => {
+            this._update_Header_Left_For_Scroll_X();
+        }, 50 )
+    }
+
+    /**
+     * Updates Header Contents 'left' to keep Header contents in viewport
+     */
+    private _update_Header_Left_For_Scroll_X() : void {
+
+        const scrollX = window.scrollX;
+
+        if ( scrollX === this._update_Header_Left_For_Scroll_X__Last_ScrollX_Position ) {
+            // scrollX not change so exit
+            return; // EARLY RETURN
+        }
+
+        this.view_single_protein_overlay_header_inner_container_Ref.current.style.marginLeft = scrollX + "px";
     }
 
     ////////////////////////////////////////
@@ -296,6 +336,21 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
             )
         }
 
+        let proteinName_Display_Header = null;
+
+        if ( this.props.proteinNames ) {
+            proteinName_Display_Header = this.props.proteinNames;
+        } else {
+            if (this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop) {
+                if ( this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop.proteinNames) {
+                    proteinName_Display_Header = this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop.proteinNames;
+                }
+            }
+        }
+
+        const view_single_protein_overlay_header_Style_width_maxWidth = "min( 100%, calc( 100vw - 10px ))";
+
+
         return (
             <div >
                 <div id="single_protein_overlay_background" className="single-protein-modal-dialog-overlay-background" >
@@ -307,12 +362,30 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
 
                     <div id="view_single_protein_inner_overlay_div"  className=" view-single-protein-overlay-div " ref={ this._view_single_protein_inner_overlay_div_Ref }>
 
-                        <div id="view_single_protein_overlay_header" className="view-single-protein-overlay-header" style={ { width: "100%" } } >
+                        <div className="view-single-protein-overlay-header">
 
-                            <h1 id="view_single_protein_overlay_X_for_exit_overlay" className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }
-                            >X</h1>
-                                                
-                            <h1 id="view_single_protein_overlay_header_text" className="view-single-protein-overlay-header-text" >Protein Data</h1>
+                            <div ref={ this.view_single_protein_overlay_header_inner_container_Ref }
+                                style={  { width: view_single_protein_overlay_header_Style_width_maxWidth,  maxWidth: view_single_protein_overlay_header_Style_width_maxWidth } }
+                            >
+
+                                <div  style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
+                                    {/* Next elements in the header are in a CSS Grid */}
+
+                                    <h1 className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }
+                                        title="Close"
+                                    >X</h1>
+
+                                    <h1 className="view-single-protein-overlay-header-text"
+                                        title={ proteinName_Display_Header }
+                                    >
+                                        <span>Protein</span>
+                                        { proteinName_Display_Header ? (
+                                            <span>: </span>
+                                            ) : null }
+                                        { proteinName_Display_Header }
+                                    </h1>
+                                </div>
+                            </div>
                         </div>
                         <div id="view_single_protein_overlay_body" className="view-single-protein-overlay-body" ref={ this._view_single_protein_overlay_body_Ref } >
 

@@ -237,7 +237,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
     //  bind to 'this' for passing as parameters
 
-    private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
+    // private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
 
@@ -451,9 +451,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
             this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded();
 
-            this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
+            // this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 
-            this._resizeWindow_Handler_Attach();
+            // this._resizeWindow_Handler_Attach();
 
         } catch( e ) {
 			console.log("Exception caught in _resizeWindow_Handler()");
@@ -468,7 +468,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */   
     componentWillUnmount() {
         try {
-            this._resizeWindow_Handler_Remove();
+            // this._resizeWindow_Handler_Remove();
 
             this._remove_MutationObserver_From_reported_peptides_outer_container();
             
@@ -480,38 +480,38 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 		}
     }
 
-	/**
-	 * 
-	 */
-	private _resizeWindow_Handler_Attach() : void {
+	// /**
+	//  *
+	//  */
+	// private _resizeWindow_Handler_Attach() : void {
+    //
+	// 	//  Attach resize handler
+	// 	window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
+	// }
+    //
+	// /**
+	//  *
+	//  */
+	// private _resizeWindow_Handler_Remove() : void {
+    //
+	// 	//  Remove resize handler
+	// 	window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
+	// }
 
-		//  Attach resize handler
-		window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	}
-
-	/**
-	 * 
-	 */
-	private _resizeWindow_Handler_Remove() : void {
-
-		//  Remove resize handler
-		window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	}
-	
-	/**
-	 * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
-	 */
-	private _resizeWindow_Handler() : void {
-		try {
-			this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
-
-		} catch( e ) {
-			console.log("Exception caught in _resizeWindow_Handler()");
-			console.log( e );
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		}
-	}
+	// /**
+	//  * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
+	//  */
+	// private _resizeWindow_Handler() : void {
+	// 	try {
+	// 		this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
+    //
+	// 	} catch( e ) {
+	// 		console.log("Exception caught in _resizeWindow_Handler()");
+	// 		console.log( e );
+	// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+	// 		throw e;
+	// 	}
+	// }
 
     /**
      * User has changed the Search Sub Group Selections.
@@ -2083,7 +2083,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 		}
 
 		//  Add MutationObserver to DOM element .selector_reported_peptides_outer_container
-	
+
 		// const $selector_reported_peptides_outer_container = $view_single_protein_overlay_body.find(".selector_reported_peptides_outer_container");
 		// if ( $selector_reported_peptides_outer_container.length === 0 ) {
 		// 	throw Error("Failed find DOM element with class 'selector_reported_peptides_outer_container'");
@@ -2126,7 +2126,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 		};
 		// Create an observer instance linked to the callback function
         this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
-        
+
 
         const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
@@ -2138,8 +2138,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 	}
 
 	/**
-	 * Adjust overlay width to fit reported peptide 
-	 * 
+	 * Adjust overlay width to fit reported peptide
+	 *
 	 * called internally from this class
 	 */
 	_resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() {
@@ -2149,19 +2149,19 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
         const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
-		
+
 		const reported_peptides_data_table_container_Width = containerRect_GeneratedReportedPeptideListSection.width;
-			
+
 		let overlayWidth = (
-            reported_peptides_data_table_container_Width 
-            + this.props.view_single_protein_overlay_body_PaddingLeft 
+            reported_peptides_data_table_container_Width
+            + this.props.view_single_protein_overlay_body_PaddingLeft
             + this.props.view_single_protein_overlay_body_PaddingRight
             + 2 //  Little Extra
         );
 		if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
 			overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
         }
-        
+
         if ( overlayWidth !== this._updated_OverlayWidth ) {
 
             //  overlayWidth has changed
@@ -2171,93 +2171,95 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             this._updated_OverlayWidth = overlayWidth;
         }
 
-		this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
+		// this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 	}
 
-	/**
-	 * _adjustBoxesOnRight So AtRigthtEdgeOfViewPort or right edge of overlay, whichever is further left.
-     * 
-     * This is done by adjusting the width of the containing <div> that contains the grid definition "auto min-content"
-     * 
-     * Called from _resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() or whenever the width of the viewport changes.
-	 */
-	_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() {
+	//  NOT CALLED
 
-        // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() entered")
-
-        let widthOverall_For_TopSection = undefined;  // Section above Peptide List.  Keep in viewport if possible
-        {
-            let overlayWidth = undefined;
-            
-            if ( this._updated_OverlayWidth !== undefined ) {
-                
-                overlayWidth = this._updated_OverlayWidth;
-
-            } else {
-
-                overlayWidth = this.props.view_single_protein_inner_overlay_div_Width_Initial;
-            }
-
-            //   window.innerWidth: Per MDN: Width (in pixels) of the browser window viewport INCLUDING, if rendered, the vertical scrollbar.
-            // const window_innerWidth = window.innerWidth
-
-            //  Get Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.  
-            //     Done to position boxes on right correctly from right side, including if vertical scrollbar is rendered
-            const rootHTMLelement_Collection = document.getElementsByTagName("html");
-            if ( ! ( rootHTMLelement_Collection.length > 0 ) ) {
-                const msg = "_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort(): element 'html' not found: true: if ( ! ( rootHTMLelement_Collection.length > 0 ) )"
-                console.warn( msg );
-                throw Error( msg );
-            }
-            const rootHTMLelement = rootHTMLelement_Collection[ 0 ];
-            const rootHTMLelement_clientWidth = rootHTMLelement.clientWidth; // Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar. 
-    
-            // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() rootHTMLelement_clientWidth: " + rootHTMLelement_clientWidth + ", window_innerWidth: " + window_innerWidth )
-    
-            if ( overlayWidth < rootHTMLelement_clientWidth ) {
-
-                widthOverall_For_TopSection = overlayWidth;
-
-            } else {
-
-                widthOverall_For_TopSection = rootHTMLelement_clientWidth;
-            }
-        }
-
-        //  Subtract left and right adding of containing <div>
-        widthOverall_For_TopSection = widthOverall_For_TopSection - this.props.view_single_protein_overlay_body_PaddingLeft - this.props.view_single_protein_overlay_body_PaddingRight;
-        {
-            const div_MainGridAtTo_DOM = this._div_MainGridAtTop_Ref.current;
-
-            div_MainGridAtTo_DOM.style.width = widthOverall_For_TopSection + "px";
-
-            div_MainGridAtTo_DOM.style.maxWidth = widthOverall_For_TopSection + "px";
-        }
-        {
-            const div_MainContent_LeftGridEntry_AtTop_DOM = this._div_MainContent_LeftGridEntry_AtTop_Ref.current;
-
-            let width_LeftGridEntry = (
-                widthOverall_For_TopSection 
-                - _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC - _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC // - _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC 
-                - 10 //  border width on boxes and just extra
-            );
-
-            if ( width_LeftGridEntry < this.state.widthOf_proteinSequenceWidgetDisplay_Component ) {
-                width_LeftGridEntry = this.state.widthOf_proteinSequenceWidgetDisplay_Component
-            }
-
-            if ( width_LeftGridEntry !== this._width_LeftGridEntry_TopMainSection_LastUpdatedValue ) {
-
-                // Has changed so update saved value and DOM
-
-                this._width_LeftGridEntry_TopMainSection_LastUpdatedValue = width_LeftGridEntry;
-
-                div_MainContent_LeftGridEntry_AtTop_DOM.style.width = width_LeftGridEntry + "px";
-                div_MainContent_LeftGridEntry_AtTop_DOM.style.maxWidth = width_LeftGridEntry + "px";
-                div_MainContent_LeftGridEntry_AtTop_DOM.style.minWidth = width_LeftGridEntry + "px";
-            }
-        }
-	}
+	// /**
+	//  * _adjustBoxesOnRight So AtRigthtEdgeOfViewPort or right edge of overlay, whichever is further left.
+    //  *
+    //  * This is done by adjusting the width of the containing <div> that contains the grid definition "auto min-content"
+    //  *
+    //  * Called from _resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() or whenever the width of the viewport changes.
+	//  */
+	// _adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() {
+    //
+    //     // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() entered")
+    //
+    //     let widthOverall_For_TopSection = undefined;  // Section above Peptide List.  Keep in viewport if possible
+    //     {
+    //         let overlayWidth = undefined;
+    //
+    //         if ( this._updated_OverlayWidth !== undefined ) {
+    //
+    //             overlayWidth = this._updated_OverlayWidth;
+    //
+    //         } else {
+    //
+    //             overlayWidth = this.props.view_single_protein_inner_overlay_div_Width_Initial;
+    //         }
+    //
+    //         //   window.innerWidth: Per MDN: Width (in pixels) of the browser window viewport INCLUDING, if rendered, the vertical scrollbar.
+    //         // const window_innerWidth = window.innerWidth
+    //
+    //         //  Get Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
+    //         //     Done to position boxes on right correctly from right side, including if vertical scrollbar is rendered
+    //         const rootHTMLelement_Collection = document.getElementsByTagName("html");
+    //         if ( ! ( rootHTMLelement_Collection.length > 0 ) ) {
+    //             const msg = "_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort(): element 'html' not found: true: if ( ! ( rootHTMLelement_Collection.length > 0 ) )"
+    //             console.warn( msg );
+    //             throw Error( msg );
+    //         }
+    //         const rootHTMLelement = rootHTMLelement_Collection[ 0 ];
+    //         const rootHTMLelement_clientWidth = rootHTMLelement.clientWidth; // Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
+    //
+    //         // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() rootHTMLelement_clientWidth: " + rootHTMLelement_clientWidth + ", window_innerWidth: " + window_innerWidth )
+    //
+    //         if ( overlayWidth < rootHTMLelement_clientWidth ) {
+    //
+    //             widthOverall_For_TopSection = overlayWidth;
+    //
+    //         } else {
+    //
+    //             widthOverall_For_TopSection = rootHTMLelement_clientWidth;
+    //         }
+    //     }
+    //
+    //     //  Subtract left and right adding of containing <div>
+    //     widthOverall_For_TopSection = widthOverall_For_TopSection - this.props.view_single_protein_overlay_body_PaddingLeft - this.props.view_single_protein_overlay_body_PaddingRight;
+    //     {
+    //         const div_MainGridAtTo_DOM = this._div_MainGridAtTop_Ref.current;
+    //
+    //         div_MainGridAtTo_DOM.style.width = widthOverall_For_TopSection + "px";
+    //
+    //         div_MainGridAtTo_DOM.style.maxWidth = widthOverall_For_TopSection + "px";
+    //     }
+    //     {
+    //         const div_MainContent_LeftGridEntry_AtTop_DOM = this._div_MainContent_LeftGridEntry_AtTop_Ref.current;
+    //
+    //         let width_LeftGridEntry = (
+    //             widthOverall_For_TopSection
+    //             - _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC - _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC // - _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC
+    //             - 10 //  border width on boxes and just extra
+    //         );
+    //
+    //         if ( width_LeftGridEntry < this.state.widthOf_proteinSequenceWidgetDisplay_Component ) {
+    //             width_LeftGridEntry = this.state.widthOf_proteinSequenceWidgetDisplay_Component
+    //         }
+    //
+    //         if ( width_LeftGridEntry !== this._width_LeftGridEntry_TopMainSection_LastUpdatedValue ) {
+    //
+    //             // Has changed so update saved value and DOM
+    //
+    //             this._width_LeftGridEntry_TopMainSection_LastUpdatedValue = width_LeftGridEntry;
+    //
+    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.width = width_LeftGridEntry + "px";
+    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.maxWidth = width_LeftGridEntry + "px";
+    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.minWidth = width_LeftGridEntry + "px";
+    //         }
+    //     }
+	// }
 
 
     ////////////////////////////////////////
