@@ -272,6 +272,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
             return; // EARLY RETURN
         }
 
+        this._update_Header_Left_For_Scroll_X__Last_ScrollX_Position = scrollX;
+
         this.view_single_protein_overlay_header_inner_container_Ref.current.style.marginLeft = scrollX + "px";
     }
 
