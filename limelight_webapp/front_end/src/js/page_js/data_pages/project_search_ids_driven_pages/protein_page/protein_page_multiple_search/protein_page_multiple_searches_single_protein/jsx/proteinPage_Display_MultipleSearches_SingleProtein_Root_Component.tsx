@@ -348,8 +348,10 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
             }
         }
 
+        //  This CSS calculation sets the width the lesser of 100% of parent element or view port width (100vw) minus 10 pixels
+        //       (subtract 10 pixels since 100vw doesn't subtract for scrollbar if present)
+        //       (Set 'width:' and 'maxWidth:' to this string)
         const view_single_protein_overlay_header_Style_width_maxWidth = "min( 100%, calc( 100vw - 10px ))";
-
 
         return (
             <div >
