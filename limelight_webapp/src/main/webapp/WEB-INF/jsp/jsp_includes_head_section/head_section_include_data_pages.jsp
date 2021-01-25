@@ -35,7 +35,7 @@
 	The controller for every data page must call Page_UserDefault_SetForJSP.page_UserDefault_SetForJSP(...) 
  --%>
 
-<script type="text/text" id="page_user_default_url">${ defaultURL }</script>
+<script type="text/text" id="page_user_default_url"><html><body><c:out value="${ defaultURL }"/></body><html></script>
 
 
 <script type="text/text" id="page_navigation_links_data_json"

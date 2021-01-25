@@ -37,13 +37,36 @@ export class Page_UserDefault_processing {
 	 * @return
 	 */
 	page_UserDefault_processing() {
-        
-        const $page_user_default_url = $("#page_user_default_url");
-        if ( $page_user_default_url.length === 0 ) {
-            // Not on Page so exit
-            return; // EARLY EXIT
-        }
-        const page_user_default_url = $page_user_default_url.text();
+
+        const page_user_default_urlDOM = document.getElementById("page_user_default_url");
+		if ( ! page_user_default_urlDOM ) {
+			// Not on Page so exit
+			return; // EARLY EXIT
+		}
+
+		let page_user_default_url : string = null;
+
+		{
+			const innerText = page_user_default_urlDOM.innerText
+
+			const domparser = new DOMParser()
+
+			try {
+				const doc = domparser.parseFromString(innerText, "text/html")
+
+				const body = doc.body;
+
+				const bodyinnerText = body.innerText
+				const bodyinnerHTML = body.innerHTML
+
+				page_user_default_url = body.innerText;
+
+			} catch (e) {
+				// Not parsable Value so exit
+				return; // EARLY EXIT
+			}
+		}
+
         if ( page_user_default_url === undefined || page_user_default_url === null || page_user_default_url === "" ) {
             // No Value so exit
             return; // EARLY EXIT
