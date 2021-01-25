@@ -99,7 +99,7 @@ export class SetDefaultView_Component extends React.Component< SetDefaultView_Co
         return (
             <React.Fragment>
                 <div className=" set-default-view-container ">
-                    <input type="button" value="Set Default"
+                    <input type="button" value="Save As Default"
                            onClick={ this._setDefaultViewButton_ClickHandler_BindThis }
                     />
                 </div>
