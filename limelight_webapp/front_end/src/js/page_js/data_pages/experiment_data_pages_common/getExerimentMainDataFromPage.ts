@@ -38,24 +38,13 @@ export class GetExerimentMainDataFromPage {
 	 */
 	getExerimentMainDataFromPage({ searchDataLookupParamsRoot } : { searchDataLookupParamsRoot : SearchDataLookupParameters_Root } ) {
 
-		// console.log("getExerimentMainDataFromPage()")
-		
-		//   Process Strings from Server from DOM <div style="display: none "> text elements
-
-		//     ( Stored in <div> instead of <script> so can encode as HTML and auto decode using .text() )
-
 		let experimentId : number = undefined;
 		let experiment_id_string : string = undefined;
 		{
-			const $experiment_id_string = $("#experiment_id_string");
-			if ( $experiment_id_string.length === 0 ) {
-				throw Error("No DOM element with ID 'experiment_id_string'");
+			experiment_id_string = _getDOMElementContents_UnEncode_HTML_To_Text( "experiment_id_string" );
+			if ( experiment_id_string === undefined || experiment_id_string === null ) {
+				throw Error("No DOM element with ID 'experiment_id_string' or contents failed to parse as HTML");
 			}
-			experiment_id_string = $experiment_id_string.text();
-			
-			//  Remove from Page DOM
-			$experiment_id_string.remove();
-
 			{
 				experimentId = Number.parseInt( experiment_id_string );
 				if ( Number.isNaN( experimentId ) ) {
@@ -68,28 +57,22 @@ export class GetExerimentMainDataFromPage {
 
 		let experiment_name : string = undefined;
 		{
-			const $experiment_name_from_server = $("#experiment_name_from_server");
-			if ( $experiment_name_from_server.length === 0 ) {
-				throw Error("No DOM element with ID 'experiment_name_from_server'");
+			experiment_name = _getDOMElementContents_UnEncode_HTML_To_Text( "experiment_name_from_server" );
+			if ( experiment_name === undefined || experiment_name === null ) {
+				throw Error("No DOM element with ID 'experiment_name_from_server' or contents failed to parse as HTML");
 			}
-			experiment_name = $experiment_name_from_server.text();
-
-			//  Remove from Page DOM
-			$experiment_name_from_server.remove();
 		}
 
 		let experiment_ConditionGroupsContainer : Experiment_ConditionGroupsContainer = undefined;
 		let conditionGroupsDataContainer : ConditionGroupsDataContainer = undefined;
 
 		{
-			const $experiment_main_data_at_page_load_json = $("#experiment_main_data_at_page_load_json");
-			if ( $experiment_main_data_at_page_load_json.length === 0 ) {
-				throw Error("No DOM element with ID 'experiment_main_data_at_page_load_json'");
+			const DOMElementContents_UnEncode_HTML_To_Text = _getDOMElementContents_UnEncode_HTML_To_Text( "experiment_main_data_at_page_load_json" );
+			if ( DOMElementContents_UnEncode_HTML_To_Text === undefined || DOMElementContents_UnEncode_HTML_To_Text === null ) {
+				throw Error("No DOM element with ID 'experiment_main_data_at_page_load_json' or contents failed to parse as HTML");
 			}
-			const experiment_main_data_at_page_load_json = $experiment_main_data_at_page_load_json.text();
-			
-			//  Remove from Page DOM
-			$experiment_main_data_at_page_load_json.remove();
+
+			const experiment_main_data_at_page_load_json = DOMElementContents_UnEncode_HTML_To_Text;
 
 			let experiment_main_data_at_page_load : any = undefined;
 
@@ -128,20 +111,16 @@ export class GetExerimentMainDataFromPage {
 			});
 		}
 
-		
-
 
 		let experiment_project_search_ids_at_page_load_Local = undefined;
 		{
-			const $experiment_project_search_ids_at_page_load_json = $("#experiment_project_search_ids_at_page_load_json");
-			if ( $experiment_project_search_ids_at_page_load_json.length === 0 ) {
-				throw Error("No DOM element with ID 'experiment_project_search_ids_at_page_load_json'");
+			const DOMElementContents_UnEncode_HTML_To_Text = _getDOMElementContents_UnEncode_HTML_To_Text( "experiment_project_search_ids_at_page_load_json" );
+			if ( DOMElementContents_UnEncode_HTML_To_Text === undefined || DOMElementContents_UnEncode_HTML_To_Text === null ) {
+				throw Error("No DOM element with ID 'experiment_project_search_ids_at_page_load_json' or contents failed to parse as HTML");
 			}
-			const experiment_project_search_ids_at_page_load_json = $experiment_project_search_ids_at_page_load_json.text();
-			
-			//  Remove from Page DOM
-			$experiment_project_search_ids_at_page_load_json.remove();
-			
+
+			const experiment_project_search_ids_at_page_load_json = DOMElementContents_UnEncode_HTML_To_Text;
+
 			try {
 				experiment_project_search_ids_at_page_load_Local = JSON.parse( experiment_project_search_ids_at_page_load_json );
 			} catch( e ) {
@@ -177,6 +156,45 @@ export class GetExerimentMainDataFromPage {
 	
 }
 
+/**
+ *
+ * @param domElementIdString
+ */
+const _getDOMElementContents_UnEncode_HTML_To_Text = function ( domElementIdString : string ) : string {
+
+	const domElementRef = document.getElementById(domElementIdString);
+	if ( ! domElementRef ) {
+		// Not on Page so exit
+		return null; // EARLY EXIT
+	}
+
+	let domElementContents_Inside_HTML_BODY_Tags : string = null;
+
+	{
+		const innerText = domElementRef.innerText
+
+		const domparser = new DOMParser()
+
+		try {
+			const doc = domparser.parseFromString(innerText, "text/html")
+
+			const body = doc.body;
+
+			domElementContents_Inside_HTML_BODY_Tags = body.innerText;
+
+		} catch (e) {
+			// Not parsable Value so exit
+			return null; // EARLY EXIT
+		}
+	}
+	try {
+		domElementRef.remove();
+	} catch (e) {
+		// swallow any exception
+	}
+
+	return domElementContents_Inside_HTML_BODY_Tags;
+}
 
 			//  contents of variable experiment_main_data_at_page_load_json is the serialized JSON representation of Java classes (Server side code):
 

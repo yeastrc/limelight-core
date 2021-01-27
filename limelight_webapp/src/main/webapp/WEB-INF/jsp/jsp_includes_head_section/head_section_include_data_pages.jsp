@@ -22,13 +22,18 @@
 
 <%-- From Java class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor and Experiment_Set_HTTPRequest_ForJSP --%>
 
-<script type="text/text" id="search_data_lookup_parameters_at_page_load_json">${ searchDataLookupParametersJSON }</script>
+<script type="text/text" id="search_data_lookup_parameters_at_page_load_json"><html><body><c:out value="${ searchDataLookupParametersJSON }"/></body><html></script>
 
-<script type="text/text" id="search_data_lookup_parameters_at_page_load_code">${ searchDataLookupParametersCode }</script>
+<script type="text/text" id="search_data_lookup_parameters_at_page_load_code"><html><body><c:out value="${ searchDataLookupParametersCode }"/></body><html></script>
 
 	<%-- Experiment - from Java class Experiment_Set_HTTPRequest_ForJSP --%>
 	
-		<%-- INFO: In <body> in <div> to get proper decoding of HTML encoded value.  --%>
+<script type="text/text" id="experiment_name_from_server"><html><body><c:out value="${ experimentName }"></c:out></body><html></script>
+
+<script type="text/text" id="experiment_id_string"><html><body><c:out value="${ experimentIdString }"></c:out></body><html></script>
+
+<script type="text/text" id="experiment_main_data_at_page_load_json"><html><body><c:out value="${ experimentJSONMainDataJSON }"></c:out></body><html></script>
+<script type="text/text" id="experiment_project_search_ids_at_page_load_json"><html><body><c:out value="${ experimentProjectSearchIdsJSON }"></c:out></body><html></script>
 	
 <%-- From Java class Page_UserDefault_SetForJSP
 	

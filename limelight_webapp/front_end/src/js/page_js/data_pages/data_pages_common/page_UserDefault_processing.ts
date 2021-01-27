@@ -56,9 +56,6 @@ export class Page_UserDefault_processing {
 
 				const body = doc.body;
 
-				const bodyinnerText = body.innerText
-				const bodyinnerHTML = body.innerHTML
-
 				page_user_default_url = body.innerText;
 
 			} catch (e) {
@@ -71,6 +68,12 @@ export class Page_UserDefault_processing {
             // No Value so exit
             return; // EARLY EXIT
         }
+
+		try {
+			page_user_default_urlDOM.remove();
+		} catch (e) {
+			// swallow any exception
+		}
 
         //  Is current URL a referrer from another page?
 

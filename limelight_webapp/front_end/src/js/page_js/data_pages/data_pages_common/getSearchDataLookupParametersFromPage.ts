@@ -45,24 +45,15 @@ export class GetSearchDataLookupParametersFromPage {
 		
 		//   Process Search Data Lookup Parameters JSON and Code from DOM <script> text element 
 
-		const $search_data_lookup_parameters_at_page_load_code = $("#search_data_lookup_parameters_at_page_load_code");
-		if ( $search_data_lookup_parameters_at_page_load_code.length === 0 ) {
-			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_code'");
+		const search_data_lookup_parameters_at_page_load_code = _getDOMElementContents_UnEncode_HTML_To_Text( "search_data_lookup_parameters_at_page_load_code" );
+		if ( search_data_lookup_parameters_at_page_load_code === undefined || search_data_lookup_parameters_at_page_load_code === null ) {
+			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_code' or contents failed to parse as HTML");
 		}
-		const search_data_lookup_parameters_at_page_load_code = $search_data_lookup_parameters_at_page_load_code.text();
-		
-		//  Remove from Page DOM
-		$search_data_lookup_parameters_at_page_load_code.remove();
-		
-		
-		const $search_data_lookup_parameters_at_page_load_json = $("#search_data_lookup_parameters_at_page_load_json");
-		if ( $search_data_lookup_parameters_at_page_load_json.length === 0 ) {
-			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_json'");
+
+		const search_data_lookup_parameters_at_page_load_json = _getDOMElementContents_UnEncode_HTML_To_Text( "search_data_lookup_parameters_at_page_load_json" );
+		if ( ! search_data_lookup_parameters_at_page_load_json === undefined || search_data_lookup_parameters_at_page_load_json === null ) {
+			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_json' or contents failed to parse as HTML");
 		}
-		const search_data_lookup_parameters_at_page_load_json = $search_data_lookup_parameters_at_page_load_json.text();
-		
-		//  Remove from Page DOM
-		$search_data_lookup_parameters_at_page_load_json.remove();
 		
 		let search_data_lookup_parameters_at_page_load_Parsed = undefined;
 		try {
@@ -101,4 +92,44 @@ export class GetSearchDataLookupParametersFromPage {
 		return getSearchDataLookupParametersFromPage_Result;
 	}
 	
+}
+
+/**
+ *
+ * @param domElementIdString
+ */
+const _getDOMElementContents_UnEncode_HTML_To_Text = function ( domElementIdString : string ) : string {
+
+	const domElementRef = document.getElementById(domElementIdString);
+	if ( ! domElementRef ) {
+		// Not on Page so exit
+		return null; // EARLY EXIT
+	}
+
+	let domElementContents_Inside_HTML_BODY_Tags : string = null;
+
+	{
+		const innerText = domElementRef.innerText
+
+		const domparser = new DOMParser()
+
+		try {
+			const doc = domparser.parseFromString(innerText, "text/html")
+
+			const body = doc.body;
+
+			domElementContents_Inside_HTML_BODY_Tags = body.innerText;
+
+		} catch (e) {
+			// Not parsable Value so exit
+			return null; // EARLY EXIT
+		}
+	}
+	try {
+		domElementRef.remove();
+	} catch (e) {
+		// swallow any exception
+	}
+
+	return domElementContents_Inside_HTML_BODY_Tags;
 }
