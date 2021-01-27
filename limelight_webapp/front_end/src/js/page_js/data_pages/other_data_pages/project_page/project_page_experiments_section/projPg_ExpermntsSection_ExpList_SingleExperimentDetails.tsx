@@ -22,7 +22,18 @@ import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data
 
 import { getExperimentDataFromServer } from './projPg_Expermnts_Load_ExperimentData';
 
-import { getSearchesDataForProject } from './projPg_Expermnts_Load_SearchesData_ForProject';
+import {
+    getSearchesDataForProject_ExperimentProcessing,
+    GetSearchesDataForProject_ExperimentProcessing_Result
+} from './projPg_Expermnts_Load_SearchesData_ForProject';
+import {
+    GetSearchesAndFolders_SingleProject_PromiseResponse,
+    GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    AnnotationTypeData_Root,
+    SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 /**
  * 
@@ -118,7 +129,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 		const promises = [];
 
 		{
-			const promise = getSearchesDataForProject({ projectIdentifier : this.props.projectIdentifierFromURL });
+			const promise = getSearchesDataForProject_ExperimentProcessing({ projectIdentifier : this.props.projectIdentifierFromURL });
 			promises.push( promise );
 		}
 		if ( experimentId !== undefined ) {
@@ -133,17 +144,31 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 		
 		promisesAll.then ( ( promiseResults ) => {
 			try {
-				const results : { searchList? , searchesSubData? , experimentData? } = {};
+				const results : {
+                    searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+                    noSearchesFound? : boolean
+                    searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+
+                    searchesSubData? : {
+                        searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+                        annotationTypeData_Root : AnnotationTypeData_Root
+                    }
+                    experimentData?
+				} = {};
+
 				for ( const promiseResult of promiseResults ) {
-					if ( promiseResult.searchList ) {
-						results.searchList = promiseResult.searchList
-					}
-					if ( promiseResult.searchesSubData ) {
-						results.searchesSubData = promiseResult.searchesSubData
-					}
-					if ( promiseResult.experimentData ) {
+					if ( promiseResult instanceof GetSearchesDataForProject_ExperimentProcessing_Result ) {
+					    results.noSearchesFound = promiseResult.noSearchesFound;
+						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
+                        results.searchList_OnlySearches = promiseResult.searchList_OnlySearches;
+                        results.searchesSubData = promiseResult.searchesSubData;
+					} else if ( promiseResult.experimentData ) {
 						results.experimentData = promiseResult.experimentData;
-					}
+					} else {
+					    const msg = "_loadExperimentData(...): promisesAll.then: promiseResult is unknown type";
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
                 }
                 
 				this._process_LoadedExperimentData({ results });
@@ -156,11 +181,30 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 			}
 		});
     }
-    
-    _process_LoadedExperimentData({ results }) {
+
+    /**
+     *
+     * @param results
+     */
+    _process_LoadedExperimentData(
+        {
+            results
+        } : {
+            results : {
+                searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+                noSearchesFound? : boolean
+                searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+
+                searchesSubData? : {
+                    searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+                    annotationTypeData_Root : AnnotationTypeData_Root
+                }
+                experimentData?
+            }
+        }) : void {
 
         const experimentData = results.experimentData;
-        const searchList = results.searchList;
+        const searchList_OnlySearches = results.searchList_OnlySearches;
         const searchesSubData = results.searchesSubData;
 
         {
@@ -168,8 +212,8 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 
             this._searchDataMap_KeyProjectSearchId = new Map();
 
-            if ( searchList ) {
-                for ( const search of searchList ) {
+            if ( searchList_OnlySearches ) {
+                for ( const search of searchList_OnlySearches ) {
                     const projectSearchId = search.projectSearchId;
                     this._searchDataMap_KeyProjectSearchId.set( projectSearchId, search );
                 }

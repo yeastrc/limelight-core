@@ -21,6 +21,19 @@ import { Experiment_User_Set_Searches_Filters } from './experiment_User_Set_Sear
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
+import {
+    get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout,
+    SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params
+} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_OverlayLayout";
+import {
+    limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
+    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
+} from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    AnnotationTypeData_Root,
+    SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
@@ -31,11 +44,18 @@ export class Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint {
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
     conditionGroupsDataContainer : ConditionGroupsDataContainer
     mainCell_Identifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier
-    searchesData : any; // this.props.searchesData,
+    searchesData :  {
+        searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+        searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+        searchesSubData : {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
     searchesList : any;
     save_ProjectSearchIds_ForMainCell : any; // function
     save_updated_conditionGroupsDataContainer : any; // this._save_updated_conditionGroupsDataContainer_BindThis
-};
+}
 
 /**
  * 
@@ -49,8 +69,8 @@ interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_State {
 
     current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint? : Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint
 
-    projectSearchIds?
-    projectSearchIds_InitialProps?
+    projectSearchIds? : Set<number>
+    projectSearchIds_InitialProps? : Set<number>
     searches_Selected?
     searches_NOT_Selected?
     experiment_User_Set_Single_Search_FiltersPropsParams?
@@ -61,6 +81,7 @@ interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_State {
  */
 export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends React.Component< ProjectPage_Experiments_SingleExperiment_MainCellMaint_Props, ProjectPage_Experiments_SingleExperiment_MainCellMaint_State > {
 
+    private _changeSearches_OpenOverlay_BindThis = this._changeSearches_OpenOverlay.bind(this);
     private _add_Search_Select_Updated_BindThis = this._add_Search_Select_Updated.bind(this);
     private _delete_Search_BindThis = this._delete_Search.bind(this);
     private _filterEntryClicked_BindThis = this._filterEntryClicked.bind(this);
@@ -195,6 +216,38 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     }
 
     /**
+     *
+     * @private
+     */
+    private _changeSearches_OpenOverlay() {
+
+        let changeSearches_Overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF = undefined;
+
+        const projectSearchIdsSet = new Set( this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds );
+
+        const callback_updateSelected_Searches = ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) : void => {
+
+            changeSearches_Overlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM()
+            this._save({ projectSearchIds : params.updated_selected_ProjectSearchIds });
+        }
+
+        const callbackOn_Cancel_Close_Clicked = () : void => {
+
+            changeSearches_Overlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM()
+        }
+
+        const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout({
+            searchList : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searches_TopLevelAndNestedInFolders,
+            projectSearchIds_Selected : projectSearchIdsSet,
+            callback_updateSelected_Searches, // : undefined, // this._callback_updateSelected_Searches_BindThis,
+            callbackOn_Cancel_Close_Clicked // : undefined // this._callbackOn_Cancel_Close_Clicked_BindThis
+        })
+
+        changeSearches_Overlay_AddedTo_DocumentBody_Holder =
+            limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
+    }
+
+    /**
      * New Search Selected: Update the projectSearchId in copy of state.projectSearchIds and call parent component save
      */
     _add_Search_Select_Updated( event ) {
@@ -253,8 +306,9 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
 
         // const data_ProjectPage_Experiments_SingleExperiment_MainCellMaint = this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint;
 
-        let searches_Assigned_ToCell = undefined;
-        let no_searches_Assigned_ToCell_msg = undefined;
+        let searches_Assigned_ToCell : Array<JSX.Element> = undefined;
+        let no_searches_Assigned_ToCell_msg : JSX.Element = undefined;
+        let addChangeSearchesButton_Label : string = undefined;
 
         if ( this.state.searches_Selected && this.state.searches_Selected.length !== 0 ) {
             searches_Assigned_ToCell = [];
@@ -267,15 +321,20 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
                 );
                 searches_Assigned_ToCell.push( search_Assigned_Display );
             }
+
+            addChangeSearchesButton_Label = "Change Searches";
+
         } else {
             no_searches_Assigned_ToCell_msg = ( 
                 <div >
                     No Searches Assigned
                 </div>
             );
+
+            addChangeSearchesButton_Label = "Add Searches";
         }
 
-        const searches_NOT_Assigned_ToCell_Options = [];  //  May be assigned to other cells
+        const searches_NOT_Assigned_ToCell_Options : Array<JSX.Element> = [];  //  May be assigned to other cells
 
         for ( const searchContainer of this.state.searches_NOT_Selected ) {
 
@@ -286,7 +345,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
                 inOtherCell_TitlePrefix = "Search currently assigned to another cell.\n\n";
             }
 
-            const searchName = searchContainer.search.name;
+            const searchName = searchContainer.search.searchName;
 
             const searchTitle = inOtherCell_TitlePrefix + "(" + searchContainer.search.searchId + ") " + searchName;
 
@@ -340,18 +399,22 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
                         { no_searches_Assigned_ToCell_msg }
                     </div>
 
-                    <div style={ { fontWeight: "bold", marginTop: 10, marginBottom: 3 } }>
-                        Choose a Search to Add
-                    </div>
-                    <div >
-                        ( A Search with "*" is assigned to another cell and will be moved to this cell when selected )
-                    </div>
-                    <div style={ { overflowX: "hidden" } }>
-                        <select onChange={ this._add_Search_Select_Updated_BindThis } title="Select a Search to Add">
-                            <option key="none-selected" >Select a Search</option>
-                            { searches_NOT_Assigned_ToCell_Options }
-                        </select>
-                    </div>
+                    <input type="button" value={ addChangeSearchesButton_Label }
+                        onClick={ this._changeSearches_OpenOverlay_BindThis }
+                    />
+
+                    {/*<div style={ { fontWeight: "bold", marginTop: 10, marginBottom: 3 } }>*/}
+                    {/*    Choose a Search to Add*/}
+                    {/*</div>*/}
+                    {/*<div >*/}
+                    {/*    ( A Search with "*" is assigned to another cell and will be moved to this cell when selected )*/}
+                    {/*</div>*/}
+                    {/*<div style={ { overflowX: "hidden" } }>*/}
+                    {/*    <select onChange={ this._add_Search_Select_Updated_BindThis } title="Select a Search to Add">*/}
+                    {/*        <option key="none-selected" >Select a Search</option>*/}
+                    {/*        { searches_NOT_Assigned_ToCell_Options }*/}
+                    {/*    </select>*/}
+                    {/*</div>*/}
                 </div>
             </React.Fragment>
         );
@@ -365,7 +428,10 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
 /**
  * 
  */
-const _computeStateFromNewOrUpdatedProps_data_ProjectPage_Experiments_SingleExperiment_MainCellMaint = function({ data_ProjectPage_Experiments_SingleExperiment_MainCellMaint }) {
+const _computeStateFromNewOrUpdatedProps_data_ProjectPage_Experiments_SingleExperiment_MainCellMaint = function({ data_ProjectPage_Experiments_SingleExperiment_MainCellMaint } : {
+
+    data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint
+}) {
 
     //  projectSearchIds_InitialProps : projectSearchIds currently assigned to this cell
 
@@ -391,7 +457,24 @@ const _computeStateFromNewOrUpdatedProps_data_ProjectPage_Experiments_SingleExpe
 /**
  * 
  */
-const _createSearchLists = function({ projectSearchIds, searchesAllList, searchesData, conditionGroupsDataContainer }) {
+const _createSearchLists = function({ projectSearchIds, searchesAllList, searchesData, conditionGroupsDataContainer } : {
+
+    projectSearchIds: Set<number>
+    searchesAllList,
+    searchesData :  {
+        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSubData: {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
+    conditionGroupsDataContainer: ConditionGroupsDataContainer
+
+}) : {
+    searches_Selected,
+    searches_NOT_Selected
+} {
 
     const searches_Selected = [];
     const searches_NOT_Selected = [];
@@ -418,7 +501,21 @@ const _createSearchLists = function({ projectSearchIds, searchesAllList, searche
 /**
  * @param conditionGroupsData_PerProjectSearchIdData - class ConditionGroupsDataContainer_PerProjectSearchIdData
  */
-const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, conditionGroupsDataContainer, searchesData }) {
+const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, conditionGroupsDataContainer, searchesData } : {
+
+    searchContainer,
+    projectSearchId,
+    conditionGroupsDataContainer: ConditionGroupsDataContainer
+    searchesData :  {
+        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSubData: {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
+
+}) : any {
 
     //  class ConditionGroupsData_PerProjectSearchIdData
     const conditionGroupsData_PerProjectSearchIdData = conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId });
@@ -427,15 +524,16 @@ const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, 
     }
 
     const searchesSubData = searchesData.searchesSubData;
-    const dataMap_KeyProjectSearchId = searchesSubData.dataMap_KeyProjectSearchId;
 
-    const searchData = dataMap_KeyProjectSearchId.get( projectSearchId );
-    if ( ! searchData ) {
-        throw Error("_createSearchLists(...): No value for dataMap_KeyProjectSearchId.get( projectSearchId ). projectSearchId: " + projectSearchId );
+    const searchAnnotationTypesData = searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ! searchAnnotationTypesData ) {
+        throw Error("_createSearchLists(...): No value for searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId ). projectSearchId: " + projectSearchId );
     }
-    const searchAnnotationTypesData = searchData.searchAnnotationTypesData;
-    const searchProgramsPerSearch = searchData.searchProgramsPerSearch;
-    const searchProgramsPerSearch_Key_searchProgramsPerSearchId = searchProgramsPerSearch.searchProgramsPerSearch_Key_searchProgramsPerSearchId;
+    const searchProgramsPerSearch = searchesSubData.searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ! searchProgramsPerSearch ) {
+        throw Error("_createSearchLists(...): No value for searchesSubData.searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId ). projectSearchId: " + projectSearchId );
+    }
+    const searchProgramsPerSearch_Key_searchProgramsPerSearchId = searchProgramsPerSearch.searchProgramsPerSearchItem_Map;
 
     // Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
 

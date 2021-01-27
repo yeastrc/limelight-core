@@ -13,6 +13,11 @@ import React from 'react'
 import { ProjectPage_Experiments_SingleExperimentMaintRoot } from './projPg_Expermnts_Single_MaintRoot';
 import {keep_UserSession_AliveIfExists_OnServer_WebserviceCall} from "page_js/keep_UserSession_AliveIfExists_OnServer_WebserviceCall";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    AnnotationTypeData_Root,
+    SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 /**
  * 
@@ -22,7 +27,14 @@ export interface ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_
     projectPage_ExperimentsSection_LoggedInUsersInteraction
     experimentData
     projectIdentifierFromURL
-    searchesData 
+    searchesData : {
+        searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+        searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+        searchesSubData : {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
 }
 
 /**

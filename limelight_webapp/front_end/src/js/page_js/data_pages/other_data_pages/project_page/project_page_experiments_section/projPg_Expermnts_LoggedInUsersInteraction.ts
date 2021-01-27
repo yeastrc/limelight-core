@@ -21,9 +21,20 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { getExperimentDataFromServer } from './projPg_Expermnts_Load_ExperimentData';
 
-import { getSearchesDataForProject } from './projPg_Expermnts_Load_SearchesData_ForProject'
+import {
+	getSearchesDataForProject_ExperimentProcessing,
+	GetSearchesDataForProject_ExperimentProcessing_Result
+} from './projPg_Expermnts_Load_SearchesData_ForProject'
 
-import { ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer } from './projPg_Expermnts_Single_Maint_OverlayContainer';
+import {
+	ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer,
+	ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_Props
+} from './projPg_Expermnts_Single_Maint_OverlayContainer';
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+	AnnotationTypeData_Root,
+	SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 /**
@@ -101,7 +112,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 		const promises = [];
 
 		{
-			const promise = getSearchesDataForProject({ projectIdentifier : this._projectIdentifierFromURL });
+			const promise = getSearchesDataForProject_ExperimentProcessing({ projectIdentifier : this._projectIdentifierFromURL });
 			promises.push( promise );
 		}
 		if ( experimentId !== undefined ) {
@@ -112,20 +123,39 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 
 		const promisesAll = Promise.all( promises );
 
-		promisesAll.catch( (reason) => {  } );
-		
+		promisesAll.catch( (reason) => {
+			throw Error("")
+		})
+
 		promisesAll.then ( ( promiseResults ) => {
 			try {
-				const results : { searchList? , searchesSubData? , experimentData?, makeClone : boolean } = { makeClone };
+				const results : {
+					makeClone? : boolean
+					searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+					noSearchesFound? : boolean
+					searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+
+					searchesSubData? : {
+						searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+						annotationTypeData_Root : AnnotationTypeData_Root
+					}
+
+					experimentData?
+
+				} = {};
+
 				for ( const promiseResult of promiseResults ) {
-					if ( promiseResult.searchList ) {
-						results.searchList = promiseResult.searchList
-					}
-					if ( promiseResult.searchesSubData ) {
-						results.searchesSubData = promiseResult.searchesSubData
-					}
-					if ( promiseResult.experimentData ) {
+					if ( promiseResult instanceof GetSearchesDataForProject_ExperimentProcessing_Result ) {
+						results.noSearchesFound = promiseResult.noSearchesFound;
+						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
+						results.searchList_OnlySearches = promiseResult.searchList_OnlySearches;
+						results.searchesSubData = promiseResult.searchesSubData;
+					} else if ( promiseResult.experimentData ) {
 						results.experimentData = promiseResult.experimentData;
+					} else {
+						const msg = "_loadExperimentData(...): promisesAll.then: promiseResult is unknown type";
+						console.warn(msg);
+						throw Error(msg);
 					}
 				}
 
@@ -151,7 +181,28 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-	_open_New_Update_ExperimentOverlay({ searchList, searchesSubData, experimentData, makeClone } : { searchList?, searchesSubData?, experimentData?, makeClone : boolean }) {
+	_open_New_Update_ExperimentOverlay(
+		{
+			makeClone,
+			searches_TopLevelAndNestedInFolders,
+			noSearchesFound,
+			searchList_OnlySearches,
+			searchesSubData,
+			experimentData
+		} :  {
+			makeClone? : boolean
+			searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+			noSearchesFound? : boolean
+			searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+
+			searchesSubData? : {
+				searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+				annotationTypeData_Root : AnnotationTypeData_Root
+			}
+
+			experimentData?
+
+		}) : void {
 
 		{  //  First save scroll position and hide the main root div
 			const data_page_outermost_divDOM = document.getElementById("data_page_outermost_div");
@@ -165,7 +216,20 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 			data_page_outermost_divDOM.style.display = "none";
 		}
 
-		const searchesData = { searchList, searchesSubData };
+		const searchesData = {
+			searches_TopLevelAndNestedInFolders,
+			searchList_OnlySearches,
+			searchesSubData
+		};
+
+		const projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent = this;
+
+		const ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_Props : ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_Props = {
+			projectIdentifierFromURL : this._projectIdentifierFromURL ,
+			projectPage_ExperimentsSection_LoggedInUsersInteraction : projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent ,
+			searchesData : searchesData ,
+			experimentData : experimentData
+		}
 
 		const addedDivElementDOM = document.createElement("div");
 
@@ -174,20 +238,13 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 		documentBody.appendChild( addedDivElementDOM );
 
 		this._create_Update_Experiment_addedDivElementDOM = addedDivElementDOM;
-		
-		const projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent = this;
 
 		const renderCompletecallbackFcn = ( ) => { };
 
 		const projectPage_Experiments_SingleExperimentMaint_OverlayContainer_Component = (
 			React.createElement(
 				ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer,
-				{
-					projectIdentifierFromURL : this._projectIdentifierFromURL ,
-					projectPage_ExperimentsSection_LoggedInUsersInteraction : projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent ,
-					searchesData : searchesData ,
-					experimentData : experimentData 
-				},
+				ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_Props,
 				null
 			)
 		)

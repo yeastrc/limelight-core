@@ -20,6 +20,11 @@ import React from 'react'
 
 import { ConditionGroupsDataContainer_PerProjectSearchIdData, ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
 import { ConditionGroupsDataContainer_DataEntry, ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    AnnotationTypeData_Root, AnnotationTypeItem,
+    SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 // const _FILTER_LABEL_PSM = "PSM";
@@ -32,7 +37,14 @@ import { ConditionGroupsDataContainer_DataEntry, ConditionGroupsDataContainer } 
 export interface Experiment_User_Set_Searches_Filters_Props {
 
     projectSearchIds : Array<number>
-    searchesData
+    searchesData : {
+        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSubData: {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
     conditionGroupsDataContainer : ConditionGroupsDataContainer
     save // function
     cancel // function
@@ -43,10 +55,22 @@ export interface Experiment_User_Set_Searches_Filters_Props {
  */
 interface Experiment_User_Set_Searches_Filters_State {
 
-    saveButtonEnabled? : boolean
-    dataMapPerProjectSearchId_KeyProjectSearchId? // Derived from props data
+    saveButtonEnabled?: boolean
+    dataMapPerProjectSearchId_KeyProjectSearchId?:  // Derived from props data
+        Map<number,
+            {
+                projectSearchId: number,
+                reportedPeptideFilterDataMap_KeyAnnTypeId:
+                    Map<number, {
+                        annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                        currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+                    }>,
+                psmFilterDataMap_KeyAnnTypeId: Map<number, {
+                    annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                    currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+                }>
+            }>
 }
-
 
 /**
  * 
@@ -60,7 +84,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     private _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_BindThis = this._update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData.bind(this);
     private _userUpdatedInputValue_Callback_BindThis = this._userUpdatedInputValue_Callback.bind(this);
 
-    private _searchDataMap_KeyProjectSearchId;
+    private _searchDataMap_KeyProjectSearchId : Map<number,  GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
 
     constructor(props : Experiment_User_Set_Searches_Filters_Props) {
         super(props);
@@ -77,7 +101,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
 
            const searchesData = this.props.searchesData;
            if ( searchesData ) {
-               const searchList = searchesData.searchList;
+               const searchList = searchesData.searchList_OnlySearches;
                if ( searchList ) {
                    for ( const search of searchList ) {
                        const projectSearchId = search.projectSearchId;
@@ -456,7 +480,10 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
 /**
  * Create Copy of Search Filters for Local Use with additional object properties
  */
-const _create_SearchFilters_LocalCopy = function({ props }) {
+const _create_SearchFilters_LocalCopy = function({ props } : {
+
+    props : Experiment_User_Set_Searches_Filters_Props
+})  {
 
     if ( ! props.conditionGroupsDataContainer ) {
 
@@ -468,7 +495,13 @@ const _create_SearchFilters_LocalCopy = function({ props }) {
         throw Error("props.projectSearchIds NOT instanceof Array");
     }
 
-    const resultMap_KeyProjectSearchId = new Map();
+    const resultMap_KeyProjectSearchId : Map<number, {
+        projectSearchId: number,
+        reportedPeptideFilterDataMap_KeyAnnTypeId: Map<number,  {annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string, currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean}
+            >,
+        psmFilterDataMap_KeyAnnTypeId: Map<number,  {annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string, currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean}
+            >}
+        > = new Map();
 
     const projectSearchIds = props.projectSearchIds; //  Array of projectSearchIds to be processed
 
@@ -487,8 +520,10 @@ const _create_SearchFilters_LocalCopy = function({ props }) {
         const psmFilterDataMap = data_conditionGroupsDataContainer.get_psmFilters_PerProjectSearchId();
 
         //  Output Maps
-        const result_reportedPeptideFilterDataMap_KeyAnnTypeId = new Map();
-        const result_psmFilterDataMap_KeyAnnTypeId = new Map();
+        const result_reportedPeptideFilterDataMap_KeyAnnTypeId : Map<number,  {annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string, currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean}
+            > = new Map();
+        const result_psmFilterDataMap_KeyAnnTypeId : Map<number,  {annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string, currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean}
+            > = new Map();
 
         if ( reportedPeptideFilterData && reportedPeptideFilterData.length !== 0 ) {
             //  entry : class ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data
@@ -552,6 +587,19 @@ const _get_filtersPerSearch_SingleSearch_Components = function({
     searchDataMap_KeyProjectSearchId,
     searchesData,
     userUpdatedInputValue_Callback
+} : {
+    projectSearchId : number
+    data_ForProjectSearchId_ReportedPeptidePSM_Local : any
+    searchDataMap_KeyProjectSearchId : any
+    searchesData : {
+        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSubData: {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
+    userUpdatedInputValue_Callback : any
 }) {
 
     const searchData = searchDataMap_KeyProjectSearchId.get( projectSearchId );
@@ -563,20 +611,16 @@ const _get_filtersPerSearch_SingleSearch_Components = function({
     }
 
     const searchesSubData = searchesData.searchesSubData;
-    const dataMap_KeyProjectSearchId = searchesSubData.dataMap_KeyProjectSearchId;
 
-    const dataForProjectSearchId_searchesSubData = dataMap_KeyProjectSearchId.get( projectSearchId );
-
-    if ( ! dataForProjectSearchId_searchesSubData ) {
-        console.log("_get_filtersPerSearch_SingleSearch_Components: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
-        // return; //  EARLY RETURN
-        throw Error("No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
+    const searchAnnotationTypesData = searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ! searchAnnotationTypesData ) {
+        throw Error("_createSearchLists(...): No value for searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId ). projectSearchId: " + projectSearchId );
     }
-
-    const searchAnnotationTypesData = dataForProjectSearchId_searchesSubData.searchAnnotationTypesData;
-    const searchProgramsPerSearch = dataForProjectSearchId_searchesSubData.searchProgramsPerSearch;
-
-    const searchProgramsPerSearch_Key_searchProgramsPerSearchId = searchProgramsPerSearch.searchProgramsPerSearch_Key_searchProgramsPerSearchId;
+    const searchProgramsPerSearch = searchesSubData.searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ! searchProgramsPerSearch ) {
+        throw Error("_createSearchLists(...): No value for searchesSubData.searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId ). projectSearchId: " + projectSearchId );
+    }
+    const searchProgramsPerSearch_Key_searchProgramsPerSearchId = searchProgramsPerSearch.searchProgramsPerSearchItem_Map;
 
     //  Map key ann type id
     const reportedPeptideFilterableAnnotationTypes = searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes;
@@ -931,23 +975,39 @@ const _searchFilterValues_PopulateNotSetWithEmptyString = ({
     projectSearchIds, 
     searchDataMap_KeyProjectSearchId,
     searchesData, 
-    dataMapPerProjectSearchId_KeyProjectSearchId }) => {
-
-    const searchesSubData = searchesData.searchesSubData;
-    const dataMap_KeyProjectSearchId = searchesSubData.dataMap_KeyProjectSearchId;
+    dataMapPerProjectSearchId_KeyProjectSearchId
+} : {
+     projectSearchIds : Array<number>
+     searchDataMap_KeyProjectSearchId : Map<number,  GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+     searchesData : {
+         searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+         searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+         searchesSubData: {
+             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+             annotationTypeData_Root : AnnotationTypeData_Root
+         }
+     }
+     dataMapPerProjectSearchId_KeyProjectSearchId:  // Derived from props data
+         Map<number,
+             {
+                 projectSearchId: number,
+                 reportedPeptideFilterDataMap_KeyAnnTypeId:
+                     Map<number, {
+                         annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                         currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+                     }>,
+                 psmFilterDataMap_KeyAnnTypeId: Map<number, {
+                     annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                     currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+                 }>
+             }>
+ }) : void => {
 
     for ( const projectSearchId of projectSearchIds ) {
         const searchDataEntry = searchDataMap_KeyProjectSearchId.get( projectSearchId );
         if ( ! searchDataEntry ) {
             console.warn("WARN: No entry in searchDataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
             continue; // EARLY CONTINUE
-        }
-
-        const dataForProjectSearchId = dataMap_KeyProjectSearchId.get( projectSearchId );
-
-        if ( ! dataForProjectSearchId ) {
-            console.warn("_searchFilterValues_PopulateNotSetWithEmptyString: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
-            throw Error("_searchFilterValues_PopulateNotSetWithEmptyString: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
         }
 
         //  data_conditionGroupsDataContainer is internal object to this file
@@ -958,7 +1018,7 @@ const _searchFilterValues_PopulateNotSetWithEmptyString = ({
         }
     
         //  Entries for Search
-        _create_SearchFilterValues_SingleSearchContents({ dataForProjectSearchId, data_conditionGroupsDataContainer });
+        _create_SearchFilterValues_SingleSearchContents({ projectSearchId, searchesData, data_conditionGroupsDataContainer });
         
     }
 }
@@ -968,12 +1028,46 @@ const _searchFilterValues_PopulateNotSetWithEmptyString = ({
  * Contents for 1 Search
  * 
  */
-const _create_SearchFilterValues_SingleSearchContents = ({ 
-    dataForProjectSearchId,
-    data_conditionGroupsDataContainer //  output
-}) => {
+const _create_SearchFilterValues_SingleSearchContents = (
+    {
+        projectSearchId,
+        searchesData,
+        data_conditionGroupsDataContainer //  output
+    } : {
+        projectSearchId : number
+        searchesData : {
+            searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+            searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+            searchesSubData: {
+                searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+                annotationTypeData_Root : AnnotationTypeData_Root
+            }
+        }
+        data_conditionGroupsDataContainer : //  output
+            {
+                projectSearchId: number,
+                reportedPeptideFilterDataMap_KeyAnnTypeId:
+                    Map<number, {
+                        annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                        currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+                    }>,
+                psmFilterDataMap_KeyAnnTypeId: Map<number, {
+                    annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                    currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+                }>
+            }
+    }) : void => {
 
-    const searchAnnotationTypesData = dataForProjectSearchId.searchAnnotationTypesData;
+    const searchesSubData = searchesData.searchesSubData;
+
+    const searchAnnotationTypesData = searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ! searchAnnotationTypesData ) {
+        throw Error("_create_SearchFilterValues_SingleSearchContents(...): No value for searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId ). projectSearchId: " + projectSearchId );
+    }
+    const searchProgramsPerSearch = searchesSubData.searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ! searchProgramsPerSearch ) {
+        throw Error("_create_SearchFilterValues_SingleSearchContents(...): No value for searchesSubData.searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId ). projectSearchId: " + projectSearchId );
+    }
 
     //  Map key ann type id
     const reportedPeptideFilterableAnnotationTypes = searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes;
@@ -1000,7 +1094,6 @@ const _create_SearchFilterValues_SingleSearchContents = ({
             filterDataMap_KeyAnnTypeId : data_conditionGroupsDataContainer.reportedPeptideFilterDataMap_KeyAnnTypeId // Updated in function
         });
     }
-
 }
 
 /**
@@ -1010,6 +1103,12 @@ const _create_SearchFilterValues_SingleSearchContents = ({
 const _create_SearchFilterValues_SingleFilterableType = ({ 
     filterableAnnotationTypes,
     filterDataMap_KeyAnnTypeId
+} : {
+    filterableAnnotationTypes : Map<number, AnnotationTypeItem>
+    filterDataMap_KeyAnnTypeId: Map<number, {
+        annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+        currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+    }>
 }) => {
 
     for ( const entry of filterableAnnotationTypes ) {

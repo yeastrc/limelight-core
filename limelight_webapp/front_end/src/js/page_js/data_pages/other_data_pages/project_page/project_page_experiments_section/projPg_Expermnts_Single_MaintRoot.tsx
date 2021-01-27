@@ -50,6 +50,11 @@ import {
 
 import { create_experiment_SearchFilterValuesFromDefaultCutoffs } from './create_experiment_SearchFilterValuesFromDefaultCutoffs';
 import { ConditionGroupsDataContainer_PerProjectSearchIdData } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    AnnotationTypeData_Root,
+    SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
         //  !!!!  Possibly redesign constructor once this Component becomes a child of another component.
@@ -90,7 +95,15 @@ export interface ProjectPage_Experiments_SingleExperimentMaintRoot_Props {
     experimentData
     projectPage_ExperimentsSection_LoggedInUsersInteraction
 
-    searchesData;
+    searchesData : {
+        searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+        searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+        searchesSubData : {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+    }
+
     projectIdentifierFromURL;
     closeOverlay; // function
 }
@@ -203,7 +216,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
     /////
 
-    private _searchDataMap_KeyProjectSearchId;
+    private _searchDataMap_KeyProjectSearchId : Map<number, GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
 
     //  Not Used
     // private _projectPage_ExperimentsSection_LoggedInUsersInteraction;
@@ -226,7 +239,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
            const searchesData = this.props.searchesData;
            if ( searchesData ) {
-               const searchList = searchesData.searchList;
+               const searchList = searchesData.searchList_OnlySearches;
                if ( searchList ) {
                    for ( const search of searchList ) {
                        const projectSearchId = search.projectSearchId;
@@ -441,7 +454,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Populate conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId })
             //          properties 'psmFilterDataMap_KeyAnnTypeId', 'reportedPeptideFilterDataMap_KeyAnnTypeId'
 
-            const projectSearchIds_All = new Set();
+            const projectSearchIds_All = new Set<number>();
 
             const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
 
@@ -1754,7 +1767,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const searchesData = this.props.searchesData;
 
         if ( searchesData ) {
-            const searchList = searchesData.searchList;
+            const searchList = searchesData.searchList_OnlySearches;
             if ( searchList ) {
                 for ( const search of searchList ) {
 
@@ -1840,7 +1853,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             conditionGroupsDataContainer,
             mainCell_Identifier : mainCellIdentifier,
             searchesData : this.props.searchesData,
-            searchesList,
+            searchesList,                               // returned from this._getSearchesListForSpecificEntryCell({ mainCellIdentifier });
             save_ProjectSearchIds_ForMainCell : this._save_ProjectSearchIds_ForMainCell_BindThis,
             save_updated_conditionGroupsDataContainer : this._save_updated_conditionGroupsDataContainer_BindThis
         }

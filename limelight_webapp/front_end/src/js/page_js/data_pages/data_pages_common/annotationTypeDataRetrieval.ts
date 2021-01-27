@@ -46,7 +46,7 @@ export class AnnotationTypeDataRetrieval {
 		
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
 		dataPageStateManager_DataFrom_Server : DataPageStateManager
-	} ) {
+	} ) : Promise<unknown> {
 
 		// array
 		let projectSearchIds = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();

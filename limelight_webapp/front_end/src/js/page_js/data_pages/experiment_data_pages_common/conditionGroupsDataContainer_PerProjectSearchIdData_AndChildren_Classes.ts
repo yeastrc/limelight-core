@@ -230,8 +230,8 @@ class ConditionGroupsDataContainer_PerProjectSearchIdData {
  */
 class ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data {
 
-    private annTypeId = undefined;
-    private value = undefined;
+    private annTypeId : number = undefined;
+    private value : number = undefined;
 
     // class SearchDataLookupParams_Filter_Per_AnnotationType {}
     //     /**

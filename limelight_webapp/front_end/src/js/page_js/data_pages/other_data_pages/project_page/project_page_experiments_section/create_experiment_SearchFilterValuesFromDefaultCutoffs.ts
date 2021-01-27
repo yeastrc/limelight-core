@@ -8,6 +8,12 @@
  */
 
 import { ConditionGroupsDataContainer_PerProjectSearchIdData, ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    AnnotationTypeData_Root,
+    SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class";
 
  /**
  * 
@@ -21,23 +27,28 @@ export const create_experiment_SearchFilterValuesFromDefaultCutoffs = ({
     projectSearchIds, 
     searchDataMap_KeyProjectSearchId,
     searchesData, 
-    conditionGroupsDataContainer }) => {
+    conditionGroupsDataContainer
+} : {
+     projectSearchIds : Set<number>
+     searchDataMap_KeyProjectSearchId : Map<number, GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+     searchesData : {
+         searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+         searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+         searchesSubData : {
+             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+             annotationTypeData_Root : AnnotationTypeData_Root
+         }
+     }
+     conditionGroupsDataContainer : ConditionGroupsDataContainer
+ }) => {
 
     const searchesSubData = searchesData.searchesSubData;
-    const dataMap_KeyProjectSearchId = searchesSubData.dataMap_KeyProjectSearchId;
 
     for ( const projectSearchId of projectSearchIds ) {
         const searchDataEntry = searchDataMap_KeyProjectSearchId.get( projectSearchId );
         if ( ! searchDataEntry ) {
             console.log("WARN: No entry in searchDataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
             continue; // EARLY CONTINUE
-        }
-
-        const dataForProjectSearchId = dataMap_KeyProjectSearchId.get( projectSearchId );
-
-        if ( ! dataForProjectSearchId ) {
-            console.log("create_experiment_SearchFilterValuesFromDefaultCutoffs: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
-            throw Error("create_experiment_SearchFilterValuesFromDefaultCutoffs: No data in dataMap_KeyProjectSearchId for projectSearchId: " + projectSearchId );
         }
 
         const data_conditionGroupsDataContainer_EmptyCheck = conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId });
@@ -47,7 +58,7 @@ export const create_experiment_SearchFilterValuesFromDefaultCutoffs = ({
             const data_conditionGroupsDataContainer = conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId, createIfNotFound : true });
         
             //  Entries for Search
-            _create_SearchFilterValues_SingleSearchContents({ dataForProjectSearchId, data_conditionGroupsDataContainer });
+            _create_SearchFilterValues_SingleSearchContents({ projectSearchId, searchesSubData, data_conditionGroupsDataContainer });
         }
     }
 }
@@ -56,12 +67,27 @@ export const create_experiment_SearchFilterValuesFromDefaultCutoffs = ({
  * Contents for 1 Search
  * 
  */
-const _create_SearchFilterValues_SingleSearchContents = ({ 
-    dataForProjectSearchId,
-    data_conditionGroupsDataContainer //  output
-}) => {
+const _create_SearchFilterValues_SingleSearchContents = (
+    {
+        projectSearchId,
+        searchesSubData,
+        data_conditionGroupsDataContainer //  output
+    } : {
+        projectSearchId : number
+        searchesSubData : {
+            searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+            annotationTypeData_Root : AnnotationTypeData_Root
+        }
+        data_conditionGroupsDataContainer: ConditionGroupsDataContainer_PerProjectSearchIdData
+    }) => {
 
-    const searchAnnotationTypesData = dataForProjectSearchId.searchAnnotationTypesData;
+    const searchAnnotationTypesData = searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
+    if ( ! searchAnnotationTypesData ) {
+        console.log("create_experiment_SearchFilterValuesFromDefaultCutoffs:_create_SearchFilterValues_SingleSearchContents: No data in searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId );
+        throw Error("create_experiment_SearchFilterValuesFromDefaultCutoffs:_create_SearchFilterValues_SingleSearchContents: No data in searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId );
+    }
+
+    // const searchAnnotationTypesData = dataForProjectSearchId.searchAnnotationTypesData;
 
     //  Map key ann type id
     const psmFilterableAnnotationTypes = searchAnnotationTypesData.psmFilterableAnnotationTypes;

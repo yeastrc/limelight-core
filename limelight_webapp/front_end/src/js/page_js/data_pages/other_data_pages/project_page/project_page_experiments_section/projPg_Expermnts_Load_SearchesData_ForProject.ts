@@ -19,33 +19,78 @@
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {
+	getSearchesAndFolders_SingleProject,
+	GetSearchesAndFolders_SingleProject_PromiseResponse, GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+	AnnotationTypeData_Root,
+	DataPageStateManager,
+	SearchProgramsPerSearchData_Root
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {SearchProgramsPerSearchDataRetrieval} from "page_js/data_pages/data_pages_common/searchProgramsPerSearchDataRetrieval";
+import {AnnotationTypeDataRetrieval} from "page_js/data_pages/data_pages_common/annotationTypeDataRetrieval";
+
+/**
+ *
+ */
+export class GetSearchesDataForProject_ExperimentProcessing_Result {
+
+	getSearchesAndFolders_SingleProject_PromiseResponse?: GetSearchesAndFolders_SingleProject_PromiseResponse
+	noSearchesFound? : boolean
+	searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+
+	searchesSubData? : {
+		searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
+		annotationTypeData_Root : AnnotationTypeData_Root
+	}
+
+	private _DO_NOT_CALL(){} // Only here to force creating an object of this class using new ...
+}
 
 /**
  * projectIdentifier - From URL
  */
-export const getSearchesDataForProject = function({ projectIdentifier }) {
+export const getSearchesDataForProject_ExperimentProcessing = function({ projectIdentifier }) : Promise<GetSearchesDataForProject_ExperimentProcessing_Result> {
 
-	return new Promise( (resolve, reject) => {
+	return new Promise<GetSearchesDataForProject_ExperimentProcessing_Result>( (resolve, reject) => {
 		try {
-			const promise_getSearchesDataFromServer = _getSearchesDataFromServer({ projectIdentifier });
+			const promise_getSearchesDataFromServer = getSearchesAndFolders_SingleProject({ projectIdentifier });
 
-			promise_getSearchesDataFromServer.catch( () => {} );
+			promise_getSearchesDataFromServer.catch( (reason) => {
+				reject(reason)
+			} );
 
-			promise_getSearchesDataFromServer.then( ({ responseData }) => {
+			promise_getSearchesDataFromServer.then( (getSearchesAndFolders_SingleProject_PromiseResponse) => {
 				try {
-					const searchList = _getSearchesListFromWebserviceResponse({ responseData });
+					const { noSearchesFound, searchList_OnlySearches } = _getSearchesListFromWebserviceResponse({ getSearchesAndFolders_SingleProject_PromiseResponse });
 
-					const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList });
+					if ( noSearchesFound ) {
+
+						const result = new GetSearchesDataForProject_ExperimentProcessing_Result();
+						result.noSearchesFound = true;
+						result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesAndFolders_SingleProject_PromiseResponse;
+
+						resolve(result);
+
+						return; // EARLY RETURN
+					}
+
+					const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList_OnlySearches });
 
 					promise_getSearchesSubDataFromServer.catch( () => {} );
 
-					promise_getSearchesSubDataFromServer.then( ({ searchesSubDataFromServer }) => {
+					promise_getSearchesSubDataFromServer.then( ({ searchProgramsPerSearchData_Root, annotationTypeData_Root }) => {
 						try {
 							//  Get Final Search List and Per Search and Ann Type data for the searches
 
-							const searchesSubData = _create_searchesSubData_From_searchesSubDataFromServer({ searchesSubDataFromServer });
+							const result = new GetSearchesDataForProject_ExperimentProcessing_Result();
+							result.noSearchesFound = false;
+							result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesAndFolders_SingleProject_PromiseResponse;
+							result.searchList_OnlySearches = searchList_OnlySearches;
+							result.searchesSubData = { searchProgramsPerSearchData_Root, annotationTypeData_Root };
 
-							resolve({ searchList, searchesSubData });
+							resolve(result);
 
 						} catch( e ) {
 							reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -106,49 +151,44 @@ const _getSearchesDataFromServer = function({ projectIdentifier }) {
 }
 
 /**
- * 
+ * @param responseData from web service call
  */
-const _getSearchesListFromWebserviceResponse = function({ responseData }) {
+const _getSearchesListFromWebserviceResponse = function(
+	{
+		getSearchesAndFolders_SingleProject_PromiseResponse
+	} : {
+		getSearchesAndFolders_SingleProject_PromiseResponse : GetSearchesAndFolders_SingleProject_PromiseResponse
 
-	const folderList = responseData.folderList;
-	const searchesNotInFolders = responseData.searchesNotInFolders;
-	const noSearchesFound = responseData.noSearchesFound;
+	}) : {
+	noSearchesFound : boolean
+	searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+} {
 
-	if ( noSearchesFound ) {
+	const searchesAndFolders_Items = getSearchesAndFolders_SingleProject_PromiseResponse.items;
+
+	if ( searchesAndFolders_Items.length < 1 ) {
 		//  No Data
-		return { noSearchesFound : true }; // EARLY RETURN
+		return { noSearchesFound : true, searchList_OnlySearches: [] }; // EARLY RETURN
 	}
 
-	const searchList = [];
+	const searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> = [];
 
 	//  Copy all searches to single array and sort on search id descending
 
-	if ( folderList && folderList.length !== 0 ) {
-		for ( const folderItem of folderList ) {
+	for ( const item of searchesAndFolders_Items ) {
 
-			const searchesInFolder = folderItem.searchesInFolder;
-
-			if ( searchesInFolder && searchesInFolder.length !== 0 ) {
-
-				for ( const searchItem of searchesInFolder ) {
-
-					searchList.push( searchItem );
-				}
+		if ( item.isFolder ) {
+			for ( const inFolderItem of item.searchesInFolder ) {
+				searchList_OnlySearches.push( inFolderItem );
 			}
-		}
-	}
-
-	if ( searchesNotInFolders && searchesNotInFolders.length !== 0 ) {
-
-		for ( const searchItem of searchesNotInFolders ) {
-
-			searchList.push( searchItem );
+		} else {
+			searchList_OnlySearches.push( item );
 		}
 	}
 
 	// sort on search id descending
 
-	searchList.sort( (a,b) => {
+	searchList_OnlySearches.sort( (a,b) => {
 
 		if ( a.searchId < b.searchId ) { 
 			return 1; // descending
@@ -159,251 +199,111 @@ const _getSearchesListFromWebserviceResponse = function({ responseData }) {
 		return 0;
 	});
 
-	return searchList;
+	return { searchList_OnlySearches, noSearchesFound: false };
 }
-
-
-// const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList });
-
-// promise_getSearchesSubDataFromServer.catch( () => {} );
-
-// promise_getSearchesSubDataFromServer.then( ({ searchesSubDataFromServer }) => {
 
 /**
  * 
  */
-const _getSearchesSubDataFromServer = function({ searchList }) {
+const _getSearchesSubDataFromServer = function({ searchList_OnlySearches } : {
+
+	searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+
+}) : Promise<{ searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root, annotationTypeData_Root : AnnotationTypeData_Root}> {
 
 	const projectSearchIds = [];
 
-	for ( const search of searchList ) {
+	for ( const search of searchList_OnlySearches ) {
 		projectSearchIds.push( search.projectSearchId );
 	}
 
+
 	return new Promise( (resolve, reject) => {
 		try {
-				
-			const promises = [];
+			//  Create instance of DataPageStateManager to call existing code to retrieve search data
+			const  localONLY__for_SearchDataLoading__dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = new DataPageStateManager()
+			localONLY__for_SearchDataLoading__dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
 
-			{
-				const promise = _getSearchProgramsPerSearch_FromServer({ projectSearchIds });
-				promises.push( promise );
-			}
-			{
-				const promise = _getSearchAnnotationTypes_FromServer({ projectSearchIds });
-				promises.push( promise );
-			}
+			//  instance of DataPageStateManager with search data loaded
+			const localONLY__SearchDataLoaded__dataPageStateManager_DataFrom_Server = new DataPageStateManager()
 
-			const promisesAll = Promise.all( promises );
-
-			promisesAll.catch( (reason) => {} );
-		
-			promisesAll.then( (promiseResults) => {
+			const promise = new Promise( (resolve, reject) => {
 				try {
-					const result = { responseData_SearchProgramsPerSearch : undefined, responseData_SearchAnnotationTypes : undefined };
-					for ( const promiseResult of promiseResults ) {
-						if ( promiseResult.responseData_SearchProgramsPerSearch ) {
-							result.responseData_SearchProgramsPerSearch = promiseResult.responseData_SearchProgramsPerSearch;
-						}
-						if ( promiseResult.responseData_SearchAnnotationTypes ) {
-							result.responseData_SearchAnnotationTypes = promiseResult.responseData_SearchAnnotationTypes;
+					const promises = [];
+
+					{
+						const searchProgramsPerSearchDataRetrieval = new SearchProgramsPerSearchDataRetrieval();
+						const promise = searchProgramsPerSearchDataRetrieval.retrieveSearchProgramsPerSearchData(
+							localONLY__for_SearchDataLoading__dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+							localONLY__SearchDataLoaded__dataPageStateManager_DataFrom_Server
+						);
+						if ( promise ) {
+							promises.push(promise);
 						}
 					}
+					{
+						const annotationTypeDataRetrieval = new AnnotationTypeDataRetrieval();
+						const promise = annotationTypeDataRetrieval.retrieveSearchAnnotationTypeData({
+							dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : localONLY__for_SearchDataLoading__dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+							dataPageStateManager_DataFrom_Server : localONLY__SearchDataLoaded__dataPageStateManager_DataFrom_Server
+						})
+						if ( promise ) {
+							promises.push(promise);
+						}
+					}
+					if ( promises.length === 0 ) {
+						resolve()
+					}
 
-					resolve({ searchesSubDataFromServer : result });
+					const promisesAll = Promise.all( promises );
+
+					promisesAll.catch( (reason) => {
+						reject(reason);
+					} );
+
+					promisesAll.then( (promiseResults) => {
+						try {
+							resolve()
+						} catch (e) {
+							reportWebErrorToServer.reportErrorObjectToServer({
+								errorException : e
+							});
+							throw e;
+						}
+					});
 				} catch (e) {
 					reportWebErrorToServer.reportErrorObjectToServer({
 						errorException : e
 					});
 					throw e;
 				}
-			});
-		} catch (e) {
-			reportWebErrorToServer.reportErrorObjectToServer({
-				errorException : e
-			});
-			throw e;
-		}
-	});
-}
-
-
-/**
- * 
- */
-const _getSearchProgramsPerSearch_FromServer = function({ projectSearchIds }) {
-
-	return new Promise( (resolve, reject) => {
-		try {
-		
-			let requestObj = { projectSearchIds };
-
-			const url = "d/rws/for-page/psb/search-programs-per-search-list-from-psi";
-
-			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
-			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-			promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
-
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-				try {
-					resolve({ responseData_SearchProgramsPerSearch : responseData });
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			});
-		} catch (e) {
-			reportWebErrorToServer.reportErrorObjectToServer({
-				errorException : e
-			});
-			throw e;
-		}
-	});
-}
-
-/**
- * 
- */
-const _getSearchAnnotationTypes_FromServer = function({ projectSearchIds }) {
-
-	return new Promise( (resolve, reject) => {
-		try {
-
-			const requestObj = { projectSearchIds };
-			
-			const url = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
-
-			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
-			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-			promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
-
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-				try {
-					resolve({ responseData_SearchAnnotationTypes : responseData });
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			});
-		} catch (e) {
-			reportWebErrorToServer.reportErrorObjectToServer({
-				errorException : e
-			});
-			throw e;
-		}
-	});
-}
-
-/**
- * 
- */
-const _create_searchesSubData_From_searchesSubDataFromServer = function({ searchesSubDataFromServer }) {
-
-	const dataMap_KeyProjectSearchId = new Map();
-
-	{
-		const responseData_SearchAnnotationTypes = searchesSubDataFromServer.responseData_SearchAnnotationTypes;
-		const perSearchList = responseData_SearchAnnotationTypes.perSearchList;
-
-		for ( const perSearchEntry of perSearchList ) {
-
-			const projectSearchId = perSearchEntry.projectSearchId;
-
-			//  Convert AnnotationType lists to Maps keyed on Annotation Type Id which is then stored in local variable
-			
-			const psmFilterableAnnotationTypes = _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchEntry.psmFilterableAnnotationTypes 
-			});
-			const reportedPeptideFilterableAnnotationTypes = _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchEntry.reportedPeptideFilterableAnnotationTypes
-			});
-			const matchedProteinFilterableAnnotationTypes = _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchEntry.matchedProteinFilterableAnnotationTypes
-			});
-			const psmDescriptiveAnnotationTypes = _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchEntry.psmDescriptiveAnnotationTypes
 			})
-			const reportedPeptideDescriptiveAnnotationTypes = _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchEntry.reportedPeptideDescriptiveAnnotationTypes
+
+			promise.catch( (reason) => {
+				reject(reason)
+			} );
+		
+			promise.then( (promiseResults) => {
+				try {
+					const searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root = localONLY__SearchDataLoaded__dataPageStateManager_DataFrom_Server.get_searchProgramsPerSearchData_Root()
+					const annotationTypeData_Root : AnnotationTypeData_Root = localONLY__SearchDataLoaded__dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
+
+					resolve({ searchProgramsPerSearchData_Root, annotationTypeData_Root });
+
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
 			});
-			const matchedProteinDescriptiveAnnotationTypes = _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchEntry.matchedProteinDescriptiveAnnotationTypes
+		} catch (e) {
+			reportWebErrorToServer.reportErrorObjectToServer({
+				errorException : e
 			});
-
-			const searchAnnotationTypesData = {
-				projectSearchId : perSearchEntry.projectSearchId,
-				searchId : perSearchEntry.searchId,
-				psmFilterableAnnotationTypes,
-
-				reportedPeptideFilterableAnnotationTypes,
-				matchedProteinFilterableAnnotationTypes,
-				psmDescriptiveAnnotationTypes,
-				reportedPeptideDescriptiveAnnotationTypes,
-				matchedProteinDescriptiveAnnotationTypes
-			};
-			
-			const resultObject = { searchAnnotationTypesData };
-			dataMap_KeyProjectSearchId.set( projectSearchId, resultObject );
+			throw e;
 		}
-	}
-
-	{
-		const responseData_SearchProgramsPerSearch = searchesSubDataFromServer.responseData_SearchProgramsPerSearch;
-		const perSearchList = responseData_SearchProgramsPerSearch.perSearchList;
-
-		for ( const perSearchEntry of perSearchList ) {
-
-			const projectSearchId = perSearchEntry.projectSearchId;
-
-			let resultObject = dataMap_KeyProjectSearchId.get( projectSearchId );
-			if ( ! resultObject ) {
-				resultObject = {};
-				dataMap_KeyProjectSearchId.set( projectSearchId, resultObject );
-			}
-
-			const searchProgramsPerSearch_Key_searchProgramsPerSearchId = new Map();
-			const searchProgramsPerSearchs = perSearchEntry.searchProgramsPerSearchs;
-
-			for ( const searchProgramsPerSearchIdEntry of searchProgramsPerSearchs ) {
-				searchProgramsPerSearch_Key_searchProgramsPerSearchId.set( searchProgramsPerSearchIdEntry.searchProgramsPerSearchId, searchProgramsPerSearchIdEntry );
-			}
-
-			const searchProgramsPerSearchEntry = {
-				searchProgramsPerSearch_Key_searchProgramsPerSearchId,
-				projectSearchId : perSearchEntry.projectSearchId,
-				searchId : perSearchEntry.searchId
-			}
-
-			resultObject.searchProgramsPerSearch = searchProgramsPerSearchEntry;
-		}
-	}
-
-	return { dataMap_KeyProjectSearchId };
+	});
 }
 
-
-/**
- * 
- */
-const _convertAnnotationTypeArray_ToMap_KeyedAnnotationTypeId = function( { annotationTypeArray } ) {
-
-	let annotationTypesMap = new Map();
-	
-	for ( const annotationTypeItem of annotationTypeArray ) {
-		
-		Object.freeze( annotationTypeItem );    //  Freeze Object, no changes to properties, no add or remove properties
-		
-		annotationTypesMap.set( annotationTypeItem.annotationTypeId, annotationTypeItem );
-	}
-	
-	return annotationTypesMap;
-}
 

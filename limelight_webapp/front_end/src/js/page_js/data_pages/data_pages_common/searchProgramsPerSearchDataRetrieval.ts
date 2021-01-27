@@ -36,7 +36,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 	 */
 	retrieveSearchProgramsPerSearchData( 
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager, 
-			dataPageStateManager_DataFrom_Server : DataPageStateManager ) {
+			dataPageStateManager_DataFrom_Server : DataPageStateManager ) : Promise<unknown> {
 
 		let projectSearchIds = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
@@ -81,7 +81,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 	 */
 	_retrieveSearchProgramsPerSearchDataFromAJAX( 
 			projectSearchIds_dataNotLoadedArray, 
-			dataPageStateManager_DataFrom_Server : DataPageStateManager ) {
+			dataPageStateManager_DataFrom_Server : DataPageStateManager ) : Promise<unknown>  {
 
 		let objectThis = this;
 

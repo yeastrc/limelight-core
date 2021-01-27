@@ -22,11 +22,9 @@ import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pag
 import {navigation_dataPages_Maint_Instance} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint";
 
 import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from 'page_js/data_pages/data_pages_common/newURL_Build_PerProjectSearchIds_Or_ExperimentId';
-import {get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/jsx/modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout";
 import {
     get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout,
-    SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params,
-    SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem
+    SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params
 } from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_OverlayLayout";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
@@ -36,6 +34,10 @@ import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
 import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder';
+import {
+    getSearchesAndFolders_SingleProject, GetSearchesAndFolders_SingleProject_PromiseResponse,
+    GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 
 
 /**
@@ -50,7 +52,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
     private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     private _dataUpdated_Callback
 
-    private _searchList_ForUserSelection : Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>;
+    private _searchList_ForUserSelection : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
 
     private _changeSearches_Overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF;
 
@@ -73,11 +75,15 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
      */
     open_ChangeSearches_Overlay(  ) {
 
-        const promise_getSearchList = this._getSearchList();
+        let projectIdentifier = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
+
+        const promise_getSearchList = getSearchesAndFolders_SingleProject({ projectIdentifier });
 
         promise_getSearchList.catch((reason => {}))
 
-        promise_getSearchList.then( ( searchList ) => {
+        promise_getSearchList.then( ( getSearchesAndFolders_SingleProject_PromiseResponse ) => {
+
+            const searchList = getSearchesAndFolders_SingleProject_PromiseResponse.items;
 
             this._searchList_ForUserSelection = searchList;
 
@@ -94,147 +100,6 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
             this._changeSearches_Overlay_AddedTo_DocumentBody_Holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
         })
-    }
-
-    /**
-     *
-     */
-    _getSearchList() : Promise<Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>> {
-
-        return new Promise ( ( resolve, reject ) => {
-            try {
-
-                let projectIdentifier = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
-
-                let requestObj = {
-                    projectIdentifier: projectIdentifier
-                };
-
-                const url = "d/rws/for-page/project-view-page-search-list";
-
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
-
-                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-                promise_webserviceCallStandardPost.catch(() => {
-                });
-
-                promise_webserviceCallStandardPost.then(({responseData}) => {
-                    try {
-                        const resultList = this._getSearchList_FromServerResponseData(responseData);
-
-                        resolve( resultList );
-
-                    } catch (e) {
-                        reportWebErrorToServer.reportErrorObjectToServer({
-                            errorException: e
-                        });
-                        throw e;
-                    }
-                });
-            } catch (e) {
-                reportWebErrorToServer.reportErrorObjectToServer({
-                    errorException: e
-                });
-                throw e;
-            }
-        });
-    }
-
-    /**
-     *
-     */
-    private _getSearchList_FromServerResponseData( responseData ) : Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem> {
-
-        const searchList_Result : Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem> = [];
-
-        const folderList = responseData.folderList;
-        const searchesNotInFolders = responseData.searchesNotInFolders;
-        const noSearchesFound = responseData.noSearchesFound;
-
-        if (noSearchesFound) {
-            return searchList_Result; // EARLY RETURN
-        }
-
-
-        sortSearchesOnDisplayOrder_OrDefaultOrder({ folderList, searchesNotInFolders }); // External Function
-
-
-        if (folderList && folderList.length !== 0) {
-
-            for (const folderItem of folderList) {
-
-                const searchesInFolder = folderItem.searchesInFolder;
-
-                if (searchesInFolder && searchesInFolder.length !== 0) {
-
-                    if ( ! variable_is_type_number_Check( folderItem.id ) ) {
-                        const msg = "_getSearchList_FromServerResponseData_SpecificListOfSearches: ( ! variable_is_type_number_Check( folderItem.id ) ). folderItem.id: " + folderItem.id
-                        console.warn( msg )
-                        throw  Error( msg )
-                    }
-                    if ( ! limelight__IsVariableAString( folderItem.folderName ) ) {
-                        const msg = "_getSearchList_FromServerResponseData_SpecificListOfSearches: ( ! limelight__IsVariableAString( folderItem.folderName ) ). folderItem.folderName: " + folderItem.folderName
-                        console.warn( msg )
-                        throw  Error( msg )
-                    }
-                    //  Build Folder Entry and put incoming folder's searches into output folder's searches
-                    const searchesInFolder_Result : Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem> = [];
-                    const searchList_Entry = new SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem({
-                        projectSearchId : undefined,
-                        searchId : undefined,
-                        searchName : undefined,
-                        folderId : folderItem.id,
-                        folderName : folderItem.folderName,
-                        searchesInFolder : searchesInFolder_Result
-                    })
-
-                    searchList_Result.push( searchList_Entry );
-
-                    this._getSearchList_FromServerResponseData_SpecificListOfSearches(searchesInFolder, searchesInFolder_Result);
-                }
-            }
-        }
-
-        if (searchesNotInFolders && searchesNotInFolders.length !== 0) {
-            this._getSearchList_FromServerResponseData_SpecificListOfSearches(searchesNotInFolders, searchList_Result);
-        }
-
-        return searchList_Result;
-    }
-
-    /**
-     *
-     */
-    private _getSearchList_FromServerResponseData_SpecificListOfSearches( searchList, searchList_Result : Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem> ) : void {
-
-        for (const searchItem of searchList) {
-
-            if ( ! variable_is_type_number_Check( searchItem.projectSearchId ) ) {
-                const msg = "_getSearchList_FromServerResponseData_SpecificListOfSearches: ( ! variable_is_type_number_Check( searchItem.projectSearchId ) ). searchItem.projectSearchId: " + searchItem.projectSearchId
-                console.warn( msg )
-                throw  Error( msg )
-            }
-            if ( ! variable_is_type_number_Check( searchItem.searchId ) ) {
-                const msg = "_getSearchList_FromServerResponseData_SpecificListOfSearches: ( ! variable_is_type_number_Check( searchItem.searchId ) ). searchItem.searchId: " + searchItem.searchId
-                console.warn( msg )
-                throw  Error( msg )
-            }
-            if ( ! limelight__IsVariableAString( searchItem.name ) ) {
-                const msg = "_getSearchList_FromServerResponseData_SpecificListOfSearches: ( ! limelight__IsVariableAString( searchItem.name ) ). searchItem.name: " + searchItem.name
-                console.warn( msg )
-                throw  Error( msg )
-            }
-            const searchList_Entry = new SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem({
-                projectSearchId : searchItem.projectSearchId,
-                searchId : searchItem.searchId,
-                searchName : searchItem.name,
-                folderId : undefined,
-                folderName : undefined,
-                searchesInFolder : undefined
-            })
-            searchList_Result.push( searchList_Entry );
-        }
     }
 
     /**
@@ -324,7 +189,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
             projectSearchIds_Additions_Final_Ordered = [];
 
-            const searchesAdditions : Array<SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem> = [];
+            const searchesAdditions : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> = [];
 
             for ( const searchList_ForUserSelectionEntry of this._searchList_ForUserSelection ) {
 
