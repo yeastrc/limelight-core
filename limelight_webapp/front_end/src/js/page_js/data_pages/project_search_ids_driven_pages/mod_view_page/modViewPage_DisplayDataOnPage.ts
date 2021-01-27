@@ -81,7 +81,7 @@ export class ModViewPage_DisplayDataOnPage {
 
 		const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = new SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({
 			displayOnly : false,
-			do_NOT_Display_ChangeSearches_Link : true,
+			do_NOT_Display_ChangeSearches_Link : false,
 			do_NOT_Display_Re_Order_Searches_Link : false,
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
@@ -170,7 +170,26 @@ export class ModViewPage_DisplayDataOnPage {
 
 		if(vizOptionsData.data.projectSearchIds === undefined) {
 			vizOptionsData.data.projectSearchIds = [...projectSearchIds];	// ordered list of project ids to show is considered a viz option
-		}
+        } else {
+            //  remove entries in vizOptionsData.data.projectSearchIds that are not in projectSearchIds.  also remove from vizOptionsData.data.selectedStateObject.data
+            const new_vizOptionsData_projectSearchIds_Entries = [];
+            for ( const vizOptionsData_projectSearchId of vizOptionsData.data.projectSearchIds ) {
+                if ( projectSearchIds.includes( vizOptionsData_projectSearchId ) ) {
+                    new_vizOptionsData_projectSearchIds_Entries.push( vizOptionsData_projectSearchId );
+                } else {
+                	if ( vizOptionsData.data.selectedStateObject ) {
+						delete vizOptionsData.data.selectedStateObject.data[ vizOptionsData_projectSearchId ];
+					}
+				}
+            }
+            //  add entries in projectSearchIds that are not in vizOptionsData.data.projectSearchIds to the end of vizOptionsData.data.projectSearchIds
+            for ( const projectSearchId of projectSearchIds ) {
+                if ( ! new_vizOptionsData_projectSearchIds_Entries.includes( projectSearchId ) ) {
+                    new_vizOptionsData_projectSearchIds_Entries.push( projectSearchId );
+                }
+            }
+            vizOptionsData.data.projectSearchIds = new_vizOptionsData_projectSearchIds_Entries;
+        }
 
 		// add the options section to the page using these viz options  -  IDE warning message: Promise returned from showOptionsOnPage is ignored
 		ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
