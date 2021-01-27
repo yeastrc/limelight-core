@@ -8,6 +8,7 @@
 
 import React from 'react'
 import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
+import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 
 /////
 
@@ -32,11 +33,15 @@ export const get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSe
     {
         searchList,
         projectSearchIds_Selected,
+        //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+        projectSearchIds_ContainedInAllOtherCells,
         callbackOn_Cancel_Close_Clicked,
         callback_updateSelected_Searches
     } : {
-        searchList : Array<ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>
+        searchList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
         projectSearchIds_Selected : Set<number>
+        //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+        projectSearchIds_ContainedInAllOtherCells : Set<number>
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelected_Searches : ( params : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
 
@@ -46,51 +51,13 @@ export const get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSe
         <ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component
             searchList={ searchList }
             projectSearchIds_Selected={ projectSearchIds_Selected }
+            projectSearchIds_ContainedInAllOtherCells={ projectSearchIds_ContainedInAllOtherCells }
             callbackOn_Cancel_Close_Clicked={ callbackOn_Cancel_Close_Clicked }
             callback_updateSelected_Searches={ callback_updateSelected_Searches }
         />
     )
 }
 
-/////
-
-/**
- * Used for both Search and Folder
- */
-export class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem {
-
-    //  Search
-    projectSearchId : number
-    searchId : number
-    searchName : string
-
-    //  For Folder
-
-    folderId : number
-    folderName : string
-    searchesInFolder : Array<ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>
-
-    constructor({ projectSearchId, searchId, searchName, folderId, folderName, searchesInFolder } : {
-
-        //  Search
-        projectSearchId : number
-        searchId : number
-        searchName : string
-
-        //  For Folder
-
-        folderId : number
-        folderName : string
-        searchesInFolder : Array<ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>
-    }) {
-        this.projectSearchId = projectSearchId;
-        this.searchId = searchId;
-        this.searchName = searchName;
-        this.folderId = folderId;
-        this.folderName = folderName;
-        this.searchesInFolder = searchesInFolder;
-    }
-}
 
 ////  React Components
 
@@ -98,8 +65,13 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearch
  *
  */
 interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component_Props {
-    searchList : Array<ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>
+
+    searchList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+
     projectSearchIds_Selected : Set<number>
+    //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+    projectSearchIds_ContainedInAllOtherCells : Set<number>
+
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelected_Searches : ( params : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
 }
@@ -108,7 +80,7 @@ interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_
  *
  */
 interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component_State {
-    searchesAndFoldersList? : Array<ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem>
+    searchesAndFoldersList? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
 }
 
 /**
@@ -168,10 +140,12 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
                 const selected = this._projectSearchIds_Selected_InProgress.has(searchEntry.projectSearchId);
 
                 const searchDisplayListEntry = (
-                    <SearchEntry key={searchEntry.projectSearchId}
-                                 searchDisplayListItem={searchEntry}
-                                 selected={selected}
-                                 callbackOn_entry_Clicked={this._searchRowClicked_BindThis}
+                    <SearchEntry
+                        key={searchEntry.projectSearchId}
+                        searchDisplayListItem={searchEntry}
+                        selected={selected}
+                        projectSearchIds_ContainedInAllOtherCells={ this.props.projectSearchIds_ContainedInAllOtherCells }
+                        callbackOn_entry_Clicked={this._searchRowClicked_BindThis}
                     />
                 )
                 searchDisplayList.push(searchDisplayListEntry);
@@ -181,17 +155,28 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
                 //  Process a Folder Entry
 
                 const searchDisplayListEntry = (
-                    <FolderEntry key={searchEntry.folderId}
-                                 searchDisplayListItem={searchEntry}
-                                 projectSearchIds_Selected_InProgress={ this._projectSearchIds_Selected_InProgress }
-                                 callbackOn_searchEntry_Clicked={this._searchRowClicked_BindThis}
+                    <FolderEntry
+                        key={searchEntry.folderId}
+                        searchDisplayListItem={searchEntry}
+                        projectSearchIds_Selected_InProgress={ this._projectSearchIds_Selected_InProgress }
+                        projectSearchIds_ContainedInAllOtherCells={ this.props.projectSearchIds_ContainedInAllOtherCells }
+                        callbackOn_searchEntry_Clicked={this._searchRowClicked_BindThis}
                     />
                 )
                 searchDisplayList.push(searchDisplayListEntry);
             }
         }
 
-        const mainBlockHeight = _Overlay_Height - 120;
+        // let show_SearchesInOtherConditions_Msg = false;
+        // if (this.props.projectSearchIds_ContainedInAllOtherCells && this.props.projectSearchIds_ContainedInAllOtherCells.size > 0 ) {
+        //     show_SearchesInOtherConditions_Msg = true;
+        // }
+
+        let mainBlockHeight = _Overlay_Height - 120;
+
+        // if ( show_SearchesInOtherConditions_Msg ) {
+        //     mainBlockHeight -= 20;
+        // }
 
         return (
             <ModalOverlay_Limelight_Component
@@ -205,8 +190,14 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
 
                     <div className=" change-searches-overlay-outer-block ">
 
-                        <div style={ { height : mainBlockHeight, maxHeight : mainBlockHeight, overflowY: "auto", width: "100%", overflowX: "hidden" } }
-                             className=" mod-mass-select-dialog-bounding-box  ">
+                        {
+                            // { show_SearchesInOtherConditions_Msg ? (
+                            //     <div style={ { fontSize: 10, paddingLeft: 8 } }> {/* paddingLeft: 8 so aligns with list of searches */}
+                            //         (A Search with "*" is assigned to another cell and will be moved to this cell)
+                            //     </div>
+                            //     ): null }
+                        }
+                        <div style={ { height : mainBlockHeight, maxHeight : mainBlockHeight, overflowY: "auto", width: "100%", overflowX: "hidden" } }>
 
                             <div style={ { padding : 6 } } >
 
@@ -216,7 +207,11 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
                         </div>
 
                         <div style={ { marginTop: 15 } }>
-                            <input type="button" value="Change" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+                            <input
+                                type="button" value={ ( this.props.projectSearchIds_Selected.size < 1 ) ? "Add" : "Change" }
+                                style={ { marginRight: 5 } }
+                                onClick={ this._updateButtonClicked_BindThis }
+                            />
 
                             <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
                         </div>
@@ -235,8 +230,10 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
  *
  */
 interface SearchEntry_Props {
-    searchDisplayListItem : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem
+    searchDisplayListItem : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
     selected : boolean
+    //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+    projectSearchIds_ContainedInAllOtherCells : Set<number>
     callbackOn_entry_Clicked : ( projectSearchId : number ) => void;
 }
 
@@ -282,14 +279,30 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
             selectedClass = " selected "
         }
 
-        const cssClasses = " search-entry-container clickable " + selectedClass;
+        let selectedOtherCellClass = ""
 
-        const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
+        if ( this.props.projectSearchIds_ContainedInAllOtherCells.has(this.props.searchDisplayListItem.projectSearchId) ) {
+            selectedOtherCellClass = " selected-other-cell "
+        }
+
+        const cssClasses = " search-entry-container clickable " + selectedClass + selectedOtherCellClass;
+
+        let selectedOtherString = "";
+        // if ( this.props.projectSearchIds_ContainedInAllOtherCells.has(this.props.searchDisplayListItem.projectSearchId) ) {
+        //     selectedOtherString = "*"
+        // }
+
+        let divTitle : string = null;
+        if ( this.props.projectSearchIds_ContainedInAllOtherCells.has(this.props.searchDisplayListItem.projectSearchId) ) {
+            divTitle = "Search is already in another cell.\nSelecting it will move it to this cell."
+        }
+
+        const searchNameDisplay = selectedOtherString + "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
 
         return (
             <div onClick={ this._searchRowClicked_BindThis }
                  className={ cssClasses }
-                // title={ searchNameDisplay }
+                title={ divTitle }
                  style={ {  } }>
                 <span style={ { overflowWrap : "break-word"}}>
                     { searchNameDisplay }
@@ -308,8 +321,10 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
  *
  */
 interface FolderEntry_Props {
-    searchDisplayListItem : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Search_or_Folder_DisplayListItem
+    searchDisplayListItem : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
     projectSearchIds_Selected_InProgress : Set<number>
+    //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+    projectSearchIds_ContainedInAllOtherCells : Set<number>
     callbackOn_searchEntry_Clicked : ( projectSearchId : number ) => void;
 }
 
@@ -389,6 +404,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                         <SearchEntry key={searchEntry.projectSearchId}
                                      searchDisplayListItem={searchEntry}
                                      selected={selected}
+                                     projectSearchIds_ContainedInAllOtherCells={ this.props.projectSearchIds_ContainedInAllOtherCells }
                                      callbackOn_entry_Clicked={this.props.callbackOn_searchEntry_Clicked}
                         />
                     )

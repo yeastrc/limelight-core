@@ -729,7 +729,12 @@
                     background-color: $site-color-very-dark;
                 }
             }
-        }
+
+            &.selected-other-cell {
+
+                color: $site-color-gray
+            }
+      }
     }
 
    //   Re-Order Searches Overlay Contents

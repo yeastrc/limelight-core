@@ -22,25 +22,32 @@ import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experime
 import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
 import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
 import {
-    get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout,
-    SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params
-} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_OverlayLayout";
-import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
-    AnnotationTypeData_Root,
-    SearchProgramsPerSearchData_Root
+    AnnotationTypeData_Root, AnnotationTypeItem,
+    SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItem
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Layout,
+    ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params
+} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_Single_MainCell_ChangeSearches_Overlay";
+import {ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data} from "page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes";
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
 
-
+/**
+ *
+ */
 export class Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint {
-    projectSearchIds : Set<number>
+
+    projectSearchIds_ForThisCell : Set<number>
+    //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+    projectSearchIds_ContainedInAllOtherCells : Set<number>
+
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
     conditionGroupsDataContainer : ConditionGroupsDataContainer
     mainCell_Identifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier
@@ -52,9 +59,27 @@ export class Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint {
             annotationTypeData_Root : AnnotationTypeData_Root
         }
     }
-    searchesList : any;
     save_ProjectSearchIds_ForMainCell : any; // function
     save_updated_conditionGroupsDataContainer : any; // this._save_updated_conditionGroupsDataContainer_BindThis
+}
+
+/**
+ * Internal class to wrap: wrappedSearch : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+ */
+class SearchSelected_Entry {
+    wrappedSearch : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+    psmFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
+    reportedPeptideFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
+}
+
+/**
+ * Internal class of filters for type PSM etc for class SearchSelected_Entry
+ */
+class SearchSelected_Entry_FiltersForType_PSM_Etc {
+    annotationTypeId : number
+    annotationTypeName : string
+    searchProgramName : string
+    value : number
 }
 
 /**
@@ -71,8 +96,7 @@ interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_State {
 
     projectSearchIds? : Set<number>
     projectSearchIds_InitialProps? : Set<number>
-    searches_Selected?
-    searches_NOT_Selected?
+    searches_Selected : Array<SearchSelected_Entry>
     experiment_User_Set_Single_Search_FiltersPropsParams?
 }
 
@@ -155,9 +179,6 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
         if ( this.state.searches_Selected !== nextState.searches_Selected ) {
             return true;
         }
-        if ( this.state.searches_NOT_Selected !== nextState.searches_NOT_Selected ) {
-            return true;
-        }
         if ( this.state.experiment_User_Set_Single_Search_FiltersPropsParams !== nextState.experiment_User_Set_Single_Search_FiltersPropsParams ) {
             return true;
         }
@@ -223,9 +244,9 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
 
         let changeSearches_Overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF = undefined;
 
-        const projectSearchIdsSet = new Set( this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds );
+        const projectSearchIdsSet = new Set( this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds_ForThisCell );
 
-        const callback_updateSelected_Searches = ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) : void => {
+        const callback_updateSelected_Searches = ( params : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) : void => {
 
             changeSearches_Overlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM()
             this._save({ projectSearchIds : params.updated_selected_ProjectSearchIds });
@@ -236,11 +257,12 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
             changeSearches_Overlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM()
         }
 
-        const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout({
+        const overlayComponent = get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Layout({
             searchList : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searches_TopLevelAndNestedInFolders,
             projectSearchIds_Selected : projectSearchIdsSet,
-            callback_updateSelected_Searches, // : undefined, // this._callback_updateSelected_Searches_BindThis,
-            callbackOn_Cancel_Close_Clicked // : undefined // this._callbackOn_Cancel_Close_Clicked_BindThis
+            projectSearchIds_ContainedInAllOtherCells : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds_ContainedInAllOtherCells,
+            callback_updateSelected_Searches,
+            callbackOn_Cancel_Close_Clicked
         })
 
         changeSearches_Overlay_AddedTo_DocumentBody_Holder =
@@ -315,7 +337,9 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
             for ( const searchSelectedEntry of this.state.searches_Selected ) {
                 
                 const search_Assigned_Display = ( 
-                    <Search_Assigned key={ searchSelectedEntry.searchContainer.search.projectSearchId } searchSelectedEntry={ searchSelectedEntry }
+                    <Search_Assigned
+                        key={ searchSelectedEntry.wrappedSearch.projectSearchId }
+                        searchSelectedEntry={ searchSelectedEntry }
                         deleteProjectSearchId={ this._delete_Search_BindThis }
                         filterEntryClicked={ this._filterEntryClicked_BindThis } /> 
                 );
@@ -332,41 +356,6 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
             );
 
             addChangeSearchesButton_Label = "Add Searches";
-        }
-
-        const searches_NOT_Assigned_ToCell_Options : Array<JSX.Element> = [];  //  May be assigned to other cells
-
-        for ( const searchContainer of this.state.searches_NOT_Selected ) {
-
-            let inOtherCell_Indicator = "";
-            let inOtherCell_TitlePrefix = "";
-            if ( searchContainer.setOnOtherCell ) {
-                inOtherCell_Indicator = "* ";
-                inOtherCell_TitlePrefix = "Search currently assigned to another cell.\n\n";
-            }
-
-            const searchName = searchContainer.search.searchName;
-
-            const searchTitle = inOtherCell_TitlePrefix + "(" + searchContainer.search.searchId + ") " + searchName;
-
-            let searchName_OptionDisplay = searchName;
-
-            const searchName_OptionDisplay_MaxLength = 60;
-
-            if ( searchName_OptionDisplay.length > searchName_OptionDisplay_MaxLength ) {
-                searchName_OptionDisplay = searchName_OptionDisplay.substring( 0, searchName_OptionDisplay_MaxLength ) + "...";
-            }
-            
-            const search_Option_Display = inOtherCell_Indicator + "(" + searchContainer.search.searchId + ") " + searchName_OptionDisplay;
-            
-            const search_NOT_Assigned_Option = ( 
-                <option 
-                    key={ searchContainer.search.projectSearchId } 
-                    value={ searchContainer.search.projectSearchId }
-                    title={ searchTitle }
-                >{ search_Option_Display }</option>
-            );
-            searches_NOT_Assigned_ToCell_Options.push( search_NOT_Assigned_Option );
         }
 
         let experiment_User_Set_Single_Search_Filters = undefined;
@@ -398,23 +387,11 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
                         { searches_Assigned_ToCell }
                         { no_searches_Assigned_ToCell_msg }
                     </div>
-
-                    <input type="button" value={ addChangeSearchesButton_Label }
-                        onClick={ this._changeSearches_OpenOverlay_BindThis }
-                    />
-
-                    {/*<div style={ { fontWeight: "bold", marginTop: 10, marginBottom: 3 } }>*/}
-                    {/*    Choose a Search to Add*/}
-                    {/*</div>*/}
-                    {/*<div >*/}
-                    {/*    ( A Search with "*" is assigned to another cell and will be moved to this cell when selected )*/}
-                    {/*</div>*/}
-                    {/*<div style={ { overflowX: "hidden" } }>*/}
-                    {/*    <select onChange={ this._add_Search_Select_Updated_BindThis } title="Select a Search to Add">*/}
-                    {/*        <option key="none-selected" >Select a Search</option>*/}
-                    {/*        { searches_NOT_Assigned_ToCell_Options }*/}
-                    {/*    </select>*/}
-                    {/*</div>*/}
+                    <div style={ { marginTop: 10 } }>
+                        <input type="button" value={ addChangeSearchesButton_Label }
+                            onClick={ this._changeSearches_OpenOverlay_BindThis }
+                        />
+                    </div>
                 </div>
             </React.Fragment>
         );
@@ -435,21 +412,19 @@ const _computeStateFromNewOrUpdatedProps_data_ProjectPage_Experiments_SingleExpe
 
     //  projectSearchIds_InitialProps : projectSearchIds currently assigned to this cell
 
-    const projectSearchIds_InitialProps = data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds;
+    const projectSearchIds_InitialProps = data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds_ForThisCell;
     const conditionGroupsDataContainer = data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.conditionGroupsDataContainer;
 
     const projectSearchIds = new Set( projectSearchIds_InitialProps );
 
-    const searchesAllList = data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesList;
     const searchesData = data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData;
 
-    const { searches_Selected, searches_NOT_Selected } = _createSearchLists({ projectSearchIds, searchesAllList, searchesData, conditionGroupsDataContainer })
+    const searches_Selected = _createSearchLists({ projectSearchIds, searchesData, conditionGroupsDataContainer })
 
     return {
             projectSearchIds,
             projectSearchIds_InitialProps,
             searches_Selected,
-            searches_NOT_Selected,
             current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : data_ProjectPage_Experiments_SingleExperiment_MainCellMaint
     };
 }
@@ -457,10 +432,9 @@ const _computeStateFromNewOrUpdatedProps_data_ProjectPage_Experiments_SingleExpe
 /**
  * 
  */
-const _createSearchLists = function({ projectSearchIds, searchesAllList, searchesData, conditionGroupsDataContainer } : {
+const _createSearchLists = function({ projectSearchIds, searchesData, conditionGroupsDataContainer } : {
 
     projectSearchIds: Set<number>
-    searchesAllList,
     searchesData :  {
         searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
         searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
@@ -471,40 +445,36 @@ const _createSearchLists = function({ projectSearchIds, searchesAllList, searche
     }
     conditionGroupsDataContainer: ConditionGroupsDataContainer
 
-}) : {
-    searches_Selected,
-    searches_NOT_Selected
-} {
+}) : Array<SearchSelected_Entry> {
 
-    const searches_Selected = [];
-    const searches_NOT_Selected = [];
+    const searches_Selected : Array<SearchSelected_Entry> = [];
 
-    for ( const searchContainer of searchesAllList ) {
+    for ( const searchEntry of searchesData.searchList_OnlySearches ) {
 
-        const search = searchContainer.search;
-
-        const projectSearchId = search.projectSearchId;
+        const projectSearchId = searchEntry.projectSearchId;
 
         if ( projectSearchIds.has( projectSearchId ) ) {
 
-            const searchSelectedEntry = _createSearchSelectedEntry({ searchContainer, projectSearchId, conditionGroupsDataContainer, searchesData });
+            const searchSelectedEntry = _createSearchSelectedEntry({ searchEntry, projectSearchId, conditionGroupsDataContainer, searchesData });
 
             searches_Selected.push( searchSelectedEntry );
-        } else {
-            searches_NOT_Selected.push( searchContainer );
         }
     }
 
-    return { searches_Selected, searches_NOT_Selected };
+    return searches_Selected;
 }
 
 /**
- * @param conditionGroupsData_PerProjectSearchIdData - class ConditionGroupsDataContainer_PerProjectSearchIdData
+ *
+ * @param searchEntry
+ * @param projectSearchId
+ * @param conditionGroupsDataContainer
+ * @param searchesData
  */
-const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, conditionGroupsDataContainer, searchesData } : {
+const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, conditionGroupsDataContainer, searchesData } : {
 
-    searchContainer,
-    projectSearchId,
+    searchEntry: GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+    projectSearchId : number
     conditionGroupsDataContainer: ConditionGroupsDataContainer
     searchesData :  {
         searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
@@ -515,7 +485,7 @@ const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, 
         }
     }
 
-}) : any {
+}) : SearchSelected_Entry {
 
     //  class ConditionGroupsData_PerProjectSearchIdData
     const conditionGroupsData_PerProjectSearchIdData = conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId });
@@ -541,7 +511,7 @@ const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, 
     const reportedPeptideFilters = conditionGroupsData_PerProjectSearchIdData.get_reportedPeptideFilters_PerProjectSearchId();
     // const matchedProteinFilters = conditionGroupsData_PerProjectSearchIdData.get_matchedProteinFilters_PerProjectSearchId();
 
-    const result_searchSelectedEntry : { searchContainer, psmFilters? : any, reportedPeptideFilters? : any } = { searchContainer };
+    const result_searchSelectedEntry : SearchSelected_Entry = { wrappedSearch: searchEntry };
 
     if ( psmFilters ) {
 
@@ -575,9 +545,17 @@ const _createSearchSelectedEntry = function({ searchContainer, projectSearchId, 
  * @param filterData_PerType_All - Array of class ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data
  * @param filterableAnnotationTypes - Map - key annotation type id
  */
-const _createSearchSelectedEntry_PerType = function({ filterData_PerType_All, filterableAnnotationTypes, searchProgramsPerSearch_Key_searchProgramsPerSearchId }) {
+const _createSearchSelectedEntry_PerType = function(
+    {
+        filterData_PerType_All, filterableAnnotationTypes, searchProgramsPerSearch_Key_searchProgramsPerSearchId
+    } : {
+        filterData_PerType_All: ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data[]
+        filterableAnnotationTypes: Map<number, AnnotationTypeItem>
+        searchProgramsPerSearch_Key_searchProgramsPerSearchId: Map<number, SearchProgramsPerSearchItem>
 
-    const result_filters = [];
+    }) : Array<SearchSelected_Entry_FiltersForType_PSM_Etc> {
+
+    const result_filters : Array<SearchSelected_Entry_FiltersForType_PSM_Etc> = [];
 
     for ( const filterData_PerType of filterData_PerType_All ) {
 
@@ -593,7 +571,7 @@ const _createSearchSelectedEntry_PerType = function({ filterData_PerType_All, fi
             throw Error("_createSearchSelectedEntry_PerType(...): No Value in searchProgramsPerSearch_Key_searchProgramsPerSearchId for searchProgramsPerSearchId: " + searchProgramsPerSearchId );
         }
 
-        const result_filter = {
+        const result_filter : SearchSelected_Entry_FiltersForType_PSM_Etc = {
             annotationTypeId,
             annotationTypeName : filterableAnnotationType.name,
             searchProgramName : searchProgramsPerSearch_Entry.name,
@@ -614,9 +592,9 @@ const _createSearchSelectedEntry_PerType = function({ filterData_PerType_All, fi
 
 interface Search_Assigned_Props {
 
-    searchSelectedEntry
-    deleteProjectSearchId
-    filterEntryClicked
+    searchSelectedEntry: SearchSelected_Entry
+    deleteProjectSearchId // callback function
+    filterEntryClicked // callback function
 }
 
 /**
@@ -640,7 +618,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
 
         event.stopPropagation();  // Stop bubbling of event
 
-        this.props.deleteProjectSearchId({ projectSearchId : this.props.searchSelectedEntry.searchContainer.search.projectSearchId })
+        this.props.deleteProjectSearchId({ projectSearchId : this.props.searchSelectedEntry.wrappedSearch.projectSearchId })
     }
 
     /**
@@ -649,7 +627,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
      */
     _filterEntryClicked({ filterLabel, annotationTypeId }) {
 
-        this.props.filterEntryClicked({ projectSearchId : this.props.searchSelectedEntry.searchContainer.search.projectSearchId, filterLabel, annotationTypeId });
+        this.props.filterEntryClicked({ projectSearchId : this.props.searchSelectedEntry.wrappedSearch.projectSearchId, filterLabel, annotationTypeId });
     }
 
     /**
@@ -657,11 +635,11 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
      */
     render () {
 
-        const search = this.props.searchSelectedEntry.searchContainer.search;
+        const search = this.props.searchSelectedEntry.wrappedSearch;
 
-        const searchTitle = "(" + search.searchId + ") " + search.name;
+        const searchTitle = "(" + search.searchId + ") " + search.searchName;
 
-        let psmFilters = undefined;
+        let psmFilters : JSX.Element = undefined;
 
         if ( this.props.searchSelectedEntry.psmFilters ) {
 
@@ -674,7 +652,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
             );
         }
 
-        let peptideFilters = undefined;
+        let peptideFilters : JSX.Element = undefined;
 
         if ( this.props.searchSelectedEntry.reportedPeptideFilters ) {
 
@@ -706,7 +684,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                     />
                     <span > </span>
                     <span >(</span><span >{ search.searchId }</span><span >) </span>
-                    <span style={ { overflowWrap: "break-word" }} title={ searchTitle } >{ search.name }</span>
+                    <span style={ { overflowWrap: "break-word" }} title={ searchTitle } >{ search.searchName }</span>
                 </div>
                 <div >
                     { filters }
@@ -719,9 +697,9 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
 
 interface Search_Assigned_FilterData_ForType_Props {
 
-    filters
-    filterLabel
-    filterEntryClicked
+    filters: SearchSelected_Entry_FiltersForType_PSM_Etc[]
+    filterLabel: string
+    filterEntryClicked // Callback Function
 }
 
 /**

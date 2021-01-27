@@ -1729,69 +1729,6 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     }
 
     /**
-     * @param mainCellIdentifier - For Cell to get Searches Data for
-     */
-    _getSearchesListForSpecificEntryCell({ mainCellIdentifier } : {
-
-        mainCellIdentifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier;
-    }) {
-
-        //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
-        const projectSearchIds_ContainedInAllOtherCells = new Set();
-
-        const conditionGroupsContainer = this.state.conditionGroupsContainer;
-        const conditionGroupsDataContainer = this.state.conditionGroupsDataContainer;
-
-        const callbackForEach_conditionGroupsDataContainer_Entry_Data = ({ conditionGroupsDataContainer_Entry_Data } : { conditionGroupsDataContainer_Entry_Data : ConditionGroupsDataContainer_DataEntry }) => {
-            if ( conditionGroupsDataContainer_Entry_Data.data ) {
-                const projectSearchIds = conditionGroupsDataContainer_Entry_Data.data.projectSearchIds;
-                if ( projectSearchIds ) {
-                    for ( const projectSearchId of projectSearchIds ) {
-                        projectSearchIds_ContainedInAllOtherCells.add( projectSearchId );
-                    }
-                }
-            }
-        }
-
-        _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier({
-            mainCellIdentifier_ToExclude : mainCellIdentifier,
-            conditionGroupsContainer,
-            conditionGroupsDataContainer,
-            callbackForEach_conditionGroupsDataContainer_Entry_Data
-        });
-
-        //  Process all searches so process this.props.searchesData.searchList
-
-        const searchesListResult = [];
-
-        const searchesData = this.props.searchesData;
-
-        if ( searchesData ) {
-            const searchList = searchesData.searchList_OnlySearches;
-            if ( searchList ) {
-                for ( const search of searchList ) {
-
-                    const searchContainer : { search, setOnOtherCell? } = { search };
-
-                    if ( projectSearchIds_ContainedInAllOtherCells.has( search.projectSearchId ) ) {
-                        //  Search selected for other cells so set
-
-                        searchContainer.setOnOtherCell = true;
-                    } else {
-
-                        var znothing = 0;
-                    }
-
-                    searchesListResult.push( searchContainer );
-                }
-            }
-        }
-
-        return { searchesList : searchesListResult };
-    }
-
-
-    /**
      * callback: Called from click handler in class Experiment_SingleExperiment_ConditionsGraphicRepresentation
      */
     _mainCellClickHandler( params : ExperimentConditions_GraphicRepresentation_MainCellClickHandler_Params ) {
@@ -1827,33 +1764,53 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const conditionIds_Array = mainCellIdentifier.get_cell_ConditionIds_AsArray();
 
         const conditionGroupsDataContainer = state.conditionGroupsDataContainer;
+        const conditionGroupsContainer = state.conditionGroupsContainer;
 
         const conditionGroupsDataContainer_Entry = conditionGroupsDataContainer.get_data ({
             conditionIds_Array
         });
 
-        let projectSearchIds : Set<number> = undefined;
+        let projectSearchIds_ForThisCell : Set<number> = undefined;
 
         if ( conditionGroupsDataContainer_Entry ) {
 
             const conditionGroupsDataContainer_Entry_Data = conditionGroupsDataContainer_Entry.data;
 
-            projectSearchIds = conditionGroupsDataContainer_Entry_Data.projectSearchIds;
+            projectSearchIds_ForThisCell = conditionGroupsDataContainer_Entry_Data.projectSearchIds;
         }
 
-        const getSearchesListForSpecificEntryCell_Result = this._getSearchesListForSpecificEntryCell({ mainCellIdentifier });
+        //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
+        const projectSearchIds_ContainedInAllOtherCells : Set<number> = new Set();
 
-        const searchesList = getSearchesListForSpecificEntryCell_Result.searchesList;
+        {
+            const callbackForEach_conditionGroupsDataContainer_Entry_Data = ({conditionGroupsDataContainer_Entry_Data}: { conditionGroupsDataContainer_Entry_Data: ConditionGroupsDataContainer_DataEntry }) => {
+                if (conditionGroupsDataContainer_Entry_Data.data) {
+                    const projectSearchIds_ForCell = conditionGroupsDataContainer_Entry_Data.data.projectSearchIds;
+                    if (projectSearchIds_ForCell) {
+                        for (const projectSearchId of projectSearchIds_ForCell) {
+                            if ( ( ! projectSearchIds_ForThisCell ) || ( ! projectSearchIds_ForThisCell.has( projectSearchId ) ) ) {
+                                projectSearchIds_ContainedInAllOtherCells.add(projectSearchId);
+                            }
+                        }
+                    }
+                }
+            }
 
-        const conditionGroupsContainer = state.conditionGroupsContainer;
+            _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier({
+                mainCellIdentifier_ToExclude: mainCellIdentifier,
+                conditionGroupsContainer,
+                conditionGroupsDataContainer,
+                callbackForEach_conditionGroupsDataContainer_Entry_Data
+            });
+        }
 
         const data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint = {
-            projectSearchIds,
+            projectSearchIds_ForThisCell,
+            projectSearchIds_ContainedInAllOtherCells,
             conditionGroupsContainer,
             conditionGroupsDataContainer,
             mainCell_Identifier : mainCellIdentifier,
             searchesData : this.props.searchesData,
-            searchesList,                               // returned from this._getSearchesListForSpecificEntryCell({ mainCellIdentifier });
             save_ProjectSearchIds_ForMainCell : this._save_ProjectSearchIds_ForMainCell_BindThis,
             save_updated_conditionGroupsDataContainer : this._save_updated_conditionGroupsDataContainer_BindThis
         }

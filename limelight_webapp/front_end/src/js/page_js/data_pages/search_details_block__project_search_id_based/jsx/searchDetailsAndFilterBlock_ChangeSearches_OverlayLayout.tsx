@@ -29,19 +29,19 @@ export class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_C
 /**
  *
  */
-export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = function({
+export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = function(
+    {
+        searchList,
+        projectSearchIds_Selected,
+        callbackOn_Cancel_Close_Clicked,
+        callback_updateSelected_Searches
+    } : {
+        searchList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+        projectSearchIds_Selected : Set<number>
+        callbackOn_Cancel_Close_Clicked : () => void;
+        callback_updateSelected_Searches : ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
 
-    searchList,
-    projectSearchIds_Selected,
-    callbackOn_Cancel_Close_Clicked,
-    callback_updateSelected_Searches
-} : {
-    searchList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
-    projectSearchIds_Selected : Set<number>
-    callbackOn_Cancel_Close_Clicked : () => void;
-    callback_updateSelected_Searches : ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
-
-}) : JSX.Element {
+    }) : JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component
@@ -167,8 +167,7 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
 
                     <div className=" change-searches-overlay-outer-block ">
 
-                        <div style={ { height : mainBlockHeight, maxHeight : mainBlockHeight, overflowY: "auto", width: "100%", overflowX: "hidden" } }
-                             className=" mod-mass-select-dialog-bounding-box  ">
+                        <div style={ { height : mainBlockHeight, maxHeight : mainBlockHeight, overflowY: "auto", width: "100%", overflowX: "hidden" } }>
 
                             <div style={ { padding : 6 } } >
 
