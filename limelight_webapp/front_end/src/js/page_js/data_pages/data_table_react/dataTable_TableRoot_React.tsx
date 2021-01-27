@@ -541,6 +541,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                         columns={ this.state.tableDataObject.columns }
                         tableOptions={ this.state.tableOptions }
                         dataTable_RootTableDataObject={ this.state.tableDataObject }
+                        dataTableId={ this.props.tableObject.dataTableId }
                         highlightRow={ highlightRow }
                         key={ dataTable_DataGroupRowEntry.uniqueId } />
                 );
@@ -583,6 +584,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                         dataObject={ dataTable_DataRowEntry } 
                         tableOptions={ this.state.tableOptions }
                         dataTable_RootTableDataObject={ this.state.tableDataObject }
+                        dataTableId={ this.props.tableObject.dataTableId }
                         isLastRow={ isLastRow }
                         key={ dataTable_DataRowEntry.uniqueId } />
                     );

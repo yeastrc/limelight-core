@@ -7,7 +7,13 @@
 
 import React from 'react'
 
-import {DataTable_TableOptions, DataTable_Column, DataTable_DataGroupRowEntry, DataTable_RootTableDataObject} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {
+  DataTable_TableOptions,
+  DataTable_Column,
+  DataTable_DataGroupRowEntry,
+  DataTable_RootTableDataObject,
+  DataTable_RootTableObject
+} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
 
@@ -23,6 +29,7 @@ export interface DataTable_Table_DataRow_Group_Props {
   columns : Array<DataTable_Column>
   tableOptions : DataTable_TableOptions
   dataTable_RootTableDataObject : DataTable_RootTableDataObject
+  dataTableId : string
   highlightRow : boolean
 }
 
@@ -58,6 +65,7 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
               dataObject={ dataTable_DataRowEntry } 
               tableOptions={ this.props.tableOptions }
               dataTable_RootTableDataObject={ this.props.dataTable_RootTableDataObject }
+              dataTableId={ this.props.dataTableId }
               isLastRow={ isLastRow }
               key={ dataTable_DataRowEntry.uniqueId } />
         );
