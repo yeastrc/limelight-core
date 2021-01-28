@@ -46,6 +46,7 @@ import {
 import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 
 
 /**
@@ -94,6 +95,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
 	private _reporterIonMass_UserSelections_StateObject = new ReporterIonMass_UserSelections_StateObject();
+
+	private _peptideUnique_UserSelection_StateObject = new PeptideUnique_UserSelection_StateObject();
 
 	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
 
@@ -212,6 +215,12 @@ export class ProteinExperimentPage_Display_SingleProtein {
                 this._reporterIonMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
             }
         }
+		{
+			const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.getPeptideUniqueFilterSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideUnique_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
         {
             const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.getProteinSequenceFormattedDisplayWidgetEncodedStateData();
             if ( encodedStateData ) {
@@ -375,6 +384,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass,
 			modificationMass_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject ,
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject ,
+			peptideUnique_UserSelection_StateObject : this._peptideUnique_UserSelection_StateObject,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,

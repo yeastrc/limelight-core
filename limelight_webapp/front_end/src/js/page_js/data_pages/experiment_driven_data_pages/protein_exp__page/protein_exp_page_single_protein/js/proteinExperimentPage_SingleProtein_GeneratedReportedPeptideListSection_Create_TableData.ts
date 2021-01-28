@@ -52,6 +52,7 @@ import {
 } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_ReturnChildReactComponent';
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other";
 
 
 //////////////////
@@ -206,6 +207,25 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
         dataTable_Columns.push( dataTable_Column );
     }
 
+    {
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+            return proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other.uniqueColumnHeader_Tooltip_Create();
+        }
+        const dataTable_Column = new DataTable_Column({
+            id : "unique", // Used for tracking sort order. Keep short
+            displayName : "Unique",
+            width : 55,
+            sortable : true,
+            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+            // style_override_header_React : {},  // Optional
+            // style_override_React : {},  // Optional
+            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
+            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
+        });
+        dataTable_Columns.push( dataTable_Column );
+    }
+
     //  PSM counts for each ...
     for ( const condition of first_conditionGroup_Conditions ) {
         
@@ -237,6 +257,19 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     // tooltipText : 
                 });
                 dataTable_DataRow_ColumnEntries.push( dataTable_DataRow_ColumnEntry );
+            }
+            { // Unique
+                let value = "";
+                let valueSort = 1;
+                if (peptideEntry.peptideUnique) {
+                    value = "*";  //  Display '*' if peptide unique
+                    valueSort = 0;  // Sort unique above not unique
+                }
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    valueDisplay: value,
+                    valueSort: valueSort
+                });
+                dataTable_DataRow_ColumnEntries.push(columnEntry);
             }
 
             //  Data for child tables

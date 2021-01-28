@@ -52,6 +52,7 @@ export class Create_GeneratedReportedPeptideListData_Result {
     peptideList : Array<CreateReportedPeptideDisplayData_Result_Entry>;
     entries_Key_peptideSequenceDisplay : Map<any , CreateReportedPeptideDisplayData_Result_Entry>; // AKA peptideItems_Map_Key_peptideSequenceDisplayString : Map<any , CreateReportedPeptideDisplayData_Result_Entry>
     numberOfReportedPeptides : number;
+    numberOfUniquePeptides : number;
     numberOfPsmsForReportedPeptides : number;
 }
 // { // Return Object def:
@@ -62,6 +63,7 @@ export class Create_GeneratedReportedPeptideListData_Result {
  */
 export class CreateReportedPeptideDisplayData_Result_Entry {
     peptideSequenceDisplay : string
+    peptideUnique : boolean
     numPsmsTotal : number = 0;
     psmCountsMap_KeyProjectSearchId : Map<number, number>
     reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
@@ -96,7 +98,7 @@ export const create_GeneratedReportedPeptideListData = function( {
 
     const create_GeneratedReportedPeptideListData_Result = new Create_GeneratedReportedPeptideListData_Result();
 
-    const peptideItems_Map_Key_peptideSequenceDisplayString : Map<any , CreateReportedPeptideDisplayData_Result_Entry> = new Map();
+    const peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData_Result_Entry> = new Map();
 
     const reporterIonMassTransformer = { //  Transform Reporter Ion Mass function passed to external function psm_ReporterIonMasses_FilterOnSelectedValues
         transformMass_ReturnNumber : function({ mass }) {
@@ -148,6 +150,19 @@ export const create_GeneratedReportedPeptideListData = function( {
             const reportedPeptideId =  reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.reportedPeptideId
 
             let numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
+
+            //  Is this Reported Peptide Unique?
+            let peptideUnique = true;
+            {
+                // proteinSequenceVersionIds array of proteinSequenceVersionIds for this reported peptide id
+                const proteinSequenceVersionIds = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId().get( reportedPeptideId );
+                if ( ! proteinSequenceVersionIds ) {
+                    throw Error( "No proteinSequenceVersionIds for reportedPeptideId: " + reportedPeptideId );
+                }
+                if ( proteinSequenceVersionIds.length !== 1 ) {
+                    peptideUnique = false;
+                }
+            }
 
             numberOfPsmsForReportedPeptides += numPsms;
 
@@ -218,6 +233,7 @@ export const create_GeneratedReportedPeptideListData = function( {
             peptideItem.peptideSequenceDisplay = peptideSequenceDisplay;
             peptideItem.psmCountsMap_KeyProjectSearchId = new Map();
             peptideItem.psmCountsMap_KeyProjectSearchId.set( projectSearchId, numPsms );
+            peptideItem.peptideUnique = peptideUnique;
             peptideItem.reportedPeptideIdsMap_KeyProjectSearchId = new Map();
             peptideItem.reportedPeptideIdsMap_KeyProjectSearchId.set( projectSearchId, reportedPeptideIds );
 
@@ -226,11 +242,15 @@ export const create_GeneratedReportedPeptideListData = function( {
     }
 
     const peptideListResult : Array<CreateReportedPeptideDisplayData_Result_Entry> = [];
+    let numberOfUniquePeptides = 0;
 
     //  Copy to array
     for ( const peptideItemsEntry of peptideItems_Map_Key_peptideSequenceDisplayString.entries() ) {
         const peptideItem = peptideItemsEntry[ 1 ];
         peptideListResult.push( peptideItem );
+        if ( peptideItem.peptideUnique ) {
+            numberOfUniquePeptides++;
+        }
     }
 
     // Sort Peptides Array on Reported Peptide Ann Types Sort Order then Best PSM order then Reported Peptide Id
@@ -242,6 +262,7 @@ export const create_GeneratedReportedPeptideListData = function( {
     create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay = peptideItems_Map_Key_peptideSequenceDisplayString;
     
     create_GeneratedReportedPeptideListData_Result.numberOfReportedPeptides = numberOfReportedPeptides;
+    create_GeneratedReportedPeptideListData_Result.numberOfUniquePeptides = numberOfUniquePeptides;
     create_GeneratedReportedPeptideListData_Result.numberOfPsmsForReportedPeptides = numberOfPsmsForReportedPeptides;
 
     return create_GeneratedReportedPeptideListData_Result;

@@ -122,6 +122,9 @@ import {ModificationMass_UserSelections_DisplayMassSelectionOverlay} from "page_
 import {load_PsmOpenModificationMasses_IfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/load_PsmOpenModificationMasses_IfNeeded_To_loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {PeptidePage_Display_MainContent_Component_Props} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component";
+import {PeptideUnique_UserSelection} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/jsx/peptideUnique_UserSelection";
+import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
+import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_BuildData_ForReactComponent";
 
 
 ////
@@ -177,6 +180,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
+    peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
 	peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject;
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
     
@@ -215,6 +219,7 @@ interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
 
     modificationMass_UserSelections_ComponentData? : ModificationMass_UserSelections_ComponentData; // Only updated when new updated need to push new values from above components
     reporterIons_UserSelections_ComponentData? : ReporterIonMass_UserSelections_ComponentData;
+    peptideUnique_UserSelection_ComponentData? : PeptideUnique_UserSelection_ComponentData;
     peptideSequence_UserSelections_ComponentData? : PeptideSequence_UserSelections_ComponentData;
     userSearchString_LocationsOn_ProteinSequence_Root? : UserSearchString_LocationsOn_ProteinSequence_Root;
     proteinSequenceWidgetDisplay_Component_Data? : ProteinSequenceWidgetDisplay_Component_Data;
@@ -276,7 +281,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     private _modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback_BindThis : () => void = this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback.bind(this);
 
     private _updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback.bind(this);
-    
+    private _updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback.bind(this);
+
     private _updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback_BindThis : ({ 
         userSearchString_LocationsOn_ProteinSequence_Root 
     } : { 
@@ -371,6 +377,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             psmCountForUnfiltered,
             modificationMass_UserSelections_ComponentData,
             reporterIons_UserSelections_ComponentData,
+            peptideUnique_UserSelection_ComponentData,
             peptideSequence_UserSelections_ComponentData,
             userSearchString_LocationsOn_ProteinSequence_Root,
             proteinSequenceWidgetDisplay_Component_Data,
@@ -383,6 +390,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             psmCountForUnfiltered : number,
             modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData,
             reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
+            peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData
             peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
             userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root,
             proteinSequenceWidgetDisplay_Component_Data : ProteinSequenceWidgetDisplay_Component_Data,
@@ -399,6 +407,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             loadedDataCommonHolder : this.props.propsValue.loadedDataCommonHolder,
             modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+            peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
             graphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells
@@ -465,7 +474,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             protein_percentageCovered_Unfiltered_Rounded,
             psmCountForUnfilteredDisplay,
             modificationMass_UserSelections_ComponentData, 
-            reporterIons_UserSelections_ComponentData, 
+            reporterIons_UserSelections_ComponentData,
+            peptideUnique_UserSelection_ComponentData,
             peptideSequence_UserSelections_ComponentData,
             userSearchString_LocationsOn_ProteinSequence_Root, 
             proteinSequenceWidgetDisplay_Component_Data,
@@ -507,7 +517,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
             this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded();
 
-            this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
+            // this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 
             this._resizeWindow_Handler_Attach();
 
@@ -559,7 +569,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 	 */
 	private _resizeWindow_Handler() : void {
 		try {
-			this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
+			// this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 
 		} catch( e ) {
 			console.log("Exception caught in _resizeWindow_Handler()");
@@ -1639,6 +1649,53 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     }
 
     /**
+     * Change to peptide unique selection, this.props.propsValue.peptideUnique_UserSelection_StateObject
+     */
+    _updateMadeTo_peptideUnique_UserSelection_StateObject_Callback() : void {
+        try {
+            window.setTimeout( () => {
+                try {
+                    this._selectedPeptideUniqueChange_UpdateURL();  //  Update URL
+
+                    window.setTimeout( () => {
+                        try {
+                            this._peptideUnique_Update_PeptideUnique_UserSelection_ComponentData();
+
+                            //  Now update dependent page parts
+                            this._updateRestOfPage_ForUserInteraction();
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 0 );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 0 );
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     * create new this.state.peptideUnique_UserSelection_ComponentData
+     */
+    _peptideUnique_Update_PeptideUnique_UserSelection_ComponentData() {
+
+        const peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData = peptideUnique_UserSelection_BuildData_ForReactComponent({
+            peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject
+        });
+
+        this.setState( (state: ProteinExperimentPage_SingleProtein_MainContent_Component_State, props: ProteinExperimentPage_SingleProtein_MainContent_Component_Props ) : ProteinExperimentPage_SingleProtein_MainContent_Component_State => {
+
+            return { peptideUnique_UserSelection_ComponentData };
+        });
+    }
+
+    /**
      * Change to peptide string selection, this.props.propsValue.peptideSequence_UserSelections_StateObject
      */ 
     _updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root({ 
@@ -1771,8 +1828,16 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 		this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.setReporterIonMassesSelectedEncodedStateData( { reporterIonMassesSelectedEncodedStateData } );
 	}
 
-    
-	/**
+    /**
+     * Update State to URL for Peptide Unique selection change
+     */
+    _selectedPeptideUniqueChange_UpdateURL() {
+
+        const encodedStateData = this.props.propsValue.peptideUnique_UserSelection_StateObject.getEncodedStateData();
+        this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.setPeptideUniqueFilterSelectedEncodedStateData({ peptideUniqueFilterSelectedEncodedStateData : encodedStateData });
+    }
+
+    /**
 	 * Update State to URL for Peptide Sequence selection change
 	 */
 	_selectedPeptideSequenceChange_UpdateURL() {
@@ -1815,7 +1880,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
                                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
-                                peptideUnique_UserSelection_StateObject : undefined,
+                                peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                                 userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
                                 proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
@@ -2100,93 +2165,93 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             this._updated_OverlayWidth = overlayWidth;
         }
 
-		this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
+		// this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 	}
 
-	/**
-	 * _adjustBoxesOnRight So AtRigthtEdgeOfViewPort or right edge of overlay, whichever is further left.
-     * 
-     * This is done by adjusting the width of the containing <div> that contains the grid definition "auto min-content"
-     * 
-     * Called from _resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() or whenever the width of the viewport changes.
-	 */
-	_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() {
-
-        // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() entered")
-
-        let widthOverall_For_TopSection = undefined;  // Section above Peptide List.  Keep in viewport if possible
-        {
-            let overlayWidth = undefined;
-            
-            if ( this._updated_OverlayWidth !== undefined ) {
-                
-                overlayWidth = this._updated_OverlayWidth;
-
-            } else {
-
-                overlayWidth = this.props.view_single_protein_inner_overlay_div_Width_Initial;
-            }
-
-            //   window.innerWidth: Per MDN: Width (in pixels) of the browser window viewport INCLUDING, if rendered, the vertical scrollbar.
-            // const window_innerWidth = window.innerWidth
-
-            //  Get Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.  
-            //     Done to position boxes on right correctly from right side, including if vertical scrollbar is rendered
-            const rootHTMLelement_Collection = document.getElementsByTagName("html");
-            if ( ! ( rootHTMLelement_Collection.length > 0 ) ) {
-                const msg = "_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort(): element 'html' not found: true: if ( ! ( rootHTMLelement_Collection.length > 0 ) )"
-                console.warn( msg );
-                throw Error( msg );
-            }
-            const rootHTMLelement = rootHTMLelement_Collection[ 0 ];
-            const rootHTMLelement_clientWidth = rootHTMLelement.clientWidth; // Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar. 
-    
-            // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() rootHTMLelement_clientWidth: " + rootHTMLelement_clientWidth + ", window_innerWidth: " + window_innerWidth )
-    
-            if ( overlayWidth < rootHTMLelement_clientWidth ) {
-
-                widthOverall_For_TopSection = overlayWidth;
-
-            } else {
-
-                widthOverall_For_TopSection = rootHTMLelement_clientWidth;
-            }
-        }
-
-        //  Subtract left and right adding of containing <div>
-        widthOverall_For_TopSection = widthOverall_For_TopSection - this.props.view_single_protein_overlay_body_PaddingLeft - this.props.view_single_protein_overlay_body_PaddingRight;
-        {
-            const div_MainGridAtTo_DOM = this._div_MainGridAtTop_Ref.current;
-
-            div_MainGridAtTo_DOM.style.width = widthOverall_For_TopSection + "px";
-
-            div_MainGridAtTo_DOM.style.maxWidth = widthOverall_For_TopSection + "px";
-        }
-        {
-            const div_MainContent_LeftGridEntry_AtTop_DOM = this._div_MainContent_LeftGridEntry_AtTop_Ref.current;
-
-            let width_LeftGridEntry = (
-                widthOverall_For_TopSection 
-                - _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC - _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC // - _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC 
-                - 10 //  border width on boxes and just extra
-            );
-
-            if ( width_LeftGridEntry < this.state.widthOf_proteinSequenceWidgetDisplay_Component ) {
-                width_LeftGridEntry = this.state.widthOf_proteinSequenceWidgetDisplay_Component
-            }
-
-            if ( width_LeftGridEntry !== this._width_LeftGridEntry_TopMainSection_LastUpdatedValue ) {
-
-                // Has changed so update saved value and DOM
-
-                this._width_LeftGridEntry_TopMainSection_LastUpdatedValue = width_LeftGridEntry;
-
-                div_MainContent_LeftGridEntry_AtTop_DOM.style.width = width_LeftGridEntry + "px";
-                div_MainContent_LeftGridEntry_AtTop_DOM.style.maxWidth = width_LeftGridEntry + "px";
-                div_MainContent_LeftGridEntry_AtTop_DOM.style.minWidth = width_LeftGridEntry + "px";
-            }
-        }
-	}
+	// /**
+	//  * _adjustBoxesOnRight So AtRigthtEdgeOfViewPort or right edge of overlay, whichever is further left.
+    //  *
+    //  * This is done by adjusting the width of the containing <div> that contains the grid definition "auto min-content"
+    //  *
+    //  * Called from _resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() or whenever the width of the viewport changes.
+	//  */
+	// _adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() {
+    //
+    //     // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() entered")
+    //
+    //     let widthOverall_For_TopSection = undefined;  // Section above Peptide List.  Keep in viewport if possible
+    //     {
+    //         let overlayWidth = undefined;
+    //
+    //         if ( this._updated_OverlayWidth !== undefined ) {
+    //
+    //             overlayWidth = this._updated_OverlayWidth;
+    //
+    //         } else {
+    //
+    //             overlayWidth = this.props.view_single_protein_inner_overlay_div_Width_Initial;
+    //         }
+    //
+    //         //   window.innerWidth: Per MDN: Width (in pixels) of the browser window viewport INCLUDING, if rendered, the vertical scrollbar.
+    //         // const window_innerWidth = window.innerWidth
+    //
+    //         //  Get Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
+    //         //     Done to position boxes on right correctly from right side, including if vertical scrollbar is rendered
+    //         const rootHTMLelement_Collection = document.getElementsByTagName("html");
+    //         if ( ! ( rootHTMLelement_Collection.length > 0 ) ) {
+    //             const msg = "_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort(): element 'html' not found: true: if ( ! ( rootHTMLelement_Collection.length > 0 ) )"
+    //             console.warn( msg );
+    //             throw Error( msg );
+    //         }
+    //         const rootHTMLelement = rootHTMLelement_Collection[ 0 ];
+    //         const rootHTMLelement_clientWidth = rootHTMLelement.clientWidth; // Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
+    //
+    //         // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() rootHTMLelement_clientWidth: " + rootHTMLelement_clientWidth + ", window_innerWidth: " + window_innerWidth )
+    //
+    //         if ( overlayWidth < rootHTMLelement_clientWidth ) {
+    //
+    //             widthOverall_For_TopSection = overlayWidth;
+    //
+    //         } else {
+    //
+    //             widthOverall_For_TopSection = rootHTMLelement_clientWidth;
+    //         }
+    //     }
+    //
+    //     //  Subtract left and right adding of containing <div>
+    //     widthOverall_For_TopSection = widthOverall_For_TopSection - this.props.view_single_protein_overlay_body_PaddingLeft - this.props.view_single_protein_overlay_body_PaddingRight;
+    //     {
+    //         const div_MainGridAtTo_DOM = this._div_MainGridAtTop_Ref.current;
+    //
+    //         div_MainGridAtTo_DOM.style.width = widthOverall_For_TopSection + "px";
+    //
+    //         div_MainGridAtTo_DOM.style.maxWidth = widthOverall_For_TopSection + "px";
+    //     }
+    //     {
+    //         const div_MainContent_LeftGridEntry_AtTop_DOM = this._div_MainContent_LeftGridEntry_AtTop_Ref.current;
+    //
+    //         let width_LeftGridEntry = (
+    //             widthOverall_For_TopSection
+    //             - _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC - _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC // - _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC
+    //             - 10 //  border width on boxes and just extra
+    //         );
+    //
+    //         if ( width_LeftGridEntry < this.state.widthOf_proteinSequenceWidgetDisplay_Component ) {
+    //             width_LeftGridEntry = this.state.widthOf_proteinSequenceWidgetDisplay_Component
+    //         }
+    //
+    //         if ( width_LeftGridEntry !== this._width_LeftGridEntry_TopMainSection_LastUpdatedValue ) {
+    //
+    //             // Has changed so update saved value and DOM
+    //
+    //             this._width_LeftGridEntry_TopMainSection_LastUpdatedValue = width_LeftGridEntry;
+    //
+    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.width = width_LeftGridEntry + "px";
+    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.maxWidth = width_LeftGridEntry + "px";
+    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.minWidth = width_LeftGridEntry + "px";
+    //         }
+    //     }
+	// }
 
 
     ////////////////////////////////////////
@@ -2300,6 +2365,12 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                     reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
                                     reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
                                     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
+                                />
+
+                                <PeptideUnique_UserSelection
+                                    peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
+                                    peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
+                                    updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
                                 />
 
                                 <PeptideSequence_UserSelections

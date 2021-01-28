@@ -69,6 +69,8 @@ import { getSequenceCoverageBooleanArray_NotFiltered } from 'page_js/data_pages/
 import { ExperimentConditions_GraphicRepresentation_SelectedCells } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections';
 import {loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
+import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
+import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_BuildData_ForReactComponent";
 
 
 /**
@@ -94,6 +96,7 @@ const initialPopulate = function({
     loadedDataCommonHolder,
     modificationMass_UserSelections_StateObject,
     reporterIonMass_UserSelections_StateObject,
+    peptideUnique_UserSelection_StateObject,
     peptideSequence_UserSelections_StateObject,
     proteinSequenceWidget_StateObject,
     graphicRepresentation_SelectedCells //  may be NOT set ( null or undefined)
@@ -106,6 +109,7 @@ const initialPopulate = function({
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+    peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
     graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells
@@ -117,6 +121,7 @@ const initialPopulate = function({
     psmCountForUnfiltered : number,
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData,
     reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
+    peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData
     peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
     userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root,
     proteinSequenceWidgetDisplay_Component_Data : ProteinSequenceWidgetDisplay_Component_Data
@@ -138,6 +143,10 @@ const initialPopulate = function({
         projectSearchIds : projectSearchIds_All,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds 
     });
+
+    const peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData = peptideUnique_UserSelection_BuildData_ForReactComponent({
+        peptideUnique_UserSelection_StateObject
+    })
 
     const peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData = create_PeptideSequence_UserSelections_ComponentData({
 
@@ -162,7 +171,7 @@ const initialPopulate = function({
         proteinSequenceWidget_StateObject,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
-        peptideUnique_UserSelection_StateObject : undefined,
+        peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root,
         proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
@@ -225,6 +234,7 @@ const initialPopulate = function({
         psmCountForUnfiltered,
         modificationMass_UserSelections_ComponentData,
         reporterIons_UserSelections_ComponentData,
+        peptideUnique_UserSelection_ComponentData,
         peptideSequence_UserSelections_ComponentData,
         userSearchString_LocationsOn_ProteinSequence_Root,
         proteinSequenceWidgetDisplay_Component_Data,
