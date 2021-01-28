@@ -74,6 +74,228 @@ export class ModStatsUtils {
     }
 
 
+    /**
+     * Assume first n/2 searches are 1 rep and the second n/2 searches are the second rep
+     *
+     * @param vizOptionsData
+     * @param sortedModMasses
+     * @param projectSearchIds
+     * @param searchDetailsBlockDataMgmtProcessing
+     * @param modViewDataManager
+     */
+    static async viewSignificantMods_CombineReps(
+        {
+            vizOptionsData,
+            sortedModMasses,
+            projectSearchIds,
+            searchDetailsBlockDataMgmtProcessing,
+            modViewDataManager
+        } : {
+            vizOptionsData: ModView_VizOptionsData
+            sortedModMasses,
+            projectSearchIds: Array<number>,
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            modViewDataManager:ModViewDataManager
+        }) {
+
+        // do nothing if it's not an even number of searches
+        if( projectSearchIds.length % 2 != 0 ) {
+            console.log("Didn't get an even # of searches, doing nothing.");
+            return;
+        }
+
+        const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
+        const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
+
+        const resultsArray = new Array<any>();
+
+        let output = "<div><table><tr>";
+        output += "<th style='text-align: left;'>rep1 (searches)</th>";
+        output += "<th style='text-align: left;'>rep2 (searches)</th>";
+        output += "<th style='text-align: left;'>mod mass</th>";
+        output += "<th style='text-align: left;'>" + quantTypeString + "count 1</th>";
+        output += "<th style='text-align: left;'>" + quantTypeString + "count 2</th>";
+        output += "<th style='text-align: left;'>z-score</th>";
+        output += "<th style='text-align: left;'>p-value</th>";
+        output += "<th style='text-align: left;'>filtered z-score</th>";
+        output += "<th style='text-align: left;'>filtered p-value</th>";
+        output += "<th style='text-align: left;'>rank</th>";
+        output += "</tr>";
+
+
+        const modMap_PreCombine:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+            projectSearchIds,
+            vizOptionsData,
+            countsOverride: true,
+            modViewDataManager
+        });
+
+        const filteredCountMap:Map<number,number> = await ModViewDataVizRenderer_MultiSearch.getFilteredTotalCountForEachSearch({
+            projectSearchIds,
+            vizOptionsData,
+            modViewDataManager
+        });
+
+        const group0 = projectSearchIds.slice(0, projectSearchIds.length / 2);
+        const group1 = projectSearchIds.slice(projectSearchIds.length / 2, projectSearchIds.length);
+
+        // combine psm counts for reps into single row in new mod map
+        const combinedModMap:Map<number, Map<number, number>> = new Map();
+        for(const [modMass, projectMap] of modMap_PreCombine) {
+            combinedModMap.set(modMass, new Map());
+            combinedModMap.get(modMass).set(0, 0);
+            combinedModMap.get(modMass).set(1, 0);
+
+            for(const projectSearchId of group0) {
+                let count = projectMap.has(projectSearchId) ? projectMap.get(projectSearchId) : 0;
+                combinedModMap.get(modMass).set(0, combinedModMap.get(modMass).get(0) + count );
+            }
+
+            for(const projectSearchId of group1) {
+                let count = projectMap.has(projectSearchId) ? projectMap.get(projectSearchId) : 0;
+                combinedModMap.get(modMass).set(1, combinedModMap.get(modMass).get(1) + count );
+            }
+        }
+
+        // get combined total psm count for each rep group
+        let psmCount0 = 0;
+        let psmCount1 = 0;
+        for(const projectSearchId of group0) {
+            const n:number = psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId) : await modViewDataManager.getTotalScanCount(projectSearchId);
+            psmCount0 += n;
+        }
+        for(const projectSearchId of group1) {
+            const n:number = psmQuantType ? await modViewDataManager.getTotalPSMCount(projectSearchId) : await modViewDataManager.getTotalScanCount(projectSearchId);
+            psmCount1 += n;
+        }
+
+        // get combined filtered psm count for each rep group
+        let filteredPsmCount0 = 0;
+        let filteredPsmCount1 = 0;
+        for(const projectSearchId of group0) {
+            const n:number = filteredCountMap.get(projectSearchId);
+            filteredPsmCount0 += n;
+        }
+        for(const projectSearchId of group1) {
+            const n:number = filteredCountMap.get(projectSearchId);
+            filteredPsmCount1 += n;
+        }
+
+        let selectedData = undefined;
+        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
+            selectedData = vizOptionsData.data.selectedStateObject.data
+        }
+
+        for (const modMass of sortedModMasses) {
+
+            let x1:number = combinedModMap.get(modMass).get(0); // modMap[modMass][projectSearchId1];
+            if (x1 === undefined) {
+                x1 = 0;
+            }
+
+            let x2:number = combinedModMap.get(modMass).get(1); // modMap[modMass][projectSearchId2];
+            if (x2 === undefined) {
+                x2 = 0;
+            }
+
+            let zscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1:psmCount0, x2, n2:psmCount1});
+
+            let pvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1:psmCount0, x2, n2:psmCount1});
+            pvalue = pvalue * sortedModMasses.length;
+            if (pvalue > 1) {
+                pvalue = 1;
+            }
+
+            let filteredZscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1:filteredPsmCount0, x2, n2:filteredPsmCount1});
+
+            let filteredPvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1:filteredPsmCount0, x2, n2:filteredPsmCount1});
+            filteredPvalue = filteredPvalue * sortedModMasses.length;
+            if (filteredPvalue > 1) {
+                filteredPvalue = 1;
+            }
+
+            console.log('modMass', 'rep_group', 'n1', 'filteredn1', 'search2', 'n2', 'filteredn2', 'x1', 'x2', 'zscore', 'filteredZscore');
+            console.log(modMass, 0, psmCount0, filteredPsmCount0, 1, psmCount1, filteredPsmCount1, x1, x2, zscore, filteredZscore);
+
+            const ob = {
+                group0:group0.map( function(x) {
+                    return ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
+                        projectSearchId: x,
+                        searchDetailsBlockDataMgmtProcessing
+                    })
+                }).sort().join(','),
+                group1:group1.map( function(x) {
+                    return ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
+                        projectSearchId: x,
+                        searchDetailsBlockDataMgmtProcessing
+                    })
+                }).sort().join(','),
+                modMass:modMass,
+                count1:x1,
+                count2:x2,
+                zscore:zscore,
+                pvalue:pvalue,
+                filteredZscore:filteredZscore,
+                filteredPvalue:filteredPvalue
+            };
+
+            resultsArray.push(ob);
+        }
+
+        // sort on the magnitude of the zscore (asc) first, then p-value (desc) second
+        resultsArray.sort(function(a,b) {
+
+            if(Math.abs(a.zscore) > Math.abs(b.zscore)) {
+                return -1;
+            }
+
+            if(Math.abs(a.zscore) < Math.abs(b.zscore)) {
+                return 1;
+            }
+
+            return a.pvalue - b.pvalue;
+        });
+
+        // assemble the table rows
+        let rank = 1;
+        for(const ob of resultsArray) {
+            output += "<tr>";
+            output += "<td>" + ob.group0 + "</td>";
+            output += "<td>" + ob.group1 + "</td>";
+            output += "<td>" + ob.modMass + "</td>";
+            output += "<td>" + ob.count1 + "</td>";
+            output += "<td>" + ob.count2 + "</td>";
+            output += "<td>" + ob.zscore + "</td>";
+            output += "<td>" + ob.pvalue + "</td>";
+            output += "<td>" + ob.filteredZscore + "</td>";
+            output += "<td>" + ob.filteredPvalue + "</td>";
+            output += "<td>" + rank + "</td>";
+            output += "</tr>";
+
+            rank++;
+        }
+
+        // close table and div
+        output += "</table></div>";
+
+        // create and show the overlay
+        const overlay = new ModalOverlay(
+            {
+                $containerDiv: $('body'),
+                $contentDiv: $(output),
+                width:750,
+                height:500,
+                title:'Significant Mods Table',
+                hideBackgroundClick:true,
+                callbackOnClickedHide:null
+            }
+        );
+
+        overlay.show();
+
+    }
+
+
     static async viewSignificantMods(
         {
             vizOptionsData,

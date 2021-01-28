@@ -298,6 +298,25 @@ export class ModViewDataVizRenderer_MultiSearch {
         $("div#data-viz-container").append($html);
 
 
+        html = "<div class=\"clickable\">[View Replicate ZScore Report (Experimental)]</div>"
+        $html = $(html)
+
+        $html.click(function() {
+
+            // calculate and show stats
+            ModStatsUtils.viewSignificantMods_CombineReps({
+                vizOptionsData,
+                sortedModMasses,
+                searchDetailsBlockDataMgmtProcessing,
+                projectSearchIds: vizOptionsData.data.projectSearchIds,
+                modViewDataManager
+            });
+
+        });
+
+        $("div#data-viz-container").append($html);
+
+
         html = "<div class=\"clickable\">[Download Data Table]</div>"
         $html = $(html)
 
