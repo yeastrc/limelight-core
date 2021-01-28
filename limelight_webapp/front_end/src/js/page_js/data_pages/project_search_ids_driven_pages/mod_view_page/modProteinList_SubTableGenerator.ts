@@ -260,16 +260,27 @@ export class ModProteinList_SubTableGenerator {
             dataTableRows.push( dataTable_DataRowEntry );
         }
 
-        // sort by protein name
-        dataTableRows.sort((function(a, b) {
-            if(a.columnEntries[0].valueSort < b.columnEntries[0].valueSort) {
-                return -1;
-            }
-            if(a.columnEntries[0].valueSort > b.columnEntries[0].valueSort) {
-                return 1;
-            }
-            return 0;
-        }));
+        if( vizOptionsData.data.projectSearchIds.length === 1 ) {
+
+            // sort by psm count if there is one project search id
+            dataTableRows.sort((function(a, b) {
+                return b.columnEntries[3].valueSort - a.columnEntries[3].valueSort;
+            }));
+        } else {
+
+            // sort by protein name otherwise
+            dataTableRows.sort((function(a, b) {
+                if(a.columnEntries[0].valueSort < b.columnEntries[0].valueSort) {
+                    return -1;
+                }
+                if(a.columnEntries[0].valueSort > b.columnEntries[0].valueSort) {
+                    return 1;
+                }
+                return 0;
+            }));
+        }
+
+
 
         return dataTableRows;
     }
