@@ -4,14 +4,11 @@
  * For protein_Experiment.jsp page  
  * 
  * Root Launch Javascript for logged in users
- * 
- * 
- * !!!  This will stay Javascript (".js") and not Typescript since uses "require" for import of Handlebars and Handlebars Precompiled Templates
- * 
+ *
  */
 
-var Handlebars = require('handlebars/runtime');
-var _dummy_template_template_bundle = 
+import Handlebars = require('handlebars/runtime');
+import _dummy_template_template_bundle =
 	require("../../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 Handlebars.templates = _dummy_template_template_bundle;
 

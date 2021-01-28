@@ -100,9 +100,19 @@ public class AA_PageControllerPaths_Constants {
 	//  Start of Experiment Id based pages paths.  Always put trailing '/'.
 
 	/**
-	 * View Proteins for 1 experiment ids
+	 * View Peptides for 1 experiment id
+	 */
+	public static final String EXPERIMENT___PEPTIDE_VIEW_PAGE_CONTROLLER = "d/pg/exp/peptide/";
+
+	/**
+	 * View Proteins for 1 experiment id
 	 */
 	public static final String EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER = "d/pg/exp/protein/";
+
+	/**
+	 * View Mods for 1 experiment id
+	 */
+	public static final String EXPERIMENT___MOD_VIEW_PAGE_CONTROLLER = "d/pg/exp/mod-view/";
 
 	
 

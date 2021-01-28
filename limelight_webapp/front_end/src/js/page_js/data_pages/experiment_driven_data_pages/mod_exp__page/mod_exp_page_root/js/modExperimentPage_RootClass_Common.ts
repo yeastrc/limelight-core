@@ -1,7 +1,7 @@
 /**
- * proteinExperimentPage_RootClass_Common.ts
+ * modExperimentPage_RootClass_Common.ts
  * 
- * Common Root Javascript for protein_Experiment.jsp page  
+ * Common Root Javascript for mod_Experiment.jsp page  
  * 
  * 
  * TODO !!!!!  When Single Project Search Id: Handle "Default URL" as set by User that overrides specified values.
@@ -57,42 +57,22 @@ import { create_experimentConditions_GraphicRepresentation_PropsData, Experiment
 //  From main_pages
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
-//  From local dir
-// import { ProteinExperimentPage_DisplayDataOnPage }  
-// 	from './proteinExperimentPage_DisplayDataOnPage';
-
 import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 
-import { SingleProtein_ExpPage_CentralStateManagerObjectClass }	from './singleProtein_ExpPage_CentralStateManagerObjectClass';
-
-// import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
-
-// import { SearchColorManager } from 'page_js/data_pages/color_manager/searchColorManager';
-
-import { ProteinExperimentPage_Display } from './proteinExperimentPage_Display';
-
-
-//  From Testing
-	
-// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent';
-	
 //  Import for typing only
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
-import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 
 /**
  * 
  */
-export class ProteinExperimentPage_RootClass_Common {
+export class ModExperimentPage_RootClass_Common {
 
 	private _experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory;
 
 	private _page_UserDefault_processing : Page_UserDefault_processing;
 	private _centralPageStateManager : CentralPageStateManager;
 	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
-	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-	private _singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass;
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = new DataPageStateManager();
 
@@ -100,7 +80,7 @@ export class ProteinExperimentPage_RootClass_Common {
 	private _getExerimentMainDataFromPage : GetExerimentMainDataFromPage;
 	private _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
 	private _loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
-	private _proteinExperimentPage_Display : ProteinExperimentPage_Display;
+	// private _modExperimentPage_Display : ModExperimentPage_Display;
 
 	/**
 	 * @param experiment_DataPages_LoggedInUser_CommonObjectsFactory - Optional
@@ -119,15 +99,6 @@ export class ProteinExperimentPage_RootClass_Common {
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = new Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({
 			centralPageStateManager : this._centralPageStateManager
 		})
-		this._proteinGrouping_CentralStateManagerObjectClass = new ProteinGrouping_CentralStateManagerObjectClass({
-			centralPageStateManager : this._centralPageStateManager,
-			proteinList_CentralStateManagerObjectClass : undefined  //  Skip since only passed to get Old state data
-		})
-		this._singleProtein_ExpPage_CentralStateManagerObjectClass = new SingleProtein_ExpPage_CentralStateManagerObjectClass({ 
-			centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined
-		});
-		// this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
-		// this._searchColors_CentralStateManagerObject = new SearchColorManager( { centralPageStateManager : this._centralPageStateManager } );
 
 		//  Instances of class DataPageStateManager
 		
@@ -163,10 +134,7 @@ export class ProteinExperimentPage_RootClass_Common {
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
-		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
-		this._singleProtein_ExpPage_CentralStateManagerObjectClass.initialize();
-		// this._proteinList_CentralStateManagerObjectClass.initialize();
-		
+
 		let referrerFromURL = initialStateFromURL.referrer;
 		
 		if ( referrerFromURL === _REFERRER_PATH_STRING ) {
@@ -205,10 +173,6 @@ export class ProteinExperimentPage_RootClass_Common {
 		const conditionGroupsContainer : Experiment_ConditionGroupsContainer = exerimentMainDataFromPage.experiment_ConditionGroupsContainer;
 		const conditionGroupsDataContainer : ConditionGroupsDataContainer = exerimentMainDataFromPage.conditionGroupsDataContainer;
 
-		// experiment_ConditionGroupsContainer,
-		// 	conditionGroupsDataContainer,
-
-
         const experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData = ( 
             create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer, conditionGroupsDataContainer }) //  Call External Function
 		);
@@ -226,7 +190,7 @@ export class ProteinExperimentPage_RootClass_Common {
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
 
 
-		// this._proteinExperimentPage_DisplayDataOnPage.initialize({ projectSearchIds });
+		// this._modExperimentPage_DisplayDataOnPage.initialize({ projectSearchIds });
 		
 		// navigation_dataPages_Maint_Instance.initializePageOnLoad({ projectSearchIds }); // Initialize
 
@@ -246,23 +210,23 @@ export class ProteinExperimentPage_RootClass_Common {
 			try {
 				//  Continue processing
 						
-				this._proteinExperimentPage_Display = new ProteinExperimentPage_Display({ 
-					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-					experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,
-					experimentId, 
-					experimentName, 
-					projectSearchIds,
-					searchDataLookupParamsRoot,
-					conditionGroupsContainer,
-					conditionGroupsDataContainer,
-					experimentConditions_GraphicRepresentation_PropsData,
-					// centralPageStateManager : this._centralPageStateManager,
-					experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
-					proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
-					singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass
-				});
-				
-				this._proteinExperimentPage_Display.initialize();
+				// this._modExperimentPage_Display = new ModExperimentPage_Display({
+				// 	dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+				// 	experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,
+				// 	experimentId,
+				// 	experimentName,
+				// 	projectSearchIds,
+				// 	searchDataLookupParamsRoot,
+				// 	conditionGroupsContainer,
+				// 	conditionGroupsDataContainer,
+				// 	experimentConditions_GraphicRepresentation_PropsData,
+				// 	// centralPageStateManager : this._centralPageStateManager,
+				// 	experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+				// 	modGrouping_CentralStateManagerObjectClass : this._modGrouping_CentralStateManagerObjectClass,
+				// 	singleMod_ExpPage_CentralStateManagerObjectClass : this._singleMod_ExpPage_CentralStateManagerObjectClass
+				// });
+				//
+				// this._modExperimentPage_Display.initialize();
 
 			} catch( e ) {
 				console.warn("_loadCoreData_ProjectSearchIds_Based_Promise.then: exception: " + e );

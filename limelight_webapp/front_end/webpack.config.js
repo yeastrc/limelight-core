@@ -87,8 +87,14 @@ const mainConfig = {
 
 		//  Experiment Data pages
 
-		'data_pages/proteinExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_LoggedInUsers.js',
-		'data_pages/proteinExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_PublicUser.js',
+		'data_pages/peptideExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/peptideExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPage_RootLaunch_PublicUser.ts',
+
+		'data_pages/proteinExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/proteinExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_PublicUser.ts',
+
+		'data_pages/modExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/modExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_PublicUser.ts',
 		
 		///////////////
 		

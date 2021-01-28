@@ -901,7 +901,9 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
             );
         }
 
+        const peptideLink = "d/pg/exp/peptide/e/" + this.props.experiment.id + "/r";
         const proteinLink = "d/pg/exp/protein/e/" + this.props.experiment.id + "/r";
+        const modViewLink = "d/pg/exp/mod-view/e/" + this.props.experiment.id + "/r";
 
         const pointerRightOrDownOnClick = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) : void => {
             this.setState( ( state: Experiment_State , props: Readonly<Experiment_Props> ) : Experiment_State => {
@@ -954,8 +956,17 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                 <div >
                     <div className=" hovered-div-highlight ">
                         <div style={ { float: "right", paddingLeft: 10 } }>
+
+                            {/*<a href={ peptideLink }>[Peptides]</a>*/}
+                            {/*<span>&nbsp;</span>*/}
+
                             <a href={ proteinLink }>[Proteins]</a>
+
+                            {/*<span>&nbsp;</span>*/}
+                            {/*<a href={ modViewLink }>[Modifications]</a>*/}
+
                             { deleteIcon }
+
                         </div>
                         <span className={ name_className } onClick={ name_onClick } title={ name_title }>
                             { this.props.experiment.name }

@@ -1,19 +1,16 @@
 /**
- * proteinExperimentPage_RootLaunch_PublicUser.js
+ * proteinExperimentPage_RootLaunch_PublicUser.ts
  * 
  * For protein_Experiment.jsp page  
  * 
  * Root Launch Javascript for Public User, or Project Is Locked
  * 
  * Create and initialize object of class ProteinExperimentPage_RootClass_Common
- * 
- * 
- * !!!  This will stay Javascript (".js") and not Typescript since uses "require" for import of Handlebars and Handlebars Precompiled Templates
- * 
+ *
  */
 
-var Handlebars = require('handlebars/runtime');
-var _dummy_template_template_bundle = 
+import Handlebars = require('handlebars/runtime');
+import _dummy_template_template_bundle =
 	require("../../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 Handlebars.templates = _dummy_template_template_bundle;
 
