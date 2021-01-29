@@ -59,7 +59,7 @@ export class ProteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
     dataPageStateManager : DataPageStateManager
 
     /**
-     * Used as class for object placed in data row object property dataRow_GetChildTable_ReturnReactComponent_Parameter
+     * Used as class for function proteinPage_SingleProtein_searchesForSinglePeptide_createChildTableObjects
      */
     constructor(
         {
@@ -91,14 +91,6 @@ export class ProteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
         this.loadedDataCommonHolder = loadedDataCommonHolder;
         this.dataPageStateManager = dataPageStateManager;
     }
-
-
-    // shallowClone() {
-
-    //     const clone = new ProteinPage_SingleProtein_searchesForGeneratedSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter();
-    //     Object.assign( clone, this );
-    //     return clone;
-    // }
 }
 
 
@@ -189,7 +181,7 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
 
             const loadedDataPerProjectSearchIdHolder = params.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
             if ( ! loadedDataPerProjectSearchIdHolder ) {
-                const msg = "searchesForSinglePeptide_createChildTableObjects: No entry in dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
+                const msg = "searchesForSinglePeptide_createChildTableObjects: No entry in ProteinPage_SingleProtein_searchesForSinglePeptide_createChildTableObjects_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
                 console.warn( msg );
                 throw Error( msg );
             }
@@ -250,7 +242,7 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
                 ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =>
                 {
                     const result : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =
-                        reportedPeptidesForSingleSearch_createChildTableObjects({ dataRow_GetChildTable_ReturnReactComponent_Parameter : reportedPeptidesForSingleSearch_createChildTableObjects_Parameter });
+                        reportedPeptidesForSingleSearch_createChildTableObjects({ reportedPeptidesForSingleSearch_createChildTableObjects_Parameter });
 
                     return result;
                 }
@@ -278,8 +270,6 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
     });
     
     const tableOptions = new DataTable_TableOptions({});
-
-    //  psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent, PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

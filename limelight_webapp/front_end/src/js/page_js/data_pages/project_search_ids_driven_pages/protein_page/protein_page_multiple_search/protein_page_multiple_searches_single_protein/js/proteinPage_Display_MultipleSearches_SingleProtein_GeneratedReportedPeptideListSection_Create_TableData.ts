@@ -501,7 +501,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     throw Error(msg);
                 }
 
-                const dataRow_GetChildTable_ReturnReactComponent_Parameter = (
+                const reportedPeptidesForSingleSearch_createChildTableObjects_Parameter = (
                     new ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter({
                         searchSubGroup_Ids_Selected,
                         projectSearchId,
@@ -518,7 +518,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                 dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject =
                     (params: DataTable_DataRowEntry__GetChildTableData_CallbackParams): DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue => {
                         const result: DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =
-                            reportedPeptidesForSingleSearch_createChildTableObjects({dataRow_GetChildTable_ReturnReactComponent_Parameter});
+                            reportedPeptidesForSingleSearch_createChildTableObjects({reportedPeptidesForSingleSearch_createChildTableObjects_Parameter});
 
                         return result;
                     }

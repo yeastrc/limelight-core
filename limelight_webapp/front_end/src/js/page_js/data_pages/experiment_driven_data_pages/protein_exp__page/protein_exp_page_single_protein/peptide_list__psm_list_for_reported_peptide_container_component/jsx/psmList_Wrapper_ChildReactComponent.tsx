@@ -6,7 +6,7 @@
  * React Component that is shown for child of single peptide and will contain child table 
  * 
  * 
- * Change of props property props.dataRow_GetChildTable_ReturnReactComponent_Parameter
+ * Change of props property props.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter
  * is not coded for and will result in throw Error(...) in shouldComponentUpdate(...).
  * 
  *    * This is currently ok since the code in DataTable_Table_DataRow_State (dataTable_Table_DataRow_React.tsx)
@@ -16,29 +16,104 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-
-
-
- //  Data Table
- import { DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
-
 //  This component
-import { psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent, PsmList_Wrapper_For_SingleReportedPeptide_createChildTableObjects_Result } from '../js/psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent';
-import { PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from '../js/psmList_Wrapper_ReturnChildReactComponent'
 
 //  Child Component
-import { psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent, PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent';
+import {PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/jsx/psmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent";
+import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
+import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {DataTable_DataRowEntry__Get_RowChildContent_CallParams} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
+import {psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__psm_list_for_reported_peptide_container_component/js/psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent";
+
+
+/**
+ *
+ */
+export class PsmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter {
+
+    projectSearchId : number
+    reportedPeptideId : number
+    searchSubGroupId : number  // Optional
+    proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+    searchDataLookupParamsRoot
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+    dataPageStateManager : DataPageStateManager
+    forMultipleSearchesPage : boolean  // Always True for Experiment
+
+    /**
+     * Used as class for object placed in data row object property psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter
+     */
+    constructor(
+        {
+            projectSearchId,
+            reportedPeptideId,
+            searchSubGroupId,  // Optional
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
+            searchDataLookupParamsRoot,
+            loadedDataPerProjectSearchIdHolder,
+            loadedDataCommonHolder,
+            dataPageStateManager,
+            forMultipleSearchesPage  // Always True for Experiment
+        } : {
+            projectSearchId : number
+            reportedPeptideId : number
+            searchSubGroupId : number  // Optional
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+            searchDataLookupParamsRoot
+            loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+            loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+            dataPageStateManager : DataPageStateManager
+            forMultipleSearchesPage : boolean  // Always True for Experiment
+        }) {
+
+        this.projectSearchId = projectSearchId;
+        this.reportedPeptideId = reportedPeptideId;
+        this.searchSubGroupId = searchSubGroupId;
+        this.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+        this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
+        this.loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
+        this.loadedDataCommonHolder = loadedDataCommonHolder;
+        this.dataPageStateManager = dataPageStateManager;
+        this.forMultipleSearchesPage = forMultipleSearchesPage;
+    }
+
+}
+
+/**
+ *
+ */
+export const psmList_Wrapper__Get_RowChildContent_Return_ChildContent = function (
+    {
+        psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter,
+        dataTable_DataRowEntry__Get_RowChildContent_CallParams
+    } : {
+        psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter : PsmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter
+        dataTable_DataRowEntry__Get_RowChildContent_CallParams : DataTable_DataRowEntry__Get_RowChildContent_CallParams
+    }) : {
+    jsxElement: JSX.Element
+} {
+
+    const jsxElement = (
+        <PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent
+            psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter={ psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter }
+        />
+    )
+
+    return { jsxElement }
+}
 
 /**
  * 
  */
-export interface PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_Props {
+interface PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_Props {
 
     //  This does not change since the parent component always goes through a render cycle where this is not rendered, 
     //     resulting in this being unmounted instead of updated.
     //  shouldComponentUpdate(...) throws Error if this changes
-    dataRow_GetChildTable_ReturnReactComponent_Parameter : PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter
+    psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter : PsmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter
 }
 
 /**
@@ -52,7 +127,7 @@ interface PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_State {
 /**
  * 
  */
-export class PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent extends React.Component< PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_Props, PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_State > {
+class PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent extends React.Component< PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_Props, PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_State > {
 
     /**
      * 
@@ -76,16 +151,16 @@ export class PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent exten
         
         //  Error  if changed: props:
 
-        if ( this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter !== nextProps.dataRow_GetChildTable_ReturnReactComponent_Parameter ) {
+        if ( this.props.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter !== nextProps.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter ) {
 
-            //  props dataRow_GetChildTable_ReturnReactComponent_Parameter should never change
+            //  props psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter should never change
             //    This component should unmount and then mount since the parent component should always go through a render cycle 
             //     where this component is not rendered.
 
-            const msg = "ERROR: PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent::shouldComponentUpdate() :  prop should never change: dataRow_GetChildTable_ReturnReactComponent_Parameter.  if statement is true: if ( this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter !== nextProps.dataRow_GetChildTable_ReturnReactComponent_Parameter ) "
+            const msg = "ERROR: PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent::shouldComponentUpdate() :  prop should never change: psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter.  if statement is true: if ( this.props.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter !== nextProps.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter ) "
             console.warn( msg );
             throw Error( msg );
-            // console.log("PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent::shouldComponentUpdate() return true ( this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter !== nextProps.dataRow_GetChildTable_ReturnReactComponent_Parameter )")
+            // console.log("PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent::shouldComponentUpdate() return true ( this.props.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter !== nextProps.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter )")
             // return true;
         }
 
@@ -99,31 +174,17 @@ export class PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent exten
      */
     render () {
 
-        // console.log("PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent::render() called:  now: " + new Date() );
+        //  Make and populate prop value to pass to child Component
 
-        if ( ! this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter ) {
-            const msg = "this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter not populated"
-            console.warn( msg )
-            throw Error( msg )
-        }
-
-        if ( ! ( this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter instanceof PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter ) ) {
-            const msg = "this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter not instanceof PsmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter"
-            console.warn( msg )
-            throw Error( msg )
-        }
-        const dataRow_GetChildTable_ReturnReactComponent_Parameter = this.props.dataRow_GetChildTable_ReturnReactComponent_Parameter;
-
-        const psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent_Result = psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent({ dataRow_GetChildTable_ReturnReactComponent_Parameter });
+        const psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent_Result =
+            psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent({
+                psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter : this.props.psmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter
+            });
         const psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter = psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent_Result.psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter;
 
-        const dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm = new DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm();
-        dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm.dataRow_GetChildTable_ReturnReactComponent_Parameter = psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter;
-
-        const Component = psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent( dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm );
 
         return (
-            <Component
+            <PsmList_ForProjectSearchIdReportedPeptideId_ChildReactComponent
                 dataRow_GetChildTable_ReturnReactComponent_Parameter={ psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter }
             />
         );

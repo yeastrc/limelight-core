@@ -259,7 +259,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
             if ( conditionGroupsContainer.conditionGroups.length > 1 ) {
 
-                //  > 1 Condition Group:  Children table uses ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
+                //  > 1 Condition Group:  Children table uses createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
 
                 const conditionIds_ParentPath : Array<number> = (
                     [] // Empty since top level
@@ -306,7 +306,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
             } else {
 
-                //  Only 1 Condition Group:  Children table uses ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
+                //  Only 1 Condition Group:  Children table uses createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
 
                 const conditionIds_ParentPath : Array<number> = (
                     [] // Empty since top level

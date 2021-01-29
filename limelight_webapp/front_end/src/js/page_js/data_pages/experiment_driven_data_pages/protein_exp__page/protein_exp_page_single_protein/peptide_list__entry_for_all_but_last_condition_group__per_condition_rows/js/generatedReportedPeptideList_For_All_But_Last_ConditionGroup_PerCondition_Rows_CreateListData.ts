@@ -81,7 +81,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     dataPageStateManager : DataPageStateManager
 
     /**
-     * Used as class for object placed in data row object property dataRow_GetChildTable_ReturnReactComponent_Parameter
+     *
      */
     constructor(
         {
@@ -126,14 +126,6 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
         this.loadedDataCommonHolder = loadedDataCommonHolder;
         this.dataPageStateManager = dataPageStateManager;
     }
-
-
-    // shallowClone() {
-
-    //     const clone = new ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter();
-    //     Object.assign( clone, this );
-    //     return clone;
-    // }
 }
 
 
@@ -356,7 +348,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
 
             if ( conditionIds_ParentPath.length < ( conditionGroups.length - 2 ) ) {
 
-                //  Child Condition Group NOT 'Last Condition Group':  Children table uses ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
+                //  Child Condition Group NOT 'Last Condition Group':  Children table uses createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
 
                 const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter = ( 
                     new CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter({
@@ -397,7 +389,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
 
             } else {
 
-                //  Child Condition Group IS 'Last Condition Group':  Children table uses ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
+                //  Child Condition Group IS 'Last Condition Group':  Children table uses CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
 
                 const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter = (
                     new CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter({
