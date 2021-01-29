@@ -12,6 +12,8 @@
 import Handlebars = require('handlebars/runtime');
 import _dummy_template_template_bundle =
 	require("../../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
+
+//  Code compiles with assignment to Handlebars.templates. Just IDE that flags it.
 Handlebars.templates = _dummy_template_template_bundle;
 
 

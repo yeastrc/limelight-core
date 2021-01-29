@@ -19,52 +19,33 @@ import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataP
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-import { DataTable_RootTableObject, DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
-
 import { loadProteinDisplayData_Per_ProjectSearchId } from './proteinExperiment___loadData';
 import {
     proteinExperiment_CreateProteinDisplayData, ProteinExperiment_CreateProteinDisplayData_Result
 } from './proteinExperiment___createProteinDisplayData';
 
 import {
-    DataTable_ColumnId,
     DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    
-    DataTable_Column,
-    DataTable_SortColumnsInfoEntry,
-
+    DataTable_RootTableObject,
     DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
-    DataTable_DataRowEntry,
-    DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { ProteinExperimentPage_Root_Component, ProteinExperimentPage_Root_Component_Props, ProteinExperimentPage_Root_Component_ProteinListData_Param } from '../jsx/proteinExperimentPage_Root_Component';
-
-import { ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_WIDTH as _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, _SVG_HEIGHT as _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component } from '../jsx/proteinExperimentPage_PSMs_Per_Condition_Component';
 
 import { ProteinExperimentPage_Display_SingleProtein } from '../../protein_exp_page_single_protein/js/proteinExperimentPage_Display_SingleProtein';
 
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';
 
-// import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 import { SingleProtein_ExpPage_CentralStateManagerObjectClass } from './singleProtein_ExpPage_CentralStateManagerObjectClass';
 
-import { create_experimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
+import { ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { Experiment_ConditionGroupsDataContainer, Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 import {
     create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
     ExperimentConditions_GraphicRepresentation_SelectedCells
 } from "page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections";
-import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {proteinExperiment__createProteinList_DataTable_RootTableDataObject} from "./proteinExperiment__createProteinList_DataTable_RootTableDataObject";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 import {get_DynamicModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_GetDynamicModificationsForReportedPeptides";
@@ -625,7 +606,6 @@ export class ProteinExperimentPage_Display {
         }
     }
 
-
     ///////////////////////
 
     /////  Protein List  - Data Table Row - Click Handler
@@ -662,9 +642,6 @@ export class ProteinExperimentPage_Display {
                 throw Error( msg );
             }
 
-            // console.log("_proteinListTable_dataRow_ClickHandler, proteinListItem: ")
-            // console.log( proteinListItem );
-
             const proteinSequenceVersionId = proteinListItem.proteinSequenceVersionId;
 
             this._singleProtein_ExpPage_CentralStateManagerObjectClass.setProteinSequenceVersionId( { proteinSequenceVersionId } );
@@ -677,7 +654,6 @@ export class ProteinExperimentPage_Display {
         }
     }
 
-
     /**
      * Show Single Protein Data in Overlay
      * 
@@ -688,8 +664,6 @@ export class ProteinExperimentPage_Display {
 
         const proteinSequenceVersionId = entry_proteinList_ForDataTable.proteinSequenceVersionId;
 
-        // console.log( "proteinSequenceVersionId: " + proteinSequenceVersionId );
-
 		//  Current Window Scroll position
 		const currentWindowScrollY = window.scrollY;
 
@@ -697,12 +671,9 @@ export class ProteinExperimentPage_Display {
 		const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
         $data_page_overall_enclosing_block_div.hide();
         
-
 		//  Create callback function to call on single protein close
 		
         const singleProteinCloseCallback = () : void => {
-
-            // console.log("singleProteinCloseCallback(...) called");
 
 			const proteinSequenceVersionIdLocal = proteinSequenceVersionId;
 

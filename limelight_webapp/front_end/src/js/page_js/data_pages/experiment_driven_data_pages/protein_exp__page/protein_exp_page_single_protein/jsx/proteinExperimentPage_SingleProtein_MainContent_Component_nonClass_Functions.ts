@@ -17,23 +17,13 @@
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import {
-	modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnNumber,
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 //   Reporter Ion Mass Rounding to provide some level of commonality between searches
 import { 
-    reporterIonMass_CommonRounding_ReturnNumber_Function,
-    reporterIonMass_CommonRounding_ReturnString_Function,
-    reporterIonMass_CommonRounding_ReturnNumber, 
-    reporterIonMass_CommonRounding_ReturnString, 
-    _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 
+    reporterIonMass_CommonRounding_ReturnNumber,
 } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
-
-// import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-// import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';

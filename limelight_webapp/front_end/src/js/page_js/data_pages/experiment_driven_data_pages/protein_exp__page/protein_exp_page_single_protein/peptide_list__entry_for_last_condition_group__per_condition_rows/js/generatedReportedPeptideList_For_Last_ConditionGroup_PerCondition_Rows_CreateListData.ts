@@ -49,6 +49,7 @@ import { ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_Get
 import { searchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent, SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__searches_for_condition_for_single_peptide/js/searchesForConditionForSinglePeptide_ReturnChildReactComponent';
 import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
 
 
 //////////////////
@@ -122,91 +123,15 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_Last_Conditio
 
     //  Accumulate by conditionIds_ParentPath each condition.id
 
-    const projectSearchIds_By_conditionId = new Map<number,Set<number>>();
-
-    const current_id_ConditionGroup = current_conditionGroup.id;
+    const projectSearchIds_By_conditionId =
+        Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer.
+        getProjectSearchIds_For_ConditionGroup_FilteringOn_ConditionIdsParentPath({
+            conditionGroup : current_conditionGroup,
+            conditionIds_ParentPath,
+            conditionGroupsDataContainer
+        });
 
     const current_conditionGroup_Conditions = current_conditionGroup.conditions;
-
-
-    const processAllDataEntries_Callback = ( params : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
-
-        const data = params.data
-        const innerData = data.data;
-
-        if ( ! innerData ) {
-            // innerData not populated
-            
-            return; //  EARLY RETURN
-        }
-
-        const projectSearchIds : Set<number> = innerData.projectSearchIds;
-
-        if ( ( ! projectSearchIds ) || ( projectSearchIds.size === 0 ) ) {
-            // innerData.projectSearchIds not populated
-            
-            return; //  EARLY RETURN
-        }
-
-        let condition_id_For_current_ConditionGroup = undefined;
-
-        const conditionIds_Path = params.conditionIds_Path;
-
-        //  If not contain conditionIds_ParentPath skip
-
-        if ( conditionIds_ParentPath && conditionIds_ParentPath.length > 0 ) {
-
-            let foundAll = true;
-
-            for ( const conditionIds_ParentPath_Entry of conditionIds_ParentPath ) {
-                let foundEntry = false;
-                for ( const conditionIds_Path_Entry of conditionIds_Path ) {
-                    if ( conditionIds_Path_Entry === conditionIds_ParentPath_Entry ) {
-                        foundEntry = true;
-                        break;
-                    }
-                }
-                if ( ! foundEntry ) {
-                    foundAll = false;
-                    break;
-                }
-            }
-            if ( ! foundAll ) {
-                // not contain conditionIds_ParentPath so skip
-
-                return;  // EARLY RETURN
-            }
-        }
-
-        for ( const conditionIds_Path_Entry of conditionIds_Path ) {
-            for ( const condition of current_conditionGroup_Conditions ) {
-                if ( conditionIds_Path_Entry === condition.id ) {
-                    condition_id_For_current_ConditionGroup = conditionIds_Path_Entry;
-                    break;
-                }
-            }
-            if ( condition_id_For_current_ConditionGroup !== undefined ) {
-                break;
-            }
-        }
-        if ( condition_id_For_current_ConditionGroup === undefined ) {
-            const msg = "No entry found in conditionIds_Path for condtions in current_id_ConditionGroup: " + current_id_ConditionGroup;
-            console.warn( msg );
-            throw Error( msg );
-        }
-
-        let projectSearchIds_For_conditionId = projectSearchIds_By_conditionId.get( condition_id_For_current_ConditionGroup );
-        if ( ! projectSearchIds_For_conditionId ) {
-            projectSearchIds_For_conditionId = new Set<number>();
-            projectSearchIds_By_conditionId.set( condition_id_For_current_ConditionGroup, projectSearchIds_For_conditionId );
-        }
-
-        for ( const projectSearchId of projectSearchIds ) {
-            projectSearchIds_For_conditionId.add( projectSearchId );
-        }
-    }
-
-    conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
 
     ////////////////////
 
