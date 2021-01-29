@@ -35,7 +35,14 @@ export class ModViewDataVizRenderer_MultiSearch {
         }) {
 
         console.log('called renderDataViz()');
-        $('div#data-viz-container').hide();
+
+        // add a div for this viz to the page
+        ModViewDataVizRenderer_MultiSearch.addDataVizContainerToPage();
+        $('div#data-viz-container').show();
+
+        $('div#data-viz-container').empty();
+        $('div#data-viz-container').html('<h2>Loading data, please standby...</h2>');
+
         $('div#data-table-container-container').hide();
 
         const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
@@ -45,11 +52,12 @@ export class ModViewDataVizRenderer_MultiSearch {
             modViewDataManager,
         });
 
+        $('div#data-viz-container').empty();
+
         console.log('got modmap:', modMap);
 
         if(modMap.size < 1) {
             ModViewDataVizRenderer_MultiSearch.addEmptyDataVizContainerToPage();
-            $('div#data-viz-container').show();
             return;
         }
 
@@ -71,11 +79,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                 minCount = -1 * maxCount;
             }
         }
-
-        // add a div for this viz to the page
-        ModViewDataVizRenderer_MultiSearch.addDataVizContainerToPage();
-        $('div#data-viz-container').show();
-
 
         // add a div for the data table to the page
         const $dataTableContainer = ModViewDataVizRenderer_MultiSearch.addDataTableContainerToPage();
@@ -381,7 +384,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         $vizDiv = $mainContentDiv.find("div#data-viz-container");
-        $vizDiv.html('<span style=\"font-size:12pt;\">No modifications found for filters.</span>')
+        $vizDiv.html('<span style=\"font-size:12pt;\">No modification data found for filters.</span>')
     }
 
     static addDataTableContainerToPage() {
