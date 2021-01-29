@@ -20,6 +20,8 @@ import {
     DataTable_RootTableDataObject,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject,
+    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
@@ -33,27 +35,26 @@ import { Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDi
 
 //  Used when > 1 Condition Group:  ...For_Last_ConditionGroup...
 
-//  returns React Component to insert below current data row
-
-import { 
-    forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent, 
-    ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
-} from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_all_but_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_All_But_Last_ConditionGroup_PerCondition_Rows_ReturnChildReactComponent';
-
 
 
 //  Used when only 1 Condition Group:  ...For_Last_ConditionGroup...
 
 //  returns React Component to insert below current data row
 
-import { 
-    forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent, 
-    ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
-} from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_ReturnChildReactComponent';
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other";
 import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
+import {
+    createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup,
+    CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter,
+    GetDataTableDataObjects_All_But_Last_ConditionGroup_Result
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_all_but_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_All_But_Last_ConditionGroup_PerCondition_Rows_CreateListData";
+import {
+    createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup,
+    CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter,
+    GetDataTableDataObjects_Result_Last_ConditionGroup
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_CreateListData";
 
 
 //////////////////
@@ -256,9 +257,6 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                 throw Error("proteinExperimentPage_SingleProtein_ReportedPeptideListSection_CreateListData.ts: No value for peptideEntry.peptideSequenceDisplay: " + peptideEntry.peptideSequenceDisplay );
             }
 
-            let dataRow_GetChildTable_ReturnReactComponent_Parameter = undefined;
-
-
             if ( conditionGroupsContainer.conditionGroups.length > 1 ) {
 
                 //  > 1 Condition Group:  Children table uses ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
@@ -267,8 +265,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     [] // Empty since top level
                 );
                 
-                const forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter = ( 
-                    new ForSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter({
+                const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter = (
+                    new CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter({
                         
                         createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : createReportedPeptideDisplayData_Result_Entry_ForThisRow,
                         conditionIds_ParentPath,
@@ -286,7 +284,25 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     })
                 );
 
-                dataRow_GetChildTable_ReturnReactComponent_Parameter = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter;
+                const dataRow_GetChildTableData_Return_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject =
+                    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : DataTable_RootTableObject => {
+
+                        const getDataTableDataObjects_All_But_Last_ConditionGroup_Result : GetDataTableDataObjects_All_But_Last_ConditionGroup_Result =
+                            createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup({ createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter });
+
+                        return  getDataTableDataObjects_All_But_Last_ConditionGroup_Result.dataTable_RootTableObject;
+                    }
+
+                const dataTable_DataRowEntry = new DataTable_DataRowEntry( {
+                    uniqueId : peptideEntry.peptideSequenceDisplay,
+                    sortOrder_OnEquals : peptideListCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
+                    columnEntries : dataTable_DataRow_ColumnEntries,
+                    dataRow_GetChildTableData_Return_DataTable_RootTableObject
+                    // tableRowClickHandlerParameter : undefined,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
+                    // dataRow_GetChildTableDataParameter : undefined,   //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
+                });
+
+                dataTable_DataRowEntries.push( dataTable_DataRowEntry );
 
             } else {
 
@@ -296,8 +312,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     [] // Empty since top level
                 );
                 
-                const forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter = ( 
-                    new ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter({
+                const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter = (
+                    new CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter({
                         
                         createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : createReportedPeptideDisplayData_Result_Entry_ForThisRow,
                         conditionIds_ParentPath,
@@ -315,21 +331,29 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     })
                 );
 
-                dataRow_GetChildTable_ReturnReactComponent_Parameter = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter;
+                const dataRow_GetChildTableData_Return_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject =
+                    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : DataTable_RootTableObject => {
+
+                    const getDataTableDataObjects_Result_Last_ConditionGroup : GetDataTableDataObjects_Result_Last_ConditionGroup =
+                        createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup({
+                            createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
+                        })
+
+                        return getDataTableDataObjects_Result_Last_ConditionGroup.dataTable_RootTableObject;
+                }
+
+                const dataTable_DataRowEntry = new DataTable_DataRowEntry( {
+                    uniqueId : peptideEntry.peptideSequenceDisplay,
+                    sortOrder_OnEquals : peptideListCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
+                    columnEntries : dataTable_DataRow_ColumnEntries,
+                    dataRow_GetChildTableData_Return_DataTable_RootTableObject
+                });
+
+                dataTable_DataRowEntries.push( dataTable_DataRowEntry );
             }
 
-            //////////
+            //  dataTable_DataRowEntries added to inside 'if' and 'else' immediately above
 
-            const dataTable_DataRowEntry = new DataTable_DataRowEntry( {   
-                uniqueId : peptideEntry.peptideSequenceDisplay,
-                sortOrder_OnEquals : peptideListCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
-                columnEntries : dataTable_DataRow_ColumnEntries,
-                dataRow_GetChildTable_ReturnReactComponent_Parameter
-                // tableRowClickHandlerParameter : undefined,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
-                // dataRow_GetChildTableDataParameter : undefined,   //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
-            });
-
-            dataTable_DataRowEntries.push( dataTable_DataRowEntry );
         }
     }
 
@@ -338,26 +362,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
         dataTable_DataRowEntries
     });
 
-    let dataRow_GetChildTable_ReturnReactComponent = undefined;
-
-    if ( conditionGroupsContainer.conditionGroups.length > 1 ) {
-
-        //  > 1 Condition Group:  Children table uses 
-
-        dataRow_GetChildTable_ReturnReactComponent = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent;
-
-    } else {
-
-        //  1 Condition Group:  Children table uses 
-
-        dataRow_GetChildTable_ReturnReactComponent = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent;
-    }
-
-
-    const tableOptions = new DataTable_TableOptions({
-        // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
-       dataRow_GetChildTable_ReturnReactComponent
-    });
+    const tableOptions = new DataTable_TableOptions({});
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

@@ -42,14 +42,13 @@ import { Experiment_ConditionGroupsDataContainer, Experiment_ConditionGroupsData
 
 import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
-import { ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter } from './generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_ReturnChildReactComponent';
-
 //  Child Data Searches for Single Peptide show/hide
 
 import { searchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent, SearchesForConditionForSinglePeptide__dataRow_GetChildTable_ReturnReactComponent_Parameter } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__searches_for_condition_for_single_peptide/js/searchesForConditionForSinglePeptide_ReturnChildReactComponent';
 import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 //////////////////
@@ -57,6 +56,84 @@ import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionG
 const dataTableId_ThisTable = "Single Protein Peptide List Last Condition Group Condition rows PSM Count List Table";
 
 
+
+/**
+ * Parameter to createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup
+ */
+export class CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter {
+
+    createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry //  Row in Top Level table that this is under (direct or indirect)
+
+    //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
+    //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
+    conditionIds_ParentPath : Array<number>;
+
+    conditionGroupsContainer : Experiment_ConditionGroupsContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
+
+    projectSearchIds : Array<number>
+    reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+    dataPageStateManager : DataPageStateManager
+
+    /**
+     * Used as class for object placed in data row object property dataRow_GetChildTable_ReturnReactComponent_Parameter
+     */
+    constructor({
+
+                    createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow,
+                    conditionIds_ParentPath,
+
+                    conditionGroupsContainer,
+                    conditionGroupsDataContainer,
+
+                    projectSearchIds,
+                    reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId,
+                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                    searchDataLookupParamsRoot,
+                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+                    loadedDataCommonHolder,
+                    dataPageStateManager
+                } : {
+        createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry;
+        conditionIds_ParentPath : Array<number>; //  Empty array if at top group
+
+        conditionGroupsContainer : Experiment_ConditionGroupsContainer
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
+
+        projectSearchIds : Array<number>,
+        reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
+        dataPageStateManager : DataPageStateManager
+    }) {
+
+        this.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow = createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow;
+        this.conditionIds_ParentPath = conditionIds_ParentPath;
+        this.conditionGroupsContainer = conditionGroupsContainer;
+        this.conditionGroupsDataContainer = conditionGroupsDataContainer;
+        this.projectSearchIds = projectSearchIds;
+        this.reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId = reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId;
+        this.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
+        this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
+        this.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
+        this.loadedDataCommonHolder = loadedDataCommonHolder;
+        this.dataPageStateManager = dataPageStateManager;
+    }
+
+
+    // shallowClone() {
+
+    //     const clone = new CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter();
+    //     Object.assign( clone, this );
+    //     return clone;
+    // }
+}
 
 
 
@@ -76,33 +153,33 @@ export class GetDataTableDataObjects_Result_Last_ConditionGroup {
  */
 export const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup = function( { 
     
-    forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter
+    createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
 
 } : {
-    forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter : ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter,
+    createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter : CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter,
 
 } ) : GetDataTableDataObjects_Result_Last_ConditionGroup {
 
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_Result_Last_ConditionGroup();
 
     //  Row in Top Level table that this is under (direct or indirect)
-    const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
+    const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
 
     //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
     //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
-    const conditionIds_ParentPath : Array<number> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionIds_ParentPath;
+    const conditionIds_ParentPath : Array<number> = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.conditionIds_ParentPath;
 
-    const conditionGroupsContainer : Experiment_ConditionGroupsContainer = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsContainer;
-    const conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsDataContainer;
+    const conditionGroupsContainer : Experiment_ConditionGroupsContainer = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.conditionGroupsContainer;
+    const conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.conditionGroupsDataContainer;
 
-    const projectSearchIds : Array<number> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchIds
-    const reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId
+    const projectSearchIds : Array<number> = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.projectSearchIds
+    const reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>> = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds =
-        forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
-    const searchDataLookupParamsRoot = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot
-    const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
-    const loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.loadedDataCommonHolder
-    const dataPageStateManager : DataPageStateManager = forSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager;
+        createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+    const searchDataLookupParamsRoot = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.searchDataLookupParamsRoot
+    const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    const loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.loadedDataCommonHolder
+    const dataPageStateManager : DataPageStateManager = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.dataPageStateManager;
 
     const conditionGroups = conditionGroupsContainer.conditionGroups;
 
