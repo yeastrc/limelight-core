@@ -18,6 +18,78 @@ import {
 export class Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer {
 
     /**
+     * Get All ProjectSearchIds In conditionGroupsDataContainer. NO Filtering
+     *
+     * @param conditionGroupsDataContainer
+     * @return Set<project search id>>  -- Set<number>
+     */
+    static get_All_ProjectSearchIds(
+        {
+            conditionGroupsDataContainer
+        } : {
+            conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
+
+        }) : Set<number> {
+
+        const projectSearchIds_All = new Set<number>();
+
+        const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
+
+            const data = param.data;
+            const dataProperty = data.data;
+            if ( dataProperty ) {
+                const projectSearchIds = dataProperty.projectSearchIds;
+                if ( projectSearchIds ) {
+                    for ( const projectSearchId of projectSearchIds ) {
+                        projectSearchIds_All.add( projectSearchId );
+                    }
+                }
+            }
+        }
+        conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
+
+        return projectSearchIds_All;
+    }
+
+    /**
+     * Get Is ANY ProjectSearchId In conditionGroupsDataContainer. NO Filtering
+     *
+     * @param conditionGroupsDataContainer
+     * @return true if any project Search Ids found
+     */
+    static get_Is_ANY_ProjectSearchId_In_conditionGroupsDataContainer(
+        {
+            conditionGroupsDataContainer
+        } : {
+            conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
+
+        }) : boolean {
+
+        let any_projectSearchIdsAssigned_To_Conditions = false;
+
+
+        const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
+
+            const data = param.data;
+            const dataProperty = data.data;
+            if ( dataProperty ) {
+                const projectSearchIds = dataProperty.projectSearchIds;
+                if ( projectSearchIds && projectSearchIds.size !== 0 ) {
+                    if ( projectSearchIds.size === undefined ) {
+                        throw Error("_any_projectSearchIdsAssigned_To_Conditions(...): projectSearchIds.size === undefined");
+                    }
+                    any_projectSearchIdsAssigned_To_Conditions = true;
+                }
+            }
+        }
+
+        conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback })
+
+        return any_projectSearchIdsAssigned_To_Conditions;
+
+    }
+
+    /**
      * Get ProjectSearchIds Grouped By Condition Ids in First ConditionGroup
      *
      * @param conditionGroupsContainer

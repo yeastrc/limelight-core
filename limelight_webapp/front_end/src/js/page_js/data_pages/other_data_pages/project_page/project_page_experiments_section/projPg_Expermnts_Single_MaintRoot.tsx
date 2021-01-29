@@ -55,6 +55,7 @@ import {
     AnnotationTypeData_Root,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
 
 
         //  !!!!  Possibly redesign constructor once this Component becomes a child of another component.
@@ -426,9 +427,6 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         return { saveButtonEnabled };
     }
 
-
-
-
     /**
      *
      */
@@ -454,25 +452,9 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Populate conditionGroupsDataContainer.get_data_ForProjectSearchId({ projectSearchId })
             //          properties 'psmFilterDataMap_KeyAnnTypeId', 'reportedPeptideFilterDataMap_KeyAnnTypeId'
 
-            const projectSearchIds_All = new Set<number>();
-
-            const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
-
-                const data = param.data;
-
-                // console.log( ": callback: data:" );
-                // console.log( data );
-                const dataProperty = data.data;
-                if ( dataProperty ) {
-                    const projectSearchIds = dataProperty.projectSearchIds;
-                    if ( projectSearchIds ) {
-                        for ( const projectSearchId of projectSearchIds ) {
-                            projectSearchIds_All.add( projectSearchId );
-                        }
-                    }
-                }
-            }
-            conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback });
+            const projectSearchIds_All =
+                Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer.
+                    get_All_ProjectSearchIds({ conditionGroupsDataContainer });
 
             create_experiment_SearchFilterValuesFromDefaultCutoffs({ projectSearchIds : projectSearchIds_All, searchDataMap_KeyProjectSearchId, searchesData, conditionGroupsDataContainer });
         }
@@ -1062,37 +1044,19 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         return resultState;
     }
 
-
     /**
      *
      */
     _any_projectSearchIdsAssigned_To_Conditions({ state } : {
 
         state : ProjectPage_Experiments_SingleExperimentMaintRoot_State
-    }) {
-
-        let any_projectSearchIdsAssigned_To_Conditions = false;
-
-
-        const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
-
-            const data = param.data;
-
-            // console.log( "_add_conditionGroup_InConditionGroupList_ClickHandler: callback: data:" );
-            // console.log( data );
-            const dataProperty = data.data;
-            if ( dataProperty ) {
-                const projectSearchIds = dataProperty.projectSearchIds;
-                if ( projectSearchIds && projectSearchIds.size !== 0 ) {
-                    if ( projectSearchIds.size === undefined ) {
-                        throw Error("_any_projectSearchIdsAssigned_To_Conditions(...): projectSearchIds.size === undefined");
-                    }
-                    any_projectSearchIdsAssigned_To_Conditions = true;
-                }
-            }
-        }
-
-        state.conditionGroupsDataContainer.processAllDataEntries_ConditionGroupsDataContainer({ callback : processAllDataEntries_Callback })
+    }) : boolean {
+        const any_projectSearchIdsAssigned_To_Conditions =
+            Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer.
+                get_Is_ANY_ProjectSearchId_In_conditionGroupsDataContainer(
+                {
+                    conditionGroupsDataContainer : state.conditionGroupsDataContainer
+                });
 
         return any_projectSearchIdsAssigned_To_Conditions;
     }
