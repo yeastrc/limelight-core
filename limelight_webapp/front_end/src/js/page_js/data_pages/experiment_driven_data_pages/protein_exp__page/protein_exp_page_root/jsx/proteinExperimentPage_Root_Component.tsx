@@ -24,7 +24,7 @@ import { SaveView_Create_Component_React_Type, SaveView_Create_Component_React_R
 import { ExperimentConditions_GraphicRepresentation_SelectedCells, create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass, ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_CallbackParams, ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections';
 import { Experiment_SingleExperiment_ConditionsGraphicRepresentation, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params, ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents, ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler, ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler_Params } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
 import { Experiment_ConditionGroupsContainer, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 import { ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
 
 import { SharePage_Component } from 'page_js/data_pages/sharePage_React/sharePage_Component_React';
@@ -64,7 +64,7 @@ export interface ProteinExperimentPage_Root_Component_ProteinListData_Param {
 export interface ProteinExperimentPage_Root_Component_Props {
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
-    conditionGroupsDataContainer : ConditionGroupsDataContainer;
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap; // Map with key being project search id
     experimentId : number;
     experimentName : string;
@@ -564,7 +564,7 @@ const _mainCell_getHoverContents_StandAlone = function({
 } : { 
     conditionIdPath : Array<number>, 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
-    conditionGroupsDataContainer : ConditionGroupsDataContainer;
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
     searchNamesMap_KeyProjectSearchId  : SearchNames_AsMap
 }) {
     // console.log("_mainCell_getHoverContents_StandAlone")

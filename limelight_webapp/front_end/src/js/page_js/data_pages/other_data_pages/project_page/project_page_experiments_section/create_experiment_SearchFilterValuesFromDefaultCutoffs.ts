@@ -7,13 +7,13 @@
  * for specified projectSearchIds
  */
 
-import { ConditionGroupsDataContainer_PerProjectSearchIdData, ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
+import { Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData, Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class";
+import {Experiment_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class";
 
  /**
  * 
@@ -39,7 +39,7 @@ export const create_experiment_SearchFilterValuesFromDefaultCutoffs = ({
              annotationTypeData_Root : AnnotationTypeData_Root
          }
      }
-     conditionGroupsDataContainer : ConditionGroupsDataContainer
+     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
  }) => {
 
     const searchesSubData = searchesData.searchesSubData;
@@ -78,7 +78,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
         }
-        data_conditionGroupsDataContainer: ConditionGroupsDataContainer_PerProjectSearchIdData
+        data_conditionGroupsDataContainer: Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData
     }) => {
 
     const searchAnnotationTypesData = searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
@@ -100,14 +100,14 @@ const _create_SearchFilterValues_SingleSearchContents = (
 
     // Process PSM filters
     if ( psmFilterableAnnotationTypes ) { 
-        const psmFilterData : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({ 
+        const psmFilterData : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({
             filterableAnnotationTypes : psmFilterableAnnotationTypes
         });
         data_conditionGroupsDataContainer.set_psmFilters_PerProjectSearchId( psmFilterData );
     }
     // Process Reported Peptide filters
     if ( reportedPeptideFilterableAnnotationTypes ) {
-        const reportedPeptideFilterData : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({ 
+        const reportedPeptideFilterData : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({
             filterableAnnotationTypes : reportedPeptideFilterableAnnotationTypes
         });
         data_conditionGroupsDataContainer.set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilterData );
@@ -139,9 +139,9 @@ const _create_SearchFilterValues_SingleSearchContents = (
  */
 const _create_SearchFilterValues_SingleFilterableType = ({ 
     filterableAnnotationTypes
-}) : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> => {
+}) : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> => {
 
-    const resultArray : Array<ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = [];
+    const resultArray : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = [];
 
     for ( const entry of filterableAnnotationTypes ) {
 
@@ -153,7 +153,7 @@ const _create_SearchFilterValues_SingleFilterableType = ({
             // const annotationTypeName = filterableAnnotationType.name;
             const filterValue = filterableAnnotationType.defaultFilterValue;
             // const defaultFilterValueString = filterableAnnotationType.defaultFilterValueString;
-            const result = new ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data(); 
+            const result = new Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data();
             result.set_annTypeId( annotationTypeId );
             result.set_value( filterValue );
             resultArray.push( result );

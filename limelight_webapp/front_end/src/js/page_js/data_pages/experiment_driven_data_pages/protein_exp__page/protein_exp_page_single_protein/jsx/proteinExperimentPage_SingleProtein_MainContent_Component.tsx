@@ -38,9 +38,9 @@ import {modificationMass_CommonRounding_ReturnNumber,} from 'page_js/data_pages/
 
 import {Experiment_ConditionGroupsContainer} from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import {
-    ConditionGroupsDataContainer,
-    ProcessAllDataEntries_callback_Param
-} from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+    Experiment_ConditionGroupsDataContainer,
+    Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param
+} from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import {ProteinView_LoadedDataCommonHolder} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
@@ -170,7 +170,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     proteinDescriptions : string
     proteinSequenceString : string
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
@@ -340,7 +340,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             {
                 const projectSearchIds_Selected_Set = new Set();
 
-                const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
+                const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
                     const data = param.data;
 
@@ -601,7 +601,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             {
                 const projectSearchIds_Selected_Set = new Set();
 
-                const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
+                const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
                     const data = param.data;
 
@@ -1044,7 +1044,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         {
             let firstDataEntry = true;
                 
-            const processAllDataEntries_Callback = ( params : ProcessAllDataEntries_callback_Param ) => {
+            const processAllDataEntries_Callback = ( params : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
                 try {
                     const data = params.data
                     const innerData = data.data;

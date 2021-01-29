@@ -18,7 +18,7 @@ import { create_experimentConditions_GraphicRepresentation_PropsData, Experiment
 
 import { Experiment_SingleExperiment_ConditionsGraphicRepresentation } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
 import { Experiment_ConditionGroupsContainer, Experiment_Condition, create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { getExperimentDataFromServer } from './projPg_Expermnts_Load_ExperimentData';
 
@@ -65,7 +65,7 @@ interface ProjectPage_ExperimentsList_SingleExperimentDetails_State {
     searchesData? : any
 
     conditionGroupsContainer? : Experiment_ConditionGroupsContainer;
-    conditionGroupsDataContainer? : ConditionGroupsDataContainer;
+    conditionGroupsDataContainer? : Experiment_ConditionGroupsDataContainer;
 
     experimentConditions_GraphicRepresentation_PropsData? : ExperimentConditions_GraphicRepresentation_PropsData;
 }
@@ -224,7 +224,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
         const searchDataLookupParamsRoot = JSON.parse( experimentData.searchDataLookupParamsRootJSON );
 
         const conditionGroupsContainer : Experiment_ConditionGroupsContainer = create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON( experimentMainData.conditionGroupsContainer );
-        const conditionGroupsDataContainer : ConditionGroupsDataContainer = new ConditionGroupsDataContainer({ 
+        const conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer = new Experiment_ConditionGroupsDataContainer({
             
             experimentConditionData_Serialized : experimentMainData.experimentConditionData, 
             searchDataLookupParamsRoot

@@ -23,7 +23,7 @@ import {
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer, ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer, Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from './proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
@@ -97,7 +97,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_Result,
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
@@ -136,7 +136,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     }
 
 
-    const processAllDataEntries_Callback = ( params : ProcessAllDataEntries_callback_Param ) => {
+    const processAllDataEntries_Callback = ( params : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
         const data = params.data
         const innerData = data.data;

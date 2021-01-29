@@ -9,7 +9,7 @@
 
 
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { ExperimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation'
 import {ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier} from "page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers";
@@ -24,7 +24,7 @@ const create_experimentConditions_GraphicRepresentation_PropsData = ({
     conditionGroupsDataContainer
 } : { 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer, 
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 }) : ExperimentConditions_GraphicRepresentation_PropsData => {
 
     if ( ! ( conditionGroupsContainer instanceof Experiment_ConditionGroupsContainer ) ) {
@@ -32,7 +32,7 @@ const create_experimentConditions_GraphicRepresentation_PropsData = ({
         console.warn( msg );
         throw Error( msg );
     }
-    if ( ! ( conditionGroupsDataContainer instanceof ConditionGroupsDataContainer ) ) {
+    if ( ! ( conditionGroupsDataContainer instanceof Experiment_ConditionGroupsDataContainer ) ) {
         const msg = "ERROR: create_experimentConditions_GraphicRepresentation_PropsData: ! ( conditionGroupsDataContainer instanceof ConditionGroupsDataContainer )";
         console.warn( msg );
         throw Error( msg );
@@ -151,7 +151,7 @@ const _add_AfterFirst_ProcessRows = ({
 } : { 
     conditionGroups : Array<Experiment_ConditionGroup>, 
     conditionGroups_Length : number, 
-    conditionGroupsDataContainer : ConditionGroupsDataContainer, 
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer,
     displayTableCells : Array<Array<ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell>>
 }) : void => {
 

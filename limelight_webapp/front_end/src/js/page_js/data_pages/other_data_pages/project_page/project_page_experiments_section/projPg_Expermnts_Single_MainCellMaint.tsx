@@ -19,7 +19,7 @@ import React from 'react'
 
 import { Experiment_User_Set_Searches_Filters } from './experiment_User_Set_Searches_Filters';
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
@@ -34,7 +34,7 @@ import {
     get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Layout,
     ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_Single_MainCell_ChangeSearches_Overlay";
-import {ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data} from "page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes";
+import {Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes";
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
@@ -49,7 +49,7 @@ export class Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint {
     projectSearchIds_ContainedInAllOtherCells : Set<number>
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
     mainCell_Identifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier
     searchesData :  {
         searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
@@ -443,7 +443,7 @@ const _createSearchLists = function({ projectSearchIds, searchesData, conditionG
             annotationTypeData_Root : AnnotationTypeData_Root
         }
     }
-    conditionGroupsDataContainer: ConditionGroupsDataContainer
+    conditionGroupsDataContainer: Experiment_ConditionGroupsDataContainer
 
 }) : Array<SearchSelected_Entry> {
 
@@ -475,7 +475,7 @@ const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, cond
 
     searchEntry: GetSearchesAndFolders_SingleProject_PromiseResponse_Item
     projectSearchId : number
-    conditionGroupsDataContainer: ConditionGroupsDataContainer
+    conditionGroupsDataContainer: Experiment_ConditionGroupsDataContainer
     searchesData :  {
         searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
         searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
@@ -549,7 +549,7 @@ const _createSearchSelectedEntry_PerType = function(
     {
         filterData_PerType_All, filterableAnnotationTypes, searchProgramsPerSearch_Key_searchProgramsPerSearchId
     } : {
-        filterData_PerType_All: ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data[]
+        filterData_PerType_All: Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data[]
         filterableAnnotationTypes: Map<number, AnnotationTypeItem>
         searchProgramsPerSearch_Key_searchProgramsPerSearchId: Map<number, SearchProgramsPerSearchItem>
 

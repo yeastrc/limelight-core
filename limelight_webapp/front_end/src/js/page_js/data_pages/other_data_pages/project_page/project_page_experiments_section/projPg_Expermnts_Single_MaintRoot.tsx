@@ -43,13 +43,13 @@ import { ProjectPage_Experiments_SingleExperiment_MainCellMaint, Data_ProjectPag
 
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition, create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import {
-    ConditionGroupsDataContainer,
-    ConditionGroupsDataContainer_DataEntry,
-    ProcessAllDataEntries_callback_Param
-} from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+    Experiment_ConditionGroupsDataContainer,
+    Experiment_ConditionGroupsDataContainer_DataEntry,
+    Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param
+} from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { create_experiment_SearchFilterValuesFromDefaultCutoffs } from './create_experiment_SearchFilterValuesFromDefaultCutoffs';
-import { ConditionGroupsDataContainer_PerProjectSearchIdData } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
+import { Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root,
@@ -117,7 +117,7 @@ interface ProjectPage_Experiments_SingleExperimentMaintRoot_State {
     experimentId? : number;
     experimentName? : string;
     conditionGroupsContainer? : Experiment_ConditionGroupsContainer;
-    conditionGroupsDataContainer? : ConditionGroupsDataContainer;
+    conditionGroupsDataContainer? : Experiment_ConditionGroupsDataContainer;
 
     numberTechnicalReplicates? : number;
     numberBiologicalReplicates? : number;
@@ -258,7 +258,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
 
         let conditionGroupsContainer : Experiment_ConditionGroupsContainer = undefined;
-        let conditionGroupsDataContainer : ConditionGroupsDataContainer = undefined;
+        let conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer = undefined;
 
         let numberTimePoints = 0;
 
@@ -286,7 +286,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                 }
 
                 conditionGroupsContainer = create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON( experimentMainData.conditionGroupsContainer );
-                conditionGroupsDataContainer = new ConditionGroupsDataContainer({ experimentConditionData_Serialized : experimentMainData.experimentConditionData, searchDataLookupParamsRoot });
+                conditionGroupsDataContainer = new Experiment_ConditionGroupsDataContainer({ experimentConditionData_Serialized : experimentMainData.experimentConditionData, searchDataLookupParamsRoot });
 
                 if ( conditionGroupsContainer ) {
 
@@ -435,7 +435,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     _populateDefaultFilters_ForUnassignedFilters({ conditionGroupsContainer, conditionGroupsDataContainer } : {
 
         conditionGroupsContainer : Experiment_ConditionGroupsContainer
-        conditionGroupsDataContainer : ConditionGroupsDataContainer
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
     }) {
 
         if ( ( ! conditionGroupsContainer ) || ( ! conditionGroupsDataContainer ) ) {
@@ -456,7 +456,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             const projectSearchIds_All = new Set<number>();
 
-            const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
+            const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
                 const data = param.data;
 
@@ -627,7 +627,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         const resultState : {
             conditionGroupsContainer : Experiment_ConditionGroupsContainer
-            conditionGroupsDataContainer : ConditionGroupsDataContainer
+            conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
             numberBiologicalReplicates : number
             experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData
         } = {
@@ -883,7 +883,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         const resultState : {
             conditionGroupsContainer : Experiment_ConditionGroupsContainer
-            conditionGroupsDataContainer : ConditionGroupsDataContainer
+            conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
             numberTechnicalReplicates? : number
             experimentConditions_GraphicRepresentation_PropsData? : ExperimentConditions_GraphicRepresentation_PropsData
         } = {
@@ -1074,7 +1074,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         let any_projectSearchIdsAssigned_To_Conditions = false;
 
 
-        const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
+        const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
             const data = param.data;
 
@@ -1783,7 +1783,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const projectSearchIds_ContainedInAllOtherCells : Set<number> = new Set();
 
         {
-            const callbackForEach_conditionGroupsDataContainer_Entry_Data = ({conditionGroupsDataContainer_Entry_Data}: { conditionGroupsDataContainer_Entry_Data: ConditionGroupsDataContainer_DataEntry }) => {
+            const callbackForEach_conditionGroupsDataContainer_Entry_Data = ({conditionGroupsDataContainer_Entry_Data}: { conditionGroupsDataContainer_Entry_Data: Experiment_ConditionGroupsDataContainer_DataEntry }) => {
                 if (conditionGroupsDataContainer_Entry_Data.data) {
                     const projectSearchIds_ForCell = conditionGroupsDataContainer_Entry_Data.data.projectSearchIds;
                     if (projectSearchIds_ForCell) {
@@ -2027,7 +2027,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         const mainCell_Identifier = data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.mainCell_Identifier;
 
-        const callbackForEach_conditionGroupsDataContainer_Entry_Data = ({ conditionGroupsDataContainer_Entry_Data } : { conditionGroupsDataContainer_Entry_Data : ConditionGroupsDataContainer_DataEntry }) => {
+        const callbackForEach_conditionGroupsDataContainer_Entry_Data = ({ conditionGroupsDataContainer_Entry_Data } : { conditionGroupsDataContainer_Entry_Data : Experiment_ConditionGroupsDataContainer_DataEntry }) => {
             const data = conditionGroupsDataContainer_Entry_Data.data;
             if ( data ) {
                 const projectSearchIds_InEntry = data.projectSearchIds;
@@ -2109,7 +2109,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      * 
      */
-    _save_updated_conditionGroupsDataContainer({ conditionGroupsDataContainer } : { conditionGroupsDataContainer : ConditionGroupsDataContainer }) {
+    _save_updated_conditionGroupsDataContainer({ conditionGroupsDataContainer } : { conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer }) {
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
 
@@ -2124,7 +2124,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         
         state : ProjectPage_Experiments_SingleExperimentMaintRoot_State 
         props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props
-        conditionGroupsDataContainer : ConditionGroupsDataContainer
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
     }) {
 
         const conditionGroupsDataContainerNew = conditionGroupsDataContainer.cloneShallow();
@@ -2674,7 +2674,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
  * 
  */
 const _conditionGroupsDataContainer_InitialValue = () => {
-    return new ConditionGroupsDataContainer({});
+    return new Experiment_ConditionGroupsDataContainer({});
 }
 
 
@@ -2683,7 +2683,7 @@ const _conditionGroupsDataContainer_InitialValue = () => {
 
 //  Type for callback function for next function
 
-type CallbackForEach_conditionGroupsDataContainer_Entry_Data = ({ conditionGroupsDataContainer_Entry_Data } : { conditionGroupsDataContainer_Entry_Data : ConditionGroupsDataContainer_DataEntry }) => void;
+type CallbackForEach_conditionGroupsDataContainer_Entry_Data = ({ conditionGroupsDataContainer_Entry_Data } : { conditionGroupsDataContainer_Entry_Data : Experiment_ConditionGroupsDataContainer_DataEntry }) => void;
 
 
 //////////////    
@@ -2707,15 +2707,15 @@ const _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier
     
     mainCellIdentifier_ToExclude : ExperimentConditions_GraphicRepresentation_MainCell_Identifier;
     conditionGroupsContainer : Experiment_ConditionGroupsContainer, 
-    conditionGroupsDataContainer : ConditionGroupsDataContainer,
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer,
     callbackForEach_conditionGroupsDataContainer_Entry_Data : CallbackForEach_conditionGroupsDataContainer_Entry_Data
 }) : void =>  {
 
     const cell_ConditionIds_Set = mainCellIdentifier_ToExclude.cell_ConditionIds_Set;
 
-    const processAllDataEntries_Callback = ( param : ProcessAllDataEntries_callback_Param ) => {
+    const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
-        const conditionGroupsDataContainer_DataEntry : ConditionGroupsDataContainer_DataEntry = param.data;
+        const conditionGroupsDataContainer_DataEntry : Experiment_ConditionGroupsDataContainer_DataEntry = param.data;
         const conditionIds_Path : Set<number> = param.conditionIds_Path;
 
         if ( conditionIds_Path.size === cell_ConditionIds_Set.size ) {
@@ -2818,7 +2818,7 @@ const _save_Experiment_AsDraft = ({ projectIdentifier, experimentId, experimentN
 const _getExperimentRootForSave = ({ conditionGroupsContainer, conditionGroupsDataContainer } : { 
     
     conditionGroupsContainer : Experiment_ConditionGroupsContainer, 
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 }) : { 
     experimentRoot, 
     searchDataLookupParamsRoot 
@@ -2874,7 +2874,7 @@ const _getExperimentRootForSave = ({ conditionGroupsContainer, conditionGroupsDa
 const _get_searchDataLookupParamsRoot_ForSaveToDB = ({ projectSearchIds, conditionGroupsDataContainer } : { 
     
     projectSearchIds : Array<number>  //  Since from To Save Data
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 }) => {
 
     const paramsForProjectSearchIdsList = [];
@@ -2905,7 +2905,7 @@ const _get_searchDataLookupParamsRoot_ForSaveToDB = ({ projectSearchIds, conditi
  */
 const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataContainer, projectSearchId } : { 
     
-    data_conditionGroupsDataContainer : ConditionGroupsDataContainer_PerProjectSearchIdData 
+    data_conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData
     projectSearchId : number
 }) => {
 

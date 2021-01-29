@@ -14,7 +14,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
@@ -80,7 +80,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	private _searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 
 	private _conditionGroupsContainer : Experiment_ConditionGroupsContainer;
-	private _conditionGroupsDataContainer : ConditionGroupsDataContainer;
+	private _conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
 	
 	private _experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData;
 	
@@ -159,7 +159,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
         projectSearchIds : Array<number>,
         searchDataLookupParamsRoot,
         conditionGroupsContainer : Experiment_ConditionGroupsContainer,
-        conditionGroupsDataContainer : ConditionGroupsDataContainer,
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer,
 		experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData, 
 		singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass,
 		experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory

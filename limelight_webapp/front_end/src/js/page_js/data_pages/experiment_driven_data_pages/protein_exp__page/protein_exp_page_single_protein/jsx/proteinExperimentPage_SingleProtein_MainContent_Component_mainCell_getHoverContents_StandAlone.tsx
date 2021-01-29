@@ -17,7 +17,7 @@
 import React from 'react'
 
 import { Experiment_ConditionGroupsContainer, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 
@@ -32,7 +32,7 @@ const mainCell_getHoverContents_StandAlone = function({
 } : { 
     conditionIdPath : Array<number>, 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
-    conditionGroupsDataContainer : ConditionGroupsDataContainer;
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
     searchNamesMap_KeyProjectSearchId  : SearchNames_AsMap
 }) {
     // console.log("_mainCell_getHoverContents_StandAlone")

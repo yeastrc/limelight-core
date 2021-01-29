@@ -18,8 +18,8 @@
 
 import React from 'react'
 
-import { ConditionGroupsDataContainer_PerProjectSearchIdData, ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
-import { ConditionGroupsDataContainer_DataEntry, ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import {Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes";
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root, AnnotationTypeItem,
@@ -45,7 +45,7 @@ export interface Experiment_User_Set_Searches_Filters_Props {
             annotationTypeData_Root : AnnotationTypeData_Root
         }
     }
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
     save // function
     cancel // function
 }
@@ -197,7 +197,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
                 continue; // EARLY CONTINUE
             }
 
-            const resultEntry = new ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data();
+            const resultEntry = new Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data();
             resultEntry.set_annTypeId( annotationTypeId );
             resultEntry.set_value( currentValue );
 

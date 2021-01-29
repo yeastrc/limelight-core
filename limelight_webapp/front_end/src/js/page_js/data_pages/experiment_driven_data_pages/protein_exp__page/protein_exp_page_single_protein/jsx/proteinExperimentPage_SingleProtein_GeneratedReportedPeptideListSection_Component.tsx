@@ -30,7 +30,7 @@ import {
 
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { Create_GeneratedReportedPeptideListData_Result } from '../js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
@@ -45,7 +45,7 @@ export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideLis
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_Result;  //  For displaying the peptide list in sub component
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
-    conditionGroupsDataContainer : ConditionGroupsDataContainer;
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
@@ -216,7 +216,7 @@ export interface ReportedPeptideList_Component_Props {
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_Result;  //  For dispaying the peptide list in sub component
     
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 

@@ -42,7 +42,7 @@ import {
 
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer, ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer, Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
 
@@ -109,7 +109,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     const conditionIds_ParentPath : Array<number> = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionIds_ParentPath;
 
     const conditionGroupsContainer : Experiment_ConditionGroupsContainer = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsContainer;
-    const conditionGroupsDataContainer : ConditionGroupsDataContainer = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsDataContainer;
+    const conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.conditionGroupsDataContainer;
 
     const projectSearchIds : Array<number> = forSinglePeptide_For_All_But_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchIds
 
@@ -154,7 +154,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     const current_conditionGroup_Conditions = current_conditionGroup.conditions;
 
 
-    const processAllDataEntries_Callback = ( params : ProcessAllDataEntries_callback_Param ) => {
+    const processAllDataEntries_Callback = ( params : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
 
         const conditionIds_Path = params.conditionIds_Path; //  Condition Ids in an order that should not be depended on
         const data = params.data

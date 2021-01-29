@@ -19,7 +19,7 @@ import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_s
 import { DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/conditionGroupsDataContainer_Class';
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 
 import { create_GeneratedReportedPeptideListData, Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
@@ -42,7 +42,7 @@ class ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChi
     conditionIds_ParentPath : Array<number>;
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
-    conditionGroupsDataContainer : ConditionGroupsDataContainer
+    conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 
     projectSearchIds : Array<number>
     reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
@@ -75,7 +75,7 @@ class ForSinglePeptide_For_Last_ConditionGroup_PerCondition_Rows__dataRow_GetChi
         conditionIds_ParentPath : Array<number>; //  Empty array if at top group
 
         conditionGroupsContainer : Experiment_ConditionGroupsContainer
-        conditionGroupsDataContainer : ConditionGroupsDataContainer
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 
         projectSearchIds : Array<number>,
         reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
