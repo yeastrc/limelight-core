@@ -9,7 +9,7 @@
                     <span data-tooltip="Choose how modification masses are quantified in each search. Either as PSM or scan counts and either as raw counts or ratios." class="selector_tool_tip_attached">Quant method:</span>
 
                 <div style="margin-top:10px;">
-                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" checked><span data-tooltip="View as ratio of # of PSMs or scans with mod mass / total number of PSMs/scans in search." class="selector_tool_tip_attached">Ratios</span><br>
+                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" checked><span data-tooltip="View as ratio of # of PSMs or scans with mod mass / total number of PSMs or scans in search." class="selector_tool_tip_attached">Ratios</span><br>
                     <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts"><span data-tooltip="View as count of PSMs or scans with mod mass in search." class="selector_tool_tip_attached">Counts</span>
                 </div>
 
@@ -33,7 +33,7 @@
                         <td><input type="text" id="color-cutoff-ratio" name="color-cutoff-ratio" size="4"/></td>
                     </tr>
                     <tr>
-                        <td><span data-tooltip="Override maximum value for PSM/scan count when scaling color in visualization. Only used when quant method is set to counts." class="selector_tool_tip_attached">Count:</span></td>
+                        <td><span data-tooltip="Override maximum value for PSM or scan count when scaling color in visualization. Only used when quant method is set to counts." class="selector_tool_tip_attached">Count:</span></td>
                         <td><input type="text" id="color-cutoff-count" name="color-cutoff-count" size="4"/></td>
                     </tr>
                 </table>
@@ -61,9 +61,9 @@
                 <div id="transformation-pulldown-div">
                     <select id="transformation-pulldown">
                         <option value="none" title="No data transformation.">None</option>
-                        <option value="scaled-mean-diff" title="For each mod mass and search display: (x - μ) / μ, where x is the count/ratio for a mod mass in a search and μ is the mean for a mod mass across all searches.">Scaled Mean Diff.</option>
-                        <option value="per-mod-zscore" title="For each mod mass and search display: (x - μ) / s, where x is the count/ratio for a mod mass in a search, μ is the mean for a mod mass across all searches, and s is the standard deviation for this mod mass across all searches.">Per-mod Z-Score</option>
-                        <option value="global-zscore" title="For each mod mass and search display: (x - μ) / s, where x is the count/ratio for a mod mass in a search, μ is the mean for all mod masses across all searches, and s is the standard deviation across all mod masses in all searches.">Global Z-Score</option>
+                        <option value="scaled-mean-diff" title="For each mod mass and search display: (x - μ) / μ, where x is the count or ratio for a mod mass in a search and μ is the mean for a mod mass across all searches.">Scaled Mean Diff.</option>
+                        <option value="per-mod-zscore" title="For each mod mass and search display: (x - μ) / s, where x is the count or ratio for a mod mass in a search, μ is the mean for a mod mass across all searches, and s is the standard deviation for this mod mass across all searches.">Per-mod Z-Score</option>
+                        <option value="global-zscore" title="For each mod mass and search display: (x - μ) / s, where x is the count or ratio for a mod mass in a search, μ is the mean for all mod masses across all searches, and s is the standard deviation across all mod masses in all searches.">Global Z-Score</option>
                         <option value="global-pvalue-bonf" title="For each mod mass and search display: p, where p is the Bonferroni-corrected p-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation.">Global P-Value (Bonferroni)</option>
                         <option value="global-qvalue-bh" title="For each mod mass and search display: q, where q is the Benjamini-Hochberg q-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation.">Global Q-Value (B-H)</option>
                     </select>
