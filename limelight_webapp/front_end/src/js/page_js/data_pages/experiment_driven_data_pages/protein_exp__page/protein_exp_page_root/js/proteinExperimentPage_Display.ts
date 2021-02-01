@@ -54,6 +54,8 @@ import {ProteinExperiment__CreateProteinDataTableColumns_Class} from "page_js/da
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
+import {ProteinList_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinList_ExpPage_CentralStateManagerObjectClass";
 
 
 
@@ -104,10 +106,13 @@ export class ProteinExperimentPage_Display {
     private _experimentConditions_GraphicRepresentation_PropsData
 
     // private _centralPageStateManager : CentralPageStateManager;
+
+    private _proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass;
+    private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+
     private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
     private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     private _singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass;
-
 
     private _proteinExperiment__CreateProteinDataTableColumns_Class : ProteinExperiment__CreateProteinDataTableColumns_Class;
 
@@ -152,6 +157,10 @@ export class ProteinExperimentPage_Display {
         experimentConditions_GraphicRepresentation_PropsData,
         // centralPageStateManager,
         experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+
+        proteinList_ExpPage_CentralStateManagerObjectClass,
+        generatedPeptideContents_UserSelections_StateObject,
+
         proteinGrouping_CentralStateManagerObjectClass,
         singleProtein_ExpPage_CentralStateManagerObjectClass
 
@@ -167,6 +176,10 @@ export class ProteinExperimentPage_Display {
         experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData,
         // centralPageStateManager : CentralPageStateManager,
         experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+
+        proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass
+        generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
         singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
 
@@ -190,11 +203,14 @@ export class ProteinExperimentPage_Display {
 
         // this._centralPageStateManager = centralPageStateManager;
         this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
+
+        this._proteinList_ExpPage_CentralStateManagerObjectClass = proteinList_ExpPage_CentralStateManagerObjectClass;
+        this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
+
         this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
         this._singleProtein_ExpPage_CentralStateManagerObjectClass = singleProtein_ExpPage_CentralStateManagerObjectClass;
 
-
-		// !!!!!!!!!  TODO  Parts of this._loadedDataCommonHolder need to be cleared if the cutoffs or other filters change
+        // !!!!!!!!!  TODO  Parts of this._loadedDataCommonHolder need to be cleared if the cutoffs or other filters change
 		
 		//   this._loadedDataCommonHolder is shared with this._proteinExperimentPage_Display_SingleProtein
 		
@@ -748,6 +764,10 @@ export class ProteinExperimentPage_Display {
             conditionGroupsDataContainer : this._conditionGroupsDataContainer,
             
             experimentConditions_GraphicRepresentation_PropsData : this._experimentConditions_GraphicRepresentation_PropsData,
+
+            proteinList_ExpPage_CentralStateManagerObjectClass : this._proteinList_ExpPage_CentralStateManagerObjectClass,
+            generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
+
             singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass,
             experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,
             experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass

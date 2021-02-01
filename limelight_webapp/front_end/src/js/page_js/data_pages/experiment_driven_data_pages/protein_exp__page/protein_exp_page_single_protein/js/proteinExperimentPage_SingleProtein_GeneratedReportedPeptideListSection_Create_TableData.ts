@@ -25,10 +25,7 @@ import {
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
-import { Experiment_ConditionGroupsDataContainer, Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
-
-import { Create_GeneratedReportedPeptideListData_Result, CreateReportedPeptideDisplayData_Result_Entry } from './proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
-
+import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 //  Child Data Searches for Single Peptide show/hide
 
@@ -55,6 +52,10 @@ import {
     CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter,
     GetDataTableDataObjects_Result_Last_ConditionGroup
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_CreateListData";
+import {
+    Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
+    CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
 
 
 //////////////////
@@ -94,9 +95,10 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     searchDataLookupParamsRoot,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     loadedDataCommonHolder,
-    dataPageStateManager
+    dataPageStateManager,
+    showProteins
 } : {
-    create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_Result,
+    create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
@@ -108,12 +110,13 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
     dataPageStateManager : DataPageStateManager
+    showProteins : boolean
 
 } ) : GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result {
 
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result();
 
-    const peptideList : Array<CreateReportedPeptideDisplayData_Result_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
+    const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
 
     if ( peptideList.length === 0 ) {
         //  No data found so return
@@ -169,6 +172,21 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
         dataTable_Columns.push( dataTable_Column );
     }
 
+    if ( showProteins ) {
+        const dataTable_Column = new DataTable_Column({
+            id : "Proteins", // Used for tracking sort order. Keep short
+            displayName : "Protein(s)",
+            width : 220,
+            sortable : true,
+            style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 }, // whiteSpace: "nowrap", overflowX: "auto",
+            // style_override_header_React : {},  // Optional
+            // style_override_React : {},  // Optional
+            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
+            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+        });
+        dataTable_Columns.push( dataTable_Column );
+    }
+
     //  PSM counts for each ...
     for ( const condition of first_conditionGroup_Conditions ) {
         
@@ -215,6 +233,66 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                 dataTable_DataRow_ColumnEntries.push(columnEntry);
             }
 
+
+            if (showProteins) { // Protein(s)
+
+                const proteinNames_Set: Set<string> = new Set();
+
+                for (const projectSearchId of projectSearchIds) {
+
+                    const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId);
+                    if (!dataPerReportedPeptideId_Map_Key_reportedPeptideId) {
+
+                        continue; // EARLY CONTINUE
+                    }
+
+                    const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
+                    if (!loadedDataPerProjectSearchIdHolder) {
+
+                        continue; // EARLY CONTINUE
+                    }
+
+                    const proteinSequenceVersionIdsKeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId();
+
+                    for (const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries()) {
+
+                        const dataPerReportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry[1];
+                        const reportedPeptideId = dataPerReportedPeptideId.reportedPeptideId
+
+                        const proteinSequenceVersionIds = proteinSequenceVersionIdsKeyReportedPeptideId.get(reportedPeptideId);
+                        if (!proteinSequenceVersionIds) {
+
+                            continue; // EARLY CONTINUE
+                        }
+
+                        for (const proteinSequenceVersionId of proteinSequenceVersionIds) {
+
+                            const proteinInfo = loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId().get(proteinSequenceVersionId);
+                            if (!proteinInfo) {
+                                const msg = "No value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId().get( proteinSequenceVersionId ). proteinSequenceVersionId: " + proteinSequenceVersionId;
+                                console.warn(msg);
+                                throw Error(msg);
+                            }
+
+                            for (const annotation of proteinInfo.annotations) {
+                                proteinNames_Set.add(annotation.name)
+                            }
+                        }
+                    }
+                }
+
+                const proteinNames_Array: Array<string> = Array.from(proteinNames_Set);
+                proteinNames_Array.sort();
+
+                const proteinNames_String = proteinNames_Array.join(", ");
+
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    valueDisplay: proteinNames_String,
+                    valueSort: proteinNames_String
+                })
+                dataTable_DataRow_ColumnEntries.push(columnEntry);
+            }
+
             //  Data for child tables
 
             for ( const condition of first_conditionGroup_Conditions ) {
@@ -250,7 +328,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
             // Data for Child Tables for this row of this table
 
-            const createReportedPeptideDisplayData_Result_Entry_ForThisRow : CreateReportedPeptideDisplayData_Result_Entry = (
+            const createReportedPeptideDisplayData_Result_Entry_ForThisRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = (
                 create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay.get( peptideEntry.peptideSequenceDisplay )
             );
             if ( ! createReportedPeptideDisplayData_Result_Entry_ForThisRow ) {
@@ -264,7 +342,17 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                 const conditionIds_ParentPath : Array<number> = (
                     [] // Empty since top level
                 );
-                
+
+                const reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>> = new Map();
+
+                for ( const per_ProjectSearchId_MapEntry of peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.entries() ) {
+                    const projectSearchId = per_ProjectSearchId_MapEntry[ 0 ];
+                    const per_ProjectSearchId_MapValue = per_ProjectSearchId_MapEntry[ 1 ];
+                    const reportedPeptideIds = new Set( per_ProjectSearchId_MapValue.keys() );
+
+                    reportedPeptideIdsMap_KeyProjectSearchId.set( projectSearchId, reportedPeptideIds )
+                }
+
                 const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter = (
                     new CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter({
                         
@@ -275,7 +363,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                         conditionGroupsDataContainer,
 
                         projectSearchIds,
-                        reportedPeptideIdsMap_KeyProjectSearchId : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
+                        reportedPeptideIdsMap_KeyProjectSearchId,
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         searchDataLookupParamsRoot,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -298,8 +386,6 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     sortOrder_OnEquals : peptideListCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
                     columnEntries : dataTable_DataRow_ColumnEntries,
                     dataRow_GetChildTableData_Return_DataTable_RootTableObject
-                    // tableRowClickHandlerParameter : undefined,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
-                    // dataRow_GetChildTableDataParameter : undefined,   //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
                 });
 
                 dataTable_DataRowEntries.push( dataTable_DataRowEntry );
@@ -311,6 +397,16 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                 const conditionIds_ParentPath : Array<number> = (
                     [] // Empty since top level
                 );
+
+                const reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>> = new Map();
+
+                for ( const per_ProjectSearchId_MapEntry of peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.entries() ) {
+                    const projectSearchId = per_ProjectSearchId_MapEntry[ 0 ];
+                    const per_ProjectSearchId_MapValue = per_ProjectSearchId_MapEntry[ 1 ];
+                    const reportedPeptideIds = new Set( per_ProjectSearchId_MapValue.keys() );
+
+                    reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId.set( projectSearchId, reportedPeptideIds )
+                }
                 
                 const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter = (
                     new CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter({
@@ -322,7 +418,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                         conditionGroupsDataContainer,
 
                         projectSearchIds,
-                        reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : peptideEntry.reportedPeptideIdsMap_KeyProjectSearchId,
+                        reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId,
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         searchDataLookupParamsRoot,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,

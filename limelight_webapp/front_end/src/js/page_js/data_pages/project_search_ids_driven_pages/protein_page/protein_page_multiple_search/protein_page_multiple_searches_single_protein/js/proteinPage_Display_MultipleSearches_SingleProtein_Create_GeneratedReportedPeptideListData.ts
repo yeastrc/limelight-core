@@ -129,7 +129,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         //  Map<(reported peptide), Map<(position),Set<(mod mass rounded number)>>
         let variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId : Map<number, Map<number, Set<number>>> = undefined;
 
-        if ( generatedPeptideContents_UserSelections_StateObject.getVariableModifications_Selected() ) {
+        if ( generatedPeptideContents_UserSelections_StateObject && generatedPeptideContents_UserSelections_StateObject.getVariableModifications_Selected() ) {
             variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId = (
                 _get_Variable_ModificationsRoundedByReportedPeptideIdPosition_ForSingleProjectSearchId({
                     loadedDataPerProjectSearchIdHolder,
@@ -142,7 +142,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         //   The static modifications
         let staticModificationsForProjectSearchId_Key_ResidueLetter : Map<string, number> = undefined;
 
-        if ( generatedPeptideContents_UserSelections_StateObject.getStaticModifications_Selected() ) {
+        if ( generatedPeptideContents_UserSelections_StateObject && generatedPeptideContents_UserSelections_StateObject.getStaticModifications_Selected() ) {
             staticModificationsForProjectSearchId_Key_ResidueLetter = _get_StaticModifications_ByResidueLetter_ForProjectSearchId({loadedDataPerProjectSearchIdHolder});
         }
 
@@ -193,8 +193,8 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
             }
 
             if ( _anyOpenMods_For_ReportedPeptide({ reportedPeptideId, loadedDataPerProjectSearchIdHolder })
-                && ( generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
-                    || generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) ) {
+                && ( ( generatedPeptideContents_UserSelections_StateObject && generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected() )
+                    || ( generatedPeptideContents_UserSelections_StateObject && generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) ) ) {
 
                 _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMIds_AndOpenMods({
                     reportedPeptideId,
@@ -458,6 +458,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         } else {
 
             if ( ( ! psmOpenModificationMassForPsmId.positionsMap_KeyPosition )
+                || ! generatedPeptideContents_UserSelections_StateObject
                 || ( ! generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) ) {
 
                 //  No Position OR WithLocalization NOT selected

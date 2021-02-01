@@ -2378,8 +2378,8 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
                     if ( searchString && ( searchString !== "" ) ) {  //  Skip searchString === ""
 
                         const searchStringUpperCase = searchString.toLocaleUpperCase();
-                        const searchString_UpperCase_L_to_I = searchStringUpperCase.replace( findAll_I_Regex, "I" );
-                        searchStrings_I_To_L__ToGetReportedPeptideIdsFor.add( searchString_UpperCase_L_to_I );
+                        const searchString_UpperCase_I_to_L = searchStringUpperCase.replace( findAll_I_Regex, "L" );
+                        searchStrings_I_To_L__ToGetReportedPeptideIdsFor.add( searchString_UpperCase_I_to_L );
                     }
                 }
             }

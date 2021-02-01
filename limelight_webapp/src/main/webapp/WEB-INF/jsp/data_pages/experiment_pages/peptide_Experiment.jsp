@@ -35,14 +35,9 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
-   <%--   REMOVE this when have working page   --%>
-   	<div style="margin-top: 20px; font-weight: bold">
-		Experiment Peptide Page Shell.  This is only a Page Stub with NO functionality.    	
-   	</div>
-   
    	<%--  <div> to contain main display --%>
    	
-   	<div id="peptide_experiment_data_page_overall_enclosing_block_div" style="display: none;"> <%--  Hidden until Javascript has loaded and displays it --%>
+   	<div id="main_peptide_view_outer_block_react_root_container">
    	</div>
    	
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>

@@ -26,8 +26,6 @@ import {
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
-import { CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
-
 //  Child Data Searches for Single Peptide show/hide
 
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
@@ -37,6 +35,9 @@ import {
     searchesForSinglePeptide_createChildTableObjects,
     SearchesForSinglePeptide_createChildTableObjects_Parameter
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__searches_for_condition_for_single_peptide/js/searchesForConditionForSinglePeptide_createChildTableObjects";
+import {
+    CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
 
 
 //////////////////
@@ -50,7 +51,7 @@ const dataTableId_ThisTable = "Single Protein Peptide List Last Condition Group 
  */
 export class CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter {
 
-    createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry //  Row in Top Level table that this is under (direct or indirect)
+    createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry //  Row in Top Level table that this is under (direct or indirect)
 
     //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
     //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
@@ -86,7 +87,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_Last_Conditio
             loadedDataCommonHolder,
             dataPageStateManager
         } : {
-            createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry;
+            createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry;
             conditionIds_ParentPath : Array<number>; //  Empty array if at top group
 
             conditionGroupsContainer : Experiment_ConditionGroupsContainer
@@ -150,8 +151,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_Last_Conditio
 
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_Result_Last_ConditionGroup();
 
-    //  Row in Top Level table that this is under (direct or indirect)
-    const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry = createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
+    //  Row in Top Level table that this is under (direct or indirect)   
+    const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry =
+        createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
 
     //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
     //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)

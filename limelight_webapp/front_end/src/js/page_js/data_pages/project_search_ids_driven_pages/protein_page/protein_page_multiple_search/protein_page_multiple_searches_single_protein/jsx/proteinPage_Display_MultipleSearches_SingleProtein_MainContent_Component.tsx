@@ -1649,10 +1649,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */
     _updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback() : void {
 
-        console.warn("Does NOT do everything it needs to Yet: _updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback() ")
         try {
-            // let newSelection = false;
-
             window.setTimeout( () => {
                 try {
                     this._selected_generatedPeptideContents_UserSelections_Change_UpdateURL();

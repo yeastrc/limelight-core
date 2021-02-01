@@ -30,8 +30,6 @@ import {
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
-import { CreateReportedPeptideDisplayData_Result_Entry } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_Create_GeneratedReportedPeptideListData';
-
 //  Child Data Searches for Single Peptide show/hide
 
 
@@ -49,6 +47,7 @@ import {
     CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter,
     GetDataTableDataObjects_Result_Last_ConditionGroup
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_CreateListData";
+import {CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
 
 
 //////////////////
@@ -63,7 +62,7 @@ const dataTableId_ThisTable = "Single Protein Peptide List Last Condition Group 
  */
 export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter {
 
-    createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry //  Row in Top Level table that this is under (direct or indirect)
+    createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry //  Row in Top Level table that this is under (direct or indirect)
 
     //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
     //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)
@@ -99,7 +98,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
             loadedDataCommonHolder,
             dataPageStateManager
         } : {
-            createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry;
+            createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry;
             conditionIds_ParentPath : Array<number>; //  Empty array if at top group
 
             conditionGroupsContainer : Experiment_ConditionGroupsContainer
@@ -156,7 +155,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_All_But_Last_ConditionGroup_Result();
 
     //  Row in Top Level table that this is under (direct or indirect)
-    const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_Result_Entry = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
+    const createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow
 
     //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
     //    (This is how it is tracked the path of expanded rows and determine what is to be shown in the current table)

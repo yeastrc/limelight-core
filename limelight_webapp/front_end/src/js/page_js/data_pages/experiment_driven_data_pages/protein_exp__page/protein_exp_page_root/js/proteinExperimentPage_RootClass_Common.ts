@@ -80,6 +80,8 @@ import { ProteinExperimentPage_Display } from './proteinExperimentPage_Display';
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
+import {ProteinList_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinList_ExpPage_CentralStateManagerObjectClass";
 
 /**
  * 
@@ -90,9 +92,11 @@ export class ProteinExperimentPage_RootClass_Common {
 
 	private _page_UserDefault_processing : Page_UserDefault_processing;
 	private _centralPageStateManager : CentralPageStateManager;
+	private _proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass;
 	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
 	private _singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass;
+	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = new DataPageStateManager();
 
@@ -116,6 +120,8 @@ export class ProteinExperimentPage_RootClass_Common {
 
 		this._centralPageStateManager = new CentralPageStateManager();
 
+		this._proteinList_ExpPage_CentralStateManagerObjectClass = new ProteinList_ExpPage_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager });
+
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = new Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({
 			centralPageStateManager : this._centralPageStateManager
 		})
@@ -126,6 +132,9 @@ export class ProteinExperimentPage_RootClass_Common {
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass = new SingleProtein_ExpPage_CentralStateManagerObjectClass({ 
 			centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined
 		});
+
+		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject();
+
 		// this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 		// this._searchColors_CentralStateManagerObject = new SearchColorManager( { centralPageStateManager : this._centralPageStateManager } );
 
@@ -162,10 +171,18 @@ export class ProteinExperimentPage_RootClass_Common {
 		
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
+		this._proteinList_ExpPage_CentralStateManagerObjectClass.initialize();
+
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
 		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass.initialize();
-		// this._proteinList_CentralStateManagerObjectClass.initialize();
+
+		{
+			const encodedStateData = this._proteinList_ExpPage_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 		
 		let referrerFromURL = initialStateFromURL.referrer;
 		
@@ -258,6 +275,10 @@ export class ProteinExperimentPage_RootClass_Common {
 					experimentConditions_GraphicRepresentation_PropsData,
 					// centralPageStateManager : this._centralPageStateManager,
 					experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+
+					proteinList_ExpPage_CentralStateManagerObjectClass : this._proteinList_ExpPage_CentralStateManagerObjectClass,
+					generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
+
 					proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
 					singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass
 				});
