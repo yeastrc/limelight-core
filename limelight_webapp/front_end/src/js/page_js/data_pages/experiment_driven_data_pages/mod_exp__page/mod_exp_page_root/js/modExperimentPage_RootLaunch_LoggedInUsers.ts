@@ -7,10 +7,7 @@
  *
  */
 
-import Handlebars = require('handlebars/runtime');
-import _dummy_template_template_bundle =
-	require("../../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
-Handlebars.templates = _dummy_template_template_bundle;
+import { Handlebars, _dummy_template_template_bundle } from './modExperimentPage_RootLaunch_ImportHandlebars'
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
