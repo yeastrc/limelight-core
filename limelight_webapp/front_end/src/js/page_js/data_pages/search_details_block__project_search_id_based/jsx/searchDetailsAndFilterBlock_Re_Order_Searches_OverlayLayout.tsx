@@ -11,6 +11,10 @@ import React from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
+import {
+    tooltip_Limelight_Create_Tooltip,
+    Tooltip_Limelight_Created_Tooltip
+} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 
 /////
 
@@ -286,7 +290,7 @@ interface SearchEntry_Props {
  *
  */
 interface SearchEntry_State {
-    _placeHolder
+    searchNameDisplay : string
 }
 
 /**
@@ -294,21 +298,63 @@ interface SearchEntry_State {
  */
 class DraggableSearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State > {
 
+    private _onMouseEnter_searchNameText_Div_BindThis = this._onMouseEnter_searchNameText_Div.bind(this);
+    private _onMouseLeave_searchNameText_Div_BindThis = this._onMouseLeave_searchNameText_Div.bind(this);
+
+    private _searchNameText_Div_Ref :  React.RefObject<HTMLDivElement>;
+
+    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip;
+
     /**
      *
      */
     constructor(props: SearchEntry_Props) {
         super(props);
 
-        // this.state = {searchList};
+        this._searchNameText_Div_Ref = React.createRef();
+
+        const searchNameDisplay = this._create_searchNameDisplay(props)
+
+        this.state = {
+            searchNameDisplay
+        }
+    }
+
+    private _create_searchNameDisplay(props: SearchEntry_Props) : string {
+
+        const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
+
+        return searchNameDisplay;
+    }
+
+    private _onMouseEnter_searchNameText_Div(  ) {
+
+        const tooltip_target_DOM_Element = this._searchNameText_Div_Ref.current;
+        const tooltipContents = (
+            <div >
+                { this.state.searchNameDisplay }
+            </div>
+        );
+
+        if ( this._tooltip_Limelight_Created_Tooltip ) {
+            this._tooltip_Limelight_Created_Tooltip.removeTooltip();
+        }
+        this._tooltip_Limelight_Created_Tooltip =
+            tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element, tooltipContents });
+    }
+
+    private _onMouseLeave_searchNameText_Div(  ) {
+
+        if ( this._tooltip_Limelight_Created_Tooltip ) {
+            this._tooltip_Limelight_Created_Tooltip.removeTooltip();
+        }
+        this._tooltip_Limelight_Created_Tooltip = null;
     }
 
     /**
      *
      */
     render(): React.ReactNode {
-
-        const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
 
         return (
             <Draggable key={ this.props.searchDisplayListItem.projectSearchId } draggableId={ this.props.draggableId } index={ this.props.index }>
@@ -327,11 +373,13 @@ class DraggableSearchEntry extends React.Component< SearchEntry_Props, SearchEnt
                                     className=" icon-small "
                                     title="Drag to change Search Order"/>
                                 </div>
-                                <div
-                                    title={ searchNameDisplay }
+                                <div ref={ this._searchNameText_Div_Ref }
+                                     onMouseEnter={ this._onMouseEnter_searchNameText_Div_BindThis }
+                                     onMouseLeave={ this._onMouseLeave_searchNameText_Div_BindThis }
+                                    // title={ this.state.searchNameDisplay }
                                     style={ { whiteSpace : "nowrap", overflowX : "hidden", textOverflow : "ellipsis" } }>
 
-                                    { searchNameDisplay }
+                                    { this.state.searchNameDisplay }
 
                                 </div>
                             </div>
