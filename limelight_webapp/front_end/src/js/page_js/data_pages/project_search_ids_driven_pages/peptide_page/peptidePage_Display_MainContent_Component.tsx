@@ -525,6 +525,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             loadedDataCommonHolder
         } );
 
+
+        console.log("Peptide List Data Generated (in call to _recompute_FullPage_Except_SearchDetails__SubPart): create_GeneratedReportedPeptideListData_Result.peptideList_Length: "
+            + create_GeneratedReportedPeptideListData_Result.peptideList_Length
+            + ", create_GeneratedReportedPeptideListData_Result: ", create_GeneratedReportedPeptideListData_Result )
+
         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 
             return {
@@ -598,6 +603,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             return { searchSubGroup_PropValue, searchSubGroup_Are_All_SearchSubGroupIds_Selected };
         });
     }
+
+    //  NOT CURRENTLY USED.  May be OUT OF DATE
 
 	/**
 	 * 
@@ -882,6 +889,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 		return reportLinesSingleString;
 	}
 
+    //  NOT CURRENTLY USED.  May be OUT OF DATE
 	
     /**
      * Download ALL PSMs for Protein based on current cutoff/filter criteria.  
