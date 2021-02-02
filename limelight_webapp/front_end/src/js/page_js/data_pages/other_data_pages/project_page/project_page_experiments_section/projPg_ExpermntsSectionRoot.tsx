@@ -957,8 +957,8 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                     <div className=" hovered-div-highlight ">
                         <div style={ { float: "right", paddingLeft: 10 } }>
 
-                            {/*<a href={ peptideLink }>[Peptides]</a>*/}
-                            {/*<span>&nbsp;</span>*/}
+                            <a href={ peptideLink }>[Peptides]</a>
+                            <span>&nbsp;</span>
 
                             <a href={ proteinLink }>[Proteins]</a>
 
