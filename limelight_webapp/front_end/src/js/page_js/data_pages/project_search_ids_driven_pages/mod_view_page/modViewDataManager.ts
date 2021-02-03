@@ -57,6 +57,32 @@ export class ModViewDataManager {
         return this._reportedPeptides.get(projectSearchId);
     }
 
+    async loadPsmsForModMasses({ modMasses, projectSearchId } : { modMasses:Array<number>, projectSearchId:number }):Promise<void> {
+        console.log('called loadPsmsForModMasses()', modMasses, projectSearchId);
+
+        if(!(this._psmsForModMasses.has(projectSearchId))) {
+            this._psmsForModMasses.set(projectSearchId, new Map());
+        }
+
+        const response:any = await this._dataLoader.getPSMDataForProjectSearchIdModMasses({
+            searchDetailsBlockDataMgmtProcessing:this._searchDetailsBlockDataMgmtProcessing,
+            projectSearchId,
+            modMasses
+        });
+
+        for(const psmItem of response) {
+            const modMass:number = psmItem.modMass;
+
+            if(!(this._psmsForModMasses.get(projectSearchId).has(modMass))) {
+                this._psmsForModMasses.get(projectSearchId).set(modMass, new Array<any>());
+            }
+
+            this._psmsForModMasses.get(projectSearchId).get(modMass).push(psmItem);
+        }
+
+        console.log('done');
+    }
+
     async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<any>> {
         console.log('called getPsmsForModMass()', modMass, projectSearchId);
 

@@ -14,68 +14,68 @@ import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_de
 
 export class ModViewPage_DataLoader {
 
-	/**
-	 * Called by getModData_SingleProjectSearchId to create a request
-	 */
-	__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, projectSearchId: number ) {
+    /**
+     * Called by getModData_SingleProjectSearchId to create a request
+     */
+    __createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, projectSearchId: number ) {
 
-		let searchDataLookupParams_For_Single_ProjectSearchId =
-			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
+        let searchDataLookupParams_For_Single_ProjectSearchId =
+            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
 
-		let requestObject = {
-				projectSearchId : projectSearchId,
-				searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
-		};
+        let requestObject = {
+            projectSearchId : projectSearchId,
+            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
+        };
 
-		return {
-			requestObject : requestObject
-		};
-	}
+        return {
+            requestObject : requestObject
+        };
+    }
 
 
-	/**
-	 * Get total number of PSMs for search
-	 */
-	getTotalPSMCountForSingleProjectSearchId(
-	    {
+    /**
+     * Get total number of PSMs for search
+     */
+    getTotalPSMCountForSingleProjectSearchId(
+        {
             searchDetailsBlockDataMgmtProcessing,
             projectSearchId
-	    } : {
+        } : {
             searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
             projectSearchId: number
-	    } ) {
+        } ) {
 
         let objectThis = this;
 
-		return new Promise( function( resolve, reject ) {
-          try {
-            let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+        return new Promise( function( resolve, reject ) {
+            try {
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
-            let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
 
-			const url = "d/rws/for-page/psb/psm-count-searchcriteria";
+                const url = "d/rws/for-page/psb/psm-count-searchcriteria";
 
-          const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
-          const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    resolve(responseData);
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve(responseData);
 
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-          } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-          }
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
-	}
+    }
 
 
     /**
@@ -207,39 +207,12 @@ export class ModViewPage_DataLoader {
         });
     }
 
-	//////
+    //////
 
-	/**
-	 * Called by getProteinInfoList_SingleProjectSearchId to create a request.
-	 */
-	__createRequestForProteinDataForSingleProjectSearchId(
-	    {
-            projectSearchId,
-            searchDetailsBlockDataMgmtProcessing
-	    } : {
-            projectSearchId: number
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-        } ) {
-
-        // Validate that only 1 project search id since that is what this supports
-
-		let searchDataLookupParams_For_Single_ProjectSearchId = 
-			searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
-
-		let requestObject = {
-				searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
-				projectSearchId : projectSearchId
-		};
-		
-		return {
-			requestObject : requestObject
-		};
-	}
-		
-	/**
-	 * Get Protein Info List For Single Project Search Id
-	 */
-	getProteinAnnotationDataForSingleProjectSearchId(
+    /**
+     * Called by getProteinInfoList_SingleProjectSearchId to create a request.
+     */
+    __createRequestForProteinDataForSingleProjectSearchId(
         {
             projectSearchId,
             searchDetailsBlockDataMgmtProcessing
@@ -247,35 +220,62 @@ export class ModViewPage_DataLoader {
             projectSearchId: number
             searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
         } ) {
-		
-		let objectThis = this;
-        
-		return new Promise( function( resolve, reject ) {
-          try {
-            let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForProteinDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing } );
-            let requestObject = createRequestData_For_getProteinInfoList_Result.requestObject;
- 
-			const url = "d/rws/for-page/psb/protein-info-searchcriteria-list";
 
-      const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+        // Validate that only 1 project search id since that is what this supports
 
-      const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+        let searchDataLookupParams_For_Single_ProjectSearchId =
+            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
 
-			promise_webserviceCallStandardPost.catch( () => { reject() }  );
+        let requestObject = {
+            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
+            projectSearchId : projectSearchId
+        };
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
-                try {
-                    console.log('got protein data', responseData);
-                    resolve(responseData);
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-          } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-          }
+        return {
+            requestObject : requestObject
+        };
+    }
+
+    /**
+     * Get Protein Info List For Single Project Search Id
+     */
+    getProteinAnnotationDataForSingleProjectSearchId(
+        {
+            projectSearchId,
+            searchDetailsBlockDataMgmtProcessing
+        } : {
+            projectSearchId: number
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+        } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForProteinDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing } );
+                let requestObject = createRequestData_For_getProteinInfoList_Result.requestObject;
+
+                const url = "d/rws/for-page/psb/protein-info-searchcriteria-list";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        console.log('got protein data', responseData);
+                        resolve(responseData);
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         });
     }
 
@@ -377,16 +377,15 @@ export class ModViewPage_DataLoader {
         });
     }
 
-
-    __createRequestForPSMDataForProjectSearchIdModMass(
+    __createRequestForPSMDataForProjectSearchIdModMasses(
         {
             searchDetailsBlockDataMgmtProcessing,
             projectSearchId,
-            modMass
+            modMasses
         } : {
             searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
             projectSearchId: number,
-            modMass
+            modMasses:Array<number>
         } ) {
 
         let searchDataLookupParams_For_Single_ProjectSearchId =
@@ -395,10 +394,50 @@ export class ModViewPage_DataLoader {
         let requestObject = {
             projectSearchId : projectSearchId,
             searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
-            modMassInteger : modMass
+            modMassesInteger : modMasses
         };
 
         return requestObject;
+    }
+
+    getPSMDataForProjectSearchIdModMasses(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId,
+            modMasses
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number,
+            modMasses : Array<number>
+        } ) {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMasses } );
+
+                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+                        resolve(responseData.resultRoot);
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
     }
 
     getPSMDataForProjectSearchIdModMass(
@@ -416,9 +455,9 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMass( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMass } );
+                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMasses:[modMass] } );
 
-                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-mass-cutoffs-single-project-search-id";
+                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id";
 
                 const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
@@ -469,7 +508,7 @@ export class ModViewPage_DataLoader {
             projectSearchId: number
         } ): Promise<Map<number, Map<number, Map<number, any>>>> {
 
-	    console.log('called getOpenModPSMDataForProjectSearchId()');
+        console.log('called getOpenModPSMDataForProjectSearchId()');
 
         let objectThis = this;
 

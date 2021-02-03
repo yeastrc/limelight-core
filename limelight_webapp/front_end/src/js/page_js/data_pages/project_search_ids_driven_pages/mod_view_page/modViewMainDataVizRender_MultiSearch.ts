@@ -18,6 +18,8 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_pages/limelight__Input_NumberOrString_ReturnNumber";
+import {PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/psmLocalizationReportDownloadGenerator";
+import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -334,6 +336,25 @@ export class ModViewDataVizRenderer_MultiSearch {
                 modViewDataManager
             });
 
+        });
+
+        $("div#data-viz-container").append($html);
+
+        html = "<div class=\"clickable\">[Download PSM Localization Report]</div>"
+        $html = $(html)
+
+        $html.click(async function() {
+
+            // calculate and show stats
+            const textToDownload = await PSMLocalizationReportDownloadGenerator.getPsmLocalizationReportText({
+                vizOptionsData,
+                sortedModMasses,
+                searchDetailsBlockDataMgmtProcessing,
+                projectSearchIds: vizOptionsData.data.projectSearchIds,
+                modViewDataManager
+            });
+
+            StringDownloadUtils.downloadStringAsFile( { stringToDownload : textToDownload, filename: 'psm_modification_localization_report.txt' } );
         });
 
         $("div#data-viz-container").append($html);
