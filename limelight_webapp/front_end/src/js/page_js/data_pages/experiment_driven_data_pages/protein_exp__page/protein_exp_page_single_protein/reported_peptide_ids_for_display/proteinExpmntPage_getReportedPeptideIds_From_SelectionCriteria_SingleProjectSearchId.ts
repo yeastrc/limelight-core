@@ -1060,6 +1060,12 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
             } else {
                 //  Have at least one Open Modification for reportedPeptideId so Add reportedPeptideId and exclude PSM Ids that have Open Modifications
 
+                if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs ) {
+                    const msg = "loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs(); returned nothing when openModificationsOnReportedPeptide_KeyReportedPeptideId.get( reportedPeptideId ); returned a value";
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
                 const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
                 const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
                 if ( numPsmsForReportedPeptideId && psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId ) {
@@ -1992,6 +1998,14 @@ export class ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_Sing
         }): void {
 
         const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
+
+        if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs ) {
+            //  NO modifications for this search so cannot find any matches to selected Open Modification masses
+
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.clearAllEntries()
+
+            return  //  EARLY RETURN
+        }
 
         const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 

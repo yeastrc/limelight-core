@@ -108,6 +108,11 @@ import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pag
 import {ProteinPositionFilter_UserSelections} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/jsx/proteinPositionFilter_UserSelections_Component";
 import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
 import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
+import {
+    createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein,
+    GetDataTableDataObjects_MultipleSearch_SingleProtein_Result
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
+import {DataTable_RootTableObject} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 
 
 /////////////////////////
@@ -520,6 +525,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             loadedDataCommonHolder
         } );
 
+
+        console.log("Peptide List Data Generated (in call to _recompute_FullPage_Except_SearchDetails__SubPart): create_GeneratedReportedPeptideListData_Result.peptideList_Length: "
+            + create_GeneratedReportedPeptideListData_Result.peptideList_Length
+            + ", create_GeneratedReportedPeptideListData_Result: ", create_GeneratedReportedPeptideListData_Result )
+
         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 
             return {
@@ -593,6 +603,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             return { searchSubGroup_PropValue, searchSubGroup_Are_All_SearchSubGroupIds_Selected };
         });
     }
+
+    //  NOT CURRENTLY USED.  May be OUT OF DATE
 
 	/**
 	 * 
@@ -681,14 +693,116 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 	_downloadPeptides_Shown_ClickHandler() : void {
 
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = this.state.create_GeneratedReportedPeptideListData_Result;
-        
-        const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
 
-        const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
-            peptideList
+        let searchSubGroup_Ids_Selected : Set<number> = undefined;
+
+        if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+
+            //  Only display for 1 search
+
+            const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
+
+            const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+            if ( ! searchSubGroups_ForProjectSearchId ) {
+                const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
+                searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+            })
+        }
+
+        const getDataTableDataObjects_Result : GetDataTableDataObjects_MultipleSearch_SingleProtein_Result = createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein({ //  External Function
+
+            create_GeneratedReportedPeptideListData_Result : create_GeneratedReportedPeptideListData_Result,
+
+            searchSubGroup_Ids_Selected : searchSubGroup_Ids_Selected,
+
+            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList,
+            proteinSequenceVersionId : null,
+            projectSearchIds : this.props.propsValue.projectSearchIds,
+            searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+            loadedDataCommonHolder : this.state.loadedDataCommonHolder,
+            dataPageStateManager : this.props.propsValue.dataPageStateManager,
+            showProteins : true
         });
 
-        StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
+        const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;
+
+        const tableDataObject = dataTable_RootTableObject.tableDataObject;
+
+        //  Array of Arrays of reportLineParts
+        const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
+
+        //  reportLineParts will be joined with separator '\t'
+
+        //  Header Line
+        {
+
+            const reportLineParts : Array<string> = [];
+            let index = 0;
+
+            for ( const column of tableDataObject.columns ) {
+
+                reportLineParts.push( column.displayName );
+
+                index++;
+            }
+
+            reportLineParts_AllLines.push( reportLineParts );
+        }
+
+        //  Data Lines - One line per peptideSequenceDisplay / Search Id
+
+        for ( const dataTable_DataRowEntry of tableDataObject.dataTable_DataRowEntries ) {
+
+            const reportLineParts : Array<string> = [];
+            let index = 0;
+
+            for ( const columnEntry of dataTable_DataRowEntry.columnEntries ) {
+
+                let cellContentsString = columnEntry.valueSort;
+                if ( index === 1 && ( columnEntry.valueDisplay === "*" || columnEntry.valueDisplay === "" ) ) { // Unique column
+                    cellContentsString = columnEntry.valueDisplay;
+                }
+
+                reportLineParts.push( cellContentsString );
+
+                index++;
+            }
+
+            reportLineParts_AllLines.push( reportLineParts );
+        }
+
+        //  Join all line parts into strings, delimit on '\t'
+
+        const reportLine_AllLines = [];
+
+        let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
+        const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
+
+        for ( const reportLineParts of reportLineParts_AllLines ) {
+
+            reportLineParts_AllLinesIndex++;
+
+            let reportLine = reportLineParts.join( "\t" );
+            if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
+                reportLine += '\n'; // Add '\n' to last line
+            }
+            reportLine_AllLines.push( reportLine );
+        }
+
+        //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
+
+        const reportLinesSingleString = reportLine_AllLines.join( '\n' );
+
+
+
+
+        StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportLinesSingleString, filename: 'peptides_for_protein.txt' });
     }
     
 	/**
@@ -775,6 +889,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 		return reportLinesSingleString;
 	}
 
+    //  NOT CURRENTLY USED.  May be OUT OF DATE
 	
     /**
      * Download ALL PSMs for Protein based on current cutoff/filter criteria.  

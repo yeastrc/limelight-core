@@ -10,89 +10,6 @@ import ReactDOM from 'react-dom';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-
-
-/**
- * class returned from tooltip_Limelight_Create_Tooltip
- * 
- */
-export class Tooltip_Limelight_Created_Tooltip {
-
-    private _tooltip_addedDivElementDOM : HTMLElement
-
-    constructor({ tooltip_addedDivElementDOM } : { tooltip_addedDivElementDOM : HTMLElement }) {
-        this._tooltip_addedDivElementDOM = tooltip_addedDivElementDOM;
-    }
-
-    /**
-     * Remove the Tooltip
-     * 
-     */
-    removeTooltip() {
-
-        if ( ! this._tooltip_addedDivElementDOM ) {
-            // Nothing to remove
-
-            return; // EARLY RETURN
-        }
-
-        try {
-
-            const addedDivElementDOM_Local = this._tooltip_addedDivElementDOM;
-
-            this._tooltip_addedDivElementDOM = undefined;
-
-            addedDivElementDOM_Local.style.display = "none"; // Hide Tooltip from view
-
-            //  Defer Removal from DOM so can draw anything else immediately as needed, like another tooltip
-
-            const cleanupCallback = () => {
-                try {
-                    // console.log("removeTooltip(): cleanupCallback() called " );
-
-                    //  React Unmount 
-                    
-                    ReactDOM.unmountComponentAtNode( addedDivElementDOM_Local );
-
-                    //  Remove containing <div> from DOM
-
-                    addedDivElementDOM_Local.remove();
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }
-
-            //  Not in all browsers: window.requestIdleCallback
-            //  window.requestIdleCallback not in Typescript declaration since is experimental
-            // @ts-ignore comment suppresses all errors in following line.  
-            if ( window.requestIdleCallback ) {
-                try {
-                    //  Not in all browsers: window.requestIdleCallback
-                    //  window.requestIdleCallback not in Typescript declaration since is experimental
-                    // @ts-ignore comment suppresses all errors in following line.  
-                    window.requestIdleCallback( cleanupCallback );
-
-                } catch ( e ) {
-                    //  fall back to window.setTimeout
-                    // console.log("removeTooltip(): Exception caught: Falling back to calling window.setTimeout( cleanupCallback, 1000 ); e: ", e );
-                    window.setTimeout( cleanupCallback, 1000 );
-                }
-            } else {
-                //  fall back to window.setTimeout
-                // console.log("removeTooltip(): No value for window.requestIdleCallback: Falling back to calling window.setTimeout( cleanupCallback, 1000 );" );
-                window.setTimeout( cleanupCallback, 1000 );
-            }
-
-        } catch( e ) {
-            console.warn("class Tooltip_Limelight_Created_Tooltip::removeTooltip: Exception: ", e );
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    }
-}
-
 /**
  * Creates the tooltip and returns object of class tooltip_Limelight_Create_Tooltip
  * 
@@ -161,7 +78,93 @@ export const tooltip_Limelight_Create_Tooltip = function({
 
 
 
+
+/**
+ * class returned from tooltip_Limelight_Create_Tooltip
+ *
+ */
+export class Tooltip_Limelight_Created_Tooltip {
+
+    private _tooltip_addedDivElementDOM : HTMLElement
+
+    constructor({ tooltip_addedDivElementDOM } : { tooltip_addedDivElementDOM : HTMLElement }) {
+        this._tooltip_addedDivElementDOM = tooltip_addedDivElementDOM;
+    }
+
+    /**
+     * Remove the Tooltip
+     *
+     */
+    removeTooltip() {
+
+        if ( ! this._tooltip_addedDivElementDOM ) {
+            // Nothing to remove
+
+            return; // EARLY RETURN
+        }
+
+        try {
+
+            const addedDivElementDOM_Local = this._tooltip_addedDivElementDOM;
+
+            this._tooltip_addedDivElementDOM = undefined;
+
+            addedDivElementDOM_Local.style.display = "none"; // Hide Tooltip from view
+
+            //  Defer Removal from DOM so can draw anything else immediately as needed, like another tooltip
+
+            const cleanupCallback = () => {
+                try {
+                    // console.log("removeTooltip(): cleanupCallback() called " );
+
+                    //  React Unmount
+
+                    ReactDOM.unmountComponentAtNode( addedDivElementDOM_Local );
+
+                    //  Remove containing <div> from DOM
+
+                    addedDivElementDOM_Local.remove();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }
+
+            //  Not in all browsers: window.requestIdleCallback
+            //  window.requestIdleCallback not in Typescript declaration since is experimental
+            // @ts-ignore comment suppresses all errors in following line.
+            if ( window.requestIdleCallback ) {
+                try {
+                    //  Not in all browsers: window.requestIdleCallback
+                    //  window.requestIdleCallback not in Typescript declaration since is experimental
+                    // @ts-ignore comment suppresses all errors in following line.
+                    window.requestIdleCallback( cleanupCallback );
+
+                } catch ( e ) {
+                    //  fall back to window.setTimeout
+                    // console.log("removeTooltip(): Exception caught: Falling back to calling window.setTimeout( cleanupCallback, 1000 ); e: ", e );
+                    window.setTimeout( cleanupCallback, 1000 );
+                }
+            } else {
+                //  fall back to window.setTimeout
+                // console.log("removeTooltip(): No value for window.requestIdleCallback: Falling back to calling window.setTimeout( cleanupCallback, 1000 );" );
+                window.setTimeout( cleanupCallback, 1000 );
+            }
+
+        } catch( e ) {
+            console.warn("class Tooltip_Limelight_Created_Tooltip::removeTooltip: Exception: ", e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+}
+
+
 ////////
+
+//  <Tooltip_Limelight_Component>
+
 
 interface Tooltip_Limelight_Component_Props {
 
@@ -310,7 +313,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
                 className=" tooltip-limelight-react-based-outer-container "
                 style={ { 
                     position: "absolute", 
-                    zIndex: 1000,
+                    zIndex: 100000,
                     pointerEvents: "none",
                     top: tooltip_Top,
                     left: tooltip_Left,
