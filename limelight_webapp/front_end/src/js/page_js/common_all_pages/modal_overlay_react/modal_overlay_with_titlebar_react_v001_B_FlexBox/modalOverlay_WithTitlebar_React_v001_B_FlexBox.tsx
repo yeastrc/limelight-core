@@ -17,7 +17,7 @@ import React from 'react'
  */
 export class ModalOverlay_Limelight_Component_v001_B_FlexBox_Props {
 
-    set_CSS_Position_Fixed? : boolean
+    set_CSS_Position_Fixed? : boolean  //  USE WITH CARE:  Setting position: flex;  eliminates the ability to use browser scrollbars to get to parts of modal dialog outside of the viewport
     heightMaximum : number
     heightMinimum : number
     widthMaximum : number

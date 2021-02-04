@@ -170,7 +170,7 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
                 close_OnBackgroundClick={ false }>
 
 
-                <div className=" change-searches-overlay-outer-block top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
+                <div className=" change-searches-overlay-outer-block top-level single-entry-variable-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
                      style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
                     // style={ { padding : 6 } }
                 >
