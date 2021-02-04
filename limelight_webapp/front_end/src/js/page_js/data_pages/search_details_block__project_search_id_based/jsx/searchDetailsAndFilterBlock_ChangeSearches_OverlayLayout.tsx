@@ -7,10 +7,12 @@
  */
 
 import React from 'react'
-import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {
+    getSearchesAndFolders_SingleProject,
+    GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
-import {ProjectPage_Experiments_SingleExperimentMaintRoot_Props} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_Single_MaintRoot";
+import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 
 /////
 
@@ -29,28 +31,32 @@ const _Overlay_Height_Max = 1000;
  */
 export class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params {
     updated_selected_ProjectSearchIds : Set<number>
+    searchesAndFoldersList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
 }
+
+export type SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches =
+    ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
 
 /**
  *
  */
 export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = function(
     {
-        searchList,
+        projectIdentifier,
         projectSearchIds_Selected,
         callbackOn_Cancel_Close_Clicked,
         callback_updateSelected_Searches
     } : {
-        searchList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+        projectIdentifier : string
         projectSearchIds_Selected : Set<number>
         callbackOn_Cancel_Close_Clicked : () => void;
-        callback_updateSelected_Searches : ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
+        callback_updateSelected_Searches : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches
 
     }) : JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component
-            searchList={ searchList }
+            projectIdentifier={ projectIdentifier }
             projectSearchIds_Selected={ projectSearchIds_Selected }
             callbackOn_Cancel_Close_Clicked={ callbackOn_Cancel_Close_Clicked }
             callback_updateSelected_Searches={ callback_updateSelected_Searches }
@@ -65,16 +71,17 @@ export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = fun
  *
  */
 interface SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component_Props {
-    searchList : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+    projectIdentifier : string
     projectSearchIds_Selected : Set<number>
     callbackOn_Cancel_Close_Clicked : () => void;
-    callback_updateSelected_Searches : ( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
+    callback_updateSelected_Searches : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches
 }
 
 /**
  *
  */
 interface SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component_State {
+
     searchesAndFoldersList? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
 }
 
@@ -86,7 +93,9 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
     private _updateButtonClicked_BindThis = this._updateButtonClicked.bind(this);
     private _searchRowClicked_BindThis = this._searchRowClicked.bind(this);
 
-    private _projectSearchIds_Selected_InProgress : Set<number>
+    private _projectSearchIds_Selected_InProgress : Set<number>;
+
+    private _unmountCalled = false;
 
     /**
      *
@@ -96,9 +105,40 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
 
         this._projectSearchIds_Selected_InProgress = new Set( props.projectSearchIds_Selected )
 
-        const searchList = this.props.searchList;
+        this.state = {};
+    }
 
-        this.state = { searchesAndFoldersList: searchList };
+    /**
+     *
+     */
+    componentDidMount() {
+
+        //  Load Searches and Folders to select from
+
+        const promise_getSearchList = getSearchesAndFolders_SingleProject({ projectIdentifier : this.props.projectIdentifier });
+
+        promise_getSearchList.catch((reason => {}))
+
+        promise_getSearchList.then( ( getSearchesAndFolders_SingleProject_PromiseResponse ) => {
+
+            if ( this._unmountCalled ) {
+                // unmounted so exit
+
+                return; // EARLY RETURN
+            }
+
+            const searchesAndFoldersList = getSearchesAndFolders_SingleProject_PromiseResponse.items;
+
+            this.setState({ searchesAndFoldersList })
+        })
+    }
+
+    /**
+     *
+     */
+    componentWillUnmount() {
+
+        this._unmountCalled = true;
     }
 
     /**
@@ -106,7 +146,10 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
      */
     private _updateButtonClicked(  ) {
 
-        this.props.callback_updateSelected_Searches({ updated_selected_ProjectSearchIds : this._projectSearchIds_Selected_InProgress })
+        this.props.callback_updateSelected_Searches({
+            updated_selected_ProjectSearchIds : this._projectSearchIds_Selected_InProgress,
+            searchesAndFoldersList : this.state.searchesAndFoldersList
+        })
     }
 
     /**
@@ -128,34 +171,37 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
 
         const searchDisplayList : Array<JSX.Element> = [];
 
-        for ( const searchEntry of this.state.searchesAndFoldersList ) {
+        if ( this.state.searchesAndFoldersList ) {
 
-            if ( searchEntry.projectSearchId !== undefined ) {
+            for (const searchEntry of this.state.searchesAndFoldersList) {
 
-                const selected = this._projectSearchIds_Selected_InProgress.has(searchEntry.projectSearchId);
+                if (searchEntry.projectSearchId !== undefined) {
 
-                const searchDisplayListEntry = (
-                    <SearchEntry key={searchEntry.projectSearchId}
-                                 searchDisplayListItem={searchEntry}
-                                 selected={selected}
-                                 showSeparatorBelow={ true }
-                                 callbackOn_entry_Clicked={this._searchRowClicked_BindThis}
-                    />
-                )
-                searchDisplayList.push(searchDisplayListEntry);
+                    const selected = this._projectSearchIds_Selected_InProgress.has(searchEntry.projectSearchId);
 
-            } else {
+                    const searchDisplayListEntry = (
+                        <SearchEntry key={searchEntry.projectSearchId}
+                                     searchDisplayListItem={searchEntry}
+                                     selected={selected}
+                                     showSeparatorBelow={true}
+                                     callbackOn_entry_Clicked={this._searchRowClicked_BindThis}
+                        />
+                    )
+                    searchDisplayList.push(searchDisplayListEntry);
 
-                //  Process a Folder Entry
+                } else {
 
-                const searchDisplayListEntry = (
-                    <FolderEntry key={searchEntry.folderId}
-                                 searchDisplayListItem={searchEntry}
-                                 projectSearchIds_Selected_InProgress={ this._projectSearchIds_Selected_InProgress }
-                                 callbackOn_searchEntry_Clicked={this._searchRowClicked_BindThis}
-                    />
-                )
-                searchDisplayList.push(searchDisplayListEntry);
+                    //  Process a Folder Entry
+
+                    const searchDisplayListEntry = (
+                        <FolderEntry key={searchEntry.folderId}
+                                     searchDisplayListItem={searchEntry}
+                                     projectSearchIds_Selected_InProgress={this._projectSearchIds_Selected_InProgress}
+                                     callbackOn_searchEntry_Clicked={this._searchRowClicked_BindThis}
+                        />
+                    )
+                    searchDisplayList.push(searchDisplayListEntry);
+                }
             }
         }
 
@@ -175,19 +221,34 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
                     // style={ { padding : 6 } }
                 >
 
-                    <div
-                        // style={ { padding : 6 } }
-                    >
+                    { ( this.state.searchesAndFoldersList ) ? (
+                        <div
+                            // style={ { padding : 6 } }
+                        >
 
-                        { searchDisplayList }
+                            { searchDisplayList }
 
-                    </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <div style={ { marginTop: 20, textAlign: "center" }}>
+                                LOADING DATA
+                            </div>
+                            <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" }}>
+                                <Spinner_Limelight_Component/>
+                            </div>
+                        </div>
+                    ) }
+
                 </div>
                 <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
                     // style={ { padding : 6 } }
                 >
                     <div style={ { marginTop: 15 } }>
-                        <input type="button" value="Change" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+
+                        { ( this.state.searchesAndFoldersList ) ? (
+                            <input type="button" value="Change" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+                        ) : null }
 
                         <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
                     </div>

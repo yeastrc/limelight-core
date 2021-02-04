@@ -52,8 +52,6 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
     private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     private _dataUpdated_Callback
 
-    private _searchList_ForUserSelection : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
-
     private _changeSearches_Overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF;
 
     /**
@@ -75,31 +73,20 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
      */
     open_ChangeSearches_Overlay(  ) {
 
-        let projectIdentifier = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
+        const projectIdentifier : string = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
 
-        const promise_getSearchList = getSearchesAndFolders_SingleProject({ projectIdentifier });
+        const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds( )
 
-        promise_getSearchList.catch((reason => {}))
+        const projectSearchIdsSet : Set<number> = new Set( projectSearchIds );
 
-        promise_getSearchList.then( ( getSearchesAndFolders_SingleProject_PromiseResponse ) => {
-
-            const searchList = getSearchesAndFolders_SingleProject_PromiseResponse.items;
-
-            this._searchList_ForUserSelection = searchList;
-
-            const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds( )
-
-            const projectSearchIdsSet = new Set( projectSearchIds );
-
-            const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout({
-                searchList,
-                projectSearchIds_Selected : projectSearchIdsSet,
-                callback_updateSelected_Searches: this._callback_updateSelected_Searches_BindThis,
-                callbackOn_Cancel_Close_Clicked : this._callbackOn_Cancel_Close_Clicked_BindThis
-            })
-
-            this._changeSearches_Overlay_AddedTo_DocumentBody_Holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
+        const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout({
+            projectIdentifier,
+            projectSearchIds_Selected : projectSearchIdsSet,
+            callback_updateSelected_Searches: this._callback_updateSelected_Searches_BindThis,
+            callbackOn_Cancel_Close_Clicked : this._callbackOn_Cancel_Close_Clicked_BindThis
         })
+
+        this._changeSearches_Overlay_AddedTo_DocumentBody_Holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
     }
 
     /**
@@ -108,14 +95,6 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
     _callbackOn_Cancel_Close_Clicked() : void {
 
         this._remove_ModalOverlay();
-    }
-
-    /**
-     *
-     */
-    _callback_updateSelected_Searches( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) : void {
-
-        this._changeSearches( params.updated_selected_ProjectSearchIds );
     }
 
     /**
@@ -131,7 +110,10 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
     /**
      *
      */
-    private _changeSearches( updated_selected_ProjectSearchIds : Set<number> ) {
+    _callback_updateSelected_Searches( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) : void {
+
+        const updated_selected_ProjectSearchIds = params.updated_selected_ProjectSearchIds;
+        const searchesAndFoldersList = params.searchesAndFoldersList;
 
         const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds()
 
@@ -191,7 +173,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
             const searchesAdditions : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> = [];
 
-            for ( const searchList_ForUserSelectionEntry of this._searchList_ForUserSelection ) {
+            for ( const searchList_ForUserSelectionEntry of searchesAndFoldersList ) {
 
                 if ( searchList_ForUserSelectionEntry.projectSearchId !== undefined ) {
                     if (projectSearchIds_Additions.has(searchList_ForUserSelectionEntry.projectSearchId)) {
@@ -352,30 +334,30 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
 }
 
-/**
- *
- */
-const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLookupParamsCode_New, _parseURL_Into_PageStateParts } : {
-
-    searchDataLookupParamsCode_New,
-    _parseURL_Into_PageStateParts : ParseURL_Into_PageStateParts
-} ) {
-
-    // Current URL contents
-    const pageStatePartsFromURL = _parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
-
-    let pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
-
-    let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
-        pageControllerPath,
-        searchDataLookupParamsCode : searchDataLookupParamsCode_New,
-        pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
-        pageStateString : pageStatePartsFromURL.pageStateString,
-        referrer : pageStatePartsFromURL.referrer,
-        experimentId : undefined
-    } );
-
-    window.history.replaceState( null, null, newURL );
-
-    navigation_dataPages_Maint_Instance.updateNavLinks();
-}
+// /**
+//  *
+//  */
+// const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLookupParamsCode_New, _parseURL_Into_PageStateParts } : {
+//
+//     searchDataLookupParamsCode_New,
+//     _parseURL_Into_PageStateParts : ParseURL_Into_PageStateParts
+// } ) {
+//
+//     // Current URL contents
+//     const pageStatePartsFromURL = _parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
+//
+//     let pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
+//
+//     let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
+//         pageControllerPath,
+//         searchDataLookupParamsCode : searchDataLookupParamsCode_New,
+//         pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
+//         pageStateString : pageStatePartsFromURL.pageStateString,
+//         referrer : pageStatePartsFromURL.referrer,
+//         experimentId : undefined
+//     } );
+//
+//     window.history.replaceState( null, null, newURL );
+//
+//     navigation_dataPages_Maint_Instance.updateNavLinks();
+// }

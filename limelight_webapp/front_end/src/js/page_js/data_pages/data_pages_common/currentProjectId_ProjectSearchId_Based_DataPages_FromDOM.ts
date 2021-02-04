@@ -7,12 +7,12 @@
 
 ///////////////////////////////////////////
 
-let currentProjectId_Cached = undefined;
+let currentProjectId_Cached : string = undefined;
 
 /**
  * Current Project Id, placed on DOM by server code
  */
-export const currentProjectId_ProjectSearchId_Based_DataPages_FromDOM = function() {
+export const currentProjectId_ProjectSearchId_Based_DataPages_FromDOM = function() : string {
 
 	if ( currentProjectId_Cached ) {
 		return currentProjectId_Cached;
