@@ -261,6 +261,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
             searchList : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searches_TopLevelAndNestedInFolders,
             projectSearchIds_Selected : projectSearchIdsSet,
             projectSearchIds_ContainedInAllOtherCells : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds_ContainedInAllOtherCells,
+            current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint: this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint,
             callback_updateSelected_Searches,
             callbackOn_Cancel_Close_Clicked
         })

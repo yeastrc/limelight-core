@@ -7,15 +7,20 @@
  */
 
 import React from 'react'
-import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+import {Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_Single_MainCellMaint";
+
+import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/common_all_pages/tooltip_LimelightLocal_ReactBased';
 
 /////
 
-const _Overlay_Title = "Choose the searches to put in cell"
+const _Overlay_Title = "Select Searches"
 
-const _Overlay_Width = 800;
-const _Overlay_Height = 600;
+const _Overlay_Width_Min = 600;
+const _Overlay_Width_Max = 1200;
+const _Overlay_Height_Min = 400;
+const _Overlay_Height_Max = 1000;
 
 //////
 
@@ -35,6 +40,7 @@ export const get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSe
         projectSearchIds_Selected,
         //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
         projectSearchIds_ContainedInAllOtherCells,
+        current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint,
         callbackOn_Cancel_Close_Clicked,
         callback_updateSelected_Searches
     } : {
@@ -42,6 +48,7 @@ export const get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSe
         projectSearchIds_Selected : Set<number>
         //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
         projectSearchIds_ContainedInAllOtherCells : Set<number>
+        current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelected_Searches : ( params : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
 
@@ -52,6 +59,7 @@ export const get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSe
             searchList={ searchList }
             projectSearchIds_Selected={ projectSearchIds_Selected }
             projectSearchIds_ContainedInAllOtherCells={ projectSearchIds_ContainedInAllOtherCells }
+            current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint={ current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint }
             callbackOn_Cancel_Close_Clicked={ callbackOn_Cancel_Close_Clicked }
             callback_updateSelected_Searches={ callback_updateSelected_Searches }
         />
@@ -71,6 +79,8 @@ interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_
     projectSearchIds_Selected : Set<number>
     //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
     projectSearchIds_ContainedInAllOtherCells : Set<number>
+
+    current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint : Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint
 
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelected_Searches : ( params : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
@@ -144,6 +154,7 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
                         key={searchEntry.projectSearchId}
                         searchDisplayListItem={searchEntry}
                         selected={selected}
+                        showSeparatorBelow={ true }
                         projectSearchIds_ContainedInAllOtherCells={ this.props.projectSearchIds_ContainedInAllOtherCells }
                         callbackOn_entry_Clicked={this._searchRowClicked_BindThis}
                     />
@@ -167,57 +178,82 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
             }
         }
 
-        // let show_SearchesInOtherConditions_Msg = false;
-        // if (this.props.projectSearchIds_ContainedInAllOtherCells && this.props.projectSearchIds_ContainedInAllOtherCells.size > 0 ) {
-        //     show_SearchesInOtherConditions_Msg = true;
-        // }
+        const conditionGroupName_ConditionName_Entries : Array<JSX.Element> = [];
+        {
+            const cell_ConditionIds_Set = this.props.current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.mainCell_Identifier.cell_ConditionIds_Set
+            for ( const conditionGroup of this.props.current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.conditionGroupsContainer.conditionGroups ) {
 
-        let mainBlockHeight = _Overlay_Height - 120;
+                for (const condition of conditionGroup.conditions) {
 
-        // if ( show_SearchesInOtherConditions_Msg ) {
-        //     mainBlockHeight -= 20;
-        // }
+                    if (cell_ConditionIds_Set.has(condition.id)) {
+
+                        if (conditionGroupName_ConditionName_Entries.length > 0) {
+
+                            const commaSeparator = (
+                                <span key={condition.id + "-comma"}>, </span>
+                            );
+                            conditionGroupName_ConditionName_Entries.push(commaSeparator);
+                        }
+
+                        const conditionGroupName_ConditionName = (
+                            <span key={condition.id} style={{whiteSpace: "nowrap"}}>
+                                {conditionGroup.label}: {condition.label}
+                            </span>
+                        );
+                        conditionGroupName_ConditionName_Entries.push(conditionGroupName_ConditionName);
+                    }
+                }
+            }
+        }
 
         return (
-            <ModalOverlay_Limelight_Component
-                width={ _Overlay_Width }
-                height={ _Overlay_Height }
+            <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                widthMinimum={ _Overlay_Width_Min }
+                widthMaximum={ _Overlay_Width_Max }
+                heightMinimum={ _Overlay_Height_Min }
+                heightMaximum={ _Overlay_Height_Max }
                 title={ _Overlay_Title }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ false }>
+                close_OnBackgroundClick={ false } >
 
-                <div className=" modal-overlay-body-standard-padding ">
+                <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                     style={ { marginBottom: 12, fontWeight: "bold" } }
+                     // style={ { padding : 6 } }
+                >
 
-                    <div className=" change-searches-overlay-outer-block ">
+                    <span>Choosing Searches for: </span>
+                    {
+                        conditionGroupName_ConditionName_Entries
+                    }
+                </div>
 
-                        {
-                            // { show_SearchesInOtherConditions_Msg ? (
-                            //     <div style={ { fontSize: 10, paddingLeft: 8 } }> {/* paddingLeft: 8 so aligns with list of searches */}
-                            //         (A Search with "*" is assigned to another cell and will be moved to this cell)
-                            //     </div>
-                            //     ): null }
-                        }
-                        <div style={ { height : mainBlockHeight, maxHeight : mainBlockHeight, overflowY: "auto", width: "100%", overflowX: "hidden" } }>
+                <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
+                     style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
+                >
+                    <div className=" change-searches-overlay-outer-block " >
 
-                            <div style={ { padding : 6 } } >
-
-                                { searchDisplayList }
-
-                            </div>
-                        </div>
-
-                        <div style={ { marginTop: 15 } }>
-                            <input
-                                type="button" value={ ( this.props.projectSearchIds_Selected.size < 1 ) ? "Add" : "Change" }
-                                style={ { marginRight: 5 } }
-                                onClick={ this._updateButtonClicked_BindThis }
-                            />
-
-                            <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
+                        <div
+                            // style={ { padding : 6 } }
+                        >
+                            { searchDisplayList }
                         </div>
                     </div>
                 </div>
-            </ModalOverlay_Limelight_Component>
+                <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                     // style={ { padding : 6 } }
+                >
+                    <div style={ { marginTop: 15 } }>
+                        <input
+                            type="button" value={ ( this.props.projectSearchIds_Selected.size < 1 ) ? "Add" : "Change" }
+                            style={ { marginRight: 5 } }
+                            onClick={ this._updateButtonClicked_BindThis }
+                        />
+
+                        <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
+                    </div>
+                </div>
+
+            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
         );
     }
 }
@@ -232,6 +268,7 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
 interface SearchEntry_Props {
     searchDisplayListItem : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
     selected : boolean
+    showSeparatorBelow : boolean
     //    The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
     projectSearchIds_ContainedInAllOtherCells : Set<number>
     callbackOn_entry_Clicked : ( projectSearchId : number ) => void;
@@ -249,7 +286,14 @@ interface SearchEntry_State {
  */
 class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State > {
 
+    private _onMouseEnter_RootDiv_BindThis = this._onMouseEnter_RootDiv.bind(this);
+    private _onMouseLeave_RootDiv_BindThis = this._onMouseLeave_RootDiv.bind(this);
+
     private _searchRowClicked_BindThis = this._searchRowClicked.bind(this);
+
+    private readonly rootDiv_Ref: React.RefObject<HTMLDivElement>;
+
+    private tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
     /**
      *
@@ -257,7 +301,44 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
     constructor(props: SearchEntry_Props) {
         super(props);
 
-        // this.state = {searchList};
+        this.rootDiv_Ref = React.createRef();
+    }
+
+    /**
+     *
+     */
+    private _onMouseEnter_RootDiv( event : React.MouseEvent<HTMLDivElement> ) {
+
+        if ( this.tooltip_Limelight_Created_Tooltip ) {
+            this.tooltip_Limelight_Created_Tooltip.removeTooltip();
+        }
+        this.tooltip_Limelight_Created_Tooltip = null;
+
+        const tooltip_target_DOM_Element = this.rootDiv_Ref.current
+
+        const tooltipContents : JSX.Element = (
+            <div>
+                <div>
+                    This search is already in another condition.
+                </div>
+                <div>
+                    Selecting this search will remove it from the other condition.
+                </div>
+            </div>
+        )
+
+        this.tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element, tooltipContents });
+    }
+
+    /**
+     *
+     */
+    private _onMouseLeave_RootDiv( event : React.MouseEvent<HTMLDivElement> ) {
+
+        if ( this.tooltip_Limelight_Created_Tooltip ) {
+            this.tooltip_Limelight_Created_Tooltip.removeTooltip();
+        }
+        this.tooltip_Limelight_Created_Tooltip = null;
     }
 
     /**
@@ -287,27 +368,45 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
         const cssClasses = " search-entry-container clickable " + selectedClass + selectedOtherCellClass;
 
-        let selectedOtherString = "";
-        // if ( this.props.projectSearchIds_ContainedInAllOtherCells.has(this.props.searchDisplayListItem.projectSearchId) ) {
-        //     selectedOtherString = "*"
-        // }
+        let onMouseEnter_RootDiv = null;
+        let onMouseLeave_RootDiv = null;
 
-        let divTitle : string = null;
         if ( this.props.projectSearchIds_ContainedInAllOtherCells.has(this.props.searchDisplayListItem.projectSearchId) ) {
-            divTitle = "Search is already in another cell.\nSelecting it will move it to this cell."
+            onMouseEnter_RootDiv = this._onMouseEnter_RootDiv_BindThis;
+            onMouseLeave_RootDiv = this._onMouseLeave_RootDiv_BindThis;
         }
 
-        const searchNameDisplay = selectedOtherString + "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
+        const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
 
         return (
-            <div onClick={ this._searchRowClicked_BindThis }
-                 className={ cssClasses }
-                title={ divTitle }
-                 style={ {  } }>
-                <span style={ { overflowWrap : "break-word"}}>
-                    { searchNameDisplay }
-                </span>
-            </div>
+            <React.Fragment>
+
+                <div ref={ this.rootDiv_Ref }
+                     onMouseEnter={ onMouseEnter_RootDiv }
+                     onMouseLeave={ onMouseLeave_RootDiv }
+                     onClick={ this._searchRowClicked_BindThis }
+                     className={ cssClasses }
+                     style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
+
+                    {/*  2 Column Grid  */}
+                    <div style={ { marginRight: 8 } }>
+                        <input type="checkbox" checked={ this.props.selected } onChange={ () => { /* nothing since have click handler on containing row div */ } } />
+                    </div>
+                    <div >
+                        <span style={ { overflowWrap : "break-word"}}>
+                            { searchNameDisplay }
+                        </span>
+                    </div>
+                </div>
+
+                {this.props.showSeparatorBelow ?
+                    <div className="standard-border-color-dark"
+                         style={{width: "100%", borderBottomStyle: "solid", borderBottomWidth: 1 }}
+                    ></div>
+                    : null
+                }
+
+            </React.Fragment>
         );
     }
 }
@@ -340,8 +439,7 @@ interface FolderEntry_State {
  */
 class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State > {
 
-    private _folderExpandClickHandler_BindThis = this._folderExpandClickHandler.bind(this);
-    private _folderCollapseClickHandler_BindThis = this._folderCollapseClickHandler.bind(this);
+    private _folderDivClickHandler_BindThis = this._folderDivClickHandler.bind(this);
 
     /**
      *
@@ -368,17 +466,11 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
     /**
      *
      */
-    private _folderExpandClickHandler( event: React.MouseEvent<HTMLDivElement> ): void {
+    private _folderDivClickHandler( event: React.MouseEvent<HTMLDivElement> ): void {
 
-        this.setState( { folderExpanded : true });
-    }
-
-    /**
-     *
-     */
-    private _folderCollapseClickHandler( event: React.MouseEvent<HTMLDivElement> ): void {
-
-        this.setState( { folderExpanded : false });
+        this.setState( (state : FolderEntry_State, props : FolderEntry_Props ) : FolderEntry_State => {
+            return { folderExpanded : ( ! state.folderExpanded ) }; // Save to state for re-render
+        });
     }
 
     /**
@@ -391,7 +483,14 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
         if ( this.state.folderExpanded ) {
 
-            for (const searchEntry of this.props.searchDisplayListItem.searchesInFolder) {
+            const searchesInFolder = this.props.searchDisplayListItem.searchesInFolder
+            const searchesInFolder_length = searchesInFolder.length;
+
+            let counter = 0;
+
+            for (const searchEntry of searchesInFolder ) {
+
+                counter++;
 
                 if (searchEntry.projectSearchId !== undefined) {
 
@@ -399,11 +498,17 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                     if (selected) {
                         anySearchSelected = true;
                     }
+                    //  Show Separator Below for all BUT last entry
+                    let showSeparatorBelow = true;
+                    if ( counter === searchesInFolder_length ) {
+                        showSeparatorBelow = false;
+                    }
 
                     const searchDisplayListEntry = (
                         <SearchEntry key={searchEntry.projectSearchId}
                                      searchDisplayListItem={searchEntry}
                                      selected={selected}
+                                     showSeparatorBelow={ showSeparatorBelow }
                                      projectSearchIds_ContainedInAllOtherCells={ this.props.projectSearchIds_ContainedInAllOtherCells }
                                      callbackOn_entry_Clicked={this.props.callbackOn_searchEntry_Clicked}
                         />
@@ -413,29 +518,52 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
             }
         }
 
+        const folder_container_div_style : React.CSSProperties = {};
+        if ( ! this.state.folderExpanded ) {
+            folder_container_div_style.marginBottom = 8;
+        }
+
         return (
-            <div className={"folder-container"}>
-                <div className={"folder-collapsable-link-container"}>
-                    {
-                        ( this.state.folderExpanded ) ? (
-                            <img src="static/images/icon-folder-open.png" onClick={ this._folderCollapseClickHandler_BindThis }
-                                 className=" clickable icon-large "
-                            />
-                        ) : (
-                            <img src="static/images/icon-folder-closed.png" onClick={ this._folderExpandClickHandler_BindThis }
-                                 className=" clickable icon-large "
-                            />
-                        )
-                    }
+            <React.Fragment>
+
+                <div className="folder-container" style={ folder_container_div_style }>
+
+                    <div
+                        className=" folder-name-and-collapsable-container clickable "
+                        style={ { display: "grid", gridTemplateColumns: "min-content auto"} }
+                        onClick={ this._folderDivClickHandler_BindThis }
+                    >
+
+                    {/* 2 column grid */}
+                        <div className={"folder-collapsable-link-container"}>
+                            {
+                                ( this.state.folderExpanded ) ? (
+                                    <img src="static/images/pointer-down.png"
+                                         className=" icon-small fake-link-image "
+                                    />
+                                ) : (
+                                    <img src="static/images/pointer-right.png"
+                                         className=" icon-small fake-link-image "
+                                    />
+                                )
+                            }
+                        </div>
+                        <div >
+                            <span className=" folder-name-display ">Folder: { this.props.searchDisplayListItem.folderName }</span>
+                        </div>
+
+                    </div>
+                    <div className={ " searches-under-folder-block "} >
+                        { searchDisplayList }
+                    </div>
                 </div>
-                <div >
-                    <span className=" folder-name-display ">{ this.props.searchDisplayListItem.folderName }</span>
-                </div>
-                <div className={ " searches-under-folder-block "} >
-                    { searchDisplayList }
-                </div>
-                <div style={ { clear: "both" } }></div>
-            </div>
+
+                <div className="standard-border-color-dark"
+                     style={{width: "100%", borderBottomStyle: "solid", borderBottomWidth: 1 }}
+                ></div>
+
+            </React.Fragment>
         );
     }
 }
+

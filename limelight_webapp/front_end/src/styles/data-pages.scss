@@ -631,8 +631,9 @@
                     color: black;
                     padding: 3px;
                     margin: 0px;
-                    text-align:
-                    center;
+                    text-align: center;
+                    white-space: nowrap;
+                    overflow: hidden; text-overflow: ellipsis;
                  }
 
              }//end header div
@@ -656,8 +657,26 @@
              	}	 
                 .modal-overlay-body-standard-padding-right { // Standard padding for modal filled with text.
                 	padding-right: $modal-overlay-body-standard-padding-value;
-             	}	 
-            // }
+             	}
+
+                //  Listed again as ...-margin... for use with scrollable div
+
+                .modal-overlay-body-standard-margin { // Standard margin for modal filled with text.
+                  margin: $modal-overlay-body-standard-padding-value;
+                }
+                .modal-overlay-body-standard-margin-top { // Standard margin for modal filled with text.
+                  margin-top: $modal-overlay-body-standard-padding-value;
+                }
+                .modal-overlay-body-standard-margin-bottom { // Standard margin for modal filled with text.
+                  margin-bottom: $modal-overlay-body-standard-padding-value;
+                }
+                .modal-overlay-body-standard-margin-left { // Standard margin for modal filled with text.
+                  margin-left: $modal-overlay-body-standard-padding-value;
+                }
+                .modal-overlay-body-standard-margin-right { // Standard margin for modal filled with text.
+                  margin-right: $modal-overlay-body-standard-padding-value;
+                }
+          // }
     }
 
     div.modal-overlay-flexbox-overflow-control-no-header-container {
@@ -693,29 +712,38 @@
 
       .folder-container {
         padding-left: 8px;
-        padding-top: 3px;
-        padding-bottom: 3px;
-        clear: both;
+        margin-top: 8px;
 
-        .folder-collapsable-link-container {
-          float: left;
-          padding-top: 0;
-          padding-right: 3px;
-        }
-        .folder-name-display {
-          font-size: 18px;
-          font-weight: bold;
-        }
+        .folder-name-and-collapsable-container {
 
-        .searches-under-folder-block {
-          margin-left: 20px;
-          margin-top: 6px;
+          &:hover {
+            background-color: $site-color-medium;
+          }
+
+          .folder-collapsable-link-container {
+            padding-top: 3px;
+            padding-right: 6px;
+          }
+
+          .folder-name-display {
+            font-size: 18px;
+            font-weight: bold;
+          }
+
+          .searches-under-folder-block {
+            margin-left: 20px;
+            margin-top: 6px;
+          }
         }
       }
 
       div.search-entry-container {
 
-            padding: 4px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+
+            padding-left: 4px;
+            padding-right: 4px;
 
             &:hover {
                 background-color: $site-color-medium;
@@ -732,7 +760,7 @@
 
             &.selected-other-cell {
 
-                color: $site-color-gray
+                color: $site-color-gray-text
             }
       }
     }
@@ -1277,17 +1305,6 @@
 
             &:hover {
                 background-color: $site-color-medium;
-            }
-        }
-
-        .searches-selected-container {
-
-        }
-
-        .searches-not-selected-container {
-            
-            .search-selected-other-cell {
-                color: $site-color-gray;
             }
         }
     }
