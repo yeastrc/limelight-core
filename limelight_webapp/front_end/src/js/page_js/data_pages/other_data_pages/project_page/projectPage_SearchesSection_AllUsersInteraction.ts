@@ -670,6 +670,14 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 					$searches_container.appendTo( $folder_contents_block_jq );
 			
 					this._addSearchesUnderAFolderOrNotInAnyFolder({ searchList : searchesInFolder, showBorderLastSearch : false, canSelectSearches, $searches_container });
+				} else {
+
+					//  NO searches in folder
+
+					const $folder_contents_block_jq = $folderItem.find(".folder_contents_block_jq");
+
+					$folder_contents_block_jq.append( '<div class="empty-folder-text" style="margin-left: 3px;" >Empty Folder</div>' );
+
 				}
 			}
 		}

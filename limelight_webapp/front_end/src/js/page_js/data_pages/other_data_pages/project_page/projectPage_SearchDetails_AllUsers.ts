@@ -575,7 +575,6 @@ export class ProjectPage_SearchDetails_AllUsers {
 				this.searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container });
 			}
 		}
-
     }
 
 	/**
@@ -619,10 +618,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 
 			this._projectPage_SearchDetails_LoggedInUsers.searchDetails_Edit_Delete_Comment_AddClickHandlers({ projectSearchId, comment, $commentEntry });
 		}
-
-
 	}
-
 
     ///////////////////////////////////////////
 
@@ -643,7 +639,19 @@ export class ProjectPage_SearchDetails_AllUsers {
 	 */
 	displaySearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
 
-		const objectThis = this;
+		{
+			//  Expand all folders
+
+			const $search_list = $("#search_list");
+			// folder root elements
+			const $folder_root_jq = $search_list.children(".folder_root_jq");
+			$folder_root_jq.each( ( index,  element ) => {
+
+				const $selector_collapsable_link_container = $(element).children(".selector_collapsable_link_container")
+				const $selector_collapsable_expand_link = $selector_collapsable_link_container.children(".selector_collapsable_expand_link")
+				$selector_collapsable_expand_link.click();
+			})
+		}
 
 		const projectSearchIdsGetFromServer = [];
 
@@ -659,7 +667,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 			//  No Data to Load. Expand All
 
 			for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-				objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined : undefined });
+				this._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined : undefined });
 			}
 			return; // EARLY RETURN
 		}
@@ -670,13 +678,13 @@ export class ProjectPage_SearchDetails_AllUsers {
 			try {
 				for ( const projectSearchId of projectSearchIdsGetFromServer ) {
 
-					objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined });
+					this._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined });
 				}
 
 				//  Then expand all
 
 				for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
-					objectThis._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined : undefined });
+					this._displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined : undefined });
 				}
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -691,7 +699,19 @@ export class ProjectPage_SearchDetails_AllUsers {
 	 */
 	hideSearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
 
-		const objectThis = this;
+		{
+			//  Collapse all folders
+
+			const $search_list = $("#search_list");
+			// folder root elements
+			const $folder_root_jq = $search_list.children(".folder_root_jq");
+			$folder_root_jq.each( ( index,  element ) => {
+
+				const $selector_collapsable_link_container = $(element).children(".selector_collapsable_link_container")
+				const $selector_collapsable_collapse_link = $selector_collapsable_link_container.children(".selector_collapsable_collapse_link")
+				$selector_collapsable_collapse_link.click();
+			})
+		}
 
 		for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
 			this._hideSearchDetailsClicked({ projectSearchId });

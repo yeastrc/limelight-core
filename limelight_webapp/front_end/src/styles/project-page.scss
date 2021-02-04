@@ -247,12 +247,14 @@ body.project-page {
 		//  Folders for searches
 
 		.folder-container { padding-top: 3px; padding-bottom: 3px; clear: left; } //  Use padding-left: from left-margin-same-as-checkbox
-		.folder-collapsable-link-container { float: left; padding-top: 0px; padding-right: 3px; }
+		.folder-collapsable-link-container { float: left; padding-top: 3px; padding-right: 6px; }
 		// .folder-collapsable-link {  }
 
 		.folder-name-display { font-size: 18px; font-weight: bold; }
 
 		.searches-under-folder-block { margin-left: 20px; margin-top: 6px; }
+
+		.empty-folder-text { color: $site-color-gray-text }
 
 		
 		/////////////////////////////////////////

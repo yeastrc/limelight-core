@@ -10,20 +10,19 @@
 
 	<div  class="collapsable-link-container folder-collapsable-link-container selector_collapsable_link_container " style="">
 
-		<img  src="static/images/icon-folder-open.png" 
-			class=" clickable icon-large  folder_hide_contents_link_jq selector_collapsable_collapse_link selector_tool_tip_attached "
+		<img  src="static/images/pointer-down.png"
+			class="  icon-small fake-link-image  folder_hide_contents_link_jq selector_collapsable_collapse_link "
 			style="display: none;"
-			data-tooltip="Close folder" >
-		<img  src="static/images/icon-folder-closed.png"
-			class=" clickable icon-large  folder_show_contents_link_jq selector_collapsable_expand_link selector_tool_tip_attached "
-			data-tooltip="Open folder"
-			>
+        >
+		<img  src="static/images/pointer-right.png"
+			class="  icon-small fake-link-image  folder_show_contents_link_jq selector_collapsable_expand_link  "
+        >
 
 	</div>
 
 	<div >
 		<span class=" folder-name-display folder_name_jq "
-			>{{ folder.folderName }}</span>
+			>Folder: {{ folder.folderName }}</span>
 			
 		{{#if folder.canEdit }} 
 			<img  src="static/images/icon-edit.png" 

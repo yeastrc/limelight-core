@@ -5,5 +5,9 @@
 	data-project_search_id="{{ searchItem.projectSearchId }}"
 	data-search_id="{{ searchItem.searchId }}">
 
-   	<input type="checkbox" class=" single_search_checkbox_jq ">
+    <div style="position: relative;">
+        <div style="position: absolute; top: -2px;"> {{!-- Move up so in line with triangle and folder name text --}}
+            <input type="checkbox" class=" single_search_checkbox_jq ">
+        </div>
+    </div>
 </div>
