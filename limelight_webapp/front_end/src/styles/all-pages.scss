@@ -282,9 +282,13 @@ div.error-message-container, div.success-message-container {
   margin-left: 10px;
 }
 
+/////////////////////////
+
 // styling of form elements and buttons
 input {
       font-size:14px;
+
+          //  Any change to button styling also needed for <button> styling which is next
 
       &[type="button"], &[type="submit"] {
           color: $color-white;
@@ -294,8 +298,24 @@ input {
       &[type="button"]:disabled, &[type="submit"]:disabled {
           opacity: 0.6;
       }
-  }
+}
 
-  .clickable {
-    cursor: pointer;
+//  Any change to button styling also needed for <input type="button" > <input type="submit" > styling which is immediately above
+
+button {
+
+  font-size:14px;
+
+  color: $color-white;
+  background-color: $site-color-dark;
+
+  &:disabled {
+    opacity: 0.6;
   }
+}
+
+//////////////////
+
+.clickable {
+  cursor: pointer;
+}
