@@ -281,6 +281,11 @@ class DataTable_RootTableDataObject {
             console.warn( msg )
             throw Error( msg );
         }
+        if ( ! ( dataTable_RootTableDataObject.columns.length > 0 ) ) {
+            const msg = 'DataTable_RootTableDataObject.constructor: ( ! ( dataTable_RootTableDataObject.columns.length > 0 ) )';
+            console.warn( msg )
+            throw Error( msg );
+        }
         if ( dataTable_RootTableDataObject.dataTable_DataRowEntries && dataTable_RootTableDataObject.dataTable_DataGroupRowEntries ) {
             const msg = 'DataTable_RootTableDataObject.constructor: ( dataTable_DataRowEntries && dataTable_DataGroupRowEntries )';
             console.warn( msg )
@@ -290,6 +295,18 @@ class DataTable_RootTableDataObject {
             const msg = 'DataTable_RootTableDataObject.constructor: ( ( ! dataTable_DataRowEntries ) && ( ! dataTable_DataGroupRowEntries ) )';
             console.warn( msg )
             throw Error( msg );
+        }
+        //  All index values in dataTable_RootTableDataObject.columns must be sequential since Javascript allows gaps
+        {
+            const columns = dataTable_RootTableDataObject.columns;
+            const columns_length = columns.length;
+            for ( let index = 0; index < columns_length; index++ ) {
+                if ( ! columns[ index ] ) {
+                    const msg = 'DataTable_RootTableDataObject.constructor: Gap in dataTable_RootTableDataObject.columns indexes: ( ! columns[ index ] )';
+                    console.warn( msg )
+                    throw Error( msg );
+                }
+            }
         }
     }
 
