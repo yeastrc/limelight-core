@@ -309,24 +309,69 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
 
         const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;
 
-        let noPeptidesMessage = undefined;
-        let peptideListTable = undefined;
+        const maxDisplay_dataTableCellCount = 400000;  //  MAX
+
+        let dataTableCellCount = 0
+        if ( dataTable_RootTableObject.tableDataObject.dataTable_DataRowEntries ) {
+            dataTableCellCount = (
+                dataTable_RootTableObject.tableDataObject.columns.length * dataTable_RootTableObject.tableDataObject.dataTable_DataRowEntries.length
+            )
+        }
+
+        let havePeptideDataTableContentsForDownload : boolean = false;
+
+        let noPeptidesMessage : JSX.Element = undefined;
+        let peptideListTable_TooLarge : JSX.Element = undefined;
+        let peptideListTable : JSX.Element = undefined;
 
         if ( this.props.create_GeneratedReportedPeptideListData_Result.peptideList_Length === 0 ) {
 
             noPeptidesMessage = (
-                <div className=" padding-for-room-for-child-table-show-hide-icon "> 
-                {/* add className padding-for-room-for-child-table-show-hide-icon to match positioning of peptide list table */}
+                <div className=" padding-for-room-for-child-table-show-hide-icon ">
+                    {/* add className padding-for-room-for-child-table-show-hide-icon to match positioning of peptide list table */}
                     No peptides meet the current filtering criteria.
                 </div>
             );
+
         } else {
 
-            peptideListTable = (
-                <DataTable_TableRoot
-                    tableObject={ dataTable_RootTableObject }
-                />
-            );
+            havePeptideDataTableContentsForDownload = true;
+
+            if ( dataTableCellCount > maxDisplay_dataTableCellCount ) {
+
+                peptideListTable_TooLarge = (
+                    <div style={ { marginTop: 20, marginLeft: 20 } }>
+                        <div>
+                            <span style={{ fontWeight: "bold", fontSize: 18, paddingRight: 8 }}>
+                                The peptide table is too large to display
+                            </span>
+                            (the peptide download link will download what would have been shown).
+                        </div>
+                        <div style={ { marginTop: 20 } }>
+                            To reduce the size of the table:
+                        </div>
+                        <div style={ { marginTop: 5, marginLeft: 20, marginBottom: 30 } }>
+                            <div>
+                                Filter the data
+                            </div>
+                            <div>
+                                Change the <span style={ { fontWeight: "bold" } }>Show in Peptides:</span>
+                            </div>
+                            <div>
+                                Reduce the number of merged searches
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            } else {
+
+                peptideListTable = (
+                    <DataTable_TableRoot
+                        tableObject={dataTable_RootTableObject}
+                    />
+                );
+            }
         }
 
         const numberOfPeptidesShown = this.props.create_GeneratedReportedPeptideListData_Result.peptideList_Length.toLocaleString();
@@ -350,38 +395,42 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                         <span > peptides ({ numberOfUniquePeptides } unique) </span>
                         <span >{ numberOfPSMsForReportedPeptidesShown } PSMs</span>
 
-                        { ( peptideListTable && ( this.props.downloadPeptides_Shown_ClickHandler || this.props.downloadPsms_Shown_ClickHandler ) ) ? (
-
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler || this.props.downloadPsms_Shown_ClickHandler ) ) ? (
+                            //  Separator
                             <React.Fragment>
                                 <span style={ { paddingLeft : 20 } }>&nbsp;</span>
-                                { ( this.props.downloadPeptides_Shown_ClickHandler ) ? (
-                                    <span className=" fake-link "
-                                          onClick={ this.props.downloadPeptides_Shown_ClickHandler }
-                                    >Download Peptides</span>
-                                ) : null }
-                                { ( this.props.downloadPeptides_Shown_ClickHandler && this.props.downloadPsms_Shown_ClickHandler ) ? (
-                                    <span style={ { paddingLeft : 10 } }>&nbsp;</span>
-                                ) : null }
-                                { ( this.props.downloadPsms_Shown_ClickHandler ) ? (
-                                    <span className=" fake-link "
-                                          onClick={ this.props.downloadPsms_Shown_ClickHandler }
-                                    >Download PSMs</span>
-                                ) : null }
                             </React.Fragment>
+                        ) : null }
 
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler ) ) ? (
+                            // Peptide Download Link
+                            <span className=" fake-link "
+                                  onClick={ this.props.downloadPeptides_Shown_ClickHandler }
+                            >Download Peptides</span>
+                        ) : null }
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler && this.props.downloadPsms_Shown_ClickHandler ) ) ? (
+                            //  Separator
+                            <span style={ { paddingLeft : 10 } }>&nbsp;</span>
+                        ) : null }
+                        { ( peptideListTable && this.props.downloadPsms_Shown_ClickHandler ) ? (
+                            // PSM Download Link
+                            <span className=" fake-link "
+                                  onClick={ this.props.downloadPsms_Shown_ClickHandler }
+                            >Download PSMs</span>
                         ) : null }
                     </div>
                 </div>
 
-                <div >  {/* Remove paddingLeft.  peptideListTable will make room for show/hide child table icons as is needed style={ { paddingLeft: 20 } } */}
+                <div >
 
                     {/* Container for Reported Peptides using Data Table - */}
                     <div className="  "
-                        >  {/* Padding to make room for expand icon to left of each row of data  */}
+                        >
                         {/* Loading Reported Peptides  */}
                         { peptideListTable }
                     </div>
                     { noPeptidesMessage }
+                    { peptideListTable_TooLarge }
                 </div>
             </div>
         );
