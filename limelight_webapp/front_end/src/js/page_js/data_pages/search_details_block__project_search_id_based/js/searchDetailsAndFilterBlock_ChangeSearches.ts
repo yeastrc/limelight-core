@@ -38,6 +38,7 @@ import {
     getSearchesAndFolders_SingleProject, GetSearchesAndFolders_SingleProject_PromiseResponse,
     GetSearchesAndFolders_SingleProject_PromiseResponse_Item
 } from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
+import {get_SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout_Layout} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout";
 
 
 /**
@@ -102,9 +103,12 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
      */
     _remove_ModalOverlay() {
 
-        this._changeSearches_Overlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();
+        if ( this._changeSearches_Overlay_AddedTo_DocumentBody_Holder ) {
 
-        this._changeSearches_Overlay_AddedTo_DocumentBody_Holder = undefined;
+            this._changeSearches_Overlay_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();
+
+            this._changeSearches_Overlay_AddedTo_DocumentBody_Holder = undefined;
+        }
     }
 
     /**
@@ -149,6 +153,21 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
             return; // EARLY RETURN
         }
+
+        ///////////////
+
+        this._remove_ModalOverlay();
+
+        //  Show Updating Message
+
+        {
+            const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout_Layout({});
+
+            //  If change to NOT go to New URL, store the returned object and click the 'remove' method on it
+            limelight_add_ReactComponent_JSX_Element_To_DocumentBody({componentToAdd: overlayComponent});
+        }
+
+        ///////////////
 
         //  The user entered Filter values per Annotation Types and Annotation Types to display, or the defaults for the Search Id
         //  An array in the same order as projectSearchIds
@@ -321,6 +340,9 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
             // Reload page with new URL
 
             window.location.href = newURL;
+
+            //  Remove "Updating" overlay displayed in this method if NO LONGER use window.location.href to change to new page
+
 
             // window.history.replaceState( null, null, newURL );
             //

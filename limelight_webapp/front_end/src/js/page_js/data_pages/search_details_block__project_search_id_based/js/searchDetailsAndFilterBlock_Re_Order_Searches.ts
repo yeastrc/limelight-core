@@ -34,6 +34,8 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {get_SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout_Layout} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout";
+import {get_SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout_Layout} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout";
 
 
 /**
@@ -190,6 +192,21 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
             }
         }
 
+
+        ///////////////
+
+        this._remove_ModalOverlay();
+
+        //  Show Updating Message
+
+        {
+            const overlayComponent = get_SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout_Layout({});
+
+            //  If change to NOT go to New URL, store the returned object and click the 'remove' method on it
+            limelight_add_ReactComponent_JSX_Element_To_DocumentBody({componentToAdd: overlayComponent});
+        }
+
+        ///////////////
 
         //  The user entered Filter values per Annotation Types and Annotation Types to display, or the defaults for the Search Id
         //  An array in the same order as projectSearchIds
