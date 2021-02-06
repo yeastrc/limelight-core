@@ -240,6 +240,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
+    		
+    		Set<Integer> modMassesInteger_Set = new HashSet<>( webserviceRequest.modMassesInteger );
 
     		////////////////
     		
@@ -339,18 +341,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    				throw new LimelightInternalErrorException(msg);
 		    			}
 		    			Integer variableModMassRounded = (int) variableModMassRounded_Long;
-		    			
-		    			boolean found_ModMass_In_RequestedModMasses = false;
-		    			
-		    			for ( Integer modMassInteger : webserviceRequest.modMassesInteger ) {
-
-		    				if ( modMassInteger.intValue() == variableModMassRounded ) {
-		    					
-		    					found_ModMass_In_RequestedModMasses = true;
-		    				}
-		    			}
-		    			
-		    			if ( ! found_ModMass_In_RequestedModMasses ) {
+		    					    			
+		    			if ( ! modMassesInteger_Set.contains( variableModMassRounded ) ) {
 		    				
 		    				//  Not the Mod Mass requested so skip it
 		    				
@@ -424,17 +416,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    			}
 		    			int variableModMassRounded = (int) variableModMassRounded_Long;
 
-		    			boolean found_ModMass_In_RequestedModMasses = false;
-		    			
-		    			for ( Integer modMassInteger : webserviceRequest.modMassesInteger ) {
-
-		    				if ( modMassInteger.intValue() == variableModMassRounded ) {
-		    					
-		    					found_ModMass_In_RequestedModMasses = true;
-		    				}
-		    			}
-		    			
-		    			if ( ! found_ModMass_In_RequestedModMasses ) {
+		    			if ( ! modMassesInteger_Set.contains( variableModMassRounded ) ) {
 		    				
 		    				//  Not the Mod Mass requested so skip it
 		    				
@@ -563,17 +545,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    			}
 		    			Integer openModMass  = (int) openModMass_Long;
 
-		    			boolean found_ModMass_In_RequestedModMasses = false;
-		    			
-		    			for ( Integer modMassInteger : webserviceRequest.modMassesInteger ) {
-
-		    				if ( modMassInteger.intValue() == openModMass.intValue() ) {
-		    					
-		    					found_ModMass_In_RequestedModMasses = true;
-		    				}
-		    			}
-		    			
-		    			if ( ! found_ModMass_In_RequestedModMasses ) {
+		    			if ( ! modMassesInteger_Set.contains( openModMass ) ) {
 		    				
 		    				//  Not the Mod Mass requested so skip it
 		    				
