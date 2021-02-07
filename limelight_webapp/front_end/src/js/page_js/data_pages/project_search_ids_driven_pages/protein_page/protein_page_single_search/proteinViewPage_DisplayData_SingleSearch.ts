@@ -48,7 +48,13 @@ import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/p
 import { ProteinGrouping_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
 
 import { createProteinDisplayData_SingleSearch, ProteinDisplayData_From_createProteinDisplayData_SingleSearch, ProteinNameDescriptionCacheEntry_SingleSearch, CountsFor_proteinSequenceVersionIdEntry_SingleSearch, ProteinDataDisplay_ProteinListItem_SingleSearch } from './proteinViewPage_DisplayData_SingleSearch_CreateProteinDisplayData';
-import { renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject, ProteinRow_tableRowClickHandlerParameter_SingleSearch, getProteinDataTableColumns_SingleSearch, createProteinList_ForDataTable_SingleSearch } from './proteinViewPage_DisplayData_SingleSearch_Create_ProteinList_DataTable_RootTableDataObject';
+import {
+	renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject,
+	getProteinDataTableColumns_SingleSearch,
+	createProteinList_ForDataTable_SingleSearch,
+	ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function,
+	ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Parameter
+} from './proteinViewPage_DisplayData_SingleSearch_Create_ProteinList_DataTable_RootTableDataObject';
 import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_SINGLE_SEARCH } from './proteinViewPage_DisplayData_SingleSearch_Constants';
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
@@ -58,6 +64,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
+import {ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search__search_sub_group/js/proteinViewPage_DisplayData_SingleSearch__SearchSubGroup_Create_ProteinList_DataTable_RootTableDataObject";
 
 	
 /**
@@ -67,7 +74,10 @@ export class ProteinViewPage_Display_SingleSearch {
 
 	private _singleProteinRowClickHandler_BindThis = this._singleProteinRowClickHandler.bind(this);
 
-	//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
+	private _DO_NOT_CALL_CastTestOnly () {
+		const singleProteinRowClickHandler:ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function = this._singleProteinRowClickHandler
+	}
+			//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
 	
 	// !!!!!!!!!  TODO  Parts of this._loadedDataCommonHolder need to be cleared if the cutoffs or other filters change
 
@@ -443,7 +453,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			//  When do this processing here, an optimization would be to not create the protein list.  That would require other changes.
 
 			//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
-			this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL, $target : undefined } ) ;
+			this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId : proteinSequenceVersionId_FromURL } ) ;
 		}
 
 
@@ -587,13 +597,12 @@ export class ProteinViewPage_Display_SingleSearch {
 			$protein_list_updating_message.show();
 		}
 		
-		const tableOptions = new DataTable_TableOptions({
-			dataRowClickHandler : this._singleProteinRowClickHandler_BindThis,
-		})
-		
+		const tableOptions = new DataTable_TableOptions({})
+
 		//   Create Data Table
 		const tableDataObject : DataTable_RootTableDataObject = renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject({ // External Function
-			proteinList, annotationTypeRecords_DisplayOrder, proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass, projectSearchId 
+			proteinList, annotationTypeRecords_DisplayOrder, proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass, projectSearchId,
+			proteinRow_tableRowClickHandler_Callback_Function : this._singleProteinRowClickHandler_BindThis
 		});
 
 		const tableObject = new DataTable_RootTableObject({ tableDataObject, tableOptions, dataTableId: "Single Search Protein List" });
@@ -679,49 +688,39 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-    _singleProteinRowClickHandler( param : DataTable_TableOptions_dataRowClickHandler_RequestParm ) {
+    _singleProteinRowClickHandler( params : ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Parameter ) {
 
-		const eventObject = param.event;
-		
-		const proteinRow_tableRowClickHandlerParameter = param.tableRowClickHandlerParameter as ProteinRow_tableRowClickHandlerParameter_SingleSearch
-		if ( ! ( proteinRow_tableRowClickHandlerParameter instanceof ProteinRow_tableRowClickHandlerParameter_SingleSearch ) ) {
-			const msg = "ProteinViewPage_Display_SingleSearch: _singleProteinRowClickHandler:  if ( ! ( proteinRow_tableRowClickHandlerParameter instanceof ProteinRow_tableRowClickHandlerParameter ) ). proteinRow_tableRowClickHandlerParameter:  ";
-			console.warn( msg, proteinRow_tableRowClickHandlerParameter );
-			throw Error( msg );
-		}
+		const proteinSequenceVersionId = params.proteinSequenceVersionId
 
-		const proteinSequenceVersionId = proteinRow_tableRowClickHandlerParameter.proteinSequenceVersionId
-
-		eventObject.stopPropagation();
-
-		{
+		try {
 			//  Exit if user selected content on the page
 			const selectedContent = window.getSelection().toString();
 			if( selectedContent ){
 				//  user selected content on the page
 				return false; //  EARLY RETURN
 			}
+		} catch (e) {
+			//  Eat any exception
 		}
-		
-		const $target = $( eventObject.target );
 
-		if ( eventObject.ctrlKey || eventObject.metaKey ) {
+		if (params.dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params.clickEventData.ctrlKey_From_ClickEvent ||
+			params.dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params.clickEventData.metaKey_From_ClickEvent ) {
 
 			//  Show Single Protein in New Window
 
-			this._singleProteinRowShowSingleProteinNewWindow( { $target, proteinSequenceVersionId } );
+			this._singleProteinRowShowSingleProteinNewWindow( { proteinSequenceVersionId } );
 			return; //  EARLY RETURN
 		}
 
 		this._singleProtein_CentralStateManagerObject.setProteinSequenceVersionId( { proteinSequenceVersionId } );
 		
-		this._singleProteinRowShowSingleProteinOverlay( { $target, proteinSequenceVersionId } );
+		this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId } );
 	}
 
 	/**
 	 * 
 	 */
-    _singleProteinRowShowSingleProteinNewWindow( { $target, proteinSequenceVersionId } ) {
+    _singleProteinRowShowSingleProteinNewWindow( { proteinSequenceVersionId } ) {
 
 		//  Create URL for new Window about to open
 
@@ -740,7 +739,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-    _singleProteinRowShowSingleProteinOverlay( { $target, proteinSequenceVersionId } ) {
+    _singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId } ) {
 		
 		const proteinNameDescription = this._proteinNameDescription_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId );
 		if ( proteinNameDescription === undefined ) {
@@ -755,23 +754,17 @@ export class ProteinViewPage_Display_SingleSearch {
 			throw Error("No countsFor_proteinSequenceVersionId found.  proteinSequenceVersionId: " + proteinSequenceVersionId );
 		}
 
-		if ( $target ) {
-
+		try {
 			const $protein_list_container = $("#protein_list_container");
-
-			if ( $protein_list_container.length === 0 ) {
-				throw Error("_singleProteinRowShowSingleProteinOverlay:No DOM element found with id 'protein_list_container'")
-			}
-
-			if ( $protein_list_container.length !== 0 ) {
+			if ( $protein_list_container.length > 0 ) {
 				// Grab the first element in the tooltips array and access its qTip API
 				const qtipAPI = ( $protein_list_container as any ).qtip('api'); // cast $protein_list_container as any since qtip is a plugin
 				if ( qtipAPI ) {
 					qtipAPI.toggle(false);  // ensure qtip not shown
-				} else {
-					console.warn("$protein_list_container: no value for qtipAPI")
 				}
 			}
+		} catch (e) {
+			//  Eat any exception
 		}
 
 		//  Current Window Scroll position
@@ -1079,7 +1072,7 @@ export class ProteinViewPage_Display_SingleSearch {
 		const greyOutRow = undefined;  // Not Set for download
 
 		//   Protein List of objects with properties for Data Table
-		const proteinList_ForDataTable = createProteinList_ForDataTable_SingleSearch( { greyOutRow, proteinList, annotationTypeRecords_DisplayOrder } );
+		const proteinList_ForDataTable = createProteinList_ForDataTable_SingleSearch( { greyOutRow, proteinList, proteinRow_tableRowClickHandler_Callback_Function : null } );
 
 		//  Array of Arrays of reportLineParts
 		const reportLineParts_AllLines = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join

@@ -7,7 +7,15 @@
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { DataTable_RootTableDataObject, DataTable_DataRowEntry, DataTable_DataGroupRowEntry, DataTable_Column, DataTable_DataRow_ColumnEntry } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {
+    DataTable_RootTableDataObject,
+    DataTable_DataRowEntry,
+    DataTable_DataGroupRowEntry,
+    DataTable_Column,
+    DataTable_DataRow_ColumnEntry,
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params
+} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { ProteinGroup } from 'page_js/data_pages/protein_inference/ProteinGroup';
 import { ProteinGrouping_CentralStateManagerObjectClass } from '../../../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
@@ -34,28 +42,30 @@ class GroupedProtein_Entry {
     proteinGroup : ProteinGroup
 }
 
-//  Also export functions getProteinDataTableColumns, createProteinList_ForDataTable below
+//  Also export functions getProteinDataTableColumns..., createProteinList_ForDataTable... below
 
 
-export class ProteinRow_tableRowClickHandlerParameter_SingleSearch__SearchSubGroup {
+export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Parameter {
     proteinSequenceVersionId : number
-
-    constructor({ proteinSequenceVersionId } : { proteinSequenceVersionId : number }) {
-        this.proteinSequenceVersionId = proteinSequenceVersionId;
-    }
+    dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params;
 }
+
+export type ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function =
+    ( params : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Parameter ) => void;
+
 
 /**
  * Create tableObject object  for DataTable
  */
 export const renderToPageProteinList_SingleSearch__SearchSubGroup__Create_DataTable_RootTableDataObject = function({
-    proteinList, proteinGrouping_CentralStateManagerObjectClass, searchSubGroupIds, projectSearchId, dataPageStateManager_DataFrom_Server
+    proteinList, proteinGrouping_CentralStateManagerObjectClass, searchSubGroupIds, projectSearchId, dataPageStateManager_DataFrom_Server, proteinRow_tableRowClickHandler_Callback_Function
 } : {
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch_SearchSubGroup>
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     searchSubGroupIds : Array<number>
     projectSearchId : number
     dataPageStateManager_DataFrom_Server : DataPageStateManager
+    proteinRow_tableRowClickHandler_Callback_Function : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function
 
 }) : DataTable_RootTableDataObject {
 
@@ -67,13 +77,15 @@ export const renderToPageProteinList_SingleSearch__SearchSubGroup__Create_DataTa
 
     if ( ! proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
 
-        dataTable_DataGroupRowEntries = _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups({ proteinGrouping_CentralStateManagerObjectClass, proteinList, columns, searchSubGroupIds });
+        dataTable_DataGroupRowEntries = _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups({
+            proteinGrouping_CentralStateManagerObjectClass, proteinList, columns, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function
+        });
 
     } else {
 
         const greyOutRow = undefined;  //  Not pass for not grouped
 
-        dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({ greyOutRow, proteinList, columns, searchSubGroupIds });
+        dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({ greyOutRow, proteinList, columns, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function });
     }
 
     const tableObject = new DataTable_RootTableDataObject({
@@ -184,12 +196,16 @@ export const getProteinDataTableColumns_SingleSearch__SearchSubGroup = function(
  *
  * For YES Grouping of Proteins
  */
-const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = function({ proteinGrouping_CentralStateManagerObjectClass, proteinList, columns, searchSubGroupIds } : {
-
+const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = function(
+    {
+        proteinGrouping_CentralStateManagerObjectClass, proteinList, columns, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function
+    } : {
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch_SearchSubGroup>
     columns : Array<DataTable_Column>
     searchSubGroupIds : Array<number>
+    proteinRow_tableRowClickHandler_Callback_Function : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function
+
 }) : Array<DataTable_DataGroupRowEntry> {
 
     const dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = [];
@@ -211,7 +227,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         const greyOutRow = ! groupedProteinItem.proteinGroup.passesFilter;
 
         const dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
-            greyOutRow, proteinList : groupedProteinItem.proteinList_Grouped, columns, searchSubGroupIds
+            greyOutRow, proteinList : groupedProteinItem.proteinList_Grouped, columns, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function
         });
 
         const first_dataTable_DataRowEntry = dataTable_DataRowEntries[ 0 ];
@@ -389,15 +405,17 @@ const _group_proteinList_Entries_Get_PerProteinIdMap = function({ proteinGroupin
  *
  * For NO Grouping of Proteins
  */
-const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function({ greyOutRow, proteinList, columns, searchSubGroupIds } : {
+const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function({ greyOutRow, proteinList, columns, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function } : {
 
     greyOutRow : boolean  //  Set greyOutRow on all rows
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch_SearchSubGroup>
     columns : Array<DataTable_Column>
     searchSubGroupIds : Array<number>
+    proteinRow_tableRowClickHandler_Callback_Function : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function
+
 }) : Array<DataTable_DataRowEntry> {
 
-    const dataTable_DataRowEntries = createProteinList_ForDataTable( { greyOutRow, proteinList, searchSubGroupIds } );
+    const dataTable_DataRowEntries = createProteinList_ForDataTable( { greyOutRow, proteinList, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function } );
 
     return dataTable_DataRowEntries;
 }
@@ -405,11 +423,12 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function({ 
 /**
  *  Called from internal to this file and also called from proteinViewPage_DisplayData_SingleSearch.ts for downloads
  */
-export const createProteinList_ForDataTable = function({ greyOutRow, proteinList, searchSubGroupIds } : {
+export const createProteinList_ForDataTable = function({ greyOutRow, proteinList, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function } : {
 
     greyOutRow : boolean
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch_SearchSubGroup>
     searchSubGroupIds : Array<number>
+    proteinRow_tableRowClickHandler_Callback_Function : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function
 
 }) : Array<DataTable_DataRowEntry> {
 
@@ -418,7 +437,7 @@ export const createProteinList_ForDataTable = function({ greyOutRow, proteinList
     let index = 0;
     for ( const proteinListItem of proteinList ) {
 
-        proteinList_ForDataTable.push( _createProteinItem_DataTableEntry( { greyOutRow, proteinListItem, arrayIndex : index, searchSubGroupIds } ) );
+        proteinList_ForDataTable.push( _createProteinItem_DataTableEntry( { greyOutRow, proteinListItem, arrayIndex : index, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function } ) );
         index++;
     }
     return proteinList_ForDataTable;
@@ -429,12 +448,13 @@ export const createProteinList_ForDataTable = function({ greyOutRow, proteinList
 /**
  * Create object
  */
-const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem, arrayIndex, searchSubGroupIds } : {
+const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem, arrayIndex, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function } : {
 
     greyOutRow : boolean
     proteinListItem : ProteinDataDisplay_ProteinListItem_SingleSearch_SearchSubGroup
     arrayIndex : number
     searchSubGroupIds : Array<number>
+    proteinRow_tableRowClickHandler_Callback_Function : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Function
 }) : DataTable_DataRowEntry {
 
 
@@ -496,19 +516,24 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
         }
     }
 
+    const tableRowClickHandler_Callback_NoDataPassThrough : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough =
+        ( params_tableRowClickHandler_Callback : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params ) : void => {
 
-    const proteinRow_tableRowClickHandlerParameter = new ProteinRow_tableRowClickHandlerParameter_SingleSearch__SearchSubGroup({
+            const proteinRow_tableRowClickHandler_Callback_Parameter = new ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup_ProteinRow_tableRowClickHandler_Callback_Parameter();
+            proteinRow_tableRowClickHandler_Callback_Parameter.proteinSequenceVersionId = proteinListItem.proteinSequenceVersionId;
+            proteinRow_tableRowClickHandler_Callback_Parameter.dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params = params_tableRowClickHandler_Callback;
 
-        proteinSequenceVersionId : proteinListItem.proteinSequenceVersionId
-    });
+            proteinRow_tableRowClickHandler_Callback_Function( proteinRow_tableRowClickHandler_Callback_Parameter );
+        }
 
     const dataTable_DataRowEntry = new DataTable_DataRowEntry({
         uniqueId : proteinListItem.proteinSequenceVersionId,
         sortOrder_OnEquals : arrayIndex, // Original Sort Order
         greyOutRow : greyOutRow,
         columnEntries,
-        tableRowClickHandlerParameter : proteinRow_tableRowClickHandlerParameter
+        tableRowClickHandler_Callback_NoDataPassThrough
     })
 
     return dataTable_DataRowEntry;
 }
+
