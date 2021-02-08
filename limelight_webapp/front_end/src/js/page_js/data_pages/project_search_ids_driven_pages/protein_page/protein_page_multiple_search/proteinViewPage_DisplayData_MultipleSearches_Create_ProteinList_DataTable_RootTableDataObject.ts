@@ -468,11 +468,9 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
         }
         singleProteinRowClickHandler_Callback( singleProteinRowClickHandler_Params );
     }
-    const proteinRow_tableRowClickHandlerParameter = new ProteinRow_tableRowClickHandlerParameter_MultipleSearches({
 
-        proteinSequenceVersionId : proteinListItem.proteinSequenceVersionId
-    });
-        
+    //  Create DataTable_DataRowEntry
+
     const dataTable_DataRowEntry = new DataTable_DataRowEntry({
         uniqueId : proteinListItem.proteinSequenceVersionId,
         sortOrder_OnEquals : arrayIndex, // Original Sort Order

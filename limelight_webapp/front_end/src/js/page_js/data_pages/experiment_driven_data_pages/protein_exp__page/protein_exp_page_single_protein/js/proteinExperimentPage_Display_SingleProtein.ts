@@ -65,7 +65,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 
 	private _proteinSequenceVersionId : number;
-	private _proteinListItem;
+	private _proteinListItem : {name: string, description: string};
 
 	private _singleProteinCloseCallback : ProteinExperimentPage_Display_SingleProtein_singleProteinCloseCallback;
 	
@@ -156,7 +156,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
 		} : {
 			proteinSequenceVersionId : number,
-			proteinListItem,
+			proteinListItem : {name: string, description: string};
 
 			singleProteinCloseCallback,
 
@@ -329,8 +329,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		let proteinDescriptions : string = undefined
 
 		if ( this._proteinListItem ) {
-			proteinNames = this._proteinListItem.proteinNames
-			proteinDescriptions = this._proteinListItem.proteinDescriptions
+			proteinNames = this._proteinListItem.name
+			proteinDescriptions = this._proteinListItem.description
 		}
 
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
@@ -366,8 +366,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
         //  Render to page:
 
 
-        const proteinNames = this._proteinListItem.proteinNames;
-		const proteinDescriptions = this._proteinListItem.proteinDescriptions;
+        const proteinNames = this._proteinListItem.name;
+		const proteinDescriptions = this._proteinListItem.description;
 		
 
 		const proteinSequenceData = this._loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId({ proteinSequenceVersionId : this._proteinSequenceVersionId });
