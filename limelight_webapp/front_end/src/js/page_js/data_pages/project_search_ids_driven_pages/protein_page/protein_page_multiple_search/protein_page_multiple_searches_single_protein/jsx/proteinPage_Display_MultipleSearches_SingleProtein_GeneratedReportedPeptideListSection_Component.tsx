@@ -312,7 +312,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         const maxDisplay_dataTableCellCount = 400000;  //  MAX
 
         let dataTableCellCount = 0
-        if ( dataTable_RootTableObject.tableDataObject.dataTable_DataRowEntries ) {
+        if ( dataTable_RootTableObject && dataTable_RootTableObject.tableDataObject && dataTable_RootTableObject.tableDataObject.dataTable_DataRowEntries ) {
             dataTableCellCount = (
                 dataTable_RootTableObject.tableDataObject.columns.length * dataTable_RootTableObject.tableDataObject.dataTable_DataRowEntries.length
             )
