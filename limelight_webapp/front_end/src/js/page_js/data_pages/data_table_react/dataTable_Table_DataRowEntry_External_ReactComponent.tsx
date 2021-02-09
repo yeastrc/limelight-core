@@ -25,12 +25,8 @@ export interface DataTable_Table_DataRowEntry_External_ReactComponent_Props {
  */
 export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.Component< DataTable_Table_DataRowEntry_External_ReactComponent_Props, {} > {
 
-    private cellContainingDiv;
-
     constructor(props : DataTable_Table_DataRowEntry_External_ReactComponent_Props) {
         super(props);
-
-        // this.cellContainingDiv = React.createRef();
 
         this.state = {};
     }
@@ -88,19 +84,7 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
    */
   render () {
 
-
-        // console.log("DataTable_Table_DataRowEntry_External_ReactComponent.render: this.props: ")
-        // console.log( this.props );
-
-        //  props
-        // columns={ this.props.columns }
-        // dataObject={ this.props.dataObject }
-        // dataObject_columnEntry={ dataObject_columnEntry } 
-        // index={ index }
-
-
-        // const dataObject_columnEntry = this.props.dataObject_columnEntry;
-        // const index = this.props.index;
+        // console.log("DataTable_Table_DataRowEntry_External_ReactComponent.render: this.props: ", this.props)
 
         const column = this.props.column;
 
@@ -114,14 +98,14 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
             + classesAdditions
         );
 
-        const styleContainerDiv : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
+        const styleContainer_TD : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
 
          //  Height not restricted to column.heightInitial
          
          //    column.heightInitial may or may not be populated.
 
         if ( column.heightInitial !== undefined && column.heightInitial !== null ) {
-            styleContainerDiv.height = column.heightInitial;
+            styleContainer_TD.height = column.heightInitial;
         }
 
         const style_override_React = column.style_override_DataRowCell_React;
@@ -136,7 +120,7 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
                     console.warn( msg );
                     throw Error( msg );
                 }
-                styleContainerDiv[ style_override_ReactKey ] =  style_override_React[ style_override_ReactKey ];
+                styleContainer_TD[ style_override_ReactKey ] =  style_override_React[ style_override_ReactKey ];
             }
         }
 
@@ -155,20 +139,15 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
         const ReactComponentChild = column.cellMgmt_ExternalReactComponent.reactComponent;
         
         return (
-            <td 
+            <td
+                style={ styleContainer_TD }
                 className={ className }
-                // data-index={ index }
-                // data-value={ valueDisplay }
-                >
-                {/* Removed since property not set: data-row-id={ columnEntry.uniqueId } */}
-
-                <div ref={ this.cellContainingDiv } style={ styleContainerDiv }>
-                    <ReactComponentChild
-                        cellMgmt_ExternalReactComponent_Data={ this.props.dataObject_columnEntry.cellMgmt_ExternalReactComponent_Data }
-                        columnWidth={ column.width }
-                        columnHeightInitial={ column.heightInitial }
-                    />
-                </div>
+            >
+                <ReactComponentChild
+                    cellMgmt_ExternalReactComponent_Data={ this.props.dataObject_columnEntry.cellMgmt_ExternalReactComponent_Data }
+                    columnWidth={ column.width }
+                    columnHeightInitial={ column.heightInitial }
+                />
             </td>
         );
     }

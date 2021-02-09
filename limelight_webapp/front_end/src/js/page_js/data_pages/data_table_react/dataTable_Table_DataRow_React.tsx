@@ -235,13 +235,6 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
      */
     _row_onClick( event: React.MouseEvent<HTMLTableRowElement, MouseEvent> ) : void {
         try {
-            // console.log("_row_onClick");
-
-            //  Remove event.preventDefault and event.stopPropagation until needed since breaks some behavior like check boxes
-
-            // event.preventDefault(); //  Prevent Default Action of event
-            // event.stopPropagation();  // Stop bubbling of event
-
             try { // In try/catch block in case not supported in browser
                 const selectionObj = window.getSelection();
                 const selection = selectionObj.toString()
@@ -251,7 +244,6 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                 }
             } catch (e) {
                 //  Eat exception
-                // const znothing = 0;
             }
 
             if ( this.props.tableOptions.dataRowClickHandler ) {
@@ -743,50 +735,11 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             throw Error(msg);
         }
 
-
-        let className_Row_classNameClickable = " ";
-
-        if (this.props.tableOptions.dataRowClickHandler ||
-            this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise ||
-            this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
-            this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
-
-            className_Row_classNameClickable = " clickable "
-        }
-
-
-        let className_innerContainingDiv_HighlightRow = "";
-
-        if (this.props.dataObject.highlightRowWithBackgroundColor) {
-            className_innerContainingDiv_HighlightRow = " table-row-highlight-with-background-color ";
-        }
-
-
         const className_Row = (
-            " data-table-data-row  table-row-hovered-highlight   "
-            + className_Row_classNameClickable
-            + className_innerContainingDiv_HighlightRow
+            " data-table-data-row "
         );
 
         //   expandable-table-row
-
-        //   The onMouseOut does not appear to fire consistently.  
-        //        Rows are left highlighted after the mouse has moved to another row and that row is highlighted.
-        // Code in these functions for onMouseOver and onMouseOut change the DOM directly which is a "BAD" idea.
-        //     Also, returning a arrow function from an expression is a bad idea.  Better to have a class function that has .bind(this).  See onClick
-        // onMouseOver={ (event) => { this.rowDivRef.current.classList.add( "hoveredTableRow" ) } }
-        // onMouseOut={ (event) => { this.rowDivRef.current.classList.remove( "hoveredTableRow" ) } }
-
-        //  Currently highlighting the row on hover using CSS class 'table-row-hovered-highlight' (see it above)
-
-        // put inside <div> to use it: ref={ this.rowDivRef }
-
 
         let rowClickHandler = undefined;
 
@@ -980,6 +933,28 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         let className_innerContainingDiv : string = undefined
 
         {
+            let className_innerContainingDiv_classNameClickable = " ";
+
+            if (this.props.tableOptions.dataRowClickHandler ||
+                this.props.tableOptions.dataRow_GetChildTableData || this.props.tableOptions.dataRow_GetChildTableData_ViaPromise ||
+                this.props.tableOptions.dataRow_GetChildTable_ReturnReactComponent ||
+                this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
+                this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
+                this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+                this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+                this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
+                this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+                this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+
+                className_innerContainingDiv_classNameClickable = " clickable "
+            }
+
+            let className_innerContainingDiv_HighlightRow = "";
+
+            if (this.props.dataObject.highlightRowWithBackgroundColor) {
+                className_innerContainingDiv_HighlightRow = " table-row-highlight-with-background-color ";
+            }
+
             let className_innerContainingDiv_GreyOut = "";
 
             if (this.props.dataObject.greyOutRow) {
@@ -1001,7 +976,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                 className_innerContainingDiv_row_CSS_Additions = this.props.dataObject.row_CSS_Additions;
             }
 
-            className_innerContainingDiv = " data-table-data-rows-inner-containing-div " + className_innerContainingDiv_GreyOut + className_innerContainingDiv_HighlightRow +
+            className_innerContainingDiv = " data-table-data-rows-inner-containing-div table-row-hovered-highlight " +
+                className_innerContainingDiv_classNameClickable +
+                className_innerContainingDiv_GreyOut +
+                className_innerContainingDiv_HighlightRow +
                 className_innerContainingDiv_Border +
                 className_innerContainingDiv_row_CSS_Additions;
         }
@@ -1020,19 +998,17 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
                     { childTableShowHideIcon }
 
-                    <div className={ className_innerContainingDiv } style={ styleOverrides_innerContainingDiv }>
-                        
+                    <div className={ className_innerContainingDiv } style={ styleOverrides_innerContainingDiv }
+                         ref={ this._row_OfTable_Ref }
+                         onClick={ rowClickHandler }
+                    >
                         <table className=" data-table-data-rows-table ">
                             <tbody>
 
                                 <tr 
                                     style={ { position: "relative" } } 
                                     className={ className_Row } 
-                                    onClick={ rowClickHandler }
-                                    ref={ this._row_OfTable_Ref }
-                                    // data-id={ this.props.dataObject.uniqueId }
                                 >
-
                                     {/* Render columns */}
                                     { columnComponents }
 

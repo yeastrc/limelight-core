@@ -459,7 +459,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
      */
     render(): React.ReactNode {
 
-        let mods_selection_dialog_list_bounding_box_Width = 280;
+        let mods_selection_dialog_list_bounding_box_Width = 295;
 
         return (
             <ModalOverlay_Limelight_Component

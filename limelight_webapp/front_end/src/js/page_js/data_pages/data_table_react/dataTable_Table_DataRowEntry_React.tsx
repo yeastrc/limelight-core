@@ -38,14 +38,14 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
     private _cellContentsDiv_onMouseEnterCallback_BindThis = this._cellContentsDiv_onMouseEnterCallback.bind(this);
     private _cellContentsDiv_onMouseLeaveCallback_BindThis = this._cellContentsDiv_onMouseLeaveCallback.bind(this);
 
-    private readonly _displayNameValueDiv_Ref :  React.RefObject<HTMLDivElement>
+    private readonly _displayNameValue_TD_Ref :  React.RefObject<HTMLTableDataCellElement>
 
     private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
   constructor(props : DataTable_Table_DataRowEntry_Props) {
     super(props);
 
-      this._displayNameValueDiv_Ref = React.createRef();
+      this._displayNameValue_TD_Ref = React.createRef();
 
     // this.state = {};
   }
@@ -114,7 +114,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           }
           const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough(params);
 
-          this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueDiv_Ref.current })
+          this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValue_TD_Ref.current })
 
       } catch( e ) {
           console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsDiv_onMouseEnterCallback: ", e )
@@ -160,8 +160,12 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       const column = this.props.column;
 
-      const styleContainerDiv : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
+      let className_Container_TD = " data-table-data-cell ";
+      if ( column.cssClassNameAdditions_DataRowCell ) {
+          className_Container_TD += column.cssClassNameAdditions_DataRowCell;
+      }
 
+      const styleContainerDiv : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
 
       //  Height not restricted to column.heightInitial
       
@@ -273,27 +277,20 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       }
 
       return (
-          <td 
-              className={ " data-table-data-cell data-table-cell " }
-              // data-index={ index }
-              // data-value={ valueDisplay }
+          <td
+              ref={ this._displayNameValue_TD_Ref }
+              style={ styleContainerDiv }
+              className={ className_Container_TD }
+              //  Set onMouse... if have tooltip callback
+              onMouseEnter={ cellContentsDiv_onMouseEnterCallback }
+              onMouseLeave={ cellContentsDiv_onMouseLeaveCallback }
+              // Set title attribute if have text tooltip
+              title={ tooltipText }
               >
-                {/* Removed since property not set: data-row-id={ columnEntry.uniqueId } */}
 
-            <div  ref={ this._displayNameValueDiv_Ref }
-                  //  Set onMouse... if have tooltip callback
-                  onMouseEnter={ cellContentsDiv_onMouseEnterCallback }
-                  onMouseLeave={ cellContentsDiv_onMouseLeaveCallback }
-                  // Set title attribute if have text tooltip
-                  title={ tooltipText }
-                  style={ styleContainerDiv } className={ column.cssClassNameAdditions_DataRowCell } 
-            >
               { horizontalGraph }
               { horizontalGraph_SpaceAfter }
-              <span
-                  className=" table-data-cell-property-value "
-              >{ valueDisplay }{ cellDisplayContents_FromCallback }</span>
-            </div>
+              { valueDisplay }{ cellDisplayContents_FromCallback }
           </td>
       )
     }
