@@ -32,6 +32,10 @@ $error-text-color: #A55353;
 // our fonts
 $theme-font: arial, sans-serif;
 
+//  Default font size (Applied to <body> in all-pages.scss)
+$default-font-size: 14px;
+
+
 // what all borders look like
 %default-border-properties {
   border-style: solid;
