@@ -15,8 +15,6 @@ let main_page_lorikeet_page_controller_path = undefined;
  */
 const lorikeetSpectrumViewer_CreateURL = function({ projectSearchId, psmId, openModPosition } : {projectSearchId:number, psmId:number, openModPosition:OpenModPosition_DataType}) {
 
-    console.log('openModPosition', openModPosition);
-
     if ( ! main_page_lorikeet_page_controller_path ) {
         const main_page_lorikeet_page_controller_pathDOMElement = document.getElementById("main_page_lorikeet_page_controller_path");
         if ( ! main_page_lorikeet_page_controller_pathDOMElement ) {

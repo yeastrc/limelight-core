@@ -8,6 +8,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {Protein} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/Protein";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
 
 export class ModViewDataManager {
 
@@ -19,6 +20,8 @@ export class ModViewDataManager {
     private readonly _proteinData : Map<number, Map<number, Protein>>;  // keyed on search id then protein version id
 
     private readonly _psmsForModMasses : Map<number, Map<number, Array<any>>>;
+
+    private readonly _scanInfoForPsms : Map<number, Map<number, PsmScanInfo>>;
 
     // keyed on: search id, then mod mass, then reported peptide id, then psm id
     private readonly _openModPsmsForModMassReportedPeptideId : Map<number, Map<number, Map<number, Map<number, any>>>>;
@@ -37,6 +40,7 @@ export class ModViewDataManager {
         this._reportedPeptides = new Map();
         this._proteinData = new Map();
         this._openModPsmsForModMassReportedPeptideId = new Map();
+        this._scanInfoForPsms = new Map();
 
         this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
         this._dataLoader = new ModViewPage_DataLoader();
@@ -81,6 +85,32 @@ export class ModViewDataManager {
         }
 
         console.log('done');
+    }
+
+    async getScanInfoForAllPsms({ projectSearchId } : { projectSearchId:number}):Promise<Map<number, PsmScanInfo>> {
+
+        if(!(this._scanInfoForPsms.has(projectSearchId))) {
+            this._scanInfoForPsms.set(projectSearchId, await this._dataLoader.getScanDataForSingleProjectSearchId({
+                searchDetailsBlockDataMgmtProcessing:this._searchDetailsBlockDataMgmtProcessing,
+                projectSearchId
+            }));
+        }
+
+        return this._scanInfoForPsms.get(projectSearchId);
+    }
+
+    async getScanInfoForPsm({ psmId, projectSearchId } : { psmId:number, projectSearchId:number}):Promise<PsmScanInfo> {
+
+        //console.log('called getScanInfoForPsm', psmId, projectSearchId);
+
+        if(!(this._scanInfoForPsms.has(projectSearchId))) {
+            this._scanInfoForPsms.set(projectSearchId, await this._dataLoader.getScanDataForSingleProjectSearchId({
+                searchDetailsBlockDataMgmtProcessing:this._searchDetailsBlockDataMgmtProcessing,
+                projectSearchId
+            }));
+        }
+
+        return this._scanInfoForPsms.get(projectSearchId).get(psmId);
     }
 
     async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<any>> {

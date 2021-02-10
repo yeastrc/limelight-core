@@ -7,6 +7,7 @@ import {lorikeetSpectrumViewer_CreateURL} from "page_js/data_pages/other_data_pa
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 import {ParseURL_Into_PageStateParts} from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
+import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
 
 export class PSMLocalizationReportDownloadGenerator {
 
@@ -46,12 +47,13 @@ export class PSMLocalizationReportDownloadGenerator {
     ) : Promise<string> {
 
         const reportLines:Array<string> = [];
-        reportLines.push(['mod mass', 'mod type', 'psm id', 'view psm link', 'search id', 'search name', 'peptide sequence', 'peptide mod position', 'residue', 'protein name', 'protein mod position'].join("\t"));
+        reportLines.push(['mod mass', 'mod type', 'scan number', 'scan filename', 'psm id', 'view psm link', 'search id', 'search name', 'peptide sequence', 'peptide mod position', 'residue', 'protein name', 'protein mod position'].join("\t"));
 
         for(const projectSearchId of projectSearchIds) {
 
             const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
             const searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
+            const psmScanInfo:Map<number, PsmScanInfo> = await modViewDataManager.getScanInfoForAllPsms({projectSearchId});
 
             // preemptively load all psm mod data for this search for these mod masses
             await modViewDataManager.loadPsmsForModMasses({projectSearchId, modMasses:sortedModMasses});
@@ -67,6 +69,9 @@ export class PSMLocalizationReportDownloadGenerator {
 
                     const reportedPeptideId: number = psmItem.reportedPeptideId;
                     const psmId:number = psmItem.psmId;
+                    const scanInfo:PsmScanInfo = psmScanInfo.get(psmId);
+                    const scanNumber = scanInfo.scanNumber;
+                    const scanFilename = scanInfo.scanFilename ? scanInfo.scanFilename : 'not found';
 
                     if (!(reportedPeptideMap.has(reportedPeptideId))) {
                         throw new Error("Error. Reported peptide map does not contain reported peptide for psm.");
@@ -101,7 +106,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                             projectSearchId
                                         })).sort().join(',');
 
-                                        const line = [modMass, 'variable', psmId, psmLink, searchId, searchName, peptideSequence, modPositionInPeptide, residue, proteinName, modPositionInProtein].join("\t");
+                                        const line = [modMass, 'variable', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, modPositionInPeptide, residue, proteinName, modPositionInProtein].join("\t");
                                         reportLines.push(line);
                                     }
                                 }
@@ -132,7 +137,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                         projectSearchId
                                     })).sort().join(',');
 
-                                    const line = [modMass, 'variable', psmId, psmLink, searchId, searchName, peptideSequence, 'n', residue, proteinName, modPositionInProtein].join("\t");
+                                    const line = [modMass, 'variable', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, 'n', residue, proteinName, modPositionInProtein].join("\t");
                                     reportLines.push(line);
                                 }
                             }
@@ -163,7 +168,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                         projectSearchId
                                     })).sort().join(',');
 
-                                    const line = [modMass, 'variable', psmId, psmLink, searchId, searchName, peptideSequence, 'c', residue, proteinName, modPositionInProtein].join("\t");
+                                    const line = [modMass, 'variable', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, 'c', residue, proteinName, modPositionInProtein].join("\t");
                                     reportLines.push(line);
                                 }
                             }
@@ -194,7 +199,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                             projectSearchId
                                         })).sort().join(',');
 
-                                        const line = [modMass, 'open', psmId, psmLink, searchId, searchName, peptideSequence, modPositionInPeptide, residue, proteinName, modPositionInProtein].join("\t");
+                                        const line = [modMass, 'open', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, modPositionInPeptide, residue, proteinName, modPositionInProtein].join("\t");
                                         reportLines.push(line);
                                     }
                                 }
@@ -225,7 +230,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                         projectSearchId
                                     })).sort().join(',');
 
-                                    const line = [modMass, 'open', psmId, psmLink, searchId, searchName, peptideSequence, 'n', residue, proteinName, modPositionInProtein].join("\t");
+                                    const line = [modMass, 'open', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, 'n', residue, proteinName, modPositionInProtein].join("\t");
                                     reportLines.push(line);
                                 }
                             }
@@ -256,7 +261,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                         projectSearchId
                                     })).sort().join(',');
 
-                                    const line = [modMass, 'open', psmId, psmLink, searchId, searchName, peptideSequence, 'c', residue, proteinName, modPositionInProtein].join("\t");
+                                    const line = [modMass, 'open', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, 'c', residue, proteinName, modPositionInProtein].join("\t");
                                     reportLines.push(line);
                                 }
                             }
@@ -290,7 +295,7 @@ export class PSMLocalizationReportDownloadGenerator {
                                         projectSearchId
                                     })).sort().join(',');
 
-                                    const line = [modMass, 'open', psmId, psmLink, searchId, searchName, peptideSequence, 'unlocalized', 'unlocalized', proteinName, 'unlocalized'].join("\t");
+                                    const line = [modMass, 'open', scanNumber, scanFilename, psmId, psmLink, searchId, searchName, peptideSequence, 'unlocalized', 'unlocalized', proteinName, 'unlocalized'].join("\t");
                                     reportLines.push(line);
                                 }
                             }

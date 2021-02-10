@@ -11,13 +11,14 @@ import {
     ReportedPeptideVariableMod
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
 
 export class ModViewPage_DataLoader {
 
     /**
      * Called by getModData_SingleProjectSearchId to create a request
      */
-    __createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, projectSearchId: number ) {
+    __createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, projectSearchId: number ) {
 
         let searchDataLookupParams_For_Single_ProjectSearchId =
             searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
@@ -27,9 +28,76 @@ export class ModViewPage_DataLoader {
             searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
         };
 
-        return {
-            requestObject : requestObject
-        };
+        return requestObject;
+    }
+
+    /**
+     * Get scan data (scan numbers, scan file names, etc) for all psms for this project search id that meet
+     * the passed-in filters
+     */
+    getScanDataForSingleProjectSearchId(
+        {
+            searchDetailsBlockDataMgmtProcessing,
+            projectSearchId
+        } : {
+            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            projectSearchId: number
+        } ) : Promise<Map<number, PsmScanInfo>> {
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
+
+                const url = "d/rws/for-page/psb/psm-info-per-reported-peptide-id-for-searchcriteria-single-project-search-id";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+
+                        console.log('responseData', responseData);
+
+                        const scanFileIdNameMap:Map<number, string> = new Map();
+                        if(responseData.scanFileInfo) {
+                            for(const dataObject of responseData.scanFileInfo) {
+                                scanFileIdNameMap.set(dataObject.scanFilenameId, dataObject.scanFilename);
+                            }
+                        }
+
+                        const psmScanInfoMap:Map<number, PsmScanInfo> = new Map();
+
+                        for(const dataObject of responseData.reportedPeptideId_psmIdList_List) {
+                            for(const psmItem of dataObject.psms) {
+                                const psmId = psmItem.psmId;
+                                const scanNumber = psmItem.scanNumber;
+                                const scanFilenameId = psmItem.scanFilenameId;
+                                const scanFilename = (scanFilenameId && scanFileIdNameMap.has(scanFilenameId)) ? scanFileIdNameMap.get(scanFilenameId) : null;
+
+                                psmScanInfoMap.set(psmId, new PsmScanInfo({psmId, scanNumber, scanFilenameId, scanFilename}));
+                            }
+                        }
+
+                        console.log('psmScanInfoMap', psmScanInfoMap);
+                        resolve(psmScanInfoMap);
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
     }
 
 
@@ -49,9 +117,9 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
-                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
                 const url = "d/rws/for-page/psb/psm-count-searchcriteria";
 
@@ -94,9 +162,9 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
-                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
                 const url = "d/rws/for-page/psb/mod-page-special-protein-positions-var-mods-per-reported-peptide-single-project-search-id";
 
@@ -179,9 +247,9 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForModDataForSingleProjectSearchId( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
-                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result.requestObject;
+                let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
                 const url = "d/rws/for-page/psb/scan-count-searchcriteria";
 
@@ -207,35 +275,6 @@ export class ModViewPage_DataLoader {
         });
     }
 
-    //////
-
-    /**
-     * Called by getProteinInfoList_SingleProjectSearchId to create a request.
-     */
-    __createRequestForProteinDataForSingleProjectSearchId(
-        {
-            projectSearchId,
-            searchDetailsBlockDataMgmtProcessing
-        } : {
-            projectSearchId: number
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-        } ) {
-
-        // Validate that only 1 project search id since that is what this supports
-
-        let searchDataLookupParams_For_Single_ProjectSearchId =
-            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
-
-        let requestObject = {
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
-            projectSearchId : projectSearchId
-        };
-
-        return {
-            requestObject : requestObject
-        };
-    }
-
     /**
      * Get Protein Info List For Single Project Search Id
      */
@@ -252,8 +291,8 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForProteinDataForSingleProjectSearchId( { projectSearchId, searchDetailsBlockDataMgmtProcessing } );
-                let requestObject = createRequestData_For_getProteinInfoList_Result.requestObject;
+                let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let requestObject = createRequestData_For_getProteinInfoList_Result;
 
                 const url = "d/rws/for-page/psb/protein-info-searchcriteria-list";
 
@@ -279,28 +318,6 @@ export class ModViewPage_DataLoader {
         });
     }
 
-
-    __createRequestForOpenModDataForProjectSearchId(
-        {
-            searchDetailsBlockDataMgmtProcessing,
-            projectSearchId
-        } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            projectSearchId: number
-        }
-    ) {
-
-        let searchDataLookupParams_For_Single_ProjectSearchId =
-            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
-
-        let requestObject = {
-            projectSearchId : projectSearchId,
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
-        };
-
-        return requestObject;
-    }
-
     getPSMModDataForProjectSearchId(
         {
             searchDetailsBlockDataMgmtProcessing,
@@ -314,7 +331,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id";
 
@@ -352,7 +369,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForOpenModDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id";
 
@@ -480,25 +497,6 @@ export class ModViewPage_DataLoader {
         });
     }
 
-    __createRequestForOpenModPSMDataForProjectSearchId(
-        {
-            searchDetailsBlockDataMgmtProcessing,
-            projectSearchId
-        } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            projectSearchId: number
-        } ) {
-
-        let searchDataLookupParams_For_Single_ProjectSearchId =
-            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
-
-        let requestObject = {
-            projectSearchId : projectSearchId,
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
-        };
-
-        return requestObject;
-    }
     getOpenModPSMDataForProjectSearchId(
         {
             searchDetailsBlockDataMgmtProcessing,
@@ -514,7 +512,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise<Map<number, Map<number, Map<number, any>>>>( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForOpenModPSMDataForProjectSearchId( { searchDetailsBlockDataMgmtProcessing, projectSearchId } );
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id";
 
