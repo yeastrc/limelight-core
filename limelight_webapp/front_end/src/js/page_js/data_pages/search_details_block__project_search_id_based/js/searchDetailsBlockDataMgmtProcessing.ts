@@ -18,6 +18,10 @@ import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/data
 import { SearchDataLookupParameters_Root, SearchDataLookupParams_For_Single_ProjectSearchId } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 
 
+interface SearchDetailsBlockDataMgmtProcessing_getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds_Params{
+	dataPageStateManager? : DataPageStateManager
+}
+
 /**
  * 
  */
@@ -25,23 +29,17 @@ export class SearchDetailsBlockDataMgmtProcessing {
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 
-	//  Added only since Mod page code is referencing this.  Otherwise, it is not used in this class
-	readonly _dataPageStateManager_DataFrom_Server : DataPageStateManager;
-
 	/**
 	 * 
 	 */
 	constructor({ 
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-		dataPageStateManager_DataFrom_Server
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
 	} :
 	{ 
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager, 
-		dataPageStateManager_DataFrom_Server : DataPageStateManager 
 	}) {
 		
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
-		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -78,15 +76,13 @@ export class SearchDetailsBlockDataMgmtProcessing {
 	 * @returns searchDetails_Filters_AnnTypeDisplay_Root passed to store... method: which is object Parsed from JSON passed in HTML from server on page load
 	 * 				Return value has no type info since is from object Parsed from JSON passed in HTML from server on page load
 	 */
-	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ 
-		dataPageStateManager 
-	} : { 
-		dataPageStateManager : DataPageStateManager 
-	}) : SearchDataLookupParameters_Root {
+	getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds(
+		params? : SearchDetailsBlockDataMgmtProcessing_getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds_Params
+	) : SearchDataLookupParameters_Root {
 
 		let dataPageStateManager_Local : DataPageStateManager = undefined;
-		if ( dataPageStateManager ) {
-			dataPageStateManager_Local = dataPageStateManager;
+		if ( params && params.dataPageStateManager ) {
+			dataPageStateManager_Local = params.dataPageStateManager;
 		}
 		
 		if ( ! dataPageStateManager_Local ) {

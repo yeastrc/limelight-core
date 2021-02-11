@@ -267,7 +267,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
 
         const searchDataLookupParamsRoot: SearchDataLookupParameters_Root =
-            props.propsValue.searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined});
+            props.propsValue.searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
 
         const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =
