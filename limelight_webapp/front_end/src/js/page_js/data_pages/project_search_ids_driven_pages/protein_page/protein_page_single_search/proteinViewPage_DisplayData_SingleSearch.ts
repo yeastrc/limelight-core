@@ -248,7 +248,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 				const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
 					objectThis._searchDetailsBlockDataMgmtProcessing.
-					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+					getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
 				if ( ! searchDataLookupParamsRoot ) {
 					throw Error( "searchDataLookupParamsRoot not found" );
@@ -815,7 +815,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = (
 			this._searchDetailsBlockDataMgmtProcessing.
-			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
 		);
 
 		const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = new Map();

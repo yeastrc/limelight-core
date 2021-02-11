@@ -175,7 +175,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
         let searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
             this._searchDetailsBlockDataMgmtProcessing.
-            getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+            getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
         let paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
 

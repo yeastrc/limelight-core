@@ -249,7 +249,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
 
         const searchDetails_Filters_AnnTypeDisplayRootObject : SearchDataLookupParameters_Root = (
             this.props.propValue.searchDetailsBlockDataMgmtProcessing
-                .getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
+                .getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
         );
 
         const paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
@@ -362,7 +362,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
 
         const searchDetails_Filters_AnnTypeDisplayRootObject : SearchDataLookupParameters_Root = (
             this.props.propValue.searchDetailsBlockDataMgmtProcessing
-                .getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
+                .getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
         );
 
         const paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
@@ -483,7 +483,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
 
         const searchDetails_Filters_AnnTypeDisplayRootObject : SearchDataLookupParameters_Root = (
             this.props.propValue.searchDetailsBlockDataMgmtProcessing
-                .getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
+                .getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
         );
 
         const paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;

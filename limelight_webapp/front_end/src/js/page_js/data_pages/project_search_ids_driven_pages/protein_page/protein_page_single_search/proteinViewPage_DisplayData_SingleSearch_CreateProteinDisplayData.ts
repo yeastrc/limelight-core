@@ -290,7 +290,7 @@ const _getAnnotationTypeRecords_DisplayOrder = function({ projectSearchId, searc
 } {
 
     let searchDetails_Filters_AnnTypeDisplayRootObject : SearchDataLookupParameters_Root = 
-        searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+        searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
     
     let paramsForProjectSearchIds = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds;
 

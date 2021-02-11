@@ -214,7 +214,7 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
 
         const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
             this._searchDetailsBlockDataMgmtProcessing.
-            getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+            getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
         if ( ! searchDataLookupParamsRoot ) {
             throw Error( "searchDataLookupParamsRoot not found" );

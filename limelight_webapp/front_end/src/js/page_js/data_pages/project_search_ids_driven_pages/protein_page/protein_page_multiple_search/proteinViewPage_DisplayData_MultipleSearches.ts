@@ -330,7 +330,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 					objectThis._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 				const searchDataLookupParamsRoot: SearchDataLookupParameters_Root =
-					objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined});
+					objectThis._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
 				if (!searchDataLookupParamsRoot) {
 					throw Error("searchDataLookupParamsRoot not found");
@@ -1543,7 +1543,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		}
 
 		const searchDataLookupParamsRoot: SearchDataLookupParameters_Root = (
-			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined})
+			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
 		);
 
 		this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinPage_Display_MultipleSearches_SingleProtein({
