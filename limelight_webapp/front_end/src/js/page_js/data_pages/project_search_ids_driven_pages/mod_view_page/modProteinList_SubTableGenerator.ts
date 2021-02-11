@@ -10,7 +10,6 @@ import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_sea
 import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {ModProteinSearchList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableGenerator";
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModProteinSearchPeptideList_SubTableGenerator,
@@ -34,14 +33,13 @@ export class ModProteinList_SubTableGenerator {
         const modMass:number = params.modMass;
         const modViewDataManager:ModViewDataManager = params.modViewDataManager;
         const vizOptionsData = params.vizOptionsData;
-        const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
         // create the columns for the table
         const dataTableColumns : Array<DataTable_Column> = await ModProteinList_SubTableGenerator.getDataTableColumns({
             vizOptionsData,
             modMass,
-            searchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server
         });
 
         // create the rows for the table
@@ -49,7 +47,6 @@ export class ModProteinList_SubTableGenerator {
             modViewDataManager,
             vizOptionsData,
             modMass,
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server
         });
 
@@ -78,11 +75,11 @@ export class ModProteinList_SubTableGenerator {
         {
             vizOptionsData,
             modMass,
-            searchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server
         }:{
             vizOptionsData : ModView_VizOptionsData,
             modMass:number,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
     ) : Promise<Array<DataTable_Column>> {
 
@@ -124,7 +121,7 @@ export class ModProteinList_SubTableGenerator {
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
 
         for(const projectSearchId of projectSearchIds) {
-            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
+            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
 
             const dataTableColumn = new DataTable_Column({
                 id : projectSearchId + '-' + modMass + '-psms', // Used for tracking sort order. Keep short
@@ -144,13 +141,11 @@ export class ModProteinList_SubTableGenerator {
             modViewDataManager,
             vizOptionsData,
             modMass,
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server
         } : {
             modViewDataManager:ModViewDataManager,
             vizOptionsData : ModView_VizOptionsData
             modMass:number,
-            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
     ) : Promise<Array<DataTable_DataRowEntry>> {
@@ -234,7 +229,6 @@ export class ModProteinList_SubTableGenerator {
                     vizOptionsData,
                     modMass,
                     proteinId: proteinData.proteinId,
-                    searchDetailsBlockDataMgmtProcessing,
                     dataPageStateManager_DataFrom_Server
                 });
             } else {
@@ -243,7 +237,6 @@ export class ModProteinList_SubTableGenerator {
                     vizOptionsData,
                     modMass,
                     proteinId: proteinData.proteinId,
-                    searchDetailsBlockDataMgmtProcessing,
                     dataPageStateManager_DataFrom_Server,
                     projectSearchId:projectSearchIds[0]
                 });

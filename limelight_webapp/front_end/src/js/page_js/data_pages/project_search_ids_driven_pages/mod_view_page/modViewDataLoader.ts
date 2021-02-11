@@ -10,22 +10,19 @@ import {
     ReportedPeptide,
     ReportedPeptideVariableMod
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
+import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 export class ModViewPage_DataLoader {
 
     /**
      * Called by getModData_SingleProjectSearchId to create a request
      */
-    __createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing, projectSearchId: number ) {
-
-        let searchDataLookupParams_For_Single_ProjectSearchId =
-            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
+    __createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId, projectSearchId: number ) {
 
         let requestObject = {
             projectSearchId : projectSearchId,
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId
+            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams
         };
 
         return requestObject;
@@ -37,10 +34,10 @@ export class ModViewPage_DataLoader {
      */
     getScanDataForSingleProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
         } ) : Promise<Map<number, PsmScanInfo>> {
 
@@ -48,7 +45,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
@@ -106,10 +103,10 @@ export class ModViewPage_DataLoader {
      */
     getTotalPSMCountForSingleProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
         } ) {
 
@@ -117,7 +114,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
@@ -151,10 +148,10 @@ export class ModViewPage_DataLoader {
      */
     getReportedPeptidesForProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
         } ) : Promise<Map<number, ReportedPeptide>> {
 
@@ -162,7 +159,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
@@ -236,10 +233,10 @@ export class ModViewPage_DataLoader {
      */
     getTotalScanCountForSingleProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
         } ) {
 
@@ -247,7 +244,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 let requestObject = createRequestData_SingleProjectSearchId_For_getModData_Result;
 
@@ -281,17 +278,17 @@ export class ModViewPage_DataLoader {
     getProteinAnnotationDataForSingleProjectSearchId(
         {
             projectSearchId,
-            searchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams
         } : {
             projectSearchId: number
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
         } ) {
 
         let objectThis = this;
 
         return new Promise( function( resolve, reject ) {
             try {
-                let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
                 let requestObject = createRequestData_For_getProteinInfoList_Result;
 
                 const url = "d/rws/for-page/psb/protein-info-searchcriteria-list";
@@ -320,10 +317,10 @@ export class ModViewPage_DataLoader {
 
     getPSMModDataForProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
         }) {
 
@@ -331,7 +328,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id";
 
@@ -358,10 +355,10 @@ export class ModViewPage_DataLoader {
 
     getScanModDataForProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
         } ) {
 
@@ -369,7 +366,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id";
 
@@ -396,21 +393,18 @@ export class ModViewPage_DataLoader {
 
     __createRequestForPSMDataForProjectSearchIdModMasses(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId,
             modMasses
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId,
             projectSearchId: number,
             modMasses:Array<number>
         } ) {
 
-        let searchDataLookupParams_For_Single_ProjectSearchId =
-            searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId( { projectSearchId : projectSearchId } );
-
         let requestObject = {
             projectSearchId : projectSearchId,
-            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams_For_Single_ProjectSearchId,
+            searchDataLookupParams_For_Single_ProjectSearchId : searchDataLookupParams,
             modMassesInteger : modMasses
         };
 
@@ -419,11 +413,11 @@ export class ModViewPage_DataLoader {
 
     getPSMDataForProjectSearchIdModMasses(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId,
             modMasses
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId,
             projectSearchId: number,
             modMasses : Array<number>
         } ) {
@@ -432,7 +426,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMasses } );
+                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDataLookupParams, projectSearchId, modMasses } );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id";
 
@@ -459,11 +453,11 @@ export class ModViewPage_DataLoader {
 
     getPSMDataForProjectSearchIdModMass(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId,
             modMass
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId,
             projectSearchId: number,
             modMass
         } ) {
@@ -472,7 +466,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDetailsBlockDataMgmtProcessing, projectSearchId, modMasses:[modMass] } );
+                let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDataLookupParams, projectSearchId, modMasses:[modMass] } );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id";
 
@@ -499,10 +493,10 @@ export class ModViewPage_DataLoader {
 
     getOpenModPSMDataForProjectSearchId(
         {
-            searchDetailsBlockDataMgmtProcessing,
+            searchDataLookupParams,
             projectSearchId
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId,
             projectSearchId: number
         } ): Promise<Map<number, Map<number, Map<number, any>>>> {
 
@@ -512,7 +506,7 @@ export class ModViewPage_DataLoader {
 
         return new Promise<Map<number, Map<number, Map<number, any>>>>( function( resolve, reject ) {
             try {
-                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDetailsBlockDataMgmtProcessing, projectSearchId );
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id";
 

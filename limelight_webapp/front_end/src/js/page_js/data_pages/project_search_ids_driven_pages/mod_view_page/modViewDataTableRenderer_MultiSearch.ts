@@ -8,23 +8,11 @@
 import {
 
 	DataTable_RootTableObject,
-
 	DataTable_TableOptions,
-	DataTable_TableOptions_dataRowClickHandler_RequestParm,
-	DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-	DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-
 	DataTable_Column,
-
 	DataTable_RootTableDataObject,
-	DataTable_DataGroupRowEntry,
 	DataTable_DataRowEntry,
 	DataTable_DataRow_ColumnEntry,
-
-	DataTable_cellMgmt_External,
-	DataTable_cellMgmt_External_PopulateRequest,
-	DataTable_cellMgmt_External_PopulateResponse,
-	DataTable_cellMgmt_ExternalReactComponent
 
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
@@ -32,7 +20,6 @@ import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/d
 import {wholeModTable_ShowCount_ExternalReactComponent} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/whole_mod_table_show_count_External_Component";
 import {ModProteinList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator";
 import {ModProteinList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableProperties";
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {
@@ -47,7 +34,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 	static renderDataTable(
 		{
 			vizSelectedStateObject,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
 			modMap,
@@ -58,7 +44,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 			colorScale
 		} : {
 			vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
-			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
 			sortedModMasses,
 			modMap,
@@ -74,7 +59,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 		// create the columns for the table
 		const dataTableColumns : Array<DataTable_Column> = ModViewDataTableRenderer_MultiSearch.getDataTableColumns({
 			vizSelectedStateObject,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
 			modMap,
@@ -86,7 +70,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 		// create the rows for the table
 		const dataTableRows : Array<DataTable_DataRowEntry> = ModViewDataTableRenderer_MultiSearch.getDataTableRows({
 			vizSelectedStateObject,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
 			modMap,
@@ -132,7 +115,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 	static getDataTableRows(
 		{
 			vizSelectedStateObject,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
 			modMap,
@@ -142,7 +124,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 			colorScale
 		} : {
 			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
-			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
 			sortedModMasses,
 			modMap,
@@ -196,7 +177,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 			// data to pass in for the sub table
 			const subTableData = new ModProteinList_SubTableProperties({
-				searchDetailsBlockDataMgmtProcessing,
 				dataPageStateManager_DataFrom_Server,
 				modViewDataManager,
 				vizOptionsData,
@@ -220,7 +200,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 	static getDataTableColumns(
 		{
 			vizSelectedStateObject,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
 			modMap,
@@ -229,7 +208,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 			vizOptionsData,
 		} : {
 			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
-			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 			dataPageStateManager_DataFrom_Server: DataPageStateManager
 			sortedModMasses,
 			modMap,
@@ -262,7 +240,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 			const dataTableColumn = new DataTable_Column({
 				id : projectSearchId + "_val", // Used for tracking sort order. Keep short
-				displayName : ModViewDataTableRenderer_MultiSearch.getDisplayNameForModMassColumn({projectSearchId, searchDetailsBlockDataMgmtProcessing, vizOptionsData }),
+				displayName : ModViewDataTableRenderer_MultiSearch.getDisplayNameForModMassColumn({projectSearchId, dataPageStateManager_DataFrom_Server, vizOptionsData }),
 				width : 100,
 				sortable : true,
 				style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
@@ -279,14 +257,14 @@ export class ModViewDataTableRenderer_MultiSearch {
 	}
 
 	static getDisplayNameForModMassColumn(
-		{ projectSearchId, vizOptionsData, searchDetailsBlockDataMgmtProcessing } :
+		{ projectSearchId, vizOptionsData, dataPageStateManager_DataFrom_Server } :
 		{
 			projectSearchId:number,
 			vizOptionsData: ModView_VizOptionsData,
-			searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+			dataPageStateManager_DataFrom_Server : DataPageStateManager
 		}) : string  {
 
-		const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing });
+		const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
 
 		let displayString = '';
 

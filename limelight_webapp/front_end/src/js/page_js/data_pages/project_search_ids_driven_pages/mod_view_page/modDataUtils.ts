@@ -1,16 +1,16 @@
 import {UnlocalizedStartEnd} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 export class ModDataUtils {
 
     static getSearchNameForProjectSearchId(
         {
             projectSearchId,
-            searchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server
         } : {
             projectSearchId: number,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
         let projectSearchIdInt = projectSearchId;
@@ -28,7 +28,7 @@ export class ModDataUtils {
             console.warn( "getSearchNameForProjectSearchId(...) projectSearchId param is declared number but is not a number ")
         }
 
-        const searchNameObject = searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );
+        const searchNameObject = dataPageStateManager_DataFrom_Server.get_searchNames_AsMap().get( projectSearchIdInt );
         if ( ! searchNameObject ) {
             const msg = "getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing}): No entry in searchDetailsBlockDataMgmtProcessing._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap() for projectSearchIdInt: " + projectSearchIdInt;
             console.warn( msg );

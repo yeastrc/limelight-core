@@ -1,7 +1,6 @@
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
 import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {
@@ -18,13 +17,11 @@ export class ModViewDataVizRendererOptionsHandler {
 
     static async showOptionsOnPage(
         {
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
             allProjectSearchIds
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
             dataPageStateManager_DataFrom_Server :  DataPageStateManager
             vizOptionsData : ModView_VizOptionsData
             modViewDataManager : ModViewDataManager
@@ -50,7 +47,6 @@ export class ModViewDataVizRendererOptionsHandler {
 
         // add handlers to fields
         ModViewDataVizRendererOptionsHandler.addChangeHandlerToFormElements({
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
@@ -68,14 +64,12 @@ export class ModViewDataVizRendererOptionsHandler {
 
     static async showProteinPositionFilterForm(
         {
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
             $formDiv,
             allProjectSearchIds
         } : {
-            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server:DataPageStateManager,
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
@@ -94,7 +88,6 @@ export class ModViewDataVizRendererOptionsHandler {
         $addProteinForm.html("Loading protein data...");
 
         const formHTML = await ModViewDataVizRendererOptionsHandler.getAddProteinFormHTML({
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
@@ -407,13 +400,11 @@ export class ModViewDataVizRendererOptionsHandler {
 
     static async getAddProteinFormHTML(
         {
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
             allProjectSearchIds
         } : {
-            searchDetailsBlockDataMgmtProcessing:SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server:DataPageStateManager,
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
@@ -493,13 +484,11 @@ export class ModViewDataVizRendererOptionsHandler {
 
     static addChangeHandlerToFormElements(
         {
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
             allProjectSearchIds
         } : {
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
             dataPageStateManager_DataFrom_Server :  DataPageStateManager
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
@@ -516,7 +505,6 @@ export class ModViewDataVizRendererOptionsHandler {
                 vizOptionsData,
                 modViewDataManager,
                 dataPageStateManager_DataFrom_Server,
-                searchDetailsBlockDataMgmtProcessing,
                 allProjectSearchIds
             });
         });
@@ -609,7 +597,6 @@ export class ModViewDataVizRendererOptionsHandler {
             vizOptionsData.stateManagementObject.updateState();
 
             ModViewDataVizRenderer_MultiSearch.renderDataViz({
-                searchDetailsBlockDataMgmtProcessing,
                 dataPageStateManager_DataFrom_Server,
                 vizOptionsData,
                 modViewDataManager

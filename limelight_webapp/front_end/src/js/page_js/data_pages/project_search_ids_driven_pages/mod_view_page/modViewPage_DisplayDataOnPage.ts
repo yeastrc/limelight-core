@@ -24,6 +24,9 @@ import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callb
 import {Simulate} from "react-dom/test-utils";
 import load = Simulate.load;
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {
+	SearchDataLookupParameters_Root,
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 /**
  * 
@@ -126,11 +129,15 @@ export class ModViewPage_DisplayDataOnPage {
 
 		let projectSearchIds = // array
 			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
-				
+
+		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
+			this._searchDetailsBlockDataMgmtProcessing.
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined });
+
 		let searchDetailsBlockDataMgmtProcessing = this._searchDetailsBlockDataMgmtProcessing;
 
-		const modViewDataManager = new ModViewDataManager(searchDetailsBlockDataMgmtProcessing);
-		this.renderModDataPage( { projectSearchIds, searchDetailsBlockDataMgmtProcessing, modViewDataManager } );
+		const modViewDataManager = new ModViewDataManager(searchDataLookupParamsRoot);
+		this.renderModDataPage( { projectSearchIds, modViewDataManager } );
 	}
 
 	/**
@@ -140,24 +147,20 @@ export class ModViewPage_DisplayDataOnPage {
 	 */
 	renderModDataPage( { 
 		projectSearchIds,
-		searchDetailsBlockDataMgmtProcessing,
 		modViewDataManager
 	} : { 
 		projectSearchIds : Array<number>
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		modViewDataManager : ModViewDataManager
 	} ) {
 
-		this.renderModDataPageMultiSearch({ searchDetailsBlockDataMgmtProcessing, projectSearchIds, modViewDataManager } );
+		this.renderModDataPageMultiSearch({ projectSearchIds, modViewDataManager } );
 	}
 
 	renderModDataPageMultiSearch({ 
 		projectSearchIds,
-		searchDetailsBlockDataMgmtProcessing,
 		modViewDataManager
 	} : { 
 		projectSearchIds : Array<number>
-		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		modViewDataManager : ModViewDataManager
 	} ) {
 
@@ -194,7 +197,6 @@ export class ModViewPage_DisplayDataOnPage {
 		// add the options section to the page using these viz options  -  IDE warning message: Promise returned from showOptionsOnPage is ignored
 		ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
 			vizOptionsData,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			modViewDataManager,
 			allProjectSearchIds:projectSearchIds
@@ -203,7 +205,6 @@ export class ModViewPage_DisplayDataOnPage {
 		// add the viz to the page using these viz options
 		ModViewDataVizRenderer_MultiSearch.renderDataViz({
 			vizOptionsData,
-			searchDetailsBlockDataMgmtProcessing,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			modViewDataManager
 		});

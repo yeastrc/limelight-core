@@ -14,7 +14,6 @@ import {
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
@@ -30,7 +29,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const projectSearchId:number = params.projectSearchId;
         const proteinId:number = params.proteinId;
         const modViewDataManager:ModViewDataManager = params.modViewDataManager;
-        const searchDetailsBlockDataMgmtProcessing = params.searchDetailsBlockDataMgmtProcessing;
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
         const vizOptionsData = params.vizOptionsData;
 
@@ -43,7 +41,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modViewDataManager,
             modMass,
             proteinId,
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData
         });
@@ -150,7 +147,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modMass,
             proteinId,
             projectSearchId,
-            searchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server,
             vizOptionsData
         } : {
@@ -158,7 +154,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modMass,
             proteinId,
             projectSearchId: number,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
             dataPageStateManager_DataFrom_Server : DataPageStateManager,
             vizOptionsData
         }
@@ -245,7 +240,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 projectSearchId: projectSearchId,
                 psmIds_Include: proteinData.psmIds,
                 reportedPeptideId: undefined,
-                searchDataLookupParamsRoot: searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined }),
+                searchDataLookupParamsRoot: modViewDataManager.searchDataLookupParameters_Root,
                 openModPositionOverride:proteinData.openModPositionOverride
             });
 

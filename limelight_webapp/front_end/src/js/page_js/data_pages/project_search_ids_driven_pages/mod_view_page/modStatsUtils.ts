@@ -3,8 +3,8 @@ import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/download
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
 import {ModViewDataManager} from "./modViewDataManager";
 import {ModalOverlay} from 'page_js/data_pages/display_utilities/modalOverlay.js';
-import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 export class ModStatsUtils {
 
@@ -13,14 +13,14 @@ export class ModStatsUtils {
             vizOptionsData,
             sortedModMasses,
             projectSearchIds,
-            searchDetailsBlockDataMgmtProcessing,
-            modViewDataManager
+            modViewDataManager,
+            dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
             sortedModMasses,
             projectSearchIds: Array<number>,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            modViewDataManager : ModViewDataManager
+            modViewDataManager : ModViewDataManager,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
@@ -29,8 +29,8 @@ export class ModStatsUtils {
         let output = "# Search Id Key:\n"
 
         for(const projectSearchId of projectSearchIds) {
-            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
-            output += "#\t" + searchId + "\t" + ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing }) + "\n";
+            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server })
+            output += "#\t" + searchId + "\t" + ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server }) + "\n";
         }
         output += "#\n";
 
@@ -40,7 +40,7 @@ export class ModStatsUtils {
 
         output += "mod mass";
         for(const projectSearchId of projectSearchIds) {
-            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, searchDetailsBlockDataMgmtProcessing })
+            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server })
             output += "\tSearch:" + searchId + " " + quantTypeString + " " + (vizOptionsData.data.psmQuant === 'counts' ? "count" : "ratio");
         }
 
@@ -88,14 +88,14 @@ export class ModStatsUtils {
             vizOptionsData,
             sortedModMasses,
             projectSearchIds,
-            searchDetailsBlockDataMgmtProcessing,
-            modViewDataManager
+            modViewDataManager,
+            dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
             sortedModMasses,
             projectSearchIds: Array<number>,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            modViewDataManager:ModViewDataManager
+            modViewDataManager:ModViewDataManager,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
         // do nothing if it's not an even number of searches
@@ -221,13 +221,13 @@ export class ModStatsUtils {
                 group0:group0.map( function(x) {
                     return ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
                         projectSearchId: x,
-                        searchDetailsBlockDataMgmtProcessing
+                        dataPageStateManager_DataFrom_Server
                     })
                 }).sort().join(','),
                 group1:group1.map( function(x) {
                     return ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
                         projectSearchId: x,
-                        searchDetailsBlockDataMgmtProcessing
+                        dataPageStateManager_DataFrom_Server
                     })
                 }).sort().join(','),
                 modMass:modMass,
@@ -301,14 +301,14 @@ export class ModStatsUtils {
             vizOptionsData,
             sortedModMasses,
             projectSearchIds,
-            searchDetailsBlockDataMgmtProcessing,
-            modViewDataManager
+            modViewDataManager,
+            dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
             sortedModMasses,
             projectSearchIds: Array<number>,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            modViewDataManager:ModViewDataManager
+            modViewDataManager:ModViewDataManager,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
@@ -413,19 +413,19 @@ export class ModStatsUtils {
                         const ob = {
                             name1:ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({
                                 projectSearchId: projectSearchId1,
-                                searchDetailsBlockDataMgmtProcessing
+                                dataPageStateManager_DataFrom_Server
                             }),
                             name2:ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({
                                 projectSearchId: projectSearchId2,
-                                searchDetailsBlockDataMgmtProcessing
+                                dataPageStateManager_DataFrom_Server
                             }),
                             search1:ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
                                 projectSearchId: projectSearchId1,
-                                searchDetailsBlockDataMgmtProcessing
+                                dataPageStateManager_DataFrom_Server
                             }),
                             search2:ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
                                 projectSearchId: projectSearchId2,
-                                searchDetailsBlockDataMgmtProcessing
+                                dataPageStateManager_DataFrom_Server
                             }),
                             modMass:modMass,
                             count1:x1,
@@ -502,14 +502,14 @@ export class ModStatsUtils {
             vizOptionsData,
             sortedModMasses,
             projectSearchIds,
-            searchDetailsBlockDataMgmtProcessing,
-            modViewDataManager
+            modViewDataManager,
+            dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
             sortedModMasses,
             projectSearchIds: Array<number>,
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            modViewDataManager:ModViewDataManager
+            modViewDataManager:ModViewDataManager,
+            dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
@@ -584,11 +584,11 @@ export class ModStatsUtils {
 
                         output += ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({
                             projectSearchId: projectSearchId1,
-                            searchDetailsBlockDataMgmtProcessing
+                            dataPageStateManager_DataFrom_Server
                         }) + "\t";
                         output += ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({
                             projectSearchId: projectSearchId2,
-                            searchDetailsBlockDataMgmtProcessing
+                            dataPageStateManager_DataFrom_Server
                         }) + "\t";
                         output += modMass + "\t";
                         output += x1 + "\t";
