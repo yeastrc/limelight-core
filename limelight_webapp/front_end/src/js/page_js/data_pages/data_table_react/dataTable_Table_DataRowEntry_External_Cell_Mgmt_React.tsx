@@ -196,7 +196,9 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
                     console.warn( msg );
                     throw Error( msg );
                 }
-                styleContainer_TD[ style_override_ReactKey ] =  style_override_React[ style_override_ReactKey ];
+                if ( style_override_ReactKey !== 'display') { // NOT ALLOW: change to 'display' property
+                    styleContainer_TD[style_override_ReactKey] = style_override_React[style_override_ReactKey];
+                }
             }
         }
         

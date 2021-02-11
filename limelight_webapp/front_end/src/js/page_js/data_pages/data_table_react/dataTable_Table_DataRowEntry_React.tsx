@@ -187,7 +187,9 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
             console.warn( msg );
             throw Error( msg );
           }
-          styleContainerDiv[ style_override_ReactKey ] =  style_override_React[ style_override_ReactKey ];
+          if ( style_override_ReactKey !== 'display') { // NOT ALLOW: change to 'display' property
+              styleContainerDiv[style_override_ReactKey] = style_override_React[style_override_ReactKey];
+          }
         }
       }
 
