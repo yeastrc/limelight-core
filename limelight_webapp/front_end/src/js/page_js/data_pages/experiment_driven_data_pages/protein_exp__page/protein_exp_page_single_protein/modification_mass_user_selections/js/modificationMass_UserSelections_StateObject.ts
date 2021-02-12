@@ -52,6 +52,7 @@ const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE_PROPERTY_NAME =
 //  Values in ...SELECTION_TYPE_PROPERTY_NAME
 const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ANY__PROPERTY_NAME = "a"
 const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ALL__PROPERTY_NAME = "b"
+const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__NOT__PROPERTY_NAME = "c"
 
 ///////
 
@@ -120,9 +121,9 @@ export class ModificationMass_UserSelections_StateObject {
     }
 
     /**
-     * @returns true if any Static Modifications currently selected of type SelectionType.ANY
+     * @returns true if any Static Modifications currently selected of type singleProtein_Filter_SelectionType_Requested
      */
-    is_Any_StaticModification_Selected__SelectionType__ANY() : boolean {
+    is_Any_StaticModification_Selected__For_SelectionType({ singleProtein_Filter_SelectionType_Requested } : { singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType }) : boolean {
 
         let anySelected = false;
         if ( this._staticModificationsSelected.size !== 0 ) {
@@ -130,7 +131,7 @@ export class ModificationMass_UserSelections_StateObject {
                 const map_Key_ModMass = mapEntry_Key_ResidueLetter[ 1 ]
                 for ( const mapEntry_Key_ModMass of map_Key_ModMass.entries() ) {
                     const selectionEntry = mapEntry_Key_ModMass[1]
-                    if (selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY) {
+                    if (selectionEntry.selectionType === singleProtein_Filter_SelectionType_Requested) {
                         anySelected = true
                         break;
                     }
@@ -140,31 +141,7 @@ export class ModificationMass_UserSelections_StateObject {
                 }
             }
         }
-        return anySelected // any selection of type SelectionType.ANY
-    }
-
-    /**
-     * @returns true if any Static Modifications currently selected of type SelectionType.ALL
-     */
-    is_Any_StaticModification_Selected__SelectionType__ALL() : boolean {
-
-        let anySelected = false;
-        if ( this._staticModificationsSelected.size !== 0 ) {
-            for ( const mapEntry_Key_ResidueLetter of this._staticModificationsSelected.entries() ) {
-                const map_Key_ModMass = mapEntry_Key_ResidueLetter[ 1 ]
-                for ( const mapEntry_Key_ModMass of map_Key_ModMass.entries() ) {
-                    const selectionEntry = mapEntry_Key_ModMass[1]
-                    if (selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL) {
-                        anySelected = true
-                        break;
-                    }
-                }
-                if ( anySelected ) {
-                    break
-                }
-            }
-        }
-        return anySelected // any selection of type SelectionType.ALL
+        return anySelected // any selection of type singleProtein_Filter_SelectionType_Requested
     }
 
 	/**
@@ -222,6 +199,28 @@ export class ModificationMass_UserSelections_StateObject {
             for ( const massMapEntry of entryResidueMapValue ) {
                 const selectionTypeEntry = massMapEntry[ 1 ]
                 if ( selectionTypeEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                    const mass = massMapEntry[0]
+                    resultMassSet.add(mass)
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @returns a Map of the currently selected Static Modifications.  Just Residues and Masses:  Only for "NOT" Selection type SingleProtein_Filter_SelectionType.NOT
+     *     Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
+     */
+    get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__NOT_SelectionType() : Map<string, Set<number>> {
+        const result : Map<string, Set<number>> = new Map()
+        for ( const entryResidueMapEntry of this._staticModificationsSelected.entries() ) {
+            const entryResidue = entryResidueMapEntry[ 0 ]
+            const entryResidueMapValue = entryResidueMapEntry[ 1 ];
+            const resultMassSet = new Set<number>();
+            result.set( entryResidue, resultMassSet );
+            for ( const massMapEntry of entryResidueMapValue ) {
+                const selectionTypeEntry = massMapEntry[ 1 ]
+                if ( selectionTypeEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
                     const mass = massMapEntry[0]
                     resultMassSet.add(mass)
                 }
@@ -475,6 +474,8 @@ const _decodeStaticModSelection = function( selectionEncoded : string ) : Single
         selectionType = SingleProtein_Filter_SelectionType.ANY
     } else if ( selectionEncoded === _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ALL__PROPERTY_NAME ) {
         selectionType = SingleProtein_Filter_SelectionType.ALL
+    } else if ( selectionEncoded === _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__NOT__PROPERTY_NAME ) {
+        selectionType = SingleProtein_Filter_SelectionType.NOT
     } else {
         const msg = "_decodeStaticModSelection: Unknown value for selectionEncoded: " + selectionEncoded
         console.warn( msg )
@@ -497,6 +498,8 @@ const _encodeStaticModSelection = function ( selectionEntry : SingleProtein_Filt
         selectionEntryEncoded = _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ANY__PROPERTY_NAME
     } else if ( selectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
         selectionEntryEncoded = _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__ALL__PROPERTY_NAME
+    } else if ( selectionEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+        selectionEntryEncoded = _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE__NOT__PROPERTY_NAME
     } else {
         const msg = "_encodeStaticModSelection: Unknown value for selectionEntry.selectionType: " + selectionEntry.selectionType
         console.warn( msg )

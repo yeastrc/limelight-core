@@ -126,6 +126,10 @@ img.icon-large, input[type="image"].icon-large {
   border-color: $site-color-gray
 }
 
+.peptide-filter--not-border-color {
+  border-color: $peptide-filter--not-border-color
+}
+
 //   Div that is displayed over a block to display a message, typically updating or loading data
 
 .block-updating-overlay-container {

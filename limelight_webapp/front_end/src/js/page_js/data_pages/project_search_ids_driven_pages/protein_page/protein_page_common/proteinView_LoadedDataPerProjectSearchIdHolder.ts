@@ -16,6 +16,7 @@
 
 
  import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinSequenceCoverageData_For_ProteinSequenceVersionId';
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 
  //  Sub classes used are defined below the main class
 
@@ -522,21 +523,16 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 
 	//   getReportedPeptideIdsForDisplay_SingleProjectSearchId  Cached data
 
-	_getReportedPeptideIdsForDisplay_SingleProjectSearchId__Cached_data : {
+	_getReportedPeptideIdsForDisplay_SingleProjectSearchId__Cached_data :
+		{
 
-		//  	Used in _getFor__SelectionType_ANY__StaticModifications__NOT_Have_proteinSequenceVersionId
+		//  	Used in _getFor__SelectionType_???__StaticModifications__NOT_Have_proteinSequenceVersionId
 
-		staticModSearch_ANY_CachedResults? :  {
-			staticMod_residueLetters_I_To_L__ToGetReportedPeptideIdsFor : Set<string>
-			reportedPeptideIds_ContainStaticMod : Set<number>
-		}
-
-		//  	Used in _getFor__SelectionType_ALL__StaticModifications__NOT_Have_proteinSequenceVersionId
-
-		staticModSearch_ALL_CachedResults? :  {
-			staticMod_residueLetters_I_To_L__ToGetReportedPeptideIdsFor : Set<string>
-			reportedPeptideIds_SearchedAllAtCutoffs_ContainStaticMod : Set<number>
-		},
+		staticModSearch_CachedResults_Map_Key_SingleProtein_Filter_SelectionType ? :
+			Map<SingleProtein_Filter_SelectionType, {
+				staticMod_residueLetters_I_To_L__ToGetReportedPeptideIdsFor : Set<string>
+				reportedPeptideIds_SearchedAllAtCutoffs_ContainStaticMod : Set<number>
+			}>
 
 		//   Used in _updateFor__UserSearchString__NOT_Have_proteinSequenceVersionId
 

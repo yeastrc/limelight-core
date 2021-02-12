@@ -345,6 +345,7 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
     //  bind to 'this' for passing as parameters
     private _choice_ANY_Clicked_Callback_BindThis = this._choice_ANY_Clicked_Callback.bind(this)
     private _choice_ALL_Clicked_Callback_BindThis = this._choice_ALL_Clicked_Callback.bind(this)
+    private _choice_NOT_Clicked_Callback_BindThis = this._choice_NOT_Clicked_Callback.bind(this)
     private _choice_Remove_Clicked_Callback_BindThis = this._choice_Remove_Clicked_Callback.bind(this)
 
     /**
@@ -453,6 +454,31 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
     /**
      *
      */
+    private _choice_NOT_Clicked_Callback() {
+        try {
+            const selectionType = SingleProtein_Filter_SelectionType.NOT
+
+            this.setState( (state, props) : SingleModification_Entry_State => {
+
+                return { selection_SelectionType : selectionType }
+            });
+
+            const modMass = this.props.variable_or_Open_ModificationEntry.modMass;
+
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+            this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected( modMass, newEntry );
+
+            this._updateRestofPage();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
     private _choice_Remove_Clicked_Callback() {
         try {
             this.setState( (state, props) : SingleModification_Entry_State => {
@@ -509,6 +535,7 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
                 current_selection_SelectionType={ this.state.selection_SelectionType }
                 any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
                 all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
+                not_Selected_Callback={ this._choice_NOT_Clicked_Callback_BindThis }
                 remove_Selected_Callback={ this._choice_Remove_Clicked_Callback_BindThis }
             />
         );
@@ -539,6 +566,7 @@ class Unmodified_Entry extends React.Component< Unmodified_Entry_Props, Unmodifi
     //  bind to 'this' for passing as parameters
     private _choice_ANY_Clicked_Callback_BindThis = this._choice_ANY_Clicked_Callback.bind(this)
     private _choice_ALL_Clicked_Callback_BindThis = this._choice_ALL_Clicked_Callback.bind(this)
+    private _choice_NOT_Clicked_Callback_BindThis = this._choice_NOT_Clicked_Callback.bind(this)
     private _choice_Remove_Clicked_Callback_BindThis = this._choice_Remove_Clicked_Callback.bind(this)
 
     /**
@@ -651,6 +679,29 @@ class Unmodified_Entry extends React.Component< Unmodified_Entry_Props, Unmodifi
     /**
      *
      */
+    private _choice_NOT_Clicked_Callback() {
+        try {
+            const selectionType = SingleProtein_Filter_SelectionType.NOT
+
+            this.setState( (state, props) : Unmodified_Entry_State => {
+
+                return { selection_SelectionType : selectionType }
+            });
+
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType })
+            this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_NO_Modification_AKA_Unmodified_Selected( newEntry );
+
+            this._updateRestofPage();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
     private _choice_Remove_Clicked_Callback() {
         try {
             this.setState( (state, props) : Unmodified_Entry_State => {
@@ -700,6 +751,7 @@ class Unmodified_Entry extends React.Component< Unmodified_Entry_Props, Unmodifi
                 current_selection_SelectionType={ this.state.selection_SelectionType }
                 any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
                 all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
+                not_Selected_Callback={ this._choice_NOT_Clicked_Callback_BindThis }
                 remove_Selected_Callback={ this._choice_Remove_Clicked_Callback_BindThis }
             />
         );

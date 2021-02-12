@@ -25,6 +25,11 @@ $link-color-visited: #005606;
 $link-color-hover: $site-color-dark;
 $link-color-active: $site-color-dark;
 
+//  The border color used for the NOT of OR/AND/NOT Peptide Filters
+
+$peptide-filter--not-border-color: red;
+
+
 //  Error Text
 
 $error-text-color: #A55353;

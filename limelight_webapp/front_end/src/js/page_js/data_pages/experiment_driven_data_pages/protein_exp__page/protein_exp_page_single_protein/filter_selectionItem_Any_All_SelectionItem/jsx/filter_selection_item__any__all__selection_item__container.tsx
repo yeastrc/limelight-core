@@ -23,6 +23,7 @@ export interface Filter_selectionItem_Any_All_SelectionItem_Container_Props {
     current_selection_SelectionType : SingleProtein_Filter_SelectionType
     any_Selected_Callback : () => void;
     all_Selected_Callback : () => void;
+    not_Selected_Callback : () => void;
     remove_Selected_Callback : () => void;
 }
 
@@ -97,6 +98,7 @@ export class Filter_selectionItem_Any_All_SelectionItem_Container extends React.
                 position_Top,
                 any_Selected_Callback : this.props.any_Selected_Callback,
                 all_Selected_Callback : this.props.all_Selected_Callback,
+                not_Selected_Callback :  this.props.not_Selected_Callback,
                 remove_Selected_Callback : this.props.remove_Selected_Callback
             })
         } catch( e ) {
@@ -169,11 +171,17 @@ const _protein_SingleProtein_FilterItem_Formatting = function({ singleProtein_Fi
             borderStyle : "dashed"
         }
 
-        cssClassNames = " standard-border-color-dark ";
+        cssClassNames = " standard-border-color-dark "; // Changed if 'NOT'
 
         if ( singleProtein_Filter_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
 
-            styleObject.borderStyle = "solid"
+            styleObject.borderStyle = "solid";
+
+        } else if ( singleProtein_Filter_SelectionType === SingleProtein_Filter_SelectionType.NOT ) {
+
+            styleObject.borderStyle = "solid";
+
+            cssClassNames = " peptide-filter--not-border-color ";
         }
     }
 

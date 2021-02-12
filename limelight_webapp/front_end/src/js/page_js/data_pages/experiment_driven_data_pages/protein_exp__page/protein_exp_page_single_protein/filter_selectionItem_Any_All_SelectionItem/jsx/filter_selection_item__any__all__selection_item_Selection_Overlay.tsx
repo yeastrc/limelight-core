@@ -26,6 +26,7 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
         position_Top,
         any_Selected_Callback,
         all_Selected_Callback,
+        not_Selected_Callback,
         remove_Selected_Callback
     } : {
         current_selection_SelectionType : SingleProtein_Filter_SelectionType
@@ -33,6 +34,7 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
         position_Top : number
         any_Selected_Callback : () => void;
         all_Selected_Callback : () => void;
+        not_Selected_Callback : () => void;
         remove_Selected_Callback : () => void;
     }) {
 
@@ -67,6 +69,7 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
                 position_Top,
                 any_Selected_Callback,
                 all_Selected_Callback,
+                not_Selected_Callback,
                 remove_Selected_Callback,
                 close_Selected_Callback
             },
@@ -90,6 +93,7 @@ interface Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Props {
     position_Top : number
     any_Selected_Callback : () => void;
     all_Selected_Callback : () => void;
+    not_Selected_Callback : () => void;
     remove_Selected_Callback : () => void;
     close_Selected_Callback : () => void;
 }
@@ -107,6 +111,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
     private _selectionOverlay_Background_Clicked_BindThis = this._selectionOverlay_Background_Clicked.bind(this);
     private _choice_ANY_Clicked_BindThis = this._choice_ANY_Clicked.bind(this)
     private _choice_ALL_Clicked_BindThis = this._choice_ALL_Clicked.bind(this)
+    private _choice_NOT_Clicked_BindThis = this._choice_NOT_Clicked.bind(this)
     private _choice_Remove_Clicked_BindThis = this._choice_Remove_Clicked.bind(this)
     private _close_SelectionOverlay_Clicked_BindThis = this._close_SelectionOverlay_Clicked.bind(this)
 
@@ -174,6 +179,21 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
     /**
      *
      */
+    private _choice_NOT_Clicked() {
+        try {
+            this._close_SelectionOverlay()
+
+            this.props.not_Selected_Callback()
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
     private _choice_Remove_Clicked() {
         try {
             this._close_SelectionOverlay()
@@ -208,12 +228,15 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
 
         let current_selection_SelectionType_ANY = false
         let current_selection_SelectionType_ALL = false
+        let current_selection_SelectionType_NOT = false
         let current_selection_SelectionType_NotSelected = false
 
         if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ANY ) {
             current_selection_SelectionType_ANY = true
         } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
             current_selection_SelectionType_ALL = true
+        } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.NOT ) {
+            current_selection_SelectionType_NOT = true
         } else if ( ! this.props.current_selection_SelectionType ) {
             current_selection_SelectionType_NotSelected = true
         } else {
@@ -249,6 +272,14 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                             buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING }
                             buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
                             buttonClicked_Callback={ this._choice_ALL_Clicked_BindThis }
+                        />
+                        <span > </span>
+                        <OverlayUpdateButton
+                            buttonLabel={ "NOT" }
+                            isCurrentSelection={ current_selection_SelectionType_NOT }
+                            buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._NOT__TOOLTIP_MAIN_TEXT_STRING }
+                            buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
+                            buttonClicked_Callback={ this._choice_NOT_Clicked_BindThis }
                         />
                         <span > </span>
                         <OverlayUpdateButton

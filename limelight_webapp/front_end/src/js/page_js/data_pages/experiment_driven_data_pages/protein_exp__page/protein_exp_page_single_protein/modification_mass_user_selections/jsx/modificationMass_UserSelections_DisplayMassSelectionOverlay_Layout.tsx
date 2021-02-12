@@ -204,6 +204,13 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
             this._updateTable_ForChangedSelection()
         }
 
+        const not_Selected_Callback = () => {
+            const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.NOT })
+            this._modificationMasses_Selected_InProgress.set( mass, newEntry );
+
+            this._updateTable_ForChangedSelection()
+        }
+
         const remove_Selected_Callback = () => {
             this._modificationMasses_Selected_InProgress.delete( mass )
 
@@ -218,6 +225,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
             position_Top,
             any_Selected_Callback,
             all_Selected_Callback,
+            not_Selected_Callback,
             remove_Selected_Callback
         })
     }
@@ -250,25 +258,6 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         const dataTable_Columns : Array<DataTable_Column> = [];
 
         {
-            // { //  ANY or ALL label when selected
-            //     const dataTable_Column = new DataTable_Column({
-            //         id: "any_all", // Used for tracking sort order. Keep short
-            //         displayName: "",
-            //         width: 40,
-            //         sortable: true,
-            //         style_override_DataRowCell_React: {
-            //             // display: "inline-block",
-            //             // whiteSpace: "nowrap",
-            //             // overflowX: "auto",
-            //             fontSize: 12
-            //         },
-            //         // style_override_header_React : {},  // Optional
-            //         // style_override_React : {},  // Optional
-            //         // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            //         // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
-            //     });
-            //     dataTable_Columns.push(dataTable_Column);
-            // }
             {
                 const dataTable_Column = new DataTable_Column({
                     id: "mass", // Used for tracking sort order. Keep short
@@ -276,25 +265,14 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     width: 160,
                     sortable: true,
                     style_override_DataRowCell_React: {
-                        // display: "inline-block",
-                        // whiteSpace: "nowrap",
-                        // overflowX: "auto",
                         fontSize: 12
                     },
                     cellMgmt_ExternalReactComponent : { reactComponent : Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer }
-                    // style_override_header_React : {},  // Optional
-                    // style_override_React : {},  // Optional
-                    // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                    // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
                 });
                 dataTable_Columns.push(dataTable_Column);
             }
             {
                 const style_override_DataRowCell_React : React.CSSProperties = {
-                    // display: "inline-block",
-                    // whiteSpace: "nowrap",
-                    // overflowX: "auto",
-                    // textAlign: "right",
                     paddingTop: 3,
                         fontSize: 12
                 }
@@ -304,14 +282,10 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     width: 75,
                     sortable: true,
                     style_override_DataRowCell_React
-                    // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                    // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
                 });
                 dataTable_Columns.push(dataTable_Column);
             }
         }
-
-        // modUniqueMassesWithTheirPsmCountsArray //  []; // {mass, psmCount}
 
         //  Data Rows
 
@@ -323,28 +297,6 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
                 const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
                 {
-                    // { // 'ANY'/'ALL'
-                    //     let columnContent = ""
-                    //     const entry = this._modificationMasses_Selected_InProgress.get( modUniqueMassesWithTheirPsmCountsEntry.mass )
-                    //     if ( entry ) {
-                    //         if (entry.selectionType === SingleProtein_Filter_SelectionType.ANY) {
-                    //             columnContent = "Any"
-                    //         } else if (entry.selectionType === SingleProtein_Filter_SelectionType.ALL) {
-                    //             columnContent = "All"
-                    //         } else {
-                    //             //  Unknown value for existingEntry.selectionType
-                    //             const msg = "ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component:_create_DataTableObjects: Unknown value for entry.selectionType : " + entry.selectionType
-                    //             console.warn( msg )
-                    //             throw Error( msg )
-                    //         }
-                    //     }
-                    //     const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    //         valueDisplay: columnContent,
-                    //         valueSort: columnContent
-                    //     })
-                    //     columnEntries.push(columnEntry);
-                    // }
-
                     { // mod mass
 
                         const textLabel : string = modUniqueMassesWithTheirPsmCountsEntry.mass.toString()
@@ -376,27 +328,9 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     columnEntries.push(columnEntry);
                 }
 
-                // let highlightRowWithBackgroundColor = false;
-
-                // if ( this._modificationMasses_Selected_InProgress.has( modUniqueMassesWithTheirPsmCountsEntry.mass ) ) {
-                //     highlightRowWithBackgroundColor = true;
-                // }
-
-                // let row_CSS_Additions : string = undefined
-                // let styleOverrides_innerContainingDiv : React.CSSProperties = undefined
-
-                // if ( this._modificationMasses_Selected_InProgress.has( modUniqueMassesWithTheirPsmCountsEntry.mass ) ) {
-                //     row_CSS_Additions = " standard-border-color-dark "
-                //     styleOverrides_innerContainingDiv = {
-                //         marginTop : 3,
-                //         marginBottom : 3,
-                //         borderStyle : "solid",
-                //         borderWidth : 2
-                //     }
-                // }
-
-                let highlightRowWithBorderSolid = false
                 let highlightRowWithBorderDash = false
+                let highlightRowWithBorderSolid = false
+                let highlightRowWithBorder_peptideFilter_NOT_borderColor = false
 
                 {
                     const entry : SingleProtein_Filter_PerUniqueIdentifier_Entry = this._modificationMasses_Selected_InProgress.get( modUniqueMassesWithTheirPsmCountsEntry.mass )
@@ -407,6 +341,9 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                         } else if ( entry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
                             //  AND
                             highlightRowWithBorderSolid = true
+                        } else if ( entry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                            //  NOT
+                            highlightRowWithBorder_peptideFilter_NOT_borderColor = true
                         } else {
                             const msg = "ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component:_create_DataTableObjects: Unknown value for entry.selectionType : " + entry.selectionType
                             console.warn( msg )
@@ -423,11 +360,9 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     uniqueId : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     sortOrder_OnEquals : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     columnEntries,
-                    // highlightRowWithBackgroundColor,
+                    highlightRowWithBorder_peptideFilter_NOT_borderColor,
                     highlightRowWithBorderSolid,
                     highlightRowWithBorderDash,
-                    // row_CSS_Additions,
-                    // styleOverrides_innerContainingDiv,
                     tableRowClickHandlerParameter
                 })
 

@@ -84,6 +84,8 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
             tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._OR__TOOLTIP_MAIN_TEXT_STRING
         } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
             tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING
+        } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.NOT ) {
+            tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._NOT__TOOLTIP_MAIN_TEXT_STRING
         } else {
 
             return // EARLY RETURN

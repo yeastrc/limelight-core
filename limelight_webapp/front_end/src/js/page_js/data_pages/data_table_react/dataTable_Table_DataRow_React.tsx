@@ -920,7 +920,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
             if (this.props.dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder) {
 
-                if ( this.props.dataObject.highlightRowWithBorderSolid || this.props.dataObject.highlightRowWithBorderDash ) {
+                if ( this.props.dataObject.highlightRowWithBorder_peptideFilter_NOT_borderColor || this.props.dataObject.highlightRowWithBorderSolid || this.props.dataObject.highlightRowWithBorderDash ) {
                     className_outerContainingDiv_Border = " row-border-padding ";
                 } else {
                     className_outerContainingDiv_Border = " row-border-place-holder ";
@@ -963,7 +963,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
             let className_innerContainingDiv_Border = "";
 
-            if (this.props.dataObject.highlightRowWithBorderSolid) {
+            if (this.props.dataObject.highlightRowWithBorder_peptideFilter_NOT_borderColor) {
+                className_innerContainingDiv_Border = " row-border row-border-style-solid table-row-border-peptide-filter--not-border-color ";
+
+            } else if (this.props.dataObject.highlightRowWithBorderSolid) {
                 className_innerContainingDiv_Border = " row-border row-border-style-solid ";
 
             } else if (this.props.dataObject.highlightRowWithBorderDash) {

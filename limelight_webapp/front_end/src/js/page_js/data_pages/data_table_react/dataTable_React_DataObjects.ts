@@ -603,6 +603,11 @@ class DataTable_DataRowEntry {
     sortOrder_OnEquals : any    //  Must be sortable using Javascript < > comparators
     greyOutRow? : boolean;  //  Grey out the row.  Apply CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
     highlightRowWithBackgroundColor? : boolean //  Highlight the row by applying a background color.  Apply CSS class 'table-row-highlight-with-background-color' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+
+    //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.
+    //  Highlight the row by applying a solid border and color using CSS class table-row-border-peptide-filter--not-border-color
+    highlightRowWithBorder_peptideFilter_NOT_borderColor? : boolean
+
     highlightRowWithBorderSolid? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a solid border.
     highlightRowWithBorderDash? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a dash border.
     row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
@@ -656,7 +661,9 @@ class DataTable_DataRowEntry {
      */
     constructor(
         {
-            uniqueId, sortOrder_OnEquals, greyOutRow, highlightRowWithBackgroundColor, highlightRowWithBorderSolid, highlightRowWithBorderDash, row_CSS_Additions, styleOverrides_innerContainingDiv,
+            uniqueId, sortOrder_OnEquals, greyOutRow,
+            highlightRowWithBackgroundColor, highlightRowWithBorder_peptideFilter_NOT_borderColor, highlightRowWithBorderSolid, highlightRowWithBorderDash,
+            row_CSS_Additions, styleOverrides_innerContainingDiv,
             columnEntries,
 
             //  Old Style parameters used by code passed in DataTable_TableOptions object
@@ -689,6 +696,7 @@ class DataTable_DataRowEntry {
         this.sortOrder_OnEquals = sortOrder_OnEquals;
         this.greyOutRow = greyOutRow;
         this.highlightRowWithBackgroundColor = highlightRowWithBackgroundColor;
+        this.highlightRowWithBorder_peptideFilter_NOT_borderColor = highlightRowWithBorder_peptideFilter_NOT_borderColor;
         this.highlightRowWithBorderSolid = highlightRowWithBorderSolid;
         this.highlightRowWithBorderDash = highlightRowWithBorderDash;
         this.row_CSS_Additions = row_CSS_Additions;
@@ -727,6 +735,16 @@ class DataTable_DataRowEntry {
         }
         if ( dataTable_DataRowEntry.columnEntries === undefined || dataTable_DataRowEntry.columnEntries === null ) {
             const msg = 'DataTable_DataRowEntry.constructorDataValidation: columnEntries === undefined';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor && dataTable_DataRowEntry.highlightRowWithBorderDash ) {
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: highlightRowWithBorder_peptideFilter_NOT_borderColor and highlightRowWithBorderDash cannot both be true';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( dataTable_DataRowEntry.highlightRowWithBorderSolid && dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor ) {
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: highlightRowWithBorderSolid and highlightRowWithBorder_peptideFilter_NOT_borderColor cannot both be true';
             console.warn( msg )
             throw Error( msg );
         }
@@ -783,6 +801,11 @@ interface DataTable_DataRowEntry__Constructor_Base {
     sortOrder_OnEquals : any,    //  Must be sortable using Javascript < > comparators
     greyOutRow? : boolean;  //  Grey out the row.  Apply CSS class 'grey-out-row' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
     highlightRowWithBackgroundColor? : boolean //  Highlight the row with background color.  Apply CSS class 'table-row-highlight-with-background-color' to <div> with CSS class 'data-table-data-rows-inner-containing-div'
+
+    //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.
+    //  Highlight the row by applying a solid border and color using CSS class table-row-border-peptide-filter--not-border-color
+    highlightRowWithBorder_peptideFilter_NOT_borderColor? : boolean
+
     highlightRowWithBorderSolid? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a solid border.
     highlightRowWithBorderDash? : boolean //  !!  MUST set property highlightingOneOrMoreRowsWithBorder on object of class DataTable_RootTableDataObject if set this value.  Highlight the row by applying a dash border.
     row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'

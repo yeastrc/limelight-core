@@ -111,6 +111,9 @@ const _round_Selected_Variable_or_Open_ModMasses_IfNeed = function (
 			possiblyRounded_modifications_SelectedModMass = modificationMass_CommonRounding_ReturnNumber(modifications_SelectedModMass);
 		}
 
+		//  Special code to handle selected masses that round to the same value, choosing the 'ALL' if any of the values are type 'ALL'
+		//     This is required since previously didn't round for single search
+
 		const existing_RoundedEntry = new_rounded_Entries.get( possiblyRounded_modifications_SelectedModMass );
 		if ( existing_RoundedEntry ) {
 			if ( existing_RoundedEntry.selectionType === SingleProtein_Filter_SelectionType.ANY
@@ -176,6 +179,9 @@ const _round_Selected_Static_ModMasses_IfNeed = function (
 
 				modificationMass_UserSelections_StateObject.delete_StaticModification_Selected({ residueLetter, modMass })
 
+				//  Special code to handle selected masses that round to the same value, choosing the 'ALL' if any of the values are type 'ALL'
+				//     This is required since previously didn't round for single search
+
 				const existing_RoundedEntry = modificationMass_UserSelections_StateObject.get_StaticModification_Selected({ residueLetter, modMass : possiblyRounded_modifications_SelectedModMass });
 				if ( existing_RoundedEntry ) {
 					if ( existing_RoundedEntry.selectionType === SingleProtein_Filter_SelectionType.ANY
@@ -237,6 +243,9 @@ const round_Selected_ReporterIonMasses_IfNeed_reporterIonMass_UserSelections_Sta
 
 			possiblyRounded_reporterIons_SelectedModMass = reporterIonMass_CommonRounding_ReturnNumber(reporterIons_SelectedModMass);
 		}
+
+		//  Special code to handle selected masses that round to the same value, choosing the 'ALL' if any of the values are type 'ALL'
+		//     This is required since previously didn't round for single search
 
 		const existing_RoundedEntry = new_rounded_Entries.get( possiblyRounded_reporterIons_SelectedModMass );
 		if ( existing_RoundedEntry ) {

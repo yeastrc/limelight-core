@@ -222,8 +222,9 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
         }
 
         // Data in row but not in dataTable_RootTableDataObject
-        if ( ( dataTable_DataRowEntry.highlightRowWithBorderSolid || dataTable_DataRowEntry.highlightRowWithBorderDash ) && ( ! dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder ) ) {
-            const msg = "dataTable_DataRowEntry.highlightRowWithBorderSolid or dataTable_DataRowEntry.highlightRowWithBorderDash is true BUT dataTable_TableOptions.highlightingOneOrMoreRowsWithBorder is not true. dataTableId: " + dataTableId
+        if ( ( dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor || dataTable_DataRowEntry.highlightRowWithBorderSolid || dataTable_DataRowEntry.highlightRowWithBorderDash )
+            && ( ! dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder ) ) {
+            const msg = "dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor || dataTable_DataRowEntry.highlightRowWithBorderSolid or dataTable_DataRowEntry.highlightRowWithBorderDash is true BUT dataTable_TableOptions.highlightingOneOrMoreRowsWithBorder is not true. dataTableId: " + dataTableId
             console.warn( msg )
             throw Error( msg )
         }

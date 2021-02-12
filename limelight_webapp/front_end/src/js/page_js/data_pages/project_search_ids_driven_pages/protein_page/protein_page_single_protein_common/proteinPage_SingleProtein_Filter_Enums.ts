@@ -18,5 +18,6 @@
 export const enum SingleProtein_Filter_SelectionType {
 
     ANY = "ANY",
-    ALL = "ALL"
+    ALL = "ALL",
+    NOT = "NOT"
 }

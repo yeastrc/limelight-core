@@ -149,18 +149,14 @@
         th.data-table-header-cell {
             text-align: left;
             vertical-align:bottom;
-            //padding-top: 1px;
-            //padding-bottom: 1px;
-            // white-space:normal;
+            white-space:normal;
 
-            //div.display-name-container {
-            //    padding-top: 4px;
-            //    padding-bottom: 4px;
-            //
-            //    span.display-name-value {
-            //        overflow-wrap: break-word;
-            //    }
-            //}
+            div.display-name-container {
+
+                span.display-name-value {
+                    overflow-wrap: break-word;
+                }
+            }
         }
       }
         
@@ -228,6 +224,10 @@
                     }
                     &.row-border-style-dashed {
                       border-style: dashed;
+                    }
+
+                    &.table-row-border-peptide-filter--not-border-color {
+                      border-color: $peptide-filter--not-border-color
                     }
                 }
 

@@ -46,6 +46,14 @@ const _ENCODED_DATA__MODIFICATION_MASS_SELECTED__ALL__NON_INTEGERS_ARRAY_ENCODIN
 const _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ANY__ENCODING_PROPERTY_NAME = 'g'; // AKA Unmodified - CURRENT ENTRY
 const _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ALL__ENCODING_PROPERTY_NAME = 'h'; // AKA Unmodified - CURRENT ENTRY
 
+//  Add NOT (Select NOT containing)
+
+const _ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME = 'i';
+const _ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME = 'j';
+const _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__NOT__ENCODING_PROPERTY_NAME = 'k';
+
+
+
 const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_BASE = 35;         // Only specific Modifications
 const _ENCODING_DATA__MOD_MASS_SELECTED_INTEGERS_SEPARATOR = 'Z';   // Only specific Modifications
 
@@ -111,41 +119,22 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
     }
 
     /**
-     * Is any selection of type SelectionType.ANY
+     * Is any selection of type singleProtein_Filter_SelectionType_Requested
      * Excludes check for Unmodified selected
      */
-    is_Any_SelectionType__ANY__Modification_Selected_Excludes_UnmodifiedSelection() : boolean {
+    is_Any__For_SelectionType__Modification_Selected_Excludes_UnmodifiedSelection({ singleProtein_Filter_SelectionType_Requested } : { singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType }) : boolean {
 
         let anySelected = false;
         if ( this._modificationsSelected.size !== 0 ) {
             for ( const mapEntry of this._modificationsSelected.entries() ) {
                 const entryValue = mapEntry[ 1 ]
-                if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+                if ( entryValue.selectionType === singleProtein_Filter_SelectionType_Requested ) {
                     anySelected = true
                     break;
                 }
             }
         }
         return anySelected // any selection of type SelectionType.ANY
-    }
-
-    /**
-     * Is any selection of type SelectionType.ALL
-     * Excludes check for Unmodified selected
-     */
-    is_Any_SelectionType__ALL__Modification_Selected_Excludes_UnmodifiedSelection() : boolean {
-
-        let anySelected = false;
-        if ( this._modificationsSelected.size !== 0 ) {
-            for ( const mapEntry of this._modificationsSelected.entries() ) {
-                const entryValue = mapEntry[ 1 ]
-                if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
-                    anySelected = true
-                    break;
-                }
-            }
-        }
-        return anySelected // any selection of type SelectionType.ALL
     }
 
 	/**
@@ -181,7 +170,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
     }
 
     /**
-     * @returns a Set of the currently selected Modification Masses for "ANY" and "ALL" combined, excluding the "No Modification" selection option
+     * @returns a Set of the currently selected Modification Masses for "ANY" and "ALL" and "NOT" combined, excluding the "No Modification" selection option
      */
     get_ModificationsSelected__OnlyModMasses_AsSet() : Set<number> {
 
@@ -227,7 +216,25 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
     }
 
     /**
-     * @returns a Map clone of the currently selected Modification Masses for "ANY" and "ALL" combined, excluding the "No Modification" selection option
+     * @returns a Set of the currently selected Modification Masses for "NOT" selection type, excluding the "No Modification" selection option
+     */
+    get_ModificationsSelected__OnlyModMasses_Only__NOT_SelectionType_AsSet() : Set<number> {
+
+        const selectionCopy : Set<number> = new Set();
+
+        for ( const entry of this._modificationsSelected ) {
+            const value = entry[ 1 ]
+            if ( value.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                const mass = entry[ 0 ]
+                selectionCopy.add( mass )
+            }
+        }
+
+        return selectionCopy;
+    }
+
+    /**
+     * @returns a Map clone of the currently selected Modification Masses for "ANY" and "ALL" and "NOT" combined, excluding the "No Modification" selection option
      */
     get_ModificationsSelected__ExcludingNoModification_AsMapClone() : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry> {
 
@@ -308,6 +315,8 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
                 result[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ANY__ENCODING_PROPERTY_NAME ] = true;
             } else if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
                 result[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ALL__ENCODING_PROPERTY_NAME ] = true;
+            } else if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                result[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__NOT__ENCODING_PROPERTY_NAME ] = true;
             } else {
                 const msg = "getEncodedStateData: Unknown Value for this._UN_Modified_Selected.selectionType: " + this._UN_Modified_Selected.selectionType
                 console.warn( msg )
@@ -315,7 +324,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             }
         }
         {
-            const { modificationsSelected_ANY, modificationsSelected_ALL } = this._getEncoded_SplitAnyAll();
+            const { modificationsSelected_ANY, modificationsSelected_ALL, modificationsSelected_NOT } = this._getEncoded_SplitAnyAllNot();
 
             {  //  ANY
                 const {modificationsDelimited, modificationsNonInteger} = this._getEncoded_AnyAll({modificationsSelected_ANY_ALL : modificationsSelected_ANY})
@@ -329,6 +338,12 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__ALL__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME] = modificationsDelimited;
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__ALL__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME] = modificationsNonInteger;
             }
+            {  //  NOT
+                const {modificationsDelimited, modificationsNonInteger} = this._getEncoded_AnyAll({modificationsSelected_ANY_ALL : modificationsSelected_NOT})
+
+                result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME] = modificationsDelimited;
+                result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME] = modificationsNonInteger;
+            }
         }
 
 		return result;
@@ -337,12 +352,14 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
     /**
      *
      */
-    private _getEncoded_SplitAnyAll() : {
+    private _getEncoded_SplitAnyAllNot() : {
         modificationsSelected_ANY : Set<number>
         modificationsSelected_ALL : Set<number>
+        modificationsSelected_NOT : Set<number>
     } {
         const modificationsSelected_ANY : Set<number> = new Set<number>();
         const modificationsSelected_ALL : Set<number> = new Set<number>();
+        const modificationsSelected_NOT : Set<number> = new Set<number>();
 
         for ( const mapEntry of this._modificationsSelected.entries() ) {
             const modMass = mapEntry[ 0 ];
@@ -351,6 +368,8 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
                 modificationsSelected_ANY.add( modMass )
             } else if ( mapValue.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
                 modificationsSelected_ALL.add( modMass )
+            } else if ( mapValue.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                modificationsSelected_NOT.add( modMass )
             } else {
                 const msg = "mapValue.selectionType is unknown type.  mapValue.selectionType: " + mapValue.selectionType
                 console.warn( msg )
@@ -358,7 +377,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             }
         }
 
-        return { modificationsSelected_ANY, modificationsSelected_ALL }
+        return { modificationsSelected_ANY, modificationsSelected_ALL, modificationsSelected_NOT }
     }
 
     /**
@@ -485,6 +504,13 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 
             this._set_encodedStateData_Internal({ modificationsAsOffsetAndAltBaseString, modificationsNonInteger, singleProtein_Filter_SelectionType : SingleProtein_Filter_SelectionType.ALL })
         }
+        {  //  NOT
+            const modificationsAsOffsetAndAltBaseString = encodedStateData[ _ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
+            const modificationsNonInteger = encodedStateData[ _ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];
+
+            this._set_encodedStateData_Internal({ modificationsAsOffsetAndAltBaseString, modificationsNonInteger, singleProtein_Filter_SelectionType : SingleProtein_Filter_SelectionType.NOT })
+        }
+
 
         {
             if ( encodedStateData[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED__OLD_ENTRY__ARRAY_ENCODING_PROPERTY_NAME ] ) {
@@ -495,6 +521,9 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             }
             if ( encodedStateData[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ALL__ENCODING_PROPERTY_NAME ] ) {
                 this._UN_Modified_Selected = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.ALL });
+            }
+            if ( encodedStateData[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__NOT__ENCODING_PROPERTY_NAME ] ) {
+                this._UN_Modified_Selected = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.NOT });
             }
         }
 	}
@@ -553,7 +582,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
                         //  Validate that array element is number
 
                         if ( ! variable_is_type_number_Check( modificationNonInteger ) ) {
-                            const msg = "entry in encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] is not _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED and is not number: " + modificationNonInteger;
+                            const msg = "modificationNonInteger is not number (see 'for ( const modificationNonInteger of modificationsNonInteger ) {'): " + modificationNonInteger;
                             console.warn( msg );
                             throw Error( msg );
                         }

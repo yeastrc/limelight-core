@@ -186,9 +186,15 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
         const AND_SEPARATOR_STRING = "AND"
         const OR_SEPARATOR_STRING = "OR"
+        const NOT_SEPARATOR_STRING = "OR"
 
         let selection_AND_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
         let selection_OR_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+        let selection_NOT_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+
+        let selection_NOT_UnModified_Variable_Mods_Selected = false;
+        let selection_NOT_UnModified_Open_Mods_Selected = false;
+
         {
             const modificationMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
             const variable_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_VariableModificationSelections()
@@ -207,8 +213,10 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
                         _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
                         selection_AND_Group_Display_Entries.push( display )
+                    } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                        selection_NOT_UnModified_Variable_Mods_Selected = true;
                     } else {
-                        const msg = "variable_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL"
+                        const msg = "variable_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL or NOT"
                         console.warn( msg )
                         throw Error( msg )
                     }
@@ -251,6 +259,25 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                         selection_AND_Group_Display_Entries.push(display)
                     }
                 }
+                {
+                    const selectedModMasses = Array.from(variable_ModificationSelections_StateObject.get_ModificationsSelected__OnlyModMasses_Only__NOT_SelectionType_AsSet())
+                    selectedModMasses.sort(function (a, b) {
+                        //  Sort Ascending
+                        if (a < b) {
+                            return -1;
+                        }
+                        if (a > b) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for (const selectedModMass of selectedModMasses) {
+                        const key = "Var_Mod_" + selectedModMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries})
+                        const display = <span key={key} style={{whiteSpace: "nowrap"}}><span>Variable mod: </span><span> </span><span>{selectedModMass}</span></span>
+                        selection_NOT_Group_Display_Entries.push(display)
+                    }
+                }
             }
 
             //  Open Mods
@@ -266,8 +293,10 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
                         _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
                         selection_AND_Group_Display_Entries.push( display )
+                    } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                        selection_NOT_UnModified_Open_Mods_Selected = true;
                     } else {
-                        const msg = "open_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL"
+                        const msg = "open_ModificationSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected() returned value but value.selectionType is not ANY or ALL or NOT"
                         console.warn( msg )
                         throw Error( msg )
                     }
@@ -310,6 +339,25 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                         selection_AND_Group_Display_Entries.push(display)
                     }
                 }
+                {
+                    const selectedModMasses = Array.from( open_ModificationSelections_StateObject.get_ModificationsSelected__OnlyModMasses_Only__NOT_SelectionType_AsSet() )
+                    selectedModMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for (const selectedModMass of selectedModMasses) {
+                        const key = "Open_Mod_" + selectedModMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries })
+                        const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Open mod: </span><span> </span><span>{selectedModMass}</span></span>
+                        selection_NOT_Group_Display_Entries.push(display)
+                    }
+                }
             }
 
             // Static Mods
@@ -317,6 +365,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
                 const selection_ANY = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__ANY_SelectionType()
                 const selection_ALL = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__ALL_SelectionType()
+                const selection_NOT = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set__ONLY__NOT_SelectionType()
 
                 _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
                     staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ANY,
@@ -328,6 +377,12 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ALL,
                     seperatorString : AND_SEPARATOR_STRING,
                     selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries
+                })
+
+                _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
+                    staticModificationMassesToFilterOn_ANY_or_ALL :  selection_NOT,
+                    seperatorString : NOT_SEPARATOR_STRING,
+                    selection_Group_Display_Entries_Local : selection_NOT_Group_Display_Entries
                 })
             }
 
@@ -372,6 +427,25 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                         selection_AND_Group_Display_Entries.push(display)
                     }
                 }
+                {
+                    const selectedReporterIonMasses = Array.from( reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly__SelectionType__NOT__AsSet() )
+                    selectedReporterIonMasses.sort(function( a, b ) {
+                        //  Sort Ascending
+                        if ( a < b ) {
+                            return -1;
+                        }
+                        if ( a > b ) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    for (const selectedReporterIonMass of selectedReporterIonMasses) {
+                        const key = "Reporter_Ion_" + selectedReporterIonMass
+                        _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries })
+                        const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Reporter ion: </span><span> </span><span>{selectedReporterIonMass}</span></span>
+                        selection_NOT_Group_Display_Entries.push(display)
+                    }
+                }
             }
 
             if ( selection_OR_Group_Display_Entries.length === 1 && selection_AND_Group_Display_Entries.length > 0 ) {
@@ -387,6 +461,9 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             }
             if ( selection_AND_Group_Display_Entries && selection_AND_Group_Display_Entries.length === 0 ) {
                 selection_AND_Group_Display_Entries = undefined
+            }
+            if ( selection_NOT_Group_Display_Entries && selection_NOT_Group_Display_Entries.length === 0 ) {
+                selection_NOT_Group_Display_Entries = undefined
             }
         }
 
@@ -591,6 +668,36 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     { ( selection_OR_Group_Display_Entries ) ? //  Filter Values "OR" relationship
                         <div>
                             All peptides must contain: { selection_OR_Group_Display_Entries }
+                        </div>
+                        : null /* Display nothing */ }
+
+                    {/*  Special text for "NOT" of Unmodified (Variable and/or Open Modifications)   */}
+                    { ( selection_NOT_UnModified_Variable_Mods_Selected || selection_NOT_UnModified_Open_Mods_Selected ) ? //  Filter Values "NOT" Unmodified entries
+                        <div>
+                            <span>
+                                All peptides must contain
+                            </span>
+                            {(selection_NOT_UnModified_Variable_Mods_Selected) ?
+                                <span>
+                                    &nbsp;a variable modification
+                                </span>
+                                : null /* Display nothing */}
+                            {(selection_NOT_UnModified_Variable_Mods_Selected && selection_NOT_UnModified_Open_Mods_Selected) ?
+                                <span>
+                                    &nbsp;and
+                                </span>
+                                : null /* Display nothing */}
+                            {(selection_NOT_UnModified_Open_Mods_Selected) ?
+                                <span>
+                                    &nbsp;an open modification
+                                </span>
+                            : null /* Display nothing */}
+                        </div>
+                        : null /* Display nothing */}
+
+                    { ( selection_NOT_Group_Display_Entries ) ? //  Filter Values "NOT" relationship
+                        <div>
+                            No peptides may contain: { selection_NOT_Group_Display_Entries }
                         </div>
                         : null /* Display nothing */ }
 

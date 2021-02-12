@@ -31,6 +31,7 @@ const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
 const _ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ANY__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME = 'b';  //  Existing mapped to ANY
 const _ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ALL__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME = 'c';
+const _ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__NOT__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME = 'd';
 
 
 ///////
@@ -72,39 +73,21 @@ export class ReporterIonMass_UserSelections_StateObject {
 	}
 
 	/**
-	 * Is any selection of type SelectionType.ANY
+	 * Is any selection of type singleProtein_Filter_SelectionType_Requested
 	 */
-	is_Any_ReporterIons_Selected__SelectionType__ANY(): boolean {
+	is_Any_ReporterIons_Selected__For_SelectionType({ singleProtein_Filter_SelectionType_Requested } : { singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType }): boolean {
 
 		let anySelected = false;
 		if ( this._reporterIonsSelected.size !== 0 ) {
 			for ( const mapEntry of this._reporterIonsSelected.entries() ) {
 				const entryValue = mapEntry[ 1 ]
-				if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+				if ( entryValue.selectionType === singleProtein_Filter_SelectionType_Requested ) {
 					anySelected = true
 					break;
 				}
 			}
 		}
-		return anySelected // any selection of type SelectionType.ANY
-	}
-
-	/**
-	 * Is any selection of type SelectionType.ALL
-	 */
-	is_Any_ReporterIons_Selected__SelectionType__ALL(): boolean {
-
-		let anySelected = false;
-		if ( this._reporterIonsSelected.size !== 0 ) {
-			for ( const mapEntry of this._reporterIonsSelected.entries() ) {
-				const entryValue = mapEntry[ 1 ]
-				if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
-					anySelected = true
-					break;
-				}
-			}
-		}
-		return anySelected // any selection of type SelectionType.ALL
+		return anySelected // any selection of type singleProtein_Filter_SelectionType_Requested
 	}
 
 	/**
@@ -161,6 +144,21 @@ export class ReporterIonMass_UserSelections_StateObject {
 	}
 
 	/**
+	 * @returns a Set of the currently selected Reporter Ion Masses for Selection Type NOT
+	 */
+	get_ReporterIonssSelected_MassesOnly__SelectionType__NOT__AsSet(): Set<number> {
+		const selectionCopy = new Set<number>();
+		for ( const entry of this._reporterIonsSelected.entries() ) {
+			const selectionEntry = entry[1]
+			if ( selectionEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+				const selectionMass = entry[ 0 ]
+				selectionCopy.add( selectionMass )
+			}
+		}
+		return selectionCopy;
+	}
+
+	/**
 	 *
 	 */
 	set_ReporterIons_Selected(mass: number, entry: SingleProtein_Filter_PerUniqueIdentifier_Entry): void {
@@ -200,10 +198,11 @@ export class ReporterIonMass_UserSelections_StateObject {
 
 		if (this._reporterIonsSelected && this._reporterIonsSelected.size !== 0) {
 
-			const {reporterIonsSelected_ANY, reporterIonsSelected_ALL} = this._getEncoded_SplitAnyAll();
+			const {reporterIonsSelected_ANY, reporterIonsSelected_ALL, reporterIonsSelected_NOT} = this._getEncoded_SplitAnyAllNot();
 
 			result[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ANY__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME] = this._getEncoded_SetToArrayAndSort(reporterIonsSelected_ANY);
 			result[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ALL__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME] = this._getEncoded_SetToArrayAndSort(reporterIonsSelected_ALL);
+			result[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__NOT__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME] = this._getEncoded_SetToArrayAndSort(reporterIonsSelected_NOT);
 		}
 
 		return result;
@@ -236,12 +235,14 @@ export class ReporterIonMass_UserSelections_StateObject {
 	/**
 	 *
 	 */
-	private _getEncoded_SplitAnyAll(): {
+	private _getEncoded_SplitAnyAllNot(): {
 		reporterIonsSelected_ANY: Set<number>
 		reporterIonsSelected_ALL: Set<number>
+		reporterIonsSelected_NOT: Set<number>
 	} {
 		const reporterIonsSelected_ANY: Set<number> = new Set<number>();
 		const reporterIonsSelected_ALL: Set<number> = new Set<number>();
+		const reporterIonsSelected_NOT: Set<number> = new Set<number>();
 
 		for (const mapEntry of this._reporterIonsSelected.entries()) {
 			const modMass = mapEntry[0];
@@ -250,6 +251,8 @@ export class ReporterIonMass_UserSelections_StateObject {
 				reporterIonsSelected_ANY.add(modMass)
 			} else if (mapValue.selectionType === SingleProtein_Filter_SelectionType.ALL) {
 				reporterIonsSelected_ALL.add(modMass)
+			} else if (mapValue.selectionType === SingleProtein_Filter_SelectionType.NOT) {
+				reporterIonsSelected_NOT.add(modMass)
 			} else {
 				const msg = "mapValue.selectionType is unknown type.  mapValue.selectionType: " + mapValue.selectionType
 				console.warn(msg)
@@ -257,7 +260,7 @@ export class ReporterIonMass_UserSelections_StateObject {
 			}
 		}
 
-		return {reporterIonsSelected_ANY, reporterIonsSelected_ALL}
+		return {reporterIonsSelected_ANY, reporterIonsSelected_ALL, reporterIonsSelected_NOT}
 	}
 
 	/**
@@ -289,6 +292,10 @@ export class ReporterIonMass_UserSelections_StateObject {
 		{ // ALL
 			const reporterIons_Array = encodedStateData[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ALL__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME];
 			this._set_encodedStateData_Internal({ reporterIons_Array, singleProtein_Filter_SelectionType : SingleProtein_Filter_SelectionType.ALL })
+		}
+		{ // NOT
+			const reporterIons_Array = encodedStateData[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__NOT__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME];
+			this._set_encodedStateData_Internal({ reporterIons_Array, singleProtein_Filter_SelectionType : SingleProtein_Filter_SelectionType.NOT })
 		}
 	}
 
