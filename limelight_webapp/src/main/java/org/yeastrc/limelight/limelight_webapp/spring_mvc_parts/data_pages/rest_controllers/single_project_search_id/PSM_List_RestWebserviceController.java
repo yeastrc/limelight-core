@@ -283,6 +283,15 @@ public class PSM_List_RestWebserviceController {
 
         		for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
         			
+
+    				if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null && psmWebDisplay.getPsm_precursor_MZ() != null ) {
+    					
+    					//  Skip if already have both values in PSM record
+
+        				continue;
+    				}
+        			
+        			
         			Integer scanFileId = psmWebDisplay.getScanFileId();
         			Integer scanNumber = psmWebDisplay.getScanNumber();
         			if ( scanFileId != null && scanNumber != null ) {
@@ -358,28 +367,33 @@ public class PSM_List_RestWebserviceController {
     			
     			result.setHasReporterIons( psmWebDisplay.isHasReporterIons() );
     			result.setHasOpenModifications( psmWebDisplay.isHasOpenModifications() );
-
-    			if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
+    			
+    			if ( ! ( psmWebDisplay.getPsm_precursor_RetentionTime() != null && psmWebDisplay.getPsm_precursor_MZ() != null ) ) {
     				
-    				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
-    						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
-    				if ( scanData_KeyedOn_ScanNumber == null ) {
-    					String msg = "ScanFileId not found in lookup map: " + psmWebDisplay.getScanFileId();
-    					log.error(msg);
-    					throw new LimelightInternalErrorException(msg);
-    				}
-    				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
-    				if ( scan == null ) {
-    					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
-    							+ ", ScanFileId: " + psmWebDisplay.getScanFileId();
-    					log.error(msg);
-    					throw new LimelightInternalErrorException(msg);
-    				}
-    				
-    				result.setRetentionTimeSeconds( scan.getRetentionTime() );
-    				result.setPrecursor_M_Over_Z( scan.getPrecursor_M_Over_Z() );
+    				//  Execute ONLY if one or both of PSM not populated for RT or M/Z
+	
+	    			if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
+	    				
+	    				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
+	    						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
+	    				if ( scanData_KeyedOn_ScanNumber == null ) {
+	    					String msg = "ScanFileId not found in lookup map: " + psmWebDisplay.getScanFileId();
+	    					log.error(msg);
+	    					throw new LimelightInternalErrorException(msg);
+	    				}
+	    				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
+	    				if ( scan == null ) {
+	    					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
+	    							+ ", ScanFileId: " + psmWebDisplay.getScanFileId();
+	    					log.error(msg);
+	    					throw new LimelightInternalErrorException(msg);
+	    				}
+	    				
+	    				result.setRetentionTimeSeconds( scan.getRetentionTime() );
+	    				result.setPrecursor_M_Over_Z( scan.getPrecursor_M_Over_Z() );
+	    			}
     			}
-
+    			
 				if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null ) {
     			
 					result.setRetentionTimeSeconds( psmWebDisplay.getPsm_precursor_RetentionTime().floatValue() );
