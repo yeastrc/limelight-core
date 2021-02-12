@@ -2436,6 +2436,24 @@ COMMENT = 'Sub Group User Editable Data';
 CREATE INDEX project_search_sub_group_prj_search_fk_idx ON project_search_sub_group_tbl (search_id ASC);
 
 
+-- -----------------------------------------------------
+-- Table search__flags_other_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__flags_other_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  psm_rt_mz_from_scan_file TINYINT NOT NULL DEFAULT 0 COMMENT 'rt mz fields from scan file, not limelight xml file',
+  PRIMARY KEY (search_id),
+  CONSTRAINT search__flags_other__search_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin
+COMMENT = '\"Other\" flags for a search';
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
