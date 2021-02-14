@@ -160,15 +160,19 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 	getDataForEncoding() {
 
 		const dataForEncoding = {}
+		// @ts-ignore
 		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
 		if ( this._value.projectSearchId !== undefined ) {
+			// @ts-ignore
 			dataForEncoding[ _PROJECT_SEARCH_ID_ENCODING_PROPERTY_NAME ] = this._value.projectSearchId;
 		}
 		if ( this._value.selectedSearchSubGroupIds !== undefined ) {
+			// @ts-ignore
 			dataForEncoding[ _SELECTED_SEARCH_SUB_GROUP_IDS ] = Array.from( this._value.selectedSearchSubGroupIds );
 		}
 		if ( this._value.no_selectedSearchSubGroupIds !== undefined ) {
+			// @ts-ignore
 			dataForEncoding[ _NO_SELECTED_SEARCH_SUB_GROUP_IDS ] = this._value.no_selectedSearchSubGroupIds;
 		}
 

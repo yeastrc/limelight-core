@@ -41,8 +41,8 @@ const getDynamicModificationsForProteinSequenceVersionId = function({
     projectSearchId 
 } : { 
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-    proteinSequenceVersionId, 
-    projectSearchId 
+    proteinSequenceVersionId: number
+    projectSearchId: number
 }) {
 
     //  First check if Dynamic Modifications for Protein already computed and stored
@@ -120,7 +120,7 @@ const _combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId = functio
     proteinSequenceVersionId
 } : { 
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder, 
-    proteinSequenceVersionId
+    proteinSequenceVersionId: number
 }) {
 
         //  Param reportedPeptideIds_For_proteinSequenceVersionId not needed here since working from protein coverage for protein

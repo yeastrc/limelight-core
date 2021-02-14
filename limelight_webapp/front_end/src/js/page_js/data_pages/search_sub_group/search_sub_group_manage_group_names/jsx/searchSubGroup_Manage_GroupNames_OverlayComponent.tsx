@@ -257,7 +257,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
     /**
      *
      */
-    private onDragEnd_SubGroupItem_Callback( result ) {
+    private onDragEnd_SubGroupItem_Callback( result: any ) {
 
         // dropped outside the list
         if ( ! result.destination ) {
@@ -305,7 +305,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
         });
     }
 
-    private _changeGroupName( value /* event.target.value */, id /* subGroup_Display_Object.id */ ) {
+    private _changeGroupName( value: any /* event.target.value */, id: any /* subGroup_Display_Object.id */ ) {
 
         this.setState( (state : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_State, props : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_Props ) : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_State => {
 
@@ -383,7 +383,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
 
         {
 
-            const get_SubGroupListItem_OuterStyle = ( isDragging, draggableStyle ) => {
+            const get_SubGroupListItem_OuterStyle = ( isDragging: any, draggableStyle: any ) => {
 
                 //  Must use a function since need to add values in parameter 'draggableStyle' to result
 

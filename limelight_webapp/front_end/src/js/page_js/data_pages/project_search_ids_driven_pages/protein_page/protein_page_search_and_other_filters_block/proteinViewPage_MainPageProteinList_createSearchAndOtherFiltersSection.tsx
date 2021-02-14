@@ -74,7 +74,7 @@ interface ProteinPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderCont
  */
 interface ProteinPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Component_State {
 
-    _placeHolder
+    _placeHolder: any
 }
 
 /**

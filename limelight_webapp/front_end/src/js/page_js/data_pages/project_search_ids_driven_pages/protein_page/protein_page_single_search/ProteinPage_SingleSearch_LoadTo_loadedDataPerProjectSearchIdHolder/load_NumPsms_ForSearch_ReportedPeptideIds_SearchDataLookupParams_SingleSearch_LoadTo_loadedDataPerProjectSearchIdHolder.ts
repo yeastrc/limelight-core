@@ -51,7 +51,7 @@ export const load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_Si
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
@@ -83,7 +83,7 @@ export const load_NumPsms_ForSearch_ReportedPeptideIds_SearchDataLookupParams_Si
  */
 const _processNumPsmsForReportedPeptideIdsFromServer_Populate_loadedData = function ( { psmCount_PerReportedPeptideId, loadedDataPerProjectSearchIdHolder } : {
 
-    psmCount_PerReportedPeptideId
+    psmCount_PerReportedPeptideId: any
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
 } ) : void {

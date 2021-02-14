@@ -19,7 +19,7 @@ export const loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPe
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder;
 } ) : Promise<any> {
 
-    const reportedPeptideIdsToLoadPeptideIdsFor = [];
+    const reportedPeptideIdsToLoadPeptideIdsFor: Array<number> = [];
     {
         for ( const reportedPeptideId of reportedPeptideIds ) {
 
@@ -80,7 +80,7 @@ export const loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPe
 /**
  * Get Peptide Ids from Reported Peptide Ids and Project Search Id
  */
-const _getPeptideIdsFromReportedPeptideIds = function ( { projectSearchId, reportedPeptideIds } ) {
+const _getPeptideIdsFromReportedPeptideIds = function ( { projectSearchId, reportedPeptideIds }: { projectSearchId: number, reportedPeptideIds: Array<number> }  ) {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -99,7 +99,7 @@ const _getPeptideIdsFromReportedPeptideIds = function ( { projectSearchId, repor
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids END, Now: " + new Date() );
 

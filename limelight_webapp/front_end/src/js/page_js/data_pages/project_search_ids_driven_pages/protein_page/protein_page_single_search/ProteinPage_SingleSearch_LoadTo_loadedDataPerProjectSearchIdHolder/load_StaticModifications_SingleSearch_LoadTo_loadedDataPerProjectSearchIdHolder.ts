@@ -95,7 +95,7 @@ export const load_StaticModifications_SingleSearch_LoadTo_loadedDataPerProjectSe
  *
  * result list item { String residue, BigDecimal mass }
  */
-const _getStaticMods = function ( { projectSearchId } ) {
+const _getStaticMods = function ( { projectSearchId }:{ projectSearchId: number } ) {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -113,7 +113,7 @@ const _getStaticMods = function ( { projectSearchId } ) {
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get Static Mods List END, Now: " + new Date() );
 

@@ -62,7 +62,7 @@ export const load_NumPsms_By_SearchSubGroup_ForSearch_ReportedPeptideIds_SearchD
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
@@ -94,7 +94,7 @@ export const load_NumPsms_By_SearchSubGroup_ForSearch_ReportedPeptideIds_SearchD
  */
 const _processResultsFromServer_Populate_loadedData = function ( { results, loadedDataPerProjectSearchIdHolder } : {
 
-    results
+    results: any
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
 } ) : void {

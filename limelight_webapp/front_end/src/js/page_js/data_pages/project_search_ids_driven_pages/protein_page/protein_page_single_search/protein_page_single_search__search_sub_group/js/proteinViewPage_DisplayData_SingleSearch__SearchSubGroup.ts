@@ -12,8 +12,10 @@
 
 //  !! Next 2 imports import AMD format code so use import ... = require('...');
 
+// @ts-ignore
 import Handlebars = require('handlebars/runtime');
 
+// @ts-ignore
 import _protein_table_template_bundle = require("../../../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
@@ -588,6 +590,8 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
         this._proteinViewPage_StatsSectionCreator_SingleSearch.setProteinListData({
             projectSearchId : this._projectSearchId,
             proteinListData : {
+                psmCount: proteinDisplayData.psmCount_TotalForSearch,
+                reportedPeptideCount: proteinDisplayData.reportedPeptideCount_TotalForSearch,
                 proteinCount: proteinListLength
             }
         });
@@ -634,7 +638,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     _renderToPageProteinList_ActualRender({ proteinDisplayData, $protein_list_container, searchSubGroup_Ids_Selected_Array, projectSearchId } : {
 
         proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_SingleSearch_SearchSubGroup
-        $protein_list_container,
+        $protein_list_container: JQuery<HTMLElement>
         searchSubGroup_Ids_Selected_Array : Array<number>
         projectSearchId : number
     } ) {
@@ -778,7 +782,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     /**
      *
      */
-    private _singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId}) {
+    private _singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId}: {proteinSequenceVersionId: number}) {
 
         //  Create URL for new Window about to open
 
@@ -998,7 +1002,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     /**
      *
      */
-    private _addTooltipForProteinName({$selector_table_rows_container}) {
+    private _addTooltipForProteinName({$selector_table_rows_container}: {$selector_table_rows_container: JQuery<HTMLElement>}) {
 
         if (this._addTooltipForProteinName_ADDED) {
             //  Already done so exit
@@ -1009,6 +1013,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
 
         // const selector_table_rows_container_Element = $selector_table_rows_container[ 0 ];
 
+        // @ts-ignore
         $selector_table_rows_container.qtip({
 
             content: {
@@ -1030,10 +1035,11 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
         });
 
         // Grab the first element in the tooltips array and access its qTip API
+        // @ts-ignore
         const qtipAPI = $selector_table_rows_container.qtip('api');
 
 
-        const proteinSequenceVersionIdNotAvailable = undefined;
+        const proteinSequenceVersionIdNotAvailable: any = undefined;
 
         const lastProteinSequenceVersionIdObjInContainingFunction = {lastProteinSequenceVersionId: -2};
 
@@ -1056,7 +1062,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     /**
      *
      */
-    private _updateTooltipOnScroll(eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable) {
+    private _updateTooltipOnScroll(eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any) {
 
         if (lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId === proteinSequenceVersionIdNotAvailable) {
             //  Already not showing tooltip so exit
@@ -1076,7 +1082,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     /**
      *
      */
-    private _updateTooltipOnMouseMove(eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable) {
+    private _updateTooltipOnMouseMove(eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any) {
 
         const $target = $(eventObject.target);
 
@@ -1141,7 +1147,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     /**
      *
      */
-    private _getTooltipText({proteinSequenceVersionIdInt}) {
+    private _getTooltipText({proteinSequenceVersionIdInt}: {proteinSequenceVersionIdInt: number}) {
 
         //  Only displaying the name and description uploaded with the search
 

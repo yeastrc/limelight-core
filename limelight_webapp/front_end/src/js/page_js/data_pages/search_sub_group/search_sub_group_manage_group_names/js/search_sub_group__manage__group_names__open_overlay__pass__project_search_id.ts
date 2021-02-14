@@ -99,10 +99,10 @@ export const searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId =
  * @param projectSearchIds - array of projectSearchIds to get data for
  */
 const _retrieveSearchNamesAndSubGroupsFromAJAX = function ({ projectSearchIds } : {
-    projectSearchIds
+    projectSearchIds: Array<number>
 }) : Promise<any> {
 
-    let retrieval = (resolve, reject) => {
+    let retrieval = (resolve: any, reject: any) => {
         try {
             let requestObj = {projectSearchIds};
 
@@ -121,7 +121,7 @@ const _retrieveSearchNamesAndSubGroupsFromAJAX = function ({ projectSearchIds } 
                 }
             });
 
-            promise_webserviceCallStandardPost.then(({responseData}) => {
+            promise_webserviceCallStandardPost.then(({responseData}: { responseData: any }) => {
                 try {
                     resolve( responseData );
 
@@ -146,7 +146,7 @@ const _retrieveSearchNamesAndSubGroupsFromAJAX = function ({ projectSearchIds } 
  */
 const _create_SubGroupDisplayListObjects = function ({ data, projectSearchId } : {
 
-    data // From Server
+    data: any // From Server
     projectSearchId : number
 
 }) : Array<SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object> {

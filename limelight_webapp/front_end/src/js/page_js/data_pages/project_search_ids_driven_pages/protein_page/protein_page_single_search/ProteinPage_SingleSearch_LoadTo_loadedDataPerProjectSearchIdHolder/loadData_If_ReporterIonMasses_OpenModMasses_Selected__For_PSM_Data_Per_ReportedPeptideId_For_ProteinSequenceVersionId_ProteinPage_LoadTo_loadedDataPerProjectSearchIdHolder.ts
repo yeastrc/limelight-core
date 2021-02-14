@@ -37,9 +37,9 @@ export const loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_
         getSearchSubGroupIds : boolean
         anyReporterIonMassesSelected : boolean
         anyOpenModificationMassesSelected : boolean
-        proteinSequenceVersionId,
-        projectSearchId,
-        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId //  Not typed in data in any of the calls at the moment
+        proteinSequenceVersionId: number
+        projectSearchId: number
+        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     }  ) {
 
@@ -197,8 +197,8 @@ const _loadDataFor_PSM_Ids_Per_ReportedPeptideId_For_ProteinSequenceVersionId = 
         loadedDataPerProjectSearchIdHolder
     } : {
 
-        proteinSequenceVersionId
-        projectSearchId
+        proteinSequenceVersionId: number
+        projectSearchId: number
         searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
@@ -229,7 +229,7 @@ const _loadDataFor_PSM_Ids_Per_ReportedPeptideId_For_ProteinSequenceVersionId = 
         loadedDataPerProjectSearchIdHolder.set_psmIdsForReportedPeptideIdMap( psmIdsForReportedPeptideIdMap );
     }
 
-    const reportedPeptideIdsToLoadDataFor = [];
+    const reportedPeptideIdsToLoadDataFor: Array<number> = [];
     {
         for ( const reportedPeptideId of reportedPeptideIds ) {
 
@@ -305,7 +305,14 @@ const _loadDataFor_PSM_Ids_Per_ReportedPeptideId_For_ProteinSequenceVersionId = 
  *
  * Get PSM IDs per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
  */
-const _getPsmsIdsForReportedPeptideIdsCutoffs_WebserviceCall = function ( { projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId } ) {
+const _getPsmsIdsForReportedPeptideIdsCutoffs_WebserviceCall = function (
+    {
+        projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId
+    }: {
+        projectSearchId: number
+        reportedPeptideIds: Array<number>
+        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
+    } ) {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -325,7 +332,7 @@ const _getPsmsIdsForReportedPeptideIdsCutoffs_WebserviceCall = function ( { proj
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
@@ -750,8 +757,8 @@ const _loadDataFor_PSM_ReporterIonMasses_For_ReportedPeptideIdsToLoadDataFor = f
     } : {
         getSearchSubGroupIds : boolean
         reportedPeptideIdsToLoadDataFor : Array<number>
-        projectSearchId,
-        searchDataLookupParams_For_Single_ProjectSearchId
+        projectSearchId: number
+        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     }  ) : Promise<unknown> {
@@ -902,7 +909,9 @@ const _loadDataFor_PSM_ReporterIonMasses_For_ReportedPeptideIdsToLoadDataFor = f
 const _getPsmsReporterIonMassesForReportedPeptideIdsCutoffs = function ({ getSearchSubGroupIds, projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId } : {
 
     getSearchSubGroupIds : boolean
-    projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId
+    projectSearchId: number
+    reportedPeptideIds: Array<number>
+    searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
 }) {
 
     let promise = new Promise( function( resolve, reject ) {
@@ -924,7 +933,7 @@ const _getPsmsReporterIonMassesForReportedPeptideIdsCutoffs = function ({ getSea
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
@@ -957,7 +966,7 @@ const _loadDataFor_PSM_OpenModificationMasses_Get_ReportedPeptideId_ToLoadDataFo
         loadedDataPerProjectSearchIdHolder
 
     } : {
-        reportedPeptideIds
+        reportedPeptideIds: Array<number>
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     }) : Array<number> {
@@ -1016,8 +1025,8 @@ const _loadDataFor_PSM_OpenModificationMasses_For_ReportedPeptideIdsToLoadDataFo
     } : {
         getSearchSubGroupIds : boolean
         reportedPeptideIdsToLoadDataFor : Array<number>
-        projectSearchId,
-        searchDataLookupParams_For_Single_ProjectSearchId
+        projectSearchId: number
+        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     }) : Promise<any> {
@@ -1197,7 +1206,9 @@ const _loadDataFor_PSM_OpenModificationMasses_For_ReportedPeptideIdsToLoadDataFo
 const _getPsmsOpenModificationMassesForReportedPeptideIdsCutoffs = function ({ getSearchSubGroupIds, projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId } : {
 
     getSearchSubGroupIds : boolean
-    projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId
+    projectSearchId: number
+    reportedPeptideIds: Array<number>
+    searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
 }) {
 
     let promise = new Promise( function( resolve, reject ) {
@@ -1219,7 +1230,7 @@ const _getPsmsOpenModificationMassesForReportedPeptideIdsCutoffs = function ({ g
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 

@@ -28,9 +28,13 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
     private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
-    private _projectSearchId;
+    private _projectSearchId: number;
 
-    private _proteinListData;
+    private _proteinListData: {
+        psmCount: number
+        reportedPeptideCount: number
+        proteinCount: number
+    };
 
 	/**
 	 * 
@@ -52,7 +56,14 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
      * 
      * @param proteinListData - computed data when generate protein list
 	 */
-    setProteinListData({ projectSearchId, proteinListData }) {
+    setProteinListData({ projectSearchId, proteinListData } : {
+        projectSearchId: number
+        proteinListData : {
+            psmCount: number
+            reportedPeptideCount: number
+            proteinCount: number
+        }
+    }) {
 
         this._projectSearchId = projectSearchId;
 
@@ -92,7 +103,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
     }
 
-    _show_status_linkClick(event) {
+    _show_status_linkClick(event: any) {
 
         event.preventDefault();
 
@@ -200,7 +211,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                     try {
                         console.log("AJAX Call to get ms2 count END, Now: " + new Date() );
 
@@ -223,7 +234,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 	/**
 	 * 
 	 */
-    _getReportedPeptideIdsHaveDynamicModifications_FromServer({ reportedPeptideIds }) {
+    _getReportedPeptideIdsHaveDynamicModifications_FromServer({ reportedPeptideIds }: { reportedPeptideIds: Array<number> }) {
 		return new Promise( ( resolve, reject ) => {
             try {
                 let requestObject = {
@@ -241,7 +252,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                     try {
                         console.log("AJAX Call to get reported peptides have dynamic mods END, Now: " + new Date() );
 
@@ -264,7 +275,7 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 	/**
 	 * 
 	 */
-    _populateStatsSection({ statsDataFromServer }) : void {
+    _populateStatsSection({ statsDataFromServer }: { statsDataFromServer: any }) : void {
 
         const containerDOMElement = document.getElementById("stats_data_container");
 
@@ -286,7 +297,15 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
         const ms2CountsFromServerResponse = statsDataFromServer.ms2CountsFromServerResponse;
         const reportedPeptideIdsHaveDynamicModificationsResult = statsDataFromServer.reportedPeptideIdsHaveDynamicModificationsResult;
 
-        const data = Object.assign( {}, this._proteinListData ); // create new object, copying all properties
+        const data: {
+            psmCount: number
+            reportedPeptideCount: number
+            proteinCount: number
+            ms2ScanCount?: any
+            psmsNoVariableModsCount? : number
+            psmsYesVariableModsCount? : number
+
+        } = Object.assign( {}, this._proteinListData ); // create new object, copying all properties
 
         if ( ms2CountsFromServerResponse.searchHasScanData ) {
             data.ms2ScanCount = ms2CountsFromServerResponse.ms2Count;

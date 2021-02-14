@@ -22,7 +22,7 @@ export interface SearchDetailsAndOtherFiltersOuterBlock_Layout_Props {
  */
 interface SearchDetailsAndOtherFiltersOuterBlock_Layout_State {
 
-    _placeholder?
+    _placeholder?: any
 }
 
 /**

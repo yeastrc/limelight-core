@@ -449,7 +449,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	getSearchSubGroupIds : boolean
-	proteinSequenceVersionId: any
+	proteinSequenceVersionId: number
 	projectSearchIds :  number[]
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
 	loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -569,12 +569,12 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	getSearchSubGroupIds : boolean
-	proteinSequenceVersionId, 
-	projectSearchIds, 
-	dataPageStateManager_DataFrom_Server, 
-	loadedDataCommonHolder, 
-	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-	searchDataLookupParamsRoot,
+	proteinSequenceVersionId: number
+	projectSearchIds :  number[]
+	dataPageStateManager_DataFrom_Server : DataPageStateManager
+	loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds :  Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+	searchDataLookupParamsRoot : SearchDataLookupParameters_Root
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
 	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
@@ -682,12 +682,12 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	getSearchSubGroupIds : boolean
-	proteinSequenceVersionId, 
-	projectSearchId, 
-	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
-	loadedDataCommonHolder, 
-	dataPageStateManager_DataFrom_Server,
-	searchDataLookupParamsRoot
+	proteinSequenceVersionId: number
+	projectSearchId :  number
+	dataPageStateManager_DataFrom_Server : DataPageStateManager
+	loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds :  Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+	searchDataLookupParamsRoot : SearchDataLookupParameters_Root
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
 	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
@@ -822,7 +822,14 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
  * 
  * This can be (but not likely) called multiple times for the same search due to where it is currently called from.
  */
-const _populateStaticModificationsPositionsOnProteinSequence = function({ proteinSequenceVersionId, proteinSequenceString, loadedDataPerProjectSearchIdHolder }) {
+const _populateStaticModificationsPositionsOnProteinSequence = function(
+	{
+		proteinSequenceVersionId, proteinSequenceString, loadedDataPerProjectSearchIdHolder
+	}:{
+		proteinSequenceVersionId: number
+		proteinSequenceString: string
+		loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+	}) {
 
 	{
 		const staticModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_staticModificationsOnProtein_KeyProteinSequenceVersionId();
@@ -912,7 +919,15 @@ const _populateStaticModificationsPositionsOnProteinSequence = function({ protei
  * 
  * @returns null or Promise
  */
-const _getPeptideSequencesForPeptideIds = function({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, loadedDataCommonHolder }) {
+const _getPeptideSequencesForPeptideIds = function(
+	{
+		proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, loadedDataCommonHolder
+	}: {
+		proteinSequenceVersionId: number
+		projectSearchIds :  number[]
+		loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+		loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds :  Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+	}) {
 
 	//   Map<PeptideId,{ reportedPeptideId, projectSearchId, peptideId }>
 	const peptideIdsToLoadSequencesForMap_Key_PeptideId = new Map();

@@ -49,11 +49,11 @@ export const searchSubGroup_Manage_GroupNames_UpdateServer = function (
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-        promise_webserviceCallStandardPost.catch( (reason) => {
+        promise_webserviceCallStandardPost.catch( (reason: any) => {
             reject(reason);
         }  );
 
-        promise_webserviceCallStandardPost.then( ({ responseData }) => {
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
             try {
                 console.log("AJAX Call to Update Sub Group Data END, Now: " + new Date() );
 

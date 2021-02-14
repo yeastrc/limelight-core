@@ -181,7 +181,7 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_
 
     // view_single_protein_inner_overlay_div
     view_single_protein_inner_overlay_div_Width_Initial : number;
-    setWidth__view_single_protein_inner_overlay_div // Function in Root Component Class _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number })
+    setWidth__view_single_protein_inner_overlay_div: any // Function in Root Component Class _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number })
 
     // view_single_protein_overlay_body
     view_single_protein_overlay_body_PaddingLeft : number
@@ -226,8 +226,8 @@ interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Compone
     //  User made a selection that resulted in a AJAX request for data.  Page update for filtered Peptides will wait for the AJAX to complete.  Display message loading data.
     gettingDataFor_Filtering_reportedPeptideIdsForDisplay? : boolean;
 
-    saveView_Component_React? //  React Component for Save View
-    saveView_Component_Props_Prop? //  Object passed to saveView_Component_React as property propsValue
+    saveView_Component_React?: any //  React Component for Save View
+    saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
 
 /**
@@ -279,9 +279,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
     private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
 
-    private _updated_OverlayWidth = undefined;  // Updated whenever call function in parent Component to update width of overlay
+    private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
 
-    private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
+    // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
 
     /**
      * 
@@ -2094,10 +2094,10 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 		// const config = { attributes: true, childList: true, subtree: true };
 		const config = { childList: true, subtree: true };
 
-		let timeoutId = null;
+		let timeoutId: number = null;
 
 		// Callback function to execute when mutations are observed
-		const domMutationCallback = ( mutationsList, observer ) => {
+		const domMutationCallback = ( mutationsList: any, observer: any ) => {
 
 			let foundChildListMutation = false;
 

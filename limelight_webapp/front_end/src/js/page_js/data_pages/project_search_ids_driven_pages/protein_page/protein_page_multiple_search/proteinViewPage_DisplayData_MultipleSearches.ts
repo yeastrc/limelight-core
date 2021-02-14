@@ -11,10 +11,11 @@
 
 //  !! Next 2 imports import AMD format code so use import ... = require('...');
 
+// @ts-ignore
 import Handlebars = require('handlebars/runtime');
 
-import _protein_table_template_bundle =
-	require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
+// @ts-ignore
+import _protein_table_template_bundle = require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -114,6 +115,11 @@ class ProteinDataDisplay_MultipleSearch_Summary_PerSearch {
 	psmCount_TotalForSearch : number;
 }
 
+class ProteinNameDescriptionCacheEntry_MultipleSearches {
+	name : string
+	description: string
+}
+
 	
 /**
  * 
@@ -166,10 +172,10 @@ export class ProteinViewPage_Display_MultipleSearches {
 	private _projectSearchIds: Array<number> = undefined;
 
 	//   Cached: Protein Name and Description in a Map, Key ProteinSequenceVersionId
-	private _proteinNameDescription_Key_ProteinSequenceVersionId = undefined;
+	private _proteinNameDescription_Key_ProteinSequenceVersionId : Map<number, ProteinNameDescriptionCacheEntry_MultipleSearches> = undefined;
 
 	//   Clear: Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
-	private _proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId = undefined;
+	private _proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_MultipleSearches>> = undefined;
 
 	//   Cached: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
 	private _peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId: Map<number, {
@@ -182,7 +188,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 	private _proteinViewPage_Display_MultipleSearches_SingleProtein: ProteinPage_Display_MultipleSearches_SingleProtein;
 
-	private currentProteinListDisplayTableData = undefined
+	// private currentProteinListDisplayTableData = undefined
 
 	private _proteinList_IsInDOM: boolean;
 
@@ -362,7 +368,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 * Populate Protein List On Page For Multiple Project Search Ids
 	 */
-	populateProteinList({projectSearchIds}) {
+	populateProteinList({projectSearchIds}: { projectSearchIds : Array<number> }) {
 
 		this._projectSearchIds = projectSearchIds;
 
@@ -578,7 +584,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _displayProteinListOnPage({projectSearchIds}) {
+	private _displayProteinListOnPage({projectSearchIds}: { projectSearchIds : Array<number> }) {
 
 		if (!this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping()) {
 
@@ -656,7 +662,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _displayProteinListOnPage_ActualRender({projectSearchIds}) {
+	private _displayProteinListOnPage_ActualRender({projectSearchIds}: { projectSearchIds : Array<number> }) {
 
 
 		const proteinDisplayData = this._createProteinDisplayData({projectSearchIds});
@@ -1468,7 +1474,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId}) {
+	private _singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId}: {proteinSequenceVersionId: number}) {
 
 		//  Create URL for new Window about to open
 
@@ -1489,7 +1495,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId}) {
+	private _singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId}: {proteinSequenceVersionId: number}) {
 
 		const proteinNameDescription = this._proteinNameDescription_Key_ProteinSequenceVersionId.get(proteinSequenceVersionId);
 		if (proteinNameDescription === undefined) {
@@ -1519,7 +1525,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
 	 */
-	private _instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY}) {
+	private _instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY}: {currentWindowScrollY: number}) {
 
 		//  Create callback function to call on single protein close
 
@@ -1569,7 +1575,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _addTooltipForProteinName({$selector_table_rows_container}) {
+	private _addTooltipForProteinName({$selector_table_rows_container}:{$selector_table_rows_container: JQuery<HTMLElement>}) {
 
 		if (this._addTooltipForProteinName_ADDED) {
 			//  Already done so exit
@@ -1580,6 +1586,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		// const selector_table_rows_container_Element = $selector_table_rows_container[ 0 ];
 
+		// @ts-ignore
 		$selector_table_rows_container.qtip({
 
 			content: {
@@ -1601,10 +1608,11 @@ export class ProteinViewPage_Display_MultipleSearches {
 		});
 
 		// Grab the first element in the tooltips array and access its qTip API
+		// @ts-ignore
 		const qtipAPI = $selector_table_rows_container.qtip('api');
 
 
-		const proteinSequenceVersionIdNotAvailable = undefined;
+		const proteinSequenceVersionIdNotAvailable: any = undefined;
 
 		const lastProteinSequenceVersionIdObjInContainingFunction = {lastProteinSequenceVersionId: -2};
 
@@ -1627,7 +1635,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _updateTooltipOnScroll(eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable) {
+	private _updateTooltipOnScroll(eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any) {
 
 		if (lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId === proteinSequenceVersionIdNotAvailable) {
 			//  Already not showing tooltip so exit
@@ -1647,7 +1655,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _updateTooltipOnMouseMove(eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable) {
+	private _updateTooltipOnMouseMove(eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any) {
 
 		const $target = $(eventObject.target);
 
@@ -1712,7 +1720,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 *
 	 */
-	private _getTooltipText({proteinSequenceVersionIdInt}) {
+	private _getTooltipText({proteinSequenceVersionIdInt}: {proteinSequenceVersionIdInt: number}) {
 
 		//  Only displaying the name and description uploaded with the search
 

@@ -60,7 +60,7 @@ interface ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props {
  */
 interface ProteinPage_ProteinGroupingFilterSelection_Component_Root_State {
 
-    _placeHolder
+    _placeHolder: any
 }
 
 /**

@@ -16,12 +16,16 @@ import {
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
-import { ProteinDataDisplay_ProteinListItem_SingleSearch } from './proteinViewPage_DisplayData_SingleSearch_CreateProteinDisplayData';
+import {
+    ProteinDataDisplay_ProteinListItem_SingleSearch,
+    ProteinDisplayData_From_createProteinDisplayData_SingleSearch
+} from './proteinViewPage_DisplayData_SingleSearch_CreateProteinDisplayData';
 import { ProteinInferenceUtils } from 'page_js/data_pages/protein_inference/ProteinInferenceUtils';
 import { ProteinGroup } from 'page_js/data_pages/protein_inference/ProteinGroup';
 import { SingleSearch_ProteinList_ProteinName_ExternalReactComponent, SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data } from './proteinViewPage_DisplayData_SingleSearch_ProteinName_DataTable_Component';
 import { SingleSearch_ProteinList_ProteinDescription_ExternalReactComponent, SingleSearch_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data } from './proteinViewPage_DisplayData_SingleSearch_ProteinDescription_DataTable_Component';
 import { ProteinGrouping_CentralStateManagerObjectClass } from '../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
+import {AnnotationTypeItem} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 class GroupedProtein_Entry {
@@ -45,16 +49,19 @@ export type ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHan
 /**
  * Create tableObject object  for DataTable
  */
-export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject = function({ 
-    proteinList, annotationTypeRecords_DisplayOrder, proteinGrouping_CentralStateManagerObjectClass, projectSearchId, proteinRow_tableRowClickHandler_Callback_Function
-} : { 
-    proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch>, 
-    annotationTypeRecords_DisplayOrder, 
+export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject = function(
+    {
+        proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass, projectSearchId, proteinRow_tableRowClickHandler_Callback_Function
+} : {
+    proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_SingleSearch
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     projectSearchId : number
     proteinRow_tableRowClickHandler_Callback_Function: ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function
 
 }) : DataTable_RootTableDataObject {
+
+    const proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch> = proteinDisplayData.proteinList
+    const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder
 
     // the columns for the data being shown on the page
     const columns : Array<DataTable_Column> = getProteinDataTableColumns_SingleSearch( { 
@@ -74,7 +81,7 @@ export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableData
 
     } else {
 
-        const greyOutRow = undefined;  //  Not pass for not grouped
+        const greyOutRow = false;  //  Not pass for not grouped
 
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
             greyOutRow, proteinList, proteinRow_tableRowClickHandler_Callback_Function
@@ -96,7 +103,15 @@ export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableData
  * 
  * Called from internal to this file and also called from proteinViewPage_DisplayData_SingleSearch.ts for downloads
  */
-export const getProteinDataTableColumns_SingleSearch = function( { psmAnnotationTypes, reportedPeptideAnnotationTypes } ) : Array<DataTable_Column> {
+export const getProteinDataTableColumns_SingleSearch = function(
+    {
+        psmAnnotationTypes, reportedPeptideAnnotationTypes
+    }: {
+        psmAnnotationTypes : AnnotationTypeItem[]
+        reportedPeptideAnnotationTypes: AnnotationTypeItem[]
+
+    } ) : Array<DataTable_Column> {
+
 
     let columns : Array<DataTable_Column> = [ ];
 

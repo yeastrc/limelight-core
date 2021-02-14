@@ -106,7 +106,7 @@ export class ProteinList_CentralStateManagerObjectClass {
 		return this._value.groupProteins_OLD_V1;
 	}
 
-	setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData } ) {
+	setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData } : { generatedPeptideContentsSelectedEncodedStateData: any } ) {
 		this._value.generatedPeptideContentsSelectedEncodedStateData = generatedPeptideContentsSelectedEncodedStateData;
 
 		if ( ! this._centralPageStateManager ) {
@@ -132,6 +132,7 @@ export class ProteinList_CentralStateManagerObjectClass {
 	getDataForEncoding() {
 
 		const dataForEncoding = {}
+		// @ts-ignore
 		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
 		//  Do NOT encode since OLD version
@@ -140,6 +141,7 @@ export class ProteinList_CentralStateManagerObjectClass {
 		// }
 
 		if ( this._value.generatedPeptideContentsSelectedEncodedStateData !== undefined ) {
+			// @ts-ignore
 			dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.generatedPeptideContentsSelectedEncodedStateData;
 		}
 

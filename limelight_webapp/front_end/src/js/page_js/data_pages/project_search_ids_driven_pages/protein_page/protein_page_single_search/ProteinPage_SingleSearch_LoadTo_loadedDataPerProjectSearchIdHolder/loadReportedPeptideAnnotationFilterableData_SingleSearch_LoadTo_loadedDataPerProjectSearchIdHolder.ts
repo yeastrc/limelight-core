@@ -18,7 +18,9 @@ export const loadReportedPeptideAnnotationFilterableData_SingleSearch_LoadTo_loa
         reportedPeptideIds, annTypeIds, projectSearchId,
         loadedDataPerProjectSearchIdHolder
     } : {
-        reportedPeptideIds, annTypeIds, projectSearchId
+        reportedPeptideIds: Array<number>
+        annTypeIds: Array<number>
+        projectSearchId: number
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     } ) {
 
@@ -64,7 +66,9 @@ const _getReportedPeptideFilterableAnnData_From_ReportedPeptideIds_AnnTypeIds = 
     {
         projectSearchId, reportedPeptideIds, annTypeIds
     } : {
-        projectSearchId, reportedPeptideIds, annTypeIds
+        reportedPeptideIds: Array<number>
+        annTypeIds: Array<number>
+        projectSearchId: number
 
     } ) {
 
@@ -86,7 +90,7 @@ const _getReportedPeptideFilterableAnnData_From_ReportedPeptideIds_AnnTypeIds = 
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get reported-peptide-filtrbl-ann-data END, Now: " + new Date() );
 
@@ -121,7 +125,7 @@ const _processReportedPeptideFilterableAnnDataFromServer_Populate_loadedData = f
         annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer,
         loadedDataPerProjectSearchIdHolder
     } : {
-        annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer
+        annData_KeyAnnTypeId_KeyReportedPeptideIdFromServer: any
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     } ) {
 

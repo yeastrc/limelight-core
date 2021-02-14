@@ -33,7 +33,7 @@ export class SharePage_Component_Props {
  */
 class SharePage_Component_State {
 
-    _placeholder  // Used so don't put anything in the state
+    _placeholder: any  // Used so don't put anything in the state
 }
 
 

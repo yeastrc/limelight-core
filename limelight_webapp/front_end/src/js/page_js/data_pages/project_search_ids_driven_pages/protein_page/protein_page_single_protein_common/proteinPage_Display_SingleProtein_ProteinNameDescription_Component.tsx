@@ -22,7 +22,7 @@ export interface ProteinPage_Display_SingleProtein_ProteinNameDescription_Compon
 
 interface ProteinPage_Display_SingleProtein_ProteinNameDescription_Component_State {
 
-    _placeholder?
+    _placeholder?: any
 }
 
 /**

@@ -59,11 +59,7 @@ import { ProteinViewPage_DisplayDataOnPage }  from './proteinViewPage_DisplayDat
 import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
-	
-//  From Testing
-	
-// import { TestPageComponent } from 'page_js/z_test_code/testPageComponent';
-	
+
 /**
  * 
  */
@@ -100,7 +96,7 @@ export class ProteinViewPage_RootClass_Common {
 	/**
 	 * 
 	 */
-	constructor({ dataPages_LoggedInUser_CommonObjectsFactory } : { dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory }) {
+	constructor({ dataPages_LoggedInUser_CommonObjectsFactory } : { dataPages_LoggedInUser_CommonObjectsFactory? : DataPages_LoggedInUser_CommonObjectsFactory }) {
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 
@@ -191,12 +187,6 @@ export class ProteinViewPage_RootClass_Common {
 		
 		//  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
-		
-//		let testPageComponent = new TestPageComponent( { centralPageStateManager : this._centralPageStateManager } );
-//		testPageComponent.initialize();
-//		
-//		testPageComponent.setValue( { key : 'b', value : 'rtw' } );
-
 
 		////Instance of class
 		{

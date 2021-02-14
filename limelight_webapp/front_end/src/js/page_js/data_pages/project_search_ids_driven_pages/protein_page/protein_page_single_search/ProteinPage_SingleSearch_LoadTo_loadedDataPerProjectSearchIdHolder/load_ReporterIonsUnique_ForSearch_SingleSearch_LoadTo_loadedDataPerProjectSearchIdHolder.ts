@@ -73,7 +73,7 @@ export const load_ReporterIonsUnique_ForSearch_SingleSearch_LoadTo_loadedDataPer
  *
  * result list item { String residue, BigDecimal mass }
  */
-const _get_ReporterIonsUnique_ForSearch_forProjectSearchId = function ( { projectSearchId } ) {
+const _get_ReporterIonsUnique_ForSearch_forProjectSearchId = function ( { projectSearchId }: { projectSearchId: number } ) {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -91,7 +91,7 @@ const _get_ReporterIonsUnique_ForSearch_forProjectSearchId = function ( { projec
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get Get Reporter Ions - Unique Masses for this Search END, Now: " + new Date() );
 

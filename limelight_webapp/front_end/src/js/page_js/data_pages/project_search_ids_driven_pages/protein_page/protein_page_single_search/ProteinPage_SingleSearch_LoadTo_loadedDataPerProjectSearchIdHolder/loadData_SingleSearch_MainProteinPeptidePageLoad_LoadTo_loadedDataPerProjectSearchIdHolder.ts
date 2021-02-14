@@ -278,7 +278,7 @@ const _processReportedPeptideId_AndData_ListFromServer_Populate_loadedData = fun
 		reportedPeptideCoreDataArray,
 		loadedDataPerProjectSearchIdHolder
 	} : {
-		reportedPeptideCoreDataArray
+		reportedPeptideCoreDataArray: any
 		loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 	} ) {
 

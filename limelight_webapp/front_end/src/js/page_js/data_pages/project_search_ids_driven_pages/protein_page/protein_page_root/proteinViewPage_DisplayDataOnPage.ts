@@ -375,7 +375,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 	/**
 	 * 
 	 */
-	populateProteinListBlock_MultipleSearches({ projectSearchIds }) {
+	populateProteinListBlock_MultipleSearches({ projectSearchIds }: { projectSearchIds : Array<number> }) {
 
 		this._proteinViewPage_Display_MultipleSearches.attachPSMDownloadClickHandler({ projectSearchIds });
 		this._proteinViewPage_Display_MultipleSearches.populateProteinList({ projectSearchIds });
@@ -384,8 +384,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 	/**
 	 * 
 	 */
-	populateProteinListBlock_SingleSearch({ projectSearchId }) {
-
+	populateProteinListBlock_SingleSearch({ projectSearchId }: { projectSearchId: number }) {
 
 		if ( this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() ) {
 
@@ -395,8 +394,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 			this._proteinViewPage_Display_SingleSearch.attachPSMDownloadClickHandler({ projectSearchId });
 			this._proteinViewPage_Display_SingleSearch.populateProteinList({ projectSearchId });
 		}
-
-		
 	}
 	
 }

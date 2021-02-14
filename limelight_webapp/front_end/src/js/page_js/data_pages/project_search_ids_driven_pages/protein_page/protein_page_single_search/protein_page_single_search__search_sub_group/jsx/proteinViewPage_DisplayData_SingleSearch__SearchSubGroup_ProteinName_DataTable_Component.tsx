@@ -38,7 +38,7 @@ export interface SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalRe
 
 interface SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 

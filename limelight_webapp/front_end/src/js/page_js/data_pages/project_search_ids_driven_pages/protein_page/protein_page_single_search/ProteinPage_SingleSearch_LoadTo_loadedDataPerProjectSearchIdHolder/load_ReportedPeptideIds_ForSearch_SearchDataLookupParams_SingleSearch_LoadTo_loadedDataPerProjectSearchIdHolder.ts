@@ -44,7 +44,7 @@ export const load_ReportedPeptideIds_ForSearch_SearchDataLookupParams_SingleSear
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get Peptide List END, Now: " + new Date() );
 

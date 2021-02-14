@@ -20,7 +20,7 @@ import {
 export class ProteinDisplayData_From_createProteinDisplayData_SingleSearch {
 
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch> 
-    annotationTypeRecords_DisplayOrder
+    annotationTypeRecords_DisplayOrder: {psmAnnotationTypesForProteinListEntries: AnnotationTypeItem[], reportedPeptideAnnotationTypesForProteinListEntries: AnnotationTypeItem[]}
     reportedPeptideCount_TotalForSearch : number
     psmCount_TotalForSearch : number
 
@@ -272,7 +272,14 @@ export const createProteinDisplayData_SingleSearch = function({
 
     _sortProteinList( { proteinList : proteinResultListResult } );
 
-    return { proteinList : proteinResultListResult, annotationTypeRecords_DisplayOrder, reportedPeptideCount_TotalForSearch, psmCount_TotalForSearch };
+    const functionResult : ProteinDisplayData_From_createProteinDisplayData_SingleSearch = {
+        proteinList : proteinResultListResult,
+        annotationTypeRecords_DisplayOrder,
+        reportedPeptideCount_TotalForSearch,
+        psmCount_TotalForSearch
+    }
+
+    return functionResult;
 }
 
 

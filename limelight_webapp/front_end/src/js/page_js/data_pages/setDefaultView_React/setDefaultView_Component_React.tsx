@@ -49,7 +49,7 @@ export class SetDefaultView_Component_Props {
  */
 class SetDefaultView_Component_State {
 
-    _placeholder  // Used so don't put anything in the state
+    _placeholder: any  // Used so don't put anything in the state
 }
 
 

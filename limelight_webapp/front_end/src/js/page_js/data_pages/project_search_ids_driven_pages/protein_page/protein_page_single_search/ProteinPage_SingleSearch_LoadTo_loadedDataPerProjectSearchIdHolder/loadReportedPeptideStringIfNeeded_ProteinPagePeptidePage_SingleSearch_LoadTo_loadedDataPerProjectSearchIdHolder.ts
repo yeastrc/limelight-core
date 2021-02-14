@@ -18,11 +18,12 @@ export const loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSear
     {
         reportedPeptideIds, projectSearchId, loadedDataCommonHolder
     } : {
-        reportedPeptideIds, projectSearchId
+        reportedPeptideIds: Set<number>
+        projectSearchId: number
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     } ) : Promise<unknown> {
 
-    const reportedPeptideIdsToLoadReportedPeptideStringsFor = [];
+    const reportedPeptideIdsToLoadReportedPeptideStringsFor: Array<number> = [];
 
     {
         for ( const reportedPeptideId of reportedPeptideIds ) {
@@ -85,7 +86,13 @@ export const loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSear
 /**
  * Get Reported Peptide Strings from Reported Peptide Ids
  */
-const _getReportedPeptideStringsFromReportedPeptideIds = function ( { projectSearchIds, reportedPeptideIds } ) {
+const _getReportedPeptideStringsFromReportedPeptideIds = function (
+    {
+        projectSearchIds, reportedPeptideIds
+    } : {
+        projectSearchIds: Array<number>
+        reportedPeptideIds: Array<number>
+    } ) {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -104,7 +111,7 @@ const _getReportedPeptideStringsFromReportedPeptideIds = function ( { projectSea
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get d/rws/for-page/psb/reported-peptide-strings-for-reported-peptide-ids END, Now: " + new Date() );
 

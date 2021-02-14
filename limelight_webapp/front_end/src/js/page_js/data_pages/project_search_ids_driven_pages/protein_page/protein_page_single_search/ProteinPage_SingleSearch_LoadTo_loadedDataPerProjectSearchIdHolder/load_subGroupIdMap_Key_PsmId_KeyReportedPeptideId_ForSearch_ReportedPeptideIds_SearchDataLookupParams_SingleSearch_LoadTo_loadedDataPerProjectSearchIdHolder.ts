@@ -69,7 +69,7 @@ export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_Reporte
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
 
@@ -101,7 +101,7 @@ export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_Reporte
  */
 const _processResultsFromServer_Populate_loadedData = function ( { results, loadedDataPerProjectSearchIdHolder } : {
 
-    results
+    results: any
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
 } ) : void {

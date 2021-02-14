@@ -109,7 +109,7 @@ export interface SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Common_Root_
  */
 interface SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Root_State {
 
-    _placeHolder
+    _placeHolder: any
     // prev_PropValue? : SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Root_Props_PropValue
 }
 
@@ -255,7 +255,7 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
  */
 interface SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State {
 
-    _placeHolder
+    _placeHolder: any
     // prev_PropValue? : SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Props_PropValue
 }
 
@@ -436,7 +436,7 @@ interface SearchSubGroup_Entry_Props {
  */
 interface SearchSubGroup_Entry_State {
 
-    _placeHolder
+    _placeHolder: any
 }
 
 /**

@@ -21,7 +21,7 @@ import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable
 export interface ProteinViewPage_StatsSection_Props {
 
     searchContainsSubGroups : boolean
-    data
+    data: any
 }
 
 /**

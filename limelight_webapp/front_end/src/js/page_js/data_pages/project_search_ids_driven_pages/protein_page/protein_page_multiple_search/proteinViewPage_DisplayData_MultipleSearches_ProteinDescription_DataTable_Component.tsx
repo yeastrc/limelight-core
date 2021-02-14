@@ -39,7 +39,7 @@ export interface MultipleSearches_ProteinList_ProteinDescription_ExternalReactCo
 
 interface MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 

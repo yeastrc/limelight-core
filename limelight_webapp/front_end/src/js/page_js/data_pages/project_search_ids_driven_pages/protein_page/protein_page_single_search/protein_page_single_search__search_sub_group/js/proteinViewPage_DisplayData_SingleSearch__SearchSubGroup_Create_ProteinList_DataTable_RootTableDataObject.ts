@@ -83,7 +83,7 @@ export const renderToPageProteinList_SingleSearch__SearchSubGroup__Create_DataTa
 
     } else {
 
-        const greyOutRow = undefined;  //  Not pass for not grouped
+        const greyOutRow = false;  //  Not pass for not grouped
 
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({ greyOutRow, proteinList, columns, searchSubGroupIds, proteinRow_tableRowClickHandler_Callback_Function });
     }

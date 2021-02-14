@@ -11,8 +11,10 @@
 
 //  !! Next 2 imports import AMD format code so use import ... = require('...');
 
+// @ts-ignore
 import Handlebars = require('handlebars/runtime');
 
+// @ts-ignore
 import _protein_table_template_bundle = require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 
@@ -541,7 +543,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			//  Have Data to show
 
 			this._renderToPageProteinList_ActualRender({ 
-				proteinList, annotationTypeRecords_DisplayOrder, $protein_list_container, projectSearchId 
+				proteinDisplayData, $protein_list_container, projectSearchId
 			});
 			
 		} else {
@@ -572,14 +574,15 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * Have data so actual render
 	 */
-	_renderToPageProteinList_ActualRender({ proteinList, annotationTypeRecords_DisplayOrder, $protein_list_container, projectSearchId } : { 
-		
-		proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch>, 
-		annotationTypeRecords_DisplayOrder, 
-		$protein_list_container, 
+	_renderToPageProteinList_ActualRender({ proteinDisplayData, $protein_list_container, projectSearchId } : {
+
+		proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_SingleSearch
+		$protein_list_container: JQuery<HTMLElement>
 		projectSearchId : number
 	} ) {
-		
+
+		const proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch> = proteinDisplayData.proteinList;
+		const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder;
 		
 		const $protein_counts_download_assoc_psms_block = $("#protein_counts_download_assoc_psms_block");
 		if ( $protein_counts_download_assoc_psms_block.length === 0 ) {
@@ -601,7 +604,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		//   Create Data Table
 		const tableDataObject : DataTable_RootTableDataObject = renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject({ // External Function
-			proteinList, annotationTypeRecords_DisplayOrder, proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass, projectSearchId,
+			proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass, projectSearchId,
 			proteinRow_tableRowClickHandler_Callback_Function : this._singleProteinRowClickHandler_BindThis
 		});
 
@@ -720,7 +723,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-    _singleProteinRowShowSingleProteinNewWindow( { proteinSequenceVersionId } ) {
+    _singleProteinRowShowSingleProteinNewWindow( { proteinSequenceVersionId }: {proteinSequenceVersionId: number} ) {
 
 		//  Create URL for new Window about to open
 
@@ -739,7 +742,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-    _singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId } ) {
+    _singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId }: {proteinSequenceVersionId: number} ) {
 		
 		const proteinNameDescription = this._proteinNameDescription_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId );
 		if ( proteinNameDescription === undefined ) {
@@ -789,7 +792,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
 	 */
-	_instantiateObject_Class__ProteinPage_Display_SingleSearch_SingleProtein({ currentWindowScrollY }) {
+	_instantiateObject_Class__ProteinPage_Display_SingleSearch_SingleProtein({ currentWindowScrollY }: { currentWindowScrollY: number }) {
 		
 		//  Create callback function to call on single protein close
 		
@@ -843,7 +846,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-	_addTooltipForProteinName( { $selector_table_rows_container } ) {
+	_addTooltipForProteinName( { $selector_table_rows_container }: { $selector_table_rows_container: JQuery<HTMLElement> } ) {
 		
 		if ( this._addTooltipForProteinName_Called === true ) {
 			//  Already called so just exit.  Assume that DOM element has not been removed and added
@@ -858,6 +861,7 @@ export class ProteinViewPage_Display_SingleSearch {
 
 		// const selector_table_rows_container_Element = $selector_table_rows_container[ 0 ];
 
+		// @ts-ignore
 		$selector_table_rows_container.qtip({
 
 			content: {
@@ -879,10 +883,11 @@ export class ProteinViewPage_Display_SingleSearch {
 		});
 
 		// Grab the first element in the tooltips array and access its qTip API
+		// @ts-ignore
 		const qtipAPI = $selector_table_rows_container.qtip('api');
 		
 
-		const proteinSequenceVersionIdNotAvailable = undefined;
+		const proteinSequenceVersionIdNotAvailable: any = undefined;
 	
 		const lastProteinSequenceVersionIdObjInContainingFunction = { lastProteinSequenceVersionId : -2 };
 		
@@ -905,7 +910,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-	_updateTooltipOnScroll( eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable ) {
+	_updateTooltipOnScroll( eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any ) {
 
 		// User has scrolled.  Hide tooltip and clear tooltip contents.
 		
@@ -929,7 +934,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-	_updateTooltipOnMouseMove( eventObject, qtipAPI, lastProteinSequenceVersionIdObj, proteinSequenceVersionIdNotAvailable ) {
+	_updateTooltipOnMouseMove( eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any ) {
 
 		const $target = $( eventObject.target );
 
@@ -994,7 +999,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-	_getTooltipText( { proteinSequenceVersionIdInt } ) {
+	_getTooltipText( { proteinSequenceVersionIdInt }: { proteinSequenceVersionIdInt: number } ) {
 
 		//  Only displaying the name and description uploaded with the search
 
@@ -1055,7 +1060,7 @@ export class ProteinViewPage_Display_SingleSearch {
 	/**
 	 * 
 	 */
-	_createProteinDisplayDownloadDataAsString( { proteinDisplayData } ) {
+	_createProteinDisplayDownloadDataAsString( { proteinDisplayData } : { proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_SingleSearch} ) {
 
 		const proteinList = proteinDisplayData.proteinList;
 		const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder;
@@ -1069,7 +1074,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			reportedPeptideAnnotationTypes : annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForProteinListEntries 
 		} );
 
-		const greyOutRow = undefined;  // Not Set for download
+		const greyOutRow = false;  // Not Set for download
 
 		//   Protein List of objects with properties for Data Table
 		const proteinList_ForDataTable = createProteinList_ForDataTable_SingleSearch( { greyOutRow, proteinList, proteinRow_tableRowClickHandler_Callback_Function : null } );

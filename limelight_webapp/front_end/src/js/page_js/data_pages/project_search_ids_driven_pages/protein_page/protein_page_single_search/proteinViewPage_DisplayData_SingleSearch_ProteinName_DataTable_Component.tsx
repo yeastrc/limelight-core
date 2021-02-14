@@ -41,7 +41,7 @@ export interface SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Pro
 
 interface SingleSearch_ProteinList_ProteinName_ExternalReactComponent_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 

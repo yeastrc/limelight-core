@@ -82,7 +82,7 @@ export class ProteinPageSearchesSummarySectionCreator_MultipleSearches {
     /**
      *
      */
-    _combined_searches_show_summary_data_per_search_linkClick(event) {
+    _combined_searches_show_summary_data_per_search_linkClick(event: any) {
 
         event.preventDefault();
 
@@ -105,7 +105,7 @@ export class ProteinPageSearchesSummarySectionCreator_MultipleSearches {
             throw Error("No DOM element with id 'combined_searches_psm_counts_per_search_container'");
         }
 
-        const callbackFcn = undefined;
+        const callbackFcn: any = undefined;
 
         const componentProps : ProteinPageSearchesSummarySectionData_Component_Props = {
             summarySectionData : this._summarySectionData

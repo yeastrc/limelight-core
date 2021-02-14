@@ -19,7 +19,7 @@ export const load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearch
         loadedDataPerProjectSearchIdHolder
 
     } : {
-        projectSearchId
+        projectSearchId: number
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     }) : Promise<unknown> {
@@ -91,7 +91,7 @@ const _processProteinCoverageFromServer_Populate_loadedData = function (
         proteinCoverageList ,
         loadedDataPerProjectSearchIdHolder
     } : {
-        proteinCoverageList
+        proteinCoverageList: any
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     } ) : void {
 
@@ -165,7 +165,7 @@ const _processProteinCoverageFromServer_Populate_loadedData = function (
 /**
  * Get Protein Coverage Data From Reported Peptide Ids
  */
-const _getProteinCoverageData_From_ReportedPeptideIds = function ( { projectSearchId, reportedPeptideIds } ) : Promise<any> {
+const _getProteinCoverageData_From_ReportedPeptideIds = function ( { projectSearchId, reportedPeptideIds } : { projectSearchId: number, reportedPeptideIds: Array<number> } ) : Promise<any> {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -184,7 +184,7 @@ const _getProteinCoverageData_From_ReportedPeptideIds = function ( { projectSear
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get protein-coverage-per-reported-peptide-id END, Now: " + new Date() );
 

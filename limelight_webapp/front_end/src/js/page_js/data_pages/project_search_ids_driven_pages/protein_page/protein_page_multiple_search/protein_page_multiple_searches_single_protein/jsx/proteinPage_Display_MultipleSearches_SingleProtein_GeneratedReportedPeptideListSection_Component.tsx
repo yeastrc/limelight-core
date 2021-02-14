@@ -68,7 +68,7 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedRep
  */
 interface ProteinPage_Display_MultipleSearches_SingleProtein_ReportedPeptideListSection_Component_State {
 
-    placeholder?
+    placeholder?: any
     // showUpdatingMessage? : boolean 
 }
 
@@ -227,7 +227,7 @@ export interface ReportedPeptideList_Component_Props {
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
-    searchDataLookupParamsRoot,
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
@@ -243,7 +243,7 @@ export interface ReportedPeptideList_Component_Props {
  */
 interface ReportedPeptideList_Component_State {
 
-    placeholder?
+    placeholder?: any
     // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId? : Map<number, Array<number>>
     // showUpdatingMessage? : boolean 
 }

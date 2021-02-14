@@ -33,8 +33,8 @@ import {SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer} from "p
 const create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = function({ jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer, containerDOMElement, renderCompleteCallbackFcn } : {
 
     jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer : JSX.Element
-    containerDOMElement,
-    renderCompleteCallbackFcn
+    containerDOMElement: HTMLElement
+    renderCompleteCallbackFcn: any
 }) {
 
     if ( containerDOMElement === undefined || containerDOMElement === null ) {
@@ -82,7 +82,7 @@ const create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = f
  *
  * @param containerDOMElement - DOM element reference
  */
-const remove_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = function({ containerDOMElement }) {
+const remove_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = function({ containerDOMElement }: { containerDOMElement: HTMLElement }) {
     if ( containerDOMElement === undefined || containerDOMElement === null ) {
         throw Error("remove_dataTable_Root_React({ containerDOMElement }): containerDOMElement is undefined or null ");
     }

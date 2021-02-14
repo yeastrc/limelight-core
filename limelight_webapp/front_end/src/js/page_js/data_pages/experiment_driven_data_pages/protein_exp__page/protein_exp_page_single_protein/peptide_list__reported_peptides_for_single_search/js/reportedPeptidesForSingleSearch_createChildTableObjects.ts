@@ -166,7 +166,9 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = ({
         reportedPeptideIds_LoadDataFor = new Set( dataPerReportedPeptideId_Map_Key_reportedPeptideId.keys() );
     }
 
-    let reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param = {
+    let reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId_Param: {
+        reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId : Array<number>
+    } = {
         reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId  //  Reported Peptide Ann Type Ids To Display
     }; 
 
