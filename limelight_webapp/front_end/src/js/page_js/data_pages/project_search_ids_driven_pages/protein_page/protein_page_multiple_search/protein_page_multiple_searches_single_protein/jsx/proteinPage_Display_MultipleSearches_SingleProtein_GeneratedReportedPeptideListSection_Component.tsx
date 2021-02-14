@@ -412,7 +412,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             //  Separator
                             <span style={ { paddingLeft : 10 } }>&nbsp;</span>
                         ) : null }
-                        { ( peptideListTable && this.props.downloadPsms_Shown_ClickHandler ) ? (
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.downloadPsms_Shown_ClickHandler ) ? (
                             // PSM Download Link
                             <span className=" fake-link "
                                   onClick={ this.props.downloadPsms_Shown_ClickHandler }
