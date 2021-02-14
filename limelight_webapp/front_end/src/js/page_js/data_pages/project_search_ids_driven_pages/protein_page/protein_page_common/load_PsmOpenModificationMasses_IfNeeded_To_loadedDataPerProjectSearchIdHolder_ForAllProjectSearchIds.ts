@@ -14,6 +14,7 @@
 //
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_ReportedPeptideId_For_ProteinSequenceVersionId_ProteinPage_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 /**
  *
@@ -31,7 +32,7 @@ export const load_PsmOpenModificationMasses_IfNeeded = function({
     proteinSequenceVersionId : number,
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
 }) : Promise<any> {
 
@@ -106,7 +107,7 @@ const _process_SingleProjectSearchId = function (
         proteinSequenceVersionId : number,
         projectSearchId : number,
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-        searchDataLookupParamsRoot
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
     }) : Promise<any>{
 

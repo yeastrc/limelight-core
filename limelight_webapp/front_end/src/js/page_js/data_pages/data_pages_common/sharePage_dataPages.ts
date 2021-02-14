@@ -7,6 +7,7 @@
  * 
  */
 
+// @ts-ignore
 import { Handlebars, _share_page_template_bundle } from './sharePage_dataPages_ImportHandlebarsTemplates';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -16,6 +17,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
 
+// @ts-ignore
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
 
 
@@ -180,7 +182,12 @@ export class SharePage_dataPages {
 	/**
      * Send Share Page to the server
 	 */
-	private _sharePageToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds, experimentId } ) : Promise<any> {
+	private _sharePageToServer(
+	    {
+            pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds, experimentId
+	    }:{
+            pageControllerPath: any, pageCurrentURL_StartAtPageController: any, searchDataLookupParametersCode: any, projectSearchIds: any, experimentId: any
+        } ) : Promise<any> {
 
 		let promise = new Promise( function( resolve, reject ) {
 		  try {
@@ -200,7 +207,7 @@ export class SharePage_dataPages {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData:any }) => {
 				try {
 					resolve({ ajaxResult : responseData });
 
@@ -224,7 +231,7 @@ export class SharePage_dataPages {
      * 
      * @param {*} param0 
      */
-    _createModalOverlay( { urlShortcutString } ) {
+    _createModalOverlay( { urlShortcutString }: { urlShortcutString: any } ) {
     	
         let $contentDiv = this._createModalOverlayContentDiv( { urlShortcutString } );
 
@@ -239,7 +246,7 @@ export class SharePage_dataPages {
             width : '550', 
             height : '150', 
             title : 'URL Shortcut', 
-            hideOnBackgroundClick : undefined, 
+            // hideOnBackgroundClick : undefined,
             callbackOnClickedHide 
         };
 
@@ -266,7 +273,7 @@ export class SharePage_dataPages {
 	/**
 	 * 
 	 */
-    _createModalOverlayContentDiv( { urlShortcutString } ) {
+    _createModalOverlayContentDiv( { urlShortcutString }: { urlShortcutString: any } ) {
 
         const context = {
             urlShortcutString

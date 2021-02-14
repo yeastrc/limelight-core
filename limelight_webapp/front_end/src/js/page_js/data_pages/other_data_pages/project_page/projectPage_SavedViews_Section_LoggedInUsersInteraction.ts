@@ -14,11 +14,13 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page__saved_views_section_loggedin_users_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {ProjectPage_SavedViews_Section_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_AllUsersInteraction";
 
 //  Local imports
 
@@ -29,18 +31,20 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 
     private _initializeCalled = false;
 
-    private _projectIdentifierFromURL;
+    private _projectIdentifierFromURL: string;
 
     private _projpg_saved_view_list_item_edit_label_template = _project_page__saved_views_section_loggedin_users_template.projpg_saved_view_list_item_edit_label;
 
-    private _projectPage_SavedViews_Section_AllUsersInteraction;
+    private _projectPage_SavedViews_Section_AllUsersInteraction: ProjectPage_SavedViews_Section_AllUsersInteraction;
 
 	/**
 	 * 
 	 */
 	constructor({ 
 		projectIdentifierFromURL
-	}) {
+	}:{
+        projectIdentifierFromURL: string
+    }) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 
@@ -52,7 +56,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-	initialize({ projectPage_SavedViews_Section_AllUsersInteraction }) {
+	initialize({projectPage_SavedViews_Section_AllUsersInteraction}:{ projectPage_SavedViews_Section_AllUsersInteraction: ProjectPage_SavedViews_Section_AllUsersInteraction }) {
         
         this._projectPage_SavedViews_Section_AllUsersInteraction = projectPage_SavedViews_Section_AllUsersInteraction;
 
@@ -62,7 +66,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    add_ClickHandlers({ $saved_view_entry, savedViewItem }) {
+    add_ClickHandlers({ $saved_view_entry, savedViewItem }:{ $saved_view_entry: any, savedViewItem: any }) {
         
         let objectThis = this;
         
@@ -76,9 +80,9 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
             if ( $selector_edit_saved_view_label.length === 0 ) {
                 console.log("WARN: No DOM element found with class 'selector_edit_saved_view_label'");
             }
-            $selector_edit_saved_view_label.click(function(eventObject) {
+            $selector_edit_saved_view_label.click(function(eventObject: any) {
                 try {
-                    event.preventDefault(); // to stop the 
+                    eventObject.preventDefault(); // to stop the
                     let clickThis = this;
                     objectThis._editSavedViewLabel_Clicked({
                         clickThis ,
@@ -99,9 +103,9 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
             if ( $selector_delete_saved_view.length === 0 ) {
                 console.log("WARN: No DOM element found with class 'selector_delete_saved_view'");
             }
-            $selector_delete_saved_view.click(function(eventObject) {
+            $selector_delete_saved_view.click(function(eventObject: any) {
                 try {
-                    event.preventDefault(); // to stop the 
+                    eventObject.preventDefault(); // to stop the
                     let clickThis = this;
                     objectThis._deleteSavedView_Clicked({
                         clickThis ,
@@ -120,7 +124,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _editSavedViewLabel_Clicked({ clickThis, id }) {
+    _editSavedViewLabel_Clicked({ clickThis, id }: { clickThis: any, id: any }) {
 
         const objectThis = this;
 
@@ -195,7 +199,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _saveLabelChange_Clicked({ clickThis, id }) {
+    _saveLabelChange_Clicked({ clickThis, id }: { clickThis: any, id: any }) {
 
         const objectThis = this;
 
@@ -233,7 +237,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _saveLabelChange_UpdatePageAfterUpdateServer({ clickThis, labelText, id }) {
+    _saveLabelChange_UpdatePageAfterUpdateServer({ clickThis, labelText, id }: { clickThis: any, labelText: any, id: any }) {
 
         const $selector_saved_view_item_root_container = $( clickThis ).closest(".selector_saved_view_item_root_container");
         if ( $selector_saved_view_item_root_container.length === 0 ) {
@@ -253,7 +257,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */  
-    _changeLabel_SavedView_OnServer( { labelText, id } ) {
+    _changeLabel_SavedView_OnServer( { labelText, id }: { labelText: any, id: any } ) {
     
         return new Promise(function(resolve, reject) {
           try {
@@ -270,7 +274,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     resolve( responseData );
                 } catch (e) {
@@ -288,7 +292,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
     /**
 	 * 
 	 */
-    _cancelLabelChange_Clicked({ clickThis }) {
+    _cancelLabelChange_Clicked({ clickThis } : { clickThis: any }) {
 
         this._removeLabelChangeElement_ShowMainContainer({ clickThis });
     }
@@ -296,7 +300,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
     /**
 	 * 
 	 */
-    _removeLabelChangeElement_ShowMainContainer({ clickThis }) {
+    _removeLabelChangeElement_ShowMainContainer({ clickThis } : { clickThis: any }) {
 
         const $clickThis = $( clickThis );
 
@@ -326,7 +330,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _deleteSavedView_Clicked({ clickThis, id }) {
+    _deleteSavedView_Clicked({ clickThis, id }: { clickThis: any, id: any }) {
 
         if ( ! window.confirm("Delete Saved View?") ) {
             return;  // EARLY EXIT
@@ -353,7 +357,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */  
-    _deleteSavedView_OnServer( { id } ) {
+    _deleteSavedView_OnServer( { id } : { id: any } ) {
     
         return new Promise(function(resolve, reject) {
           try {
@@ -369,7 +373,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     resolve( responseData );
                 } catch (e) {

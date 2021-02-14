@@ -11,7 +11,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { ProjectPage_ExperimentsList_SingleExperimentDetails, ProjectPage_ExperimentsList_SingleExperimentDetails_Props } from './projPg_ExpermntsSection_ExpList_SingleExperimentDetails';
+import { ProjectPage_ExperimentsList_SingleExperimentDetails } from './projPg_ExpermntsSection_ExpList_SingleExperimentDetails';
 import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './projPg_Expermnts_LoggedInUsersInteraction';
 
 
@@ -21,15 +21,15 @@ export class ProjectPage_ExperimentsSectionRoot_Props {
 
     projectIdentifierFromURL : string
     projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction
-    editExperimentInvokeHandler
-    cloneExperimentInvokeHandler
+    editExperimentInvokeHandler: any
+    cloneExperimentInvokeHandler: any
 }
 
 interface ProjectPage_ExperimentsSectionRoot_State {
 
-    draftExperiments?
+    draftExperiments?: any
     experiments_drafts_initialLoading? : boolean
-    experiments?
+    experiments?: any
     experiments_initialLoading? : boolean
 
     createExperimentButton_Disabled? : boolean
@@ -212,7 +212,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    private _experimentDraftNameClicked({ id }) {
+    private _experimentDraftNameClicked({ id }:{ id: any }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -220,7 +220,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    private _experimentDraftEditClicked({ id }) {
+    private _experimentDraftEditClicked({ id }:{ id: any }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -229,7 +229,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      * @param id - experiment id
      * @param name - experiment name
      */
-    private _experimentDraftDeleteClicked({ id, name }) {
+    private _experimentDraftDeleteClicked({ id, name }:{ id: any, name: any }) {
 
         if ( window.confirm("Delete Experiment " + name + "?" ) ) {
 
@@ -255,7 +255,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    private _experimentNameClicked({ id }) {
+    private _experimentNameClicked({ id }:{ id: any }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -263,7 +263,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    private _experimentEditClicked({ id }) {
+    private _experimentEditClicked({ id }:{ id: any }) {
 
         this.props.editExperimentInvokeHandler({ experimentId : id })
     }
@@ -271,7 +271,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     /**
      * 
      */
-    private _experimentCloneClicked({ id }) {
+    private _experimentCloneClicked({ id }:{ id: any }) {
 
         this.props.cloneExperimentInvokeHandler({ experimentId : id })
     }
@@ -280,7 +280,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      * @param id - experiment id
      * @param name - experiment name
      */
-    private _experimentDeleteClicked({ id, name }) {
+    private _experimentDeleteClicked({ id, name }:{ id: any, name: any }) {
 
         if ( window.confirm("Delete Experiment " + name + "?" ) ) {
 
@@ -465,11 +465,18 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
 /**
  * 
  */
-const _process_loadExperiments_NonDrafts_responseData_SetState = ({ state, props, loadExperiments_responseData }) => {
+const _process_loadExperiments_NonDrafts_responseData_SetState = function (
+    {
+        state, props, loadExperiments_responseData
+    }: {
+        state: ProjectPage_ExperimentsSectionRoot_State
+        props: ProjectPage_ExperimentsSectionRoot_Props
+        loadExperiments_responseData: any
+    }) : ProjectPage_ExperimentsSectionRoot_State {
 
     const experiments = loadExperiments_responseData.experiments;
 
-    const stateResult = { experiments : null, experiments_initialLoading : null };
+    const stateResult: ProjectPage_ExperimentsSectionRoot_State = { experiments : null, experiments_initialLoading : null };
 
     if ( experiments && experiments.length !== 0 ) {
         stateResult.experiments = experiments;
@@ -481,11 +488,18 @@ const _process_loadExperiments_NonDrafts_responseData_SetState = ({ state, props
 /**
  * 
  */
-const _process_loadExperimentDrafts_responseData_SetState = ({ state, props, loadExperimentDrafts_responseData }) => {
+const _process_loadExperimentDrafts_responseData_SetState = function (
+    {
+        state, props, loadExperimentDrafts_responseData
+    }: {
+        state: ProjectPage_ExperimentsSectionRoot_State
+        props: ProjectPage_ExperimentsSectionRoot_Props
+        loadExperimentDrafts_responseData: any
+    }) : ProjectPage_ExperimentsSectionRoot_State {
         
         const experiments = loadExperimentDrafts_responseData.experiments;
 
-        const stateResult = { draftExperiments : null, experiments_drafts_initialLoading : null };
+        const stateResult: ProjectPage_ExperimentsSectionRoot_State = { draftExperiments : null, experiments_drafts_initialLoading : null };
 
         if ( experiments && experiments.length !== 0 ) {
             stateResult.draftExperiments = experiments;
@@ -498,15 +512,15 @@ const _process_loadExperimentDrafts_responseData_SetState = ({ state, props, loa
 
 interface ExperimentDraftList_Props {
 
-    draftExperiments
-    experimentDraftNameClicked
-    experimentDraftEditClicked
-    experimentDraftDeleteClicked
+    draftExperiments: any
+    experimentDraftNameClicked: any
+    experimentDraftEditClicked: any
+    experimentDraftDeleteClicked: any
 }
 
 interface ExperimentDraftList_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 /**
@@ -559,29 +573,29 @@ class ExperimentDraftList extends React.Component< ExperimentDraftList_Props, Ex
 
 interface ExperimentDraft_Props {
     
-    experiment
-    experimentDraftNameClicked
-    experimentDraftEditClicked
-    experimentDraftDeleteClicked
+    experiment: any
+    experimentDraftNameClicked: any
+    experimentDraftEditClicked: any
+    experimentDraftDeleteClicked: any
 }
 
-interface ExperimentDraftList_State {
+interface ExperimentDraft_State {
 
-    _placeholder
+    _placeholder: any
 }
 
-class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
+class ExperimentDraft extends React.Component< ExperimentDraft_Props, ExperimentDraft_State > {
 
     // private _experimentDraftNameClicked_BindThis = this._experimentDraftNameClicked.bind(this);
     private _experimentDraftEditClicked_BindThis = this._experimentDraftEditClicked.bind(this);
     private _experimentDraftDeleteClicked_BindThis = this._experimentDraftDeleteClicked.bind(this);
 
 
-    constructor(props) {
+    constructor(props: ExperimentDraft_Props) {
         super(props);
 
         this.state = {
-            
+            _placeholder: null
         };
     }
 
@@ -591,13 +605,13 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
     //     this.props.experimentDraftNameClicked({ id : this.props.experiment.id });
     // }
 
-    _experimentDraftEditClicked( event ) {
+    _experimentDraftEditClicked( event: any ) {
         event.stopPropagation();
 
         this.props.experimentDraftEditClicked({ id : this.props.experiment.id });
     }
 
-    _experimentDraftDeleteClicked( event ) {
+    _experimentDraftDeleteClicked( event: any ) {
         event.stopPropagation();
 
         this.props.experimentDraftDeleteClicked({ id : this.props.experiment.id, name :  this.props.experiment.name });
@@ -666,18 +680,18 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, {} > {
 
 interface ExperimentList_Props {
 
-    experiments
-    experimentNameClicked
-    experimentEditClicked
-    experimentCloneClicked
-    experimentDeleteClicked
+    experiments: any
+    experimentNameClicked: any
+    experimentEditClicked: any
+    experimentCloneClicked: any
+    experimentDeleteClicked: any
 
-    projectIdentifierFromURL
+    projectIdentifierFromURL: any
 }
 
 interface ExperimentList_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 /**
@@ -733,20 +747,20 @@ class ExperimentList extends React.Component< ExperimentList_Props, ExperimentLi
 
 interface Experiment_Props {
     
-    experiment
-    experimentNameClicked
-    experimentEditClicked
-    experimentCloneClicked
-    experimentDeleteClicked
+    experiment: any
+    experimentNameClicked: any
+    experimentEditClicked: any
+    experimentCloneClicked: any
+    experimentDeleteClicked: any
 
-    projectIdentifierFromURL
+    projectIdentifierFromURL: any
 }
 
 interface Experiment_State {
     
     showExperimentDetails? : boolean
 
-    prev_experiment?;
+    prev_experiment?: any;
 }
 
 /**
@@ -989,7 +1003,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
 
 //  Functions NOT in a class
 
-const _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall = ({ projectIdentifierFromURL }) => {
+const _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall = ({ projectIdentifierFromURL }:{ projectIdentifierFromURL: any }) => {
 
     return new Promise( (resolve, reject) => {
         try {
@@ -1003,9 +1017,9 @@ const _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall = ({ pro
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                 try {
                     resolve({ responseData });
                 } catch (e) {
@@ -1029,7 +1043,7 @@ const _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall = ({ pro
 /**
  * 
  */
-const _loadExperimentDrafts = ({ projectIdentifierFromURL }) => {
+const _loadExperimentDrafts = ({ projectIdentifierFromURL }: { projectIdentifierFromURL: any }) => {
 
     return new Promise( (resolve, reject) => {
         try {
@@ -1043,9 +1057,9 @@ const _loadExperimentDrafts = ({ projectIdentifierFromURL }) => {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     resolve({ responseData });
                 } catch (e) {
@@ -1067,7 +1081,7 @@ const _loadExperimentDrafts = ({ projectIdentifierFromURL }) => {
 /**
  * Load Experiments - Not Drafts
  */
-const _loadExperiments_NonDrafts = ({ projectIdentifierFromURL }) => {
+const _loadExperiments_NonDrafts = ({ projectIdentifierFromURL }: { projectIdentifierFromURL: any }) => {
 
     return new Promise( (resolve, reject) => {
         try {
@@ -1081,9 +1095,9 @@ const _loadExperiments_NonDrafts = ({ projectIdentifierFromURL }) => {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                 try {
                     resolve({ responseData });
                 } catch (e) {
@@ -1106,7 +1120,7 @@ const _loadExperiments_NonDrafts = ({ projectIdentifierFromURL }) => {
 /**
  * 
  */
-const _deleteExperiment = ({ id }) => {
+const _deleteExperiment = ({ id }:{ id: any }) => {
 
     return new Promise( (resolve, reject) => {
         try {
@@ -1120,9 +1134,9 @@ const _deleteExperiment = ({ id }) => {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                 try {
                     resolve({ responseData });
                 } catch (e) {

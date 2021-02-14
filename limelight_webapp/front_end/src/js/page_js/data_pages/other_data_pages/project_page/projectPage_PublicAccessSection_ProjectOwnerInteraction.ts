@@ -16,6 +16,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page__share_data_section_loggedin_users_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 //  module import 
@@ -37,24 +38,24 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 	private _blockContentsIntialized = false;  //  Are the contents of the block initialized (initialized on first open)
 
-	private _projectIdentifierFromURL;
-	private _userIsProjectOwner;
-	private _projectLocked;
+	private _projectIdentifierFromURL: string;
+	private _userIsProjectOwner: boolean;
+	private _projectLocked: boolean;
 
 	private _share_data_project_label_project_owner_template = _project_page__share_data_section_loggedin_users_template.share_data_project_label_project_owner;
 	private _share_data_project_label_project_owner_prj_locked_or_researcher_template = _project_page__share_data_section_loggedin_users_template.share_data_project_label_project_owner_prj_locked_or_researcher;
 
-	private _page_controller_path_separator;
-	private _page_controller_ShortName_Path;
+	private _page_controller_path_separator: string;
+	private _page_controller_ShortName_Path: string;
 
-	private _pageURL_BeforeControllerPath;
+	private _pageURL_BeforeControllerPath: string;
 
-	private _projectLabelLengthMax;
+	private _projectLabelLengthMax: number;
 
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL, userIsProjectOwner, projectLocked } ) {
+	constructor( { projectIdentifierFromURL, userIsProjectOwner, projectLocked } : { projectIdentifierFromURL: string, userIsProjectOwner: boolean, projectLocked: boolean } ) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 		this._userIsProjectOwner = userIsProjectOwner;
@@ -339,7 +340,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 				try {
 					resolve( responseData );
 				} catch (e) {
@@ -357,7 +358,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_updateProjectLabelBlock_ProjectOwner_ProjectNotLocked_AfterGetFromServer({ labelTextFromServer }) {
+	_updateProjectLabelBlock_ProjectOwner_ProjectNotLocked_AfterGetFromServer({ labelTextFromServer } : { labelTextFromServer: any }) {
 
 		const objectThis = this;
 
@@ -519,7 +520,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	
 	};
 
-	_changeInitProjectLabelClicked({ labelTextFromServer, clickThis }) {
+	_changeInitProjectLabelClicked({ labelTextFromServer, clickThis }: { labelTextFromServer: any, clickThis: any }) {
 
         const objectThis = this;
 
@@ -548,7 +549,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_changeProjectLabelClicked({ clickThis }) {
+	_changeProjectLabelClicked({ clickThis } : { clickThis: any }) {
 
         const objectThis = this;
 
@@ -623,7 +624,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */  
-    _isValidateProjectLabel( { labelText } ) {
+    _isValidateProjectLabel( { labelText }: { labelText: any } ) {
 
 		//  Allow digits, lowercase letters, '-' and '_'
 		if ( !  /^[\da-z\-_]+$/.test( labelText ) ) {
@@ -636,7 +637,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_removeProjectLabelClicked({ clickThis }) {
+	_removeProjectLabelClicked({ clickThis } : { clickThis: any }) {
 
 		const objectThis = this;
 		
@@ -661,7 +662,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */  
-    _changeLabel_ProjectLabel_OnServer( { labelText } ) : Promise<any> {
+    _changeLabel_ProjectLabel_OnServer( { labelText } : { labelText: any } ) : Promise<any> {
     
 		const objectThis = this;
 		
@@ -680,7 +681,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 				try {
 					resolve( responseData );
 				} catch (e) {
@@ -699,7 +700,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * Display only of Project Label in URL
 	 */
-	_updateProjectLabelBlock_ProjectOwner_ProjectYesLocked_Or_Researcher_AfterGetFromServer({ labelTextFromServer }) {
+	_updateProjectLabelBlock_ProjectOwner_ProjectYesLocked_Or_Researcher_AfterGetFromServer({ labelTextFromServer } : { labelTextFromServer : any }) {
 
 		const $share_data_label_project_owner_project_locked_or_researcher_container = $("#share_data_label_project_owner_project_locked_or_researcher_container");
 		if ($share_data_label_project_owner_project_locked_or_researcher_container.length === 0) {
@@ -726,7 +727,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_enablePublicAcessClicked( { clickThis } ) {
+	_enablePublicAcessClicked( { clickThis } : { clickThis: any } ) {
 
 		let objectThis = this;
 
@@ -740,7 +741,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 			try {
 				objectThis._enablePublicAcessProcessResponse( { requestObj, responseData, clickThis } );
 			} catch( e ) {
@@ -753,7 +754,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_enablePublicAcessProcessResponse( { requestObj, responseData, clickThis } ) {
+	_enablePublicAcessProcessResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any }  ) {
 		if ( ! responseData.statusSuccess ) {
 			throw Error("responseData.statusSuccess not true");
 		}
@@ -767,7 +768,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_disablePublicAcessClicked( { clickThis } ) {
+	_disablePublicAcessClicked( { clickThis } : { clickThis: any }  ) {
 
 		let objectThis = this;
 
@@ -781,7 +782,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => {  }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 			try {
 				objectThis._disablePublicAcessProcessResponse( { requestObj, responseData, clickThis } );
 			} catch( e ) {
@@ -794,7 +795,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_disablePublicAcessProcessResponse( { requestObj, responseData, clickThis } ) {
+	_disablePublicAcessProcessResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any } ) {
 		if ( ! responseData.statusSuccess ) {
 			throw Error("responseData.statusSuccess not true");
 		}

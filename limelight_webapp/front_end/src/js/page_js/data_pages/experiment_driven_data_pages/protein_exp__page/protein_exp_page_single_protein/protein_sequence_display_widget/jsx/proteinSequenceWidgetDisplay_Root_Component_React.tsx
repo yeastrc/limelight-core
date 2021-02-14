@@ -20,7 +20,11 @@ import { ProteinSequenceWidgetDisplay_Component_Data } from 'page_js/data_pages/
 import { ProteinSequenceWidgetDisplay_Legend_Component_React } from './proteinSequenceWidgetDisplay_Legend_Component_React';
 
 import { ProteinSequenceWidgetDisplay_HeaderLine_Component_React } from './proteinSequenceWidgetDisplay_HeaderLine_Component_React';
-import { ProteinSequenceWidgetDisplay_AllMainLines_Component_React } from './proteinSequenceWidgetDisplay_AllMainLines_Component_React';
+import {
+    ProteinSequenceWidgetDisplay__PositionClicked_Callback,
+    ProteinSequenceWidgetDisplay__PositionClicked_Callback_Params,
+    ProteinSequenceWidgetDisplay_AllMainLines_Component_React
+} from './proteinSequenceWidgetDisplay_AllMainLines_Component_React';
 
 
 
@@ -39,7 +43,11 @@ export interface ProteinSequenceWidgetDisplay_Root_Component_React_Props {
 export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Component< ProteinSequenceWidgetDisplay_Root_Component_React_Props, {} > {
 
     //  bind to 'this' for passing as parameters
-    private _positionClicked_Callback_BindThis : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void = this._positionClicked_Callback.bind(this);
+    private _positionClicked_Callback_BindThis = this._positionClicked_Callback.bind(this);
+
+    private _DO_NOT_CALL() { //  Test method cast
+        const positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback = this._positionClicked_Callback
+    }
 
     /**
      * 
@@ -127,7 +135,10 @@ export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Com
     /**
      * 
      */
-    _positionClicked_Callback({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) : void {
+    _positionClicked_Callback( params : ProteinSequenceWidgetDisplay__PositionClicked_Callback_Params ) : void {
+
+        const ctrlKey_or_metaKey_Down = params.ctrlKey_or_metaKey_Down;
+        const position = params.position;
 
         //     console.log("ProteinSequenceWidgetDisplay_Root_Component_React: _callbackMethodForSelectedProteinSequenceChange. params: ");
         //     console.log( params );

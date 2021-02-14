@@ -99,7 +99,7 @@ interface Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Props {
 }
 
 interface Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_State { //  Keep shouldComponentUpdate up to date
-    placeHolder?
+    placeHolder?: any
 }
 
 /**
@@ -319,7 +319,7 @@ interface OverlayUpdateButton_Props {
 }
 
 interface OverlayUpdateButton_State {
-    _placeholder
+    _placeholder: any
 }
 
 /**

@@ -18,7 +18,7 @@ const _POSITION_GROUP_SIZE_CONSTANT = 10;
 /**
  * 
  */
-const ProteinSequenceWidgetDisplay_SequenceGroupSeparator = function(props) {
+const ProteinSequenceWidgetDisplay_SequenceGroupSeparator = function() {
 
     return <span >&nbsp;</span>;
 }
@@ -27,7 +27,7 @@ const ProteinSequenceWidgetDisplay_SequenceGroupSeparator = function(props) {
 /**
  * 
  */
-const ProteinSequenceWidgetDisplay_SeparatorBetweenStartLabelAndSequence = function(props) {
+const ProteinSequenceWidgetDisplay_SeparatorBetweenStartLabelAndSequence = function() {
 
     return <span >&nbsp;</span>;
 }

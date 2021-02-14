@@ -35,7 +35,7 @@ export class ProjectPage_ProjectUserAccessAdminSection {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
+	private _projectIdentifierFromURL: string;
 
 	private _projectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople : ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople
 
@@ -46,7 +46,7 @@ export class ProjectPage_ProjectUserAccessAdminSection {
 	/**
 	 * 
 	 */
-	constructor({ projectIdentifierFromURL, userIsProjectOwner, projectLocked }) {
+	constructor({ projectIdentifierFromURL, userIsProjectOwner, projectLocked } : { projectIdentifierFromURL: string, userIsProjectOwner: boolean, projectLocked: boolean }) {
 
 		this._initializeCalled = false;
 

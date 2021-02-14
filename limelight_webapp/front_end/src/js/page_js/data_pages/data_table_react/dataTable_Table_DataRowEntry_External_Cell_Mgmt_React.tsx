@@ -18,16 +18,21 @@ export interface DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_Props {
   column : DataTable_Column
 }
 
+class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_State {
+
+    _placeholder: any
+}
+
 /**
  * 
  * 
  * 
  */
-export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React.Component< DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_Props, {} > {
+export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React.Component< DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_Props, DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_State > {
 
     private cellContaining_TD :  React.RefObject<HTMLTableDataCellElement>
 
-    private onUnmountCallback;
+    private onUnmountCallback: any;
     private dataObject_columnEntry_NewValue_Callback :  ( params: DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params ) => void;
 
 
@@ -36,7 +41,9 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
 
         this.cellContaining_TD = React.createRef();
 
-        this.state = {};
+        this.state = {
+            _placeholder: undefined
+        };
     }
 
     /**
@@ -103,7 +110,7 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_Props, nextState: DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_State) {
 
         // console.log("DataTable_Table_DataRowEntry_External_Cell_Mgmt_React: shouldComponentUpdate")
 
@@ -131,7 +138,7 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
   /**
    * After render()
    */
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps: DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_Props, prevState: DataTable_Table_DataRowEntry_External_Cell_Mgmt_React_State, snapshot: any) {
 
     // console.log("DataTable_Table_DataRowEntry_External_Cell_Mgmt_React: componentDidUpdate")
 
@@ -197,6 +204,9 @@ export class DataTable_Table_DataRowEntry_External_Cell_Mgmt_React extends React
                     throw Error( msg );
                 }
                 if ( style_override_ReactKey !== 'display') { // NOT ALLOW: change to 'display' property
+
+                    //  Copy object property with string in style_override_ReactKey from style_override_React to styleContainer_TD
+                    // @ts-ignore
                     styleContainer_TD[style_override_ReactKey] = style_override_React[style_override_ReactKey];
                 }
             }

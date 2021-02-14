@@ -18,9 +18,9 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	//  Computed in this class and cached
 	
 	private _proteinCoverageRatio : number;
-	private _coveredPositionCount;
+	private _coveredPositionCount: number;
 
-	private _booleanArrayOfProteinCoverage;
+	private _booleanArrayOfProteinCoverage: Array<boolean>;
 
 	/**
 	 * 
@@ -85,7 +85,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	/**
 	 * Get Reported Peptide Ids as Set For Protein Coverage At Position
 	 */
-	getReportedPeptidesForProteinCoverageAtPosition( { position } ) : Set<number> {
+	getReportedPeptidesForProteinCoverageAtPosition( { position }: { position: number } ) : Set<number> {
 		
 		const booleanArrayOfProteinCoverage = this.getBooleanArrayOfProteinCoverage();
 		
@@ -173,7 +173,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	/**
 	 * Is there Protein Coverage At Position
 	 */
-	isProteinCoverageAtPosition( { position } ) {
+	isProteinCoverageAtPosition( { position } : { position: number } ) {
 
 		const booleanArrayOfProteinCoverage = this.getBooleanArrayOfProteinCoverage();
 		
@@ -193,7 +193,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	/**
 	 * Return an Array of Boolean with true in each protein position (1 based) where there is protein coverage
 	 */
-	getBooleanArrayOfProteinCoverage() {
+	getBooleanArrayOfProteinCoverage(): Array<boolean> {
 
 		// return this._booleanArrayOfProteinCoverage or build and return it
 
@@ -202,7 +202,7 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 			return this._booleanArrayOfProteinCoverage;
 		}
 		
-		const booleanArrayOfProteinCoverage = [];
+		const booleanArrayOfProteinCoverage: Array<boolean> = [];
 		
 		for ( const proteinCoverageEntries_PerReportedPeptideId_Entry of this._proteinCoverageEntries_PerReportedPeptideId_Array ) {
 

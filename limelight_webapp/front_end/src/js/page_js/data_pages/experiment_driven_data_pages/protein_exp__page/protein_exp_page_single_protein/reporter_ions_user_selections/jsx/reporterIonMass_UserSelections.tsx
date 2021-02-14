@@ -26,10 +26,14 @@ export interface ReporterIonMass_UserSelections_Props {
     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback : () => void;
 }
 
+interface ReporterIonMass_UserSelections_State {
+    _placeholder: any
+}
+
 /**
  * 
  */
-export class ReporterIonMass_UserSelections extends React.Component< ReporterIonMass_UserSelections_Props, { } > {
+export class ReporterIonMass_UserSelections extends React.Component< ReporterIonMass_UserSelections_Props, ReporterIonMass_UserSelections_State > {
 
     /**
      * 
@@ -40,13 +44,13 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
         //  bind to 'this' for passing as parameters
         // this._callbackMethodForSelectedProteinSequenceChange_BindThis = this._callbackMethodForSelectedProteinSequenceChange.bind(this);
 
-        this.state = {  };
+        this.state = { _placeholder: null };
     }
 
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState) {
+    shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState:ReporterIonMass_UserSelections_State) {
 
         //  Only update if changed: props:
 

@@ -14,13 +14,17 @@ import { _POSITION_WRAP_POINT_CONSTANT, _POSITION_GROUP_SIZE_CONSTANT, ProteinSe
 
 export interface ProteinSequenceWidgetDisplay_HeaderLine_Component_React_Props {
 
-    dataPerSequencePosition_length
+    dataPerSequencePosition_length: number
+}
+interface ProteinSequenceWidgetDisplay_HeaderLine_Component_React_State {
+
+    _placeholder: any
 }
 
 /**
  * 
  */
-export class ProteinSequenceWidgetDisplay_HeaderLine_Component_React extends React.Component< ProteinSequenceWidgetDisplay_HeaderLine_Component_React_Props, {} > {
+export class ProteinSequenceWidgetDisplay_HeaderLine_Component_React extends React.Component< ProteinSequenceWidgetDisplay_HeaderLine_Component_React_Props, ProteinSequenceWidgetDisplay_HeaderLine_Component_React_State > {
 
     /**
      * 
@@ -31,7 +35,7 @@ export class ProteinSequenceWidgetDisplay_HeaderLine_Component_React extends Rea
         //  bind to 'this' for passing as parameters
         // this._callbackMethodForSelectedProteinSequenceChange_BindThis = this._callbackMethodForSelectedProteinSequenceChange.bind(this);
 
-        this.state = {  };
+        this.state = { _placeholder: null };
     }
 
 
@@ -73,7 +77,7 @@ export class ProteinSequenceWidgetDisplay_HeaderLine_Component_React extends Rea
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: ProteinSequenceWidgetDisplay_HeaderLine_Component_React_Props, nextState: ProteinSequenceWidgetDisplay_HeaderLine_Component_React_State ) {
 
         // console.log("ProteinSequenceWidgetDisplay_HeaderLine_Component_React: shouldComponentUpdate")
 
@@ -134,7 +138,7 @@ export class ProteinSequenceWidgetDisplay_HeaderLine_Component_React extends Rea
 /**
  * 
  */
-const _createHeader = function({ dataPerSequencePosition_length }) {
+const _createHeader = function({ dataPerSequencePosition_length }: { dataPerSequencePosition_length: number }) {
 
     const proteinLength_StringLength = dataPerSequencePosition_length.toString().length;
 
@@ -158,7 +162,7 @@ const _createHeader = function({ dataPerSequencePosition_length }) {
 /**
  * 
  */
-const _createHeader_TickNumbers = function({ numberOfTicks, proteinLength_StringLength }) {
+const _createHeader_TickNumbers = function({ numberOfTicks, proteinLength_StringLength }: { numberOfTicks: number, proteinLength_StringLength: number }) {
 
     //  Add Header with numbers for tick marks
 
@@ -221,7 +225,7 @@ const _createHeader_TickNumbers = function({ numberOfTicks, proteinLength_String
 /**
  * 
  */
-const _createHeader_TickMarks = function({ numberOfTicks, proteinLength_StringLength }) {
+const _createHeader_TickMarks = function({ numberOfTicks, proteinLength_StringLength }: { numberOfTicks: number, proteinLength_StringLength: number }) {
 
     //  Add Header with lines for tick marks
 

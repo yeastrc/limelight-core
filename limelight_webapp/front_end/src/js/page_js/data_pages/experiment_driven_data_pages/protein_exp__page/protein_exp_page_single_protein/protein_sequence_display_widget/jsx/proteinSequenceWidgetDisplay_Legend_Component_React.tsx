@@ -12,10 +12,15 @@ export interface ProteinSequenceWidgetDisplay_Legend_Component_React_Props {
 
 }
 
+export interface ProteinSequenceWidgetDisplay_Legend_Component_React_State {
+
+    _placeholder: any
+}
+
 /**
  * 
  */
-export class ProteinSequenceWidgetDisplay_Legend_Component_React extends React.Component< ProteinSequenceWidgetDisplay_Legend_Component_React_Props, {} > {
+export class ProteinSequenceWidgetDisplay_Legend_Component_React extends React.Component< ProteinSequenceWidgetDisplay_Legend_Component_React_Props, ProteinSequenceWidgetDisplay_Legend_Component_React_State > {
 
     /**
      * 
@@ -26,7 +31,7 @@ export class ProteinSequenceWidgetDisplay_Legend_Component_React extends React.C
         //  bind to 'this' for passing as parameters
         // this._callbackMethodForSelectedProteinSequenceChange_BindThis = this._callbackMethodForSelectedProteinSequenceChange.bind(this);
 
-        this.state = {  };
+        this.state = { _placeholder: null };
     }
 
 
@@ -68,7 +73,7 @@ export class ProteinSequenceWidgetDisplay_Legend_Component_React extends React.C
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: ProteinSequenceWidgetDisplay_Legend_Component_React_Props, nextState: ProteinSequenceWidgetDisplay_Legend_Component_React_State) {
 
         // console.log("ProteinSequenceWidgetDisplay_Legend_Component_React: shouldComponentUpdate")
 

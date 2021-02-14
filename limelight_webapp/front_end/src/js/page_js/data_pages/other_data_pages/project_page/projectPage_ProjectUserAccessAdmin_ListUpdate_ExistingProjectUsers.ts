@@ -17,6 +17,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page_searches_section_researcher_user_interaction_template_bundle } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -33,14 +34,14 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
+	private _projectIdentifierFromURL: string;
 	private _project_user_list_current_user_template = _project_page_searches_section_researcher_user_interaction_template_bundle.project_user_list_current_user;
 	private _project_user_list_current_user_bottom_separator_template =  _project_page_searches_section_researcher_user_interaction_template_bundle.project_user_list_current_user_bottom_separator;
 
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL } ) {
+	constructor( { projectIdentifierFromURL } :  { projectIdentifierFromURL: string } ) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 	}
@@ -78,7 +79,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._displayExistingUsersForProject_ProcessAJAXResponse({
 					responseData
@@ -96,7 +97,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_displayExistingUsersForProject_ProcessAJAXResponse( { responseData } ) {
+	_displayExistingUsersForProject_ProcessAJAXResponse( { responseData }: { responseData: any } ) {
 
 		let objectThis = this;
 		
@@ -119,7 +120,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 			let canRemoveAnyOfEntries = false;
 			let canPromoteDemoteAnyOfEntries = false;
 			
-			userList.forEach( function( userItem, index, array ) {
+			userList.forEach( function( userItem: any, index: any, array: any ) {
 
 				if ( userItem.canRemoveEntry ) {
 					canRemoveAnyOfEntries = true;
@@ -129,7 +130,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 				}
 			}, this);
 
-			userList.forEach( function( userItem, index, array ) {
+			userList.forEach( function( userItem: any, index: any, array: any ) {
 
 				let context = {
 					userItem : userItem,
@@ -207,7 +208,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_removeUserFromProject( { clickedThis, userId } ) {
+	_removeUserFromProject( { clickedThis, userId }: { clickedThis: any, userId: any } ) {
 
 		let objectThis = this;
 
@@ -228,7 +229,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 			try {
 				objectThis._removeUserFromProject_ProcessAJAXResponse({
 					responseData
@@ -247,7 +248,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_removeUserFromProject_ProcessAJAXResponse({responseData}) {
+	_removeUserFromProject_ProcessAJAXResponse({responseData}: {responseData: any}) {
 
 		//  refresh display
 		this.displayExistingUsersForProject();
@@ -256,7 +257,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_changeUserToProjectOwner( { clickedThis, userId } ) {
+	_changeUserToProjectOwner( { clickedThis, userId } : { clickedThis: any, userId: any } ) {
 
 		let objectThis = this;
 		
@@ -273,7 +274,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		promise_webserviceCallStandardPost.catch( () => { throw Error("Failed call to webservice " + url ) }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._changeUserToProjectOwner_ProcessAJAXResponse({
 					responseData
@@ -290,7 +291,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_changeUserToProjectOwner_ProcessAJAXResponse({responseData}) {
+	_changeUserToProjectOwner_ProcessAJAXResponse({responseData} : {responseData: any}) {
 
 		//  refresh display
 		this.displayExistingUsersForProject();
@@ -299,7 +300,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_changeUserToAssistantProjectOwner( { clickedThis, userId } ) {
+	_changeUserToAssistantProjectOwner( { clickedThis, userId } : { clickedThis: any, userId: any } ) {
 
 		let objectThis = this;
 		
@@ -316,7 +317,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		promise_webserviceCallStandardPost.catch( () => {  throw Error("Failed call to webservice " + url ) }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._changeUserToAssistantProjectOwner_ProcessAJAXResponse({
 					responseData
@@ -334,7 +335,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 	/**
 	 * 
 	 */
-	_changeUserToAssistantProjectOwner_ProcessAJAXResponse({responseData}) {
+	_changeUserToAssistantProjectOwner_ProcessAJAXResponse({responseData}: {responseData: any}) {
 
 		//  refresh display
 		this.displayExistingUsersForProject();

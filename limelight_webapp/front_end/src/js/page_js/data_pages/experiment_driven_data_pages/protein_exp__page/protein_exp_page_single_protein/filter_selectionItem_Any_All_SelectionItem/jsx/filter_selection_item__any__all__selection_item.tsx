@@ -25,7 +25,7 @@ export interface Filter_selectionItem_Any_All_SelectionItem_Props {
 }
 
 interface Filter_selectionItem_Any_All_SelectionItem_State { //  Keep shouldComponentUpdate up to date
-    placeHolder?
+    placeHolder?: any
 }
 
 /**

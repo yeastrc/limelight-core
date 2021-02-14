@@ -7,6 +7,7 @@
  *
  */
 
+// @ts-ignore
 import { Handlebars, _dummy_template_template_bundle } from './proteinExperimentPage_RootLaunch_ImportHandlebars'
 
 

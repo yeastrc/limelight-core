@@ -92,7 +92,9 @@ export class PeptideUnique_UserSelection_StateObject {
     getEncodedStateData() : any {
 
         const result = {}
+        // @ts-ignore
         result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
+        // @ts-ignore
         result[ _ENCODED_DATA__PEPTIDE_UNIQUE_ENCODING_PROPERTY_NAME ] = this._peptideUnique;
         return result;
     }
@@ -101,7 +103,7 @@ export class PeptideUnique_UserSelection_StateObject {
      * Update the state of this object with the value from the URL
      *
      */
-    set_encodedStateData({ encodedStateData }) : void {
+    set_encodedStateData({ encodedStateData }: { encodedStateData: any }) : void {
 
         if ( ! ( encodedStateData ) ) {
             const msg = "set_encodedStateData(...): No value in encodedStateData";

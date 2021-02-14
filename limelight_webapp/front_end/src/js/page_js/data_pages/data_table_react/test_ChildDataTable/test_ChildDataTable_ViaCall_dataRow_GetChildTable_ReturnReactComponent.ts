@@ -40,7 +40,7 @@ import { FAKE_dataRow_ChildTable_ReactComponent, FAKE_dataRow_ChildTable_ReactCo
 
 
 class FAKE_dataRow_GetChildTable_ReturnReactComponent_Parameter_FakeChildTableTesting {
-    fakedata
+    fakedata: any
 
     shallowClone() {
 

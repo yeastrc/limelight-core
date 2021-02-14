@@ -11,6 +11,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 // import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder.js';
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 /**
@@ -21,6 +22,9 @@ import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerPro
 const loadProteinDisplayData_Per_ProjectSearchId = function ( { 
     projectSearchIds, 
     searchDataLookupParamsRoot
+}:  {
+    projectSearchIds : Array<number>,
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
 } ) {
 
     return new Promise( (resolve, reject) =>  {

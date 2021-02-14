@@ -94,14 +94,16 @@ const _addFirstRowCells = ({
 
     //  Create first row of cells for top labels using conditionGroups[0] (first group)
 
-    const firstRowCells = [];
+    const firstRowCells: Array<ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell> = [];
 
     //  First create filler cells for left side cells for labels for condition groups after first group
 
     const fillerCellsOnLeftCount = conditionGroups_Length - 1;
     for ( let counter = 0; counter < fillerCellsOnLeftCount; counter++ ) {
-        const resultCell = { 
+
+        const resultCell: ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell = {
             label : "",
+            experimentConditions_GraphicRepresentation_ConditionCell_Identifier: null,
             styleOverrides : undefined // object if have overrides
         };
         firstRowCells.push( resultCell );
@@ -231,7 +233,7 @@ const _add_AfterFirst_ProcessRows = ({
                         ids_Condition_ForCurrentConditionGroupIndexes[ index ] = condition.id;
                     }
                     
-                    let styleOverrides = undefined;
+                    let styleOverrides : React.CSSProperties = undefined;
 
                     if ( index > 1 ) {
 

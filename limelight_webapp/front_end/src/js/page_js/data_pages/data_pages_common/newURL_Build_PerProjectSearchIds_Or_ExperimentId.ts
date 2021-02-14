@@ -25,7 +25,12 @@ import { controller_path_prefix_ProjectSearchId_Based_FromDOM, controller_path_p
  * Given pageControllerPath, experimentId, searchDataLookupParamsCode, pageStateIdentifier, pageStateString, referrer
  * Create a new URL:
  */
-export const newURL_Build_PerProjectSearchIds_Or_ExperimentId = function( { pageControllerPath, experimentId, searchDataLookupParamsCode, pageStateIdentifier, pageStateString, referrer } ) {
+export const newURL_Build_PerProjectSearchIds_Or_ExperimentId = function(
+	{
+		pageControllerPath, experimentId, searchDataLookupParamsCode, pageStateIdentifier, pageStateString, referrer
+	}: {
+		pageControllerPath: any, experimentId: any, searchDataLookupParamsCode: any, pageStateIdentifier: any, pageStateString: any, referrer: any
+	} ) {
 
 
 	const controller_path_prefix_ProjectSearchId_Based = controller_path_prefix_ProjectSearchId_Based_FromDOM();

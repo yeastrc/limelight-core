@@ -26,6 +26,7 @@ import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_sea
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {DataTable_DataRowEntry__Get_RowChildContent_CallParams} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__psm_list_for_reported_peptide_container_component/js/psmList_Wrapper_Compute_ComponentParamForStandardPSMListComponent";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 /**
@@ -37,7 +38,7 @@ export class PsmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter 
     reportedPeptideId : number
     searchSubGroupId : number  // Optional
     proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
@@ -62,7 +63,7 @@ export class PsmList_Wrapper__Get_RowChildContent_Return_ChildContent_Parameter 
             reportedPeptideId : number
             searchSubGroupId : number  // Optional
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
-            searchDataLookupParamsRoot
+            searchDataLookupParamsRoot: SearchDataLookupParameters_Root
             loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
             dataPageStateManager : DataPageStateManager
@@ -121,7 +122,7 @@ interface PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_Props {
  */
 interface PsmList_Wrapper_For_SingleReportedPeptide_ChildReactComponent_State {
 
-    _placeholder //  have so not have any state properties
+    _placeholder: any //  have so not have any state properties
 }
 
 /**

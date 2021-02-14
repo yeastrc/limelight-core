@@ -229,13 +229,16 @@ export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCl
 	 */
 	getDataForEncoding() {
 		const dataForEncoding = {}
+		// @ts-ignore
 		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
 		if ( this._value.selectedConditionIds_First_ConditionGroup !== undefined ) {
 
 			const selectedConditionIds_First_ConditionGroup_Array = Array.from( this._value.selectedConditionIds_First_ConditionGroup );
+			// @ts-ignore
 			dataForEncoding[ _SELECTED_CONDITION_IDS_FIRST_CONDITION_GROUP_ENCODING_PROPERTY_NAME ] = selectedConditionIds_First_ConditionGroup_Array;
 		}
+		// @ts-ignore
 		dataForEncoding[ _SELECTED_CONDITION_IDS_OTHER_THAN_FIRST_CONDITION_GROUP_ENCODING_PROPERTY_NAME ] = this._value.selectedConditionIdPaths_OtherThan_First_ConditionGroup;
 
 		return dataForEncoding;

@@ -76,7 +76,7 @@ const conditionGroupsContainerWidth = (
 /**
  * 
  */
-const getConditionGroupListItemOuterStyle = (isDragging, draggableStyle) => {
+const getConditionGroupListItemOuterStyle = (isDragging: any, draggableStyle:any) => {
 
     //  Must use a function since need to add values in parameter 'draggableStyle' to result
 
@@ -104,9 +104,9 @@ const getConditionGroupListItemOuterStyle = (isDragging, draggableStyle) => {
 export interface ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupList_Props {
 
     conditionGroups : Array<Experiment_ConditionGroup>
-    conditionGroups_ChangeOrder // function
-    conditionGroup_ClickHandler // function
-    delete_conditionGroup_ClickHandler // function
+    conditionGroups_ChangeOrder: any // function
+    conditionGroup_ClickHandler: any // function
+    delete_conditionGroup_ClickHandler: any // function
 }
 
 interface ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupList_State {
@@ -199,7 +199,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
     }
 
 
-    _onDragEnd_ConditionGroupItem( result ) : void {
+    _onDragEnd_ConditionGroupItem( result: any ) : void {
         // dropped outside the list
         if ( ! result.destination ) {
             return;
@@ -224,7 +224,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
             return null;
         }
 
-        const conditionEntryComponentsList = [];
+        const conditionEntryComponentsList: Array<JSX.Element> = [];
         {
             let index = 0
 
@@ -323,12 +323,12 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
 interface DraggableConditionGroupListEntry_Props {
 
     conditionGroup : Experiment_ConditionGroup;
-    draggableId;
+    draggableId: any;
     index : number;
 
-    conditionGroupIndex
-    conditionGroup_ClickHandler
-    delete_conditionGroup_ClickHandler
+    conditionGroupIndex: any
+    conditionGroup_ClickHandler: any
+    delete_conditionGroup_ClickHandler: any
 }
 
 /**
@@ -368,8 +368,8 @@ interface ConditionGroupListEntry_DraggableContents_Props {
 
     conditionGroup : Experiment_ConditionGroup
     conditionGroupIndex : number
-    conditionGroup_ClickHandler
-    delete_conditionGroup_ClickHandler
+    conditionGroup_ClickHandler: any
+    delete_conditionGroup_ClickHandler: any
 }
 
 
@@ -389,14 +389,14 @@ export class ConditionGroupListEntry_DraggableContents extends React.Component< 
         // this.state = newState;
     }
 
-    _mainClickHander(event) {
+    _mainClickHander(event: any) {
             
         if ( this.props.conditionGroup_ClickHandler ) {
             this.props.conditionGroup_ClickHandler({ event, conditionGroup : this.props.conditionGroup });
         }
     }
 
-    _deleteConditionGroup_ClickHandler(event) {
+    _deleteConditionGroup_ClickHandler(event: any) {
 
         event.preventDefault();
         event.stopPropagation(); //  So no click triggered for whole item

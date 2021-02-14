@@ -31,7 +31,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
  */
 export class Navigation_dataPages_Maint_Updated_CallbackParams {
 
-	_placeHolder
+	private _placeHolder : any
 	constructor() {
 	}
 }

@@ -18,6 +18,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page_searches_section_all_users_interaction_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -27,6 +28,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/common_all_pages/genericToolTip';
 
 import { SearchDetails_GetCoreDataFromServer } from 'page_js/data_pages/data_pages_common/searchDetails_GetDataFromServer_Core';
+import {ProjectPage_SearchDetails_LoggedInUsers} from "page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_LoggedInUsers";
 
 //  Local imports
 
@@ -38,10 +40,10 @@ export class ProjectPage_SearchDetails_AllUsers {
 
 	private _initializeCalled = false;
 
-	private _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX;
-	private _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX;
+	private _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX: string;
+	private _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX: string;
 
-	private _projectPage_SearchDetails_LoggedInUsers;
+	private _projectPage_SearchDetails_LoggedInUsers: ProjectPage_SearchDetails_LoggedInUsers;
 
 	private _searchDetails_GetCoreDataFromServer = new SearchDetails_GetCoreDataFromServer();
 
@@ -59,9 +61,16 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * searchSelectionChangeCallback - function called when the search selection changes
 	 */
-	constructor({ projectIdentifierFromURL, _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX, _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX,
-					projectPage_SearchDetails_LoggedInUsers
-				}) {
+	constructor(
+		{
+			projectIdentifierFromURL, _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX, _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX,
+			projectPage_SearchDetails_LoggedInUsers
+		}: {
+			projectIdentifierFromURL: string, _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX: string, _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX: string,
+			projectPage_SearchDetails_LoggedInUsers: ProjectPage_SearchDetails_LoggedInUsers
+		}) {
+
+
 
         this._SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX;
         this._SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX = _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX;
@@ -101,7 +110,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * for HTML in single_search_expansion_icon_template.handlebars
 	 */
-	addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, searchItem }) {
+	addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, searchItem }: { $expansion_entry: any, searchItem: any }) {
 
 		const objectThis = this;
 
@@ -112,7 +121,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 		if ( $selector_search_item_expand.length === 0 ) {
 			throw Error("No DOM element found with class 'selector_search_item_expand'");
 		}
-		$selector_search_item_expand.click(function(eventObject) {
+		$selector_search_item_expand.click(function(eventObject: any) {
 			try {
 				eventObject.preventDefault();
 				objectThis._showSearchDetailsClicked({ projectSearchId });
@@ -128,7 +137,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 		if ( $selector_search_item_collapse.length === 0 ) {
 			throw Error("No DOM element found with class 'selector_search_item_collapse'");
 		}
-		$selector_search_item_collapse.click(function(eventObject) {
+		$selector_search_item_collapse.click(function(eventObject: any) {
 			try {
 				eventObject.preventDefault();
 				objectThis._hideSearchDetailsClicked({ projectSearchId });
@@ -145,7 +154,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem }) {
+	addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem }: { $search_entry: any, searchItem: any }) {
 
 		const objectThis = this;
 
@@ -156,7 +165,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 		if ( $search_name_and_id_jq.length === 0 ) {
 			throw Error("No DOM element found with class 'search_name_and_id_jq'");
 		}
-		$search_name_and_id_jq.click(function(eventObject) {
+		$search_name_and_id_jq.click(function(eventObject: any) {
 			try {
 				eventObject.preventDefault();
 				objectThis._toggle_ShowHide_SearchDetails_Clicked({ projectSearchId });
@@ -172,7 +181,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	_toggle_ShowHide_SearchDetails_Clicked({ projectSearchId }) {
+	_toggle_ShowHide_SearchDetails_Clicked({ projectSearchId }: { projectSearchId: any }) {
 			
 		// disable code from running when user was highlighting text
 		let sel = window.getSelection().toString();
@@ -190,7 +199,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	_hideSearchDetailsClicked({ projectSearchId }) {
+	_hideSearchDetailsClicked({ projectSearchId }: { projectSearchId: any }) {
 
 		this._searchDetailsExpanded_ProjectSearchIds.delete( projectSearchId );
 
@@ -231,7 +240,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	_showSearchDetailsClicked({ projectSearchId }) {
+	_showSearchDetailsClicked({ projectSearchId }: { projectSearchId: any }) {
 
 		const objectThis = this;
 
@@ -256,7 +265,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	_getSearchDetails({ projectSearchIds }) {
+	_getSearchDetails({ projectSearchIds }: { projectSearchIds: any }) {
 
 		const objectThis = this;
 
@@ -302,7 +311,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */	
-	_get_SearchDetailsProjectPageDataHTML({ projectSearchIds }) : Promise<any> {
+	_get_SearchDetailsProjectPageDataHTML({ projectSearchIds }: { projectSearchIds: any }) : Promise<any> {
 
         const objectThis = this;
 
@@ -318,7 +327,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 				try {
 					const promiseResponse = objectThis._getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData } );
 					
@@ -342,7 +351,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-    _getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData } ) {
+    _getSearchDetailsProjectPageDataHTMLFromAJAXResponse( { responseData }: { responseData: any } ) {
 
 		const rootWsResult = responseData.result;
 		
@@ -384,7 +393,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	 * @param projectSearchId
 	 * @param coreSearchDetailsForProjectSearchId - loaded data. undefined if not loaded data since already have data
 	 */
-	_displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined }) {
+	_displaySearchDetails_SingleProjectSearchId({ projectSearchId, searchDetailsResultsCombined }: { projectSearchId: any, searchDetailsResultsCombined: any }) {
 
 		const DOM_Id_MainSearchElement = this._SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX + projectSearchId;
 		const $DOM_Id_MainSearchElement = $("#" + DOM_Id_MainSearchElement );
@@ -541,7 +550,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    _searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container }) {
+    _searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container }: { data: any, projectSearchId: any, $selector_search_details_container: any }) {
 
 		const webLinkList = data.webLinkList;
 		const commentList = data.commentList;
@@ -580,7 +589,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * Also called to add entries to the container
 	 */    
-    searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container }) {
+    searchDetails_Weblinks_AddSingleEntry({ webLink, projectSearchId, $selector_weblinks_list_container }: { webLink: any, projectSearchId: any, $selector_weblinks_list_container: any }) {
 		
 		if ( ! this._projectPage_SearchDetails_LoggedInUsers ) {
 			webLink.canDelete = false;
@@ -602,7 +611,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * Also called to add entries to the container
 	 */    
-	searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container }) {
+	searchDetails_Comments_AddSingleEntry({ comment, projectSearchId, $selector_comments_list_container }: { comment: any, projectSearchId: any, $selector_comments_list_container: any }) {
 
 		if ( ! this._projectPage_SearchDetails_LoggedInUsers ) {
 			comment.canEdit = false;
@@ -627,7 +636,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    _searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) {
+    _searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }: { projectSearchId: any, weblinksShowAddWeblinkLink: any, $selector_search_details_container: any }) {
 
         if ( this._projectPage_SearchDetails_LoggedInUsers ) {
             this._projectPage_SearchDetails_LoggedInUsers.searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
@@ -637,7 +646,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	displaySearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
+	displaySearchDetails_All({ searchDataLoaded_ProjectSearchIds }: { searchDataLoaded_ProjectSearchIds: any }) {
 
 		{
 			//  Expand all folders
@@ -653,7 +662,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 			})
 		}
 
-		const projectSearchIdsGetFromServer = [];
+		const projectSearchIdsGetFromServer: Array<any> = [];
 
 		for ( const projectSearchId of searchDataLoaded_ProjectSearchIds ) {
 
@@ -697,7 +706,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */
-	hideSearchDetails_All({ searchDataLoaded_ProjectSearchIds }) {
+	hideSearchDetails_All({ searchDataLoaded_ProjectSearchIds }: { searchDataLoaded_ProjectSearchIds: any }) {
 
 		{
 			//  Collapse all folders
@@ -726,12 +735,12 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    _attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container }) {
+    _attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container }: { projectSearchId: any, $selector_search_details_container: any }) {
 
         const objectThis = this;
 
         const $selector_search_filename_download_fake_linkAll = $selector_search_details_container.find(".selector_search_filename_download_fake_link");
-        $selector_search_filename_download_fake_linkAll.click(function(eventObject) {
+        $selector_search_filename_download_fake_linkAll.click(function(eventObject: any) {
 			try {
 				eventObject.preventDefault();
 				objectThis._downloadSearchFileClicked({ projectSearchId, clickedThis : this });
@@ -753,7 +762,7 @@ export class ProjectPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */        
-    _downloadSearchFileClicked({ projectSearchId, clickedThis }) {
+    _downloadSearchFileClicked({ projectSearchId, clickedThis }: { projectSearchId: any, clickedThis: any }) {
 
         const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
         if ( $selector_display_search_filename_outer_container.length === 0 ) {

@@ -43,10 +43,15 @@ export interface ModificationMass_UserSelections_Root_Props {
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;
 }
 
+interface ModificationMass_UserSelections_Root_State {
+
+    _placeholder: any
+}
+
 /**
  * 
  */
-export class ModificationMass_UserSelections_Root extends React.Component< ModificationMass_UserSelections_Root_Props, {} > {
+export class ModificationMass_UserSelections_Root extends React.Component< ModificationMass_UserSelections_Root_Props, ModificationMass_UserSelections_Root_State > {
 
     /**
      * 
@@ -57,7 +62,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
         //  bind to 'this' for passing as parameters
         // this._callbackMethodForSelectedProteinSequenceChange_BindThis = this._callbackMethodForSelectedProteinSequenceChange.bind(this);
 
-        this.state = {  };
+        this.state = { _placeholder: null };
     }
 
 
@@ -99,7 +104,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : ModificationMass_UserSelections_Root_Props, nextState) {
+    shouldComponentUpdate(nextProps : ModificationMass_UserSelections_Root_Props, nextState: ModificationMass_UserSelections_Root_State ) {
 
         // console.log("ModificationMass_UserSelections_Root: shouldComponentUpdate")
 

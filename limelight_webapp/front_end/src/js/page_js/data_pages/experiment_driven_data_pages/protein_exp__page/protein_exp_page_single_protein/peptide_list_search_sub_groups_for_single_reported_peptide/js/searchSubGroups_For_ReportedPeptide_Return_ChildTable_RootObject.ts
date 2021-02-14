@@ -76,7 +76,7 @@ export class SearchSubGroups_For_ReportedPeptide_Return_ChildTable_RootObject__P
             dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
             loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-            searchDataLookupParamsRoot,
+            searchDataLookupParamsRoot: SearchDataLookupParameters_Root,
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
             dataPageStateManager : DataPageStateManager
         }) {

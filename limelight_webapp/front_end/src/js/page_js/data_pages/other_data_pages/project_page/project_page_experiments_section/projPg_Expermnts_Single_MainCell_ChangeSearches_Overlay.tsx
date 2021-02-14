@@ -278,7 +278,7 @@ interface SearchEntry_Props {
  *
  */
 interface SearchEntry_State {
-    _placeHolder
+    _placeHolder: any
 }
 
 /**

@@ -19,7 +19,7 @@ export const load_ProteinData_Including_ProteinSequenceVersionIds_SingleSearch_L
         loadedDataPerProjectSearchIdHolder
         
     } : {
-        projectSearchId
+        projectSearchId : number
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     }) : Promise<unknown> {
@@ -82,7 +82,7 @@ const _processReportedPeptideIdProteinSequenceVersionIdsFromServer_Populate_load
         proteinSequenceVersionIdsPerReportedPeptideIdMap,
         loadedDataPerProjectSearchIdHolder
     } : {
-        proteinSequenceVersionIdsPerReportedPeptideIdMap
+        proteinSequenceVersionIdsPerReportedPeptideIdMap: any
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     }) {
 
@@ -139,7 +139,7 @@ const _get_ProteinInfo_From_proteinSequenceVersionIds = function (
         projectSearchId,
         loadedDataPerProjectSearchIdHolder
     } : {
-        projectSearchId
+        projectSearchId : number
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     } ) : Promise<unknown> {
@@ -185,7 +185,7 @@ const _processProteinInfoFromServer_Populate_loadedData = function (
         proteinInfoMapKeyProteinSequenceVersionIdFromServer,
         loadedDataPerProjectSearchIdHolder
     } : {
-        proteinInfoMapKeyProteinSequenceVersionIdFromServer
+        proteinInfoMapKeyProteinSequenceVersionIdFromServer: any
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     } ) : void {
@@ -212,7 +212,12 @@ const _processProteinInfoFromServer_Populate_loadedData = function (
 /**
  * Get getProteinSequenceVersionIds from reportedPeptideIds
  */
-const _getProteinSequenceVersionIds = function ( { projectSearchId, reportedPeptideIds } ) {
+const _getProteinSequenceVersionIds = function (
+    {
+        projectSearchId, reportedPeptideIds
+    }: {
+        projectSearchId : number, reportedPeptideIds: Array<number>
+    } ) {
 
     const reportedPeptideIds_Sorted = Array.from( reportedPeptideIds );
 
@@ -243,7 +248,7 @@ const _getProteinSequenceVersionIds = function ( { projectSearchId, reportedPept
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get ProteinSequenceVersionIds from reportedPeptideIds END, Now: " + new Date() );
 
@@ -269,7 +274,12 @@ const _getProteinSequenceVersionIds = function ( { projectSearchId, reportedPept
 /**
  * Get ProteinInfo From ProteinSequenceVersionIds
  */
-const _getProteinInfoFromProteinSequenceVersionIds = function ( { projectSearchId, proteinSequenceVersionIds } ) {
+const _getProteinInfoFromProteinSequenceVersionIds = function (
+    {
+        projectSearchId, proteinSequenceVersionIds
+    }: {
+        projectSearchId: number, proteinSequenceVersionIds: Array<number>
+    } ) {
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -288,7 +298,7 @@ const _getProteinInfoFromProteinSequenceVersionIds = function ( { projectSearchI
 
             promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     console.log("AJAX Call to get protein-info-prot-seq-v-ids-list END, Now: " + new Date() );
 

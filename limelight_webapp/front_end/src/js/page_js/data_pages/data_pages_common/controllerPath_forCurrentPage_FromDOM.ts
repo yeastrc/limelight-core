@@ -14,7 +14,7 @@
 
 //module import 
 
-let controller_path_Cached = undefined;
+let controller_path_Cached: string = undefined;
 
 /**
  * 
@@ -29,7 +29,7 @@ export class ControllerPath_forCurrentPage_FromDOM {
 	/**
 	 * Controller Path for current page, placed on DOM by server code
 	 */
-	static controllerPath_forCurrentPage_FromDOM() {
+	static controllerPath_forCurrentPage_FromDOM(): string {
 		
 		if ( controller_path_Cached ) {
 			return controller_path_Cached;

@@ -11,7 +11,7 @@
  */
 export class ReportedPeptideStringData_For_ReportedPeptideId {
 
-	private _reportedPeptideString;
+	private _reportedPeptideString : string;
 
 	/**
 	 * 

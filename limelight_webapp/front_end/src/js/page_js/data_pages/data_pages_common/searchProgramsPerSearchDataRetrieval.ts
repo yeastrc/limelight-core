@@ -80,12 +80,12 @@ export class SearchProgramsPerSearchDataRetrieval {
 	 * return Promise
 	 */
 	_retrieveSearchProgramsPerSearchDataFromAJAX( 
-			projectSearchIds_dataNotLoadedArray, 
+			projectSearchIds_dataNotLoadedArray: any,
 			dataPageStateManager_DataFrom_Server : DataPageStateManager ) : Promise<unknown>  {
 
 		let objectThis = this;
 
-		let retrieval = function( resolve, reject ) {
+		let retrieval = function( resolve: any, reject: any ) {
 		  try {
 			let requestObj = { projectSearchIds : projectSearchIds_dataNotLoadedArray };
 
@@ -105,7 +105,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 				}
 			});
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 				try {
 					objectThis._retrieveSearchProgramsPerSearchDataFromAJAXResponse( {
 							responseData, 
@@ -138,9 +138,9 @@ export class SearchProgramsPerSearchDataRetrieval {
 		dataPageStateManager_DataFrom_Server, 
 		projectSearchIds_dataNotLoadedArray 
 	} : {
-		responseData, 
+		responseData: any,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
-		projectSearchIds_dataNotLoadedArray 
+		projectSearchIds_dataNotLoadedArray: any
 	} ) {
 		
 		let perSearchList = responseData.perSearchList;
@@ -155,7 +155,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 			searchProgramsPerSearchData_Root = new SearchProgramsPerSearchData_Root();
 		}
 		
-		perSearchList.forEach(function( perSearchListArrayItem, index, array ) {
+		perSearchList.forEach(function( perSearchListArrayItem: any, index: any, array: any ) {
 			
 			//  Convert SearchProgramsPerSearch list to ...
 
@@ -174,7 +174,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 			searchProgramsPerSearchItems_PerProjectSearchId.projectSearchId = perSearchListArrayItem.projectSearchId
 			searchProgramsPerSearchItems_PerProjectSearchId.searchId = perSearchListArrayItem.searchId
 
-			perSearchListArrayItem.searchProgramsPerSearchs.forEach(function( searchProgramsPerSearchsArrayItem, index, array ) {
+			perSearchListArrayItem.searchProgramsPerSearchs.forEach(function( searchProgramsPerSearchsArrayItem: any, index: any, array: any ) {
 
 				if ( ! variable_is_type_number_Check( searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId ) ) {
 					const msg = "searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId is not a number: " + searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId;

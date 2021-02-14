@@ -194,7 +194,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	 */
 	openOverlay( { proteinSequenceVersionId, proteinNameDescription, generatedPeptideContents_UserSelections_StateObject } : {
 
-		proteinSequenceVersionId
+		proteinSequenceVersionId: any
 		proteinNameDescription : {name: string, description: string}
 		generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 	} ) : void {

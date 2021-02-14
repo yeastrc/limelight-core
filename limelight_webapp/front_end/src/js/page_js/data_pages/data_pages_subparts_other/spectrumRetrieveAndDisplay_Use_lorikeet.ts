@@ -70,7 +70,7 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	/**
 	 * 
 	 */
-	constructor( params ) {
+	constructor( ) {
 
 	}
 	
@@ -79,8 +79,8 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	 */
 	viewSpectrum_NewWindow( { psmId, projectSearchId, openModPosition } : {
 
-		psmId
-		projectSearchId
+		psmId: any
+		projectSearchId: any
 		openModPosition : OpenModPosition_DataType
 	} ) {
 

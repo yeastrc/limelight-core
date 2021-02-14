@@ -8,7 +8,7 @@
  */
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 
-let main_page_lorikeet_page_controller_path = undefined;
+let main_page_lorikeet_page_controller_path: string = undefined;
 
 /**
  * 

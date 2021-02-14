@@ -18,17 +18,24 @@ export interface DataTable_Table_DataRowEntry_External_ReactComponent_Props {
   column : DataTable_Column
 }
 
+class DataTable_Table_DataRowEntry_External_ReactComponent_State {
+
+    _placeholder: any
+}
+
 /**
  * 
  * 
  * 
  */
-export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.Component< DataTable_Table_DataRowEntry_External_ReactComponent_Props, {} > {
+export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.Component< DataTable_Table_DataRowEntry_External_ReactComponent_Props, DataTable_Table_DataRowEntry_External_ReactComponent_State > {
 
     constructor(props : DataTable_Table_DataRowEntry_External_ReactComponent_Props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            _placeholder: null
+        };
     }
 
     /**
@@ -53,7 +60,7 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: DataTable_Table_DataRowEntry_External_ReactComponent_Props, nextState: DataTable_Table_DataRowEntry_External_ReactComponent_State) {
 
         // console.log("DataTable_Table_DataRowEntry_External_Cell_Mgmt_React: shouldComponentUpdate")
 
@@ -121,6 +128,8 @@ export class DataTable_Table_DataRowEntry_External_ReactComponent extends React.
                     throw Error( msg );
                 }
                 if ( style_override_ReactKey !== 'display') { // NOT ALLOW: change to 'display' property
+                    //  Copy object property with string in style_override_ReactKey from style_override_React to styleContainer_TD
+                    // @ts-ignore
                     styleContainer_TD[style_override_ReactKey] = style_override_React[style_override_ReactKey];
                 }
             }

@@ -55,10 +55,14 @@ export interface ModificationMass_UserSelections_Variable_or_Open_Modifications_
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
 }
 
+interface ModificationMass_UserSelections_Variable_or_Open_Modifications_State {
+
+    _placeholder: any
+}
 /**
  * 
  */
-export class ModificationMass_UserSelections_Variable_or_Open_Modifications extends React.Component< ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, { } > {
+export class ModificationMass_UserSelections_Variable_or_Open_Modifications extends React.Component< ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, ModificationMass_UserSelections_Variable_or_Open_Modifications_State > {
 
     //  bind to 'this' for passing as parameters
     private _open_OverlaySelectionChanges_BindThis = this._open_OverlaySelectionChanges.bind(this);
@@ -81,7 +85,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
             throw Error( msg )
         }
 
-        this.state = {  };
+        this.state = { _placeholder: null };
     }
 
 
@@ -123,7 +127,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, nextState) {
+    shouldComponentUpdate(nextProps : ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, nextState: ModificationMass_UserSelections_Variable_or_Open_Modifications_State ) {
 
         // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
 

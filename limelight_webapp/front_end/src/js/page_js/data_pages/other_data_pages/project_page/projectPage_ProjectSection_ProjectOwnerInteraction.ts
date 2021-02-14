@@ -34,14 +34,14 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
  */
 export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
-	private _initializeCalled
-	private _projectIdentifierFromURL
-	private _projectLocked
+	private _initializeCalled: boolean
+	private _projectIdentifierFromURL : string
+	private _projectLocked : boolean
 
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL, projectLocked } ) {
+	constructor( { projectIdentifierFromURL, projectLocked } : { projectIdentifierFromURL: string, projectLocked: boolean } ) {
 
 		this._initializeCalled = false;
 		
@@ -207,7 +207,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_openChangeProjectTitle( { clickThis } ) {
+	_openChangeProjectTitle( { clickThis } : { clickThis: any } ) {
 		
 		let $project_title_display = $("#project_title_display");
 		let project_title_display = $project_title_display.text();
@@ -221,7 +221,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_saveProjectTitle( { clickThis } ) {
+	_saveProjectTitle( { clickThis } : { clickThis: any } ) {
 		
 		let objectThis = this;
 		
@@ -243,7 +243,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => {});
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._saveProjectTitleResponse( { requestObj, responseData, clickThis } );
 
@@ -257,7 +257,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_saveProjectTitleResponse( { requestObj, responseData, clickThis } ) {
+	_saveProjectTitleResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any } ) {
 		if ( ! responseData.status ) {
 			throw Error("responseData.status not true");
 		}
@@ -274,14 +274,14 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_cancelChangeProjectTitle( { clickThis } ) {
+	_cancelChangeProjectTitle( { clickThis } : { clickThis: any } ) {
 		this._closeChangeProjectTitle( { clickThis } );
 	}
 
 	/**
 	 * 
 	 */
-	_closeChangeProjectTitle( { clickThis } ) {
+	_closeChangeProjectTitle( { clickThis } : { clickThis: any } ) {
 
 		let $change_project_title_container = $("#change_project_title_container");
 		$change_project_title_container.hide();
@@ -291,7 +291,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_openChangeProjectAbstract( { clickThis } ) {
+	_openChangeProjectAbstract( { clickThis } : { clickThis: any } ) {
 		
 		let $project_abstract_display = $("#project_abstract_display");
 		let project_abstract_display = $project_abstract_display.text();
@@ -308,7 +308,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_saveProjectAbstract( { clickThis } ) {
+	_saveProjectAbstract( { clickThis } : { clickThis: any } ) {
 		
 		let objectThis = this;
 		
@@ -325,7 +325,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._saveProjectAbstractResponse( { requestObj, responseData, clickThis } );
 
@@ -339,7 +339,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_saveProjectAbstractResponse( { requestObj, responseData, clickThis } ) {
+	_saveProjectAbstractResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any } ) {
 		if ( ! responseData.status ) {
 			throw Error("responseData.status not true");
 		}
@@ -356,14 +356,14 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_cancelChangeProjectAbstract( { clickThis } ) {
+	_cancelChangeProjectAbstract( { clickThis } : { clickThis: any } ) {
 		this._closeChangeProjectAbstract( { clickThis } );
 	}
 
 	/**
 	 * 
 	 */
-	_closeChangeProjectAbstract( { clickThis } ) {
+	_closeChangeProjectAbstract( { clickThis } : { clickThis: any } ) {
 
 		let $change_project_abstract_container = $("#change_project_abstract_container");
 		$change_project_abstract_container.hide();
@@ -381,7 +381,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_lockProject( { clickThis } ) {
+	_lockProject( { clickThis } : { clickThis: any } ) {
 
 		let objectThis = this;
 		
@@ -395,7 +395,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._lockProjectProcessResponse( { requestObj, responseData, clickThis } );
 
@@ -409,7 +409,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_lockProjectProcessResponse( { requestObj, responseData, clickThis } ) {
+	_lockProjectProcessResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any } ) {
 		if ( ! responseData.statusSuccess ) {
 			throw Error("responseData.statusSuccess not true");
 		}
@@ -421,7 +421,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_unlockProject( { clickThis } ) {
+	_unlockProject( { clickThis } : { clickThis: any } ) {
 
 		let objectThis = this;
 		
@@ -435,7 +435,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._unlockProjectProcessResponse( { requestObj, responseData, clickThis } );
 
@@ -449,7 +449,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	/**
 	 * 
 	 */
-	_unlockProjectProcessResponse( { requestObj, responseData, clickThis } ) {
+	_unlockProjectProcessResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any } ) {
 		if ( ! responseData.statusSuccess ) {
 			throw Error("responseData.statusSuccess not true");
 		}

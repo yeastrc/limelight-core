@@ -29,7 +29,7 @@ export interface Filter_selectionItem_Any_All_SelectionItem_Container_Props {
 
 interface Filter_selectionItem_Any_All_SelectionItem_Container_State { //  Keep shouldComponentUpdate up to date
 
-    _placeholder
+    _placeholder: any
 }
 
 /**

@@ -149,12 +149,12 @@ export interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_Pro
     manage_SelectedCells_ConditionCell_Selection_UserClick_Updates? : boolean
     conditionCellClickHandler? : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler
     mainCellClickHandler? : ExperimentConditions_GraphicRepresentation_MainCellClickHandler
-    mainCell_getHoverContents?
+    mainCell_getHoverContents?: any
 }
 
 interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_State {
 
-    placeholder
+    placeholder: any
 }
 
 /**
@@ -283,12 +283,12 @@ interface TableCell_Props {
 
     cell : ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell
     experiment_SingleExperiment_ConditionsGraphicRepresentation_Props : Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props
-    mainCellTooltipDisplayManager
+    mainCellTooltipDisplayManager: any
 }
 
 interface TableCell_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 /**
@@ -362,7 +362,7 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
     // the value it returns will be passed as a third “snapshot” parameter to componentDidUpdate(). 
     // Otherwise this parameter will be undefined.
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps: TableCell_Props, prevState: TableCell_State, snapshot: any) {
 
         // console.log("class TableCell: componentDidUpdate()");
         if ( ! this.paddingTop_Set ) {
@@ -698,9 +698,15 @@ class MainCellTooltipDisplayManager {
 	/**
 	 * Called when onMouseEnter of main cell
 	 */
-	mainCellMouseEnter({ event, tooltipContents }) {
+	mainCellMouseEnter(
+	    {
+            event, tooltipContents
+	    }: {
+	        event : React.MouseEvent<HTMLElement, MouseEvent>
+            tooltipContents: any
+        }) {
 
-        const mouseEnter_target_DOM_Element = event.target;
+        const mouseEnter_target_DOM_Element = event.target as any;
         
         if ( this._tooltip_CurrentTooltip ) {
 
@@ -719,7 +725,7 @@ class MainCellTooltipDisplayManager {
 	/**
 	 * Called when onMouseLeave of main cell
 	 */
-	mainCellMouseLeave({ event }) {
+	mainCellMouseLeave({ event }: { event: any }) {
 
         // console.log("mainCellMouseLeave(...)");
 

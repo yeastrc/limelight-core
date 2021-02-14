@@ -16,7 +16,7 @@
 /**
  * Make deep copy of object parameter
  */
-var copyObject_DeepCopy_Limelight = function( objectToCopy ) {
+var copyObject_DeepCopy_Limelight = function( objectToCopy: any ) {
 	
 	if ( objectToCopy === undefined || objectToCopy === null ) {
 		throw Error("copyObject_DeepCopy_Limelight: invalid parameter, is undefined or null");

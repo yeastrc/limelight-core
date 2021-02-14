@@ -30,7 +30,7 @@ export { _SVG_WIDTH, _SVG_HEIGHT }
  */
 export interface ProteinExperimentPage_PSMs_Per_Condition_Component_Props {
 
-    cellMgmt_ExternalReactComponent_Data
+    cellMgmt_ExternalReactComponent_Data: any
 }
 
 
@@ -39,7 +39,7 @@ export interface ProteinExperimentPage_PSMs_Per_Condition_Component_Props {
  */
 interface ProteinExperimentPage_PSMs_Per_Condition_Component_State {
 
-    displayChart
+    displayChart: boolean
 }
 
 /**
@@ -47,7 +47,7 @@ interface ProteinExperimentPage_PSMs_Per_Condition_Component_State {
  */
 export class ProteinExperimentPage_PSMs_Per_Condition_Component extends React.Component< ProteinExperimentPage_PSMs_Per_Condition_Component_Props, ProteinExperimentPage_PSMs_Per_Condition_Component_State > {
 
-    private _displayTimeout;
+    private _displayTimeout: number;
 
     /**
      * 
@@ -164,7 +164,7 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Component extends React.Co
                     break;  // EARLY BREAK LOOP
                 }
                 
-                let x = 66;
+                let x: number = 66;
                 if ( index === 1 ) {
                     x = 168;
                 }
@@ -223,13 +223,13 @@ const _VALUE_RECT_COLOR_HOVER = "#ff0000";
 
 interface SingleBarRect_Props {
     
-    x
-    heightFraction
+    x: number
+    heightFraction: number
 }
 
 interface SingleBarRect_State {
     
-    color
+    color: string
 }
 
 /**
@@ -270,7 +270,7 @@ class SingleBarRect extends React.Component< SingleBarRect_Props, SingleBarRect_
     /**
      * 
      */   
-    _onMouseEnter( event ) {
+    _onMouseEnter( event: any ) {
 
         console.log("_onMouseEnter");
 
@@ -283,7 +283,7 @@ class SingleBarRect extends React.Component< SingleBarRect_Props, SingleBarRect_
     /**
      * 
      */   
-    _onMouseLeave( event ) {
+    _onMouseLeave( event: any ) {
 
         console.log("_onMouseLeave");
 

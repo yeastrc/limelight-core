@@ -77,7 +77,7 @@ export const proteinExperiment__createProteinList_DataTable_RootTableDataObject 
 
     } else {
 
-        const greyOutRow = undefined;  //  Not pass for not grouped
+        const greyOutRow: boolean = undefined;  //  Not pass for not grouped
 
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
             singleProteinRowClickHandler_Callback, greyOutRow, proteinList, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
@@ -316,8 +316,8 @@ const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandl
     singleProteinRowClickHandler_Callback : ProteinExperimentPage_singleProteinRow_ClickHandler
 
     greyOutRow : boolean
-    proteinListItem,
-    proteinListItem_Index
+    proteinListItem: ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry
+    proteinListItem_Index: number
     conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
 
     tableRowData_AllRows : ProteinExperimentPage_Display_tableRowData_AllRows // Updated in this file/function (or called function)

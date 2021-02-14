@@ -201,7 +201,12 @@ class Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData {
      * 
      * @param filters
      */
-    _sortFilters({ filters }) {
+    _sortFilters(
+        {
+            filters
+        }: {
+            filters: Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data>
+        }) {
 
         if ( ! filters ) {
             return;
@@ -252,14 +257,14 @@ class Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data {
     get_annTypeId() {
         return this.annTypeId
     }
-    set_annTypeId( annTypeId ) {
+    set_annTypeId( annTypeId: number ) {
         this.annTypeId = annTypeId;
     }
 
     get_value() {
         return this.value
     }
-    set_value( value ) {
+    set_value( value : number ) {
         this.value = value;
     }
 }

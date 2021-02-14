@@ -103,7 +103,7 @@ export class Experiment_ConditionGroupsDataContainer {
         experimentConditionData_Serialized, 
         searchDataLookupParamsRoot 
     } : { 
-        experimentConditionData_Serialized?, 
+        experimentConditionData_Serialized?: any,
         searchDataLookupParamsRoot? : SearchDataLookupParameters_Root
     }) {
 
@@ -134,7 +134,7 @@ export class Experiment_ConditionGroupsDataContainer {
      */
     private _construct_from_experimentConditionData_Serialized({ experimentConditionData_Serialized, searchDataLookupParamsRoot } : { 
         
-        experimentConditionData_Serialized, 
+        experimentConditionData_Serialized: any,
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root 
     }) {
 
@@ -342,7 +342,7 @@ export class Experiment_ConditionGroupsDataContainer {
      */
     getAllData_ForSave_ConditionGroupCondition({ conditionGroups } : { conditionGroups : Array<Experiment_ConditionGroup> }) : {
         version : number
-        mainResult?;
+        mainResult?: any;
         projectSearchIds_All? : Array<number>;
     } {
 
@@ -634,7 +634,7 @@ const _getAllData_ConditionGroupCondition_Internal = function ({ conditionGroups
     _conditionData : ConditionData_InternalHolder_Root
 }) : {
     version : number
-    mainResult?;
+    mainResult?: any;
     projectSearchIds_All? : Array<number>;
 } {
     //  Since leave empty maps in place, need to search through all maps
@@ -685,7 +685,7 @@ const _getAllData_ConditionGroupCondition_Internal = function ({ conditionGroups
 
     const getAllData_ConditionGroupCondition_ProcessSubMaps_Results = _getAllData_ConditionGroupCondition_ProcessSubMaps({ projectSearchIds_All_Set, all_conditionIds, conditionDataCurrent });
 
-    let dataArrayCurrent = undefined;
+    let dataArrayCurrent: DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps[] = undefined;
 
     if ( getAllData_ConditionGroupCondition_ProcessSubMaps_Results ) {
         dataArrayCurrent = getAllData_ConditionGroupCondition_ProcessSubMaps_Results.dataArrayCurrent;
@@ -838,7 +838,7 @@ const _getAllData_ConditionGroupCondition_ProcessSubMaps = function ({ projectSe
  */
 const _construct_from_experimentConditionData_Serialized_Internal = function ({ experimentConditionData_Serialized, searchDataLookupParamsRoot } : { 
     
-    experimentConditionData_Serialized, 
+    experimentConditionData_Serialized: any,
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
 }) : {
     _conditionData : ConditionData_InternalHolder_Root
@@ -849,7 +849,7 @@ const _construct_from_experimentConditionData_Serialized_Internal = function ({ 
         return null; // EARLY RETURN
     }
 
-    const mainResultDataArray = experimentConditionData_Serialized.mainResultDataArray;
+    const mainResultDataArray: DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps[] = experimentConditionData_Serialized.mainResultDataArray;
     
     if ( ( ! mainResultDataArray ) || ( mainResultDataArray.length === 0 ) ) {
         return null; // EARLY RETURN
@@ -978,7 +978,12 @@ const _construct_from_experimentConditionData_Serialized_Internal_Process_Search
  * 
  * 
  */
-const _construct_from_experimentConditionData_Serialized_Internal_Create_subConditionDataMap = function ({ subConditionDataInput }) : ConditionData_InternalHolder_PerConditionId_Map_Entry {
+const _construct_from_experimentConditionData_Serialized_Internal_Create_subConditionDataMap = function (
+    {
+        subConditionDataInput
+    }: {
+        subConditionDataInput: DataArrayCurrentEntry__getAllData_ConditionGroupCondition_ProcessSubMaps[]
+    }) : ConditionData_InternalHolder_PerConditionId_Map_Entry {
 
     if ( ( ! subConditionDataInput ) || ( subConditionDataInput.length === 0 ) ) {
         return undefined;

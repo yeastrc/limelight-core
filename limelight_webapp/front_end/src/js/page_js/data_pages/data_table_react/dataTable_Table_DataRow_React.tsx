@@ -54,12 +54,12 @@ export interface DataTable_Table_DataRow_Props {
  */
 interface DataTable_Table_DataRow_State {
 
-    dataRow_GetChildTableDataParameter?
-    dataRow_GetChildTableDataParameter_FromProps?
-    dataRow_GetChildTableData_ViaPromise_Parameter?
-    dataRow_GetChildTableData_ViaPromise_Parameter_FromProps?
-    dataRow_GetChildTable_ReturnReactComponent_Parameter?
-    dataRow_GetChildTable_ReturnReactComponent_Parameter_FromProps?
+    dataRow_GetChildTableDataParameter?: any
+    dataRow_GetChildTableDataParameter_FromProps?: any
+    dataRow_GetChildTableData_ViaPromise_Parameter?: any
+    dataRow_GetChildTableData_ViaPromise_Parameter_FromProps?: any
+    dataRow_GetChildTable_ReturnReactComponent_Parameter?: any
+    dataRow_GetChildTable_ReturnReactComponent_Parameter_FromProps?: any
 
     //  function called to get 'Row Child Content' to display when this row is expanded
     dataRow_Get_RowChildContent_Return_ChildContent? : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent

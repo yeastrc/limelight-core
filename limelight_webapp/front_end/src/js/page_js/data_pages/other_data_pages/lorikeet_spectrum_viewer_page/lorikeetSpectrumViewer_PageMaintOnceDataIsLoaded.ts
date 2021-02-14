@@ -20,9 +20,12 @@
 
 import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
+// @ts-ignore
 import {addFlotToJquery} from 'libs/Lorikeet/jquery.flot';
+// @ts-ignore
 import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection';
 
+// @ts-ignore
 import {addLorikeetToJquery} from 'libs/Lorikeet/specview';
 
 
@@ -59,21 +62,21 @@ let itemsAddedTo_jQuery = false;
  */
 export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
-	private _projectSearchId
-	private _psmId_Displayed
+	private _projectSearchId: any
+	private _psmId_Displayed: any
 
 	private _dataTable_RootTableDataObject_PutOnDOM : DataTable_RootTableDataObject
 
-	private _storedPsmPeptideData_Map_Key_PsmId = undefined;
+	private _storedPsmPeptideData_Map_Key_PsmId: any = undefined;
 
-	private lastUsed_lorikeetOptions = undefined;
+	private lastUsed_lorikeetOptions: any = undefined;
 
-	private _lorikeet_ScanData_RetentionTime_PrecursorMZ = undefined;
+	private _lorikeet_ScanData_RetentionTime_PrecursorMZ: any = undefined;
 
 	/**
 	 * 
 	 */
-	constructor({ projectSearchId, psmId }) {
+	constructor({ projectSearchId, psmId }:{ projectSearchId: any, psmId: any }) {
 
 		this._projectSearchId = projectSearchId;
 		this._psmId_Displayed = psmId;
@@ -113,7 +116,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Single parameter, JSON string
 	 */
-	addLorikeetToPage({ loadedDataFromServer, dataTable_RootTableDataObject } : { loadedDataFromServer, dataTable_RootTableDataObject : DataTable_RootTableDataObject } ) {
+	addLorikeetToPage({ loadedDataFromServer, dataTable_RootTableDataObject } : { loadedDataFromServer: any, dataTable_RootTableDataObject : DataTable_RootTableDataObject } ) {
 		try {
 			const lorikeetOptions = loadedDataFromServer.primaryLorikeetData.data;
 
@@ -147,7 +150,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * 
 	 */
-	_addLorikeetToPageInternal( { lorikeetOptions } ) {
+	_addLorikeetToPageInternal( { lorikeetOptions }: { lorikeetOptions: any } ) {
 		
 		this.lastUsed_lorikeetOptions = lorikeetOptions;
 		
@@ -194,7 +197,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Create Data Table and insert on page
 	 */
-	_addPsmPeptideListToPage( { dataTable_RootTableDataObject, loadedDataFromServer } : { dataTable_RootTableDataObject : DataTable_RootTableDataObject, loadedDataFromServer } ) {
+	_addPsmPeptideListToPage( { dataTable_RootTableDataObject, loadedDataFromServer } : { dataTable_RootTableDataObject : DataTable_RootTableDataObject, loadedDataFromServer: any } ) {
 
 		const $psm_list_outer_container = $("#psm_list_outer_container");
 		$psm_list_outer_container.show();
@@ -364,7 +367,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Save PSM Peptide Data in Map for retrieval for display in Lorikeet
 	 */
-	_savePsmPeptideDataToLocalVariableForLookup( { loadedDataFromServer } ) {
+	_savePsmPeptideDataToLocalVariableForLookup( { loadedDataFromServer }:{ loadedDataFromServer: any } ) {
 
 		this._storedPsmPeptideData_Map_Key_PsmId = new Map();
 

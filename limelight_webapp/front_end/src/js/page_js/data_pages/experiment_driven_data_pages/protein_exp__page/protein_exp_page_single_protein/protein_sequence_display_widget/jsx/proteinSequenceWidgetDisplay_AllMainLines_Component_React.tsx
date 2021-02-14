@@ -21,6 +21,7 @@ import {
 
 
 import { ProteinSequenceWidgetDisplay_SequencePosition_TooltipDisplayManager } from './proteinSequenceWidgetDisplay_SequencePosition_TooltipManager';
+import {ProteinSequenceWidget_SinglePositionFlags} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/protein_sequence_display_widget/js/proteinSequenceWidget_SinglePositionFlags";
 
 
 // const _HTML_ELEMENT_DATA_KEY__SEQUENCE_POSITION = "position";
@@ -59,13 +60,21 @@ const _CSS_CLASS_NAME__SEQUENCE_POSITION_MATCH_USER_PEPTIDE_FILTER_SEARCH_STRING
 const _CSS_CLASS_NAME__SEQUENCE_POSITION_HOVER = "pos-hover";
 
 
+export class ProteinSequenceWidgetDisplay__PositionClicked_Callback_Params {
+    position : number
+    ctrlKey_or_metaKey_Down: boolean
+}
+
+export type ProteinSequenceWidgetDisplay__PositionClicked_Callback =
+    ( params : ProteinSequenceWidgetDisplay__PositionClicked_Callback_Params ) => void
+
 /**
  * 
  */
 export interface ProteinSequenceWidgetDisplay_AllMainLines_Component_React_Props {
 
     proteinSequenceWidgetDisplay_Component_Data : ProteinSequenceWidgetDisplay_Component_Data
-    positionClicked_Callback : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void
+    positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }
 
 
@@ -215,9 +224,9 @@ const _createAllLines = function({
     positionClicked_Callback
 } : { 
     
-    dataPerSequencePosition,
+    dataPerSequencePosition: ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry[]
     selectedProteinSequencePositions : Set<number>,
-    positionClicked_Callback : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void
+    positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }) {
 
     const dataPerSequencePosition_length : number = dataPerSequencePosition.length;
@@ -276,13 +285,13 @@ const _createAllLines = function({
  */
 interface ProteinSequence_SingleLine_Props {
 
-    dataPerSequencePosition;
+    dataPerSequencePosition: ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry[]
     selectedProteinSequencePositions : Set<number>;
-    show_lineEndPosition;
-    proteinSequenceForLineStartIndex;
-    proteinSequenceForLineEndIndex;
-    proteinLength_StringLength;
-    positionClicked_Callback : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void
+    show_lineEndPosition: boolean
+    proteinSequenceForLineStartIndex: number
+    proteinSequenceForLineEndIndex: number
+    proteinLength_StringLength: number
+    positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }
 
 /**
@@ -350,16 +359,16 @@ const _createProteinSequence_Components_ForLine = function({
     proteinLength_StringLength,
     positionClicked_Callback
 } : { 
-    show_lineEndPosition,
-    proteinSequenceForLineStartIndex, 
-    proteinSequenceForLineEndIndex, 
-    dataPerSequencePosition, 
+    show_lineEndPosition: boolean
+    proteinSequenceForLineStartIndex: number
+    proteinSequenceForLineEndIndex: number
+    dataPerSequencePosition: ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry[]
     selectedProteinSequencePositions : Set<number>,
-    proteinLength_StringLength,
-    positionClicked_Callback : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void
+    proteinLength_StringLength: number
+    positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }) {
     
-    const proteinSequenceLine_Components = [];
+    const proteinSequenceLine_Components: Array<JSX.Element> = [];
 
     {
         // Display Start Position
@@ -427,7 +436,14 @@ const _createProteinSequence_Components_ForLine = function({
  * 
  * @returns Array of <span>&nbsp;</span> components to insert before the <span> with the number
  */
-const _addProteinSequenceLineStartOrEndLabelToContainer = function({ linePosition, proteinLength_StringLength, proteinSequenceLine_Components }) {
+const _addProteinSequenceLineStartOrEndLabelToContainer = function(
+    {
+        linePosition, proteinLength_StringLength, proteinSequenceLine_Components
+    }: {
+        linePosition: number
+        proteinLength_StringLength: number
+        proteinSequenceLine_Components: Array<JSX.Element>
+    }) {
     
     const number = linePosition;
     const resultTotalStringLength = proteinLength_StringLength;
@@ -458,12 +474,12 @@ const _addProteinSequenceGroupToContainer = function({
     positionClicked_Callback
 } : { 
     
-    proteinSequenceForGroupStartIndex, 
-    proteinSequenceForGroupEndIndex, 
-    dataPerSequencePosition, 
+    proteinSequenceForGroupStartIndex: number
+    proteinSequenceForGroupEndIndex: number
+    dataPerSequencePosition: ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry[]
     selectedProteinSequencePositions : Set<number>,
-    proteinSequenceLine_Components,
-    positionClicked_Callback : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void
+    proteinSequenceLine_Components: Array<JSX.Element>
+    positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }) {
     
     for ( let proteinSequenceIndex : number = proteinSequenceForGroupStartIndex; proteinSequenceIndex <= proteinSequenceForGroupEndIndex; proteinSequenceIndex++ ) {
@@ -493,7 +509,7 @@ interface ProteinSequence_SinglePosition_Props {
     position : number;
     data_At_SequencePosition : ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry;
     selectedProteinSequencePositions : Set<number>
-    positionClicked_Callback : ({ position, ctrlKey_or_metaKey_Down } : { position, ctrlKey_or_metaKey_Down : boolean } ) => void;
+    positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }
 
 /**
@@ -520,7 +536,7 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
 
     _onClick( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
 
-        const target_htmlElement = event.target as HTMLElement;
+        // const target_htmlElement = event.target as HTMLElement;
 
         const position = this.props.position;
 
@@ -554,7 +570,7 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
                         )
                         variableModificationsDisplayEntries.push( commaSeparator );
                     }
-                    let entryStyle = undefined;
+                    let entryStyle: React.CSSProperties = undefined;
                     if ( variableModificationEntry.isSelected ) {
                         entryStyle = { fontWeight: "bold" }
                     }
@@ -594,7 +610,7 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
                         )
                         staticModificationsDisplayEntries.push( commaSeparator );
                     }
-                    let entryStyle = undefined;
+                    let entryStyle: React.CSSProperties = undefined;
                     if ( staticModificationEntry.isSelected ) {
                         entryStyle = { fontWeight: "bold" }
                     }
@@ -689,7 +705,7 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
 }
 
 
-const _proteinSequence_SinglePosition_GetPrimaryClassName = function({ sequencePosition_Flags }) {
+const _proteinSequence_SinglePosition_GetPrimaryClassName = function({ sequencePosition_Flags }: { sequencePosition_Flags: ProteinSequenceWidget_SinglePositionFlags }) {
 
 
     let className_ForPosition_Primary = "";

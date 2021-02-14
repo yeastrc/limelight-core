@@ -15,6 +15,7 @@
 ///////////////////////////////////////////
 
 
+// @ts-ignore
 import { LZString } from 'libs/lz-string/lz-string.js';
 
 /**
@@ -33,7 +34,7 @@ class StringCompressDecompress {
 	 * return null if unable to decompress
 	 * LZString.decompressFromEncodedURIComponent may throw exceptions
 	 */
-	decompress( dataStringCompressed ) {
+	decompress( dataStringCompressed: any ) {
 		try {
 			//  LZString.decompressFromEncodedURIComponent(...) returns null if unable to decompress
 			let dataStringDecompressedDecodeURIComponent = LZString.decompressFromEncodedURIComponent( dataStringCompressed );
@@ -48,7 +49,7 @@ class StringCompressDecompress {
 	 * 
 	 * LZString.compressToEncodedURIComponent may throw exceptions
 	 */
-	compress( dataString ) {
+	compress( dataString: any ) {
 		try {
 			let dataStringCompressedDecodeURIComponent = LZString.compressToEncodedURIComponent( dataString );
 			return dataStringCompressedDecodeURIComponent;

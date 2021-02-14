@@ -25,15 +25,15 @@ const LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT = 2;
 
 class PsmPeptideEntryAfterProcessing {
 
-	precursor_M_Over_Z_Display
-	precursor_M_Over_Z_Sort
-	retentionTimeMinutesDisplay
-	retentionTimeMinutesSort
-	reporterIonMassesDisplay
-	reporterIonMassesSort
-	openModificationMassesDisplay
-	openModificationMassesSort
-	psmObject // Existing psmObject from server
+	precursor_M_Over_Z_Display: any
+	precursor_M_Over_Z_Sort: any
+	retentionTimeMinutesDisplay: any
+	retentionTimeMinutesSort: any
+	reporterIonMassesDisplay: any
+	reporterIonMassesSort: any
+	openModificationMassesDisplay: any
+	openModificationMassesSort: any
+	psmObject: any // Existing psmObject from server
 }
 
 /**
@@ -44,7 +44,7 @@ export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = funct
 
 	psmId_Selection : number
 	projectSearchId : number
-	loadedDataFromServer
+	loadedDataFromServer: any
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
 
 } ) : DataTable_RootTableDataObject {
@@ -89,7 +89,7 @@ export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = funct
  *
  * @param {*} param0
  */
-const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromServer }) : {
+const _preProcessInputData = function({ sorted_psmPeptideData, loadedDataFromServer }: { sorted_psmPeptideData: any, loadedDataFromServer: any }) : {
 
 	psmPeptideEntryAfterProcessingEntries : Array<PsmPeptideEntryAfterProcessing>
 	anyPsmsHave_precursor_M_Over_Z : boolean
@@ -569,7 +569,7 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 /**
  * Sort PSM Peptide Array on PSM Sort order then Psm Id
  */
-const _sortPsmPeptideListOnSortOrder = function( { psmPeptideData, projectSearchId, dataPageStateManager_DataFrom_Server } ) {
+const _sortPsmPeptideListOnSortOrder = function( { psmPeptideData, projectSearchId, dataPageStateManager_DataFrom_Server }:{ psmPeptideData: any, projectSearchId: any, dataPageStateManager_DataFrom_Server: any } ) {
 
 	const sorted_psmPeptideData = psmPeptideData;
 
@@ -597,7 +597,7 @@ const _sortPsmPeptideListOnSortOrder = function( { psmPeptideData, projectSearch
 
 	let psmAnnotationTypesForListEntriesLength = psmAnnotationTypesForListEntries.length;
 
-	sorted_psmPeptideData.sort( function( a, b ) {
+	sorted_psmPeptideData.sort( function( a: any, b: any ) {
 
 		//  Compare PSM Ann Type Values match
 		let a_psmAnnotationMap = a.psmAnnotationMap;

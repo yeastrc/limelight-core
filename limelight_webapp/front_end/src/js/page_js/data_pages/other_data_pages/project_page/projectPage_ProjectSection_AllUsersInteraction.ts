@@ -17,6 +17,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { Handlebars, _project_page__project_info_section_all_users_interaction_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -143,7 +144,7 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 									}
 								});
 
-								promise_webserviceCallStandardPost.then( ({ responseData }) => {
+								promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
 										try {
 												resolve( { projectNotesAjaxresponse : responseData } );
 											
@@ -165,7 +166,7 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 	/**
 	 * 
 	 */	
-	_notes_displayNotes_Main({ projectNotesAjaxresponse }) {
+	_notes_displayNotes_Main({ projectNotesAjaxresponse }:{ projectNotesAjaxresponse: any }) {
 		
 		const notesList = projectNotesAjaxresponse.resultList;
 		const canAdd = projectNotesAjaxresponse.canAdd;
@@ -203,7 +204,7 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 	/**
 	 * 
 	 */	
-	_notes_displayNotes_NotesList({ notesList, $notesOuterContainer }) {
+	_notes_displayNotes_NotesList({ notesList, $notesOuterContainer }:{ notesList: any, $notesOuterContainer: any }) {
 		
 		if ( ( ! notesList ) || notesList.length === 0 ) {
 

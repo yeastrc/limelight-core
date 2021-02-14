@@ -118,7 +118,7 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 	/**
 	 * 
 	 */
-	_populateProjectAndSearchInfo({ projectSearchId }) {
+	_populateProjectAndSearchInfo({ projectSearchId }:{ projectSearchId: any }) {
 	
 		const lorikeetSpectrumViewer_LoadDataFromServer = new LorikeetSpectrumViewer_LoadDataFromServer();
 

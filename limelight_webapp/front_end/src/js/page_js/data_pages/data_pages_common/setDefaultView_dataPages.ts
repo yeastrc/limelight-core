@@ -5,6 +5,7 @@
  * 
  */
 
+// @ts-ignore
 import { Handlebars, _set_default_view_template_bundle } from './setDefaultView_dataPages_ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -159,7 +160,14 @@ export class SetDefaultView_dataPages {
 	/**
      * Set the Default the view to the server
 	 */
-	private _setDefaultViewToServer( { pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode } ) : any {
+	private _setDefaultViewToServer(
+	    {
+            pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode
+	    }: {
+            pageControllerPath: string
+            pageCurrentURL_StartAtPageController: string
+            searchDataLookupParametersCode: string
+        } ) : any {
 
         const projectSearchId = this._projectSearchId
         const experimentId = this._experimentId
@@ -181,7 +189,7 @@ export class SetDefaultView_dataPages {
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                     try {
                         resolve();
 

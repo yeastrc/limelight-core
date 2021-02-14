@@ -35,6 +35,7 @@ import {
 	AnnotationTypeData_Root,
 	SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ProjectPage_ExperimentsSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_AllUsersInteraction";
 
 
 /**
@@ -44,18 +45,18 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
+	private _projectIdentifierFromURL: string;
 
-	private _projectPage_ExperimentsSection_AllUsersInteraction;
+	private _projectPage_ExperimentsSection_AllUsersInteraction: ProjectPage_ExperimentsSection_AllUsersInteraction;
 
-	private _scrollBeforeHideMainDiv;
+	private _scrollBeforeHideMainDiv: { scrollX : number, scrollY : number };
 
-	private _create_Update_Experiment_addedDivElementDOM;
+	private _create_Update_Experiment_addedDivElementDOM: HTMLDivElement;
 
 	/**
 	 * 
 	 */
-	constructor({ projectIdentifierFromURL }) {
+	constructor({ projectIdentifierFromURL }:{ projectIdentifierFromURL: string }) {
 
 		this._initializeCalled = false;
 
@@ -66,7 +67,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-	initialize({ projectPage_ExperimentsSection_AllUsersInteraction }) {
+	initialize({ projectPage_ExperimentsSection_AllUsersInteraction }: { projectPage_ExperimentsSection_AllUsersInteraction: ProjectPage_ExperimentsSection_AllUsersInteraction }) {
         
         this._projectPage_ExperimentsSection_AllUsersInteraction = projectPage_ExperimentsSection_AllUsersInteraction;
 
@@ -76,7 +77,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	/**
 	 * Called when "Create New Experiment" button is clicked on main Experiment list
 	 */
-	createNewExperimentButtonClicked({ event }) {
+	createNewExperimentButtonClicked({ event }: { event: any }) {
 
 		const target = event.target;
 
@@ -87,7 +88,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-	editExperiment({ experimentId }) {
+	editExperiment({ experimentId }: { experimentId: any }) {
 
 		// console.log("ProjectPage_ExperimentsSection_LoggedInUsersInteraction: editExperiment({ experimentId }): experimentId: " + experimentId );
 
@@ -97,9 +98,9 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-	cloneExperiment({ experimentId }) {
+	cloneExperiment({ experimentId }: { experimentId: any }) {
 
-		// console.log("ProjectPage_ExperimentsSection_LoggedInUsersInteraction: editExperiment({ experimentId }): experimentId: " + experimentId );
+		// console.log("ProjectPage_ExperimentsSection_LoggedInUsersInteraction: cloneExperiment({ experimentId }): experimentId: " + experimentId );
 
 		this._create_Update_Experiment_Clicked({ experimentId, makeClone : true });
 	}
@@ -140,11 +141,14 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 						annotationTypeData_Root : AnnotationTypeData_Root
 					}
 
-					experimentData?
+					experimentData?: any
 
 				} = {};
 
-				for ( const promiseResult of promiseResults ) {
+				for ( const promiseResult_Unknown of promiseResults ) {
+
+					const promiseResult = promiseResult_Unknown as any
+
 					if ( promiseResult instanceof GetSearchesDataForProject_ExperimentProcessing_Result ) {
 						results.noSearchesFound = promiseResult.noSearchesFound;
 						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
@@ -200,7 +204,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 				annotationTypeData_Root : AnnotationTypeData_Root
 			}
 
-			experimentData?
+			experimentData?: any
 
 		}) : void {
 

@@ -28,12 +28,17 @@ export interface DataTable_Table_DataRowEntry_Props {
   column : DataTable_Column
 }
 
+class DataTable_Table_DataRowEntry_State {
+
+    _placeholder: any
+}
+
 /**
  * 
  * 
  * 
  */
-export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Table_DataRowEntry_Props, {} > {
+export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Table_DataRowEntry_Props, DataTable_Table_DataRowEntry_State > {
 
     private _cellContentsDiv_onMouseEnterCallback_BindThis = this._cellContentsDiv_onMouseEnterCallback.bind(this);
     private _cellContentsDiv_onMouseLeaveCallback_BindThis = this._cellContentsDiv_onMouseLeaveCallback.bind(this);
@@ -47,7 +52,9 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       this._displayNameValue_TD_Ref = React.createRef();
 
-    // this.state = {};
+      this.state = {
+          _placeholder: null
+      };
   }
 
 
@@ -73,7 +80,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : DataTable_Table_DataRowEntry_Props, nextState) {
+    shouldComponentUpdate(nextProps : DataTable_Table_DataRowEntry_Props, nextState: DataTable_Table_DataRowEntry_State ) {
 
         // console.log("DataTable_Table_DataRowEntry: shouldComponentUpdate")
 
@@ -188,6 +195,8 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
             throw Error( msg );
           }
           if ( style_override_ReactKey !== 'display') { // NOT ALLOW: change to 'display' property
+              //  Copy object property with string in style_override_ReactKey from style_override_React to styleContainer_TD
+              // @ts-ignore
               styleContainerDiv[style_override_ReactKey] = style_override_React[style_override_ReactKey];
           }
         }

@@ -97,7 +97,7 @@ interface ProjectPage_Experiments_SingleExperiment_MainCellMaint_State {
     projectSearchIds? : Set<number>
     projectSearchIds_InitialProps? : Set<number>
     searches_Selected : Array<SearchSelected_Entry>
-    experiment_User_Set_Single_Search_FiltersPropsParams?
+    experiment_User_Set_Single_Search_FiltersPropsParams?: { projectSearchId: any }
 }
 
 /**
@@ -140,7 +140,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
      * 
      * Return new state (like return from setState(callback)) or null
      */
-    static getDerivedStateFromProps( props, state ) {
+    static getDerivedStateFromProps( props: ProjectPage_Experiments_SingleExperiment_MainCellMaint_Props, state: ProjectPage_Experiments_SingleExperiment_MainCellMaint_State ): ProjectPage_Experiments_SingleExperiment_MainCellMaint_State {
 
         // console.log("called: static getDerivedStateFromProps(): " );
 
@@ -165,7 +165,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * 
      */
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: ProjectPage_Experiments_SingleExperiment_MainCellMaint_Props, nextState: ProjectPage_Experiments_SingleExperiment_MainCellMaint_State): boolean {
 
         if ( this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint !== nextProps.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint ) {
             return true;
@@ -201,7 +201,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * 
      */
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps: ProjectPage_Experiments_SingleExperiment_MainCellMaint_Props, prevState: ProjectPage_Experiments_SingleExperiment_MainCellMaint_State, snapshot: any ) {
 
         if ( this.state.current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint !== this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint ) {
 
@@ -218,7 +218,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * 
      */
-    _save({ projectSearchIds }) {
+    _save({ projectSearchIds }: { projectSearchIds: any }) {
 
         //  Called from Delete and Add below
         this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.save_ProjectSearchIds_ForMainCell({ projectSearchIds });
@@ -227,7 +227,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * Delete Search: Update the projectSearchId in copy of state.projectSearchIds and call parent component save
      */
-    _delete_Search({ projectSearchId }) {
+    _delete_Search({ projectSearchId }: { projectSearchId: any }) {
 
         const projectSearchIds = new Set( this.state.projectSearchIds );
 
@@ -273,7 +273,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * New Search Selected: Update the projectSearchId in copy of state.projectSearchIds and call parent component save
      */
-    _add_Search_Select_Updated( event ) {
+    _add_Search_Select_Updated( event: any ) {
 
         const projectSearchId_String = event.target.value;
 
@@ -296,7 +296,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
      * @param filterLabel
      * @param annotationTypeId - not populated if user clicked on filter label or edit icon
      */
-    _filterEntryClicked({ projectSearchId, filterLabel, annotationTypeId }) {
+    _filterEntryClicked({ projectSearchId, filterLabel, annotationTypeId }: { projectSearchId: any, filterLabel: any, annotationTypeId: any }) {
 
         // console.log("_filterEntryClicked({ projectSearchId, filterLabel, annotationTypeId}). projectSearchId: " + projectSearchId
         // + ", filterLabel: " + filterLabel + ", annotationTypeId: " + annotationTypeId );
@@ -315,7 +315,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * "Save" button clicked in subcomponent <Experiment_User_Set_Searches_Filters  >
      */
-    _setSearchFilters_Save({ conditionGroupsDataContainer }) {
+    _setSearchFilters_Save({ conditionGroupsDataContainer }: { conditionGroupsDataContainer: any }) {
 
         this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.save_updated_conditionGroupsDataContainer({ conditionGroupsDataContainer });
 
@@ -594,8 +594,8 @@ const _createSearchSelectedEntry_PerType = function(
 interface Search_Assigned_Props {
 
     searchSelectedEntry: SearchSelected_Entry
-    deleteProjectSearchId // callback function
-    filterEntryClicked // callback function
+    deleteProjectSearchId: any // callback function
+    filterEntryClicked: any // callback function
 }
 
 /**
@@ -613,7 +613,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
         // this.state = newState;
     }
 
-    _deleteClicked( event ) {
+    _deleteClicked( event: any ) {
         
         event.preventDefault(); //  Prevent Default Action of event
 
@@ -626,7 +626,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
      * @param filterLabel
      * @param annotationTypeId - not pppulated if user clicked on filter label or edit icon
      */
-    _filterEntryClicked({ filterLabel, annotationTypeId }) {
+    _filterEntryClicked({ filterLabel, annotationTypeId }: { filterLabel: any, annotationTypeId: any }) {
 
         this.props.filterEntryClicked({ projectSearchId : this.props.searchSelectedEntry.wrappedSearch.projectSearchId, filterLabel, annotationTypeId });
     }
@@ -700,7 +700,7 @@ interface Search_Assigned_FilterData_ForType_Props {
 
     filters: SearchSelected_Entry_FiltersForType_PSM_Etc[]
     filterLabel: string
-    filterEntryClicked // Callback Function
+    filterEntryClicked: any // Callback Function
 }
 
 /**
@@ -715,7 +715,7 @@ class Search_Assigned_FilterData_ForType extends React.Component< Search_Assigne
         // this.state = newState;
     }
 
-    _filterLabelOrEditIconClicked( event ) {
+    _filterLabelOrEditIconClicked( event: any ) {
         
         event.preventDefault(); //  Prevent Default Action of event
 
@@ -776,9 +776,9 @@ class Search_Assigned_FilterData_ForType extends React.Component< Search_Assigne
 
 interface Search_Assigned_FilterData_ForType_SingleEntry_Props {
 
-    filter
-    filterLabel
-    filterEntryClicked
+    filter: any
+    filterLabel: any
+    filterEntryClicked: any
 }
 /**
  * Single Assigned Search - Single Filter Data Entry for Annotation Type Entry for a Type (PSM, ...)
@@ -797,7 +797,7 @@ class Search_Assigned_FilterData_ForType_SingleEntry extends React.Component< Se
     /**
      * 
      */
-    _filterEntryClicked( event ) {
+    _filterEntryClicked( event: any ) {
         
         event.preventDefault(); //  Prevent Default Action of event
 

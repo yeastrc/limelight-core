@@ -66,7 +66,7 @@ export const getSearchesAndFolders_SingleProject = function (
     {
         projectIdentifier
     } : {
-        projectIdentifier
+        projectIdentifier : any
     }) : Promise<GetSearchesAndFolders_SingleProject_PromiseResponse> {
 
     return new Promise ( ( resolve, reject ) => {
@@ -82,11 +82,11 @@ export const getSearchesAndFolders_SingleProject = function (
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch((reason) => {
+            promise_webserviceCallStandardPost.catch((reason : any) => {
                 reject(reason);
             });
 
-            promise_webserviceCallStandardPost.then(({responseData}) => {
+            promise_webserviceCallStandardPost.then(({responseData} : {responseData : any}) => {
                 try {
                     const resultList = _getSearchList_FromServerResponseData(responseData);
 
@@ -111,7 +111,7 @@ export const getSearchesAndFolders_SingleProject = function (
 /**
  *
  */
-const _getSearchList_FromServerResponseData = function ( responseData ) : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> {
+const _getSearchList_FromServerResponseData = function ( responseData: any ) : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> {
 
     const searchList_Result : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> = [];
 
@@ -174,7 +174,7 @@ const _getSearchList_FromServerResponseData = function ( responseData ) : Array<
 /**
  *
  */
-const _getSearchList_FromServerResponseData_SpecificListOfSearches = function ( searchList, searchList_Result : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> ) : void {
+const _getSearchList_FromServerResponseData_SpecificListOfSearches = function ( searchList: any, searchList_Result : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> ) : void {
 
     for (const searchItem of searchList) {
 

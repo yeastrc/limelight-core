@@ -78,7 +78,7 @@ export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Compo
         const openModPosition = this.props.cellMgmt_ExternalReactComponent_Data.openModPosition;
 
         
-        const spectrumRetrieveAndDisplay_Use_lorikeet = new SpectrumRetrieveAndDisplay_Use_lorikeet( undefined ); // Params not used in constructor
+        const spectrumRetrieveAndDisplay_Use_lorikeet = new SpectrumRetrieveAndDisplay_Use_lorikeet(); // Params not used in constructor
 
         spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_NewWindow( { 
           psmId, projectSearchId, openModPosition

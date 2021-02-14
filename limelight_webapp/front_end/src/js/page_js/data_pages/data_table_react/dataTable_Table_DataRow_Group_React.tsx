@@ -38,7 +38,7 @@ export interface DataTable_Table_DataRow_Group_Props {
  */
 interface DataTable_Table_DataRow_Group_State {
 
-  _placeholder //  have so not have any state properties
+  _placeholder: any //  have so not have any state properties
 }
 
 /**

@@ -153,10 +153,13 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
                         searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
                         annotationTypeData_Root : AnnotationTypeData_Root
                     }
-                    experimentData?
+                    experimentData?: any
 				} = {};
 
-				for ( const promiseResult of promiseResults ) {
+				for ( const promiseResult_Uknown of promiseResults ) {
+
+                    const promiseResult = promiseResult_Uknown as any;
+
 					if ( promiseResult instanceof GetSearchesDataForProject_ExperimentProcessing_Result ) {
 					    results.noSearchesFound = promiseResult.noSearchesFound;
 						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
@@ -199,7 +202,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
                     searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
                     annotationTypeData_Root : AnnotationTypeData_Root
                 }
-                experimentData?
+                experimentData?: any
             }
         }) : void {
 

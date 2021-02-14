@@ -166,7 +166,7 @@ interface Internal__ExistingProteinRangesContainer_Props {
 
 interface Internal__ExistingProteinRangesContainer_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 /**
@@ -263,7 +263,7 @@ interface Internal__ExistingProteinRangeEntry_Props {
 
 interface Internal__ExistingProteinRangeEntry_State {
 
-    _placeholder
+    _placeholder: any
 }
 
 /**
@@ -286,7 +286,7 @@ class Internal__ExistingProteinRangeEntry extends React.Component< Internal__Exi
      * @param event
      * @private
      */
-    private _delete_Clicked( event ) {
+    private _delete_Clicked( event: any ) {
         try {
             this.props.deleteEntry_Callback( this.props.entry );
 
@@ -1016,7 +1016,7 @@ class SingleRange_Entry_From_or_To_InputField extends React.Component< SingleRan
             const current_inputField_Value_String = this._inputField_Ref.current.value;  //  New Value
 
             let current_inputField_Value_Number = null; // Only set when current_inputField_Value_String is a valid value
-            let new_errorMessage = null;
+            let new_errorMessage: string = null;
 
             if ( current_inputField_Value_String.length < 1 ) {
 

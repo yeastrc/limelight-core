@@ -10,7 +10,12 @@
 /**
  * 
  */
-const sortSearchesOnDisplayOrder_OrDefaultOrder = function({ folderList, searchesNotInFolders }) {
+const sortSearchesOnDisplayOrder_OrDefaultOrder = function(
+    {
+        folderList, searchesNotInFolders
+    }: {
+        folderList: any, searchesNotInFolders: any
+    }) {
 
     if ( folderList && folderList.length !== 0 ) {
         for ( const folderItem of folderList ) {
@@ -33,7 +38,7 @@ const sortSearchesOnDisplayOrder_OrDefaultOrder = function({ folderList, searche
 /**
  * 
  */
-const sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList = function({ searchList }) {
+const sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList = function({ searchList }:{ searchList: any }) {
 
     if ( ( ! searchList ) || searchList.length === 0 ) {
         //  no searches
@@ -42,7 +47,7 @@ const sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList = function({ se
 
     //  Sort on display order ascending then search id descending
 
-    searchList.sort( (a, b) => {
+    searchList.sort( (a: any, b: any) => {
         // display order ascending
         if ( a.displayOrder < b.displayOrder ) {
             return -1;

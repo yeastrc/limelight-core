@@ -24,9 +24,9 @@ import {
  */
 export interface ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_Props {
 
-    projectPage_ExperimentsSection_LoggedInUsersInteraction
-    experimentData
-    projectIdentifierFromURL
+    projectPage_ExperimentsSection_LoggedInUsersInteraction: any
+    experimentData: any
+    projectIdentifierFromURL: any
     searchesData : {
         searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
         searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
@@ -55,8 +55,8 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
 
     private _beforeunload_eventListener : any;
 
-    private _projectPage_ExperimentsSection_LoggedInUsersInteraction;
-    private _dialogTop;
+    private _projectPage_ExperimentsSection_LoggedInUsersInteraction: any;
+    private _dialogTop: any;
 
     /**
      * 
@@ -88,7 +88,7 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
      */
     componentDidMount() {
 
-        const beforeUnload_EventHandler = (event) => {
+        const beforeUnload_EventHandler = (event: any) => {
             // Cancel the event
             event.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
             // Chrome requires returnValue to be set
@@ -153,7 +153,7 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
     /**
      * 
      */
-    _closeClickHandler( event ) {
+    _closeClickHandler( event: any ) {
 
         this._closeOverlay();
     }

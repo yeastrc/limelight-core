@@ -202,8 +202,8 @@ interface PeptidePage_Display_MainContent_Component_State {
     //  User made a selection that resulted in a AJAX request for data.  Page update for filtered Peptides will wait for the AJAX to complete.  Display message loading data.
     gettingDataFor_Filtering_reportedPeptideIdsForDisplay? : boolean;
 
-    saveView_Component_React? //  React Component for Save View
-    saveView_Component_Props_Prop? //  Object passed to saveView_Component_React as property propsValue
+    saveView_Component_React?: any //  React Component for Save View
+    saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
 
 /**

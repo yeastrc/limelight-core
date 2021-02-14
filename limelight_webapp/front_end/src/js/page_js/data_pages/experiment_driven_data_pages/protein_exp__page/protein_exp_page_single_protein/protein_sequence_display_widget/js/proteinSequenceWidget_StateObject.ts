@@ -62,7 +62,7 @@ export class ProteinSequenceWidget_StateObject {
 	/**
 	 * @param position - position to add to selected positions
 	 */
-	add_selectedProteinSequencePosition({ position }) : void {
+	add_selectedProteinSequencePosition({ position }: { position: number }) : void {
 
 		if ( position === undefined ) {
 			const msg = "add_selectedProteinSequencePosition: Error to add position: undefined";
@@ -76,7 +76,7 @@ export class ProteinSequenceWidget_StateObject {
 	/**
 	 * @param position - position to delete from selected positions
 	 */
-	delete_selectedProteinSequencePosition({ position }) : void {
+	delete_selectedProteinSequencePosition({ position }: { position: number }) : void {
 		
 		if ( position === undefined ) {
 			const msg = "delete_selectedProteinSequencePosition: Error to delete position: undefined";
@@ -90,7 +90,7 @@ export class ProteinSequenceWidget_StateObject {
 	/**
 	 * @param position - is position in selected positions
 	 */
-	has_selectedProteinSequencePosition({ position }) : boolean {
+	has_selectedProteinSequencePosition({ position }: { position: number }) : boolean {
 		
 		if ( position === undefined ) {
 			const msg = "has_selectedProteinSequencePosition: Error to has position: undefined";
@@ -159,7 +159,7 @@ export class ProteinSequenceWidget_StateObject {
 	/**
 	 * @param encodedStateData - data returned by method 'getEncodedStateData' for storage on URL
 	 */
-	set_encodedStateData({ encodedStateData }) : void {
+	set_encodedStateData({ encodedStateData }:{ encodedStateData: any }) : void {
 
 		this._updateWithEncodedStateData({ encodedStateData });
     }
@@ -174,6 +174,7 @@ export class ProteinSequenceWidget_StateObject {
 	getEncodedStateData() : any {
 
 		const result = {}
+		// @ts-ignore
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		if (this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0) {
@@ -207,6 +208,7 @@ export class ProteinSequenceWidget_StateObject {
 
 			const positionsDelimited = positionsAsOffsetAndAltBase.join(_ENCODING_DATA__POSITION_SEPARATOR);
 
+			// @ts-ignore
 			result[ _ENCODED_DATA__PROTEIN_POSITIONS_ENCODING_PROPERTY_NAME ] = positionsDelimited;
 		}
 
@@ -217,7 +219,7 @@ export class ProteinSequenceWidget_StateObject {
 	 * Update the state of this object with the value from the URL
 	 * 
 	 */
-	private _updateWithEncodedStateData({ encodedStateData }) : void {
+	private _updateWithEncodedStateData({ encodedStateData }: { encodedStateData: any }) : void {
 
 		if ( ! ( encodedStateData ) ) {
 			//  No Encoded State Data
@@ -250,7 +252,7 @@ export class ProteinSequenceWidget_StateObject {
 					console.log( msg );
 					throw Error( msg );
 				}
-				let position = undefined;
+				let position: number = undefined;
 				if ( prevPositionValue === undefined ) {
 					//  First position so not offset
 					position = positionAsOffset;

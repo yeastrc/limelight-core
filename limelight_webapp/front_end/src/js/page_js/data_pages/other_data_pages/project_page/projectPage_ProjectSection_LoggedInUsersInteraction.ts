@@ -17,6 +17,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page__project_info_section_logged_in_users_interaction,_project_page__project_info_section_all_users_interaction_template  } from './projectPage__Common__ImportHandlebarsTemplates'
 
 
@@ -26,6 +27,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/common_all_pages/genericToolTip';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {ProjectPage_ProjectSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/projectPage_ProjectSection_AllUsersInteraction";
 
 //  Local imports
 
@@ -38,18 +40,24 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
     private _initializeCalled = false;
 
-    private _projectIdentifierFromURL
+    private _projectIdentifierFromURL : string
     private _project_notes_entry_edit = _project_page__project_info_section_logged_in_users_interaction.project_notes_entry_edit;
     private _project_notes_add_note_container_and_link = _project_page__project_info_section_logged_in_users_interaction.project_notes_add_note_container_and_link;
     private _project_notes_add_note_add_note_input = _project_page__project_info_section_logged_in_users_interaction.project_notes_add_note_add_note_input;
     private _project_notes_entry = _project_page__project_info_section_all_users_interaction_template.project_notes_entry;
 
-    private _projectPage_ProjectSection_AllUsersInteraction
+    private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL, projectLocked } ) {
+	constructor(
+	    {
+            projectIdentifierFromURL, projectLocked
+	    } : {
+            projectIdentifierFromURL: string
+            projectLocked: boolean
+        }) {
 
 		this._initializeCalled = false;
 		
@@ -72,7 +80,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-	initialize({ projectPage_ProjectSection_AllUsersInteraction }) {
+	initialize({ projectPage_ProjectSection_AllUsersInteraction } : { projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction }) {
         let objectThis = this;
         
         this._projectPage_ProjectSection_AllUsersInteraction = projectPage_ProjectSection_AllUsersInteraction;
@@ -83,7 +91,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * Add Notes Add, if allowed for user
 	 */
-    addNotesAddIfAllowed({ projectNotesAjaxresponse, $notesOuterContainer }) {
+    addNotesAddIfAllowed({ projectNotesAjaxresponse, $notesOuterContainer }: { projectNotesAjaxresponse: any, $notesOuterContainer: any }) {
 
         const objectThis = this;
 
@@ -118,7 +126,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    addExistingNoteLoggedInUserAdditions({ id, canEdit ,canDelete, $noteDOM }) {
+    addExistingNoteLoggedInUserAdditions({ id, canEdit ,canDelete, $noteDOM }: { id: any, canEdit: any, canDelete: any, $noteDOM: any }) {
 
         const objectThis = this;
 
@@ -127,9 +135,9 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
             if ( $selector_note_update.length === 0 ) {
                 throw Error("Failed to find DOM element with class 'selector_note_update'");
             }
-            $selector_note_update.click(function(eventObject) {
+            $selector_note_update.click(function(eventObject: any) {
                 try {
-                    event.preventDefault(); // to stop the 
+                    eventObject.preventDefault(); // to stop the
                     let clickThis = this;
                     objectThis._editNoteClicked( { clickThis, id } );
                     return false;
@@ -144,9 +152,9 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
             if ( $selector_note_remove.length === 0 ) {
                 throw Error("Failed to find DOM element with class 'selector_note_remove'");
             }
-            $selector_note_remove.click(function(eventObject) {
+            $selector_note_remove.click(function(eventObject: any) {
                 try {
-                    event.preventDefault(); // to stop the 
+                    eventObject.preventDefault(); // to stop the
                     let clickThis = this;
                     objectThis._deleteNoteClicked( { clickThis, id } );
                     return false;
@@ -161,7 +169,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * Add/Show the Add Note Block with input and buttons
 	 */    
-    _open_AddNote_Block( { clickThis } ) {
+    _open_AddNote_Block( { clickThis } :  { clickThis: any } ) {
 
         const objectThis = this;
 
@@ -228,7 +236,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * Remove the Add Note Block with input and buttons
 	 */  
-    _addNote_CancelClicked( { clickThis } ) {
+    _addNote_CancelClicked( { clickThis }: { clickThis: any } ) {
 
         const $selector_add_note_inner_root_container = $( clickThis ).closest(".selector_add_note_inner_root_container");
         if ( $selector_add_note_inner_root_container.length === 0 ) {
@@ -251,7 +259,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * Add the Note, Update DOM
 	 */  
-    _addNote_AddClicked( { clickThis } ) {
+    _addNote_AddClicked( { clickThis }: { clickThis: any }  ) {
 
         const $selector_add_note_inner_root_container = $( clickThis ).closest(".selector_add_note_inner_root_container");
         if ( $selector_add_note_inner_root_container.length === 0 ) {
@@ -334,7 +342,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */	
-	_addNote_SaveToServer({ noteText }) : Promise<any> {
+	_addNote_SaveToServer({ noteText }: { noteText: any } ) : Promise<any> {
 
         const objectThis = this;
 
@@ -357,7 +365,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                     }
                 });
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                     try {
                         resolve( { addNote_SaveToServer_AjaxResponse : responseData } );
                         
@@ -383,7 +391,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _editNoteClicked( { clickThis, id } ) {
+    _editNoteClicked( { clickThis, id } : { clickThis: any, id: any } ) {
 
         const objectThis = this;
 
@@ -456,7 +464,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _editNote_RemoveEditInputAndShowNote( { $selector_note_root_container_div } ) {
+    _editNote_RemoveEditInputAndShowNote( { $selector_note_root_container_div }: { $selector_note_root_container_div: any } ) {
 
         //  Remove Edit HTML from DOM
         
@@ -478,7 +486,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _editNote_CancelClicked( { clickThis } ) {
+    _editNote_CancelClicked( { clickThis }: { clickThis: any } ) {
 
         const $selector_note_root_container_div = $( clickThis ).closest(".selector_note_root_container_div");
         if ( $selector_note_root_container_div.length === 0 ) {
@@ -492,7 +500,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _editNote_SaveClicked( { clickThis, id } ) {
+    _editNote_SaveClicked( { clickThis, id }: { clickThis: any, id: any } ) {
 
         const $selector_note_root_container_div = $( clickThis ).closest(".selector_note_root_container_div");
         if ( $selector_note_root_container_div.length === 0 ) {
@@ -556,7 +564,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */	
-	_editNote_SaveToServer({ id, noteText }) {
+	_editNote_SaveToServer({ id, noteText } : { id: any, noteText: any }) {
 
         const objectThis = this;
 
@@ -579,7 +587,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                 } 
             });
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
                 try {
                     resolve( { editNote_SaveToServer_AjaxResponse : responseData } );
                     
@@ -604,7 +612,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */
-    _deleteNoteClicked( { clickThis, id } ) {
+    _deleteNoteClicked( { clickThis, id } : { clickThis: any, id: any } ) {
 
         if ( ! window.confirm("Delete Note?") ) {
             return; 
@@ -632,7 +640,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	/**
 	 * 
 	 */	
-	_deleteNote_DeleteFromServer({ id }) {
+	_deleteNote_DeleteFromServer({ id } : { id: any }) {
 
         const objectThis = this;
 
@@ -648,7 +656,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     resolve( { deleteNote_DeleteFromServer_AjaxResponse : responseData } );
                     

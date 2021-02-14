@@ -54,6 +54,7 @@ import {proteinPositionFilter_UserSelections_BuildData_ForComponent} from "page_
 import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
 import {proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
 import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 /**
  * 
@@ -491,75 +492,75 @@ const create_ProteinPositionFilter_UserSelections_ComponentData = function(
 
 //  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:  mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
 
-/**
- * All Variable modification masses by protein position
- * 
- * @returns  Map < {integer: position 1 based} : [ <mass> ] > -- Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
- */
-const _get_variableModificationMasses_All_OnProteinByPosition = function({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }) {
-
-	//  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
-	const modsOnProteinByPosition = new Map(); // mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
-
-	{
-		//  Start with Map of Sets to remove duplicates
-		const modsOnProteinByPosition_Sets = new Map(); // mods per sequence position:  Set < {integer: position 1 based} : [ <mass> ] >.
-
-		for ( const projectSearchId of projectSearchIds ) {
-
-			const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
-
-			const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
-			if ( ! dynamicModificationsOnProtein_KeyProteinSequenceVersionId ) {
-				//  No data for projectSearchId so skip to next
-				continue; // EARLY CONTINUE
-			}
-
-			const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
-			if ( ! dynamicModificationsOnProtein ) {
-				// No Data for _proteinSequenceVersionId so skip to next
-				continue; // EARLY CONTINUE
-			}
-
-			for ( const modificationOnProtein of dynamicModificationsOnProtein) {
-				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
-
-				//  modificationOnProtein { mass: 9945.99, position: 23, reportedPeptideId: 26043 }
-
-				const position = modificationOnProtein.position;
-				const mass = modificationOnProtein.mass;
-				let massesAtPosition = modsOnProteinByPosition_Sets.get( position );
-				if ( ! massesAtPosition ) {
-					massesAtPosition = new Set();
-					modsOnProteinByPosition_Sets.set( position, massesAtPosition );
-				}
-				//  Round mass since Multiple Search
-				const roundedMass = _roundModificationMass_ReturnNumber_LocalFunction({ mass });
-				massesAtPosition.add( roundedMass );
-			}
-		}
-
-		//  Sort masses at each position
-		for ( const modsOnProteinByPositionEntry of modsOnProteinByPosition_Sets.entries() ) {
-			const position = modsOnProteinByPositionEntry[ 0 ];
-			const massesAtPositionSet = modsOnProteinByPositionEntry[ 1 ];
-			const massesAtPositionArray = Array.from( massesAtPositionSet );
-			massesAtPositionArray.sort( function(a, b) {
-				if ( a < b ) {
-					return -1;
-				}
-				if ( a > b ) {
-					return 1;
-				}
-				return 0;
-			});
-			//  Place the sorted Array in the final output Map
-			modsOnProteinByPosition.set( position, massesAtPositionArray );
-		}
-	}
-
-	return modsOnProteinByPosition;
-}
+// /**
+//  * All Variable modification masses by protein position
+//  *
+//  * @returns  Map < {integer: position 1 based} : [ <mass> ] > -- Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
+//  */
+// const _get_variableModificationMasses_All_OnProteinByPosition = function({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }) {
+//
+// 	//  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
+// 	const modsOnProteinByPosition = new Map(); // mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
+//
+// 	{
+// 		//  Start with Map of Sets to remove duplicates
+// 		const modsOnProteinByPosition_Sets = new Map(); // mods per sequence position:  Set < {integer: position 1 based} : [ <mass> ] >.
+//
+// 		for ( const projectSearchId of projectSearchIds ) {
+//
+// 			const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+//
+// 			const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+// 			if ( ! dynamicModificationsOnProtein_KeyProteinSequenceVersionId ) {
+// 				//  No data for projectSearchId so skip to next
+// 				continue; // EARLY CONTINUE
+// 			}
+//
+// 			const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+// 			if ( ! dynamicModificationsOnProtein ) {
+// 				// No Data for _proteinSequenceVersionId so skip to next
+// 				continue; // EARLY CONTINUE
+// 			}
+//
+// 			for ( const modificationOnProtein of dynamicModificationsOnProtein) {
+// 				//  Currently a single array of all  mods for the protein.  Maybe make it a Map of mods at positions
+//
+// 				//  modificationOnProtein { mass: 9945.99, position: 23, reportedPeptideId: 26043 }
+//
+// 				const position = modificationOnProtein.position;
+// 				const mass = modificationOnProtein.mass;
+// 				let massesAtPosition = modsOnProteinByPosition_Sets.get( position );
+// 				if ( ! massesAtPosition ) {
+// 					massesAtPosition = new Set();
+// 					modsOnProteinByPosition_Sets.set( position, massesAtPosition );
+// 				}
+// 				//  Round mass since Multiple Search
+// 				const roundedMass = _roundModificationMass_ReturnNumber_LocalFunction({ mass });
+// 				massesAtPosition.add( roundedMass );
+// 			}
+// 		}
+//
+// 		//  Sort masses at each position
+// 		for ( const modsOnProteinByPositionEntry of modsOnProteinByPosition_Sets.entries() ) {
+// 			const position = modsOnProteinByPositionEntry[ 0 ];
+// 			const massesAtPositionSet = modsOnProteinByPositionEntry[ 1 ];
+// 			const massesAtPositionArray = Array.from( massesAtPositionSet );
+// 			massesAtPositionArray.sort( function(a, b) {
+// 				if ( a < b ) {
+// 					return -1;
+// 				}
+// 				if ( a > b ) {
+// 					return 1;
+// 				}
+// 				return 0;
+// 			});
+// 			//  Place the sorted Array in the final output Map
+// 			modsOnProteinByPosition.set( position, massesAtPositionArray );
+// 		}
+// 	}
+//
+// 	return modsOnProteinByPosition;
+// }
 
 //////////////////////////////////
 
@@ -580,7 +581,7 @@ const load_ReporterIonMasses_IfNeeded = function({
     getSearchSubGroupIds : boolean
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
 }) : Promise<any> {
 
@@ -652,7 +653,7 @@ const load_OpenModificationMasses_IfNeeded = function({
     getSearchSubGroupIds : boolean
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
 }) : Promise<any> {
 
@@ -754,12 +755,12 @@ const load_ProteinCoverage_IfNeeded = function(
 	
 //   Modification Mass Rounding to provide some level of commonality between searches
 
-/**
- * 
- */
-const _roundModificationMass_ReturnNumber_LocalFunction = function({ mass }) {
-	return modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
-}
+// /**
+//  *
+//  */
+// const _roundModificationMass_ReturnNumber_LocalFunction = function({ mass }) {
+// 	return modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
+// }
 
 	
 

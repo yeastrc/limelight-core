@@ -275,7 +275,12 @@ const round_Selected_ReporterIonMasses_IfNeed_reporterIonMass_UserSelections_Sta
 /**
  * 
  */
-const resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein = function({ singleProteinContainer_addedDivElementDOM }) {
+const resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein = function(
+	{
+		singleProteinContainer_addedDivElementDOM
+	} :{
+		singleProteinContainer_addedDivElementDOM: HTMLElement
+	}): void {
 
 	if ( ! singleProteinContainer_addedDivElementDOM ) {
 		// Exit if no overlay
@@ -321,17 +326,16 @@ const resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein = 
 /**
  * 
  */
-const update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function( params ) {
+const update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function(
+	{
+		singleProteinContainer_addedDivElementDOM
+	}: {
+		singleProteinContainer_addedDivElementDOM: HTMLElement
+	}
+) {
 
-	let singleProteinContainer_addedDivElementDOM = undefined;
 	let $view_single_protein_overlay_div = undefined;
 	let overlayWidth = undefined;
-
-	if ( params ) {
-		singleProteinContainer_addedDivElementDOM = params.singleProteinContainer_addedDivElementDOM;
-		$view_single_protein_overlay_div = params.$view_single_protein_overlay_div;
-		overlayWidth = params.overlayWidth;
-	}
 
 	if ( ! singleProteinContainer_addedDivElementDOM ) {
 		// Exit if no overlay
@@ -445,7 +449,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	getSearchSubGroupIds : boolean
-	proteinSequenceVersionId, 
+	proteinSequenceVersionId: any
 	projectSearchIds :  number[]
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
 	loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder

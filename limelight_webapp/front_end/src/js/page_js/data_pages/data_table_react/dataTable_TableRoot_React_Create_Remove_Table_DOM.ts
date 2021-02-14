@@ -41,8 +41,8 @@ const create_dataTable_Root_React = function({ tableObject, resortTableOnUpdate,
     
     tableObject : DataTable_RootTableObject
     resortTableOnUpdate? : boolean
-    containerDOMElement, 
-    renderCompleteCallbackFcn 
+    containerDOMElement: any,
+    renderCompleteCallbackFcn: any
 }) : void {
 
     if ( ! tableObject ) {
@@ -110,7 +110,7 @@ const create_dataTable_Root_React = function({ tableObject, resortTableOnUpdate,
  * 
 * @param containerDOMElement - DOM element reference
 */
-const remove_dataTable_Root_React = function({ containerDOMElement }) {
+const remove_dataTable_Root_React = function({ containerDOMElement }: { containerDOMElement: any }) {
     if ( containerDOMElement === undefined || containerDOMElement === null ) {
         throw Error("remove_dataTable_Root_React({ containerDOMElement }): containerDOMElement is undefined or null ");
     }

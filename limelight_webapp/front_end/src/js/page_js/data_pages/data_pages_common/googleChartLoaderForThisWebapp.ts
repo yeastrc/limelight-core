@@ -47,23 +47,23 @@ const GOOGLE_CHART_LOADER_LOADED_YES = "LOADED_YES";
  * Local Variables - Chart Loader Loading
  */
 let googleChartLoader_Loaded = GOOGLE_CHART_LOADER_LOADED_NO;
-let googleChartLoader_DeferredToResolveOnLoad = [];
+let googleChartLoader_DeferredToResolveOnLoad: Array<Deferred_Local_GoogleChartLoader> = [];
 
 /**
  * Local Variables - Core Charts Loading
  */
 
 let googleChartCoreCharts_Loaded = GOOGLE_CHART_LOADER_LOADED_NO;
-let googleChartCoreCharts_DeferredToResolveOnLoad = [];
+let googleChartCoreCharts_DeferredToResolveOnLoad: Array<Deferred_Local_GoogleChartLoader> = [];
 
 /**
  * Local Class - Kind of a Hack but it works
  */
 class Deferred_Local_GoogleChartLoader {
 
-	private promise
-	private resolve
-	private reject
+	private promise: Promise<any>
+	private resolve: any
+	private reject: any
 
 	constructor() {
 		this.promise = new Promise((resolve, reject)=> {
@@ -155,7 +155,7 @@ let _loadGoogleChartLoader = function() {
 /**
  * 
  */
-let _loadGoogleChartPackages = function( { chartPackagesToLoad } ) {	
+let _loadGoogleChartPackages = function( { chartPackagesToLoad } : { chartPackagesToLoad: any } ) {
 
 	return new Promise( function( resolve, reject ) {
 		try {
@@ -214,7 +214,7 @@ let loadGoogleChart_CoreChart = function() {
 	return { loadingPromise : new Promise( function( resolve, reject ) {
 	  	try {
 			let loadGoogleChart_Loader_Promise : any = _loadGoogleChartLoader()
-			loadGoogleChart_Loader_Promise.then(function(value) { // On Fulfilled
+			loadGoogleChart_Loader_Promise.then(function(value: any) { // On Fulfilled
 				try {
 					let loadGoogleChart__Promise = _loadGoogleChartPackages( { chartPackagesToLoad } );
 					loadGoogleChart__Promise.then(function(value) { // On Fulfilled
@@ -253,7 +253,7 @@ let loadGoogleChart_CoreChart = function() {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 					throw e;
 				}
-			}).catch(function(reason) {
+			}).catch(function(reason: any) {
 				try {
 					throw Error( "Loading Google Chart Package Loader" );
 				} catch( e ) {

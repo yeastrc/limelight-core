@@ -23,6 +23,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page__saved_views_section_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 
@@ -113,7 +114,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 			try {
 				objectThis._getSavedViewsDataResponse(responseData);
 			} catch (e) {
@@ -128,7 +129,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 	/**
 	 * 
 	 */
-	_getSavedViewsDataResponse(responseData) {
+	_getSavedViewsDataResponse(responseData: any) {
 
 		if (!this._initializeCalled) {
 			throw Error("initialize method not called");
@@ -211,7 +212,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 	/**
 	 * for HTML in single_search_expansion_icon_template.handlebars
 	 */
-	_addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, savedViewItem }) {
+	_addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, savedViewItem }: { $expansion_entry: any, savedViewItem: any }) {
 
 		// this._projectPage_SearchDetails_AllUsers.addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, savedViewItem });
 	}
@@ -219,7 +220,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 	/**
 	 * 
 	 */
-	_addSavedViewItem_ClickHandlers({ $saved_view_entry, savedViewItem }) {
+	_addSavedViewItem_ClickHandlers({ $saved_view_entry, savedViewItem }: { $saved_view_entry: any, savedViewItem: any }) {
 
 		const objectThis = this;
 

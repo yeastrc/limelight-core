@@ -35,6 +35,7 @@ import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/expe
 import { createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection, GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData';
 import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 /**
  * 
@@ -51,7 +52,7 @@ export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideLis
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
-    searchDataLookupParamsRoot,
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
     dataPageStateManager : DataPageStateManager
@@ -64,7 +65,7 @@ export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideLis
  */
 interface ProteinExperimentPage_SingleProtein_ReportedPeptideListSection_Component_State {
 
-    placeholder?
+    placeholder?: any
     // showUpdatingMessage? : boolean 
 }
 
@@ -223,7 +224,7 @@ export interface ReportedPeptideList_Component_Props {
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
-    searchDataLookupParamsRoot,
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
@@ -236,7 +237,7 @@ export interface ReportedPeptideList_Component_Props {
  */
 interface ReportedPeptideList_Component_State {
 
-    placeholder?
+    placeholder?: any
     // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId? : Map<number, Array<number>>
     // showUpdatingMessage? : boolean 
 }

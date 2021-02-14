@@ -10,7 +10,7 @@
 import { Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData, Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
-    AnnotationTypeData_Root,
+    AnnotationTypeData_Root, AnnotationTypeItem,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {Experiment_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class";
@@ -139,6 +139,8 @@ const _create_SearchFilterValues_SingleSearchContents = (
  */
 const _create_SearchFilterValues_SingleFilterableType = ({ 
     filterableAnnotationTypes
+}:{
+    filterableAnnotationTypes: Map<number, AnnotationTypeItem>
 }) : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> => {
 
     const resultArray : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = [];
@@ -167,14 +169,20 @@ const _create_SearchFilterValues_SingleFilterableType = ({
 /**
  * 
  */
-const _getDefaultsAnnTypeDisplayForType = ({ param_FilterableAnnotationTypes, param_DescriptiveAnnotationTypes }) => {
+const _getDefaultsAnnTypeDisplayForType = function (
+    {
+        param_FilterableAnnotationTypes, param_DescriptiveAnnotationTypes
+    }: {
+        param_FilterableAnnotationTypes: Map<number, AnnotationTypeItem>
+        param_DescriptiveAnnotationTypes: Map<number, AnnotationTypeItem>
+    }) {
 
     if ( ( ! param_FilterableAnnotationTypes ) && ( ! param_DescriptiveAnnotationTypes )  ) {
         return [];
     }
     
 
-    const searchDetails_AnnTypeDisplayDefaultDisplayItems = [];
+    const searchDetails_AnnTypeDisplayDefaultDisplayItems: Array<AnnotationTypeItem> = [];
 
     _getDefaultsAnnTypeDisplayForType_Add_Filterable_Or_Descriptive({ param_AnnotationTypes : param_FilterableAnnotationTypes, searchDetails_AnnTypeDisplayDefaultDisplayItems });
     
@@ -215,7 +223,14 @@ const _getDefaultsAnnTypeDisplayForType = ({ param_FilterableAnnotationTypes, pa
  * @param param_AnnotationTypes - Map
  * @param searchDetails_AnnTypeDisplayDefaultDisplayItems - Array to add to
  */
-const _getDefaultsAnnTypeDisplayForType_Add_Filterable_Or_Descriptive = ({ param_AnnotationTypes, searchDetails_AnnTypeDisplayDefaultDisplayItems } ) => {
+const _getDefaultsAnnTypeDisplayForType_Add_Filterable_Or_Descriptive = (
+    {
+        param_AnnotationTypes,
+        searchDetails_AnnTypeDisplayDefaultDisplayItems
+    }: {
+        param_AnnotationTypes: Map<number, AnnotationTypeItem>
+        searchDetails_AnnTypeDisplayDefaultDisplayItems: Array<AnnotationTypeItem>
+    } ) => {
 
     if ( ! param_AnnotationTypes ) {
         return;

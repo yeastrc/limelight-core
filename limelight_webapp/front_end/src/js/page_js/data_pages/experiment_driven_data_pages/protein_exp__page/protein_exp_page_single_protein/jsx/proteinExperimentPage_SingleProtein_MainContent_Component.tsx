@@ -130,6 +130,7 @@ import {
     Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
     CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 ////
@@ -180,7 +181,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
-    searchDataLookupParamsRoot;
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
     proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass
     generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
@@ -204,7 +205,7 @@ export interface ProteinExperimentPage_SingleProtein_MainContent_Component_Props
 
     // view_single_protein_inner_overlay_div
     view_single_protein_inner_overlay_div_Width_Initial : number;
-    setWidth__view_single_protein_inner_overlay_div // Function in Root Component Class _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number })
+    setWidth__view_single_protein_inner_overlay_div: any // Function in Root Component Class _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number })
 
     // view_single_protein_overlay_body
     view_single_protein_overlay_body_PaddingLeft : number
@@ -248,8 +249,8 @@ interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
 
     graphicRepresentation_SelectedCells? : ExperimentConditions_GraphicRepresentation_SelectedCells
 
-    saveView_Component_React? //  React Component for Save View
-    saveView_Component_Props_Prop? //  Object passed to saveView_Component_React as property propsValue
+    saveView_Component_React?: any //  React Component for Save View
+    saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
 
 /**
@@ -313,9 +314,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
 
-    private _updated_OverlayWidth = undefined;  // Updated whenever call function in parent Component to update width of overlay
+    private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
 
-    private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
+    // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
 
     /**
      * 
@@ -1067,7 +1068,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 	 * 
 	 * Don't have all PSMs in memory and may be many so open URL in new window to download from server
 	 */
-	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } ) {
+	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } : { projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry> } ) {
 		
         downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {  // External Function
             experimentId : this.props.propsValue.experimentId,
@@ -2125,10 +2126,10 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 		// const config = { attributes: true, childList: true, subtree: true };
 		const config = { childList: true, subtree: true };
 
-		let timeoutId = null;
+		let timeoutId: number = null;
 
 		// Callback function to execute when mutations are observed
-		const domMutationCallback = ( mutationsList, observer ) => {
+		const domMutationCallback = ( mutationsList: any, observer: any ) => {
 
 			let foundChildListMutation = false;
 

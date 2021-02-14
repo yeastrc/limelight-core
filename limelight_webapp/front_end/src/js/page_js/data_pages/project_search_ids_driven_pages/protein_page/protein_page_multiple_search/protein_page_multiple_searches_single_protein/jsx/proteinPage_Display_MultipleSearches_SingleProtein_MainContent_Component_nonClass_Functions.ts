@@ -22,7 +22,11 @@ import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_s
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
 
-import { proteinSequenceWidgetDisplay_Component_Data__Build } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein//protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data__Build';
+import {
+    proteinSequenceWidgetDisplay_Component_Data__Build,
+    ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM,
+    ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM_Entry,
+} from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein//protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data__Build';
 import { ProteinSequenceWidgetDisplay_Component_Data } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data';
 import { ProteinSequenceWidget_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/protein_sequence_display_widget/js/proteinSequenceWidget_StateObject';
 
@@ -56,6 +60,7 @@ import {searchSubGroup_Create__SearchSubGroup_In_SearchDetailsAndFilter_Componen
 import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
 import {ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/jsx/proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component";
 import {searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Are_All_SearchSubGroupIds_Selected";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 
@@ -682,11 +687,12 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = function({
     });
 
     //  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:  mods per sequence position:  // Map <integer, Map<integer, Object> <proteinSequenceVersionId, Map < position 1 based (integer) : { Object: residue  (string), masses: [ mass (number) ] } >>
-    const staticModificationMassesForProteinPositions = _get_staticModificationMasses_All_OnProteinByPosition({ 
-        proteinSequenceVersionId : proteinSequenceVersionId, 
-        projectSearchIds : projectSearchIds, 
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds 
-    });
+    const staticModificationMassesForProteinPositions : ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM =
+        _get_staticModificationMasses_All_OnProteinByPosition({
+            proteinSequenceVersionId : proteinSequenceVersionId,
+            projectSearchIds : projectSearchIds,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+        });
 
     const staticModificationMassesToFilterOn = modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set();
         
@@ -727,7 +733,14 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = function({
  * 
  * @returns  Map < {integer: position 1 based} : [ <mass> ] > -- Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
  */
-const _get_variableModificationMasses_All_OnProteinByPosition = function({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }) {
+const _get_variableModificationMasses_All_OnProteinByPosition = function(
+    {
+        proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    }: {
+        proteinSequenceVersionId: number
+        projectSearchIds: Array<number>
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+    }) {
 
 	//  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
 	const modsOnProteinByPosition = new Map(); // mods per sequence position:  Map < {integer: position 1 based} : [ <mass> ] >.
@@ -815,7 +828,7 @@ const load_ReporterIonMasses_IfNeeded = function({
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
 }) : Promise<any> {
 
@@ -901,7 +914,7 @@ const load_OpenModificationMasses_IfNeeded = function({
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
-    searchDataLookupParamsRoot
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
 }) : Promise<any> {
 
@@ -980,11 +993,18 @@ const load_OpenModificationMasses_IfNeeded = function({
  * 
  * @returns  Map < {integer: position 1 based} : [ <mass> ] > -- Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
  */
-const _get_staticModificationMasses_All_OnProteinByPosition = function({ proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }) {
+const _get_staticModificationMasses_All_OnProteinByPosition = function(
+    {
+        proteinSequenceVersionId, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    }: {
+        proteinSequenceVersionId: number
+        projectSearchIds: Array<number>
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+    }) : ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM {
 
 	//  Format for class ProteinSequenceFormattedDisplay_Main_displayWidget:
 	// Map<integer, Object> Map < position 1 based (integer) : { Object: residue  (string), massesArray: [ mass (number) ], massesSet: Set< mass (number)> >
-	const modsOnProteinByPosition = new Map(); 
+	const modsOnProteinByPosition : ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM = new Map();
 
 	{
 		for ( const projectSearchId of projectSearchIds ) {
@@ -1011,11 +1031,11 @@ const _get_staticModificationMasses_All_OnProteinByPosition = function({ protein
 				const position = mapEntry[ 0 ];
 				const dataForPosition = mapEntry[ 1 ];
 
-				let resultDataForPosition = modsOnProteinByPosition.get( position );
+				let resultDataForPosition: ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM_Entry = modsOnProteinByPosition.get( position );
 
 				if ( ! resultDataForPosition ) {
 
-					resultDataForPosition = { residue : dataForPosition.residue, massesSet : new Set() };
+					resultDataForPosition = { residue : dataForPosition.residue, massesSet : new Set(), massesArray: undefined };
 					modsOnProteinByPosition.set( position, resultDataForPosition );
 				}
 
@@ -1059,7 +1079,7 @@ const _get_staticModificationMasses_All_OnProteinByPosition = function({ protein
 /**
  * 
  */
-const _roundModificationMass_ReturnNumber_LocalFunction = function({ mass }) {
+const _roundModificationMass_ReturnNumber_LocalFunction = function({ mass }: { mass: number }) {
 	return modificationMass_CommonRounding_ReturnNumber( mass );  // Call external function
 }
 

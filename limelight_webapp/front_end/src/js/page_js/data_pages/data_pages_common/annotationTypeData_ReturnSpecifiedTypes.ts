@@ -19,7 +19,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 	/**
 	 * 
 	 */
-	constructor( { dataPageStateManager_DataFrom_Server } ) {
+	constructor( { dataPageStateManager_DataFrom_Server } : { dataPageStateManager_DataFrom_Server : DataPageStateManager } ) {
 		
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 	}
@@ -27,7 +27,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 	/**
 	 * 
 	 */
-	get_ReportedPeptide_AnnotationTypeIds_WhereSortOrderPopulated( { projectSearchId } ) : Array<number> {
+	get_ReportedPeptide_AnnotationTypeIds_WhereSortOrderPopulated( { projectSearchId } : { projectSearchId : any } ) : Array<number> {
 
 		let reportedPeptideFilterableAnnotationTypes_SortOrderPopulated = 
 			this.get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated( { projectSearchId } );
@@ -44,7 +44,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 	/**
 	 * Return array ann type entries, sorted on sortOrder
 	 */
-	get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated( { projectSearchId } ) : Array<AnnotationTypeItem> {
+	get_ReportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated( { projectSearchId } : { projectSearchId : any } ) : Array<AnnotationTypeItem> {
 
 		//   Get all Reported Peptide annotation type records with sortOrder set
 
@@ -89,7 +89,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 	/**
 	 * uniqueAnnotationTypeIds is type Set
 	 */
-	get_ReportedPeptide_AnnotationTypeRecords_InDisplayOrder( { projectSearchId, uniqueAnnotationTypeIds } ) : Array<AnnotationTypeItem> {
+	get_ReportedPeptide_AnnotationTypeRecords_InDisplayOrder( { projectSearchId, uniqueAnnotationTypeIds } : { projectSearchId : any, uniqueAnnotationTypeIds : any } ) : Array<AnnotationTypeItem> {
 
 		if ( ( ! uniqueAnnotationTypeIds ) || uniqueAnnotationTypeIds.size === 0 ) {
 			return [];
@@ -197,7 +197,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 	/**
 	 * uniqueAnnotationTypeIds is type Set
 	 */
-	get_Psm_AnnotationTypeRecords_InDisplayOrder( { projectSearchId, uniqueAnnotationTypeIds } ) : Array<AnnotationTypeItem> {
+	get_Psm_AnnotationTypeRecords_InDisplayOrder( { projectSearchId, uniqueAnnotationTypeIds } : { projectSearchId : any, uniqueAnnotationTypeIds : any } ) : Array<AnnotationTypeItem> {
 		
 		if ( ( ! uniqueAnnotationTypeIds ) || uniqueAnnotationTypeIds.size === 0 ) {
 			return [];
@@ -223,8 +223,8 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 	 */
 	_get_AnnotationTypeRecords_InDisplayOrder( { projectSearchId, uniqueAnnotationTypeIds, filterableAnnotationTypes_Map, descriptiveAnnotationTypes_Map } : { 
 		
-		projectSearchId, 
-		uniqueAnnotationTypeIds, 
+		projectSearchId: any,
+		uniqueAnnotationTypeIds: any,
 		filterableAnnotationTypes_Map : Map<number, AnnotationTypeItem>
 		descriptiveAnnotationTypes_Map : Map<number, AnnotationTypeItem>
 	} ) : Array<AnnotationTypeItem> {
@@ -232,7 +232,7 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 		let annotationTypesForPeptideListEntries : Array<AnnotationTypeItem> = [];
 
 		//  Get AnnotationTypeRecords for AnnotationTypeIds
-		uniqueAnnotationTypeIds.forEach( function( uniqueAnnotationTypeId, index, array ) {
+		uniqueAnnotationTypeIds.forEach( function( uniqueAnnotationTypeId: any, index: any, array: any ) {
 			let annotationTypeEntryForKey = filterableAnnotationTypes_Map.get( uniqueAnnotationTypeId );
 			if ( ! annotationTypeEntryForKey ) {
 				annotationTypeEntryForKey = descriptiveAnnotationTypes_Map.get( uniqueAnnotationTypeId );

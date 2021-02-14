@@ -31,7 +31,7 @@ export interface ModificationMass_UserSelections_StaticModifications_Props {
 
 interface ModificationMass_UserSelections_StaticModifications_State {
 
-    _placeholder
+    _placeholder: any
     // prev_staticModificationsData
 }
 
@@ -194,7 +194,7 @@ interface SingleModification_Entry_Props {
 
 interface SingleModification_Entry_State {
     selection_SelectionType : SingleProtein_Filter_SelectionType
-    prevProp_staticModificationEntry?
+    prevProp_staticModificationEntry? :  ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
 }
 
 /**

@@ -16,11 +16,13 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import _search_detail_section_main_page_logged_in_users_template = require("../../../../../../handlebars_templates_precompiled/search_detail_section_main_page_logged_in_users/search_detail_section_main_page_logged_in_users_template-bundle.js");
 
-import _search_detail_section_bundle =
-    require("../../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
+// @ts-ignore
+import _search_detail_section_bundle = require("../../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
 
+// @ts-ignore
 import { _project_page_searches_section_researcher_user_interaction_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -32,6 +34,7 @@ import {
     SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback,
     SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback_Params
 } from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/js/search_sub_group__manage__group_names__open_overlay__pass__project_search_id";
+import {ProjectPage_SearchDetails_AllUsers} from "page_js/data_pages/other_data_pages/project_page/projectPage_SearchDetails_AllUsers";
 
 //  Local imports
 
@@ -47,7 +50,7 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 
     private _initializeCalled = false;
 
-    private _projectIdentifierFromURL;
+    private _projectIdentifierFromURL: string;
 
     private _project_search_details_add_weblink_link_template =
         _project_page_searches_section_researcher_user_interaction_template.project_search_details_add_weblink_link_template;
@@ -63,14 +66,16 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
         _search_detail_section_main_page_logged_in_users_template.project_search_details_manage_sub_groups_link_template;
 
 
-    private _projectPage_SearchDetails_AllUsers
+    private _projectPage_SearchDetails_AllUsers: ProjectPage_SearchDetails_AllUsers
 
     /**
      *
 	 */
 	constructor({ 
 		projectIdentifierFromURL
-	}) {
+	}:{
+        projectIdentifierFromURL: string
+    }) {
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 
         if ( ! _project_page_searches_section_researcher_user_interaction_template.project_search_details_add_weblink_link_template ) {
@@ -100,7 +105,7 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 	/**
 	 * 
 	 */
-	initialize({ projectPage_SearchDetails_AllUsers }) {
+	initialize({projectPage_SearchDetails_AllUsers}:{ projectPage_SearchDetails_AllUsers: ProjectPage_SearchDetails_AllUsers }) {
         
         this._projectPage_SearchDetails_AllUsers = projectPage_SearchDetails_AllUsers;
 
@@ -112,7 +117,7 @@ export class ProjectPage_SearchDetails_LoggedInUsers {
 	/**
 	 * 
 	 */
-    searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) {
+    searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }: { projectSearchId: any, weblinksShowAddWeblinkLink: any, $selector_search_details_container: any }) {
 
         if ( weblinksShowAddWeblinkLink ) {
         	

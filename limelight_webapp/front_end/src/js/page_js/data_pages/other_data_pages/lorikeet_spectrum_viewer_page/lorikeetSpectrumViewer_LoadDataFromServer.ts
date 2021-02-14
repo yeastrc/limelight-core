@@ -37,9 +37,9 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
      */
     lorikeetSpectrumViewer_LoadDataFromServer({ psmId, projectSearchId, openmodPosition, dataPageStateManager_DataFrom_Server } : {
         
-        psmId, 
-        projectSearchId,
-        openmodPosition
+        psmId: any,
+        projectSearchId: any,
+        openmodPosition: any
         dataPageStateManager_DataFrom_Server  : DataPageStateManager
     }) {
 
@@ -72,7 +72,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
     /**
      * 
      */
-    _loadSpectrumData( { psmId, projectSearchId, openmodPosition, loadedDataFromServer } ) {
+    _loadSpectrumData( { psmId, projectSearchId, openmodPosition, loadedDataFromServer }: { psmId: any, projectSearchId: any, openmodPosition: any, loadedDataFromServer: any } ) {
         
         return new Promise( function( resolve, reject ) {
                 try {
@@ -105,7 +105,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                             }
                         } );
 
-                        promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                        promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                             try {
                                 console.log("AJAX Call to get Spectrum Data END, Now: " + new Date() );
 
@@ -133,9 +133,9 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
      */
     _loadPSMPeptideData( { psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } : { 
         
-        psmId, 
-        projectSearchId, 
-        loadedDataFromServer, 
+        psmId: any,
+        projectSearchId: any,
+        loadedDataFromServer: any,
         dataPageStateManager_DataFrom_Server  : DataPageStateManager
     }  ) {
         
@@ -198,7 +198,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                             }
                         });
 
-                        promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                        promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                             try {
                                 console.log("AJAX Call to get PSM data for Spectrum Viewer window END, Now: " + new Date() );
 
@@ -226,7 +226,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
     _get_psmDefaultAnnTypeDisplay({ projectSearchId, dataPageStateManager_DataFrom_Server } : {
         
-        projectSearchId, 
+        projectSearchId: any,
         dataPageStateManager_DataFrom_Server  : DataPageStateManager
     }) : Array<number> {
 
@@ -269,9 +269,9 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 	/**
 	 * return Promise
 	 */
-	retrieveSearchNameFromServer({ projectSearchId }) {
+	retrieveSearchNameFromServer({ projectSearchId }:{ projectSearchId: any }) {
 
-        let retrieval = function( resolve, reject ) {
+        let retrieval = function( resolve: any, reject: any ) {
             try {
                 let requestObj = { projectSearchIds : [ projectSearchId ] };
 
@@ -290,7 +290,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                     } 
                 });
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                     try {
                         resolve({ responseData });
 
@@ -312,9 +312,9 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 	/**
 	 * return Promise
 	 */
-	retrieveProjectTitleFromServer({ projectIdentifier }) {
+	retrieveProjectTitleFromServer({ projectIdentifier }:{ projectIdentifier: any }) {
 
-        let retrieval = function( resolve, reject ) {
+        let retrieval = function( resolve: any, reject: any ) {
             try {
                 let requestObj = { projectIdentifier : projectIdentifier };
 
@@ -333,7 +333,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                     } 
                 });
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                     try {
                         resolve({ responseData });
 

@@ -15,10 +15,11 @@
 
 //  module import 
 
+// @ts-ignore
 import Handlebars = require('handlebars/runtime');
 
-import _search_detail_section_bundle =
-	require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
+// @ts-ignore
+import _search_detail_section_bundle = require("../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js" );
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
@@ -35,7 +36,7 @@ export class SearchDetails_GetCoreDataFromServer {
      * @param projectSearchIds - array of projectSearchIds to get details for
      * @returns Promise - Promise.resolve(...) is passed Map( <project search id>, <HTML> )
 	 */
-    getSearchDetails_CoreDataFromServer({ projectSearchIds }) : Promise<any> {
+    getSearchDetails_CoreDataFromServer({ projectSearchIds }: { projectSearchIds: any }) : Promise<any> {
 
     	return _overall_getSearchDetails_CoreDataFromServer({ projectSearchIds });
 	}
@@ -43,8 +44,8 @@ export class SearchDetails_GetCoreDataFromServer {
 
 class Overall_AJAX_Response_Holder {
 
-	coreDataFromServer
-	searchNamesAndSubGroups
+	coreDataFromServer: any
+	searchNamesAndSubGroups: any
 }
 
 /**
@@ -53,7 +54,7 @@ class Overall_AJAX_Response_Holder {
  * @param projectSearchIds - array of projectSearchIds to get details for
  * @returns Promise - Promise.resolve(...) is passed Map( <project search id>, <HTML> )
  */
-const _overall_getSearchDetails_CoreDataFromServer = function ({ projectSearchIds }) : Promise<any> {
+const _overall_getSearchDetails_CoreDataFromServer = function ({ projectSearchIds }: { projectSearchIds: any }) : Promise<any> {
 
 	return new Promise((resolve,reject) => {
 		try {
@@ -100,7 +101,7 @@ const _overall_getSearchDetails_CoreDataFromServer = function ({ projectSearchId
  * @param projectSearchIds - array of projectSearchIds to get data for
  */
 const _getSearchDetails_CoreDataFromServer = function ({ projectSearchIds, overall_AJAX_Response_Holder } : {
-	projectSearchIds
+	projectSearchIds: any
 	overall_AJAX_Response_Holder : Overall_AJAX_Response_Holder
 }) : Promise<any> {
 
@@ -116,7 +117,7 @@ const _getSearchDetails_CoreDataFromServer = function ({ projectSearchIds, overa
 
 			promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 				try {
 					overall_AJAX_Response_Holder.coreDataFromServer = responseData
 
@@ -141,11 +142,11 @@ const _getSearchDetails_CoreDataFromServer = function ({ projectSearchIds, overa
  * @param projectSearchIds - array of projectSearchIds to get data for
  */
 const _retrieveSearchNamesAndSubGroupsFromAJAX = function ({ projectSearchIds, overall_AJAX_Response_Holder } : {
-	projectSearchIds
+	projectSearchIds: any
 	overall_AJAX_Response_Holder : Overall_AJAX_Response_Holder
 }) : Promise<any> {
 
-	let retrieval = (resolve, reject) => {
+	let retrieval = (resolve: any, reject: any) => {
 		try {
 			let requestObj = {projectSearchIds};
 
@@ -164,7 +165,7 @@ const _retrieveSearchNamesAndSubGroupsFromAJAX = function ({ projectSearchIds, o
 				}
 			});
 
-			promise_webserviceCallStandardPost.then(({responseData}) => {
+			promise_webserviceCallStandardPost.then(({responseData}: {responseData: any}) => {
 				try {
 					overall_AJAX_Response_Holder.searchNamesAndSubGroups = responseData;
 

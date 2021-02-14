@@ -44,7 +44,7 @@ export class ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedCo
 
     //  Values will be added when it is determined that they are needed
 
-    private _placeholder // added so cannot add other properties to an object of this class
+    private _placeholder: any // added so cannot add other properties to an object of this class
 }
 
 /**

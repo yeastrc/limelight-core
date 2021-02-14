@@ -5,6 +5,7 @@
  * 
  */
 
+// @ts-ignore
 import { Handlebars, _save_view_template_bundle } from './saveView_dataPages_ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -14,6 +15,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
 
+// @ts-ignore
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
 
 
@@ -168,7 +170,7 @@ export class SaveView_dataPages {
         if ( $selector_save_view_button.length === 0 ) {
         	throw Error("No element with class 'selector_save_view_button'");
         }
-        $selector_save_view_button.click( function(eventObject) {
+        $selector_save_view_button.click( function(eventObject: any) {
 			try {
 				eventObject.preventDefault();
                 objectThis._save_view_button_Overlay_Click({ clickThis : this });
@@ -215,7 +217,7 @@ export class SaveView_dataPages {
 	/**
 	 * 
 	 */
-    private _save_view_button_Overlay_Click({ clickThis }) : void {
+    private _save_view_button_Overlay_Click({ clickThis }: { clickThis: any }) : void {
 
         //  view label
 
@@ -272,7 +274,12 @@ export class SaveView_dataPages {
 	/**
      * Save the view to the server
 	 */
-	private _saveViewToServer( { viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds, experimentId } ) : any {
+	private _saveViewToServer(
+	    {
+            viewLabel, pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode, projectSearchIds, experimentId
+	    }: {
+            viewLabel: any, pageControllerPath: any, pageCurrentURL_StartAtPageController: any, searchDataLookupParametersCode: any, projectSearchIds: any, experimentId: any
+        } ) : any {
 
 		let promise = new Promise( function( resolve, reject ) {
             try {
@@ -293,7 +300,7 @@ export class SaveView_dataPages {
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                     try {
                         resolve();
 

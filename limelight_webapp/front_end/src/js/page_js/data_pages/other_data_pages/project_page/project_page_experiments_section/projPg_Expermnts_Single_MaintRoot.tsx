@@ -49,7 +49,10 @@ import {
 } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
 
 import { create_experiment_SearchFilterValuesFromDefaultCutoffs } from './create_experiment_SearchFilterValuesFromDefaultCutoffs';
-import { Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
+import {
+    Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data,
+    Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData
+} from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
 import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root,
@@ -93,8 +96,8 @@ const _CONDITION_GROUP_ID_TIME_POINTS  = -4;
  */
 export interface ProjectPage_Experiments_SingleExperimentMaintRoot_Props {
 
-    experimentData
-    projectPage_ExperimentsSection_LoggedInUsersInteraction
+    experimentData: any
+    projectPage_ExperimentsSection_LoggedInUsersInteraction: any
 
     searchesData : {
         searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
@@ -105,8 +108,8 @@ export interface ProjectPage_Experiments_SingleExperimentMaintRoot_Props {
         }
     }
 
-    projectIdentifierFromURL;
-    closeOverlay; // function
+    projectIdentifierFromURL: any;
+    closeOverlay: any; // function
 }
 
 /**
@@ -357,8 +360,8 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  <select> for # replicates (biological and technical)
             numberBiologicalReplicates,
             numberTechnicalReplicates,
-            saveAsDraftButtonEnabled : undefined,
-            saveButtonEnabled : undefined
+            // saveAsDraftButtonEnabled : undefined,
+            // saveButtonEnabled : undefined
         };
 
         const saveAsDraftButtonState = this._saveAsDraft_Button_UpdateEnabled_NewState({ state });
@@ -434,7 +437,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         conditionGroupsContainer : Experiment_ConditionGroupsContainer
         conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
-    }) {
+    }) : any {
 
         if ( ( ! conditionGroupsContainer ) || ( ! conditionGroupsDataContainer ) ) {
             //  No Data so no updates
@@ -1065,7 +1068,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _conditionGroups_ChangeOrder({ sourceIndex, destinationIndex }) {
+    _conditionGroups_ChangeOrder({ sourceIndex, destinationIndex }: { sourceIndex: any, destinationIndex: any }) {
 
         this.setState( (state : ProjectPage_Experiments_SingleExperimentMaintRoot_State, props : ProjectPage_Experiments_SingleExperimentMaintRoot_Props ) : ProjectPage_Experiments_SingleExperimentMaintRoot_State => {
 
@@ -1121,7 +1124,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _add_timePoints_ClickHandler( event ) {
+    _add_timePoints_ClickHandler( event: any ) {
 
         const any_projectSearchIdsAssigned_To_Conditions = this._any_projectSearchIdsAssigned_To_Conditions({ state : this.state });
 
@@ -1146,7 +1149,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _update_timePoints_ClickHandler( event ) {
+    _update_timePoints_ClickHandler( event: any ) {
 
         const any_projectSearchIdsAssigned_To_Conditions = this._any_projectSearchIdsAssigned_To_Conditions({ state : this.state });
 
@@ -1190,7 +1193,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _delete_timePoints_ClickHandler( event ) {
+    _delete_timePoints_ClickHandler( event: any ) {
 
         const any_projectSearchIdsAssigned_To_Conditions = this._any_projectSearchIdsAssigned_To_Conditions({ state : this.state });
 
@@ -1295,7 +1298,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      * Condition Group in Condition Group List Click Handler
      */
-    _conditionGroup_InConditionGroupList_ClickHandler({ event, conditionGroup } : { event, conditionGroup : Experiment_ConditionGroup }) {
+    _conditionGroup_InConditionGroupList_ClickHandler({ event, conditionGroup } : { event: any, conditionGroup : Experiment_ConditionGroup }) {
 
         const data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint = {
             conditionGroup,
@@ -1904,7 +1907,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                                         <span >{ searchDataEntry.searchId }</span>
                                         <span >) </span> 
                                         <span style={ { overflowWrap : "break-word"  /* Force single words to break to wrap if exceed max width */  } }
-                                        >{ searchDataEntry.name }</span>
+                                        >{ searchDataEntry.searchName }</span>
                                     </li>
                                 );
                                 searchComponents.push( searchComponent );
@@ -2732,7 +2735,12 @@ const _process_conditionGroupsDataContainer_ExcludingProvided_mainCellIdentifier
 /**
  * 
  */
-const _save_Experiment = ({ projectIdentifier, experimentId, experimentName, conditionGroupsContainer, conditionGroupsDataContainer }) => {
+const _save_Experiment = (
+    {
+        projectIdentifier, experimentId, experimentName, conditionGroupsContainer, conditionGroupsDataContainer
+    }:{
+        projectIdentifier: any, experimentId: any, experimentName: any, conditionGroupsContainer: any, conditionGroupsDataContainer: any
+    }) => {
 
     const result_getExperimentRootForSave = _getExperimentRootForSave({ conditionGroupsContainer, conditionGroupsDataContainer });
 
@@ -2756,7 +2764,12 @@ const _save_Experiment = ({ projectIdentifier, experimentId, experimentName, con
 /**
  * 
  */
-const _save_Experiment_AsDraft = ({ projectIdentifier, experimentId, experimentName, conditionGroupsContainer, conditionGroupsDataContainer }) => {
+const _save_Experiment_AsDraft = (
+    {
+        projectIdentifier, experimentId, experimentName, conditionGroupsContainer, conditionGroupsDataContainer
+    }:{
+        projectIdentifier: any, experimentId: any, experimentName: any, conditionGroupsContainer: any, conditionGroupsDataContainer: any
+    }) => {
 
     const result_getExperimentRootForSave = _getExperimentRootForSave({ conditionGroupsContainer, conditionGroupsDataContainer });
 
@@ -2785,8 +2798,8 @@ const _getExperimentRootForSave = ({ conditionGroupsContainer, conditionGroupsDa
     conditionGroupsContainer : Experiment_ConditionGroupsContainer, 
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 }) : { 
-    experimentRoot, 
-    searchDataLookupParamsRoot 
+    experimentRoot: any,
+    searchDataLookupParamsRoot: any
 } => {
 
 
@@ -2800,7 +2813,7 @@ const _getExperimentRootForSave = ({ conditionGroupsContainer, conditionGroupsDa
     const experimentMainData : { 
         version : number, 
         conditionGroupsContainer : Experiment_ConditionGroupsContainer, 
-        experimentConditionData? 
+        experimentConditionData?: any
     } = { version: 1, conditionGroupsContainer };
 
     let searchDataLookupParamsRoot = undefined;
@@ -2900,7 +2913,7 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
 	// private List<Integer> reportedPeptideAnnTypeDisplay;
     // private List<Integer> matchedProteinAnnTypeDisplay;
     
-    let matchedProteinFilters = undefined;
+    // let matchedProteinFilters = undefined;
 
     let psmAnnTypeDisplay = data_conditionGroupsDataContainer.get_psmAnnTypeDisplay_PerProjectSearchId();
     let reportedPeptideAnnTypeDisplay = data_conditionGroupsDataContainer.get_reportedPeptideAnnTypeDisplay_PerProjectSearchId();
@@ -2909,7 +2922,7 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
 
     return { 
         projectSearchId, 
-        psmFilters, reportedPeptideFilters, matchedProteinFilters,
+        psmFilters, reportedPeptideFilters, // matchedProteinFilters,
         psmAnnTypeDisplay, reportedPeptideAnnTypeDisplay, matchedProteinAnnTypeDisplay
     };
 }
@@ -2917,9 +2930,9 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
 /**
  * 
  */
-const _getSearchFilterData_ForAnnType = ({ filterData }) => {
+const _getSearchFilterData_ForAnnType = ({ filterData }: { filterData: Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data[] }) => {
 
-    const result = [];
+    const result: Array<{ annTypeId: number, value: number}> = [];
 
     for ( const entry of filterData ) {
 
@@ -2939,7 +2952,7 @@ const _getSearchFilterData_ForAnnType = ({ filterData }) => {
 /**
  * 
  */
-const _saveExperimentToServer = ({ experiment }) => {
+const _saveExperimentToServer = ({ experiment }: { experiment: any }) => {
 
     return new Promise( (resolve, reject) => {
         try {
@@ -2957,9 +2970,9 @@ const _saveExperimentToServer = ({ experiment }) => {
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+            promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
                 try {
                     resolve({ responseData });
                 } catch (e) {

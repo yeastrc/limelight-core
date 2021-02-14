@@ -279,7 +279,7 @@ class PageState_InternalData_Properties {
 				// 				searchProgramsPerSearchId: 437
 				// 				version: "1.4.3"
 
-	_searchDetailsCriteriaData; // { <cutoffs data, managed by class SearchDetailsBlockDataMgmtProcessing> }
+	_searchDetailsCriteriaData: SearchDataLookupParameters_Root; // { <cutoffs data, managed by class SearchDetailsBlockDataMgmtProcessing> }
 
 	/**
 	 * 

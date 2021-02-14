@@ -16,13 +16,13 @@
 
 //module import 
 
-let controller_path_prefix_ProjectSearchId_Based_Cached = undefined;
-let controller_path_prefix_ExperimentId_Based_Cached = undefined;
+let controller_path_prefix_ProjectSearchId_Based_Cached: string = undefined;
+let controller_path_prefix_ExperimentId_Based_Cached: string = undefined;
 
 /**
  * Controller Path Prefix for ProjectSearchId Based, placed on DOM by server code
  */
-const controller_path_prefix_ProjectSearchId_Based_FromDOM = function() {
+const controller_path_prefix_ProjectSearchId_Based_FromDOM = function(): string {
     
     if ( controller_path_prefix_ProjectSearchId_Based_Cached ) {
         return controller_path_prefix_ProjectSearchId_Based_Cached;

@@ -17,6 +17,7 @@
 
 //  Import Handlebars templates
 
+// @ts-ignore
 import { _project_page_searches_section_researcher_user_interaction_template_bundle } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -32,7 +33,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
+	private _projectIdentifierFromURL: string;
 
 	private _project_user_list_invited_person_template = _project_page_searches_section_researcher_user_interaction_template_bundle.project_user_list_invited_person;
 	private _project_user_list_invited_person_bottom_separator_template =  _project_page_searches_section_researcher_user_interaction_template_bundle.project_user_list_invited_person_bottom_separator;
@@ -40,7 +41,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL } ) {
+	constructor( { projectIdentifierFromURL } : { projectIdentifierFromURL: string } ) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 	}
@@ -77,7 +78,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._displayInvitedPeopleForProject_ProcessAJAXResponse({ responseData });
 			} catch (e) {
@@ -92,7 +93,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_displayInvitedPeopleForProject_ProcessAJAXResponse( { responseData } ) {
+	_displayInvitedPeopleForProject_ProcessAJAXResponse( { responseData } : { responseData: any } ) {
 
 		let objectThis = this;
 		
@@ -113,14 +114,14 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 		if (userInviteList && userInviteList.length > 0) {
 
 			//  Sort list on invitedUserEmail in reverse order since will prepend them in the loop
-			userInviteList.sort(function(a, b) {
+			userInviteList.sort(function(a: any, b: any) {
 				return ( - ( a.invitedUserEmail ).localeCompare( b.invitedUserEmail ) );
 			})
 
 			let canRemoveAnyOfEntries = false;
 			let canPromoteDemoteAnyOfEntries = false;
 			
-			userInviteList.forEach( function( userItem, index, array ) {
+			userInviteList.forEach( function( userItem: any, index: any, array: any ) {
 
 				if ( userItem.canRemoveEntry ) {
 					canRemoveAnyOfEntries = true;
@@ -130,7 +131,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 				}
 			}, this);
 
-			userInviteList.forEach( function( userInviteItem, index, array ) {
+			userInviteList.forEach( function( userInviteItem: any, index: any, array: any ) {
 
 				//  Add bottom separator first since "prepend"
 				
@@ -221,7 +222,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_revokeProjectInvite( { clickedThis, inviteTrackingId } ) {
+	_revokeProjectInvite( { clickedThis, inviteTrackingId } : { clickedThis: any, inviteTrackingId: any } ) {
 		
 		const userConfirm = window.confirm( "Revoke Invitation?" );
 		
@@ -243,7 +244,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._revokeProjectInvite_ProcessAJAXResponse({ responseData });
 			} catch (e) {
@@ -258,7 +259,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_revokeProjectInvite_ProcessAJAXResponse({responseData}) {
+	_revokeProjectInvite_ProcessAJAXResponse({responseData} : { responseData: any }) {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();
@@ -267,7 +268,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_resendProjectInviteEmail( { clickedThis, inviteTrackingId } ) {
+	_resendProjectInviteEmail( { clickedThis, inviteTrackingId } : { clickedThis: any, inviteTrackingId: any } ) {
 		
 		let objectThis = this;
 
@@ -283,7 +284,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._resendProjectInviteEmail_ProcessAJAXResponse({ responseData });
 			} catch (e) {
@@ -298,7 +299,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_resendProjectInviteEmail_ProcessAJAXResponse({responseData}) {
+	_resendProjectInviteEmail_ProcessAJAXResponse({responseData} : { responseData: any }) {
 
 		if (responseData.status) {
 
@@ -321,7 +322,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_changeUserInviteToProjectOwner( { clickedThis, inviteTrackingId } ) {
+	_changeUserInviteToProjectOwner( { clickedThis, inviteTrackingId } : { clickedThis: any, inviteTrackingId: any } ) {
 
 		let objectThis = this;
 
@@ -337,7 +338,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._changeUserInviteToProjectOwner_ProcessAJAXResponse({ responseData });
 			} catch (e) {
@@ -352,7 +353,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_changeUserInviteToProjectOwner_ProcessAJAXResponse({responseData}) {
+	_changeUserInviteToProjectOwner_ProcessAJAXResponse({responseData} : { responseData: any }) {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();
@@ -361,7 +362,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_changeUserInviteToAssistantProjectOwner( { clickedThis, inviteTrackingId } ) {
+	_changeUserInviteToAssistantProjectOwner( { clickedThis, inviteTrackingId } : { clickedThis: any, inviteTrackingId: any } ) {
 
 		let objectThis = this;
 
@@ -377,7 +378,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({ responseData });
 			} catch (e) {
@@ -392,7 +393,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 	/**
 	 * 
 	 */
-	_changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({responseData}) {
+	_changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({responseData} : { responseData: any }) {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();

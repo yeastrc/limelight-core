@@ -27,6 +27,7 @@ import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING
 import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 /**
  * 
@@ -40,7 +41,7 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 	/**
 	 * 
 	 */
-	constructor( { searchDetailsBlockDataMgmtProcessing } ) {
+	constructor( { searchDetailsBlockDataMgmtProcessing } : { searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing } ) {
 		
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 	}
@@ -48,9 +49,9 @@ export class UpdatePageState_URL_With_NewFilterCutoffs_FromUser {
 	/**
 	 * 
 	 */
-	updatePageState_URL_With_NewFilterCutoffs_FromUser( { searchDetails_Filters_AnnTypeDisplay_Root } : { searchDetails_Filters_AnnTypeDisplay_Root } ) {
+	updatePageState_URL_With_NewFilterCutoffs_FromUser( { searchDetails_Filters_AnnTypeDisplay_Root } : { searchDetails_Filters_AnnTypeDisplay_Root :  SearchDataLookupParameters_Root } ) {
 
-		let call_updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal = (resolve, reject) => {
+		let call_updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal = (resolve: any, reject: any) => {
 			try {
 				_updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal( { 
 					
@@ -76,9 +77,9 @@ const _updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal = function( {
 	
 	searchDetails_Filters_AnnTypeDisplay_Root, resolve, reject, _searchDetailsBlockDataMgmtProcessing, _parseURL_Into_PageStateParts
 } : {
-	searchDetails_Filters_AnnTypeDisplay_Root //  Should be : SearchDataLookupParameters_Root but not for sure have the actual instances of the classes
-	resolve, 
-	reject,
+	searchDetails_Filters_AnnTypeDisplay_Root :  SearchDataLookupParameters_Root //  Should be : SearchDataLookupParameters_Root but not for sure have the actual instances of the classes
+	resolve: any,
+	reject: any,
 	_searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
 	_parseURL_Into_PageStateParts : ParseURL_Into_PageStateParts
 } ) {
@@ -90,7 +91,7 @@ const _updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal = function( {
 
 	let searchDataLookupParamsRoot = searchDetails_Filters_AnnTypeDisplay_Root;
 
-	let call_getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs = function(resolve, reject) {
+	let call_getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs = function(resolve: any, reject: any) {
 		try {
 			_getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs( { searchDataLookupParamsRoot, resolve, reject } );
 		} catch( e ) {
@@ -129,7 +130,7 @@ const _updatePageState_URL_With_NewFilterCutoffs_FromUser_Internal = function( {
  */
 const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLookupParamsCode_New, _parseURL_Into_PageStateParts } : { 
 	
-	searchDataLookupParamsCode_New, 
+	searchDataLookupParamsCode_New: string,
 	_parseURL_Into_PageStateParts : ParseURL_Into_PageStateParts 
 } ) {
 	
@@ -155,11 +156,11 @@ const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLook
 /**
  * Get searchDataLookupParamsCode for searchDataLookupParamsRoot
  */
-const _getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs = function( { searchDataLookupParamsRoot, resolve, reject } : { 
-	
-	searchDataLookupParamsRoot  //  Should be : SearchDataLookupParameters_Root but not for sure have the actual instances of the classes
-	resolve
-	reject 
+const _getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs = function( { searchDataLookupParamsRoot, resolve, reject } : {
+
+	searchDataLookupParamsRoot :  SearchDataLookupParameters_Root  //  Should be : SearchDataLookupParameters_Root but not for sure have the actual instances of the classes
+	resolve: any
+	reject: any
 } ) {
 
 	if (!searchDataLookupParamsRoot) {
@@ -186,7 +187,7 @@ const _getSearchDataLookupParamsCode_ForUpdatedFilterCutoffs = function( { searc
 		}
 	});
 
-	promise_webserviceCallStandardPost.then( ({ responseData }) => {
+	promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 		try {
 			let searchDataLookupParamsCode = responseData.searchDataLookupParamsCode;
 			if ( ! searchDataLookupParamsCode ) {

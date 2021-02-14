@@ -17,6 +17,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {ProjectPage_ProjectUserAccessAdminSection} from "page_js/data_pages/other_data_pages/project_page/projectPage_ProjectUserAccessAdminSection";
 
 /**
  * 
@@ -25,15 +26,15 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 
 	private _initializeCalled = false;
 
-	private _projectIdentifierFromURL;
-	private _projectPage_ProjectUserAccessAdminSection;
+	private _projectIdentifierFromURL: string;
+	private _projectPage_ProjectUserAccessAdminSection: ProjectPage_ProjectUserAccessAdminSection;
 
 	private _existingUserIdForAddProjectAccess = "";
 
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL, projectPage_ProjectUserAccessAdminSection } ) {
+	constructor( { projectIdentifierFromURL, projectPage_ProjectUserAccessAdminSection } : { projectIdentifierFromURL: string, projectPage_ProjectUserAccessAdminSection: ProjectPage_ProjectUserAccessAdminSection } ) {
 
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 		this._projectPage_ProjectUserAccessAdminSection = projectPage_ProjectUserAccessAdminSection;
@@ -288,7 +289,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 		//  add ts ignore since using jQuery plugin
 		// @ts-ignore
 		$invite_user_last_name.autocomplete({
-			source : function(request, response) {
+			source : function(request: any, response: any) {
 				if ( objectThis._projectIdentifierFromURL === null) {
 					throw Error( "No value for 'projectIdentifierFromURL' " );
 				}
@@ -306,7 +307,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 
 				promise_webserviceCallStandardPost.catch( () => {}  );
 	
-				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 					try {
 						// Call "response" passed into the function defined at "source".
 						//         Use jQuery .map(...)
@@ -323,7 +324,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 					}
 				})
 			},
-			select : function(event, ui) {
+			select : function(event: any, ui: any) {
 				// var $this = $(this);
 				var thisValue = this.value;
 				objectThis._processChosenUserForAddProjectAccess( { ui, thisValue } );
@@ -347,7 +348,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 	/**
 	 * Process autocomplete Value
 	 */
-	_processChosenUserForAddProjectAccess( { ui, thisValue } ) {
+	_processChosenUserForAddProjectAccess( { ui, thisValue } : { ui: any, thisValue: any } ) {
 		
 		var item = ui.item;
 		var userId = item.id;
@@ -364,7 +365,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 	/**
 	 * Update DB with Invite
 	 */
-	_inviteUserToProject( clickThis ) {
+	_inviteUserToProject( clickThis: any ) {
 
 		let objectThis = this;
 
@@ -410,7 +411,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 
 		promise_webserviceCallStandardPost.catch( () => { }  );
 
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 			try {
 				objectThis._inviteUserToProjectResponse({
 					responseData : responseData,
@@ -426,7 +427,7 @@ export class ProjectPage_ProjectUserAccessAdmin_AddUserOrInviteNonUser {
 	/**
 	 * 
 	 */
-	_inviteUserToProjectResponse( { requestData, responseData } ) {
+	_inviteUserToProjectResponse( { requestData, responseData } : { requestData: any, responseData: any }  ) {
 
 		if (responseData.status) {
 			this._clearInviteUserFieldsAndAutocompleteDisplay();

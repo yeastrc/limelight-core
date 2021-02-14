@@ -146,7 +146,7 @@ export class ProteinExperimentPage_Display {
     private _conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     private _conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
     
-    private _experimentConditions_GraphicRepresentation_PropsData
+    private _experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData
 
     // private _centralPageStateManager : CentralPageStateManager;
 
@@ -353,7 +353,9 @@ export class ProteinExperimentPage_Display {
                 let loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = undefined;
 
                 for ( const promiseResult of promiseResults ) {
+                    // @ts-ignore
                     if ( promiseResult && promiseResult.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        // @ts-ignore
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = promiseResult.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
                     }
                 }

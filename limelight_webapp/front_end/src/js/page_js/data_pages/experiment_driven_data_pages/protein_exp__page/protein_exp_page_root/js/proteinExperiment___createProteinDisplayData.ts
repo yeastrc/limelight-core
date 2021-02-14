@@ -27,7 +27,7 @@ export class ProteinExperiment_CreateProteinDisplayData_Result {
  */
 export class ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry {
 
-    proteinSequenceVersionId
+    proteinSequenceVersionId: number
     numPsms : number //  numPsms to be consistent with single search code
     proteinNames : string
     proteinDescriptions : string
@@ -525,7 +525,7 @@ export const proteinExperiment_CreateProteinDisplayData = function ( {
         //   Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
         proteinNameDescriptionForTooltip_Key_ProteinSequenceVersionId.set( proteinSequenceVersionId, proteinNamesAndDescriptionsArray );
 
-        const proteinResultEntry = {
+        const proteinResultEntry: ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry = {
             proteinSequenceVersionId,
             numPsms : psmCountForThis_proteinSequenceVersionId, //  numPsms to be consistent with single search code
             proteinNames : proteinNamesString,
@@ -550,7 +550,7 @@ const _sortProteinList = function( {
     proteinList 
 } :  { 
     proteinList : Array<{
-        proteinSequenceVersionId,
+        proteinSequenceVersionId: number,
         numPsms : number, //  numPsms to be consistent with single search code
         proteinNames : string,
         proteinDescriptions : string,

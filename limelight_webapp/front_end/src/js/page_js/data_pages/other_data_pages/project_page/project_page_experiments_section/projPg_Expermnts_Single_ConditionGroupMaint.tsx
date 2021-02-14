@@ -73,7 +73,7 @@ const conditionsContainerWidth = (
 // });
 
 
-const getConditionListItemOuterStyle = ( isDragging, draggableStyle ) => {
+const getConditionListItemOuterStyle = ( isDragging: any, draggableStyle: any ) => {
 
     //  Must use a function since need to add values in parameter 'draggableStyle' to result
 
@@ -939,14 +939,18 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
 
 interface ConditionsTopLevelBlock_Props {
 
-    conditionContainers
-    isTimePoints
-    deleteConditionHandler
-    changeConditionContainerConditionLabel
-    conditions_ChangeOrder
+    conditionContainers : Array<ConditionContainer>
+    isTimePoints: boolean
+    deleteConditionHandler: any
+    changeConditionContainerConditionLabel: any
+    conditions_ChangeOrder: any
 }
 
-class ConditionsTopLevelBlock extends React.Component< ConditionsTopLevelBlock_Props, {} > {
+interface ConditionsTopLevelBlock_State {
+    childMaxHeight?: number
+}
+
+class ConditionsTopLevelBlock extends React.Component< ConditionsTopLevelBlock_Props, ConditionsTopLevelBlock_State > {
 
     private _onDragEnd_ConditionItem_BindThis = this._onDragEnd_ConditionItem.bind(this);
 
@@ -960,7 +964,7 @@ class ConditionsTopLevelBlock extends React.Component< ConditionsTopLevelBlock_P
         };
     }
 
-    _onDragEnd_ConditionItem( result ) {
+    _onDragEnd_ConditionItem( result: any ) {
 
         // dropped outside the list
         if ( ! result.destination ) {
@@ -976,7 +980,7 @@ class ConditionsTopLevelBlock extends React.Component< ConditionsTopLevelBlock_P
 
     render() {
 
-        const conditionEntryComponentsList = [];
+        const conditionEntryComponentsList: Array<JSX.Element> = [];
         {
             let index = 0;
             for ( const conditionContainer of this.props.conditionContainers ) {
@@ -1030,8 +1034,8 @@ interface DraggableConditionListEntry_Props {
 
     conditionContainer : ConditionContainer
     isTimePoints : boolean
-    deleteConditionHandler
-    changeConditionContainerConditionLabel
+    deleteConditionHandler: any
+    changeConditionContainerConditionLabel: any
 
     draggableId : string
     index : number
@@ -1071,8 +1075,8 @@ interface ConditionListEntry_DraggableContents_Props {
     conditionContainer : ConditionContainer
     arrayIndex : number
     isTimePoints : boolean
-    deleteConditionHandler
-    changeConditionContainerConditionLabel
+    deleteConditionHandler: any
+    changeConditionContainerConditionLabel: any
 }
 
 interface ConditionListEntry_DraggableContents_State {

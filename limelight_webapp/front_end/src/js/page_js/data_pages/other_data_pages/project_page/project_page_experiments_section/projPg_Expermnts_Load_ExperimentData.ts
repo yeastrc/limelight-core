@@ -22,7 +22,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 /**
  * 
  */
-export const getExperimentDataFromServer = function({ experimentId }) {
+export const getExperimentDataFromServer = function({ experimentId }:{ experimentId: any }) {
 
 	return new Promise( (resolve, reject) => {
 		try {
@@ -36,9 +36,9 @@ export const getExperimentDataFromServer = function({ experimentId }) {
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-			promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+			promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }:{ responseData: any }) => {
 				try {
 					resolve({ experimentData : responseData });
 				} catch (e) {

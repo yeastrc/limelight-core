@@ -27,7 +27,11 @@ export const sort_dataRows_on_sortColumnsInfo = function({
 
     //  Get Index in data row entry arrays for sortColumnsInfo entries
 
-    const dataRowEntrySortDataEntries = []; 
+    const dataRowEntrySortDataEntries : Array<{
+        columnIndex: number,
+        columnInfo:  DataTable_Column,
+        sortColumnsInfoEntry:  DataTable_SortColumnsInfoEntry
+    }> = [];
 
     for ( const sortColumnsInfoEntry of sortColumnsInfo ) {
         

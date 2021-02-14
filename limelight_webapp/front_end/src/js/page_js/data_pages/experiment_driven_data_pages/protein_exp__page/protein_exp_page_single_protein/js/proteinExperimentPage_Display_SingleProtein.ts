@@ -122,9 +122,9 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	//  after constructor
 
 
-	private _singleProteinContainer_addedDivElementDOM;
+	private _singleProteinContainer_addedDivElementDOM:  HTMLDivElement;
 
-	private _renderedReactComponent_ProteinExperimentPage_Root_Component;
+	private _renderedReactComponent_ProteinExperimentPage_Root_Component: ProteinExperimentPage_SingleProtein_Root_Component;
 	
 	/**
 	 * 
@@ -158,7 +158,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			proteinSequenceVersionId : number,
 			proteinListItem : {name: string, description: string};
 
-			singleProteinCloseCallback,
+			singleProteinCloseCallback: any,
 
 			loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
@@ -167,7 +167,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			experimentId : number,
 			experimentName : string,
 			projectSearchIds : Array<number>,
-			searchDataLookupParamsRoot,
+			searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 			conditionGroupsContainer : Experiment_ConditionGroupsContainer,
 			conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer,
 			experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData,

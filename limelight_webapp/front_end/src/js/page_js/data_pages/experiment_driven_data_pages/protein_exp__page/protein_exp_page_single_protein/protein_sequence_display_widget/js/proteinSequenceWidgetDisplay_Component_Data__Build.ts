@@ -19,6 +19,21 @@ import {
 
 //  At bottom:  export { proteinSequenceWidgetDisplay_Component_Data__Build }
 
+/**
+ *
+ */
+export class ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM_Entry {
+    residue : string
+    massesSet : Set<number>
+    massesArray: Array<number>
+}
+
+/**
+ *
+ */
+export type ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM =
+    Map<number,ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM_Entry>
+
 
 /**
  * 
@@ -32,7 +47,7 @@ import {
  * @param staticModificationMassesToFilterOn : Static Modification masses that the user has selected to filter on - Initial value - Set
  * 
  */
-const proteinSequenceWidgetDisplay_Component_Data__Build = function({ 
+export const proteinSequenceWidgetDisplay_Component_Data__Build = function({
     
     proteinSequenceString, 
     
@@ -55,9 +70,9 @@ const proteinSequenceWidgetDisplay_Component_Data__Build = function({
     proteinCoverageArrayOfBoolean_UserSelectedPeptides : Array<boolean>,  // - null or undefined if not set - Only User Selected Peptides 
     variableModificationSelectionUnmodifiedSelected : boolean,  //  boolean
     variableModificationMassesToFilterOn : Set<number>, // Expected to be undefined or null if none selected
-    staticModificationMassesToFilterOn : any,   // Expected to be undefined or null if none selected
+    staticModificationMassesToFilterOn : Map<string, Set<number>>,   // Expected to be undefined or null if none selected
     variableModificationMassesForProteinPositions : Map<number, Array<number>>, 
-    staticModificationMassesForProteinPositions,
+    staticModificationMassesForProteinPositions: ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM
     proteinPositions_CoveredBy_PeptideSearchStrings : Array<boolean> //  User entered a Peptide String and these Protein Positions are covered by matched peptides - Array of boolean
 }) 
 : ProteinSequenceWidgetDisplay_Component_Data {
@@ -147,7 +162,7 @@ const proteinSequenceWidgetDisplay_Component_Data__Build = function({
             }
         }
 
-        if ( staticModificationMassesForProteinPositions && staticModificationMassesForProteinPositions.length !== 0 ) {  //  Static Modification Masses for display.  Only Add Static Mods that User has Selected
+        if ( staticModificationMassesForProteinPositions && staticModificationMassesForProteinPositions.size > 0 ) {  //  Static Modification Masses for display.  Only Add Static Mods that User has Selected
             const staticModificationMassesDataObject = staticModificationMassesForProteinPositions.get( proteinSequencePosition );
 
             if ( staticModificationMassesDataObject ) {
@@ -208,10 +223,21 @@ const _get_primary_flags_ForProteinSequencePosition = function({
     staticModificationMassesToFilterOn,
     variableModificationMassesForProteinPositions,
     staticModificationMassesForProteinPositions
+}: {
+
+    sequencePosition_Flags: ProteinSequenceWidget_SinglePositionFlags, // Updated
+
+    proteinSequencePosition: number,
+    proteinCoverageArrayOfBoolean: Array<boolean>, //  All Peptides
+    proteinCoverageArrayOfBoolean_UserSelectedPeptides : Array<boolean>,  // - null or undefined if not set - Only User Selected Peptides
+    variableModificationSelectionUnmodifiedSelected : boolean,
+    variableModificationMassesToFilterOn : Set<number>,
+    staticModificationMassesToFilterOn : Map<string, Set<number>>,
+    variableModificationMassesForProteinPositions : Map<number, Array<number>>,
+    staticModificationMassesForProteinPositions: ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM
 }) {
 
-
-    if ( ! proteinCoverageArrayOfBoolean[ proteinSequencePosition ] ) { 
+if ( ! proteinCoverageArrayOfBoolean[ proteinSequencePosition ] ) {
 
         //  position has no sequence coverage, by default, then has no mods
 
@@ -322,6 +348,13 @@ const _proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedSt
     variableModificationMassesForProteinPositions,
     staticModificationMassesForProteinPositions,
     staticModificationMassesToFilterOn
+}: {
+    proteinSequencePosition: number,
+    variableModificationSelectionUnmodifiedSelected : boolean,
+    variableModificationMassesToFilterOn : Set<number>,
+    staticModificationMassesToFilterOn : Map<string, Set<number>>,
+    variableModificationMassesForProteinPositions : Map<number, Array<number>>,
+    staticModificationMassesForProteinPositions: ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM
 }) {
 
     if ( variableModificationSelectionUnmodifiedSelected || variableModificationMassesToFilterOn || staticModificationMassesToFilterOn ) {
@@ -346,6 +379,12 @@ const _proteinSequencePosition_Contains_Selected_ModificationMasses = function({
     staticModificationMassesToFilterOn,
     variableModificationMassesForProteinPositions,
     staticModificationMassesForProteinPositions
+}: {
+    proteinSequencePosition: number,
+    variableModificationMassesToFilterOn : Set<number>,
+    staticModificationMassesToFilterOn : Map<string, Set<number>>,
+    variableModificationMassesForProteinPositions : Map<number, Array<number>>,
+    staticModificationMassesForProteinPositions: ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM
 }) {
 
     if ( ( ! variableModificationMassesToFilterOn ) && ( ! staticModificationMassesToFilterOn ) ) {
@@ -411,6 +450,11 @@ const _proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedSt
     variableModificationMassesForProteinPositions,
     staticModificationMassesForProteinPositions,
     staticModificationMassesToFilterOn
+}: {
+    proteinSequencePosition: number,
+    staticModificationMassesToFilterOn : Map<string, Set<number>>,
+    variableModificationMassesForProteinPositions : Map<number, Array<number>>,
+    staticModificationMassesForProteinPositions: ProteinSequenceWidgetDisplay_Component_Data__Build__staticModificationMassesForProteinPositions_PARAM
 }) {
 
     if ( variableModificationMassesForProteinPositions ) {
@@ -452,8 +496,4 @@ const _proteinSequencePosition_ContainsAnyVariableModificationMassesOrSelectedSt
 
     return false;
 }
-
-
-
-export { proteinSequenceWidgetDisplay_Component_Data__Build }
 

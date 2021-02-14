@@ -134,7 +134,7 @@ const _create_DataTable_RootTableObject = function({
 
 } : {
     alwaysShow_ReporterIonMasses_Column : boolean,
-    ajaxResponse, 
+    ajaxResponse: any,
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number,
     openModPositionOverride : OpenModPosition_DataType
@@ -213,7 +213,7 @@ const _getDataTableColumns = function({
 } : { 
     
     alwaysShow_ReporterIonMasses_Column : boolean, 
-    ajaxResponse, 
+    ajaxResponse: any,
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number
     psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem>
@@ -397,8 +397,8 @@ const _get_DataTable_DataRowEntries = function({
     psmList : Array<any>,
     projectSearchId : number,
     dataPageStateManager : DataPageStateManager
-    psmAnnotationTypesForPsmListEntries_DisplayOrder,
-    ajaxResponse,
+    psmAnnotationTypesForPsmListEntries_DisplayOrder: any,
+    ajaxResponse: any,
     openModPositionOverride: OpenModPosition_DataType
 
 }) : Get_DataTable_DataRowEntries_Result {
@@ -681,7 +681,7 @@ const _sort_psmList = function({
     projectSearchId,
     dataPageStateManager
 } : {
-    psmList
+    psmList: any
     projectSearchId : number
     dataPageStateManager : DataPageStateManager 
 }) {
@@ -695,7 +695,7 @@ const _sort_psmList = function({
 
     let psm_AnnotationTypeRecords_WhereSortOrderPopulated_Length = psm_AnnotationTypeRecords_WhereSortOrderPopulated.length;
 
-    psmList.sort( function( a, b ) {
+    psmList.sort( function( a: any, b: any ) {
 
         //  Compare PSM Ann Values, if they are populated
         let a_psmAnnotationMap = a.psmAnnotationMap;

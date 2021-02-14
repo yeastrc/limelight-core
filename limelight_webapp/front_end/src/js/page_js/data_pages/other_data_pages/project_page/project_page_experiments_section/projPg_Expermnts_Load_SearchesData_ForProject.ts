@@ -51,7 +51,7 @@ export class GetSearchesDataForProject_ExperimentProcessing_Result {
 /**
  * projectIdentifier - From URL
  */
-export const getSearchesDataForProject_ExperimentProcessing = function({ projectIdentifier }) : Promise<GetSearchesDataForProject_ExperimentProcessing_Result> {
+export const getSearchesDataForProject_ExperimentProcessing = function({ projectIdentifier }: { projectIdentifier: any }) : Promise<GetSearchesDataForProject_ExperimentProcessing_Result> {
 
 	return new Promise<GetSearchesDataForProject_ExperimentProcessing_Result>( (resolve, reject) => {
 		try {
@@ -114,7 +114,7 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 /**
  * 
  */
-const _getSearchesDataFromServer = function({ projectIdentifier }) {
+const _getSearchesDataFromServer = function({ projectIdentifier }: { projectIdentifier: any }) {
 
 	return new Promise( (resolve, reject) => {
 		try {
@@ -129,9 +129,9 @@ const _getSearchesDataFromServer = function({ projectIdentifier }) {
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-			promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
+			promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
 
-			promise_webserviceCallStandardPost.then( ({ responseData }) => {
+			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 				try {
 					resolve({ responseData });
 				} catch (e) {
@@ -211,7 +211,7 @@ const _getSearchesSubDataFromServer = function({ searchList_OnlySearches } : {
 
 }) : Promise<{ searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root, annotationTypeData_Root : AnnotationTypeData_Root}> {
 
-	const projectSearchIds = [];
+	const projectSearchIds: Array<number> = [];
 
 	for ( const search of searchList_OnlySearches ) {
 		projectSearchIds.push( search.projectSearchId );

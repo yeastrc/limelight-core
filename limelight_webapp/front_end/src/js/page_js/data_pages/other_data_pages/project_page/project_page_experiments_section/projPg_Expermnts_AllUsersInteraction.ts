@@ -74,7 +74,7 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 	/**
 	 * 
 	 */
-	_editExperimentInvokeHandler({ experimentId }) {
+	_editExperimentInvokeHandler({ experimentId }:{ experimentId: any }) {
 
 		this._projectPage_ExperimentsSection_LoggedInUsersInteraction.editExperiment({ experimentId });
 	}
@@ -82,7 +82,7 @@ export class ProjectPage_ExperimentsSection_AllUsersInteraction {
 	/**
 	 * 
 	 */
-	_cloneExperimentInvokeHandler({ experimentId }) {
+	_cloneExperimentInvokeHandler({ experimentId }:{ experimentId: any }) {
 
 		this._projectPage_ExperimentsSection_LoggedInUsersInteraction.cloneExperiment({ experimentId });
 	}

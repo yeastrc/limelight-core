@@ -54,9 +54,9 @@ const sortIcon_NotCurrentLyForSorting = (
 
 export interface DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props {
 
-  column_sortDirection?; // may be undefined
-  column_sortPosition;
-  lastColumn;
+  column_sortDirection?: any ; // may be undefined
+  column_sortPosition: any
+  lastColumn: any;
 }
 
 /**

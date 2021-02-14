@@ -46,8 +46,8 @@ export interface Experiment_User_Set_Searches_Filters_Props {
         }
     }
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
-    save // function
-    cancel // function
+    save: any // function
+    cancel: any // function
 }
 
 /**
@@ -134,7 +134,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * User Clicked Save or hit enter in a field
      */
-    _save( event ) {
+    _save( event: any ) {
 
         // console.log("Experiment_User_Set_Searches_Filters._save()");
 
@@ -180,12 +180,17 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * User Clicked Save - Subpart
      */
-    _save_PerType_ReportedPeptidePSM({ dataMap_KeyAnnTypeId }) {
+    _save_PerType_ReportedPeptidePSM(
+        {
+            dataMap_KeyAnnTypeId
+        }: {
+            dataMap_KeyAnnTypeId: Map<number, {annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string, currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean}>
+        }): Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> {
 
         if ( dataMap_KeyAnnTypeId === undefined || dataMap_KeyAnnTypeId === null ) {
             return undefined;
         }
-        let resultArray = undefined;
+        let resultArray: Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
         for ( const entry of dataMap_KeyAnnTypeId.entries() ) {
             const entryValue = entry[ 1 ];
             
@@ -214,7 +219,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * User Clicked Cancel or "X"
      */
-    _cancel( event ) {
+    _cancel( event: any ) {
 
         // console.log("_cancel called");
 
@@ -224,11 +229,11 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * User Clicked Show all filters for Search
      */
-    _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData({ projectSearchId }) {
+    _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData({ projectSearchId }: { projectSearchId: any }) {
 
         // console.log( "_update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData: projectSearchId: " + projectSearchId );
 
-        this.setState( (state, props) => {
+        this.setState( (state: Experiment_User_Set_Searches_Filters_State, props: Experiment_User_Set_Searches_Filters_Props): Experiment_User_Set_Searches_Filters_State => {
 
             return this._update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_SetStateCallback({ 
                 projectSearchId, state, props 
@@ -241,6 +246,10 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
      */
     _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_SetStateCallback({ 
         projectSearchId, state, props 
+    }: {
+        projectSearchId: any
+        state: Experiment_User_Set_Searches_Filters_State
+        props: Experiment_User_Set_Searches_Filters_Props
     }) {
 
         // console.log( "_update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_SetStateCallback: projectSearchId: " + projectSearchId );
@@ -265,11 +274,11 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * User has changed value in <input> field for filters
      */
-    _userUpdatedInputValue_Callback({ projectSearchId, newValue, annotationTypeId }) {
+    _userUpdatedInputValue_Callback({ projectSearchId, newValue, annotationTypeId }: { projectSearchId: any, newValue: any, annotationTypeId: any }) {
 
         // console.log("_userUpdatedInputValue_Callback({ newValue, annotationTypeId }) annotationTypeId: " + annotationTypeId + ", newValue: " + newValue + ", projectSearchId: " + projectSearchId );
 
-        this.setState( (state, props) => {
+        this.setState( (state:Experiment_User_Set_Searches_Filters_State, props:Experiment_User_Set_Searches_Filters_Props):Experiment_User_Set_Searches_Filters_State => {
 
             return this._userUpdatedInputValue_Callback_SetStateCallback({ 
                 newValue, projectSearchId, annotationTypeId, state, props 
@@ -282,6 +291,12 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
      */
     _userUpdatedInputValue_Callback_SetStateCallback({ 
         newValue, projectSearchId, annotationTypeId, state, props 
+    }: {
+        newValue: any
+        projectSearchId: any
+        annotationTypeId: any
+        state: Experiment_User_Set_Searches_Filters_State
+        props: Experiment_User_Set_Searches_Filters_Props
     }) {
 
         // console.log( "_update_data_ForProjectSearchId_AnnTypeData_CurrentEntry_SetStateCallback: new value: " + newValue );
@@ -333,7 +348,12 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * 
      */
-    _isAnyInputFilterValueInvalid({ dataMapPerProjectSearchId_KeyProjectSearchId }) {
+    _isAnyInputFilterValueInvalid(
+        {
+            dataMapPerProjectSearchId_KeyProjectSearchId
+        }: {
+            dataMapPerProjectSearchId_KeyProjectSearchId: any // Map<number, {projectSearchId: number, reportedPeptideFilterDataMap_KeyAnnTypeId: Map<number, {annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string, currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean}>, psmFilterDataMap_KeyAnnTypeId: Map<...>}>
+        }) {
 
         for ( const entry of dataMapPerProjectSearchId_KeyProjectSearchId.entries() ) {
 
@@ -366,6 +386,8 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
      */
     _update_data_ForProjectSearchId_AnnTypeData_CurrentEntry_ProcessForAnnTypeId({
         newValue, filterDataValue
+    }: {
+        newValue: any, filterDataValue: any
     }) {
   
         filterDataValue.currentValueString = newValue;
@@ -701,9 +723,15 @@ const _getFilters_SingleFilterableType_Components = function({
     filterDataMap_KeyAnnTypeId,
     searchProgramsPerSearch_Key_searchProgramsPerSearchId,
     userUpdatedInputValue_Callback
-}) {
+}: {
+    projectSearchId: any
+    filterableAnnotationTypes: any
+    filterDataMap_KeyAnnTypeId: any
+    searchProgramsPerSearch_Key_searchProgramsPerSearchId: any
+    userUpdatedInputValue_Callback: any
+}): Array<JSX.Element> {
 
-    let result = undefined;
+    let result: Array<JSX.Element> = undefined;
 
     for ( const entry of filterableAnnotationTypes ) {
 
@@ -760,12 +788,12 @@ const _getFilters_SingleFilterableType_Components = function({
 
 interface Single_Filterable_PerAnnotationType_Entry_Props {
 
-    inputValue
-    inputLabel
-    filterData
-    annotationTypeId
-    projectSearchId
-    userUpdatedInputValue_Callback
+    inputValue: any
+    inputLabel: any
+    filterData: any
+    annotationTypeId: any
+    projectSearchId: any
+    userUpdatedInputValue_Callback: any
 }
 
 
@@ -794,7 +822,7 @@ class Single_Filterable_PerAnnotationType_Entry extends React.Component< Single_
     /**
      * 
      */
-    _handleFilterAnnTypeValueChange( event ) {
+    _handleFilterAnnTypeValueChange( event: any ) {
 
         const target = event.target;
         const value = target.value;
@@ -845,6 +873,12 @@ const _createDataStructureToRender_SingleSearchContents = ({
     searchesData,
     conditionGroups_Length,
     displayObjects //  output
+}: {
+    searchDataEntry: any
+    data_ForProjectSearchId_ReportedPeptidePSM_Local: any
+    searchesData: any
+    conditionGroups_Length: any
+    displayObjects: any //  output
 }) => {
     const offsetIndexTypeLabels = conditionGroups_Length + 1;  //  When output Condition Group Label:   = ( conditionGroups_Index * 2 ) + 2;
     const offsetIndex_AnnTypeEntries = conditionGroups_Length + 2;  //  When output Condition Group Label:   = ( conditionGroups_Index * 2 ) + 3;
@@ -923,6 +957,15 @@ const _createDataStructureToRender_SingleFilterableType = ({
     labelRowLabel,
     offsetIndexTypeLabels,
     displayObjects //  output
+}: {
+    projectSearchId: any
+    filterableAnnotationTypes: any
+    filterDataMap_KeyAnnTypeId: any
+    searchProgramsPerSearch_Key_searchProgramsPerSearchId: any
+    offsetIndex: any
+    labelRowLabel: any
+    offsetIndexTypeLabels: any
+    displayObjects: any //  output
 }) => {
 
     let firstEntry = true;
@@ -1117,13 +1160,19 @@ const _create_SearchFilterValues_SingleFilterableType = ({
         const annotationTypeId = filterableAnnotationType.annotationTypeId;
 
         if ( ! filterDataMap_KeyAnnTypeId.has( annotationTypeId ) ) {
+
             // const annotationTypeName = filterableAnnotationType.name;
-            const defaultFilterValue = filterableAnnotationType.defaultFilterValue;
-            const defaultFilterValueString = filterableAnnotationType.defaultFilterValueString;
-            const result = { 
+            // const defaultFilterValue = filterableAnnotationType.defaultFilterValue;
+            // const defaultFilterValueString = filterableAnnotationType.defaultFilterValueString;
+
+
+            const result: {
+                annotationTypeId: number, initialValue: number, initialValueString: string, currentValue: number, currentValueString: string,
+                    currentValueInvalidValue: boolean, currentValueSameAsInitialValue: boolean
+            } = {
                 annotationTypeId,
-                defaultFilterValue, 
-                defaultFilterValueString,
+                // defaultFilterValue,
+                // defaultFilterValueString,
                 initialValue : undefined,
                 initialValueString : "",
                 currentValue : undefined,
@@ -1131,6 +1180,7 @@ const _create_SearchFilterValues_SingleFilterableType = ({
                 currentValueInvalidValue : false,
                 currentValueSameAsInitialValue : true,
             };
+
             filterDataMap_KeyAnnTypeId.set( annotationTypeId, result );
         }
     }

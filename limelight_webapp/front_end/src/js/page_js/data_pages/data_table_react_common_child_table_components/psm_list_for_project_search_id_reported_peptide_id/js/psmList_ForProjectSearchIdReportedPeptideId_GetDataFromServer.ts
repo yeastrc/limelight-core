@@ -62,7 +62,7 @@ export const getPSMDataFromServer = function({
             let requestObject = {
                 projectSearchId,
                 psmIds_Include : psmIds_Include_Array, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
-                psmIds_Exclude : undefined, // Optional.  If provided, Additive to
+                // psmIds_Exclude : undefined, // Optional.  If provided, Additive to
                 reportedPeptideId,    // NOT required if have psmIds_Include
                 searchSubGroupId,   // Optional, only allowed if reportedPeptideId is populated
                 searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,
@@ -83,7 +83,7 @@ export const getPSMDataFromServer = function({
                 reject() 
             });
 
-            promise_webserviceCallStandardPost.then( ({ responseData }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                 try {
                     // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
 
@@ -198,9 +198,11 @@ const _get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated = function({
  * 				Return value has no type info since is from object Parsed from JSON passed in HTML from server on page load
  */
 const _getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_SingleProjectSearchId = function( 
-    { projectSearchId, searchDataLookupParamsRoot }  : 
-    { projectSearchId : number, searchDataLookupParamsRoot }
-) {
+    { projectSearchId, searchDataLookupParamsRoot }  :
+        {
+            projectSearchId: number,
+            searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+        }) {
 
     let paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
     if ( ! paramsForProjectSearchIds ) {

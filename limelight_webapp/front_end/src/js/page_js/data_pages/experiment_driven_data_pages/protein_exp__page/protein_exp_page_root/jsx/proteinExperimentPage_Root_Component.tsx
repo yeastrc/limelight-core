@@ -78,8 +78,8 @@ export interface ProteinExperimentPage_Root_Component_Props {
 
     experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
 
-    selectedConditionIdsUpdated_Callback
-    proteinGroup_SelectionValues_Changed_Callback
+    selectedConditionIdsUpdated_Callback: any
+    proteinGroup_SelectionValues_Changed_Callback: any
 }
 
 /**
@@ -91,7 +91,7 @@ interface ProteinExperimentPage_Root_Component_State {
     proteinListData_DisplayLoadedMessage? : boolean;  // Has data been loaded
     proteinList_Updating? : boolean;    // Updating Protein List
 
-    saveView_Component_React? //  React Component for Save View
+    saveView_Component_React?: any //  React Component for Save View
     saveView_Component_Props_Prop? : SaveView_Component_Props_Prop //  Object passed to saveView_Component_React as property propsValue
 
     //  Selected cells in Experiment_SingleExperiment_ConditionsGraphicRepresentation
@@ -899,7 +899,7 @@ const _downloadPSMs = function({ experimentId, projectSearchIds, searchDataLooku
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 }) {
 
-    const projectSearchIdsReportedPeptideIdsPsmIds = [];
+    const projectSearchIdsReportedPeptideIdsPsmIds: any = [];
 
     for ( const projectSearchId of projectSearchIds ) {
 

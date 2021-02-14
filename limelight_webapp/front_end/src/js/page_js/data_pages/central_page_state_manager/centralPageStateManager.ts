@@ -69,24 +69,17 @@ import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pag
  */
 export class CentralPageStateManager {
 
-	private _stateLoadedFromURL
-	private _pageState
-	private _registeredComponents
+	private _stateLoadedFromURL = false;
+	private _pageState : any = {}
+	private _registeredComponents = new Map();
 	//
-	private _parseURL_Into_PageStateParts
-	private _stringCompressDecompress
+	private _parseURL_Into_PageStateParts = new ParseURL_Into_PageStateParts();
+	private _stringCompressDecompress = new StringCompressDecompress();
 
 	/**
 	 * 
 	 */
-	constructor() {
-		this._stateLoadedFromURL = false;
-		this._pageState = {};
-		this._registeredComponents = new Map();
-		
-		this._parseURL_Into_PageStateParts = new ParseURL_Into_PageStateParts();
-		this._stringCompressDecompress = new StringCompressDecompress();
-	}
+	constructor() {}
 
 	/**
 	 * 
@@ -148,7 +141,7 @@ export class CentralPageStateManager {
 	/**
 	 * 
 	 */
-	register( { component } ) {
+	register( { component } : { component : any } ) {
 		if ( ! component.getUniqueId ) {
 			throw Error("register() Component does not have method named getUniqueId");
 		}
@@ -163,7 +156,7 @@ export class CentralPageStateManager {
 	/**
 	 * 
 	 */	
-	unregister( { componentUniqueId } ) {
+	unregister( { componentUniqueId } : { componentUniqueId : any } ) {
 
 		if ( this._registeredComponents.delete( componentUniqueId ) ) {
 			return true;
@@ -174,7 +167,7 @@ export class CentralPageStateManager {
 	/**
 	 * 
 	 */
-	getEncodedData( { component } ) {
+	getEncodedData( { component } : { component : any } ) {
 		const componentUniqueId = component.getUniqueId();
 		if ( ! this._registeredComponents.has( componentUniqueId ) ) {
 			throw( "getEncodedData() Component unique id not registered: " + componentUniqueId );
@@ -186,7 +179,7 @@ export class CentralPageStateManager {
 	/**
 	 * 
 	 */
-	setState( { component } ) {
+	setState( { component } : { component : any } ) {
 		const componentUniqueId = component.getUniqueId();
 		if ( ! this._registeredComponents.has( componentUniqueId ) ) {
 			throw( "setState() Component unique id not registered: " + componentUniqueId );
@@ -212,7 +205,7 @@ export class CentralPageStateManager {
 	/**
 	 * 
 	 */
-	_updateStateFromAllRegisteredComponents( { pageStateObject } ) {
+	_updateStateFromAllRegisteredComponents( { pageStateObject } : { pageStateObject : any } ) {
 		
 		const componentUniqueIds = this._registeredComponents.keys();
 		for ( const componentUniqueId of componentUniqueIds ) {
@@ -260,7 +253,7 @@ export class CentralPageStateManager {
 	 * 
 	 * return: String of URL for current state (and componentOverridesAdditions if present)
 	 */
-	getURL_ForCurrentState( params ) {
+	getURL_ForCurrentState( params : any ) {
 
 		let componentOverridesAdditions = undefined;
 
@@ -297,7 +290,6 @@ export class CentralPageStateManager {
 		//  Not used
 		//		let pageStateIdentifier = pageStatePartsFromURL.pageStateIdentifier;
 
-		const pageState = pageStatePartsFromURL.pageState;
 		const referrer = pageStatePartsFromURL.referrer;
 
 		//		if ( ! pageStateIdentifier ) {

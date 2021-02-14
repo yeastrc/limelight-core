@@ -121,10 +121,12 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 	 */
 	getEncodedStateData() : any {
 
-		const resultFor_All_proteinSequenceVersionIds = [];
+		const resultFor_All_proteinSequenceVersionIds : Array<any> = [];
 
 		const result = {}
+		// @ts-ignore
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
+		// @ts-ignore
 		result[ _ENCODED_DATA__SELECTIONS_ENCODING_PROPERTY_NAME ] = resultFor_All_proteinSequenceVersionIds;
 
 		if ( this._selections_Ranges ) {
@@ -134,22 +136,27 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 				const proteinSequenceVersionId = entryFor_proteinSequenceVersionId.proteinSequenceVersionId;
 
 				const resultFor_proteinSequenceVersionId = {};
+				// @ts-ignore
 				resultFor_proteinSequenceVersionId[_ENCODED_DATA__PROTEIN_SEQUENCE_VERSION_ID_ENCODING_PROPERTY_NAME] = proteinSequenceVersionId;
 				resultFor_All_proteinSequenceVersionIds.push( resultFor_proteinSequenceVersionId );
 
 				if ( entryFor_proteinSequenceVersionId.fullProteinSelected ) {
+					// @ts-ignore
 					resultFor_proteinSequenceVersionId[_ENCODED_DATA__FULL_PROTEIN_SELECTED__ENCODING_PROPERTY_NAME] = true;
 				}
 
 				if ( entryFor_proteinSequenceVersionId.rangeEntries && entryFor_proteinSequenceVersionId.rangeEntries.length > 0 ) {
 
-					const resultFor_positions = [];
+					const resultFor_positions: Array<any> = [];
+					// @ts-ignore
 					resultFor_proteinSequenceVersionId[_ENCODED_DATA__POSITIONS_SUB_PART__ENCODING_PROPERTY_NAME] = resultFor_positions;
 
 					for (const positionEntry of entryFor_proteinSequenceVersionId.rangeEntries) {
 						const resultFor_position = {};
 						resultFor_positions.push(resultFor_position);
+						// @ts-ignore
 						resultFor_position[_ENCODED_DATA__POSITION_START_ENCODING_PROPERTY_NAME] = positionEntry.proteinPosition_Start;
+						// @ts-ignore
 						resultFor_position[_ENCODED_DATA__POSITION_END_ENCODING_PROPERTY_NAME] = positionEntry.proteinPosition_End;
 					}
 				}
@@ -163,7 +170,7 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 	 * Update the state of this object with the value from the URL
 	 *
 	 */
-	set_encodedStateData({ encodedStateData }) : void {
+	set_encodedStateData({ encodedStateData }: { encodedStateData: any }) : void {
 
 		if ( ! ( encodedStateData ) ) {
 			const msg = "set_encodedStateData(...): No value in encodedStateData";

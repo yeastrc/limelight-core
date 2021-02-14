@@ -17,7 +17,7 @@ export class ProteinSequenceWidgetDisplay_SequencePosition_TooltipDisplayManager
 
     private _tooltip_CurrentTooltip : Tooltip_Limelight_Created_Tooltip
 
-    private _tooltip_TimeoutId;
+    private _tooltip_TimeoutId: number;
 
 	/**
 	 * Called when onMouseEnter of Sequence Position

@@ -146,7 +146,7 @@ interface Navigation_dataPages_SingleNavItem_Props {
  */
 interface Navigation_dataPages_SingleNavItem_State {
 
-    _placeholder?
+    _placeholder? : any
 }
 
 /**

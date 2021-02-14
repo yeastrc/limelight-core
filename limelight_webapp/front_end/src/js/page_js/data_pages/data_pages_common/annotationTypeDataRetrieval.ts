@@ -96,7 +96,7 @@ export class AnnotationTypeDataRetrieval {
 
 		let objectThis = this;
 
-		let retrieval = function( resolve, reject ) {
+		let retrieval = function( resolve: any, reject: any ) {
 			try {
 				const url = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
 
@@ -108,7 +108,7 @@ export class AnnotationTypeDataRetrieval {
 
 				promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
-				promise_webserviceCallStandardPost.then( ({ responseData }) => {
+				promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 					try {
 						objectThis._retrieveSearchAnnotationTypeDataFromAJAXResponse( {
 							requestData, responseData, 
@@ -140,8 +140,8 @@ export class AnnotationTypeDataRetrieval {
 		dataPageStateManager_DataFrom_Server, 
 		projectSearchIds_dataNotLoadedArray 
 	} : {
-		requestData, 
-		responseData, 
+		requestData: any,
+		responseData: any,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
 		projectSearchIds_dataNotLoadedArray : Array<number>
 	} ) {
@@ -178,8 +178,8 @@ export class AnnotationTypeDataRetrieval {
 		projectSearchIds_dataNotLoadedArray 
 	} :  {
 		
-		requestData, 
-		responseData, 
+		requestData: any,
+		responseData: any,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager
 		projectSearchIds_dataNotLoadedArray : Array<number>
 	} 
@@ -244,7 +244,7 @@ export class AnnotationTypeDataRetrieval {
 	/**
 	 * 
 	 */
-	_convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId( { annotationTypeArray, sorttype } ) : Map<number, AnnotationTypeItem> {
+	_convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId( { annotationTypeArray, sorttype } : { annotationTypeArray: any, sorttype: any } ) : Map<number, AnnotationTypeItem> {
 
 		let annotationTypesMap : Map<number, AnnotationTypeItem> = new Map();
 

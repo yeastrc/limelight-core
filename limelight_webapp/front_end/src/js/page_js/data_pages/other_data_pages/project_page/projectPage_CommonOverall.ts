@@ -17,7 +17,7 @@ import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
  */
 export class ProjectPage_CommonOverall {
 
-	private _initializeCalled
+	private _initializeCalled: boolean
 
 	/**
 	 * 

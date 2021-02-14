@@ -110,7 +110,7 @@ export class SearchNameRetrieval {
 		dataPageStateManager_DataFrom_Server: DataPageStateManager
 	): Promise<any> {
 
-		let retrieval = (resolve, reject) => {
+		let retrieval = (resolve: any, reject: any) => {
 			try {
 				let requestObj = {projectSearchIds: projectSearchIds_dataNotLoadedArray};
 
@@ -129,7 +129,7 @@ export class SearchNameRetrieval {
 					}
 				});
 
-				promise_webserviceCallStandardPost.then(({responseData}) => {
+				promise_webserviceCallStandardPost.then(({responseData}:{responseData: any}) => {
 					try {
 						this._retrieveSearchNamesResponse(
 							responseData,
@@ -158,7 +158,7 @@ export class SearchNameRetrieval {
 	 *
 	 */
 	private _retrieveSearchNamesResponse(
-		responseData, //  Data from webservice
+		responseData: any, //  Data from webservice
 		dataPageStateManager_DataFrom_Server: DataPageStateManager,
 		projectSearchIds_dataNotLoadedArray: Array<number>
 	): void {

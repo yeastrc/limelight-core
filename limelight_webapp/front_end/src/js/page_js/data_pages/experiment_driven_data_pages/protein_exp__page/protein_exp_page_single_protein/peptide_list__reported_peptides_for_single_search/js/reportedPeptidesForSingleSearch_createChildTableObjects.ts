@@ -92,7 +92,7 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
             dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
             loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
-            searchDataLookupParamsRoot,
+            searchDataLookupParamsRoot: SearchDataLookupParameters_Root,
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
             dataPageStateManager : DataPageStateManager
         }) {

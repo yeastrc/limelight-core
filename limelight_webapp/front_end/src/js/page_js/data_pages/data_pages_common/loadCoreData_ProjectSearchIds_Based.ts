@@ -31,7 +31,7 @@ export class LoadCoreData_ProjectSearchIds_Based{
 	_searchProgramsPerSearchDataRetrieval : SearchProgramsPerSearchDataRetrieval;
 
 	//  Bind 'this' to 'this.loadDataFor_ProjectSearchIds_ExcludeMainQueries'
-	_processRequestAsPromise_BoundThis;
+	_processRequestAsPromise_BoundThis: any;
 	
 
 	/**
@@ -72,7 +72,7 @@ export class LoadCoreData_ProjectSearchIds_Based{
 		return new Promise( this._processRequestAsPromise_BoundThis );
 	}
 	
-	_processRequestAsPromise( resolve, reject ) {
+	_processRequestAsPromise( resolve: any, reject: any ) {
 		try {
 			
 			let promisesToWaitFor = []; //  'sub' promises

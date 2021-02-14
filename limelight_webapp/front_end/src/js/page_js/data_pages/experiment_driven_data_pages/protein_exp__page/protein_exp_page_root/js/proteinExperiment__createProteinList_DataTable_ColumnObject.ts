@@ -191,7 +191,16 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
     /**
      * Process the DOM Object in the cell handed from the Data Table React
      */
-    _PSMs_per_Condition_populateCellDOMObject_Initial({cellMgmt_External_Data, domObjectInCell, columnWidth, columnHeightInitial, cellMgmt_External}) {
+    _PSMs_per_Condition_populateCellDOMObject_Initial(
+        {
+            cellMgmt_External_Data, domObjectInCell, columnWidth, columnHeightInitial, cellMgmt_External
+        }:{
+            cellMgmt_External_Data: any
+            domObjectInCell: any
+            columnWidth: any
+            columnHeightInitial: any
+            cellMgmt_External: any
+        }) {
 
         // console.log("_PSMs_per_Condition_populateCellDOMObject_Initial(...)")
 
@@ -330,7 +339,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
 /**
  * Process the DOM Object in the cell handed from the Data Table React
  */
-const _PSMs_per_Condition_CellCleanup = function( { domObjectInCell } ) {
+const _PSMs_per_Condition_CellCleanup = function( { domObjectInCell } : { domObjectInCell: any } ) {
 
     // console.log( "_PSMs_per_Condition_CellCleanup called " );
 
@@ -349,7 +358,17 @@ const _PSMs_per_Condition_CellCleanup = function( { domObjectInCell } ) {
  * @param cellMgmt_External - cellMgmt_External property in column in columns in Data Table Definition
  * @param dataObject_columnEntry_InitialPopulation - dataObject_columnEntry at time of initial population
  */
-const _PSMs_per_Condition_populateCellDOMObject_Initial_AfterSetTimeout = function( { cellMgmt_External_Data, domObjectInCell, columnWidth, columnHeightInitial, cellMgmt_External, cellMgmt_External_Data_InitialPopulation } ) {
+const _PSMs_per_Condition_populateCellDOMObject_Initial_AfterSetTimeout = function(
+    {
+        cellMgmt_External_Data, domObjectInCell, columnWidth, columnHeightInitial, cellMgmt_External, cellMgmt_External_Data_InitialPopulation
+    }: {
+        cellMgmt_External_Data: any
+        domObjectInCell: any
+        columnWidth: any
+        columnHeightInitial: any
+        cellMgmt_External: any
+        cellMgmt_External_Data_InitialPopulation: any
+    } ) {
 
     if ( ! cellMgmt_External_Data ) {
         const msg = "proteinExperimentPage_Display.ts: _PSMs_per_Condition_populateCellDOMObject_Initial_AfterSetTimeout: No Value for cellMgmt_External_Data.psmCountsPerCondition. cellMgmt_External_Data(only shown in console): ";

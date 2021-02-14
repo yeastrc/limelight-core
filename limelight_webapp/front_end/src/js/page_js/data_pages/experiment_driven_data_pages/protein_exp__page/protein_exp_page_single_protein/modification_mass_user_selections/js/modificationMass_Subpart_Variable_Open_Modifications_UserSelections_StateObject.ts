@@ -308,14 +308,18 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 	getEncodedStateData() {
 
 		const result = {}
-		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
+		// @ts-ignore
+        result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		if ( this._UN_Modified_Selected ) {
             if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
+                // @ts-ignore
                 result[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ANY__ENCODING_PROPERTY_NAME ] = true;
             } else if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                // @ts-ignore
                 result[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__ALL__ENCODING_PROPERTY_NAME ] = true;
             } else if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
+                // @ts-ignore
                 result[ _ENCODED_DATA__NO_MODIFICATION_MASS_SELECTED_ENTRY__NOT__ENCODING_PROPERTY_NAME ] = true;
             } else {
                 const msg = "getEncodedStateData: Unknown Value for this._UN_Modified_Selected.selectionType: " + this._UN_Modified_Selected.selectionType
@@ -329,19 +333,25 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             {  //  ANY
                 const {modificationsDelimited, modificationsNonInteger} = this._getEncoded_AnyAll({modificationsSelected_ANY_ALL : modificationsSelected_ANY})
 
+                // @ts-ignore
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__ANY__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME] = modificationsDelimited;
+                // @ts-ignore
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__ANY__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME] = modificationsNonInteger;
             }
             {  //  ALL
                 const {modificationsDelimited, modificationsNonInteger} = this._getEncoded_AnyAll({modificationsSelected_ANY_ALL : modificationsSelected_ALL})
 
+                // @ts-ignore
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__ALL__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME] = modificationsDelimited;
+                // @ts-ignore
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__ALL__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME] = modificationsNonInteger;
             }
             {  //  NOT
                 const {modificationsDelimited, modificationsNonInteger} = this._getEncoded_AnyAll({modificationsSelected_ANY_ALL : modificationsSelected_NOT})
 
+                // @ts-ignore
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__INTEGERS_ENCODED_ENCODING_PROPERTY_NAME] = modificationsDelimited;
+                // @ts-ignore
                 result[_ENCODED_DATA__MODIFICATION_MASS_SELECTED__NOT__NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME] = modificationsNonInteger;
             }
         }
@@ -474,7 +484,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 	 * Update the state of this object with the value from the URL
 	 * 
 	 */
-	set_encodedStateData({ encodedStateData }) {
+	set_encodedStateData({ encodedStateData }: { encodedStateData: any }) {
 
 		if ( ! ( encodedStateData ) ) {
 			const msg = "set_encodedStateData(...): No value in encodedStateData";

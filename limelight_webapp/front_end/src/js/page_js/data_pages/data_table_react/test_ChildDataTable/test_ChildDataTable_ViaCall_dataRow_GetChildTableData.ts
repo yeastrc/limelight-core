@@ -38,7 +38,7 @@ const dataTableId_ThisTable = "Fake Child Table from Call dataRow_GetChildTableD
 
 
 class FAKE_DataRow_GetChildTableDataParameter_FakeChildTableTesting {
-    fakedata
+    fakedata: any
 
     shallowClone() {
 

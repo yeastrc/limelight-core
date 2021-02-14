@@ -117,7 +117,7 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 	get_staticMods() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._staticMods;
 	}
-	set_staticMods(staticMods) : void {
+	set_staticMods(staticMods : Array<{ residue: string, mass : number }>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._staticMods = staticMods;
 	}
 
@@ -127,49 +127,49 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 	get_reporterIonMasses_ForSearch() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reporterIonMasses_ForSearch;
 	}
-	set_reporterIonMasses_ForSearch(reporterIonMasses_ForSearch) : void {
+	set_reporterIonMasses_ForSearch(reporterIonMasses_ForSearch : Set<number>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reporterIonMasses_ForSearch = reporterIonMasses_ForSearch;
 	}
 
 	get_ms2ScanCounts_ForSearch() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._ms2ScanCounts_ForSearch;
 	}
-	set_ms2ScanCounts_ForSearch(ms2ScanCounts_ForSearch) : void {
+	set_ms2ScanCounts_ForSearch(ms2ScanCounts_ForSearch : { searchHasScanData : boolean, ms2Count : number }) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._ms2ScanCounts_ForSearch = ms2ScanCounts_ForSearch;
 	}
 
 	get_proteinInfoMapKeyProteinSequenceVersionId() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinInfoMapKeyProteinSequenceVersionId;
 	}
-	set_proteinInfoMapKeyProteinSequenceVersionId(proteinInfoMapKeyProteinSequenceVersionId) : void {
+	set_proteinInfoMapKeyProteinSequenceVersionId(proteinInfoMapKeyProteinSequenceVersionId : Map<number,{ proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinInfoMapKeyProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionId;
 	}
 
 	get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
-	set_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId(dynamicModificationsOnReportedPeptide_KeyReportedPeptideId) : void {
+	set_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId(dynamicModificationsOnReportedPeptide_KeyReportedPeptideId : Map<number, Array<{reportedPeptideId : number, position : number, mass : number, is_N_Terminal : boolean, is_C_Terminal : boolean}>>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
 
 	get_openModificationsOnReportedPeptide_KeyReportedPeptideId() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._openModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
-	set_openModificationsOnReportedPeptide_KeyReportedPeptideId(openModificationsOnReportedPeptide_KeyReportedPeptideId) : void {
+	set_openModificationsOnReportedPeptide_KeyReportedPeptideId(openModificationsOnReportedPeptide_KeyReportedPeptideId : Map<number, Array<{reportedPeptideId : number, mass : number}>>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._openModificationsOnReportedPeptide_KeyReportedPeptideId = openModificationsOnReportedPeptide_KeyReportedPeptideId;
 	}
 
 	get_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
-	set_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId(reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId) : void {
+	set_reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId(reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId : Map<number,Map<number,{valueDouble : number, valueString : string}>>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideFilterable_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 
 	get_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId() {
 		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
-	set_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId(reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId) : void {
+	set_reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId(reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId : Map<number,Map<number,{valueDouble: number, valueString : string}>>) : void {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId = reportedPeptideDescriptive_annData_KeyAnnTypeId_KeyReportedPeptideId;
 	}
 

@@ -14,6 +14,7 @@
  */
 
 //  Required Import for Handlebars Support on this page
+// @ts-ignore
 import { Handlebars, _dummy_template_template_bundle } from './projectPage_Root_Handlebars_Include'
 
 const Handlebars_Local = Handlebars
