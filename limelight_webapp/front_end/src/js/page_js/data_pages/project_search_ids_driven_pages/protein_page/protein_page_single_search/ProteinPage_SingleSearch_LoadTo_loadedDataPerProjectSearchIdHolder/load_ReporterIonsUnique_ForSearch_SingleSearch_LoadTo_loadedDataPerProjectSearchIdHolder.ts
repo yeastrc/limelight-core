@@ -9,6 +9,7 @@
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
+import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
 /**
  * Load Reporter Ion Masses Unique within a Single Search
@@ -31,13 +32,28 @@ export const load_ReporterIonsUnique_ForSearch_SingleSearch_LoadTo_loadedDataPer
                     // DB Results: reporterIonMassesUniqueList: result list item BigDecimal
                     // Store: Set <mass>
 
-                    const reporterIonMassesUniqueList_Local = ( reporterIonMassesUniqueList as any ) ;
+                    if ( ! ( reporterIonMassesUniqueList instanceof  Array ) ) {
+                        const msg = "reporterIonMassesUniqueList is not an Array";
+                        console.warn( msg + ". reporterIonMassesUniqueList: ", reporterIonMassesUniqueList )
+                        throw Error(msg);
+                    }
 
-                    const reporterIonMassesUniqueSet = new Set( reporterIonMassesUniqueList_Local )
+                    //  Validate each entry is a number
+
+                    for ( const entry of reporterIonMassesUniqueList ) {
+                        if ( ! variable_is_type_number_Check( entry ) ) {
+                            const msg = "entry in reporterIonMassesUniqueList is not a number";
+                            console.warn( msg + ". reporterIonMassesUniqueList: ", reporterIonMassesUniqueList )
+                            throw Error(msg);
+                        }
+                    }
+
+                    const reporterIonMassesUniqueSet = new Set( reporterIonMassesUniqueList )
 
                     loadedDataPerProjectSearchIdHolder.set_reporterIonMasses_ForSearch(reporterIonMassesUniqueSet);
 
                     resolve();
+
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
