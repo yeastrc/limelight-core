@@ -554,6 +554,11 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_VariableMo
 
     const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
+    if (!dynamicModificationsOnReportedPeptide_KeyReportedPeptideId) {
+        //  No values for this search, skip
+        return; // EARLY RETURN
+    }
+
     for (const reportedPeptideId of reportedPeptideIds_All) {
         const modificationsForReportedPeptide = dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.get(reportedPeptideId);
         if (!modificationsForReportedPeptide) {
@@ -596,6 +601,12 @@ const _updateFor__SelectionType_ANY_NOT___For__VariableModificationMassesSelecte
 
         //  Dynamic Modifications ARE same as Variable Modifications
         const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+
+        if (!dynamicModificationsOnProtein_KeyProteinSequenceVersionId) {
+            //  No values for this search, skip
+            return; // EARLY RETURN
+        }
+
         const dynamicModificationsOnProtein = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get(proteinSequenceVersionId);
 
         //  Add to reportedPeptideIds_ToAddTo_Set any reported peptide ids with modification masses that are selected
@@ -683,6 +694,11 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_OpenModifi
     const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
 
     const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
+
+    if (!psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs) {
+        //  No values for this search, skip
+        return; // EARLY RETURN
+    }
 
     //  All PSM IDs for each reported peptide id for current cutoffs
     const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
@@ -800,6 +816,14 @@ const _updateFor__SelectionType_ANY_NOT___For__OpenModificationMassesSelected_Ot
 
     const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
     const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+
+    if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs ) {
+
+        //  NO Open Modification Masses for this search so exit
+
+        return; // EARLY RETURN
+    }
+
 
     const psmIdsSet_Map_Key_ReportedPeptideId: Map<number, Set<number>> = new Map();
 
