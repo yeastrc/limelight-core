@@ -24,7 +24,7 @@ export const load_ProteinData_Including_ProteinSequenceVersionIds_SingleSearch_L
 
     }) : Promise<unknown> {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<void>(function(resolve, reject) {
         try {
             _getProteinSequenceVersionIds( { projectSearchId, reportedPeptideIds : loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() } )
                 .then(function( proteinSequenceVersionIdsPerReportedPeptideIdMap ) {
@@ -144,7 +144,7 @@ const _get_ProteinInfo_From_proteinSequenceVersionIds = function (
 
     } ) : Promise<unknown> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         try {
             let proteinSequenceVersionIds = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsArray();
             _getProteinInfoFromProteinSequenceVersionIds( { projectSearchId, proteinSequenceVersionIds } )

@@ -105,7 +105,7 @@ const _getSearchDetails_CoreDataFromServer = function ({ projectSearchIds, overa
 	overall_AJAX_Response_Holder : Overall_AJAX_Response_Holder
 }) : Promise<any> {
 
-	return new Promise((resolve,reject) => {
+	return new Promise<void>((resolve,reject) => {
 		try {
 			const requestObj = { projectSearchIds : projectSearchIds };
 

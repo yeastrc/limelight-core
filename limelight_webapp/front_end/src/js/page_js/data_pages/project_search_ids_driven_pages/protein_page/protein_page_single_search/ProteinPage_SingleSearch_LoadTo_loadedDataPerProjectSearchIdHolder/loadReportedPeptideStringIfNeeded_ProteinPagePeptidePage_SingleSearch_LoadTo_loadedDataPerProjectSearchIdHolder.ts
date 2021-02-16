@@ -41,7 +41,7 @@ export const loadReportedPeptideStringIfNeeded_ProteinPagePeptidePage_SingleSear
         return null; // EARLY RETURN
     }
 
-    return new Promise( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
         try {
             const promise_getReportedPeptideStringsFromReportedPeptideIds =
                 _getReportedPeptideStringsFromReportedPeptideIds(

@@ -80,7 +80,7 @@ const _getOpenModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = function
         return null; //  EARLY EXIT
     }
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<void>(function(resolve, reject) {
         try {
             promise_getOpenModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId.catch((reason) => {
                 reject(reason);

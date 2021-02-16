@@ -172,7 +172,7 @@ export class SetDefaultView_dataPages {
         const projectSearchId = this._projectSearchId
         const experimentId = this._experimentId
 
-		let promise = new Promise( function( resolve, reject ) {
+		let promise = new Promise<void>( function( resolve, reject ) {
             try {
                 let requestObject = {
                         projectSearchId,

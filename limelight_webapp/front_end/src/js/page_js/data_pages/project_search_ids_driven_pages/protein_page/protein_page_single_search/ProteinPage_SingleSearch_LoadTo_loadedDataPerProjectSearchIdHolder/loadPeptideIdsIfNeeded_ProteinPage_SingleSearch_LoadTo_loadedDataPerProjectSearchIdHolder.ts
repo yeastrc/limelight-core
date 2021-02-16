@@ -34,7 +34,7 @@ export const loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPe
         return null; // EARLY RETURN
     }
 
-    return new Promise( function(resolve, reject) {
+    return new Promise<void>( function(resolve, reject) {
         try {
             const promise_getPeptideIdsFromReportedPeptideIds =
                 _getPeptideIdsFromReportedPeptideIds(

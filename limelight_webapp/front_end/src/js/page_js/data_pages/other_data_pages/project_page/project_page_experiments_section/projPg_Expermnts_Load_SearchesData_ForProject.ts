@@ -227,7 +227,7 @@ const _getSearchesSubDataFromServer = function({ searchList_OnlySearches } : {
 			//  instance of DataPageStateManager with search data loaded
 			const localONLY__SearchDataLoaded__dataPageStateManager_DataFrom_Server = new DataPageStateManager()
 
-			const promise = new Promise( (resolve, reject) => {
+			const promise = new Promise<void>( (resolve, reject) => {
 				try {
 					const promises = [];
 

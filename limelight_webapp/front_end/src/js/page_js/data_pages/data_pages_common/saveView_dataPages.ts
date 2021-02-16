@@ -281,7 +281,7 @@ export class SaveView_dataPages {
             viewLabel: any, pageControllerPath: any, pageCurrentURL_StartAtPageController: any, searchDataLookupParametersCode: any, projectSearchIds: any, experimentId: any
         } ) : any {
 
-		let promise = new Promise( function( resolve, reject ) {
+		let promise = new Promise<void>( function( resolve, reject ) {
             try {
                 let requestObject = {
                         projectSearchIds,

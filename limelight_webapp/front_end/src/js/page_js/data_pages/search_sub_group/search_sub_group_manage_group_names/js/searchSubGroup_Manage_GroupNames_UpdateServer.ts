@@ -39,7 +39,7 @@ export const searchSubGroup_Manage_GroupNames_UpdateServer = function (
         subGroupEntries,
     };
 
-    return new Promise<any>( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
 
         console.log("AJAX Call to Update Sub Group Data START, Now: " + new Date() );
 

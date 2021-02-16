@@ -46,7 +46,7 @@ export const loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataP
 
 	//  Outer Promise for getting data from server for projectSearchId
 
-	return new Promise( (resolve, reject) => {
+	return new Promise<void>( (resolve, reject) => {
 		try {
 			//  First get Reported Peptide Ids for current cutoffs/filters
 

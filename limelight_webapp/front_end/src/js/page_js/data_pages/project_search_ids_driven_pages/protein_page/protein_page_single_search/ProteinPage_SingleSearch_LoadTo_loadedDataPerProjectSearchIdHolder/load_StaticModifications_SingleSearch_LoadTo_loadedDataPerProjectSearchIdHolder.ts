@@ -21,7 +21,7 @@ export const load_StaticModifications_SingleSearch_LoadTo_loadedDataPerProjectSe
 
 } ) : Promise<unknown> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         try {
             const promise_getData = _getStaticMods( { projectSearchId } );
 

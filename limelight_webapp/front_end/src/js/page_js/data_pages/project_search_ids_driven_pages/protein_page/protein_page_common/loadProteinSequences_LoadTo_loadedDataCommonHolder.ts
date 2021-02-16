@@ -24,7 +24,7 @@ export const loadProteinSequences_LoadTo_loadedDataCommonHolder = function(
 
 	} ) : Promise<unknown> {
 
-	return new Promise(function(resolve, reject) {
+	return new Promise<void>(function(resolve, reject) {
 		try {
 			const promise_getProteinSequencesFromProteinSequenceVersionIds =
 				_getProteinSequencesFromProteinSequenceVersionIds(

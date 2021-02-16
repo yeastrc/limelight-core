@@ -80,7 +80,7 @@ const _getDynamicModificationsForRepPeptIds_CombineAndStoreForProtSeqVId = funct
         return null; //  EARLY EXIT
     }
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<void>(function(resolve, reject) {
         try {
             promise_getDynamicModificationsForReportedPeptideIdsReferencedByProteinSequenceVersionId.catch((reason) => {
                 reject(reason);

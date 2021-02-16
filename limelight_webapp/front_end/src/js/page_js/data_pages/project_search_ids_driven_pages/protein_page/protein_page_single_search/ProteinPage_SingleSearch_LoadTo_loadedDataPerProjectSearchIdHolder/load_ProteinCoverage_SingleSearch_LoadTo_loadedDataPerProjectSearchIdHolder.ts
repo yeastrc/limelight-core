@@ -46,7 +46,7 @@ export const load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearch
         return 0;
     } );
 
-    return new Promise( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
         try {
             if ( reportedPeptideIds.length === 0 ) {
                 //  No reportedPeptideIds

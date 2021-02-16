@@ -115,7 +115,7 @@ let _loadGoogleChartLoader = function() {
 	
 	googleChartLoader_Loaded = GOOGLE_CHART_LOADER_LOADING_IN_PROGRESS;
 	
-	return new Promise( function( resolve, reject ) {
+	return new Promise<void>( function( resolve, reject ) {
 		try {
 			jQuery.ajax({
 				url: GOOGLE_CHART_LOADER_URL,
@@ -157,7 +157,7 @@ let _loadGoogleChartLoader = function() {
  */
 let _loadGoogleChartPackages = function( { chartPackagesToLoad } : { chartPackagesToLoad: any } ) {
 
-	return new Promise( function( resolve, reject ) {
+	return new Promise<void>( function( resolve, reject ) {
 		try {
 			// @ts-ignore
 			const google = window.google

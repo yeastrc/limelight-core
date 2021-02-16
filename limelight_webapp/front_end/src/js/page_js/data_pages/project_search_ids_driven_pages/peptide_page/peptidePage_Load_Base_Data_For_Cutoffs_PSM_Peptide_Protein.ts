@@ -42,7 +42,7 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
     //     getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
     // );
 
-    return new Promise( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
         try {
             const getDataFromServer_AllPromises = [];
 
@@ -63,7 +63,7 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
                 if ( dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() ) {
                     load_searchSubGroupsData = true;
                 }
-                const promise_Single_ProjectSearchId = new Promise( (resolve, reject) => {
+                const promise_Single_ProjectSearchId = new Promise<void>( (resolve, reject) => {
                     try {
                         const promise_getDataFromServer = (
                             loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder( {

@@ -23,7 +23,7 @@ export const loadData_PeptideSequences_LoadTo_loadedDataCommonHolder = function(
 
 	} ) : Promise<unknown> {
 
-	return new Promise(function(resolve, reject) {
+	return new Promise<void>(function(resolve, reject) {
 		try {
 			const promise_getPeptideSequenceStringsFromReportedPeptideIds =
 				_getPeptideSequenceStringsFromReportedPeptideIds( { projectSearchId, reportedPeptideIds } );

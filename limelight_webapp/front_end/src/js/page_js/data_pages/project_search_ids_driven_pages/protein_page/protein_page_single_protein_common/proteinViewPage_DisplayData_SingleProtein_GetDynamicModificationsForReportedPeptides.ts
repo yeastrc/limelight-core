@@ -104,7 +104,7 @@ const _get_DynamicModificationsForReportedPeptideIds_RetrieveFromDB = function( 
     reportedPeptideIds : Array<number>
 } ) : Promise<any> {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<void>(function(resolve, reject) {
         try {
             _getDynamicModificationsForReportedPeptideids(
                     { projectSearchId, 

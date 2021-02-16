@@ -78,7 +78,7 @@ export const loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SinglePr
 
             // No Reported Peptide Ids so skip
 
-            return new Promise( ( resolve, reject) => {
+            return new Promise<void>( ( resolve, reject) => {
                 try {
                     resolve();
                 } catch( e ) {
@@ -96,7 +96,7 @@ export const loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SinglePr
     let reportedPeptideIds_Set = new Set( reportedPeptideIds );
 
 
-    return new Promise( ( resolve, reject) => {
+    return new Promise<void>( ( resolve, reject) => {
         try {
             const promises_LoadData_Array = [];
 
@@ -175,7 +175,7 @@ export const loadData_SingleProtein_AfterInitialOverlayShow_ProteinPage_SinglePr
 
                 promisesAll.then( (value) => {
                     try {
-                        resolve( value );
+                        resolve();
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                         throw e;
@@ -292,7 +292,7 @@ export const loadData_MultipleSearches_ShowReportedPeptidesForSingleSearch_LoadT
 
             } else {
 
-                resolve();
+                resolve(null);
             }
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -420,7 +420,7 @@ const _loadReportedPeptideAnnotationDescriptiveData = function (
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     } ) {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<void>(function(resolve, reject) {
         try {
             const promise_LoadData =
                 _getReportedPeptideDescriptiveAnnData_From_ReportedPeptideIds_AnnTypeIds(

@@ -483,7 +483,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 
 	//  Returned Promise
 
-	return new Promise( (resolve, reject) => {
+	return new Promise<void>( (resolve, reject) => {
 
 		promise_FirstRetrieval.catch( (reason) => { 
 			reject(reason) 

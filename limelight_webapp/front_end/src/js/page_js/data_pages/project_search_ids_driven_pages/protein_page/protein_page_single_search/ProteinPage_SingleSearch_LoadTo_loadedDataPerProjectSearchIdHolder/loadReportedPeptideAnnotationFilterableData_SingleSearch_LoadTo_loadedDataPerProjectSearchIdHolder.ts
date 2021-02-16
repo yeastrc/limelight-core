@@ -24,7 +24,7 @@ export const loadReportedPeptideAnnotationFilterableData_SingleSearch_LoadTo_loa
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     } ) {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<void>(function(resolve, reject) {
         try {
             const promise_LoadData =
                 _getReportedPeptideFilterableAnnData_From_ReportedPeptideIds_AnnTypeIds(

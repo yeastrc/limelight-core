@@ -246,7 +246,7 @@ const _loadDataFor_PSM_Ids_Per_ReportedPeptideId_For_ProteinSequenceVersionId = 
 
     const reportedPeptideIdsToLoadDataFor_AsSet = new Set( reportedPeptideIdsToLoadDataFor ); //  Create set for tracking received data for all reported peptide ids
 
-    return new Promise( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
         try {
             const promise = _getPsmsIdsForReportedPeptideIdsCutoffs_WebserviceCall({
                 projectSearchId : projectSearchId,
@@ -772,7 +772,7 @@ const _loadDataFor_PSM_ReporterIonMasses_For_ReportedPeptideIdsToLoadDataFor = f
         return null; //  EARLY RETURN
     }
 
-    return new Promise( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
         try {
             const reportedPeptideIdsToLoadDataFor_AsSet = new Set( reportedPeptideIdsToLoadDataFor ); //  Create set for tracking received data for all reported peptide ids
 
@@ -1033,7 +1033,7 @@ const _loadDataFor_PSM_OpenModificationMasses_For_ReportedPeptideIdsToLoadDataFo
 
     const reportedPeptideIdsToLoadDataFor_AsSet = new Set( reportedPeptideIdsToLoadDataFor ); //  Create set for tracking received data for all reported peptide ids
 
-    return new Promise( (resolve, reject) => {
+    return new Promise<void>( (resolve, reject) => {
         try {
             const promise = _getPsmsOpenModificationMassesForReportedPeptideIdsCutoffs({
                 getSearchSubGroupIds,

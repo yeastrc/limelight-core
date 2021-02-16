@@ -21,7 +21,7 @@ export const load_ReporterIonsUnique_ForSearch_SingleSearch_LoadTo_loadedDataPer
 
 } ) : Promise<unknown>{
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         try {
             const promise_getData = _get_ReporterIonsUnique_ForSearch_forProjectSearchId( { projectSearchId } );
 
