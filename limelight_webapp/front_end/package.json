@@ -42,7 +42,7 @@
     "@types/react": "^16.9.2",
     "@types/react-beautiful-dnd": "^11.0.3",
     "babel-loader": "^8.0.6",
-    "caniuse-lite": "^1.0.30001147",
+    "caniuse-lite": "^1.0.30001187",
     "d3-drag": "^1.2.4",
     "jstat": "^1.9.1",
     "react": "^16.8.6",
