@@ -225,6 +225,26 @@ export class ProteinPositionFilter_UserSelections_StateObject_Wrapper {
 	 *
 	 *
 	 */
+	remove_Selected_ProteinSequenceVersionId({proteinSequenceVersionId}:{proteinSequenceVersionId: number} ) : void {
+
+		const root = this.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges();
+		if (!root) {
+			// No selections
+			return; // EARLY RETURN
+		}
+		const entriesMap_Key_proteinSequenceVersionId = root.entriesMap_Key_proteinSequenceVersionId
+
+		// delete Full Protein selection
+		entriesMap_Key_proteinSequenceVersionId.delete( proteinSequenceVersionId );
+		if ( entriesMap_Key_proteinSequenceVersionId.size === 0 ) {
+			this.proteinPositionFilter_UserSelections_StateObject.clearSelections();
+		}
+	}
+
+	/**
+	 *
+	 *
+	 */
 	removeSelectedPositions( selection : ProteinPositionFilter_UserSelections_StateObject_Wrapper_Add_Remove_Param ) : void {
 
 		const root = this.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges();

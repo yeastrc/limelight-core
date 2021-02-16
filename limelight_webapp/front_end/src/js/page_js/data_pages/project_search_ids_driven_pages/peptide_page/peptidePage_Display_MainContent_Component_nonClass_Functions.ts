@@ -49,12 +49,196 @@ import {searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn} from "page_js/da
 import {PeptidePage_Display_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component";
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
 import {ProteinPositionFilter_UserSelections_ComponentData} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_ComponentData";
-import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
+import {
+    ProteinPositionFilter_UserSelections_StateObject_Wrapper,
+} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
 import {proteinPositionFilter_UserSelections_BuildData_ForComponent} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_BuildData_ForComponent";
 import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
 import {proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
 import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
+import {ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
+
+/**
+ *
+ */
+const purge_Selections_OfValues_NotInCurrentLoadedData = function(
+    {
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        modificationMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject,
+        proteinPositionFilter_UserSelections_StateObject_Wrapper
+    } : {
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+        proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper;
+    }  ) : void {
+
+    let variableModification_AnySelection = false;
+    let openModification_AnySelection = false;
+    let reporterIon_AnySelection = false;
+    let proteinPositionFilter_AnySelection = false;
+
+    if ( modificationMass_UserSelections_StateObject ) {
+        if ( modificationMass_UserSelections_StateObject.get_VariableModificationSelections() ) {
+            if ( modificationMass_UserSelections_StateObject.get_VariableModificationSelections().is_Any_Modification_Selected() ) {
+                variableModification_AnySelection = true;
+            }
+        }
+        if ( modificationMass_UserSelections_StateObject.get_OpenModificationSelections() ) {
+            if ( modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() ) {
+                openModification_AnySelection = true;
+            }
+        }
+    }
+    if ( reporterIonMass_UserSelections_StateObject ) {
+        if ( reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
+            reporterIon_AnySelection = true;
+        }
+    }
+
+    if ( proteinPositionFilter_UserSelections_StateObject_Wrapper ) {
+        if (proteinPositionFilter_UserSelections_StateObject_Wrapper.isAnySelections()) {
+            proteinPositionFilter_AnySelection = true;
+        }
+    }
+
+    if ( ( ! variableModification_AnySelection ) &&
+        ( ! openModification_AnySelection ) &&
+        ( ! reporterIon_AnySelection ) &&
+        ( ! proteinPositionFilter_AnySelection ) ) {
+
+        //  NO selections that need to be purged so EXIT
+
+        return; // EARLY RETURN
+    }
+
+    const variableModificationMasses_All_Set = new Set<number>();
+    const openModificationMasses_All_Set = new Set<number>();
+    const reporterIonMasses_All_Set = new Set<number>();
+    const proteinSequenceVersionId_All_Set = new Set<number>();
+
+    for (const projectSearchId of projectSearchIds) {
+
+        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
+        if (!loadedDataPerProjectSearchIdHolder) {
+            throw Error("purge_Selections_OfValues_NotInCurrentLoadedData: loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId ); returned nothing. projectSearchId: " + projectSearchId);
+        }
+
+        if (loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId()) {
+            for (const mapEntry of loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId().entries()) {
+                const mapEntryValue = mapEntry[1];
+                for (const dynamicModification_Entry of mapEntryValue) {
+                    variableModificationMasses_All_Set.add(dynamicModification_Entry.mass); //  variable same as dynamic
+                }
+            }
+        }
+
+        if (loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs()) {
+            for (const mapEntry of loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs().entries()) {
+                const mapEntryValue = mapEntry[1];
+                for (const openModificationMass of mapEntryValue.openModificationMasses) {
+                    openModificationMasses_All_Set.add(openModificationMass);
+                }
+            }
+        }
+
+        if (loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs()) {
+            for (const mapEntry of loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs().entries()) {
+                const mapEntryValue = mapEntry[1];
+                for (const reporterIonMass of mapEntryValue.reporterIonMasses) {
+                    reporterIonMasses_All_Set.add(reporterIonMass);
+                }
+            }
+        }
+
+        {
+            if (!loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsUnique()) {
+                const msg = "(!loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsUnique())";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            for ( const proteinSequenceVersionId of loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsUnique() ) {
+                proteinSequenceVersionId_All_Set.add(proteinSequenceVersionId);
+            }
+        }
+    }
+
+    //  All values collected from loaded data
+
+    //  Perform purge of values from Selected State variables
+
+    if ( proteinPositionFilter_AnySelection ) {
+        const selections_Ranges : ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root = proteinPositionFilter_UserSelections_StateObject_Wrapper.getSelections_Ranges();
+
+        for ( const mapEntry of selections_Ranges.entriesMap_Key_proteinSequenceVersionId.entries() ) {
+            const mapEntryValue = mapEntry[1];
+            const proteinSequenceVersionId = mapEntryValue.proteinSequenceVersionId;
+
+            if ( ! proteinSequenceVersionId_All_Set.has( proteinSequenceVersionId) ) {
+                //  proteinSequenceVersionId not in loaded data so delete
+                proteinPositionFilter_UserSelections_StateObject_Wrapper.remove_Selected_ProteinSequenceVersionId({proteinSequenceVersionId});
+            }
+        }
+    }
+
+    if ( variableModification_AnySelection ) {
+        _purge_dynamic_or_open_mods_selections({
+            variable_Open_Modifications_UserSelections_StateObject: modificationMass_UserSelections_StateObject.get_VariableModificationSelections(),
+            loadedValues: variableModificationMasses_All_Set
+        });
+    }
+    if ( openModification_AnySelection ) {
+        _purge_dynamic_or_open_mods_selections({
+            variable_Open_Modifications_UserSelections_StateObject: modificationMass_UserSelections_StateObject.get_OpenModificationSelections(),
+            loadedValues: openModificationMasses_All_Set
+        });
+    }
+    if ( reporterIonMass_UserSelections_StateObject && reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
+        if ( reporterIonMasses_All_Set.size === 0 ) {
+            reporterIonMass_UserSelections_StateObject.clear_selectedReporterIons();
+        } else {
+            const selectedMasses = new Set( reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet() );
+            for ( const selectedMass of selectedMasses ) {
+                if ( ! reporterIonMasses_All_Set.has( selectedMass ) ) {
+                    reporterIonMass_UserSelections_StateObject.delete_ReporterIons_Selected( selectedMass );
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ *
+ */
+const _purge_dynamic_or_open_mods_selections = function(
+    {
+        variable_Open_Modifications_UserSelections_StateObject,
+        loadedValues
+    } : {
+        variable_Open_Modifications_UserSelections_StateObject:  ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
+        loadedValues: Set<number>
+    }
+) {
+    if ( variable_Open_Modifications_UserSelections_StateObject ) {
+        if ( loadedValues.size === 0 ) {
+            variable_Open_Modifications_UserSelections_StateObject.clear_selectedModifications();
+        } else {
+            const selectedMasses = new Set( variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__OnlyModMasses_AsSet() );
+            for ( const selectedMass of selectedMasses ) {
+                if ( ! loadedValues.has( selectedMass ) ) {
+                    variable_Open_Modifications_UserSelections_StateObject.delete_Modification_Selected(selectedMass);
+                }
+            }
+        }
+    }
+}
+
 
 /**
  * 
@@ -768,6 +952,7 @@ const load_ProteinCoverage_IfNeeded = function(
 
 
 const peptidePage_Display_MainContent_Component_nonClass_Functions = {
+    purge_Selections_OfValues_NotInCurrentLoadedData,
     compute_FullPage_Except_SearchDetails,
     compute_searchSubGroup_Ids_Selected,
     compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected,
