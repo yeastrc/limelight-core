@@ -64,6 +64,8 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 	//  Set of all Project Search Ids of Searches Loaded
 	private _searchDataLoaded_ProjectSearchIds = new Set();
 
+	private _selected_projectSearchIds = new Set();
+
 	private _url_path__peptide
 	private _url_path__protein
 	private _url_path__mod_view
@@ -530,16 +532,20 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 		$explore_data_section__contents_block.empty();
 
-		const explore_data_section__contents_blockHTML = _project_page_searches_section_all_users_interaction_template.searchSection_OuterContainer();
+		{
+			const explore_data_section__contents_blockHTML = _project_page_searches_section_all_users_interaction_template.searchSection_OuterContainer();
 
-		$explore_data_section__contents_block.append( explore_data_section__contents_blockHTML );
+			$explore_data_section__contents_block.append(explore_data_section__contents_blockHTML);
+
+			addToolTips($explore_data_section__contents_block);
+		}
 
 		//  Merge buttons added from this template
 
 		{
 			const objectThis = this;
 			
-			const $merge_peptide_view_button = $("#merge_peptide_view_button");
+			const $merge_peptide_view_button = $("#compare_peptide_view_button");
 			$merge_peptide_view_button.click(function(eventObject) {
 				try {
 					eventObject.preventDefault();
@@ -551,7 +557,7 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 					throw e;
 				}
 			});
-			const $merge_protein_view_button = $("#merge_protein_view_button");
+			const $merge_protein_view_button = $("#compare_protein_view_button");
 			$merge_protein_view_button.click(function(eventObject) {
 				try {
 					eventObject.preventDefault();
@@ -563,7 +569,7 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 					throw e;
 				}
 			});
-			const $merge_mod_view_button = $("#merge_mod_view_button");
+			const $merge_mod_view_button = $("#compare_mod_view_button");
 			$merge_mod_view_button.click(function(eventObject) {
 				try {
 					eventObject.preventDefault();
@@ -735,6 +741,13 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 				const $checkbox_entry = $(checkbox_HTML);
 				$checkbox_entry.appendTo( $searches_container );
 
+				$checkbox_entry.change( (changeEvent)=> {
+					const checkboxChecked = changeEvent.target.checked;
+					const projectSearchId = searchItem.projectSearchId;
+
+					this._update_For_Search_Selection_Change({ checkboxChecked, projectSearchId });
+				})
+
 				if ( canSelectSearches && this._projectPage_SearchesAdmin ) {
 
 					this._projectPage_SearchesAdmin.addChangeHandlersSelectSearch({
@@ -782,6 +795,49 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 	}
 
 	/**
+	 * User Checked or Unchecked a search checkbox
+	 */
+	private _update_For_Search_Selection_Change({ checkboxChecked, projectSearchId }) {
+
+		if ( checkboxChecked ) {
+			this._selected_projectSearchIds.add( projectSearchId)
+		} else {
+			this._selected_projectSearchIds.delete( projectSearchId)
+		}
+
+		const $selector_compare_searches_button = $(".selector_compare_searches_button");
+		if ( ! ( $selector_compare_searches_button.length > 0 ) ) {
+			throw Error("No DOM elements with class 'selector_compare_searches_button'");
+		}
+		const $selector_compare_searches_button_overlay_when_disabled = $(".selector_compare_searches_button_overlay_when_disabled");
+		if ( ! ( $selector_compare_searches_button_overlay_when_disabled.length > 0 ) ) {
+			throw Error("No DOM elements with class 'selector_compare_searches_button_overlay_when_disabled'");
+		}
+
+
+		if ( this._selected_projectSearchIds.size > 1 ) {
+
+			$selector_compare_searches_button.each( (index, element) => {
+				const elementInput = element as HTMLInputElement;
+				elementInput.disabled = false;
+			});
+			$selector_compare_searches_button_overlay_when_disabled.each( (index, element) => {
+				element.style.display = "none";
+			});
+
+		} else {
+
+			$selector_compare_searches_button.each( (index, element) => {
+				const elementInput = element as HTMLInputElement;
+				elementInput.disabled = true;
+			});
+			$selector_compare_searches_button_overlay_when_disabled.each( (index, element) => {
+				element.style.display = "";
+			});
+		}
+	}
+
+	/**
 	 * for HTML in single_search_expansion_icon_template.handlebars
 	 */
 	_addSearch_ShowHideBlock_ClickHandlers({ $expansion_entry, searchItem }) {
@@ -794,10 +850,10 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 	 */
 	_addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem }) {
 
-		const objectThis = this;
-
-		const projectSearchId = searchItem.projectSearchId;
-		const searchId = searchItem.searchId;
+		// const objectThis = this;
+		//
+		// const projectSearchId = searchItem.projectSearchId;
+		// const searchId = searchItem.searchId;
 
 		this._projectPage_SearchDetails_AllUsers.addSearch_MainBlock_ClickHandlers({ $search_entry, searchItem });
 

@@ -9,21 +9,43 @@
 
     <div id="search_list" style="margin-bottom: 10px;">
     </div>
-
-    <div id="need_2_or_more_searches_selected_to_merge_msg" style="display: none;">
-        Need 2 or more searches selected to merge.
-    </div>
+    {{!--
+        <div id="need_2_or_more_searches_selected_to_merge_msg" style="display: none;">
+            Need 2 or more searches selected to compare.
+        </div>
+    --}}
 
     <div id="search_list_below_block" style="margin-bottom: 10px; display: none;">
 
-        {{!--  merge peptide  --}}
-        <input type="button" value="Merge Peptide View" id="merge_peptide_view_button" class=" merge_searches_button_jq ">
+        {{!--  compare peptide  --}}
+        <div style="position: relative; display: inline-block; ">
+            <input disabled="disabled" type="button" value="Compare Peptide View" id="compare_peptide_view_button" class=" selector_compare_searches_button ">
+            {{!--  overlay when button is disabled to show tooltip  --}}
+            <div class=" selector_compare_searches_button_overlay_when_disabled  selector_tool_tip_attached "
+                 style="position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; "
+                 data-tooltip="Select 2 or more searches to compare searches"
+            ></div>
+        </div>
 
-        {{!--  merge protein  --}}
-        <input type="button" value="Merge Protein View" id="merge_protein_view_button" class=" merge_searches_button_jq ">
-        
-        {{!--  merge mod --}}
-        <input type="button" value="Merge Mod View" id="merge_mod_view_button" class=" merge_searches_button_jq ">
+        {{!--  compare protein  --}}
+        <div style="position: relative; display: inline-block; ">
+            <input disabled="disabled" type="button" value="Compare Protein View" id="compare_protein_view_button" class=" selector_compare_searches_button ">
+            {{!--  overlay when button is disabled to show tooltip  --}}
+            <div class=" selector_compare_searches_button_overlay_when_disabled  selector_tool_tip_attached "
+                 style="position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; "
+                 data-tooltip="Select 2 or more searches to compare searches"
+            ></div>
+        </div>
+
+        {{!--  compare mod --}}
+        <div style="position: relative; display: inline-block; ">
+            <input disabled="disabled" type="button" value="Compare Mod View" id="compare_mod_view_button" class=" selector_compare_searches_button ">
+            {{!--  overlay when button is disabled to show tooltip  --}}
+            <div class=" selector_compare_searches_button_overlay_when_disabled  selector_tool_tip_attached "
+                 style="position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; "
+                 data-tooltip="Select 2 or more searches to compare searches"
+            ></div>
+        </div>
 
     </div>
 </div>
