@@ -79,8 +79,10 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 				return; // EARLY RETURN
 			}
 
-			const projectSearchId = encodedStateData[ _PROJECT_SEARCH_ID_ENCODING_PROPERTY_NAME ]
-			if ( projectSearchId !== undefined && projectSearchId !== current_ProjectSearchIds[ 0 ] ) {
+			const current_ProjectSearchId = current_ProjectSearchIds[ 0 ];
+
+			const projectSearchId_FromURL = encodedStateData[ _PROJECT_SEARCH_ID_ENCODING_PROPERTY_NAME ]
+			if ( projectSearchId_FromURL !== undefined && projectSearchId_FromURL !== current_ProjectSearchId ) {
 
 				//  Project Search Id has changed so clear the values and exit
 
@@ -94,7 +96,7 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 			}
 
             this._value = {
-				projectSearchId,
+				projectSearchId: current_ProjectSearchId,
 				selectedSearchSubGroupIds,
 				no_selectedSearchSubGroupIds : encodedStateData[ _NO_SELECTED_SEARCH_SUB_GROUP_IDS ]
             };
