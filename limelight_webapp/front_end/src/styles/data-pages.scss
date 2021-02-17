@@ -202,7 +202,7 @@
                 }
 
                 &.table-row-highlight-with-background-color {
-                  color: white;
+                  color: white; //  does not apply within the contained <table>, at least on Chrome so set font color on the <tr> below to white
                   background-color: $site-color-dark;
 
                   &:hover {
@@ -237,6 +237,11 @@
                     //  !!!   Search for 'table.data-table-data-rows-table' above for additional values on this class name and it's children
 
                     tr.data-table-data-row {
+
+                        &.table-row-highlight-with-background-color {
+                          color: white;  // Override <table> default font color
+                                //  Background color will be set on <div> containing the <table>
+                        }
 
                         //  Cells inside a data row of the table
 

@@ -735,9 +735,12 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             throw Error(msg);
         }
 
-        const className_Row = (
-            " data-table-data-row "
-        );
+        let className_Row = " data-table-data-row ";
+
+        if ( this.props.dataObject.highlightRowWithBackgroundColor ) {
+
+            className_Row += "  table-row-highlight-with-background-color  ";
+        }
 
         //   expandable-table-row
 
