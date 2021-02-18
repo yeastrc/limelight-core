@@ -287,7 +287,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                     props.propsValue.experiment_DataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
                 );
 
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined });
+                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : props.propsValue.experimentId });
                 saveView_Component_React = result.saveView_Component_React
                 saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
             }
@@ -2223,6 +2223,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                             { saveView_Component }
 
                             <SharePage_Component
+                                experimentId={ this.props.propsValue.experimentId }
                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
                             />
                         </div>
