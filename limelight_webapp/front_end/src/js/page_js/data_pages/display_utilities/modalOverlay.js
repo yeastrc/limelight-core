@@ -43,11 +43,11 @@ export class ModalOverlay {
             leftOfModalOverlay = 1;
         }
 
-        let template = Handlebars.templates.modalOverlay;
+        let template = _common_template_bundle.modalOverlay;
         let html = template( { title : this.title, cssWidth : this.width, cssHeight : this.height, cssLeft : leftOfModalOverlay, cssTop : topOfModalOverlay } );
         this.$overlayDiv = $( html );
 
-        template = Handlebars.templates.modalBackground;
+        template = _common_template_bundle.modalBackground;
         html = template( { hideOnBackgroundClick : this.hideOnBackgroundClick } );
         this.$backgroundDiv = $( html );
 

@@ -14,6 +14,8 @@
 
 //  Imports
 
+import { Handlebars, _dummy_template_template_bundle } from './peptideViewPage_RootLaunch_ImportHandlebars';
+
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
 //  From local dir
