@@ -1,11 +1,9 @@
 /**
- * proteinViewPage_RootLaunch_ImportHandlebars.js
+ * peptideViewPage_RootLaunch_ImportHandlebars.ts
  *
- * For proteinView.jsp page
+ * For peptideView.jsp page
  *
  * Root Launch Javascript Import Handlebars
- *
- * !!!  This will stay Javascript (".js") and not Typescript since uses "require" for import of Handlebars and Handlebars Precompiled Templates
  *
  * !!!  This is required in ...RootLaunch... files: const Handlebars = require('handlebars/runtime');
  *
@@ -18,8 +16,11 @@
 /**
  * Require Handlebars and dummy_template_template-bundle.js so that Handlebars is properly initialized for other uses of it
  */
-const Handlebars = require('handlebars/runtime');
-const _dummy_template_template_bundle =
-    require("../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
+
+// @ts-ignore
+import Handlebars = require('handlebars/runtime');
+
+// @ts-ignore
+import _dummy_template_template_bundle = require( "../../../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 
 export { Handlebars, _dummy_template_template_bundle }

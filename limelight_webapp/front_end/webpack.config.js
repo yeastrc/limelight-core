@@ -82,8 +82,8 @@ const mainConfig = {
 		'data_pages/proteinViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_LoggedInUsers.ts',
 		'data_pages/proteinViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_PublicUser.ts',
 		
-		'data_pages/modViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_LoggedInUsers.js',
-		'data_pages/modViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_PublicUser.js',
+		'data_pages/modViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/modViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_PublicUser.ts',
 
 		//  Experiment Data pages
 
