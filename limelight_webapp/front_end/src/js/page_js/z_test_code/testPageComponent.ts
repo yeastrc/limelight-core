@@ -17,6 +17,9 @@ const _COMPONENT_UNIQUE_ID = 'TestPageComponent'; // Normally return a single ch
  */
 export class TestPageComponent {
 
+	_centralPageStateManager: any
+	_value : any
+
 	/**
 	 * IMPORTANT:
 	 * 

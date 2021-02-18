@@ -13,7 +13,13 @@
 
 //  Import Handlebars Templates
 
-import { _user_account_create_account_template_bundle, _user_invite_processing_bundle } from './createUserAccount_With_Invite_ImportHandlebarsTemplates'
+import _user_account_create_account_template_bundle =
+	require("../../../../../handlebars_templates_precompiled/user_account_create_account/user_account_create_account_template-bundle.js" );
+
+//  Invite Validation Error from user_invite_processing
+
+import _user_invite_processing_bundle =
+	require("../../../../../handlebars_templates_precompiled/user_invite_processing/user_invite_processing_template-bundle.js" );
 
 ///////////////////////////////////////////
 

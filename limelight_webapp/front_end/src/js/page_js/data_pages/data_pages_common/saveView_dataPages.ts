@@ -5,8 +5,10 @@
  * 
  */
 
-// @ts-ignore
-import { Handlebars, _save_view_template_bundle } from './saveView_dataPages_ImportHandlebarsTemplates'
+
+import Handlebars = require('handlebars/runtime');
+
+import _save_view_template_bundle = require("../../../../../handlebars_templates_precompiled/save_view/save_view_template-bundle.js");
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
@@ -15,7 +17,6 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
 
-// @ts-ignore
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
 
 

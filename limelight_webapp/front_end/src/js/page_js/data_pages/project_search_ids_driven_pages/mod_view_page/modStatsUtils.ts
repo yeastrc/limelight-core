@@ -2,7 +2,7 @@ import jStat from 'jstat'
 import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
 import {ModViewDataManager} from "./modViewDataManager";
-import {ModalOverlay} from 'page_js/data_pages/display_utilities/modalOverlay.js';
+import {ModalOverlay} from 'page_js/data_pages/display_utilities/modalOverlay';
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 

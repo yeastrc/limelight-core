@@ -5,8 +5,9 @@
  * 
  */
 
-// @ts-ignore
-import { Handlebars, _set_default_view_template_bundle } from './setDefaultView_dataPages_ImportHandlebarsTemplates'
+import Handlebars = require('handlebars/runtime');
+
+import _set_default_view_template_bundle = require("../../../../../handlebars_templates_precompiled/set_default_view/set_default_view_template-bundle.js");
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 

@@ -15,7 +15,8 @@ import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { _admin_user_management_template_bundle } from './manageUsersForAdminPage_Main_ImportHandlebarsTemplates'
+import _admin_user_management_template_bundle =
+	require("../../../../../handlebars_templates_precompiled/admin_user_management/admin_user_management_template-bundle.js" );
 
 //  _admin_user_management_template_bundle has properties:
 

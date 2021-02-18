@@ -13,7 +13,9 @@
 
 ///////////////////////////////////////////
 
-import { Handlebars, _dummy_template_template_bundle } from './userLoginPage_Root_ImportHandlebarsTemplates'
+import Handlebars = require('handlebars/runtime');
+import _dummy_template_template_bundle =
+	require("../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()

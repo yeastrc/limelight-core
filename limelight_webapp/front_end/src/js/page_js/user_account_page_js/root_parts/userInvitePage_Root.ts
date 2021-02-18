@@ -11,7 +11,10 @@
 
 //module import 
 
-import { Handlebars, _user_invite_processing_template_bundle } from './userInvitePage_Root_ImportHandlebarsTemplates'
+import Handlebars = require('handlebars/runtime');
+
+import _user_invite_processing_template_bundle =
+	require("../../../../../handlebars_templates_precompiled/user_invite_processing/user_invite_processing_template-bundle.js" );
 
 ///////////////////////////////////////////
 

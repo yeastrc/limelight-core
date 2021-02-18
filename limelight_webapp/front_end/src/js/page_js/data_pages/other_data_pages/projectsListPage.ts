@@ -17,7 +17,11 @@
 
 //  module import 
 
-import { Handlebars, _project_list_template_bundle } from './listProjectsPage_ImportHandlebarsTemplates'
+import Handlebars = require('handlebars/runtime');
+
+import _project_list_template_bundle =
+	require("../../../../../handlebars_templates_precompiled/project_list/project_list_template-bundle.js" );
+
 
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()

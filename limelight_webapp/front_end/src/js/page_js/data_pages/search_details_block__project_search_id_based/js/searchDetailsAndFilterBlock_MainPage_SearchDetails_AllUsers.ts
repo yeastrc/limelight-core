@@ -24,7 +24,10 @@
 
 //  module import 
 
-import { Handlebars, _search_detail_section_main_page_template } from './searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_ImportHandleBarsTemplates';
+import Handlebars = require('handlebars/runtime');
+
+import _search_detail_section_main_page_template = require("../../../../../../handlebars_templates_precompiled/search_detail_section_main_page/search_detail_section_main_page_template-bundle.js");
+
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 

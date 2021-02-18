@@ -1,13 +1,29 @@
 "use strict";
 
-let Handlebars = require('handlebars/runtime');
+import Handlebars = require('handlebars/runtime');
 
-let _common_template_bundle = 
+import _common_template_bundle =
 	require("../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
 
 export class ModalOverlay {
 
-    constructor( { $containerDiv, $contentDiv, width, height, title, hideOnBackgroundClick, callbackOnClickedHide } ) {
+    $containerDiv : any;
+    $contentDiv : any;
+    width : any;
+    height : any;
+    title : any;
+    hideOnBackgroundClick : any;
+    callbackOnClickedHide : any; // Not called on .hide() method called
+    $overlayDiv : any;
+    $backgroundDiv : any;
+
+    constructor(
+        {
+            $containerDiv, $contentDiv, width, height, title, hideOnBackgroundClick, hideBackgroundClick, callbackOnClickedHide
+        }: {
+            $containerDiv : any, $contentDiv : any, width : any, height : any, title : any, hideOnBackgroundClick? : any, hideBackgroundClick? : any, callbackOnClickedHide? : any
+        } ) {
+
         this.$containerDiv = $containerDiv;
         this.$contentDiv = $contentDiv;
         this.width = width;
@@ -17,6 +33,10 @@ export class ModalOverlay {
         this.callbackOnClickedHide = callbackOnClickedHide; // Not called on .hide() method called
         this.$overlayDiv = undefined;
         this.$backgroundDiv = undefined;
+
+        if ( hideBackgroundClick ) {
+            this.hideOnBackgroundClick = true;
+        }
     }
 
 
