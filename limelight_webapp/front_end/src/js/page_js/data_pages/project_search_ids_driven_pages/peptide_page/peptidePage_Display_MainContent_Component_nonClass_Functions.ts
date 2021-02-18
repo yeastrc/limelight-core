@@ -10,12 +10,12 @@
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import {
-    modificationMass_CommonRounding_ReturnNumber,
+    modificationMass_CommonRounding_ReturnNumber, modificationMass_CommonRounding_ReturnNumber_Function,
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 //   Reporter Ion Mass Rounding to provide some level of commonality between searches
-import { 
-    reporterIonMass_CommonRounding_ReturnNumber,
+import {
+    reporterIonMass_CommonRounding_ReturnNumber, reporterIonMass_CommonRounding_ReturnNumber_Function,
 } from 'page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding';
 
 import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
@@ -78,12 +78,16 @@ const purge_Selections_OfValues_NotInCurrentLoadedData = function(
         proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper;
     }  ) : void {
 
+    let staticModification_AnySelection = false;
     let variableModification_AnySelection = false;
     let openModification_AnySelection = false;
     let reporterIon_AnySelection = false;
     let proteinPositionFilter_AnySelection = false;
 
     if ( modificationMass_UserSelections_StateObject ) {
+
+        staticModification_AnySelection = modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected();
+
         if ( modificationMass_UserSelections_StateObject.get_VariableModificationSelections() ) {
             if ( modificationMass_UserSelections_StateObject.get_VariableModificationSelections().is_Any_Modification_Selected() ) {
                 variableModification_AnySelection = true;
@@ -107,7 +111,8 @@ const purge_Selections_OfValues_NotInCurrentLoadedData = function(
         }
     }
 
-    if ( ( ! variableModification_AnySelection ) &&
+    if ( ( ! staticModification_AnySelection ) &&
+        ( ! variableModification_AnySelection ) &&
         ( ! openModification_AnySelection ) &&
         ( ! reporterIon_AnySelection ) &&
         ( ! proteinPositionFilter_AnySelection ) ) {
@@ -117,6 +122,7 @@ const purge_Selections_OfValues_NotInCurrentLoadedData = function(
         return; // EARLY RETURN
     }
 
+    const staticMods_All_Map = new Map<string,Set<number>>();
     const variableModificationMasses_All_Set = new Set<number>();
     const openModificationMasses_All_Set = new Set<number>();
     const reporterIonMasses_All_Set = new Set<number>();
@@ -129,20 +135,37 @@ const purge_Selections_OfValues_NotInCurrentLoadedData = function(
             throw Error("purge_Selections_OfValues_NotInCurrentLoadedData: loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId ); returned nothing. projectSearchId: " + projectSearchId);
         }
 
+        if (loadedDataPerProjectSearchIdHolder.get_staticMods()){
+            for ( const staticMod of loadedDataPerProjectSearchIdHolder.get_staticMods() ) {
+                const residue = staticMod.residue
+                const mass_Rounded = modificationMass_CommonRounding_ReturnNumber(staticMod.mass);
+                let masses = staticMods_All_Map.get(residue);
+                if ( ! masses ) {
+                    masses = new Set();
+                    staticMods_All_Map.set(residue, masses);
+                }
+                masses.add(mass_Rounded);
+            }
+        }
+
         if (loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId()) {
             for (const mapEntry of loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId().entries()) {
                 const mapEntryValue = mapEntry[1];
                 for (const dynamicModification_Entry of mapEntryValue) {
-                    variableModificationMasses_All_Set.add(dynamicModification_Entry.mass); //  variable same as dynamic
+
+                    const mass_Rounded = modificationMass_CommonRounding_ReturnNumber(dynamicModification_Entry.mass);
+                    variableModificationMasses_All_Set.add(mass_Rounded); //  variable same as dynamic
                 }
             }
         }
 
-        if (loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs()) {
-            for (const mapEntry of loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs().entries()) {
-                const mapEntryValue = mapEntry[1];
-                for (const openModificationMass of mapEntryValue.openModificationMasses) {
-                    openModificationMasses_All_Set.add(openModificationMass);
+        if (loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs()) {
+            for (const map_Outer_Entry of loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs().entries()) {
+                const map_Outer_EntryValue = map_Outer_Entry[1]; // Which is Map inner
+                for (const map_Inner_Entry of map_Outer_EntryValue.openModificationMass_RoundedMap.entries()) {
+                    const map_Inner_EntryValue = map_Inner_Entry[ 1 ];
+                    const mass_Rounded = modificationMass_CommonRounding_ReturnNumber(map_Inner_EntryValue.openModificationMass_Rounded);
+                    openModificationMasses_All_Set.add(mass_Rounded);
                 }
             }
         }
@@ -151,7 +174,8 @@ const purge_Selections_OfValues_NotInCurrentLoadedData = function(
             for (const mapEntry of loadedDataPerProjectSearchIdHolder.get_psmReporterIonMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs().entries()) {
                 const mapEntryValue = mapEntry[1];
                 for (const reporterIonMass of mapEntryValue.reporterIonMasses) {
-                    reporterIonMasses_All_Set.add(reporterIonMass);
+                    const reporterIonMass_Rounded = reporterIonMass_CommonRounding_ReturnNumber( reporterIonMass );
+                    reporterIonMasses_All_Set.add(reporterIonMass_Rounded);
                 }
             }
         }
@@ -182,6 +206,31 @@ const purge_Selections_OfValues_NotInCurrentLoadedData = function(
             if ( ! proteinSequenceVersionId_All_Set.has( proteinSequenceVersionId) ) {
                 //  proteinSequenceVersionId not in loaded data so delete
                 proteinPositionFilter_UserSelections_StateObject_Wrapper.remove_Selected_ProteinSequenceVersionId({proteinSequenceVersionId});
+            }
+        }
+    }
+
+    if ( staticModification_AnySelection ) {
+        if ( staticMods_All_Map.size === 0 ) {
+            modificationMass_UserSelections_StateObject.clear_selected_Static_Modifications();
+        } else {
+            //    Map<Residue Letter, Set<Mass>>
+            for ( const mapEntry of modificationMass_UserSelections_StateObject.get_StaticModifications_Selected_Residue_Mass_Map_Set().entries() ) {
+                const selection_Residue = mapEntry[ 0 ];
+                const selection_Masses = mapEntry[ 1 ];
+
+                const staticMods_All = staticMods_All_Map.get( selection_Residue );
+                if ( ! staticMods_All ) {
+                    //  No entries in loaded static mods for selection_Residue so delete all static mod selections for selection_Residue
+                    modificationMass_UserSelections_StateObject.delete_StaticModification_Selected_AllFor_ResidueLetter({residueLetter: selection_Residue });
+                } else {
+                    //  process selected mod masses for residue letter
+                    for ( const selection_Mass of selection_Masses ) {
+                        if ( ! staticMods_All.has( selection_Mass ) ) {
+                            modificationMass_UserSelections_StateObject.delete_StaticModification_Selected({ residueLetter: selection_Residue, modMass: selection_Mass});
+                        }
+                    }
+                }
             }
         }
     }

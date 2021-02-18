@@ -89,6 +89,14 @@ export class ModificationMass_UserSelections_StateObject {
         this._staticModificationsSelected.clear(); // Reset to None
     }
 
+    /**
+     *
+     */
+    clear_selected_Static_Modifications() : void {
+
+        this._staticModificationsSelected.clear(); // Reset to None
+    }
+
     //////////////////////////////////
 
     //   Variable Mods External
@@ -254,6 +262,13 @@ export class ModificationMass_UserSelections_StateObject {
             this._staticModificationsSelected.set( residueLetter, entryFor_ResidueLetter )
         }
         entryFor_ResidueLetter.set( modMass, entry );
+    }
+
+    /**
+     *
+     */
+    delete_StaticModification_Selected_AllFor_ResidueLetter({ residueLetter }: { residueLetter: string }) {
+        this._staticModificationsSelected.delete( residueLetter );
     }
 
 	/**

@@ -280,12 +280,14 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs;
 	}
 
-	get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs() {
-		return this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs;
-	}
-	set_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs(psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs) : void {
-		this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs = psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs;
-	}
+	//  Remove since NEVER Set
+
+	// get_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs() {
+	// 	return this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs;
+	// }
+	// set_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs(psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs) : void {
+	// 	this._data_AtCurrentCutoffs_Or_DisplayData._psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs = psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs;
+	// }
 
 	///
 
@@ -475,10 +477,11 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 	_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs :
 		Map<number, { reportedPeptideId : number, psmIds_ContainAnyOpenModificationMass : Set<number>, openModificationMass_RoundedMap : Map<number,{ openModificationMass_Rounded : number, psmIds_Set : Set<number> }> }>;
 
+	// !!  Remove since NEVER Set
 	//  	Open Modification Mass Unique Values for all PSMs for current cutoffs per Reported Peptide Id
 	// 				- Map<integer, { integer, Map<integer, { integer, Set<double> } > } > : Map<Reported Peptide Id, openModificationMasses (Set) >
-	_psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs :
-		Map<number, { reportedPeptideId : number, openModificationMasses : Set<number> }> ;
+	// _psmOpenModificationMassesUnique_ForReportedPeptideIdMap_CurrentCutoffs :
+	// 	Map<number, { reportedPeptideId : number, openModificationMasses : Set<number> }> ;
 
 	//  	PSM: Reporter Ion Mass Values for each PSM for current cutoffs per PSM Id per Reported Peptide Id
 	// 				- Map<integer, { integer, Map<integer, { integer, Set<bigdecimal> } > } > : Map<Reported Peptide Id, { reportedPeptideId, Map<PsmId, { psmId, reporterIonMasses (Set) > >
