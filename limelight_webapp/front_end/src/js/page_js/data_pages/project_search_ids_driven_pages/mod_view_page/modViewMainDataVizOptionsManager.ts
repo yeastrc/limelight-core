@@ -431,7 +431,7 @@ export class ModViewDataVizRendererOptionsHandler {
             genericProteinObjects.push(ob);
         }
 
-        const template = Handlebars.templates.addProteinPositionForm;
+        const template = _mod_table_template_bundle.addProteinPositionForm;
         const html = template( {proteins:genericProteinObjects} );
 
         return html;

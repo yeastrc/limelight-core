@@ -1,6 +1,6 @@
 "use strict";
 
-import { Handlebars } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
+import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
 import * as d3 from "d3";
 import * as Drag from 'd3-drag';
@@ -373,7 +373,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         if($vizDiv.length !== 0) {
             $vizDiv.empty();
         } else {
-            const template = Handlebars.templates.dataVizContainer;
+            const template = _mod_table_template_bundle.dataVizContainer;
             const html = template( {  } );
             const $dataVizContainer = $( html );
             $mainContentDiv.append( $dataVizContainer );
@@ -391,7 +391,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         if($vizDiv.length !== 0) {
             $vizDiv.empty();
         } else {
-            const template = Handlebars.templates.dataVizContainer;
+            const template = _mod_table_template_bundle.dataVizContainer;
             const html = template( {  } );
             const $dataVizContainer = $( html );
             $mainContentDiv.append( $dataVizContainer );
@@ -413,7 +413,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         const $mainContentDiv = $('#mod_list_container');
 
-        const template = Handlebars.templates.dataTableContainer;
+        const template = _mod_table_template_bundle.dataTableContainer;
         const html = template( {  } );
         const $dataTableContainer = $( html );
         $mainContentDiv.append( $dataTableContainer );
