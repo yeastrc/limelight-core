@@ -6,6 +6,10 @@
 #  In Case Typscript is somehow run to output .js and .js.map files, they are output to here and ignored
 /typescript_compile_output/
 
+#  In case 'typescript_compiler_run__noEmit.sh' is run, exclude it's output
+tsc_NoEmit_err.txt
+tsc_NoEmit_out.txt
+
 .idea
 # Eclipse
 /.settings/
