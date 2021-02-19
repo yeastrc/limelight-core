@@ -386,6 +386,12 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
             }
 
             const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs()
+            if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap ) {
+
+                //  No Open Mods for this search so skip search
+
+                continue // EARLY CONTINUE
+            }
 
             if ( this._proteinSequenceVersionId !== undefined && this._proteinSequenceVersionId !== null ) {
 
