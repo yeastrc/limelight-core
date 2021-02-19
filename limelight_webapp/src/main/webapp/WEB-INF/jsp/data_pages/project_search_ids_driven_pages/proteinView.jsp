@@ -52,11 +52,11 @@
 	<!-- Outer Container for Save View Button and other buttons  -->
 	<div >
 		<!--  Save As Default Button -->
-		<div class=" selector_set_default_view_root_container set-default-view-container " style="dislay: none;" ></div>
+		<div id="set_default_view_root_container" class=" set-default-view-container " style="dislay: none;" ></div>
 		<!--  Save View Button -->
-		<div class=" selector_save_view_root_container save-view-root-container " ></div>
+		<div id="save_view_root_container" class=" save-view-root-container " ></div>
 		<!--  Share Page Button -->
-		<div class=" selector_share_page_root_container share-page-root-container " ></div>
+		<div id="share_page_root_container" class="  share-page-root-container " ></div>
 	</div>
 
 	<h3> Protein List:</h3>

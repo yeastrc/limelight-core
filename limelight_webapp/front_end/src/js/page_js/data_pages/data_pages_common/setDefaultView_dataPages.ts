@@ -11,10 +11,9 @@ import _set_default_view_template_bundle = require("../../../../../handlebars_te
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
-
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
+import {setDefaultView_dataPages_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages_Common";
 
 
 /**
@@ -87,7 +86,8 @@ export class SetDefaultView_dataPages {
         $selector_set_default_view_button.click( (eventObject) => {
 			try {
 				eventObject.preventDefault();
-                this._setDefaultView_MainPage_ButtonClicked();
+
+                setDefaultView_dataPages_ProcessRequest_Common({ projectSearchId })
                 return false;
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -95,118 +95,5 @@ export class SetDefaultView_dataPages {
 			}
 		});
     }
-
-	/**
-     * @param projectSearchIds
-	 * @param container_DOM_Element - optional
-	 */
-	initializeFrom_SetDefaultView_Component_React(
-        { projectSearchId, experimentId } :
-        { 
-            projectSearchId : number
-            experimentId? : number
-        }
-    ) : void {
-
-        this._projectSearchId = projectSearchId;
-        this._experimentId = experimentId;
-    }
-
-	/**
-	 * 
-	 */
-	public setDefaultView_MainPage_ButtonClicked_SetDefaultView_Component_React() : void {
-
-        this._setDefaultView_MainPage_ButtonClicked();
-    }
-
-	/**
-	 * 
-	 */
-	private _setDefaultView_MainPage_ButtonClicked() : void {
-
-        var pageCurrentURL = window.location.href;
-
-        const pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
-
-        const controllerStart = pageCurrentURL.indexOf( pageControllerPath );
-        if ( controllerStart === -1 ) {
-            throw Error("Controller Path not found in current Page/Window URL.  pageControllerPath: " + pageControllerPath + ", pageCurrentURL: " + pageCurrentURL );
-        }
-
-        const pageCurrentURL_StartAtPageController = pageCurrentURL.substring( controllerStart );
-        
-        const parseURL_Into_PageStateParts = new ParseURL_Into_PageStateParts();
-        const pageStatePartsFromURL = parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
-        
-		const searchDataLookupParametersCode = pageStatePartsFromURL.searchDataLookupParametersCode;
-		const pageStateIdentifier = pageStatePartsFromURL.pageStateIdentifier;
-		const pageStateString = pageStatePartsFromURL.pageStateString;
-		const referrer = pageStatePartsFromURL.referrer;
-
-        const promise__setDefaultViewToServer = this._setDefaultViewToServer({ pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode })
-
-        promise__setDefaultViewToServer.catch( () => {  });
-
-        promise__setDefaultViewToServer.then( (  ) => {
-            try {
-                window.alert("Default View Saved")
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
-    }
-
-	/**
-     * Set the Default the view to the server
-	 */
-	private _setDefaultViewToServer(
-	    {
-            pageControllerPath, pageCurrentURL_StartAtPageController, searchDataLookupParametersCode
-	    }: {
-            pageControllerPath: string
-            pageCurrentURL_StartAtPageController: string
-            searchDataLookupParametersCode: string
-        } ) : any {
-
-        const projectSearchId = this._projectSearchId
-        const experimentId = this._experimentId
-
-		let promise = new Promise<void>( function( resolve, reject ) {
-            try {
-                let requestObject = {
-                        projectSearchId,
-                        pageControllerPath,
-                        pageCurrentURL_StartAtPageController,
-                        searchDataLookupParametersCode
-                };
-
-                const url = "d/rws/for-page/psb/save-default-view-project-search-based-page";
-
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
-
-                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-                promise_webserviceCallStandardPost.catch( () => { reject() }  );
-
-                promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
-                    try {
-                        resolve();
-
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                });
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-		});
-		
-		return promise;
-	}
-
 }
 

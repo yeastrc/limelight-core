@@ -17,11 +17,12 @@
 
 import React from 'react'
 
-import { SetDefaultView_dataPages } from 'page_js/data_pages/data_pages_common/setDefaultView_dataPages';
 import {
     Get_SetDefaultView_Component_React_Type,
     SetDefaultView_Component_React_Params
 } from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
+import {setDefaultView_dataPages_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages_Common";
+
 
 /**
  *
@@ -82,13 +83,10 @@ export class SetDefaultView_Component extends React.Component< SetDefaultView_Co
 
         event.preventDefault();
 
-        const setDefaultView_dataPages = new SetDefaultView_dataPages();
-        setDefaultView_dataPages.initializeFrom_SetDefaultView_Component_React({
+        setDefaultView_dataPages_ProcessRequest_Common({
             experimentId : this.props.propsValue.experimentId,
             projectSearchId : this.props.propsValue.projectSearchId
         });
-
-        setDefaultView_dataPages.setDefaultView_MainPage_ButtonClicked_SetDefaultView_Component_React();
     }
 
     /**

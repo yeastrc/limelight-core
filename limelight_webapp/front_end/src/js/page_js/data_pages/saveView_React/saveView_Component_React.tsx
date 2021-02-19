@@ -16,8 +16,31 @@
 
 
 import React from 'react'
+import {SaveView_Get_Component_React_Type} from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
+import {saveView_dataPages_MainPage_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/saveView_dataPages_Common";
 
-import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
+/**
+ *
+ * @param projectSearchIds
+ * @param experimentId
+ */
+export const getSaveView_Component : SaveView_Get_Component_React_Type = function (
+    {
+        projectSearchIds, experimentId
+    } : {
+        projectSearchIds : Array<number>;
+        experimentId? : number
+
+    }) : JSX.Element {
+
+    const propsValue = new SaveView_Component_Props_Prop({ projectSearchIds, experimentId })
+
+    return (
+        <SaveView_Component
+          propsValue={ propsValue }
+        />
+    )
+}
 
 /**
  * 
@@ -83,13 +106,10 @@ export class SaveView_Component extends React.Component< SaveView_Component_Prop
 
         event.preventDefault();
 
-        const saveView_dataPages = new SaveView_dataPages();
-        saveView_dataPages.initializeFrom_SaveView_Component_React({ 
+        saveView_dataPages_MainPage_ProcessRequest_Common({
             experimentId : this.props.propsValue.experimentId, 
             projectSearchIds : this.props.propsValue.projectSearchIds
         });
-
-        saveView_dataPages.saveView_MainPage_ButtonClicked_SaveView_Component_React();
     }
     
     /**

@@ -30,3 +30,12 @@ export type SaveView_Create_Component_React_Type = ({ projectSearchIds, experime
     projectSearchIds : Array<number>
     experimentId : number
 }) => SaveView_Create_Component_React_Result
+
+/**
+ *
+ */
+export type SaveView_Get_Component_React_Type = ({ projectSearchIds, experimentId } : {
+
+    projectSearchIds : Array<number>
+    experimentId? : number
+}) => JSX.Element

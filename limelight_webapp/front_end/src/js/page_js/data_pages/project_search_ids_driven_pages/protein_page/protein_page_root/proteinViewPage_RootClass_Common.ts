@@ -16,7 +16,7 @@
  * Always do in Root Javascript for page:
  */
 
- // import { Handlebars, _dummy_template_template_bundle } from './proteinViewPage_RootClass_Common_ImportHandlebarsTemplates.js';
+import ReactDOM from 'react-dom';
 
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
@@ -40,8 +40,6 @@ import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pag
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
-import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
-
 import { SingleProtein_CentralStateManagerObjectClass }	from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass';
 
 import { ProteinList_CentralStateManagerObjectClass } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass';
@@ -52,13 +50,20 @@ import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHea
 
 //  Import for typing only
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
-import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
 
 //  From local dir
 import { ProteinViewPage_DisplayDataOnPage }  from './proteinViewPage_DisplayDataOnPage';
-import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import {getSharePage_MainPage_Component} from "page_js/data_pages/sharePage_React/sharePage_Component_React";
+import {
+	Get_SetDefaultView_Component_React_Type,
+	SetDefaultView_Component_React_Params
+} from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
+import {
+	SaveView_Create_Component_React_Result,
+	SaveView_Create_Component_React_Type, SaveView_Get_Component_React_Type
+} from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
 
 /**
  * 
@@ -67,10 +72,6 @@ export class ProteinViewPage_RootClass_Common {
 
 	//  Copied from constructor parameter
 	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
-
-	//  Comes from this._dataPages_LoggedInUser_CommonObjectsFactory  : DataPages_LoggedInUser_CommonObjectsFactory
-	private _saveView_dataPages : SaveView_dataPages;
-	private _setDefaultView_dataPages : SetDefaultView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
 
 	//  Created or set in this class
 
@@ -89,7 +90,6 @@ export class ProteinViewPage_RootClass_Common {
 	private _proteinViewPage_DisplayDataOnPage : ProteinViewPage_DisplayDataOnPage;
 
 	private _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
-	private _sharePage_dataPages : SharePage_dataPages;
 
 	private _loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
 
@@ -99,11 +99,6 @@ export class ProteinViewPage_RootClass_Common {
 	constructor({ dataPages_LoggedInUser_CommonObjectsFactory } : { dataPages_LoggedInUser_CommonObjectsFactory? : DataPages_LoggedInUser_CommonObjectsFactory }) {
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
-
-		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
-			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
-			this._setDefaultView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SetDefaultView_dataPages();
-		}
 
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
 
@@ -148,8 +143,6 @@ export class ProteinViewPage_RootClass_Common {
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
-		
-		this._sharePage_dataPages = new SharePage_dataPages();
 	}
 
 
@@ -220,17 +213,59 @@ export class ProteinViewPage_RootClass_Common {
 
 		navigation_dataPages_Maint_Instance.initializePageOnLoad({ isManageNavigationOnPage : true, navigationChange_Callback : undefined, isSingleSearch, isMultipleSearches, isExperimentPage : false }); // Initialize
 
-		if ( this._saveView_dataPages ) {
-			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, experimentId : undefined });
-		}
-		if ( isSingleSearch && this._setDefaultView_dataPages ) {
-			const projectSearchId = projectSearchIds[ 0 ]
-			this._setDefaultView_dataPages.initialize({ projectSearchId, container_DOM_Element : undefined, experimentId : undefined });
+
+		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
+
+			const save_view_root_containerDOM = document.getElementById("save_view_root_container");
+			if ( ! save_view_root_containerDOM ) {
+				throw Error("No DOM element with id 'save_view_root_container'")
+			}
+
+			const getSaveView_Component : SaveView_Get_Component_React_Type = this._dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_getSaveView_Component();
+
+			const saveView_Component = getSaveView_Component({ projectSearchIds });
+
+			ReactDOM.render(
+				saveView_Component,
+				save_view_root_containerDOM
+			);
 		}
 
-		this._sharePage_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined });
+		if ( isSingleSearch && this._dataPages_LoggedInUser_CommonObjectsFactory ) {
 
-		
+			const get_SetDefaultView_Component_React : Get_SetDefaultView_Component_React_Type = this._dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SetDefaultView_Component_React();
+
+			const projectSearchId = projectSearchIds[ 0 ];
+
+			const set_default_view_root_containerDOM = document.getElementById("set_default_view_root_container");
+			if ( ! set_default_view_root_containerDOM ) {
+				throw Error("No DOM element with id 'set_default_view_root_container'")
+			}
+			const params = new SetDefaultView_Component_React_Params({ projectSearchId })
+			const setDefaultView_Component_React = get_SetDefaultView_Component_React(params);
+
+			ReactDOM.render(
+				setDefaultView_Component_React,
+				set_default_view_root_containerDOM
+			);
+		}
+
+		{
+			//  Put "Share Page" button component on page
+
+			const share_page_root_containerDOM = document.getElementById("share_page_root_container");
+			if ( ! share_page_root_containerDOM ) {
+				throw Error("No DOM element with id 'share_page_root_container'")
+			}
+
+			const sharePage_MainPage_Component = getSharePage_MainPage_Component({ projectSearchIds });
+
+			ReactDOM.render(
+				sharePage_MainPage_Component,
+				share_page_root_containerDOM
+			);
+		}
+
 		this._loadCoreData_ProjectSearchIds_Based =
 			new LoadCoreData_ProjectSearchIds_Based( {
 				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,

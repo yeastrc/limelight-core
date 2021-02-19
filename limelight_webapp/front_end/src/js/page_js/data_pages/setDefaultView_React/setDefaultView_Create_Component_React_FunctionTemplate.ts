@@ -29,6 +29,8 @@ export class SetDefaultView_Component_React_Params {
         this.projectSearchId = projectSearchId
         this.experimentId = experimentId
     }
+
+    private _DO_NOT_Call() {} // Only here to force use of constructor
 }
 
 

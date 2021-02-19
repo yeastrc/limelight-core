@@ -7,17 +7,33 @@
  */
 
 
-//  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-// When user adds or removes in the experiment builder, the data in 'conditionGroupsDataContainer' is removed.  
-
-//  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 import React from 'react'
 
-import { SharePage_dataPages } from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
+import {sharePage_MainPage_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/sharePage_dataPages_Common";
 
+
+/**
+ *
+ * @param experimentId
+ * @param projectSearchIds
+ */
+export const getSharePage_MainPage_Component = function (
+    {
+        experimentId,
+        projectSearchIds
+    } : {
+    experimentId? : number
+    projectSearchIds : Array<number>;
+
+    }) : JSX.Element {
+
+    return (
+        <SharePage_Component
+            experimentId={ experimentId }
+            projectSearchIds={ projectSearchIds}
+        />
+    );
+}
 
 /**
  * 
@@ -60,10 +76,7 @@ export class SharePage_Component extends React.Component< SharePage_Component_Pr
 
         event.preventDefault();
 
-        const sharePage_dataPages = new SharePage_dataPages();
-        sharePage_dataPages.initializeFrom_SharePage_Component_React({ experimentId : this.props.experimentId, projectSearchIds : this.props.projectSearchIds });
-
-        sharePage_dataPages.sharePage_MainPage_ButtonClicked_SharePage_Component_React();
+        sharePage_MainPage_ProcessRequest_Common({ experimentId : this.props.experimentId, projectSearchIds : this.props.projectSearchIds })
     }
     
     /**
