@@ -17,5 +17,3 @@ import _dummy_template_template_bundle =
 
 export { Handlebars, _dummy_template_template_bundle }
 
-
-// import { Handlebars, _dummy_template_template_bundle } from './projectPage_Root_Handlebars_Include'

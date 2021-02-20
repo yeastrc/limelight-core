@@ -11,8 +11,6 @@ import _set_default_view_template_bundle = require("../../../../../handlebars_te
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
-import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
 import {setDefaultView_dataPages_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages_Common";
 
 

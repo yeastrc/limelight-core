@@ -17,7 +17,6 @@
 
 //  Import Handlebars templates
 
-// @ts-ignore
 import { Handlebars, _project_page__project_info_section_all_users_interaction_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';

@@ -23,7 +23,6 @@
 
 //  Import Handlebars templates
 
-// @ts-ignore
 import { _project_page__saved_views_section_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 

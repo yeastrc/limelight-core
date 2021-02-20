@@ -11,10 +11,8 @@
 
 //  !! Next 2 imports import AMD format code so use import ... = require('...');
 
-// @ts-ignore
 import Handlebars = require('handlebars/runtime');
 
-// @ts-ignore
 import _protein_table_template_bundle = require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
 
 

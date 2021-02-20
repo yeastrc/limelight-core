@@ -15,7 +15,6 @@
 
 //  This is required in this 'RootLaunch' file to add Handlebars before anything else is added to the bundle
 
-// @ts-ignore
 import { Handlebars, _dummy_template_template_bundle } from './proteinViewPage_RootLaunch_ImportHandlebars';
 
  import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';

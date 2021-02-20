@@ -14,8 +14,6 @@
 
 ///////////////////////////////////////////
 
-
-// @ts-ignore
 import { LZString } from 'libs/lz-string/lz-string.js';
 
 /**

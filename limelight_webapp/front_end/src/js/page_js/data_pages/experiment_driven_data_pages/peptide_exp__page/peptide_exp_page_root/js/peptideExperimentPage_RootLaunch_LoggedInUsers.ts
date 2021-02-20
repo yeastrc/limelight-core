@@ -10,7 +10,6 @@
  * 
  */
 
-// @ts-ignore
 import { Handlebars, _dummy_template_template_bundle } from './peptideExperimentPage_RootLaunch_ImportHandlebars'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';

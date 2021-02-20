@@ -14,7 +14,6 @@
 
 //  Import Handlebars templates
 
-// @ts-ignore
 import { _project_page__saved_views_section_loggedin_users_template } from './projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
