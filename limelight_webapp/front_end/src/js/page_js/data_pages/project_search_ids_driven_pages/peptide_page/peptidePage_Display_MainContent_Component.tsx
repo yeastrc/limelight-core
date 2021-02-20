@@ -113,6 +113,11 @@ import {
     GetDataTableDataObjects_MultipleSearch_SingleProtein_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
 import {DataTable_RootTableObject} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
+import {
+    limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
+    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
+} from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+import {get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/jsx/modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout";
 
 
 /////////////////////////
@@ -1208,12 +1213,22 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                 });
 
-                //  Show loading message for peptide list since may take time to load new values from DB
-                // reportedPeptideList_ShowLoadingMessage();
+                //  Show Loading Message
+
+                let modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF = undefined;
+                {
+                    const overlayComponent = get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage({});
+
+                    modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay =
+                        limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
+                }
 
                 promise.catch( (reason) => {
                     try {
                         this._load_PsmOpenModificationMasses_InProgress = false;
+
+                        //  Remove Loading Message
+                        modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
                         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 
@@ -1228,6 +1243,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 promise.then( (result) => {
                     try {
                         this._load_PsmOpenModificationMasses_InProgress = false;
+
+                        //  Remove Loading Message
+                        modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
                         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 

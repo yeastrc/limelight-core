@@ -25,14 +25,26 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox_Props {
     title : string
     close_OnBackgroundClick : boolean
     callbackOnClicked_Close : () => void;
+    titleBar_LeaveSpaceFor_CloseX?: boolean  //  In formatting the title bar, leave space for the Close "X" even if don't show it
 
-    constructor( { heightMaximum, heightMinimum, widthMaximum, title, hideOnBackgroundClick, callbackOnClicked_Close } : {
+    /**
+     *
+     * @param heightMaximum
+     * @param heightMinimum
+     * @param widthMaximum
+     * @param title
+     * @param hideOnBackgroundClick
+     * @param callbackOnClicked_Close - Don't show "X" if callbackOnClicked_Close is not populated
+     * @param titleBar_LeaveSpaceFor_CloseX - In formatting the title bar, leave space for the Close "X" even if don't show it
+     */
+    constructor( { heightMaximum, heightMinimum, widthMaximum, title, hideOnBackgroundClick, callbackOnClicked_Close, titleBar_LeaveSpaceFor_CloseX } : {
         heightMaximum : number
         heightMinimum : number
         widthMaximum : number
         title : string
         hideOnBackgroundClick : boolean
-        callbackOnClicked_Close : () => void;
+        callbackOnClicked_Close? : () => void;   // Don't show "X" if callbackOnClicked_Close is not populated
+        titleBar_LeaveSpaceFor_CloseX?: boolean  //  In formatting the title bar, leave space for the Close "X" even if don't show it
     }) {
         this.heightMaximum = heightMaximum
         this.heightMinimum = heightMinimum
@@ -116,8 +128,13 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
                 <div className="modal-overlay-container modal-overlay-flexbox-overflow-control-no-header-container"
                      style={ modal_overlay_container_css }>
 
-                    <div className="top-level fixed-heightMaximum modal-overlay-header" style={ { width: "100%" } }>
-                        <h1 className="modal-overlay-X-icon" onClick={ this.props.callbackOnClicked_Close } >X</h1>
+                    <div className="top-level fixed-height modal-overlay-header" style={ { width: "100%" } }>
+                        { ( this.props.callbackOnClicked_Close ) ? (
+                            <h1 className="modal-overlay-X-icon" onClick={ this.props.callbackOnClicked_Close } >X</h1>
+                        ): null }
+                        { ( ( ! this.props.callbackOnClicked_Close ) && ( this.props.titleBar_LeaveSpaceFor_CloseX ) ) ? (
+                            <h1 className="modal-overlay-X-icon" style={ { visibility: "hidden" } } >X</h1>
+                        ): null }
                         <h1 className="modal-overlay-header-text">{ this.props.title }</h1>
                     </div>
 

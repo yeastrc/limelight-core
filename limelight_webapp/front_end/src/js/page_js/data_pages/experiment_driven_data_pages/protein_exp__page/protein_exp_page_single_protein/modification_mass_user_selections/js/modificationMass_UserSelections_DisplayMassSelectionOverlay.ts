@@ -9,10 +9,7 @@
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import { 
-    modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnNumber_Function
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
@@ -28,14 +25,8 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
-import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
-// import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
-
 
 //  Modal Dialog for selecting mod masses when count > _MAX_MODS_DISPLAY_NON_SELECTED
-
-const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH = 800;
-const _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT = 600;
 
 /**
  *
@@ -154,9 +145,6 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
     _createAndShowModalOverlay( { modUniqueMassesWithTheirPsmCountsArray }  : { modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> } ) {
 
         const overlayComponent = get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout({
-            width : _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_WIDTH,
-            height : _MOD_MASS_ENTRY_SELECTION_DIALOG_OVERALL_HEIGHT,
-            title : 'Change Modification Selection',
             proteinName : this._proteinNames,
             modUniqueMassesWithTheirPsmCountsArray,
             modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,

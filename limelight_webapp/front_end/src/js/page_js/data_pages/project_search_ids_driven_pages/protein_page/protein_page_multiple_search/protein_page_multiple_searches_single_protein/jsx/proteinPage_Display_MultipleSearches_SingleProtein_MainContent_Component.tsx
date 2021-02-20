@@ -114,7 +114,11 @@ import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {searchSubGroup_Get_Selected_SearchSubGroupIds} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
 import {userSearchString_LocationsOn_ProteinSequence_Compute} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/userSearchString_LocationsOn_ProteinSequence/userSearchString_LocationsOn_ProteinSequence_Compute";
-import {PeptidePage_Display_MainContent_Component_Props} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component";
+import {get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/jsx/modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout";
+import {
+    limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
+    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
+} from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 
 
 /////////////////////////
@@ -1066,12 +1070,22 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                 });
 
-                //  Show loading message for peptide list since may take time to load new values from DB
-                // reportedPeptideList_ShowLoadingMessage();
+                //  Show Loading Message
+
+                let modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF = undefined;
+                {
+                    const overlayComponent = get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage({});
+
+                    modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay =
+                        limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
+                }
 
                 promise.catch( (reason) => {
                     try {
                         this._load_PsmOpenModificationMasses_InProgress = false;
+
+                        //  Remove Loading Message
+                        modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
                         this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
 
@@ -1087,6 +1101,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                     try {
                         this._load_PsmOpenModificationMasses_InProgress = false;
 
+                        //  Remove Loading Message
+                        modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
+
                         this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
 
                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
@@ -1094,7 +1111,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                         //  Now open the overlay
 
-                        this._openModificationMass_OpenUserSelections_Overlay_ActualOpenOverlay()
+                        this._openModificationMass_OpenUserSelections_Overlay_ActualOpenOverlay();
 
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -1110,7 +1127,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             window.setTimeout( () => {
                 //  Now open the overlay
 
-                this._openModificationMass_OpenUserSelections_Overlay_ActualOpenOverlay()
+                this._openModificationMass_OpenUserSelections_Overlay_ActualOpenOverlay();
 
             }, 0 );
         } catch( e ) {

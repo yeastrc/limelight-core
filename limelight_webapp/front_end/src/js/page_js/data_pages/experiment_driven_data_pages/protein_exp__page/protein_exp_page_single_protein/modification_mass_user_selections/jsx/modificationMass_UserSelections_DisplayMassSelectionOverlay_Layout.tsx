@@ -7,7 +7,6 @@
  */
 
 import React from 'react'
-import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
 import {
     DataTable_Column,
     DataTable_DataRow_ColumnEntry,
@@ -24,6 +23,16 @@ import {
     Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer,
     Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer_CellMgmt_Data
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__TableEntryContainer";
+import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+
+//  Main Dialog
+
+const _DIALOG_TITLE = 'Change Modification Selection';
+const _Overlay_Width_Min = 800;
+const _Overlay_Width_Max = 800;
+const _Overlay_Height_Min = 400;
+const _Overlay_Height_Max = 1000;
 
 /**
  *
@@ -47,17 +56,52 @@ class TableRowClickHandlerParameter_Class {
 /**
  *
  */
+export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage = function (
+    {
+        callbackOn_Cancel_Close_Clicked
+    } : {
+        callbackOn_Cancel_Close_Clicked? : () => void;
+
+    }) : JSX.Element {
+
+    return (
+        <ModalOverlay_Limelight_Component_v001_B_FlexBox
+            widthMinimum={ _Overlay_Width_Min }
+            widthMaximum={ _Overlay_Width_Max }
+            heightMinimum={ _Overlay_Height_Min }
+            heightMaximum={ _Overlay_Height_Max }
+            title={ _DIALOG_TITLE }
+            callbackOnClicked_Close={ callbackOn_Cancel_Close_Clicked }
+            close_OnBackgroundClick={ false }
+            titleBar_LeaveSpaceFor_CloseX={ true }
+        >
+
+
+            <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+            >
+                <div style={ { marginBottom: 12, fontWeight: "bold", fontSize: 24, textAlign: "center" } }>
+                    LOADING DATA
+                </div>
+                <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" }}>
+                    <Spinner_Limelight_Component/>
+                </div>
+            </div>
+
+        </ModalOverlay_Limelight_Component_v001_B_FlexBox>
+    );
+}
+
+/**
+ *
+ */
 export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout = function(
     {
-        height, width, title, proteinName,
+        proteinName,
         modUniqueMassesWithTheirPsmCountsArray,
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
         callbackOn_Cancel_Close_Clicked,
         callback_updateSelectedMods
     } : {
-        height : number
-        width : number
-        title : string
         proteinName : string
         modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
@@ -68,9 +112,6 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
 
     return (
         <ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component
-            width={ width }
-            height={ height }
-            title={ title }
             proteinName={ proteinName }
             modUniqueMassesWithTheirPsmCountsArray={ modUniqueMassesWithTheirPsmCountsArray }
             selectedModificationMasses_MapClone={ modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__ExcludingNoModification_AsMapClone() }
@@ -84,9 +125,6 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
  *
  */
 interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_Props {
-    height : number
-    width : number
-    title : string
     proteinName : string
     modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
     selectedModificationMasses_MapClone : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
@@ -109,9 +147,6 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
     private _updateButtonClicked_BindThis = this._updateButtonClicked.bind(this);
     private _dataRowClickHandler_BindThis = this._dataRowClickHandler.bind(this);
 
-    private _above_mod_list_block_Ref : React.RefObject<HTMLDivElement>
-    private _mods_selection_dialog_list_bounding_box_Ref : React.RefObject<HTMLDivElement>
-
     private _modificationMasses_Selected_InProgress : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 
     /**
@@ -119,9 +154,6 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
      */
     constructor(props: ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_Props) {
         super(props);
-
-        this._above_mod_list_block_Ref = React.createRef<HTMLDivElement>();
-        this._mods_selection_dialog_list_bounding_box_Ref = React.createRef<HTMLDivElement>();
 
         this._modificationMasses_Selected_InProgress = props.selectedModificationMasses_MapClone
 
@@ -135,17 +167,9 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
     /**
      *
      */
-    componentDidMount(): void {
-
-        //  Adjust scrollable div max-height
-
-        const aboveListBlockHeight= this._above_mod_list_block_Ref.current.getBoundingClientRect().height
-
-        const scrollableDivMaxHeight = this.props.height - 125 - aboveListBlockHeight;
-        const scrollableDivMaxHeightPxString = scrollableDivMaxHeight + "px";
-
-        this._mods_selection_dialog_list_bounding_box_Ref.current.style.maxHeight = scrollableDivMaxHeightPxString;
-    }
+    // componentDidMount(): void {
+    //
+    // }
 
     /**
      *
@@ -397,58 +421,57 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         let mods_selection_dialog_list_bounding_box_Width = 295;
 
         return (
-            <ModalOverlay_Limelight_Component
-                width={ this.props.width }
-                height={ this.props.height }
-                title={ this.props.title }
+            <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                widthMinimum={ _Overlay_Width_Min }
+                widthMaximum={ _Overlay_Width_Max }
+                heightMinimum={ _Overlay_Height_Min }
+                heightMaximum={ _Overlay_Height_Max }
+                title={ _DIALOG_TITLE }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false }>
 
-                <div >
+                <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                     style={ { marginBottom: 12, fontWeight: "bold" } }
+                    // style={ { padding : 6 } }
+                >
 
-                    <div className=" modal-overlay-body-standard-padding ">
-
-                        <div ref={ this._above_mod_list_block_Ref }>   {/*className=" selector_mods_selection_dialog_above_mod_list_block "*/}
-                            {/* may need to measure height and adjust max-height of selector_mods_selection_dialog_list_bounding_box */}
-
-                            { (this.props.proteinName) ? (
-                                <div style={ { fontWeight: "bold", marginBottom: 10 } }>
-                                    Protein Name (from FASTA): { this.props.proteinName }
-                                </div>
-                            ) : null }
-
-                            <div style={ { fontWeight: "bold", marginBottom: 10 } }>
-                                Select Modification Masses to filter on.
-                                (Click to select/deselect)
-                            </div>
+                    { (this.props.proteinName) ? (
+                        <div style={ { fontWeight: "bold", marginBottom: 10 } }>
+                            Protein Name (from FASTA): { this.props.proteinName }
                         </div>
-                            {/* max-height: value tied to height of total modal overlay, which is specified in JS code */}
-                            {/* width: value tied to width of list entry */}
+                    ) : null }
 
-                        <div ref={ this._mods_selection_dialog_list_bounding_box_Ref }
-                            style={ {  maxHeight : 300, overflowY: "auto", width: mods_selection_dialog_list_bounding_box_Width, overflowX: "hidden" } } // max-height updated after mount
-                            // className=" mod-mass-select-dialog-bounding-box  "
-                        >
-
-                            <div  >
-
-                                <DataTable_TableRoot
-                                    tableObject={ this.state.massDisplay_DataTable_RootTableObject }
-                                    resortTableOnUpdate={ true }
-                                />
-
-                            </div>
-                        </div>
-
-                        <div style={ { marginTop: 15 } }>
-                            <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
-
-                            <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
-                        </div>
+                    <div style={ { fontWeight: "bold", marginBottom: 10 } }>
+                        Select Modification Masses to filter on.
+                        (Click to select/deselect)
                     </div>
                 </div>
-            </ModalOverlay_Limelight_Component>
+
+                <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                     style={ { overflowY: "auto", overflowX: "hidden", width: mods_selection_dialog_list_bounding_box_Width } }
+                >
+                    <div  >
+
+                        <DataTable_TableRoot
+                            tableObject={ this.state.massDisplay_DataTable_RootTableObject }
+                            resortTableOnUpdate={ true }
+                        />
+
+                    </div>
+                </div>
+                <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                    // style={ { padding : 6 } }
+                >
+                    <div style={ { marginTop: 15 } }>
+                        <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+
+                        <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
+                    </div>
+                </div>
+
+            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
         );
     }
 }
+
 
