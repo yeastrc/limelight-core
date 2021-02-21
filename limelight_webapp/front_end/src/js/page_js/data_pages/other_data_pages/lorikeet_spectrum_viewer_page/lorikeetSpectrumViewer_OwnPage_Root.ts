@@ -97,14 +97,17 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 
 		promise_lorikeetSpectrumViewer_LoadDataFromServer.then( ({ loadedDataFromServer }) => {
 			try {
+				const lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded = new LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded({ projectSearchId, psmId });
+
 				let dataTable_RootTableDataObject : DataTable_RootTableDataObject = undefined;
 
 				if ( openmodPosition === undefined || openmodPosition === null ) {
 					dataTable_RootTableDataObject =
-						lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData( { psmId_Selection : psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } );
+						lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData( {
+							psmId_Selection : psmId, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server, lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded
+						} );
 				}
 
-				const lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded = new LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded({ projectSearchId, psmId });
 				lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.initialize();
 				lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.addLorikeetToPage({ loadedDataFromServer, dataTable_RootTableDataObject });
 			} catch( e ) {

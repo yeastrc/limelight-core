@@ -56,6 +56,7 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ProteinList_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinList_ExpPage_CentralStateManagerObjectClass";
+import {ProteinExperiment__CreateProteinDataTable_ChartColumn_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ChartColumn";
 
 
 
@@ -159,6 +160,8 @@ export class ProteinExperimentPage_Display {
 
     private _proteinExperiment__CreateProteinDataTableColumns_Class : ProteinExperiment__CreateProteinDataTableColumns_Class;
 
+    private _proteinExperiment__CreateProteinDataTable_ChartColumn_Class : ProteinExperiment__CreateProteinDataTable_ChartColumn_Class
+
 
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
 
@@ -249,6 +252,8 @@ export class ProteinExperimentPage_Display {
 		this._loadedDataCommonHolder = new ProteinView_LoadedDataCommonHolder();
 
 		this._proteinExperiment__CreateProteinDataTableColumns_Class = new ProteinExperiment__CreateProteinDataTableColumns_Class();
+
+		this._proteinExperiment__CreateProteinDataTable_ChartColumn_Class = new ProteinExperiment__CreateProteinDataTable_ChartColumn_Class();
     }
 	
 
@@ -386,7 +391,7 @@ export class ProteinExperimentPage_Display {
         this._usedForCurrentDisplay__experiment_SelectedConditionIdsAndPaths_AsJSON = JSON.stringify( this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getDataForEncoding() );
 
         //  Cancel Queued DOM updates to add PSM Count Charts
-        this._proteinExperiment__CreateProteinDataTableColumns_Class.cancel_scheduledDOMUpdates();
+        this._proteinExperiment__CreateProteinDataTable_ChartColumn_Class.cancel_scheduledDOMUpdates();
 
         //  Update Page
 
@@ -413,7 +418,7 @@ export class ProteinExperimentPage_Display {
         // console.warn("_proteinGroup_SelectionValues_Changed_Callback")
 
         //  Cancel Queued DOM updates to add PSM Count Charts
-        this._proteinExperiment__CreateProteinDataTableColumns_Class.cancel_scheduledDOMUpdates();
+        this._proteinExperiment__CreateProteinDataTable_ChartColumn_Class.cancel_scheduledDOMUpdates();
 
         //  Update Page
 
@@ -554,7 +559,8 @@ export class ProteinExperimentPage_Display {
             conditions_for_condition_group_with_their_project_search_ids,
             proteinGroups_ArrayOf_ProteinGroup : createProteinDisplayData_Result.proteinGroups_ArrayOf_ProteinGroup,
             proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
-            proteinExperiment__CreateProteinDataTableColumns_Class : this._proteinExperiment__CreateProteinDataTableColumns_Class
+            proteinExperiment__CreateProteinDataTableColumns_Class : this._proteinExperiment__CreateProteinDataTableColumns_Class,
+            proteinExperiment__CreateProteinDataTable_ChartColumn_Class : this._proteinExperiment__CreateProteinDataTable_ChartColumn_Class
         } )
 
         const rootTableDataObject: DataTable_RootTableDataObject = dataTable_RootTableDataObject;

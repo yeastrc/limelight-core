@@ -602,18 +602,11 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         {
             let addPassingForChildContent = false;
 
-            if (this.state.tableOptions.dataRow_GetChildTableData || this.state.tableOptions.dataRow_GetChildTableData_ViaPromise ||
-                this.state.tableOptions.dataRow_GetChildTable_ReturnReactComponent ) {
+            //  Check all data row entries for show child data function callback
+
+            if ( _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback( this.state.tableDataObject) ) {
 
                 addPassingForChildContent = true;
-
-            } else {
-                //  Check all data row entries for show child data function callback
-
-                if ( _anyDataRow_Has_ChildContent_ChildDataTable_Function_Callback( this.state.tableDataObject) ) {
-
-                    addPassingForChildContent = true;
-                }
             }
 
             if ( addPassingForChildContent ) {

@@ -4,14 +4,13 @@
  * Show Data Table Data Row Child Data Containing React Component
  */
 
-import React, { ComponentType } from 'react'
+import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 
 import { 
-    DataTable_TableOptions, DataTable_TableOptions_dataRow_GetChildTableData_RequestParm, DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-    DataTable_Column, DataTable_DataRowEntry, DataTable_RootTableObject 
+    DataTable_RootTableObject
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';

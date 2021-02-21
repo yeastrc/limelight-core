@@ -5,28 +5,20 @@
  */
 
 import {
-
-    DataTable_ColumnId,
-
     DataTable_RootTableObject,
-    
+
     DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-    
+
     DataTable_Column,
-    DataTable_SortColumnsInfoEntry,
 
     DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry_DownloadTable
 
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
-    
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 //////////////////
@@ -50,7 +42,7 @@ class FAKE_DataRow_GetChildTableDataParameter_FakeChildTableTesting {
 }
 
 
-const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChildTableData_RequestParm: DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject => {
+const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject => {
     if ( ! dataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) {
         throw Error("No value in dataTable_TableOptions_dataRow_GetChildTableData_RequestParm")
     }
@@ -64,39 +56,49 @@ const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChild
     const dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter_FromParam as FAKE_DataRow_GetChildTableDataParameter_FakeChildTableTesting
     // dataRow_GetChildTableDataParameter is the value in dataTable_DataRowEntry.dataRow_GetChildTableDataParameter
     console.warn( "FAKE function fake_dataRow_GetChildTableData:  dataRow_GetChildTableData value: " , dataRow_GetChildTableDataParameter ) 
-    console.warn( "FAKE function fake_dataRow_GetChildTableData:  dataRow_GetChildTableData.fakedata value: " , dataRow_GetChildTableDataParameter.fakedata ) 
+    console.warn( "FAKE function fake_dataRow_GetChildTableData:  dataRow_GetChildTableData.fakedata value: " , dataRow_GetChildTableDataParameter.fakedata )
 
+    //
+    // return as needed:
+    //
+    //     DataTable_RootTableDataObject_Both_ColumnArrays {
+    //     dataTable_Columns : Array<DataTable_Column>
+    //     dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable>
+    // }
 
     const dataTable_Columns : Array<DataTable_Column> = [];
+    const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     {
+        const displayName = "FAKE COLUMN";
+
         const dataTable_Column = new DataTable_Column({
             id : "repPeptStng", // Used for tracking sort order. Keep short
-            displayName : "FAKE COLUMN",
+            displayName,
             width : 400,
             sortable : true,
             style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
+        const displayName = "FAKE COLUMN 2";
+
         const dataTable_Column = new DataTable_Column({
             id : "repPeptStng2", // Used for tracking sort order. Keep short
-            displayName : "FAKE COLUMN 2",
+            displayName,
             width : 410,
             sortable : true,
             style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
@@ -104,49 +106,87 @@ const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChild
     {
         {
             const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+            const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
             {
+                const valueDisplay = "row 1 col 1 val";
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : "row 1 col 1 val",
+                    searchTableData,
+                    valueDisplay,
                     valueSort : "row 1 col 1 val"
                 })
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
             {
+                const valueDisplay = "row 1 col 2 val";
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : "row 1 col 2 val",
+                    searchTableData,
+                    valueDisplay,
                     valueSort : "row 1 col 2 val"
                 })
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
+
+            const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
             const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                 uniqueId : 1,
                 sortOrder_OnEquals : 1,
-                columnEntries
+                columnEntries,
+                dataTable_DataRowEntry_DownloadTable
             })
             dataTable_DataRowEntries.push( dataTable_DataRowEntry );
         }
         {
             const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+            const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
             {
+                const valueDisplay = "row 2 col 1 val";
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : "row 2 col 1 val",
+                    searchTableData,
+                    valueDisplay ,
                     valueSort : "row 2 col 1 val"
                 })
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
             {
+                const valueDisplay = "row 2 col 2 val";
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : "row 2 col 2 val",
+                    searchTableData,
+                    valueDisplay,
                     valueSort : "row 2 col 2 val"
                 })
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
+
+            const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
             const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                 uniqueId : 2,
                 sortOrder_OnEquals : 2,
-                columnEntries
+                columnEntries,
+                dataTable_DataRowEntry_DownloadTable
             })
             dataTable_DataRowEntries.push( dataTable_DataRowEntry );
         }
@@ -154,14 +194,12 @@ const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChild
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
         columns : dataTable_Columns,
+        columns_tableDownload : dataTable_Column_DownloadTable_Entries,
         dataTable_DataRowEntries
     });
     
 
-    const tableOptions = new DataTable_TableOptions({
-        //  Comment out since no further drill down to child table
-        // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
-    });
+    const tableOptions = new DataTable_TableOptions({});
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

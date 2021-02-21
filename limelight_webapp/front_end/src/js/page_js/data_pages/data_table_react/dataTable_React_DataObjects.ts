@@ -78,144 +78,13 @@ class DataTable_RootTableObject {
  */
 class DataTable_TableOptions {
 
-    //  Optional fields
-
-    //        It is assumed that dataRowClickHandler and dataRow_GetChildTableData won't be both populated but it will be supported
-
-    //  If dataRowClickHandler is populated, then the row will have CSS class clickable so mouse pointer will show ...
-
-    /**
-     * General User clicked the row, call this function.
-     */
-    dataRowClickHandler?( param : DataTable_TableOptions_dataRowClickHandler_RequestParm ) : void; 
-
-    //    If  'dataRow_GetChildTableData', 'dataRow_GetChildTableData_ViaPromise', or 'dataRow_GetChildTable_ReturnReactComponent' is populated,
-    //      then the row will have the expansion indicator to the left and
-    //      clicking on the row will show/hide the child data table under the row.
-
-    //          !!  A MAX 1 of those 3 properties is allowed to be set  !!
-
-    /**
-     * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
-     * @returns object of class DataTable_RootTableObject
-     */
-    dataRow_GetChildTableData?( param : DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject;
-
-    /**
-     * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
-     * @returns Promise that resolves to object of class DataTable_RootTableObject
-     */
-    dataRow_GetChildTableData_ViaPromise?( param : DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm ) : Promise<DataTable_RootTableObject>;
-
-    /**
-     * Call to get Data Table data for a Child table of this row in table, returning object of class that extends React.Component
-     * @returns object of class that extends React.Component
-     */
-    dataRow_GetChildTable_ReturnReactComponent?( param : DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm ) : React.Component;
-
     private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
 
-    constructor({ dataRowClickHandler, dataRow_GetChildTableData, dataRow_GetChildTableData_ViaPromise, dataRow_GetChildTable_ReturnReactComponent } : {
-
-        //  If dataRowClickHandler is populated, then the row will have CSS class clickable so mouse pointer will show ...
-
-        /**
-         * General User clicked the row, call this function.
-         */
-        dataRowClickHandler?( param : DataTable_TableOptions_dataRowClickHandler_RequestParm ) : void;
-
-        //    If  'dataRow_GetChildTableData', 'dataRow_GetChildTableData_ViaPromise', or 'dataRow_GetChildTable_ReturnReactComponent' is populated,
-        //      then the row will have the expansion indicator to the left and
-        //      clicking on the row will show/hide the child data table under the row.
-
-        //          !!  A MAX 1 of those 3 properties is allowed to be set  !!
-
-        /**
-         * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
-         * @returns object of class DataTable_RootTableObject
-         */
-        dataRow_GetChildTableData?( param : DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject;
-
-        /**
-         * Call to get Data Table data for a Child table of this row in table, returning object of class DataTable_RootTableObject
-         * @returns Promise that resolves to object of class DataTable_RootTableObject
-         */
-        dataRow_GetChildTableData_ViaPromise?( param : DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm ) : Promise<DataTable_RootTableObject>;
-
-        /**
-         * Call to get Data Table data for a Child table of this row in table, returning object of class that extends React.Component
-         * @returns object of class that extends React.Component
-         */
-        dataRow_GetChildTable_ReturnReactComponent?( param : DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm ) : React.Component;
+    constructor({} : {
 
     }) {
-        if ( dataRow_GetChildTableData && ( dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTable_ReturnReactComponent ) ) {
-            const msg = "DataTable_TableOptions: dataRow_GetChildTableData cannot have a value if dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTable_ReturnReactComponent has a value"
-            console.warn( msg )
-            throw Error( msg )
-        }
-        if ( dataRow_GetChildTableData_ViaPromise && ( dataRow_GetChildTableData || dataRow_GetChildTable_ReturnReactComponent ) ) {
-            const msg = "DataTable_TableOptions: dataRow_GetChildTableData_ViaPromise cannot have a value if dataRow_GetChildTableData || dataRow_GetChildTable_ReturnReactComponent has a value"
-            console.warn( msg )
-            throw Error( msg )
-        }
-        if ( dataRow_GetChildTable_ReturnReactComponent && ( dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTableData ) ) {
-            const msg = "DataTable_TableOptions: dataRow_GetChildTable_ReturnReactComponent cannot have a value if dataRow_GetChildTableData_ViaPromise || dataRow_GetChildTableData has a value"
-            console.warn( msg )
-            throw Error( msg )
-        }
-
-        this.dataRowClickHandler = dataRowClickHandler;
-        this.dataRow_GetChildTableData = dataRow_GetChildTableData;
-        this.dataRow_GetChildTableData_ViaPromise = dataRow_GetChildTableData_ViaPromise;
-        this.dataRow_GetChildTable_ReturnReactComponent = dataRow_GetChildTable_ReturnReactComponent;
     }
 }
-
-/**
- * Param to DataTable_TableOptions.dataRowClickHandler
- */
-class DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect {
-    left : number
-    right : number
-    top : number
-    bottom : number
-}
-
-/**
- * Param to DataTable_TableOptions.dataRowClickHandler
- */
-class DataTable_TableOptions_dataRowClickHandler_RequestParm {
-    event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
-    rowDOM_Rect : DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect
-    tableRowClickHandlerParameter : unknown  //  From property DataTable_DataRowEntry.tableRowClickHandlerParameter
-}
-
-type DataTable_TableOptions_dataRow_GetChildTableData = ( param : DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) => DataTable_RootTableObject;
-
-/**
- * Param to DataTable_TableOptions.dataRow_GetChildTableData
- */
-class DataTable_TableOptions_dataRow_GetChildTableData_RequestParm {
-    dataRow_GetChildTableDataParameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTableDataParameter
-}
-
-/**
- * Param to DataTable_TableOptions.dataRow_GetChildTableData_ViaPromise
- */
-class DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm {
-    dataRow_GetChildTableData_ViaPromise_Parameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter
-}
-
-/**
- * Param to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent
- */
-class DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm {
-    event : React.MouseEvent<HTMLTableRowElement, MouseEvent>
-    dataRow_GetChildTable_ReturnReactComponent_Parameter : unknown  //  From property DataTable_DataRowEntry.dataRow_GetChildTable_ReturnReactComponent_Parameter
-}
-
-
 
 /////
 
@@ -231,6 +100,27 @@ class DataTable_SortColumnsInfoEntry {
     sortPosition : number
 }
 
+
+/**
+ * Data Table - columns: Array<DataTable_Column> AND columns_tableDownload: Array<DataTable_Column_DownloadTable>
+ */
+class DataTable_RootTableDataObject_Both_ColumnArrays {
+
+    columns: Array<DataTable_Column>
+    columns_tableDownload: Array<DataTable_Column_DownloadTable>
+
+    constructor(
+        {
+            columns, columns_tableDownload
+        } : {
+            columns: Array<DataTable_Column>
+            columns_tableDownload: Array<DataTable_Column_DownloadTable>
+        }) {
+        this.columns = columns;
+        this.columns_tableDownload = columns_tableDownload;
+    }
+}
+
 //////////////////////////////
 //////////////////////////////
 
@@ -244,6 +134,7 @@ class DataTable_RootTableDataObject {
     dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
     dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
     columns : Array<DataTable_Column>
+    columns_tableDownload : Array<DataTable_Column_DownloadTable>
 
     /**
      * MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.
@@ -257,13 +148,15 @@ class DataTable_RootTableDataObject {
      * @param highlightingOneOrMoreRowsWithBorder - MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.  Can be true neither of them are true to hold space for when setting them true
      *
      */
-    constructor({ columns, dataTable_DataRowEntries, dataTable_DataGroupRowEntries, highlightingOneOrMoreRowsWithBorder } : {
+    constructor({ columns, columns_tableDownload, dataTable_DataRowEntries, dataTable_DataGroupRowEntries, highlightingOneOrMoreRowsWithBorder } : {
         dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
         dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
         columns : Array<DataTable_Column>
+        columns_tableDownload : Array<DataTable_Column_DownloadTable>
         highlightingOneOrMoreRowsWithBorder? : boolean
     }) {
         this.columns = columns;
+        this.columns_tableDownload = columns_tableDownload;
         this.dataTable_DataRowEntries = dataTable_DataRowEntries;
         this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
         this.highlightingOneOrMoreRowsWithBorder = highlightingOneOrMoreRowsWithBorder
@@ -283,6 +176,16 @@ class DataTable_RootTableDataObject {
         }
         if ( ! ( dataTable_RootTableDataObject.columns.length > 0 ) ) {
             const msg = 'DataTable_RootTableDataObject.constructor: ( ! ( dataTable_RootTableDataObject.columns.length > 0 ) )';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( ! dataTable_RootTableDataObject.columns_tableDownload ) {
+            const msg = 'DataTable_RootTableDataObject.constructor: ( ! columns_tableDownload )';
+            console.warn( msg )
+            throw Error( msg );
+        }
+        if ( ! ( dataTable_RootTableDataObject.columns_tableDownload.length > 0 ) ) {
+            const msg = 'DataTable_RootTableDataObject.constructor: ( ! ( dataTable_RootTableDataObject.columns_tableDownload.length > 0 ) )';
             console.warn( msg )
             throw Error( msg );
         }
@@ -313,7 +216,8 @@ class DataTable_RootTableDataObject {
     shallowClone() : DataTable_RootTableDataObject {
 
         const clone = new DataTable_RootTableDataObject({
-            columns : this.columns, dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries,
+            columns : this.columns, columns_tableDownload: this.columns_tableDownload,
+            dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries,
             highlightingOneOrMoreRowsWithBorder : this.highlightingOneOrMoreRowsWithBorder
         });
         return clone;
@@ -353,12 +257,6 @@ class DataTable_Column {
 
     //  graphWidth : number;  //  Not Supported Yet
 
-    //  Externally managed table cell contents
-
-    cellMgmt_External?: DataTable_cellMgmt_External
-
-    cellMgmt_ExternalReactComponent?: DataTable_cellMgmt_ExternalReactComponent
-
     //  For Header:
 
     id: DataTable_ColumnId
@@ -395,7 +293,6 @@ class DataTable_Column {
             graphWidth,   // width of 'outer' rectangle to represent graphMaxValue
 
             cssClassNameAdditions_HeaderRowCell, cssClassNameAdditions_DataRowCell, style_override_DataRowCell_React,
-            cellMgmt_External, cellMgmt_ExternalReactComponent,
 
             //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
             columnHeader_Tooltip_HTML_TitleAttribute, //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
@@ -422,12 +319,6 @@ class DataTable_Column {
             style_override_DataRowCell_React?: React.CSSProperties; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
             //  graphWidth : number;  //  Not Supported Yet
-
-            //  Externally managed table cell contents
-
-            cellMgmt_External?: DataTable_cellMgmt_External
-
-            cellMgmt_ExternalReactComponent?: DataTable_cellMgmt_ExternalReactComponent
 
             //  For Header:
 
@@ -460,8 +351,6 @@ class DataTable_Column {
         this.cssClassNameAdditions_HeaderRowCell = cssClassNameAdditions_HeaderRowCell;
         this.cssClassNameAdditions_DataRowCell = cssClassNameAdditions_DataRowCell;
         this.style_override_DataRowCell_React = style_override_DataRowCell_React;
-        this.cellMgmt_External = cellMgmt_External;
-        this.cellMgmt_ExternalReactComponent = cellMgmt_ExternalReactComponent;
         this.columnHeader_Tooltip_HTML_TitleAttribute = columnHeader_Tooltip_HTML_TitleAttribute;
         this.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element;
         this.sortable = sortable;
@@ -518,6 +407,29 @@ class DataTable_Column {
             throw Error(msg);
         }
 
+    }
+}
+
+/**
+ * A column in the Download of the Table.
+ */
+class DataTable_Column_DownloadTable {
+
+    cell_ColumnHeader_String : string
+
+    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+
+    /**
+     *
+     */
+    constructor(
+        {
+            cell_ColumnHeader_String
+        } : {
+            cell_ColumnHeader_String : string
+        }) {
+
+        this.cell_ColumnHeader_String = cell_ColumnHeader_String;
     }
 }
 
@@ -614,14 +526,7 @@ class DataTable_DataRowEntry {
     styleOverrides_innerContainingDiv : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
     columnEntries : Array<DataTable_DataRow_ColumnEntry>
 
-    //  ---  options For Data passed through to functions or React components provided in DataTable_Column entry
-
-    tableRowClickHandlerParameter? : unknown  //  Data passed to DataTable_TableOptions.dataRowClickHandler
-    dataRow_GetChildTableDataParameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
-    dataRow_GetChildTableData_ViaPromise_Parameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData_ViaPromise
-
-     // Data passed to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent as well as to the React Component as prop dataRow_GetChildTable_ReturnReactComponent_Parameter
-    dataRow_GetChildTable_ReturnReactComponent_Parameter? : unknown
+    dataTable_DataRowEntry_DownloadTable : DataTable_DataRowEntry_DownloadTable
 
     //  ---  options For providing a callback function here that will NOT be passed any data from this object
 
@@ -665,18 +570,12 @@ class DataTable_DataRowEntry {
             highlightRowWithBackgroundColor, highlightRowWithBorder_peptideFilter_NOT_borderColor, highlightRowWithBorderSolid, highlightRowWithBorderDash,
             row_CSS_Additions, styleOverrides_innerContainingDiv,
             columnEntries,
-
-            //  Old Style parameters used by code passed in DataTable_TableOptions object
-
-            //  Not allowed if tableRowClickHandler_Callback_NoDataPassThrough is populated
-            tableRowClickHandlerParameter,
+            dataTable_DataRowEntry_DownloadTable,
 
             //  Only 1 of the following 3 are allowed to be populated (and none allowed if any of dataRow_GetChildTableData_Return_... or dataRow_Get_RowChildContent_Return_... populated)
-            dataRow_GetChildTableDataParameter,
-            dataRow_GetChildTableData_ViaPromise_Parameter,
-            dataRow_GetChildTable_ReturnReactComponent_Parameter,
-
-            //   Current  approach of passing
+            // dataRow_GetChildTableDataParameter,
+            // dataRow_GetChildTableData_ViaPromise_Parameter,
+            // dataRow_GetChildTable_ReturnReactComponent_Parameter,
 
             tableRowClickHandler_Callback_NoDataPassThrough,
 
@@ -702,10 +601,7 @@ class DataTable_DataRowEntry {
         this.row_CSS_Additions = row_CSS_Additions;
         this.styleOverrides_innerContainingDiv = styleOverrides_innerContainingDiv
         this.columnEntries = columnEntries;
-        this.tableRowClickHandlerParameter = tableRowClickHandlerParameter;
-        this.dataRow_GetChildTableDataParameter = dataRow_GetChildTableDataParameter
-        this.dataRow_GetChildTableData_ViaPromise_Parameter = dataRow_GetChildTableData_ViaPromise_Parameter
-        this.dataRow_GetChildTable_ReturnReactComponent_Parameter = dataRow_GetChildTable_ReturnReactComponent_Parameter;
+        this.dataTable_DataRowEntry_DownloadTable = dataTable_DataRowEntry_DownloadTable
 
         this.tableRowClickHandler_Callback_NoDataPassThrough = tableRowClickHandler_Callback_NoDataPassThrough;
         this.dataRow_GetChildTableData_Return_DataTable_RootTableObject = dataRow_GetChildTableData_Return_DataTable_RootTableObject;
@@ -738,6 +634,11 @@ class DataTable_DataRowEntry {
             console.warn( msg )
             throw Error( msg );
         }
+        if ( dataTable_DataRowEntry.dataTable_DataRowEntry_DownloadTable === undefined || dataTable_DataRowEntry.dataTable_DataRowEntry_DownloadTable === null ) {
+            const msg = 'DataTable_DataRowEntry.constructorDataValidation: dataTable_DataRowEntry_DownloadTable === undefined';
+            console.warn( msg )
+            throw Error( msg );
+        }
         if ( dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor && dataTable_DataRowEntry.highlightRowWithBorderDash ) {
             const msg = 'DataTable_DataRowEntry.constructorDataValidation: highlightRowWithBorder_peptideFilter_NOT_borderColor and highlightRowWithBorderDash cannot both be true';
             console.warn( msg )
@@ -752,41 +653,6 @@ class DataTable_DataRowEntry {
             const msg = 'DataTable_DataRowEntry.constructorDataValidation: highlightRowWithBorderSolid and highlightRowWithBorderDash cannot both be true';
             console.warn( msg )
             throw Error( msg );
-        }
-
-        if ( dataTable_DataRowEntry.tableRowClickHandlerParameter && dataTable_DataRowEntry.tableRowClickHandler_Callback_NoDataPassThrough ) {
-            const msg = 'DataTable_DataRowEntry.constructorDataValidation: tableRowClickHandlerParameter and tableRowClickHandler_Callback_NoDataPassThrough cannot both be populated';
-            console.warn( msg )
-            throw Error( msg );
-        }
-        if ( dataTable_DataRowEntry.dataRow_GetChildTableDataParameter ) {
-            DataTable_DataRowEntry._constructorDataValidation_Validate_OldGetChildTable_With_New_GetChildContent( dataTable_DataRowEntry, 'dataRow_GetChildTableDataParameter')
-        }
-        if ( dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter ) {
-            DataTable_DataRowEntry._constructorDataValidation_Validate_OldGetChildTable_With_New_GetChildContent( dataTable_DataRowEntry, 'dataRow_GetChildTableData_ViaPromise_Parameter')
-        }
-        if ( dataTable_DataRowEntry.dataRow_GetChildTable_ReturnReactComponent_Parameter ) {
-            DataTable_DataRowEntry._constructorDataValidation_Validate_OldGetChildTable_With_New_GetChildContent( dataTable_DataRowEntry, 'dataRow_GetChildTable_ReturnReactComponent_Parameter')
-        }
-    }
-
-    /**
-     *
-     * @param dataTable_DataRowEntry
-     * @param oldGetChild_ProperyName
-     * @private
-     */
-    private static _constructorDataValidation_Validate_OldGetChildTable_With_New_GetChildContent(dataTable_DataRowEntry : DataTable_DataRowEntry, oldGetChild_PropertyName : string ) {
-        if ( dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
-            dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-            dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
-            dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
-            dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
-            dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
-            const msg = 'DataTable_DataRowEntry.constructorDataValidation: ' + oldGetChild_PropertyName + '' +
-                ' (constant searchable string starts here) cannot be populated when any of the following are populated: dataRow_GetChildTableData_Return_DataTable_RootTableObject || dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject, dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject, dataRow_Get_RowChildContent_Return_ChildContent, dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent, dataRow_Get_RowChildContent_Return_Promise_ChildContent';
-            console.warn(msg)
-            throw Error(msg);
         }
     }
 }
@@ -811,14 +677,7 @@ interface DataTable_DataRowEntry__Constructor_Base {
     row_CSS_Additions? : string // add to after other CSS class names to <div> with CSS class 'data-table-data-rows-inner-containing-div'
     styleOverrides_innerContainingDiv? : React.CSSProperties // USE WITH CARE: Overrides on <div class="data-table-data-rows-inner-containing-div">
     columnEntries : Array<DataTable_DataRow_ColumnEntry>,
-
-    tableRowClickHandlerParameter? : unknown,  //  Data passed to DataTable_TableOptions.dataRowClickHandler
-
-    dataRow_GetChildTableDataParameter? : unknown,  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData
-    dataRow_GetChildTableData_ViaPromise_Parameter? : unknown  //  Data passed to DataTable_TableOptions.dataRow_GetChildTableData_ViaPromise
-
-    // Data passed to DataTable_TableOptions.dataRow_GetChildTable_ReturnReactComponent as well as to the React Component as prop dataRow_GetChildTable_ReturnReactComponent_Parameter
-    dataRow_GetChildTable_ReturnReactComponent_Parameter? : unknown
+    dataTable_DataRowEntry_DownloadTable : DataTable_DataRowEntry_DownloadTable
 
     //  ---  options For providing a callback function here that will NOT be passed any data from this object
 
@@ -1044,20 +903,74 @@ type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_
 type DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent>
 
 
+
+//////////////////
+//////////////////
+
+/**
+ * The Download Data for A Data Row
+ *
+ */
+class DataTable_DataRowEntry_DownloadTable {
+
+    //  The length of this Array MUST MATCH property: columns_tableDownload : Array<DataTable_Column_DownloadTable>  in class DataTable_RootTableDataObject
+
+    dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn>
+
+    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+
+    /**
+     *
+     */
+    constructor(
+        {
+            dataColumns_tableDownload
+        } : {
+            dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn>
+        }) {
+
+        this.dataColumns_tableDownload = dataColumns_tableDownload;
+    }
+}
+
+/**
+ * The Download Data for A Data Row, a single column in download
+ *
+ */
+class DataTable_DataRowEntry_DownloadTable_SingleColumn {
+
+    cell_ColumnData_String : string
+
+    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+
+    /**
+     *
+     */
+    constructor(
+        {
+            cell_ColumnData_String
+        } : {
+            cell_ColumnData_String : string
+        }) {
+
+        this.cell_ColumnData_String = cell_ColumnData_String;
+    }
+}
+
+
 //////////////////
 //////////////////
 
 /**
  * A column in a Data Row
  *
- * valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough, cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+ * valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is not populated
  * valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
  * tooltipText is set on 'title' attribute of cell
- *
- * cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
- * cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
  */
 class DataTable_DataRow_ColumnEntry {
+
+    searchTableData : DataTable_DataRow_ColumnEntry_SearchTableData
 
     //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
 
@@ -1069,21 +982,15 @@ class DataTable_DataRow_ColumnEntry {
 
     //  ---   General  Rules for Table Cell Contents Options
 
-    //  valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent and valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough are not populated
+    //  valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is not populated
     //  valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is assigned a function.  The callback params will NOT contain any data set on this object.
-    //  cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
-    //  cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
 
     //  ---  Table Cell Contents is determined by one of the following (The first one of the next four ('valueDisplay_...' to 'valueDisplay') that meets the rule is used)
 
     // Assigned a function.  The callback params will NOT contain any data set on this object.
     valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough? : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
 
-    //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
-    cellMgmt_External_Data?: unknown;
-    cellMgmt_ExternalReactComponent_Data?: unknown;
-
-    valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent or valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is populated
+    valueDisplay?: string; // Ignored if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is populated
 
     ///////////////
 
@@ -1100,13 +1007,17 @@ class DataTable_DataRow_ColumnEntry {
     /**
      * A column in a Data Row
      *
-     * valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent are not populated
+     * valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is not populated
      * valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
-     *
-     * cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
-     * cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
      */
-    constructor({valueDisplay, valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough, valueSort, tooltipText, tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough, cellMgmt_External_Data, cellMgmt_ExternalReactComponent_Data}: {
+    constructor(
+        {
+            searchTableData,
+            valueDisplay, valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough, valueSort, tooltipText,
+            tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+        }: {
+
+            searchTableData : DataTable_DataRow_ColumnEntry_SearchTableData
 
         //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
 
@@ -1118,21 +1029,15 @@ class DataTable_DataRow_ColumnEntry {
 
         //  ---   General  Rules for Table Cell Contents Options
 
-        //  valueDisplay MUST be populated if cellMgmt_External_Data and cellMgmt_ExternalReactComponent and valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough are not populated
+        //  valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is not populated
         //  valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is assigned a function.  The callback params will NOT contain any data set on this object.
-        //  cellMgmt_External_Data MUST be populated if object of DataTable_Column has 'cellMgmt_External' property set to a value
-        //  cellMgmt_ExternalReactComponent_Data MUST be populated if object of DataTable_Column has 'cellMgmt_ExternalReactComponent' property set to a value
 
         //  ---  Table Cell Contents is determined by one of the following (The first one of the next four ('valueDisplay_...' to 'valueDisplay') that meets the rule is used)
 
         // Assigned a function.  The callback params will NOT contain any data set on this object.
         valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough? : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
 
-        //  Only cellMgmt_External_Data or cellMgmt_ExternalReactComponent can be populated, not both, and has to match up with value in DataTable_Column
-        cellMgmt_External_Data?: unknown;
-        cellMgmt_ExternalReactComponent_Data?: unknown;
-
-        valueDisplay?: string; // Ignored if cellMgmt_External_Data or cellMgmt_ExternalReactComponent or valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is populated
+        valueDisplay?: string; // Ignored if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is populated
 
         ///////////////
 
@@ -1143,13 +1048,12 @@ class DataTable_DataRow_ColumnEntry {
         tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough? : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
 
     }) {
+        this.searchTableData = searchTableData;
         this.valueDisplay = valueDisplay
         this.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
         this.valueSort = valueSort
         this.tooltipText = tooltipText
         this.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
-        this.cellMgmt_External_Data = cellMgmt_External_Data
-        this.cellMgmt_ExternalReactComponent_Data = cellMgmt_ExternalReactComponent_Data
 
         DataTable_DataRow_ColumnEntry.constructorDataValidation(this)
     }
@@ -1159,15 +1063,14 @@ class DataTable_DataRow_ColumnEntry {
      */
     static constructorDataValidation(dataTable_DataRow_ColumnEntry: DataTable_DataRow_ColumnEntry) {
 
-        if (dataTable_DataRow_ColumnEntry.cellMgmt_External_Data && dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data) {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: cellMgmt_External_Data && cellMgmt_ExternalReactComponent_Data';
+        if ( ! dataTable_DataRow_ColumnEntry.searchTableData) {
+            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ! searchTableData';
             console.warn(msg)
             throw Error(msg);
         }
-        if (((!dataTable_DataRow_ColumnEntry.cellMgmt_External_Data) && (!dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data))
-            && (dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null)
+        if ( (dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null)
             && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null) ) {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ( ( ( ! cellMgmt_External_Data ) && ( ! cellMgmt_ExternalReactComponent_Data ) ) && ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" )&& (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null)  )';
+            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ( ( ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" )&& (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null)  )';
             console.warn(msg)
             throw Error(msg);
         }
@@ -1195,46 +1098,28 @@ type DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_E
 //  Additions to DataTable_Column contents
 
 /**
- * property cellMgmt_External in DataTable_Column
+ * Column Entry Search Data
  */
-interface DataTable_cellMgmt_External {
+class DataTable_DataRow_ColumnEntry_SearchTableData {
 
-    populateCellDOMObject_Initial( param : DataTable_cellMgmt_External_PopulateRequest ) : DataTable_cellMgmt_External_PopulateResponse
-}
+    searchEntriesForColumn : Array<string>
 
-/**
- * Request param to DataTable_cellMgmt_External.populateCellDOMObject_Initial
- */
-class DataTable_cellMgmt_External_PopulateRequest {
+    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
 
-    cellMgmt_External_Data : unknown
-    domObjectInCell : HTMLElement
-    columnWidth : number
-    columnHeightInitial : number
-    cellMgmt_External : DataTable_cellMgmt_External
-}
-
-class DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params {
-    cellMgmt_External_Data : unknown
-}
-
-/**
- * Response from DataTable_cellMgmt_External.populateCellDOMObject_Initial
- */
-class DataTable_cellMgmt_External_PopulateResponse {
-
-    domObjectInCell_RemoveContents_Callback : () => void;
-    cellMgmt_External_Data_NewValue_Callback : ( params : DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params ) => void;
-}
-
-/////
-
-/**
- * property cellMgmt_ExternalReactComponent in DataTable_Column
- */
-class DataTable_cellMgmt_ExternalReactComponent {
-
-    reactComponent : any
+    /**
+     * A column in a Data Row
+     *
+     * valueDisplay MUST be populated if valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough is not populated
+     * valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+     */
+    constructor(
+        {
+            searchEntriesForColumn
+        }: {
+            searchEntriesForColumn : Array<string>
+        }) {
+        this.searchEntriesForColumn = searchEntriesForColumn;
+    }
 }
 
 ////////////////////////////////////
@@ -1245,17 +1130,14 @@ export {
 
     DataTable_RootTableObject,
 
-    DataTable_TableOptions_dataRow_GetChildTableData,
+    DataTable_RootTableDataObject_Both_ColumnArrays,
+
     DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm_RowDOM_Rect,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
 
     DataTable_Column,
     DataTable_Column_sortFunction_Param,
     DataTable_SortColumnsInfoEntry,
+    DataTable_Column_DownloadTable,
 
     DataTable_RootTableDataObject,
     DataTable_DataGroupRowEntry,
@@ -1268,21 +1150,19 @@ export {
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
     DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject,
     DataTable_DataRowEntry__Get_RowChildContent_CallParams,
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent,
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue,
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
-    DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent,
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_External_PopulateResponse_NewValue_Callback_Params,
-    DataTable_cellMgmt_ExternalReactComponent
+    DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent
 }
 

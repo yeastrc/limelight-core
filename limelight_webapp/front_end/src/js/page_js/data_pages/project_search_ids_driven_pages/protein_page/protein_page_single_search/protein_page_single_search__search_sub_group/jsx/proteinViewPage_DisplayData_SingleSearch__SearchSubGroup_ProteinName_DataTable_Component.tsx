@@ -10,30 +10,31 @@
 import React from 'react'
 import {_CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_SINGLE_SEARCH_SEARCH_SUB_GROUPS} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search__search_sub_group/js/proteinViewPage_DisplayData_SingleSearch__SearchSubGroup_Constants";
 
-/**
- * Class for cellMgmt_ExternalReactComponent_Data property in SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props
- */
-export class SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props_Data {
-    
-    proteinName : string
-    proteinSequenceVersionId : number
-
-    constructor({ proteinName, proteinSequenceVersionId } : {
+export const get_SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent = function (
+    {
+        proteinName,
+        proteinSequenceVersionId
+    } : {
         proteinName : string
         proteinSequenceVersionId : number
-    }) {
-        this.proteinName = proteinName;
-        this.proteinSequenceVersionId = proteinSequenceVersionId;
-    }
+
+    }) : JSX.Element {
+
+    return (
+        <SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent
+            proteinName={ proteinName }
+            proteinSequenceVersionId={ proteinSequenceVersionId }
+        />
+    )
 }
 
 /**
  * 
  */
-export interface SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props {
+interface SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props {
 
-    //  Standard required props property name for Component used in Data Table
-    cellMgmt_ExternalReactComponent_Data : SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props_Data
+    proteinName : string
+    proteinSequenceVersionId : number
 }
 
 interface SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_State {
@@ -46,7 +47,7 @@ interface SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComp
 /**
  * 
  */
-export class SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent extends React.Component< SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props, SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_State > {
+class SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent extends React.Component< SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props, SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_State > {
 
     /**
      * 
@@ -60,20 +61,14 @@ export class SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactC
 
     render() {
 
-        if ( ! ( this.props.cellMgmt_ExternalReactComponent_Data instanceof SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props_Data ) ) {
-            const msg = "SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent: if ( ! ( this.props.cellMgmt_ExternalReactComponent_Data instanceof SingleSearch__SearchSubGroup_ProteinList_ProteinName_ExternalReactComponent_Props_Data ) )"
-            console.warn( msg );
-            throw Error( msg );
-        }
-
         return (
             <div className={ _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_SINGLE_SEARCH_SEARCH_SUB_GROUPS } 
-                style={ { whiteSpace : "nowrap", overflowX:"auto", fontSize: 12 } }
-                data-protein-id={ this.props.cellMgmt_ExternalReactComponent_Data.proteinSequenceVersionId.toString() }
+                style={ { whiteSpace : "nowrap", overflowX:"auto" } }
+                data-protein-id={ this.props.proteinSequenceVersionId.toString() }
             >
-                <span style={ { overflowWrap : "break-word" } }>
-                    { this.props.cellMgmt_ExternalReactComponent_Data.proteinName }
-                </span>
+                {/*<span style={ { overflowWrap : "break-word" } }>*/}
+                    { this.props.proteinName }
+                {/*</span>*/}
             </div>
         );
     }

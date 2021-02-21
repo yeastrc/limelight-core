@@ -1,8 +1,16 @@
 import {
-    DataTable_Column, DataTable_DataRow_ColumnEntry, DataTable_DataRowEntry,
+    DataTable_Column,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry,
+    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_RootTableDataObject,
-    DataTable_RootTableObject, DataTable_TableOptions,
-    DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm
+    DataTable_RootTableDataObject_Both_ColumnArrays,
+    DataTable_RootTableObject,
+    DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
@@ -20,11 +28,9 @@ import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driv
 
 export class ModProteinSearchList_SubTableGenerator {
 
-    static async getSearchListSubTable(param:DataTable_TableOptions_dataRow_GetChildTableData_ViaPromise_RequestParm):Promise<DataTable_RootTableObject> {
+    static async getSearchListSubTable(params:ModProteinSearchList_SubTableProperties):Promise<DataTable_RootTableObject> {
 
         const dataTableId_ThisTable = "Mod View Protein List By Search Sub Table";
-
-        const params = <ModProteinSearchList_SubTableProperties>param.dataRow_GetChildTableData_ViaPromise_Parameter;
 
         const modMass:number = params.modMass;
         const proteinId:number = params.proteinId;
@@ -33,7 +39,7 @@ export class ModProteinSearchList_SubTableGenerator {
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
         // create the columns for the table
-        const dataTableColumns : Array<DataTable_Column> = await ModProteinSearchList_SubTableGenerator.getDataTableColumns();
+        const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = await ModProteinSearchList_SubTableGenerator.getDataTableColumns();
 
         // create the rows for the table
         const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchList_SubTableGenerator.getDataTableRows({
@@ -46,13 +52,12 @@ export class ModProteinSearchList_SubTableGenerator {
 
         // assemble the table
         const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
-            columns : dataTableColumns,
+            columns : dataTable_RootTableDataObject_Both_ColumnArrays.columns,
+            columns_tableDownload : dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
             dataTable_DataRowEntries: dataTableRows
         });
 
-        const tableOptions = new DataTable_TableOptions({
-            dataRow_GetChildTableData_ViaPromise:ModProteinSearchPeptideList_SubTableGenerator.getSearchListSubTable
-        });
+        const tableOptions = new DataTable_TableOptions({});
 
         const dataTable_RootTableObject = new DataTable_RootTableObject({
             dataTableId : dataTableId_ThisTable,
@@ -69,56 +74,75 @@ export class ModProteinSearchList_SubTableGenerator {
         return dataTable_RootTableObject;
     }
 
-    static async getDataTableColumns() : Promise<Array<DataTable_Column>> {
+    static async getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> {
 
         const dataTableColumns : Array<DataTable_Column> = [];
+        const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
         {
+            const displayName = "Search";
+
             const dataTableColumn = new DataTable_Column({
                 id : "searchProteinSearchName", // Used for tracking sort order. Keep short
-                displayName : "Search",
+                displayName,
                 width : 500,
                 sortable : true,
-                style_override_DataRowCell_React : { display: "inline-block", overflowX: "auto", fontSize: 12 },
+                style_override_DataRowCell_React : { overflowX: "auto" },
             });
             dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
         {
+            const displayName = "PSMs";
+
             const dataTableColumn = new DataTable_Column({
                 id : "searchProteinPSMCount", // Used for tracking sort order. Keep short
-                displayName : "PSMs",
+                displayName,
                 width : 100,
-                sortable : true,
-                style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
+                sortable : true
             });
             dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
         {
+            const displayName = "Positions";
+
             const dataTableColumn = new DataTable_Column({
                 id : "searchProteinModPos", // Used for tracking sort order. Keep short
-                displayName : "Positions",
+                displayName,
                 width : 100,
-                sortable : false,
-                style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
+                sortable : false
             });
             dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
         {
+            const displayName = "Residues";
+
             const dataTableColumn = new DataTable_Column({
                 id : "searchProteinModRes", // Used for tracking sort order. Keep short
-                displayName : "Residues",
+                displayName,
                 width : 100,
-                sortable : false,
-                style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
+                sortable : false
             });
             dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
+        const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: dataTableColumns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
 
-        return dataTableColumns;
+        return dataTable_RootTableDataObject_Both_ColumnArrays;
     }
 
     static async getDataTableRows(
@@ -149,6 +173,7 @@ export class ModProteinSearchList_SubTableGenerator {
         for(const proteinData of allProteinDataForModMass) {
 
             const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+            const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
             // add the name
             {
@@ -165,21 +190,34 @@ export class ModProteinSearchList_SubTableGenerator {
 
                 const displayString = "(" + searchId + ") " + searchName;
 
-
+                const valueDisplay = displayString;
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : displayString,
+                    searchTableData,
+                    valueDisplay,
                     valueSort : proteinData.projectSearchId
                 });
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
             // add psm count
             {
+                const valueDisplay = proteinData.psmCounts.toString();
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : proteinData.psmCounts.toString(),
+                    searchTableData,
+                    valueDisplay,
                     valueSort : proteinData.psmCounts
                 });
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
             // add modded positions
@@ -202,18 +240,32 @@ export class ModProteinSearchList_SubTableGenerator {
                     return a.start - b.start;
                 });
 
+                const valueDisplay = positions.map(e => e.toString()).join(", ");
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : positions.map(e => e.toString()).join(", ")
+                    searchTableData,
+                    valueDisplay
                 });
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
             // add modded residues
             {
+                const valueDisplay = Array.from(proteinData.modifiedResidues).sort().join(', ');
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : Array.from(proteinData.modifiedResidues).sort().join(', ')
+                    searchTableData,
+                    valueDisplay
                 });
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
             // data to pass in for the sub table
@@ -226,12 +278,21 @@ export class ModProteinSearchList_SubTableGenerator {
                 dataPageStateManager_DataFrom_Server
             });
 
+            const dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                    return ModProteinSearchPeptideList_SubTableGenerator.getSearchListSubTable(subTableData)
+                };
+
+            const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
             // add this row to the rows
             const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                 uniqueId : proteinData.projectSearchId + '-' + modMass + '-' + proteinId,
                 sortOrder_OnEquals : proteinData.projectSearchId,
                 columnEntries,
-                dataRow_GetChildTableData_ViaPromise_Parameter:subTableData
+                dataTable_DataRowEntry_DownloadTable,
+                dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject
             });
 
             dataTableRows.push( dataTable_DataRowEntry );

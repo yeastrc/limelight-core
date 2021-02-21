@@ -188,39 +188,6 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
         // throw Error if an error
         DataTable_DataRowEntry.constructorDataValidation(dataTable_DataRowEntry)
 
-        //  Data in Table Options but not in row
-        if ( dataTable_TableOptions.dataRowClickHandler && ( ! dataTable_DataRowEntry.tableRowClickHandlerParameter ) ) {
-            const msg = "dataTable_TableOptions.dataRowClickHandler has value BUT dataTable_DataRowEntry.tableRowClickHandlerParameter does NOT have a value. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-        if ( dataTable_TableOptions.dataRow_GetChildTableData && ( ! dataTable_DataRowEntry.dataRow_GetChildTableDataParameter ) ) {
-            const msg = "dataTable_TableOptions.dataRow_GetChildTableData has value BUT dataTable_DataRowEntry.dataRow_GetChildTableDataParameter does NOT have a value. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-        if ( dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise && ( ! dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter ) ) {
-            const msg = "dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise has value BUT dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter does NOT have a value. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-        // Data in row but not in Table Options
-        if ( dataTable_DataRowEntry.tableRowClickHandlerParameter && ( ! dataTable_TableOptions.dataRowClickHandler ) ) {
-            const msg = "dataTable_DataRowEntry.tableRowClickHandlerParameter has value BUT dataTable_TableOptions.dataRowClickHandler does NOT have a value. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-        if ( dataTable_DataRowEntry.dataRow_GetChildTableDataParameter && ( ! dataTable_TableOptions.dataRow_GetChildTableData ) ) {
-            const msg = "dataTable_DataRowEntry.dataRow_GetChildTableDataParameter has value BUT dataTable_TableOptions.dataRow_GetChildTableData does NOT have a value. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-        if ( dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter && ( ! dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise ) ) {
-            const msg = "dataTable_DataRowEntry.dataRow_GetChildTableData_ViaPromise_Parameter has value BUT dataTable_TableOptions.dataRow_GetChildTableData_ViaPromise does NOT have a value. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-
         // Data in row but not in dataTable_RootTableDataObject
         if ( ( dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor || dataTable_DataRowEntry.highlightRowWithBorderSolid || dataTable_DataRowEntry.highlightRowWithBorderDash )
             && ( ! dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder ) ) {
@@ -255,28 +222,12 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
             }
             const dataTable_ColumnEntry : DataTable_Column = dataTable_ColumnEntries_Iterator_Result.value
 
-            if ( dataTable_ColumnEntry.cellMgmt_External ) {
-                if ( dataTable_DataRow_ColumnEntry.cellMgmt_External_Data === undefined || dataTable_DataRow_ColumnEntry.cellMgmt_External_Data === null ) {
-                    const msg = "dataTable_DataRow_ColumnEntry: dataTable_ColumnEntry.cellMgmt_External has value, dataTable_DataRow_ColumnEntry.cellMgmt_External_Data does NOT have value " +
-                        dataTable_DataRow_ColumnEntry.valueDisplay + ", dataTable_ColumnEntry.id " + dataTable_ColumnEntry.id + ", dataTableId: " + dataTableId + ", dataTable_DataRow_ColumnEntry: ";
-                    console.warn(msg, dataTable_DataRow_ColumnEntry);
-                    throw Error(msg)
-                }
-            } else if ( dataTable_ColumnEntry.cellMgmt_ExternalReactComponent ) {
-                if (dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data === undefined || dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data === null ) {
-                    const msg = "dataTable_DataRow_ColumnEntry: dataTable_ColumnEntry.cellMgmt_ExternalReactComponent has value, dataTable_DataRow_ColumnEntry.cellMgmt_ExternalReactComponent_Data does NOT have value " +
-                        dataTable_DataRow_ColumnEntry.valueDisplay + ", dataTable_ColumnEntry.id " + dataTable_ColumnEntry.id + ", dataTableId: " + dataTableId + ", dataTable_DataRow_ColumnEntry: ";
-                    console.warn(msg, dataTable_DataRow_ColumnEntry);
-                    throw Error(msg)
-                }
-            } else {
-                if ( ( dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null )
-                    && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null) ) {
-                    const msg = "dataTable_DataRow_ColumnEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null) && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null)  is true: valueDisplay: " +
-                        dataTable_DataRow_ColumnEntry.valueDisplay + ", dataTable_ColumnEntry.id " + dataTable_ColumnEntry.id + ", dataTableId: " + dataTableId + ", dataTable_DataRow_ColumnEntry: ";
-                    console.warn(msg, dataTable_DataRow_ColumnEntry);
-                    throw Error(msg)
-                }
+            if ( ( dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null )
+                && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null) ) {
+                const msg = "dataTable_DataRow_ColumnEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null) && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null)  is true: valueDisplay: " +
+                    dataTable_DataRow_ColumnEntry.valueDisplay + ", dataTable_ColumnEntry.id " + dataTable_ColumnEntry.id + ", dataTableId: " + dataTableId + ", dataTable_DataRow_ColumnEntry: ";
+                console.warn(msg, dataTable_DataRow_ColumnEntry);
+                throw Error(msg)
             }
 
             if ( dataTable_ColumnEntry.sortable ) {

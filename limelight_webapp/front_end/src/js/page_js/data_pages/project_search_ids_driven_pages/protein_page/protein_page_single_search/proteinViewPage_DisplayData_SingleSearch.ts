@@ -32,7 +32,11 @@ import { SearchDataLookupParameters_Root, SearchDataLookupParams_For_Single_Proj
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
 
 
-import { DataTable_RootTableObject, DataTable_TableOptions, DataTable_RootTableDataObject, DataTable_TableOptions_dataRowClickHandler_RequestParm } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {
+	DataTable_RootTableObject,
+	DataTable_TableOptions,
+	DataTable_RootTableDataObject
+} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { create_dataTable_Root_React, remove_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM'
 
@@ -1067,10 +1071,12 @@ export class ProteinViewPage_Display_SingleSearch {
 		// const reportedPeptideAnnotationTypes = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
 
 		// the columns for the data being shown on the page
-		const columns = getProteinDataTableColumns_SingleSearch( { 
+		const dataTable_RootTableDataObject_Both_ColumnArrays = getProteinDataTableColumns_SingleSearch( {
 			psmAnnotationTypes : annotationTypeRecords_DisplayOrder.psmAnnotationTypesForProteinListEntries,
 			reportedPeptideAnnotationTypes : annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForProteinListEntries 
 		} );
+
+		const columns = dataTable_RootTableDataObject_Both_ColumnArrays.columns;
 
 		const greyOutRow = false;  // Not Set for download
 

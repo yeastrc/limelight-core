@@ -14,20 +14,26 @@ import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_SINGLE_SEARCH } from './p
 import React from 'react'
 
 /**
- * Class for cellMgmt_ExternalReactComponent_Data property in SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props
+ *
+ * @param proteinName
+ * @param proteinSequenceVersionId
  */
-export class SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data {
-    
-    proteinName : string
-    proteinSequenceVersionId : number
-
-    constructor({ proteinName, proteinSequenceVersionId } : {
+export const get_SingleSearch_ProteinList_ProteinName_ExternalReactComponent = function (
+    {
+        proteinName,
+        proteinSequenceVersionId
+    } : {
         proteinName : string
         proteinSequenceVersionId : number
-    }) {
-        this.proteinName = proteinName;
-        this.proteinSequenceVersionId = proteinSequenceVersionId;
-    }
+
+    }) : JSX.Element {
+
+    return (
+        <SingleSearch_ProteinList_ProteinName_ExternalReactComponent
+            proteinName={ proteinName }
+            proteinSequenceVersionId={ proteinSequenceVersionId }
+        />
+    )
 }
 
 /**
@@ -35,8 +41,8 @@ export class SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_D
  */
 export interface SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props {
 
-    //  Standard required props property name for Component used in Data Table
-    cellMgmt_ExternalReactComponent_Data : SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data
+    proteinName : string
+    proteinSequenceVersionId : number
 }
 
 interface SingleSearch_ProteinList_ProteinName_ExternalReactComponent_State {
@@ -63,20 +69,12 @@ export class SingleSearch_ProteinList_ProteinName_ExternalReactComponent extends
 
     render() {
 
-        if ( ! ( this.props.cellMgmt_ExternalReactComponent_Data instanceof SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data ) ) {
-            const msg = "SingleSearch_ProteinList_ProteinName_ExternalReactComponent: if ( ! ( this.props.cellMgmt_ExternalReactComponent_Data instanceof SingleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data ) )"
-            console.warn( msg );
-            throw Error( msg );
-        }
-
         return (
             <div className={ _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_SINGLE_SEARCH } 
-                style={ { whiteSpace : "nowrap", overflowX:"auto", fontSize: 12 } }
-                data-protein-id={ this.props.cellMgmt_ExternalReactComponent_Data.proteinSequenceVersionId.toString() }
+                style={ { whiteSpace : "nowrap", overflowX:"auto" } }
+                data-protein-id={ this.props.proteinSequenceVersionId.toString() }
             >
-                <span style={ { overflowWrap : "break-word" } }>
-                    { this.props.cellMgmt_ExternalReactComponent_Data.proteinName }
-                </span>
+                    { this.props.proteinName }
             </div>
         );
     }

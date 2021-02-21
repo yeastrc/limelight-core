@@ -13,11 +13,20 @@ import {
 	DataTable_RootTableDataObject,
 	DataTable_DataRowEntry,
 	DataTable_DataRow_ColumnEntry,
+	DataTable_RootTableDataObject_Both_ColumnArrays,
+	DataTable_Column_DownloadTable,
+	DataTable_DataRowEntry_DownloadTable_SingleColumn,
+	DataTable_DataRow_ColumnEntry_SearchTableData,
+	DataTable_DataRowEntry_DownloadTable,
+	DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+	DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
 
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
 import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
-import {wholeModTable_ShowCount_ExternalReactComponent} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/whole_mod_table_show_count_External_Component";
+import {
+	get_WholeModTable_ShowCount_ExternalReactComponent
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/whole_mod_table_show_count_External_Component";
 import {ModProteinList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator";
 import {ModProteinList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableProperties";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
@@ -57,7 +66,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		const dataTableId_ThisTable = "Mod View Show Mods Table";
 
 		// create the columns for the table
-		const dataTableColumns : Array<DataTable_Column> = ModViewDataTableRenderer_MultiSearch.getDataTableColumns({
+		const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = ModViewDataTableRenderer_MultiSearch.getDataTableColumns({
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
@@ -81,16 +90,12 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 		// assemble the table
 		const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
-			columns : dataTableColumns,
+			columns : dataTable_RootTableDataObject_Both_ColumnArrays.columns,
+			columns_tableDownload : dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
 			dataTable_DataRowEntries: dataTableRows
 		});
 
-		const tableOptions = new DataTable_TableOptions({
-			//  Comment out since no further drill down to child table
-			// dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
-			//dataRow_GetChildTable_ReturnReactComponent : psmList_Wrapper_For_SingleReportedPeptide__dataRow_GetChildTable_ReturnReactComponent
-			dataRow_GetChildTableData_ViaPromise:ModProteinList_SubTableGenerator.getProteinListSubTable
-		});
+		const tableOptions = new DataTable_TableOptions({});
 
 		const dataTable_RootTableObject = new DataTable_RootTableObject({
 			dataTableId : dataTableId_ThisTable,
@@ -137,17 +142,25 @@ export class ModViewDataTableRenderer_MultiSearch {
 		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
 
 		const dataTableRows : Array<DataTable_DataRowEntry> = [];
+		const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
 		// create a row for each mod mass
 		for(const modMass of sortedModsToDisplay) {
 			const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
 
 			{
+				const valueDisplay = modMass.toString();
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
-					valueDisplay : modMass.toString(),
+					searchTableData,
+					valueDisplay,
 					valueSort : modMass
 				});
 				columnEntries.push( columnEntry );
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 			// add a value for each project search id
@@ -155,24 +168,35 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 				const showInt = ((vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') && vizOptionsData.data.psmQuant === 'counts') ? true : false;
 
-				const count:number = showInt ? modMap.get(modMass).get(projectSearchId) : modMap.get(modMass).get(projectSearchId).toExponential(2);
+				const count = showInt ? modMap.get(modMass).get(projectSearchId) : modMap.get(modMass).get(projectSearchId).toExponential(2);
 
-				const cellMgmt_ExternalReactComponent_Data = {
-					modMass: modMass,
-					projectSearchId: projectSearchId,
-					d3ColorScaler: colorScale,
-					numericValue : modMap.get(modMass).get(projectSearchId),
-					displayedValue : count
-				};
+				const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+					( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
+						return get_WholeModTable_ShowCount_ExternalReactComponent({
+							modMass: modMass,
+							projectSearchId: projectSearchId,
+							d3ColorScaler: colorScale,
+							numericValue : modMap.get(modMass).get(projectSearchId),
+							displayedValue : count
+						});
+					};
 
+				let valueDisplay__Search_Download : string = "";
+				if ( count !== undefined && count !== null ) {
+					valueDisplay__Search_Download = count.toString();
+				}
+				const searchEntriesForColumn : Array<string> = [ valueDisplay__Search_Download ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					searchTableData,
 					valueSort : modMap.get(modMass).get(projectSearchId),
-					cellMgmt_ExternalReactComponent_Data
+					valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
 				});
 				columnEntries.push( columnEntry );
 
-
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay__Search_Download })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 			// data to pass in for the sub table
@@ -183,12 +207,21 @@ export class ModViewDataTableRenderer_MultiSearch {
 				modMass
 			});
 
+			const dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+				( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+					return ModProteinList_SubTableGenerator.getProteinListSubTable(subTableData)
+				};
+
+			const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
 			// add this row to the rows
 			const dataTable_DataRowEntry = new DataTable_DataRowEntry({
 				uniqueId : modMass,
 				sortOrder_OnEquals : modMass,
 				columnEntries,
-				dataRow_GetChildTableData_ViaPromise_Parameter:subTableData
+				dataTable_DataRowEntry_DownloadTable,
+				dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject
 			})
 
 			dataTableRows.push( dataTable_DataRowEntry );
@@ -214,46 +247,50 @@ export class ModViewDataTableRenderer_MultiSearch {
 			projectSearchIds: Array<number>,
 			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,
-		}) : Array<DataTable_Column> {
+		}) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
 		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
 
 		const dataTableColumns : Array<DataTable_Column> = [];
+		const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
 		{
+			const displayName = "Mod Mass";
+
 			const dataTableColumn = new DataTable_Column({
 				id : "modMass", // Used for tracking sort order. Keep short
-				displayName : "Mod Mass",
+				displayName,
 				width : 100,
 				sortable : true,
-				style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-				// style_override_header_React : {},  // Optional
-				// style_override_React : {},  // Optional
-				// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-				// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
 			});
 			dataTableColumns.push( dataTableColumn );
+
+			const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+			dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 		}
 
 		// add a column for each project search id
 		for( const projectSearchId of projectSearchIdsToDisplay ) {
 
+			const displayName = ModViewDataTableRenderer_MultiSearch.getDisplayNameForModMassColumn({projectSearchId, dataPageStateManager_DataFrom_Server, vizOptionsData });
+
 			const dataTableColumn = new DataTable_Column({
 				id : projectSearchId + "_val", // Used for tracking sort order. Keep short
-				displayName : ModViewDataTableRenderer_MultiSearch.getDisplayNameForModMassColumn({projectSearchId, dataPageStateManager_DataFrom_Server, vizOptionsData }),
+				displayName,
 				width : 100,
 				sortable : true,
-				style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-				// style_override_header_React : {},  // Optional
-				// style_override_React : {},  // Optional
-				// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-				// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
-				cellMgmt_ExternalReactComponent : { reactComponent : wholeModTable_ShowCount_ExternalReactComponent }
+				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
 			});
 			dataTableColumns.push( dataTableColumn );
+
+			const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+			dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 		}
 
-		return dataTableColumns;
+		const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: dataTableColumns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
+
+		return dataTable_RootTableDataObject_Both_ColumnArrays;
 	}
 
 	static getDisplayNameForModMassColumn(

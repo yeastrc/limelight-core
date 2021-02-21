@@ -11,30 +11,32 @@ import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES } from 
 
 import React from 'react'
 
-/**
- * Class for cellMgmt_ExternalReactComponent_Data property in MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props
- */
-export class MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data {
-    
-    proteinDescription : string
-    proteinSequenceVersionId : number
 
-    constructor({ proteinDescription, proteinSequenceVersionId } : {
+export const get_MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent = function (
+    {
+        proteinDescription,
+        proteinSequenceVersionId
+    } : {
         proteinDescription : string
         proteinSequenceVersionId : number
-    }) {
-        this.proteinDescription = proteinDescription;
-        this.proteinSequenceVersionId = proteinSequenceVersionId;
-    }
+
+    }) : JSX.Element {
+
+    return (
+        <MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent
+            proteinDescription={ proteinDescription }
+            proteinSequenceVersionId={ proteinSequenceVersionId }
+        />
+    )
 }
 
 /**
  * 
  */
-export interface MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props {
+interface MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props {
 
-    //  Standard required props property name for Component used in Data Table
-    cellMgmt_ExternalReactComponent_Data : MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data
+    proteinDescription : string
+    proteinSequenceVersionId : number
 }
 
 interface MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_State {
@@ -47,7 +49,7 @@ interface MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent
 /**
  * 
  */
-export class MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent extends React.Component< MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props, MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_State > {
+class MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent extends React.Component< MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props, MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_State > {
 
     /**
      * 
@@ -61,20 +63,12 @@ export class MultipleSearches_ProteinList_ProteinDescription_ExternalReactCompon
 
     render() {
 
-        if ( ! ( this.props.cellMgmt_ExternalReactComponent_Data instanceof MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data ) ) {
-            const msg = "MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent: if ( ! ( this.props.cellMgmt_ExternalReactComponent_Data instanceof MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data ) )"
-            console.warn( msg );
-            throw Error( msg );
-        }
-
         return (
             <div className={ _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES } 
-                style={ {  whiteSpace : "nowrap", overflow:"hidden", textOverflow: "ellipsis", fontSize: 12 } }
-                data-protein-id={ this.props.cellMgmt_ExternalReactComponent_Data.proteinSequenceVersionId.toString() }
+                style={ {  whiteSpace : "nowrap", overflow:"hidden", textOverflow: "ellipsis" } }
+                data-protein-id={ this.props.proteinSequenceVersionId.toString() }
             >
-                <span style={ { overflowWrap : "break-word" } }>
-                    { this.props.cellMgmt_ExternalReactComponent_Data.proteinDescription }
-                </span>
+                    { this.props.proteinDescription }
             </div>
         );
     }

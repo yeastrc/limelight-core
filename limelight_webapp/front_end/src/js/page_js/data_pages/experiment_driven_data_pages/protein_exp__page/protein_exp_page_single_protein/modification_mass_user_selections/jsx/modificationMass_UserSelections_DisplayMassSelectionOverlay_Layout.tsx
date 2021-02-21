@@ -9,10 +9,17 @@
 import React from 'react'
 import {
     DataTable_Column,
+    DataTable_Column_DownloadTable,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
-    DataTable_RootTableDataObject, DataTable_RootTableObject,
-    DataTable_TableOptions, DataTable_TableOptions_dataRowClickHandler_RequestParm
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_RootTableDataObject,
+    DataTable_RootTableObject,
+    DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
@@ -20,8 +27,7 @@ import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay";
 import {
-    Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer,
-    Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer_CellMgmt_Data
+    get_Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__TableEntryContainer";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
@@ -39,18 +45,6 @@ const _Overlay_Height_Max = 1000;
  */
 export class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params {
     updated_selectedModificationMasses_Map : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
-}
-
-// Internal class
-/**
- * Table tableRowClickHandlerParameter value
- */
-class TableRowClickHandlerParameter_Class {
-    mass : number
-
-    constructor({ mass } : { mass : number }) {
-        this.mass = mass
-    }
 }
 
 /**
@@ -145,7 +139,6 @@ interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterConta
 class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component extends React.Component< ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_Props, ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_State > {
 
     private _updateButtonClicked_BindThis = this._updateButtonClicked.bind(this);
-    private _dataRowClickHandler_BindThis = this._dataRowClickHandler.bind(this);
 
     private _modificationMasses_Selected_InProgress : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 
@@ -184,18 +177,10 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
     /**
      *
      */
-    private _dataRowClickHandler(param: DataTable_TableOptions_dataRowClickHandler_RequestParm): void {
+    private _dataRowClickHandler({ mass, callbackParams } : { mass: number, callbackParams : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params }): void {
 
-        const rowClicked_Left = param.rowDOM_Rect.left
-        const rowClicked_Bottom = param.rowDOM_Rect.bottom
-
-        const tableRowClickHandlerParameter : TableRowClickHandlerParameter_Class = param.tableRowClickHandlerParameter as TableRowClickHandlerParameter_Class
-
-        if ( ! ( tableRowClickHandlerParameter instanceof TableRowClickHandlerParameter_Class ) ) {
-            const msg = "( ! ( tableRowClickHandlerParameter instanceof TableRowClickHandlerParameter_Class ) ) in _dataRowClickHandler in get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout"
-            console.warn( msg )
-            throw Error( msg )
-        }
+        const rowClicked_Left = callbackParams.rowDOM_Rect.left
+        const rowClicked_Bottom = callbackParams.rowDOM_Rect.bottom
 
         const windowScroll_X = window.scrollX;
         const windowScroll_Y = window.scrollY;
@@ -204,8 +189,6 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         const position_Top = Math.floor( rowClicked_Bottom ) + windowScroll_Y
 
         let current_selection_SelectionType : SingleProtein_Filter_SelectionType = undefined
-
-        const mass = tableRowClickHandlerParameter.mass;
 
         {
             const selectionEntry = this._modificationMasses_Selected_InProgress.get(mass);
@@ -280,34 +263,38 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         //  Columns
 
         const dataTable_Columns : Array<DataTable_Column> = [];
+        const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
         {
             {
+                const displayName = "Modification Mass";
+
                 const dataTable_Column = new DataTable_Column({
                     id: "mass", // Used for tracking sort order. Keep short
-                    displayName: "Modification Mass",
+                    displayName,
                     width: 160,
-                    sortable: true,
-                    style_override_DataRowCell_React: {
-                        fontSize: 12
-                    },
-                    cellMgmt_ExternalReactComponent : { reactComponent : Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer }
+                    sortable: true
                 });
                 dataTable_Columns.push(dataTable_Column);
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
             {
-                const style_override_DataRowCell_React : React.CSSProperties = {
-                    paddingTop: 3,
-                        fontSize: 12
-                }
+                const displayName = "PSMs";
+
+                const style_override_DataRowCell_React : React.CSSProperties = { paddingTop: 3 }
                 const dataTable_Column = new DataTable_Column({
                     id: "psmCount", // Used for tracking sort order. Keep short
-                    displayName: "PSMs",
+                    displayName,
                     width: 75,
                     sortable: true,
                     style_override_DataRowCell_React
                 });
                 dataTable_Columns.push(dataTable_Column);
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
         }
 
@@ -320,6 +307,8 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
 
                 const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
+                const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
                 {
                     { // mod mass
 
@@ -332,24 +321,40 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                             }
                         }
 
-                        const cellMgmt_ExternalReactComponent_Data = new Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer_CellMgmt_Data({
-                            textLabel,
-                            current_selection_SelectionType
-                        })
+                        const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
+                                return get_Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer({ textLabel, current_selection_SelectionType });
+                            }
+
+                        const valueDisplay = textLabel;
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
+                            searchTableData,
                             // valueDisplay: modUniqueMassesWithTheirPsmCountsEntry.mass.toString(),
                             valueSort: modUniqueMassesWithTheirPsmCountsEntry.mass,
-                            cellMgmt_ExternalReactComponent_Data
+                            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                         })
                         columnEntries.push(columnEntry);
-                    }
 
-                    const columnEntry = new DataTable_DataRow_ColumnEntry({
-                        valueDisplay: modUniqueMassesWithTheirPsmCountsEntry.psmCount.toLocaleString(),
-                        valueSort: modUniqueMassesWithTheirPsmCountsEntry.psmCount
-                    })
-                    columnEntries.push(columnEntry);
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
+                    {
+                        const valueDisplay = modUniqueMassesWithTheirPsmCountsEntry.psmCount.toLocaleString();
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                        const columnEntry = new DataTable_DataRow_ColumnEntry({
+                            searchTableData,
+                            valueDisplay,
+                            valueSort: modUniqueMassesWithTheirPsmCountsEntry.psmCount
+                        })
+                        columnEntries.push(columnEntry);
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
                 }
 
                 let highlightRowWithBorderDash = false
@@ -376,18 +381,23 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                     }
                 }
 
-                const tableRowClickHandlerParameter = new TableRowClickHandlerParameter_Class({
-                    mass : modUniqueMassesWithTheirPsmCountsEntry.mass
-                })
+                const tableRowClickHandler_Callback_NoDataPassThrough =
+                    ( callbackParams : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params ) : void => {
+
+                        this._dataRowClickHandler({ mass: modUniqueMassesWithTheirPsmCountsEntry.mass, callbackParams });
+                    };
+
+                const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
                 const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                     uniqueId : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     sortOrder_OnEquals : modUniqueMassesWithTheirPsmCountsEntry.mass,
                     columnEntries,
+                    dataTable_DataRowEntry_DownloadTable,
                     highlightRowWithBorder_peptideFilter_NOT_borderColor,
                     highlightRowWithBorderSolid,
                     highlightRowWithBorderDash,
-                    tableRowClickHandlerParameter
+                    tableRowClickHandler_Callback_NoDataPassThrough
                 })
 
                 dataTable_DataRowEntries.push( dataTable_DataRowEntry );
@@ -396,13 +406,12 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
         const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
             columns : dataTable_Columns,
+            columns_tableDownload : dataTable_Column_DownloadTable_Entries,
             dataTable_DataRowEntries,
             highlightingOneOrMoreRowsWithBorder : true
         });
 
-        const tableOptions = new DataTable_TableOptions({
-            dataRowClickHandler : this._dataRowClickHandler_BindThis
-        });
+        const tableOptions = new DataTable_TableOptions({});
 
         const dataTable_RootTableObject = new DataTable_RootTableObject({
             dataTableId : "Mod Mass Selection",

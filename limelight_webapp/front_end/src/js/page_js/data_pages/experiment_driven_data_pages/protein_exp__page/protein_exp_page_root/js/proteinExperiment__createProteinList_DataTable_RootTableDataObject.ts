@@ -7,11 +7,17 @@
 
 import {
     DataTable_Column,
+    DataTable_Column_DownloadTable,
     DataTable_DataGroupRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_RootTableDataObject
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {
@@ -29,7 +35,11 @@ import {
     ProteinDataDisplay_ProteinListItem_MultipleSearch
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {get_ProteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component";
+import {ProteinExperiment__CreateProteinDataTable_ChartColumn_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ChartColumn";
 
+const googleChart_Width = 400; // pixels, must be a number.  style 'width' and 'maxWidth' properties.
+const googleChart_heightInitial = 100; // pixels, must be a number.  style 'height' property, not 'maxHeight' property
 
 
 class GroupedProtein_Entry {
@@ -44,7 +54,9 @@ class GroupedProtein_Entry {
 export const proteinExperiment__createProteinList_DataTable_RootTableDataObject = function(
     {
         singleProteinRowClickHandler_Callback,
-        proteinList, conditions_for_condition_group_with_their_project_search_ids, proteinGroups_ArrayOf_ProteinGroup, proteinGrouping_CentralStateManagerObjectClass, proteinExperiment__CreateProteinDataTableColumns_Class
+        proteinList, conditions_for_condition_group_with_their_project_search_ids, proteinGroups_ArrayOf_ProteinGroup,
+        proteinGrouping_CentralStateManagerObjectClass, proteinExperiment__CreateProteinDataTableColumns_Class,
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class
     } : {
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_singleProteinRow_ClickHandler
 
@@ -54,6 +66,7 @@ export const proteinExperiment__createProteinList_DataTable_RootTableDataObject 
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
 
         proteinExperiment__CreateProteinDataTableColumns_Class : ProteinExperiment__CreateProteinDataTableColumns_Class
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class : ProteinExperiment__CreateProteinDataTable_ChartColumn_Class
 
     } ) : {
 
@@ -63,7 +76,15 @@ export const proteinExperiment__createProteinList_DataTable_RootTableDataObject 
     const tableRowData_AllRows = new ProteinExperimentPage_Display_tableRowData_AllRows();
 
     // the columns for the data being shown on the page
-    const columns :  DataTable_Column[] = proteinExperiment__CreateProteinDataTableColumns_Class.proteinExperiment__getProteinDataTableColumns( { conditions_for_condition_group_with_their_project_search_ids } ); // External Function Call
+    const {
+        dataTable_Columns, dataTable_Column_DownloadTable_Entries
+    } = proteinExperiment__CreateProteinDataTableColumns_Class.proteinExperiment__getProteinDataTableColumns( {
+
+        conditions_for_condition_group_with_their_project_search_ids,
+        googleChart_Width, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
+        googleChart_heightInitial, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
+
+    } ); // External Function Call
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
     let dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = undefined;
@@ -72,7 +93,9 @@ export const proteinExperiment__createProteinList_DataTable_RootTableDataObject 
 
         dataTable_DataGroupRowEntries = _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups({
             singleProteinRowClickHandler_Callback,
-            proteinGrouping_CentralStateManagerObjectClass, proteinList, proteinGroups_ArrayOf_ProteinGroup, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
+            proteinGrouping_CentralStateManagerObjectClass, proteinList, proteinGroups_ArrayOf_ProteinGroup, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+            proteinExperiment__CreateProteinDataTable_ChartColumn_Class,
+
         });
 
     } else {
@@ -80,12 +103,14 @@ export const proteinExperiment__createProteinList_DataTable_RootTableDataObject 
         const greyOutRow: boolean = undefined;  //  Not pass for not grouped
 
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
-            singleProteinRowClickHandler_Callback, greyOutRow, proteinList, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
+            singleProteinRowClickHandler_Callback, greyOutRow, proteinList, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+            proteinExperiment__CreateProteinDataTable_ChartColumn_Class
         });
     }
 
     const tableDataObject: DataTable_RootTableDataObject = new DataTable_RootTableDataObject({
-        columns,
+        columns: dataTable_Columns,
+        columns_tableDownload: dataTable_Column_DownloadTable_Entries,
         dataTable_DataRowEntries,
         dataTable_DataGroupRowEntries
     });
@@ -103,7 +128,8 @@ export const proteinExperiment__createProteinList_DataTable_RootTableDataObject 
 const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = function(
     {
         singleProteinRowClickHandler_Callback,
-        proteinGrouping_CentralStateManagerObjectClass, proteinList, proteinGroups_ArrayOf_ProteinGroup, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
+        proteinGrouping_CentralStateManagerObjectClass, proteinList, proteinGroups_ArrayOf_ProteinGroup, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class
     } : {
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_singleProteinRow_ClickHandler
 
@@ -113,6 +139,8 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
 
         tableRowData_AllRows : ProteinExperimentPage_Display_tableRowData_AllRows // Updated in this file/function (or called function)
+
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class : ProteinExperiment__CreateProteinDataTable_ChartColumn_Class
 
     }) : Array<DataTable_DataGroupRowEntry> {
 
@@ -137,7 +165,9 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         const greyOutRow = ! groupedProteinItem.proteinGroup.passesFilter;
 
         const dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
-            singleProteinRowClickHandler_Callback, greyOutRow, proteinList : groupedProteinItem.proteinList_Grouped, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
+            singleProteinRowClickHandler_Callback, greyOutRow, proteinList : groupedProteinItem.proteinList_Grouped,
+            conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+            proteinExperiment__CreateProteinDataTable_ChartColumn_Class
         });
 
         const first_dataTable_DataRowEntry = dataTable_DataRowEntries[ 0 ];
@@ -278,7 +308,8 @@ const _renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries
  */
 const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
     {
-        singleProteinRowClickHandler_Callback, greyOutRow, proteinList, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
+        singleProteinRowClickHandler_Callback, greyOutRow, proteinList, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class
     } : {
 
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_singleProteinRow_ClickHandler
@@ -288,6 +319,8 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
         conditions_for_condition_group_with_their_project_search_ids: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
 
         tableRowData_AllRows : ProteinExperimentPage_Display_tableRowData_AllRows // Updated in this file/function (or called function)
+
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class : ProteinExperiment__CreateProteinDataTable_ChartColumn_Class
 
     }) : Array<DataTable_DataRowEntry> {
 
@@ -299,7 +332,8 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
 
         proteinList_ForDataTable.push( _createProteinItem_DataTableEntry( {
             singleProteinRowClickHandler_Callback,
-            greyOutRow, proteinListItem, proteinListItem_Index, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows
+            greyOutRow, proteinListItem, proteinListItem_Index, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+            proteinExperiment__CreateProteinDataTable_ChartColumn_Class
         } ) );
 
         proteinListItem_Index++;
@@ -311,7 +345,11 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
 /**
  * Create Data Object for Single Entry in Protein List Data Table
  */
-const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandler_Callback, greyOutRow, proteinListItem, proteinListItem_Index, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows } : {
+const _createProteinItem_DataTableEntry = function(
+    {
+        singleProteinRowClickHandler_Callback, greyOutRow, proteinListItem, proteinListItem_Index, conditions_for_condition_group_with_their_project_search_ids, tableRowData_AllRows,
+        proteinExperiment__CreateProteinDataTable_ChartColumn_Class
+    } : {
 
     singleProteinRowClickHandler_Callback : ProteinExperimentPage_singleProteinRow_ClickHandler
 
@@ -321,6 +359,8 @@ const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandl
     conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
 
     tableRowData_AllRows : ProteinExperimentPage_Display_tableRowData_AllRows // Updated in this file/function (or called function)
+
+    proteinExperiment__CreateProteinDataTable_ChartColumn_Class : ProteinExperiment__CreateProteinDataTable_ChartColumn_Class
 
 } ) : DataTable_DataRowEntry {
 
@@ -339,21 +379,37 @@ const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandl
     tableRowData_AllRows.set_ProteinRowData_For_ProteinSequenceVersionId({ proteinSequenceVersionId, data : proteinExperimentPage_Display_tableRowData });
 
     const columnEntries : Array<DataTable_DataRow_ColumnEntry> = [];
+    const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
     {
+        const valueDisplay = proteinName;
+        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
         const entry = new DataTable_DataRow_ColumnEntry({
+            searchTableData,
             valueSort : proteinName, //  for sorting
-            valueDisplay : proteinName,
+            valueDisplay,
             tooltipText : proteinName   //  For html 'title' property for tooltip display.  Not HTML. Can have \n
         });
         columnEntries.push( entry );
+
+        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
     {
+        const valueDisplay = proteinDescription;
+        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
         const entry = new DataTable_DataRow_ColumnEntry({
+            searchTableData,
             valueSort: proteinDescription, //  for sorting
-            valueDisplay: proteinDescription,
+            valueDisplay,
             tooltipText: proteinDescription   //  For html 'title' property for tooltip display  Not HTML. Can have \n
         });
         columnEntries.push( entry );
+
+        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
 
     const psmCountsPerCondition = [];
@@ -382,13 +438,19 @@ const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandl
 
         const valueDisplay = numPsms.toLocaleString();
 
+        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
         const columnEntry = new DataTable_DataRow_ColumnEntry({
+            searchTableData,
             valueSort : numPsms, //  for sorting
             valueDisplay,
             tooltipText : undefined
         });
 
         columnEntries.push( columnEntry );
+
+        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 
         const psmCountsPerConditionEntry = {
             condition,
@@ -397,17 +459,35 @@ const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandl
         }
         psmCountsPerCondition.push( psmCountsPerConditionEntry );
     }
+    const cellMgmt_External_Data = {
+        proteinName_ForDiv : proteinName,
+        psmCountsPerCondition
+    }
+
+    const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+            return get_ProteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component({
+                cellMgmt_External_Data,
+                columnWidth: googleChart_Width,
+                columnHeightInitial: googleChart_heightInitial,
+                proteinExperiment__CreateProteinDataTable_ChartColumn_Class
+            });
+        };
 
     //  Show chart with psm counts for conditions in first condition group
     if ( conditions_for_condition_group_with_their_project_search_ids.length > 0 ) {
+
+        const searchEntriesForColumn : Array<string> = [];
+        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
         const columnEntry = new DataTable_DataRow_ColumnEntry({
-            cellMgmt_External_Data : {
-                proteinName_ForDiv : proteinName,
-                psmCountsPerCondition
-            }
+            searchTableData,
+            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         });
 
         columnEntries.push( columnEntry );
+
+        //  Skip adding to download since graphic
     }
 
     //  Create callback function
@@ -420,12 +500,15 @@ const _createProteinItem_DataTableEntry = function( { singleProteinRowClickHandl
         singleProteinRowClickHandler_Callback( singleProteinRowClickHandler_Params );
     }
 
+    const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
     //  Create DataTable_DataRowEntry
     const rowEntry = new DataTable_DataRowEntry({
         uniqueId : proteinListItem.proteinSequenceVersionId, // Set for Data Table to identify the entry in the table
         sortOrder_OnEquals : proteinListItem_Index,        // For User Sort, order to sort items that are equals for User selected column(s)
         greyOutRow,
         columnEntries,
+        dataTable_DataRowEntry_DownloadTable,
         tableRowClickHandler_Callback_NoDataPassThrough
     });
 

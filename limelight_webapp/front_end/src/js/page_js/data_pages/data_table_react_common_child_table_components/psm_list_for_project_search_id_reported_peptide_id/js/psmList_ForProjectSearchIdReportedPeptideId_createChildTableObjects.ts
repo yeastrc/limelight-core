@@ -14,8 +14,6 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 //   From data_pages_common
 import { DataPageStateManager, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeData_Root, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
-import { WebserviceCallStandardPost_ApiObject_Holder_Class } from 'page_js/webservice_call_common/webserviceCallStandardPost_ApiObject_Class';
-
 import {
     DataTable_RootTableObject,
     DataTable_TableOptions,
@@ -23,15 +21,18 @@ import {
     DataTable_RootTableDataObject,
     DataTable_DataRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { PsmList_ViewSpectrumCell_ExternalReactComponent } from 'page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_spectrum_cell_ExternalComponent';
-
-import { PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter } from '../js/psmList_ForProjectSearchIdReportedPeptideId_ReturnChildReactComponent'
-
-import { getPSMDataFromServer } from './psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer';
+import { psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer } from './psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer';
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {get_PsmList_ViewSpectrumCell_ExternalReactComponent} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_spectrum_cell_ExternalComponent";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -41,15 +42,62 @@ const LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT = 4;
 const LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT = 2;
 
 
+/**
+ * Parameter to psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter {
 
-export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult {
+    projectSearchId : number
+    reportedPeptideId : number                                      // NOT required if have psmIds_Include
+    searchSubGroupId : number                                       // Optional, only allowed if reportedPeptideId is populated
+    openModPositionOverride : OpenModPosition_DataType
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+    dataPageStateManager : DataPageStateManager
+    psmIds_Include : ReadonlySet<number> // Optional
+    alwaysShow_ReporterIonMasses_Column? : boolean
 
-    dataTable_RootTableObject : DataTable_RootTableObject
-}
+    /**
+     *
+     */
+    constructor(
+        {
+            projectSearchId,
+            reportedPeptideId,    // NOT required if have psmIds_Include
+            searchSubGroupId,     // Optional, only allowed if reportedPeptideId is populated
+            searchDataLookupParamsRoot,
+            dataPageStateManager,
+            psmIds_Include,
+            openModPositionOverride
+        } : {
+            projectSearchId : number
+            reportedPeptideId : number    // NOT required if have psmIds_Include
+            searchSubGroupId? : number     // Optional, only allowed if reportedPeptideId is populated
+            searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+            dataPageStateManager : DataPageStateManager
+            psmIds_Include? : ReadonlySet<number> // Optional
+            openModPositionOverride? : OpenModPosition_DataType  // optional
+        }) {
 
-export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result {
+        if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
+            throw Error("ERROR: reportedPeptideId === undefined && searchSubGroupId !== undefined : PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter::constructor");
+        }
 
-    promise_DataTable_RootTableObject : Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult>
+        this.projectSearchId = projectSearchId;
+        this.reportedPeptideId = reportedPeptideId;
+        this.searchSubGroupId = searchSubGroupId;
+        this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
+        this.dataPageStateManager = dataPageStateManager;
+        this.psmIds_Include = psmIds_Include;
+        this.openModPositionOverride = openModPositionOverride;
+    }
+
+
+    // shallowClone() {
+
+    //     const clone = new PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter();
+    //     Object.assign( clone, this );
+    //     return clone;
+    // }
 }
 
 /**
@@ -61,27 +109,27 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
  */
 export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects = ({
 
-    dataRow_GetChildTable_ReturnReactComponent_Parameter,
-    webserviceCallStandardPost_ApiObject_Holder_Class
+    params,
 } : {
-    dataRow_GetChildTable_ReturnReactComponent_Parameter :PsmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent_Parameter
-    webserviceCallStandardPost_ApiObject_Holder_Class : WebserviceCallStandardPost_ApiObject_Holder_Class
+    params :PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
 
-}) : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result => {
+}) : Promise<DataTable_RootTableObject> => {
 
-    const promise : Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult> = new Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult>( ( resolve, reject ) => {
+    const promise = new Promise<DataTable_RootTableObject>( ( resolve, reject ) => {
         try {
 
-            const projectSearchId = dataRow_GetChildTable_ReturnReactComponent_Parameter.projectSearchId
-            const psmIds_Include = dataRow_GetChildTable_ReturnReactComponent_Parameter.psmIds_Include;
-            const reportedPeptideId = dataRow_GetChildTable_ReturnReactComponent_Parameter.reportedPeptideId;
-            const searchSubGroupId = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchSubGroupId;
-            const searchDataLookupParamsRoot = dataRow_GetChildTable_ReturnReactComponent_Parameter.searchDataLookupParamsRoot;
-            const dataPageStateManager = dataRow_GetChildTable_ReturnReactComponent_Parameter.dataPageStateManager;
-            const alwaysShow_ReporterIonMasses_Column = dataRow_GetChildTable_ReturnReactComponent_Parameter.alwaysShow_ReporterIonMasses_Column;
-            const openModPositionOverride = dataRow_GetChildTable_ReturnReactComponent_Parameter.openModPositionOverride;
+            const projectSearchId = params.projectSearchId
+            const psmIds_Include = params.psmIds_Include;
+            const reportedPeptideId = params.reportedPeptideId;
+            const searchSubGroupId = params.searchSubGroupId;
+            const searchDataLookupParamsRoot = params.searchDataLookupParamsRoot;
+            const dataPageStateManager = params.dataPageStateManager;
+            const alwaysShow_ReporterIonMasses_Column = params.alwaysShow_ReporterIonMasses_Column;
+            const openModPositionOverride = params.openModPositionOverride;
 
-            const loadPromise = getPSMDataFromServer({ projectSearchId, psmIds_Include, reportedPeptideId, searchSubGroupId, searchDataLookupParamsRoot, dataPageStateManager, webserviceCallStandardPost_ApiObject_Holder_Class });
+            const loadPromise = psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer({
+                projectSearchId, psmIds_Include, reportedPeptideId, searchSubGroupId, searchDataLookupParamsRoot, dataPageStateManager
+            });
 
             loadPromise.catch( (reason) => { 
                 reject( reason ) 
@@ -97,10 +145,7 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
                         openModPositionOverride
                     });
 
-                    const promiseResult = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_PromiseResult();
-                    promiseResult.dataTable_RootTableObject = dataTable_RootTableObject;
-
-                    resolve( promiseResult );
+                    resolve( dataTable_RootTableObject );
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -113,10 +158,7 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
         }
     });
 
-    const result = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result();
-    result.promise_DataTable_RootTableObject = promise;
-
-    return result;
+    return promise;
 }
 
 
@@ -158,7 +200,9 @@ const _create_DataTable_RootTableObject = function({
     const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, ajaxResponse, openModPositionOverride });
     const dataTable_DataRowEntries = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries;
 
-    const dataTable_Columns : Array<DataTable_Column> = _getDataTableColumns({ 
+    const { dataTable_Columns,
+        dataTable_Column_DownloadTable_Entries
+    } = _getDataTableColumns({
 
         alwaysShow_ReporterIonMasses_Column : false,  //  Set arbitrarily for now
         ajaxResponse, 
@@ -173,15 +217,11 @@ const _create_DataTable_RootTableObject = function({
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
         columns : dataTable_Columns,
+        columns_tableDownload: dataTable_Column_DownloadTable_Entries,
         dataTable_DataRowEntries
     });
-    
-    // const fake_dataRow_GetChildTableData = ( param: DataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject => { return null }
 
-    const tableOptions = new DataTable_TableOptions({
-        //  Comment out since no further drill down to child table
-        // dataRow_GetChildTableData : fake_dataRow_GetChildTableData          //  TODO  Need to provide this for child table processing
-    });
+    const tableOptions = new DataTable_TableOptions({});
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,
@@ -222,10 +262,14 @@ const _getDataTableColumns = function({
     anyPsmsHave_reporterIonMassesDisplay? : boolean
     anyPsmsHave_openModificationMassesDisplay? : boolean
 
-}) : Array<DataTable_Column> {
+}) : {
+    dataTable_Columns : Array<DataTable_Column>
+    dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable>
+} {
 
     const dataTable_Columns : Array<DataTable_Column> = [];
-    
+    const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
+
     //  view spectrum link
     if ( ajaxResponse.searchHasScanData ) {
         {
@@ -234,140 +278,120 @@ const _getDataTableColumns = function({
                 displayName : "",
                 width : 70,
                 sortable : false,
-                hideColumnHeader : true,
-                style_override_DataRowCell_React : { fontSize: 12 },
-                // style_override_header_React : {},  // Optional
-                // style_override_React : {},  // Optional
-                // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
-                cellMgmt_ExternalReactComponent : { reactComponent : PsmList_ViewSpectrumCell_ExternalReactComponent }
+                hideColumnHeader : true
             });
             dataTable_Columns.push( dataTable_Column );
         }
-        //  WAS
-        // let column = {
-        //     id :           'viewScan',
-        //     width :        '70px',
-        //     displayName :  '',
-        //     hideColumnHeader : true,
-        //     dataProperty : 'viewScanLink',
-        //     sort : false,
-        //     style_override : 'font-size:12px;',
-        //     css_class : 'fake-link selector_view_scan_item',
-        // };
-
-        // columns.push( column );
     }
     {
+        const displayName = "Scan Number";
+
         const dataTable_Column = new DataTable_Column({
             id : "scnNmbr", // Used for tracking sort order. Keep short
-            displayName : "Scan Number",
+            displayName,
             width : 100,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
-            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     if ( anyPsmsHave_precursor_M_Over_Z ) {
+
+        const displayName = "Obs. m/z";
+
         const dataTable_Column = new DataTable_Column({
             id : "mz", // Used for tracking sort order. Keep short
-            displayName : "Obs. m/z",
+            displayName,
             width : 100,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
-            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
-    } 
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
     
     {
+        const displayName = "Charge";
+
         const dataTable_Column = new DataTable_Column({
             id : "charge", // Used for tracking sort order. Keep short
-            displayName : "Charge",
+            displayName,
             width : 55,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
-            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
     } 
     
     if ( anyPsmsHave_retentionTime ) {
+
+        const displayName = "RT(min)";
+
         const dataTable_Column = new DataTable_Column({
             id : "rt", // Used for tracking sort order. Keep short
-            displayName : "RT(min)",
+            displayName,
             width : 60,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
-            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     } 
     
     if ( anyPsmsHave_reporterIonMassesDisplay ) {
+
+        const displayName = "Reporter Ions";
+
         const dataTable_Column = new DataTable_Column({
             id : "reporterIons", // Used for tracking sort order. Keep short
-            displayName : "Reporter Ions",
+            displayName,
             width : 65,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
-            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     if ( anyPsmsHave_openModificationMassesDisplay ) {
+
+        const displayName = "Open Modifications";
+
         const dataTable_Column = new DataTable_Column({
             id : "openModifications", // Used for tracking sort order. Keep short
-            displayName : "Open Modifications",
+            displayName,
             width : 65,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
-            // style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     for ( const annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
 
+        const displayName = annotation.name;
+
         const dataTable_Column = new DataTable_Column({
             id :           annotation.annotationTypeId.toString(),
-            displayName :  annotation.name,
+            displayName,
             width :        100,
             sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 },
         });
 
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    return dataTable_Columns;
+    return { dataTable_Columns, dataTable_Column_DownloadTable_Entries };
 }
 
 
@@ -452,6 +476,7 @@ const _get_DataTable_DataRowEntries = function({
 
         //  Column entries for this data row in data table
         const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+        const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
         //  View Spectrum link
         if ( ajaxResponse.searchHasScanData ) {
@@ -490,21 +515,40 @@ const _get_DataTable_DataRowEntries = function({
                 }
             }
 
-            const cellMgmt_ExternalReactComponent_Data = { psmId, projectSearchId, openModPosition }
+            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                    return get_PsmList_ViewSpectrumCell_ExternalReactComponent({ psmId, projectSearchId, openModPosition });
+                }
+
+            const searchEntriesForColumn : Array<string> = [];
+
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 
             const columnEntry = new DataTable_DataRow_ColumnEntry({
-                cellMgmt_ExternalReactComponent_Data
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+                searchTableData
             })
             columnEntries.push( columnEntry );
         }
 
         {  // Scan Number
+
+            const valueDisplay = psmListItem.scanNumber.toString();
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ];
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+
             const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay : psmListItem.scanNumber,
+                searchTableData,
+                valueDisplay,
                 valueSort : psmListItem.scanNumber
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
+
         //  Precursor M/Z
         if ( anyPsmsHave_precursor_M_Over_Z ) {
             let valueDisplay = "";
@@ -513,18 +557,31 @@ const _get_DataTable_DataRowEntries = function({
                 valueDisplay = psmListItem.precursor_M_Over_Z.toFixed( LOCAL__PRECURSOR_M_OVER_Z_DIGITS_AFTER_DECIMAL_POINT );
                 valueSort = psmListItem.precursor_M_Over_Z
             }
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
                 valueDisplay,
                 valueSort
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
         {  //  Charge
+            const valueDisplay = psmListItem.charge.toString();
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay : psmListItem.charge,
+                searchTableData,
+                valueDisplay,
                 valueSort : psmListItem.charge
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
         // RetentionTime
         if ( anyPsmsHave_retentionTime ) {
@@ -535,11 +592,17 @@ const _get_DataTable_DataRowEntries = function({
                 valueDisplay = retentionTimeMinutesNumber.toFixed( LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT );
                 valueSort = retentionTimeMinutesNumber
             }
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
                 valueDisplay,
                 valueSort
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
         if ( anyPsmsHave_reporterIonMassesDisplay ) {
@@ -553,11 +616,17 @@ const _get_DataTable_DataRowEntries = function({
                 }
                 valueDisplay = reporterIonMassAsString_List.join(", ");
             }
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
                 valueDisplay,
                 valueSort
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
         if ( anyPsmsHave_openModificationMassesDisplay ) {
@@ -626,11 +695,17 @@ const _get_DataTable_DataRowEntries = function({
                 valueDisplay = openModificationMassAsString_List.join(", ");
                 valueSort = psmListItem.openModificationMassAndPositionsList[ 0 ]; // Sort on first entry mass
             }
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
                 valueDisplay,
                 valueSort
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
         //  Put PSM annotations into a list for display matching table headers
 
@@ -644,20 +719,30 @@ const _get_DataTable_DataRowEntries = function({
                 if ( valueSort === undefined || valueSort === null ) {
                     valueSort = entryForAnnTypeId.valueString;
                 }
+                const valueDisplay = entryForAnnTypeId.valueString;
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : entryForAnnTypeId.valueString,
+                    searchTableData,
+                    valueDisplay,
                     valueSort
                 });
                 columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
         }
 
         //  Add the data row
 
+        const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
         const dataTable_DataRowEntry = new DataTable_DataRowEntry({
             uniqueId : psmListItem.psmId,
             sortOrder_OnEquals : psmCounter, // Original Sort Order
-            columnEntries
+            columnEntries,
+            dataTable_DataRowEntry_DownloadTable
         })
         dataTable_DataRowEntries.push( dataTable_DataRowEntry );
     }

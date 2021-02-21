@@ -24,13 +24,27 @@ const _SVG_HEIGHT = 100;
 
 export { _SVG_WIDTH, _SVG_HEIGHT }
 
+export const get_ProteinExperimentPage_PSMs_Per_Condition_Component = function (
+    {
+        proteinDescription,
+        proteinSequenceVersionId
+    } : {
+        proteinDescription : string
+        proteinSequenceVersionId : number
+
+    }) : JSX.Element {
+
+    return (
+        <ProteinExperimentPage_PSMs_Per_Condition_Component
+        />
+    )
+}
+
 
 /**
  * 
  */
 export interface ProteinExperimentPage_PSMs_Per_Condition_Component_Props {
-
-    cellMgmt_ExternalReactComponent_Data: any
 }
 
 
@@ -79,12 +93,13 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Component extends React.Co
         // console.log("DataTable_Table_DataRowEntry_External_Cell_Mgmt_React: shouldComponentUpdate")
 
         //  Only update if changed: 
-        //      props: cellMgmt_ExternalReactComponent_Data 
+        //      props: XXX
         //      state: displayChart
 
-        if ( this.props.cellMgmt_ExternalReactComponent_Data !== nextProps.cellMgmt_ExternalReactComponent_Data ) {
-            return true;
-        }
+        // if ( this.props.XXX !== nextProps.XXX ) {
+        //     return true;
+        // }
+
         if ( this.state.displayChart !== nextState.displayChart ) {
             return true;
         }
@@ -118,11 +133,6 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Component extends React.Co
      */    
     render() {
 
-        // this.props:
-        // cellMgmt_ExternalReactComponent_Data={ this.props.cellMgmt_ExternalReactComponent_Data }
-        // columnWidth={ column.width }
-        // columnHeightInitial={ column.heightInitial }
-
         // console.log("ProteinExperimentPage_PSMs_Per_Condition_Component")
 
         if ( ! this.state.displayChart ) {
@@ -133,7 +143,7 @@ export class ProteinExperimentPage_PSMs_Per_Condition_Component extends React.Co
             );
         }
 
-        const psmCountsPerCondition = this.props.cellMgmt_ExternalReactComponent_Data.psmCountsPerCondition;
+        const psmCountsPerCondition = null; // TODO ??? this.props.psmCountsPerCondition;
 
 
         let maxPsmCount = 0;

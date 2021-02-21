@@ -6,26 +6,6 @@
 
 import {
 
-    DataTable_ColumnId,
-
-    DataTable_RootTableObject,
-    
-    DataTable_TableOptions,
-    DataTable_TableOptions_dataRowClickHandler_RequestParm,
-    DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm,
-    
-    DataTable_Column,
-    DataTable_SortColumnsInfoEntry,
-
-    DataTable_RootTableDataObject,
-    DataTable_DataGroupRowEntry,
-    DataTable_DataRowEntry,
-    DataTable_DataRow_ColumnEntry,
-
-    DataTable_cellMgmt_External,
-    DataTable_cellMgmt_External_PopulateRequest,
-    DataTable_cellMgmt_External_PopulateResponse,
-    DataTable_cellMgmt_ExternalReactComponent
     
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
@@ -53,7 +33,7 @@ class FAKE_dataRow_GetChildTable_ReturnReactComponent_Parameter_FakeChildTableTe
 
 
 const fake_dataRow_GetChildTable_ReturnReactComponent = ( 
-    dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm: DataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm 
+    dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm
 ) : any /* React.Component */ => {
 
     if ( ! dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm ) {

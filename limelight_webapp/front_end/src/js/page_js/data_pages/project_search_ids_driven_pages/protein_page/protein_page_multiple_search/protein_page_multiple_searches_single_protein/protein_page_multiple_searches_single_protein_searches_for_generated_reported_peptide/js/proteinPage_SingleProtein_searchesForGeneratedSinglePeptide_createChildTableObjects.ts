@@ -19,6 +19,10 @@ import {
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
     DataTable_DataRowEntry__GetChildTableData_CallbackParams,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry_DownloadTable,
 
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
@@ -111,31 +115,37 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
 
 
     const dataTable_Columns : Array<DataTable_Column> = [];
+    const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     {
+        const displayName = "Search Name";
+
         const dataTable_Column = new DataTable_Column({
             id : "SrchNm", // Used for tracking sort order. Keep short
-            displayName : "Search Name",
+            displayName,
             width : 500,
-            sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 }, // Allow to wrap: display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", 
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
+        const displayName = "PSMs";
+
         const dataTable_Column = new DataTable_Column({
             id : "psmCount", // Used for tracking sort order. Keep short
-            displayName : "PSMs",
+            displayName,
             width : 75,
             sortable : true,
             style_override_DataRowCell_React : { fontSize: 12 }
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
@@ -165,16 +175,26 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
             }
 
             const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+            const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
             {
+                const valueDisplay = searchNameDisplay;
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : searchNameDisplay,
+                    searchTableData,
+                    valueDisplay,
                     valueSort : searchNameDisplay
                 })
                 columnEntries.push( columnEntry );
             }
             {
+                const valueDisplay = psmCount.toLocaleString();
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay : psmCount.toLocaleString(),
+                    searchTableData,
+                    valueDisplay,
                     valueSort : psmCount
                 })
                 columnEntries.push( columnEntry );
@@ -248,10 +268,13 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
                     return result;
                 }
 
+            const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
             const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                 uniqueId : projectSearchId,
                 sortOrder_OnEquals : projectSearchId,
                 columnEntries,
+                dataTable_DataRowEntry_DownloadTable,
                 dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject
             })
 
@@ -267,6 +290,7 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
         columns : dataTable_Columns,
+        columns_tableDownload: dataTable_Column_DownloadTable_Entries,
         dataTable_DataRowEntries
     });
     

@@ -4,29 +4,54 @@ import React from 'react'
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 
-/**
- *
- */
-export interface wholeModTable_ShowCount_ExternalReactComponent_Props {
-
-    cellMgmt_ExternalReactComponent_Data : {
+export const get_WholeModTable_ShowCount_ExternalReactComponent = function (
+    {
+        modMass,
+        projectSearchId,
+        d3ColorScaler,
+        numericValue,
+        displayedValue
+    } : {
         modMass : number,
         projectSearchId : number,
         d3ColorScaler : any,
         numericValue : number,
         displayedValue : any,
-    }
+
+    }) : JSX.Element {
+
+    return (
+        <WholeModTable_ShowCount_ExternalReactComponent
+            modMass={ modMass }
+            projectSearchId={ projectSearchId }
+            d3ColorScaler={ d3ColorScaler }
+            numericValue={ numericValue }
+            displayedValue={ displayedValue }
+        />
+    )
 }
 
 /**
  *
  */
-export class wholeModTable_ShowCount_ExternalReactComponent extends React.Component< wholeModTable_ShowCount_ExternalReactComponent_Props, {} > {
+interface WholeModTable_ShowCount_ExternalReactComponent_Props {
+
+    modMass : number
+    projectSearchId : number
+    d3ColorScaler : any
+    numericValue : number
+    displayedValue : any
+}
+
+/**
+ *
+ */
+class WholeModTable_ShowCount_ExternalReactComponent extends React.Component< WholeModTable_ShowCount_ExternalReactComponent_Props, {} > {
 
     /**
      *
      */
-    constructor(props : wholeModTable_ShowCount_ExternalReactComponent_Props) {
+    constructor(props : WholeModTable_ShowCount_ExternalReactComponent_Props) {
         super(props);
 
         this.state = {};
@@ -34,7 +59,7 @@ export class wholeModTable_ShowCount_ExternalReactComponent extends React.Compon
 
     render() {
 
-        const fillColor = (this.props.cellMgmt_ExternalReactComponent_Data.d3ColorScaler(this.props.cellMgmt_ExternalReactComponent_Data.numericValue));
+        const fillColor = (this.props.d3ColorScaler(this.props.numericValue));
 
         return (
             <div>
@@ -42,7 +67,7 @@ export class wholeModTable_ShowCount_ExternalReactComponent extends React.Compon
                     <rect width="15" height="15" style={{fill:fillColor,strokeWidth:"1",stroke:"rgb(0,0,0)"}} />
                 </svg>
 
-                <span>{this.props.cellMgmt_ExternalReactComponent_Data.displayedValue}</span>
+                <span>{this.props.displayedValue}</span>
             </div>
         );
     }

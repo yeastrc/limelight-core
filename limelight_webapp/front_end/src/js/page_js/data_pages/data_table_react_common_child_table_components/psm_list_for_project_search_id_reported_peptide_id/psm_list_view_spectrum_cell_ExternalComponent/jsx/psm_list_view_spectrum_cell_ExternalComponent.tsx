@@ -12,24 +12,46 @@ import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_da
 
 
 
-/**
- * 
- */
-export interface PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
-
-    cellMgmt_ExternalReactComponent_Data : {
+export const get_PsmList_ViewSpectrumCell_ExternalReactComponent = function (
+    {
+        psmId,
+        projectSearchId,
+        openModPosition,
+    } : {
         psmId : number
         projectSearchId : number
         openModPosition : OpenModPosition_DataType
-    }
+
+    }) : JSX.Element {
+
+    return (
+        <PsmList_ViewSpectrumCell_ExternalReactComponent
+            psmId={ psmId }
+            projectSearchId={ projectSearchId }
+            openModPosition={ openModPosition }
+        />
+    )
 }
-
-
 
 /**
  * 
  */
-export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Component< PsmList_ViewSpectrumCell_ExternalReactComponent_Props, {} > {
+interface PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
+
+    psmId : number
+    projectSearchId : number
+    openModPosition : OpenModPosition_DataType
+}
+
+interface PsmList_ViewSpectrumCell_ExternalReactComponent_State {
+
+    _placeholder
+}
+
+/**
+ * 
+ */
+class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Component< PsmList_ViewSpectrumCell_ExternalReactComponent_Props, PsmList_ViewSpectrumCell_ExternalReactComponent_State > {
 
     private _viewSpectrumFakeLinkClicked_BindThis = this._viewSpectrumFakeLinkClicked.bind(this);
 
@@ -39,7 +61,7 @@ export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Compo
     constructor(props : PsmList_ViewSpectrumCell_ExternalReactComponent_Props) {
         super(props);
 
-        this.state = {};
+        this.state = { _placeholder : null };
     }
 
     /**
@@ -73,9 +95,9 @@ export class PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Compo
           const znothing = 0;
         }
    
-        const projectSearchId = this.props.cellMgmt_ExternalReactComponent_Data.projectSearchId;
-        const psmId = this.props.cellMgmt_ExternalReactComponent_Data.psmId;
-        const openModPosition = this.props.cellMgmt_ExternalReactComponent_Data.openModPosition;
+        const projectSearchId = this.props.projectSearchId;
+        const psmId = this.props.psmId;
+        const openModPosition = this.props.openModPosition;
 
         
         const spectrumRetrieveAndDisplay_Use_lorikeet = new SpectrumRetrieveAndDisplay_Use_lorikeet(); // Params not used in constructor

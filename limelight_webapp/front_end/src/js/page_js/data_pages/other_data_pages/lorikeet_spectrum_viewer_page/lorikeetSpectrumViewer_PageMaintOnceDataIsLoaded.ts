@@ -31,16 +31,12 @@ import {addLorikeetToJquery} from 'libs/Lorikeet/specview';
 
 import {lorikeetSpectrumViewer_CreateURL} from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL'
 import {
-	DataTable_DataRow_ColumnEntry,
 	DataTable_DataRowEntry,
 	DataTable_RootTableDataObject,
 	DataTable_RootTableObject,
-	DataTable_TableOptions,
-	DataTable_TableOptions_dataRowClickHandler_RequestParm
+	DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
-import {LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class";
-
 
 //  Overrides for LorikeetOptions:
 
@@ -243,33 +239,9 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			console.warn( msg )
 			throw Error( msg )
 		}
-
-		const dataRowClickHandler = (param: DataTable_TableOptions_dataRowClickHandler_RequestParm) => {
-			try {
-				// console.warn("dataRowClickHandler in lorikeet code called. param: ", param )
-				// console.warn("dataRowClickHandler in lorikeet code called. param.tableRowClickHandlerParameter: ", param.tableRowClickHandlerParameter )
-
-				const tableRowClickHandlerParameter : LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class = param.tableRowClickHandlerParameter as LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class;
-
-				if ( ! ( tableRowClickHandlerParameter instanceof LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class ) ) {
-					const msg = "( ! ( tableRowClickHandlerParameter instanceof LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class ) ) In dataRowClickHandler in _insertPsmTableOnPage"
-					console.warn( msg )
-					throw Error( msg )
-				}
-
-				this._handlePsmLinkClick({ psmIdOfClicked : tableRowClickHandlerParameter.psmId })
-
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		}
-
 		this._dataTable_RootTableDataObject_PutOnDOM = dataTable_RootTableDataObject
 
-		const dataTable_TableOptions = new DataTable_TableOptions({
-			dataRowClickHandler
-		})
+		const dataTable_TableOptions = new DataTable_TableOptions({});
 
 		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List", tableOptions : dataTable_TableOptions })
 
@@ -279,7 +251,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	/**
 	 * Create Data Table and insert on page
 	 */
-	_handlePsmLinkClick( { psmIdOfClicked } : { psmIdOfClicked : number } ) : void {
+	handlePsmLinkClick( { psmIdOfClicked } : { psmIdOfClicked : number } ) : void {
 
 		if ( this._psmId_Displayed === psmIdOfClicked ) {
 
@@ -299,16 +271,8 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
 			for ( const dataTable_DataRowEntry of this._dataTable_RootTableDataObject_PutOnDOM.dataTable_DataRowEntries ) {
 
-				const tableRowClickHandlerParameter : LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class = dataTable_DataRowEntry.tableRowClickHandlerParameter as LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class;
-
-				if ( ! ( tableRowClickHandlerParameter instanceof LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class ) ) {
-					const msg = "( ! ( tableRowClickHandlerParameter instanceof LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class ) ) In dataRowClickHandler in _insertPsmTableOnPage"
-					console.warn( msg )
-					throw Error( msg )
-				}
-
 				let highlightRow = false
-				if ( tableRowClickHandlerParameter.psmId === psmIdOfClicked ) {
+				if ( dataTable_DataRowEntry.uniqueId === psmIdOfClicked ) {
 					highlightRow = true
 				}
 
@@ -316,14 +280,19 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 					uniqueId : dataTable_DataRowEntry.uniqueId,
 					sortOrder_OnEquals : dataTable_DataRowEntry.sortOrder_OnEquals,
 					columnEntries : dataTable_DataRowEntry.columnEntries,
+					dataTable_DataRowEntry_DownloadTable : dataTable_DataRowEntry.dataTable_DataRowEntry_DownloadTable,
 					highlightRowWithBackgroundColor: highlightRow,
-					tableRowClickHandlerParameter : dataTable_DataRowEntry.tableRowClickHandlerParameter
-				})
+					tableRowClickHandler_Callback_NoDataPassThrough : dataTable_DataRowEntry.tableRowClickHandler_Callback_NoDataPassThrough
+				});
 
 				new_dataTable_DataRowEntries.push( new_dataTable_DataRowEntry )
 			}
 
-			const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({ columns : this._dataTable_RootTableDataObject_PutOnDOM.columns, dataTable_DataRowEntries : new_dataTable_DataRowEntries })
+			const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
+				columns : this._dataTable_RootTableDataObject_PutOnDOM.columns,
+				columns_tableDownload : this._dataTable_RootTableDataObject_PutOnDOM.columns_tableDownload,
+				dataTable_DataRowEntries : new_dataTable_DataRowEntries
+			});
 
 			this._insertPsmTableOnPage({dataTable_RootTableDataObject})
 		}

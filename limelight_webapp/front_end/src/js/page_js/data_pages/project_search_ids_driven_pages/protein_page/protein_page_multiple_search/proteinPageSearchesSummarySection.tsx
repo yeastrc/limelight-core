@@ -7,9 +7,9 @@
 
 import React from 'react';
 import {
-    DataTable_Column,
-    DataTable_DataRow_ColumnEntry,
-    DataTable_DataRowEntry,
+    DataTable_Column, DataTable_Column_DownloadTable,
+    DataTable_DataRow_ColumnEntry, DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry, DataTable_DataRowEntry_DownloadTable, DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_RootTableDataObject,
     DataTable_RootTableObject, DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
@@ -61,64 +61,70 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
     private _getDataTable_RootTableObject() : DataTable_RootTableObject {
 
         const dataTable_Columns : Array<DataTable_Column> = [];
+        const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
+
         {
 
             {
+                const displayName = "Search";
+
                 const dataTable_Column = new DataTable_Column({
                     id : "search", // Used for tracking sort order. Keep short
-                    displayName : "Search",
+                    displayName,
                     width : 500,
                     sortable : true,
-                    style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-                    // style_override_header_React : {},  // Optional
-                    // style_override_React : {},  // Optional
-                    // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                    // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+                    style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
                 });
                 dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
 
             { // Protein Count for a single search
+
+                const displayName = "Protein Count";
+
                 const dataTable_Column = new DataTable_Column({
                     id : "proteinNum", // Used for tracking sort order. Keep short
-                    displayName : "Protein Count",
+                    displayName,
                     width : 60,
-                    sortable : true,
-                    style_override_DataRowCell_React : { fontSize: 12 },
-                    // style_override_header_React : {},  // Optional
-                    // style_override_React : {},  // Optional
-                    // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                    // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+                    sortable : true
                 });
                 dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
             {  // Reported Peptide Id Count for a single search
+
+                const displayName = "Peptide Count";
+
                 const dataTable_Column = new DataTable_Column({
                     id : "peptideNum", // Used for tracking sort order. Keep short
-                    displayName : "Peptide Count",
+                    displayName,
                     width : 60,
-                    sortable : true,
-                    style_override_DataRowCell_React : { fontSize: 12 },
-                    // style_override_header_React : {},  // Optional
-                    // style_override_React : {},  // Optional
-                    // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                    // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+                    sortable : true
                 });
                 dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
             { // PSM Count for a single search
+
+                const displayName = "PSM Count";
+
                 const dataTable_Column = new DataTable_Column({
                     id : "psmNum", // Used for tracking sort order. Keep short
-                    displayName : "PSM Count",
+                    displayName,
                     width : 60,
-                    sortable : true,
-                    style_override_DataRowCell_React : { fontSize: 12 },
-                    // style_override_header_React : {},  // Optional
-                    // style_override_React : {},  // Optional
-                    // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-                    // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+                    sortable : true
                 });
                 dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
         }
 
@@ -128,42 +134,75 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
             for ( const perSearchEntry of this.props.summarySectionData.perSearchEntries ) {
 
                 const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
+                const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
                 {
                     { // Protein Name
                         const searchNameDisplay = "(" + perSearchEntry.searchId + ") " + perSearchEntry.searchName;
+                        const valueDisplay = searchNameDisplay;
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay: searchNameDisplay,
+                            searchTableData,
+                            valueDisplay,
                             valueSort: searchNameDisplay
                         })
                         columnEntries.push(columnEntry);
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
                     { // perSearchEntry.proteinCount_TotalForSearch
+                        const valueDisplay = perSearchEntry.proteinCount_TotalForSearch.toLocaleString();
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay: perSearchEntry.proteinCount_TotalForSearch.toLocaleString(),
+                            searchTableData,
+                            valueDisplay,
                             valueSort: perSearchEntry.proteinCount_TotalForSearch
                         })
                         columnEntries.push(columnEntry);
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
                     { // perSearchEntry.reportedPeptideCount_TotalForSearch
+                        const valueDisplay = perSearchEntry.reportedPeptideCount_TotalForSearch.toLocaleString();
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay: perSearchEntry.reportedPeptideCount_TotalForSearch.toLocaleString(),
+                            searchTableData,
+                            valueDisplay,
                             valueSort: perSearchEntry.reportedPeptideCount_TotalForSearch
                         })
                         columnEntries.push(columnEntry);
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
                     { // perSearchEntry.psmCount_TotalForSearch
+                        const valueDisplay = perSearchEntry.psmCount_TotalForSearch.toLocaleString();
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
-                            valueDisplay: perSearchEntry.psmCount_TotalForSearch.toLocaleString(),
+                            searchTableData,
+                            valueDisplay,
                             valueSort: perSearchEntry.psmCount_TotalForSearch
                         })
                         columnEntries.push(columnEntry);
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
                 }
+
+                const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
                 const dataTable_DataRowEntry = new DataTable_DataRowEntry({
                     uniqueId: perSearchEntry.searchId,
                     sortOrder_OnEquals: index,
                     columnEntries,
+                    dataTable_DataRowEntry_DownloadTable
                 })
 
                 dataTable_DataRowEntries.push(dataTable_DataRowEntry);
@@ -175,6 +214,7 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
 
         const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
             columns: dataTable_Columns,
+            columns_tableDownload : dataTable_Column_DownloadTable_Entries,
             dataTable_DataRowEntries
         });
 

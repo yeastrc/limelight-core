@@ -14,12 +14,22 @@ import {
     DataTable_Column,
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
-    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params
+    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
+    DataTable_RootTableDataObject_Both_ColumnArrays,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { ProteinGroup } from 'page_js/data_pages/protein_inference/ProteinGroup';
-import { MultipleSearches_ProteinList_ProteinName_ExternalReactComponent, MultipleSearches_ProteinList_ProteinName_ExternalReactComponent_Props_Data } from './proteinViewPage_DisplayData_MultipleSearches_ProteinName_DataTable_Component';
-import { MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent, MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data } from './proteinViewPage_DisplayData_MultipleSearches_ProteinDescription_DataTable_Component';
+import {
+    get_MultipleSearches_ProteinList_ProteinName_ExternalReactComponent
+} from './proteinViewPage_DisplayData_MultipleSearches_ProteinName_DataTable_Component';
+import {
+    get_MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent
+} from './proteinViewPage_DisplayData_MultipleSearches_ProteinDescription_DataTable_Component';
 import { ProteinGrouping_CentralStateManagerObjectClass } from '../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
 import {
     ProteinDataDisplay_ProteinListItem_MultipleSearch,
@@ -35,17 +45,6 @@ class GroupedProtein_Entry {
     proteinGroup : ProteinGroup
 }
 
-//  Also export functions getProteinDataTableColumns, createProteinList_ForDataTable below
-
-
-export class ProteinRow_tableRowClickHandlerParameter_MultipleSearches {
-    proteinSequenceVersionId : number
-
-    constructor({ proteinSequenceVersionId } : { proteinSequenceVersionId : number }) {
-        this.proteinSequenceVersionId = proteinSequenceVersionId;
-    }
-}
-    
 /**
  * Create tableObject object  for DataTable
  */
@@ -64,7 +63,7 @@ export const renderToPageProteinList_MultipleSearches_Create_DataTable_RootTable
     }) : DataTable_RootTableDataObject {
 
     // the columns for the data being shown on the page
-    const columns : Array<DataTable_Column> = getProteinDataTableColumns( { projectSearchIds, dataPageStateManager_DataFrom_Server } );
+    const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = getProteinDataTableColumns( { projectSearchIds, dataPageStateManager_DataFrom_Server } );
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
     let dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = undefined;
@@ -82,8 +81,9 @@ export const renderToPageProteinList_MultipleSearches_Create_DataTable_RootTable
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({ greyOutRow, proteinList, projectSearchIds, singleProteinRowClickHandler_Callback });
     }
 
-    const tableObject = new DataTable_RootTableDataObject({ 
-        columns,
+    const tableObject = new DataTable_RootTableDataObject({
+        columns: dataTable_RootTableDataObject_Both_ColumnArrays.columns,
+        columns_tableDownload: dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
         dataTable_DataRowEntries,
         dataTable_DataGroupRowEntries
     });
@@ -102,7 +102,7 @@ export const getProteinDataTableColumns = function( { projectSearchIds, dataPage
     projectSearchIds : Array<number>
     dataPageStateManager_DataFrom_Server : DataPageStateManager
 
-} ) : Array<DataTable_Column> {
+} ) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
     
     //  For getting search info for projectSearchIds
@@ -112,37 +112,38 @@ export const getProteinDataTableColumns = function( { projectSearchIds, dataPage
 
 
     let columns : Array<DataTable_Column> = [ ];
+    const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     {
+        const displayName = 'Protein(s)';
+
         const column = new DataTable_Column({
             id :           'proteins',
-            displayName :  'Protein(s)',
+            displayName,
             width :        300,
-            sortable : true,
-            //  copied style_override_DataRowCell_React to the component
-            // style_override_DataRowCell_React : { whiteSpace : "nowrap", overflowX:"auto", fontSize: 12 }, // prevent line breaks and scroll if too long
-            style_override_HeaderRowCell_React : { fontSize: 12 }, //  React format Style Overrides for Header Row Cells
-            cellMgmt_ExternalReactComponent : { reactComponent : MultipleSearches_ProteinList_ProteinName_ExternalReactComponent }
-            // css_class : ' clickable '
+            sortable : true
         });
 
         columns.push( column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
+        const displayName = 'Protein Description(s)';
+
         const column = new DataTable_Column({
             id :           'protein_descriptions',
-            displayName :  'Protein Description(s)',
+            displayName,
             width :        325,
-            sortable : true,
-            //  copied style_override_DataRowCell_React to the component
-            // style_override_DataRowCell_React : { whiteSpace : "nowrap", overflow:"hidden", textOverflow: "ellipsis", fontSize: 12 }, // prevent line breaks and scroll if too long
-            style_override_HeaderRowCell_React : { fontSize: 12 }, //  React format Style Overrides for Header Row Cells
-            cellMgmt_ExternalReactComponent : { reactComponent : MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent }
-            // css_class : ' clickable '
+            sortable : true
         });
 
         columns.push( column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
@@ -152,22 +153,26 @@ export const getProteinDataTableColumns = function( { projectSearchIds, dataPage
 			if ( ! searchNameObject ) {
 				throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
 			}
-			
+
+            const displayName = 'PSMs (' + searchNameObject.searchId + ")";
+
             const column = new DataTable_Column({
                 id :           'psms_' + projectSearchId,
-                displayName :  'PSMs (' + searchNameObject.searchId + ")" ,
+                displayName,
                 width :        80,
-                sortable : true,
-                style_override_DataRowCell_React : { fontSize: 12 }, // React format Style overrides
-                style_override_HeaderRowCell_React : { fontSize: 12 }, //  React format Style Overrides for Header Row Cells
-                // css_class : ' clickable ' 
+                sortable : true
             });
 
             columns.push( column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
     }
 
-    return columns;
+    const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: columns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
+
+    return dataTable_RootTableDataObject_Both_ColumnArrays;
 }
 
 
@@ -403,23 +408,31 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
 
     //  Column entries for this data row in data table
     const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+    const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
     {  // proteinNames
         if ( ! proteinListItem.proteinNames ) {
             throw Error( "_createProteinItem_DataTableEntry(...): proteinListItem.proteinNames not populated: " + proteinListItem.proteinNames )
         }
 
-        const singleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data = new MultipleSearches_ProteinList_ProteinName_ExternalReactComponent_Props_Data({
+        const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-            proteinName : proteinListItem.proteinNames,
-            proteinSequenceVersionId : proteinListItem.proteinSequenceVersionId
-        });
+                return get_MultipleSearches_ProteinList_ProteinName_ExternalReactComponent({ proteinName: proteinListItem.proteinNames, proteinSequenceVersionId: proteinListItem.proteinSequenceVersionId })
+            };
 
+        const valueDisplay = proteinListItem.proteinNames;
+        const searchEntriesForColumn : Array<string> = [ valueDisplay ];
+        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn });
         const columnEntry = new DataTable_DataRow_ColumnEntry({
+            searchTableData,
             valueSort : proteinListItem.proteinNames,
-            cellMgmt_ExternalReactComponent_Data : singleSearch_ProteinList_ProteinName_ExternalReactComponent_Props_Data
+            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         })
         columnEntries.push( columnEntry );
+
+        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
     {  // proteinDescription
         let proteinDescription = proteinListItem.proteinDescriptions;
@@ -427,17 +440,24 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
             proteinDescription = "";  // Was undefined, null, or empty string so make it empty string
         }
 
-        const singleSearch_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data = new MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data ({
+        const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-            proteinDescription : proteinDescription,
-            proteinSequenceVersionId : proteinListItem.proteinSequenceVersionId
-        });
+                return get_MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent({ proteinDescription: proteinDescription, proteinSequenceVersionId: proteinListItem.proteinSequenceVersionId });
+            };
 
+        const valueDisplay = proteinDescription;
+        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
         const columnEntry = new DataTable_DataRow_ColumnEntry({
+            searchTableData,
             valueSort : proteinDescription,
-            cellMgmt_ExternalReactComponent_Data : singleSearch_ProteinList_ProteinDescription_ExternalReactComponent_Props_Data
+            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         })
         columnEntries.push( columnEntry );
+
+        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
     
     {  // numPsms per search
@@ -450,12 +470,19 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
             if ( proteinItemRecord ) {
                 numPsms = proteinItemRecord.numPsms;
             }
-                
+
+            const valueDisplay = numPsms.toLocaleString();
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay : numPsms.toLocaleString(),
+                searchTableData,
+                valueDisplay,
                 valueSort : numPsms
             })
             columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
     }
 
@@ -469,6 +496,8 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
         singleProteinRowClickHandler_Callback( singleProteinRowClickHandler_Params );
     }
 
+    const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
     //  Create DataTable_DataRowEntry
 
     const dataTable_DataRowEntry = new DataTable_DataRowEntry({
@@ -476,6 +505,7 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
         sortOrder_OnEquals : arrayIndex, // Original Sort Order
         greyOutRow : greyOutRow,
         columnEntries,
+        dataTable_DataRowEntry_DownloadTable,
         tableRowClickHandler_Callback_NoDataPassThrough
     })
 

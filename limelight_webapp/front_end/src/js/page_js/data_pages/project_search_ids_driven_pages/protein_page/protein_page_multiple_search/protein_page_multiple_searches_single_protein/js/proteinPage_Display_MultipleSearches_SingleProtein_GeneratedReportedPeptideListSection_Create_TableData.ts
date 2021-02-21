@@ -30,6 +30,10 @@ import {
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent,
     DataTable_DataRowEntry__GetChildTableData_CallbackParams,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry_DownloadTable,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry } from './proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
@@ -126,54 +130,60 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
     //  Create Table Columns (Header info and Data Info)
 
     const dataTable_Columns : Array<DataTable_Column> = [];
+    const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     {  // Generated Peptide sequence, including variable mods, etc
+
+        const displayName = "Peptide Sequence";
+
         const dataTable_Column = new DataTable_Column({
             id : "Peptide_Sequence", // Used for tracking sort order. Keep short
-            displayName : "Peptide Sequence",
+            displayName,
             width : 500,
             sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
     {
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
             return proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components_Other.uniqueColumnHeader_Tooltip_Create();
         }
+
+        const displayName = "Unique";
+
         const dataTable_Column = new DataTable_Column({
             id : "unique", // Used for tracking sort order. Keep short
-            displayName : "Unique",
+            displayName,
             width : 55,
             sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
 
     if ( showProteins ) {
+
+        const displayName = "Protein(s)";
+
         const dataTable_Column = new DataTable_Column({
             id : "Proteins", // Used for tracking sort order. Keep short
-            displayName : "Protein(s)",
+            displayName,
             width : 220,
-            sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 }, // whiteSpace: "nowrap", overflowX: "auto",
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     //  PSM Count(s)
@@ -217,6 +227,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                 sortable: true
             });
             dataTable_Columns.push(dataTable_Column);
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
     } else {
@@ -251,6 +264,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                 sortable : true
             });
             dataTable_Columns.push( dataTable_Column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
     }
 
@@ -266,27 +282,40 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
             peptideListCounter++;
 
             const dataTable_DataRow_ColumnEntries: Array<DataTable_DataRow_ColumnEntry> = [];
+            const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
             {
+                const valueDisplay = peptideEntry.peptideSequenceDisplay;
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay: peptideEntry.peptideSequenceDisplay,
-                    valueSort: peptideEntry.peptideSequenceDisplay,
-                    // tooltipText : 
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: peptideEntry.peptideSequenceDisplay
                 });
                 dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
             { // Unique
-                let value = "";
+                let valueDisplay = "";
                 let valueSort = 1;
                 if (peptideEntry.peptideUnique) {
-                    value = "*";  //  Display '*' if peptide unique
+                    valueDisplay = "*";  //  Display '*' if peptide unique
                     valueSort = 0;  // Sort unique above not unique
                 }
-                const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay: value,
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
                     valueSort: valueSort
                 });
-                dataTable_DataRow_ColumnEntries.push(columnEntry);
+                dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
 
@@ -342,11 +371,18 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                 const proteinNames_String = proteinNames_Array.join(", ");
 
-                const columnEntry = new DataTable_DataRow_ColumnEntry({
-                    valueDisplay: proteinNames_String,
+                const valueDisplay = proteinNames_String;
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
                     valueSort: proteinNames_String
                 })
-                dataTable_DataRow_ColumnEntries.push(columnEntry);
+                dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
             //  PSM Count(s)
@@ -384,13 +420,18 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                     const psmCountDisplay = psmCount.toLocaleString();
 
+                    const valueDisplay = psmCountDisplay;
+                    const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                     const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
-                        valueDisplay: psmCountDisplay,
-                        valueSort: psmCount,
-                        // tooltipText :
+                        searchTableData,
+                        valueDisplay,
+                        valueSort: psmCount
                     });
                     dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                 }
 
             } else {
@@ -421,12 +462,18 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                     const psmCountDisplay = psmCount.toLocaleString();
 
+                    const valueDisplay = psmCountDisplay;
+                    const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                     const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
-                        valueDisplay: psmCountDisplay,
-                        valueSort: psmCount,
-                        // tooltipText :
+                        searchTableData,
+                        valueDisplay,
+                        valueSort: psmCount
                     });
                     dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                 }
             }
 
@@ -526,6 +573,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
             //////////
 
+            const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
             //  Create 1 of the next 2 entries based on the values set
 
             let dataTable_DataRowEntry: DataTable_DataRowEntry = undefined;
@@ -536,6 +585,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     uniqueId: peptideEntry.peptideSequenceDisplay,
                     sortOrder_OnEquals: peptideListCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
                     columnEntries: dataTable_DataRow_ColumnEntries,
+                    dataTable_DataRowEntry_DownloadTable,
 
                     dataRow_GetChildTableData_Return_DataTable_RootTableObject,
                 });
@@ -546,6 +596,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     uniqueId: peptideEntry.peptideSequenceDisplay,
                     sortOrder_OnEquals: peptideListCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
                     columnEntries: dataTable_DataRow_ColumnEntries,
+                    dataTable_DataRowEntry_DownloadTable,
 
                     dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
                 });
@@ -563,6 +614,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
         columns : dataTable_Columns,
+        columns_tableDownload: dataTable_Column_DownloadTable_Entries,
         dataTable_DataRowEntries
     });
 

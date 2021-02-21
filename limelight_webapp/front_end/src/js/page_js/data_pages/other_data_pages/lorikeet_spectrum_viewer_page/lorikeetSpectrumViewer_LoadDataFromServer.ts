@@ -41,7 +41,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
         projectSearchId: any,
         openmodPosition: any
         dataPageStateManager_DataFrom_Server  : DataPageStateManager
-    }) {
+    }) : Promise<any> {
 
         return new Promise( ( resolve, reject ) => {
             try {

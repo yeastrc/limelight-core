@@ -13,33 +13,29 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { WebserviceCallStandardPost_ApiObject_Class, WebserviceCallStandardPost_ApiObject_Holder_Class } from 'page_js/webservice_call_common/webserviceCallStandardPost_ApiObject_Class';
-
 //   From data_pages_common
 import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager';
-import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters"; // dataPageStateManager.ts
+import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 /**
  * 
  */
-export const getPSMDataFromServer = function({ 
+export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer = function({
     
     projectSearchId, 
     reportedPeptideId,  // NOT required if have psmIds_Include
     searchSubGroupId,   // Optional, only allowed if reportedPeptideId is populated
     psmIds_Include, // Optional
     searchDataLookupParamsRoot,
-    dataPageStateManager,
-    webserviceCallStandardPost_ApiObject_Holder_Class
-} : { 
+    dataPageStateManager
+} : {
     projectSearchId : number
     reportedPeptideId : number  // NOT required if have psmIds_Include
     searchSubGroupId : number     // Optional, only allowed if reportedPeptideId is populated
     psmIds_Include: ReadonlySet<number>
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager,
-    webserviceCallStandardPost_ApiObject_Holder_Class : WebserviceCallStandardPost_ApiObject_Holder_Class
 }) : Promise<any> {
 
     if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
@@ -73,7 +69,7 @@ export const getPSMDataFromServer = function({
             
             const url = "d/rws/for-page/psb/psm-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, webserviceCallStandardPost_ApiObject_Holder_Class }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
             // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = webserviceCallStandardPostResponse.api;

@@ -8,10 +8,17 @@
  */
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
-import {DataTable_Column, DataTable_DataRow_ColumnEntry, DataTable_DataRowEntry, DataTable_RootTableDataObject} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
+import {
+	DataTable_Column,
+	DataTable_Column_DownloadTable,
+	DataTable_DataRow_ColumnEntry, DataTable_DataRow_ColumnEntry_SearchTableData,
+	DataTable_DataRowEntry, DataTable_DataRowEntry_DownloadTable, DataTable_DataRowEntry_DownloadTable_SingleColumn,
+	DataTable_RootTableDataObject, DataTable_RootTableDataObject_Both_ColumnArrays
+} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {AnnotationTypeData_Root, AnnotationTypeItem, AnnotationTypeItems_PerProjectSearchId, DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
-import {LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded";
 
 
 //   !!!  Constants visible in this file/module
@@ -40,12 +47,16 @@ class PsmPeptideEntryAfterProcessing {
  * Create PSM Peptide Table Data
  *
  */
-export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = function ( { psmId_Selection, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server } : {
+export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = function (
+	{
+		psmId_Selection, projectSearchId, loadedDataFromServer, dataPageStateManager_DataFrom_Server, lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded
+	} : {
 
 	psmId_Selection : number
 	projectSearchId : number
 	loadedDataFromServer: any
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
+	lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded : LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded
 
 } ) : DataTable_RootTableDataObject {
 
@@ -64,7 +75,7 @@ export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = funct
 		anyPsmsHave_openModificationMassesDisplay
 	} =  _preProcessInputData({ sorted_psmPeptideData, loadedDataFromServer })
 
-	const dataTable_Columns : Array<DataTable_Column> = _getDataTableColumns( { psmAnnotationTypesForPsmListEntries_DisplayOrder, anyPsmsHave_precursor_M_Over_Z, anyPsmsHave_retentionTime, anyPsmsHave_reporterIonMassesDisplay, anyPsmsHave_openModificationMassesDisplay } );
+	const dataTable_RootTableDataObject_Both_ColumnArrays = _getDataTableColumns( { psmAnnotationTypesForPsmListEntries_DisplayOrder, anyPsmsHave_precursor_M_Over_Z, anyPsmsHave_retentionTime, anyPsmsHave_reporterIonMassesDisplay, anyPsmsHave_openModificationMassesDisplay } );
 
 	const dataTable_DataRowEntries = _createDataTableDataObjectArrayFromWebServiceResponse({
 		psmId_Selection,
@@ -73,11 +84,13 @@ export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = funct
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
 		anyPsmsHave_reporterIonMassesDisplay,
-		anyPsmsHave_openModificationMassesDisplay
+		anyPsmsHave_openModificationMassesDisplay,
+		lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded
 	});
 
 	const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
-		columns : dataTable_Columns,
+		columns : dataTable_RootTableDataObject_Both_ColumnArrays.columns,
+		columns_tableDownload : dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
 		dataTable_DataRowEntries
 	});
 
@@ -274,119 +287,122 @@ const _getDataTableColumns = function(
 		anyPsmsHave_reporterIonMassesDisplay : boolean
 		anyPsmsHave_openModificationMassesDisplay : boolean
 
-	} ) : Array<DataTable_Column> {
+	} ) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
 	const dataTable_Columns : Array<DataTable_Column> = [];
+	const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
 	{
+		const displayName = "Sequence";
+
 		const dataTable_Column = new DataTable_Column({
 			id : "sequence", // Used for tracking sort order. Keep short
-			displayName : "Sequence",
+			displayName,
 			width : 500,
 			sortable : true,
-			style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
 		});
 		dataTable_Columns.push( dataTable_Column );
+
+		const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+		dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 	}
 
 	if ( anyPsmsHave_precursor_M_Over_Z ) {
 
+		const displayName = "Obs. m/z";
+
 		const dataTable_Column = new DataTable_Column({
 			id : "mz", // Used for tracking sort order. Keep short
-			displayName : "Obs. m/z",
+			displayName,
 			width : 100,
-			sortable : true,
-			style_override_DataRowCell_React : { fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			sortable : true
 		});
 		dataTable_Columns.push( dataTable_Column );
+
+		const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+		dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 	}
 
 	{
+		const displayName = "Charge";
+
 		const dataTable_Column = new DataTable_Column({
 			id : "Charge", // Used for tracking sort order. Keep short
 			displayName : "Charge",
 			width : 55,
-			sortable : true,
-			style_override_DataRowCell_React : { fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			sortable : true
 		});
 		dataTable_Columns.push( dataTable_Column );
+
+		const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+		dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 	}
 
 	if ( anyPsmsHave_retentionTime ) {
+
+		const displayName = "RT(min)";
+
 		const dataTable_Column = new DataTable_Column({
 			id : "rt", // Used for tracking sort order. Keep short
-			displayName : "RT(min)",
+			displayName,
 			width : 60,
-			sortable : true,
-			style_override_DataRowCell_React : { fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			sortable : true
 		});
 		dataTable_Columns.push( dataTable_Column );
 	}
 
 	if ( anyPsmsHave_reporterIonMassesDisplay ) {
+
+		const displayName = "Reporter Ions";
+
 		const dataTable_Column = new DataTable_Column({
 			id : "reporterIons", // Used for tracking sort order. Keep short
-			displayName : "Reporter Ions",
+			displayName,
 			width : 60,
-			sortable : false,  // String of 1 or more mass values so not sortable
-			style_override_DataRowCell_React : { fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			sortable : false  // String of 1 or more mass values so not sortable
 		});
 		dataTable_Columns.push( dataTable_Column );
+
+		const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+		dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 	}
 
 	if ( anyPsmsHave_openModificationMassesDisplay ) {
+
+		const displayName = "Open Modifications";
+
 		const dataTable_Column = new DataTable_Column({
 			id : "openModifications", // Used for tracking sort order. Keep short
-			displayName : "Open Modifications",
+			displayName,
 			width : 65,
-			sortable : true,
-			style_override_DataRowCell_React : { fontSize: 12 },
-			// style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			sortable : true
 		});
 		dataTable_Columns.push( dataTable_Column );
+
+		const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+		dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 	}
 
 	for( let annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
 
+		const displayName = annotation.name;
+
 		const dataTable_Column = new DataTable_Column({
 			id : annotation.annotationTypeId.toString(), // Used for tracking sort order. Keep short
-			displayName : annotation.name,
+			displayName,
 			width : 100,
-			sortable : true,
-			style_override_DataRowCell_React : { fontSize: 12 },
-			// style_override_header_React : {},  // Optional
-			// style_override_React : {},  // Optional
-			// cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-			// cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+			sortable : true
 		});
 		dataTable_Columns.push( dataTable_Column );
+
+		const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+		dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
 	}
 
-	return dataTable_Columns;
+	const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: dataTable_Columns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
+
+	return dataTable_RootTableDataObject_Both_ColumnArrays;
 }
 
 
@@ -403,7 +419,8 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 		anyPsmsHave_precursor_M_Over_Z,
 		anyPsmsHave_retentionTime,
 		anyPsmsHave_reporterIonMassesDisplay,
-		anyPsmsHave_openModificationMassesDisplay
+		anyPsmsHave_openModificationMassesDisplay,
+		lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded
 	} : {
 		psmId_Selection : number
 		psmPeptideEntryAfterProcessingEntries : Array<PsmPeptideEntryAfterProcessing>
@@ -412,6 +429,8 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 		anyPsmsHave_retentionTime : boolean
 		anyPsmsHave_reporterIonMassesDisplay : boolean
 		anyPsmsHave_openModificationMassesDisplay : boolean
+
+		lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded : LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded
 
 	} ) : Array<DataTable_DataRowEntry> {
 
@@ -447,14 +466,22 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 		}
 
 		const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
+		const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
 		{
 			{ // reportedPeptideSequence
+				const valueDisplay = reportedPeptideString;
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
-					valueDisplay: reportedPeptideString,
+					searchTableData,
+					valueDisplay,
 					valueSort: reportedPeptideString
 				})
 				columnEntries.push(columnEntry);
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 			if (anyPsmsHave_precursor_M_Over_Z) {
@@ -464,19 +491,32 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 					valueDisplay = psmPeptideEntryAfterProcessingEntry.precursor_M_Over_Z_Display
 					valueSort = psmPeptideEntryAfterProcessingEntry.precursor_M_Over_Z_Sort
 				}
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					searchTableData,
 					valueDisplay,
 					valueSort
 				})
 				columnEntries.push(columnEntry);
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 			{ // Charge
+				const valueDisplay = charge.toString();
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
-					valueDisplay: charge.toString(),
+					searchTableData,
+					valueDisplay,
 					valueSort: charge
 				})
 				columnEntries.push(columnEntry);
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 
@@ -487,11 +527,17 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 					valueDisplay = psmPeptideEntryAfterProcessingEntry.retentionTimeMinutesDisplay
 					valueSort = psmPeptideEntryAfterProcessingEntry.retentionTimeMinutesSort
 				}
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					searchTableData,
 					valueDisplay,
 					valueSort
 				})
 				columnEntries.push(columnEntry);
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 			if (anyPsmsHave_reporterIonMassesDisplay) {
@@ -501,11 +547,17 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 					valueDisplay = psmPeptideEntryAfterProcessingEntry.reporterIonMassesDisplay
 					valueSort = psmPeptideEntryAfterProcessingEntry.reporterIonMassesDisplay
 				}
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					searchTableData,
 					valueDisplay,
 					valueSort
 				})
 				columnEntries.push(columnEntry);
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
 			if (anyPsmsHave_openModificationMassesDisplay) {
@@ -515,11 +567,17 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 					valueDisplay = psmPeptideEntryAfterProcessingEntry.openModificationMassesDisplay
 					valueSort = psmPeptideEntryAfterProcessingEntry.openModificationMassesSort
 				}
+				const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					searchTableData,
 					valueDisplay,
 					valueSort
 				})
 				columnEntries.push(columnEntry);
+
+				const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 			{
 				//  Put PSM annotations into a list for display matching table headers
@@ -532,11 +590,18 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 						if (valueSort === undefined || valueSort === null) {
 							valueSort = entryForAnnTypeId.valueString;
 						}
+						const valueDisplay = entryForAnnTypeId.valueString;
+						const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+						const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 						const columnEntry = new DataTable_DataRow_ColumnEntry({
-							valueDisplay: entryForAnnTypeId.valueString,
+							searchTableData,
+							valueDisplay,
 							valueSort
 						});
 						columnEntries.push(columnEntry);
+
+						const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+						dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 					}
 				}
 			}
@@ -546,16 +611,29 @@ const _createDataTableDataObjectArrayFromWebServiceResponse = function(
 				highlightRow = true
 			}
 
-			const tableRowClickHandlerParameter = new LorikeetSpectrumViewer_PsmList_ClickHandlerParam_Class({
-				psmId
-			});
+			const tableRowClickHandler_Callback_NoDataPassThrough = () => {
+				try {
+					// console.warn("dataRowClickHandler in lorikeet code called. param: ", param )
+					// console.warn("dataRowClickHandler in lorikeet code called. param.tableRowClickHandlerParameter: ", param.tableRowClickHandlerParameter )
+
+					lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded.handlePsmLinkClick({ psmIdOfClicked : psmId })
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			}
+
+
+			const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
 			const dataTable_DataRowEntry = new DataTable_DataRowEntry({
-				uniqueId: psmId,
+				uniqueId: psmId,  //  code in function 'handlePsmLinkClick' expects uniqueId to be psmId
 				sortOrder_OnEquals: psmId,
 				columnEntries,
+				dataTable_DataRowEntry_DownloadTable,
 				highlightRowWithBackgroundColor: highlightRow,
-				tableRowClickHandlerParameter
+				tableRowClickHandler_Callback_NoDataPassThrough
 			})
 
 			dataTable_DataRowEntries.push(dataTable_DataRowEntry);
