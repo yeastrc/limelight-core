@@ -6,6 +6,7 @@
 	.st0{fill:none;stroke:#005606;stroke-width:7;stroke-miterlimit:10;}
 	.st1{fill:#005606;}
 </style>
+<line class="st0" x1="26.7" y1="0.9" x2="26.7" y2="22"/>
 <g>
 	<g>
 		<line class="st0" x1="0" y1="11.5" x2="10.5" y2="11.5"/>
@@ -13,37 +14,5 @@
 			<polygon class="st1" points="7,23 27,11.7 7.2,0 			"/>
 		</g>
 	</g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
 </g>
 </svg>
