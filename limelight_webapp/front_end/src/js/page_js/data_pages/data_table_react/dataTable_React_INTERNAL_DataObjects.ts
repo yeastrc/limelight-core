@@ -47,7 +47,7 @@ class DataTable_INTERNAL_RootTableDataObject {
     private _dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged : Array<DataTable_INTERNAL_DataGroupRowEntries_SinglePage>
     private _dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged : Array<DataTable_INTERNAL_DataRowEntries_SinglePage>
 
-    private _totalDataRowsCount_CurrentlyShowing : number
+    private _totalCount_CurrentlyShowing : number
 
     /**
      * MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.
@@ -95,7 +95,7 @@ class DataTable_INTERNAL_RootTableDataObject {
         });
         clone._dataTable_DataRowEntries__INTERNAL_CurrentlyShowing = this._dataTable_DataRowEntries__INTERNAL_CurrentlyShowing;
         clone._dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing = this._dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing;
-        clone._totalDataRowsCount_CurrentlyShowing = this._totalDataRowsCount_CurrentlyShowing;
+        clone._totalCount_CurrentlyShowing = this._totalCount_CurrentlyShowing;
 
         return clone;
     }
@@ -103,9 +103,23 @@ class DataTable_INTERNAL_RootTableDataObject {
     /**
      *
      */
-    getTotalDataRowsCount_ForCurrentlyShowing() : number {
+    getTotalCount_ForAll() : number {
 
-        return this._totalDataRowsCount_CurrentlyShowing;
+        if ( this._dataTable_DataGroupRowEntries__INTERNAL_All ) {
+            return this._dataTable_DataGroupRowEntries__INTERNAL_All.length;
+        }
+        if ( this._dataTable_DataRowEntries__INTERNAL_All ) {
+            return this._dataTable_DataRowEntries__INTERNAL_All.length;
+        }
+        throw Error("getTotalCount_ForAll: Neither is populated: this._dataTable_DataGroupRowEntries__INTERNAL_All or this._dataTable_DataRowEntries__INTERNAL_All")
+    }
+
+    /**
+     *
+     */
+    getTotalCount_ForCurrentlyShowing() : number {
+
+        return this._totalCount_CurrentlyShowing;
     }
 
     /**
@@ -137,7 +151,7 @@ class DataTable_INTERNAL_RootTableDataObject {
         this._dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing = value;
 
         if ( value ) {
-            this._totalDataRowsCount_CurrentlyShowing = value.length;
+            this._totalCount_CurrentlyShowing = value.length;
         }
 
         //  WAS:  Set Total Count to Total number of Data Rows
@@ -162,7 +176,7 @@ class DataTable_INTERNAL_RootTableDataObject {
         this._dataTable_DataRowEntries__INTERNAL_CurrentlyShowing = value;
 
         if ( value ) {
-            this._totalDataRowsCount_CurrentlyShowing = value.length;
+            this._totalCount_CurrentlyShowing = value.length;
         }
     }
 
@@ -209,12 +223,12 @@ class DataTable_INTERNAL_RootTableDataObject {
         this._dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged = value;
     }
 
-    get totalDataRowsCount_CurrentlyShowing(): number {
-        return this._totalDataRowsCount_CurrentlyShowing;
+    get totalCount_CurrentlyShowing(): number {
+        return this._totalCount_CurrentlyShowing;
     }
 
-    set totalDataRowsCount_CurrentlyShowing(value: number) {
-        this._totalDataRowsCount_CurrentlyShowing = value;
+    set totalCount_CurrentlyShowing(value: number) {
+        this._totalCount_CurrentlyShowing = value;
     }
 
     get highlightingOneOrMoreRowsWithBorder(): boolean {

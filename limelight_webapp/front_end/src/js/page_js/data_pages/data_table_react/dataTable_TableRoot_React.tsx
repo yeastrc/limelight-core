@@ -50,6 +50,11 @@ import {
 } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Table_PageNavigation";
 
 /**
+ *  !!!  Smallest/First entry in _showItemsPerPage_SelectValue_OPTIONS
+ */
+const _showItemsPerPage_SelectValue_Minimum_Value = 10;
+
+/**
  *
  */
 const _showItemsPerPage_SelectValue_DEFAULT = 50;
@@ -57,7 +62,7 @@ const _showItemsPerPage_SelectValue_DEFAULT = 50;
 /**
  *   !!! MUST contain as one of the entries
  */
-const _showItemsPerPage_SelectValue_OPTIONS = [ 10, 25, _showItemsPerPage_SelectValue_DEFAULT, 100, 250 ];
+const _showItemsPerPage_SelectValue_OPTIONS = [ _showItemsPerPage_SelectValue_Minimum_Value, 25, _showItemsPerPage_SelectValue_DEFAULT, 100, 250 ];
 
 /**
  * 
@@ -121,6 +126,11 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         super(props);
 
         try {
+            if ( ! _showItemsPerPage_SelectValue_OPTIONS.includes( _showItemsPerPage_SelectValue_Minimum_Value ) ) {
+                const msg = "( ! _showItemsPerPage_SelectValue_OPTIONS.includes( _showItemsPerPage_SelectValue_Minimum_Value ) )";
+                console.warn(msg)
+                throw Error(msg)
+            }
             if ( ! _showItemsPerPage_SelectValue_OPTIONS.includes( _showItemsPerPage_SelectValue_DEFAULT ) ) {
                 const msg = "( ! _showItemsPerPage_SelectValue_OPTIONS.includes( _showItemsPerPage_SelectValue_DEFAULT ) )";
                 console.warn(msg)
@@ -751,7 +761,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                     <span>0</span>
                                 )}
                                 <span>&nbsp;of&nbsp;</span>
-                                <span>{ this.state.tableDataObject_INTERNAL.getTotalDataRowsCount_ForCurrentlyShowing() }</span>
+                                <span>{ this.state.tableDataObject_INTERNAL.getTotalCount_ForCurrentlyShowing() }</span>
 
                                 { ( this.state.searchInputValue_CurrentValue ) ? (
                                     <span >
@@ -760,40 +770,47 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 ) : null }
 
                                 <span className=" fake-link " style={ { marginLeft: 15 } } onClick={ ()=>{ window.alert("Not Implemented") }}>
-                                Download Table Data
-                            </span>
+                                    Download Table Data
+                                </span>
 
                                 { ( this.state.searchInputValue_CurrentValue ) ? (
                                     <span className=" fake-link " style={ { marginLeft: 15 } } onClick={ ()=>{ window.alert("Not Implemented") }}>
-                                    Download Filtered Table Data
-                                </span>
+                                        Download Filtered Table Data
+                                    </span>
                                 ) : null }
                             </div>
 
-                            <div style={ { marginBottom: 5 } }>
+                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() >= _showItemsPerPage_SelectValue_Minimum_Value ) ? (
 
-                                {/*  Select Page to Display  */}
-                                <DataTable_TableRoot_React_Table_PageNavigation_Component
-                                    pageNavigation_SelectValue_Prop={ this.state.currentPage_CurrentValue }
-                                    pageNavigation_TotalPagesCount={ this.state.tableDataObject_INTERNAL.getPageCount() }
-                                    pageNavigation_NewValueEntered_Callback={ this._currentPage_CurrentValue_Update_Callback_BindThis }
-                                />
+                                <div style={ { marginBottom: 5 } }>
 
-                                {/*  Select number of rows per page */}
-                                <DataTable_TableRoot__ShowItemsPerPage_Select_Component
-                                    showItemsPerPage_SelectValue_Prop={ this.state.showItemsPerPage_SelectValue }
-                                    showItemsPerPage_SelectValue_Options={ _showItemsPerPage_SelectValue_OPTIONS }
-                                    showItemsPerPage_NewValueEntered_Callback={ this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback_BindThis }
-                                />
+                                    {/*  Select Page to Display  */}
+                                    <DataTable_TableRoot_React_Table_PageNavigation_Component
+                                        pageNavigation_SelectValue_Prop={ this.state.currentPage_CurrentValue }
+                                        pageNavigation_TotalPagesCount={ this.state.tableDataObject_INTERNAL.getPageCount() }
+                                        pageNavigation_NewValueEntered_Callback={ this._currentPage_CurrentValue_Update_Callback_BindThis }
+                                    />
 
-                            </div>
+                                    {/*  Select number of rows per page */}
+                                    <DataTable_TableRoot__ShowItemsPerPage_Select_Component
+                                        showItemsPerPage_SelectValue_Prop={ this.state.showItemsPerPage_SelectValue }
+                                        showItemsPerPage_SelectValue_Options={ _showItemsPerPage_SelectValue_OPTIONS }
+                                        showItemsPerPage_NewValueEntered_Callback={ this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback_BindThis }
+                                    />
 
-                            <div style={ { marginBottom: 5 } }>
-                                <DataTable_TableRoot__FindAllRows_SearchInput_Component
-                                    searchInputValue_Prop={ this.state.searchInputValue_CurrentValue }
-                                    searchInputField_NewValueEntered_Callback={ this._searchInputField_NewValueEntered_Callback_BindThis }
-                                />
-                            </div>
+                                </div>
+                            ) : null }
+
+                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() > 1 ) ? (
+
+                                <div style={ { marginBottom: 5 } }>
+                                    <DataTable_TableRoot__FindAllRows_SearchInput_Component
+                                        searchInputValue_Prop={ this.state.searchInputValue_CurrentValue }
+                                        searchInputField_NewValueEntered_Callback={ this._searchInputField_NewValueEntered_Callback_BindThis }
+                                    />
+                                </div>
+                            ) : null }
+
                         </div>
 
                     ) : null }
