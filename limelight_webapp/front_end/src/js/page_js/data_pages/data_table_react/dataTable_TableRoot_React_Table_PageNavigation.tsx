@@ -296,37 +296,69 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
 
                         {/*  Icons for First and Previous. Add -grey for greyed out */}
                         <div style={ { display: "inline-block" } }>
-                            <img
-                                src="static/images/icon-page-to-start.svg"
-                                className=" fake-link-image " style={ { width: svgImage_Width } }
-                                onClick={ () => { this._change_PageNumber( 1 ) } }
-                            />
+                            { (this.props.pageNavigation_SelectValue_Prop === 1 ) ? (
+                                //  Grayed out
+                                <img
+                                    src="static/images/icon-page-to-start-gray.svg"
+                                    style={ { width: svgImage_Width } }
+                                />
+                            ) : (
+                                <img
+                                    src="static/images/icon-page-to-start.svg"
+                                    className=" fake-link-image " style={ { width: svgImage_Width } }
+                                    onClick={ () => { this._change_PageNumber( 1 ) } }
+                                />
+                            )}
                         </div>
                         <div style={ { display: "inline-block", marginLeft: 2, marginRight: 2 } }>
-                            <img
-                                src="static/images/icon-page-to-previous.svg"
-                                className=" fake-link-image " style={ { width: svgImage_Width } }
-                                onClick={ () => { this._change_PageNumber( this.props.pageNavigation_SelectValue_Prop - 1 ) } }
-                            />
+                            { (this.props.pageNavigation_SelectValue_Prop === 1 ) ? (
+                                //  Grayed out
+                                <img
+                                    src="static/images/icon-page-to-previous-gray.svg"
+                                    style={ { width: svgImage_Width } }
+                                />
+                            ) : (
+                                <img
+                                    src="static/images/icon-page-to-previous.svg"
+                                    className=" fake-link-image " style={ { width: svgImage_Width } }
+                                    onClick={ () => { this._change_PageNumber( this.props.pageNavigation_SelectValue_Prop - 1 ) } }
+                                />
+                            )}
                         </div>
 
                         {/*  Numbered Pages */}
                         {numberedPages_JSX_Array}
 
-                        {/*  Icons for Next and Last. Add -grey for greyed out */}
+                        {/*  Icons for Next and Last */}
                         <div style={ { display: "inline-block", marginLeft: 2, marginRight: 2 } }>
-                            <img
-                                src="static/images/icon-page-to-next.svg"
-                                className=" fake-link-image " style={ { width: svgImage_Width } }
-                                onClick={ () => { this._change_PageNumber( this.props.pageNavigation_SelectValue_Prop + 1 ) } }
-                            />
+                            { (this.props.pageNavigation_SelectValue_Prop === this.props.pageNavigation_TotalPagesCount ) ? (
+                                //  Grayed out
+                                <img
+                                    src="static/images/icon-page-to-next-gray.svg"
+                                    style={ { width: svgImage_Width } }
+                                />
+                            ) : (
+                                <img
+                                    src="static/images/icon-page-to-next.svg"
+                                    className=" fake-link-image " style={ { width: svgImage_Width } }
+                                    onClick={ () => { this._change_PageNumber( this.props.pageNavigation_SelectValue_Prop + 1 ) } }
+                                />
+                            )}
                         </div>
                         <div style={ { display: "inline-block" } }>
-                            <img
-                                src="static/images/icon-page-to-end.svg"
-                                className=" fake-link-image " style={ { width: svgImage_Width } }
-                                onClick={ () => { this._change_PageNumber( this.props.pageNavigation_TotalPagesCount ) } }
-                            />
+                            { (this.props.pageNavigation_SelectValue_Prop === this.props.pageNavigation_TotalPagesCount ) ? (
+                                //  Grayed out
+                                <img
+                                    src="static/images/icon-page-to-end-gray.svg"
+                                    style={ { width: svgImage_Width } }
+                                />
+                            ) : (
+                                <img
+                                    src="static/images/icon-page-to-end.svg"
+                                    className=" fake-link-image " style={ { width: svgImage_Width } }
+                                    onClick={ () => { this._change_PageNumber( this.props.pageNavigation_TotalPagesCount ) } }
+                                />
+                            )}
                         </div>
 
                         {/*  END Current Page Display and Select Page by Clicking on Page Number */}
