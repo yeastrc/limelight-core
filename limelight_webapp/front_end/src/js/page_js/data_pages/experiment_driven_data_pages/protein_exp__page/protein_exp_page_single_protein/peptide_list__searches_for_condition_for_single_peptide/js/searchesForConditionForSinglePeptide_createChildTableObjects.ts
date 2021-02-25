@@ -262,7 +262,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
         dataTable_DataRowEntries
     });
     
-    const tableOptions = new DataTable_TableOptions({});
+    const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
     //  psmList_ForProjectSearchIdReportedPeptideId__dataRow_GetChildTable_ReturnReactComponent, PsmList_ForProjectSearchIdReportedPeptideId__searchesForSinglePeptide_createChildTableObjects_Parameter
 

@@ -602,7 +602,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			$protein_list_updating_message.show();
 		}
 		
-		const tableOptions = new DataTable_TableOptions({})
+		const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: true});
 
 		//   Create Data Table
 		const tableDataObject : DataTable_RootTableDataObject = renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject({ // External Function

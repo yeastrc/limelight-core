@@ -218,7 +218,7 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
             dataTable_DataRowEntries
         });
 
-        const dataTable_TableOptions = new DataTable_TableOptions({});
+        const dataTable_TableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
         const dataTable_RootTableObject = new DataTable_RootTableObject({
             tableDataObject : dataTable_RootTableDataObject,

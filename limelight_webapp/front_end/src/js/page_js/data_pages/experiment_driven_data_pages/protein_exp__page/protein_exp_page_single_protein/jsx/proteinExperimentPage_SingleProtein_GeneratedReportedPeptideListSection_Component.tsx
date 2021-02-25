@@ -340,7 +340,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                         </span>
                     </div>
                     <div >
-                        <span >Currently showing: </span>
+                        <span >Total Found: </span>
                         <span >{ numberOfPeptidesShown }</span>
                         <span > peptides </span>
                         <span >({ numberOfPSMsForReportedPeptidesShown } PSMs)</span>

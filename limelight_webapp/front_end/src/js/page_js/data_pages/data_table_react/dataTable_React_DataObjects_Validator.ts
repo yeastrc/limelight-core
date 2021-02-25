@@ -188,14 +188,6 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
         // throw Error if an error
         DataTable_DataRowEntry.constructorDataValidation(dataTable_DataRowEntry)
 
-        // Data in row but not in dataTable_RootTableDataObject
-        if ( ( dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor || dataTable_DataRowEntry.highlightRowWithBorderSolid || dataTable_DataRowEntry.highlightRowWithBorderDash )
-            && ( ! dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder ) ) {
-            const msg = "dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor || dataTable_DataRowEntry.highlightRowWithBorderSolid or dataTable_DataRowEntry.highlightRowWithBorderDash is true BUT dataTable_TableOptions.highlightingOneOrMoreRowsWithBorder is not true. dataTableId: " + dataTableId
-            console.warn( msg )
-            throw Error( msg )
-        }
-
         const dataTable_DataRow_ColumnEntries : Array <DataTable_DataRow_ColumnEntry> = dataTable_DataRowEntry.columnEntries
 
         if ( dataTable_DataRow_ColumnEntries.length !== dataTable_ColumnEntries.length ) {

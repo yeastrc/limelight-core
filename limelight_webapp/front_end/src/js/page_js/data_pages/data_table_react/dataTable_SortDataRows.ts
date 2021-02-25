@@ -5,23 +5,36 @@
  * Sort Data Rows or Data Group Rows
  */
 
-import { DataTable_Column, DataTable_DataGroupRowEntry, DataTable_DataRowEntry, DataTable_SortColumnsInfoEntry } from "./dataTable_React_DataObjects";
+import { DataTable_Column, DataTable_DataGroupRowEntry, DataTable_DataRowEntry } from "./dataTable_React_DataObjects";
 import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from "./dataTable_constants";
- 
+import {
+    DataTable_INTERNAL_DataGroupRowEntry,
+    DataTable_INTERNAL_DataRowEntry,
+    DataTable_INTERNAL_SortColumnsInfoEntry
+} from "page_js/data_pages/data_table_react/dataTable_React_INTERNAL_DataObjects";
+
+//
+
 /**
  * 
  */
-export const sort_dataRows_on_sortColumnsInfo = function({ 
+export const dataTable_SortDataRows__sort_dataRows_on_sortColumnsInfo = function({
     dataToSort,
     columns, 
     sortColumnsInfo 
 } : { 
-    dataToSort : Array<DataTable_DataRowEntry> | Array<DataTable_DataGroupRowEntry> 
+    dataToSort : Array<DataTable_INTERNAL_DataRowEntry> | Array<DataTable_INTERNAL_DataGroupRowEntry>
     columns: Array<DataTable_Column>, 
-    sortColumnsInfo : Array<DataTable_SortColumnsInfoEntry>  
+    sortColumnsInfo : Array<DataTable_INTERNAL_SortColumnsInfoEntry>
 }) : void {
 
     // console.log("_sort_tableObject_on_sortColumnsInfo")
+
+
+    if ( ! sortColumnsInfo ) {
+        //  No Sort columns so exit
+        return; // EARLY RETURN
+    }
 
     //  Sort table
 
@@ -30,7 +43,7 @@ export const sort_dataRows_on_sortColumnsInfo = function({
     const dataRowEntrySortDataEntries : Array<{
         columnIndex: number,
         columnInfo:  DataTable_Column,
-        sortColumnsInfoEntry:  DataTable_SortColumnsInfoEntry
+        sortColumnsInfoEntry:  DataTable_INTERNAL_SortColumnsInfoEntry
     }> = [];
 
     for ( const sortColumnsInfoEntry of sortColumnsInfo ) {
@@ -57,7 +70,7 @@ export const sort_dataRows_on_sortColumnsInfo = function({
         dataRowEntrySortDataEntries.push( dataRowEntrySortDataEntry );
     }
 
-    dataToSort.sort( ( dataObject_A : DataTable_DataRowEntry | DataTable_DataGroupRowEntry, dataObject_B : DataTable_DataRowEntry | DataTable_DataGroupRowEntry ) => {
+    dataToSort.sort( ( dataObject_A : DataTable_INTERNAL_DataRowEntry | DataTable_INTERNAL_DataGroupRowEntry, dataObject_B : DataTable_INTERNAL_DataRowEntry | DataTable_INTERNAL_DataGroupRowEntry ) => {
 
         //  Sort each selected columnId.   Sort undefined and null before other values
 
@@ -171,4 +184,5 @@ export const sort_dataRows_on_sortColumnsInfo = function({
         return 0;
     });
 }
+
 

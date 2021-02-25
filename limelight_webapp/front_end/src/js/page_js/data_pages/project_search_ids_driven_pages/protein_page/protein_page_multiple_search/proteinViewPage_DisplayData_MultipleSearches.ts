@@ -1348,7 +1348,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		// $("#reported_peptide_count_display").text( reportedPeptideCount_TotalForSearch_Display );
 		// $("#psm_count_display").text( psmCount_TotalForSearch_Display );
 
-		const tableOptions = new DataTable_TableOptions({});
+		const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: true});
 
 		//   Create Data Table
 		const tableDataObject: DataTable_RootTableDataObject = renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject({ // External Function

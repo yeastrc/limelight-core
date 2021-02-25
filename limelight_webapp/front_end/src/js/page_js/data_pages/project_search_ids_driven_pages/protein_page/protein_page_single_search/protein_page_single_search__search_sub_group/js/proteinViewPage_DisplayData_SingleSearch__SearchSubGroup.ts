@@ -655,7 +655,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
 
         //  For DataTable
 
-        const tableOptions = new DataTable_TableOptions({});
+        const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: true});
 
         const tableObject = new DataTable_RootTableObject({tableDataObject, tableOptions, dataTableId: "Single Search Search Sub Groups Protein List"});
 

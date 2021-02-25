@@ -241,7 +241,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 		}
 		this._dataTable_RootTableDataObject_PutOnDOM = dataTable_RootTableDataObject
 
-		const dataTable_TableOptions = new DataTable_TableOptions({});
+		const dataTable_TableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
 		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List", tableOptions : dataTable_TableOptions })
 

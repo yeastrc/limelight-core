@@ -415,7 +415,7 @@ const _create_dataTable_RootTableObject = function(
 
     //  Display PSMs under this Reported Peptide
 
-    const tableOptions = new DataTable_TableOptions({});
+    const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

@@ -10,14 +10,14 @@ import React from 'react'
 import {
   DataTable_TableOptions,
   DataTable_Column,
-  DataTable_DataGroupRowEntry,
-  DataTable_RootTableDataObject,
-  DataTable_RootTableObject
+  DataTable_RootTableDataObject
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
-
-import { sort_dataRows_on_sortColumnsInfo } from './dataTable_SortDataRows';
+import {
+  DataTable_INTERNAL_DataGroupRowEntry,
+  DataTable_INTERNAL_RootTableDataObject
+} from "page_js/data_pages/data_table_react/dataTable_React_INTERNAL_DataObjects";
 
 
 /**
@@ -25,10 +25,10 @@ import { sort_dataRows_on_sortColumnsInfo } from './dataTable_SortDataRows';
  */
 export interface DataTable_Table_DataRow_Group_Props {
 
-  dataTable_DataGroupRowEntry : DataTable_DataGroupRowEntry
+  dataTable_INTERNAL_DataGroupRowEntry : DataTable_INTERNAL_DataGroupRowEntry
   columns : Array<DataTable_Column>
   tableOptions : DataTable_TableOptions
-  dataTable_RootTableDataObject : DataTable_RootTableDataObject
+  dataTable_RootTableDataObject_INTERNAL :  DataTable_INTERNAL_RootTableDataObject
   dataTableId : string
   highlightRow : boolean
 }
@@ -54,20 +54,20 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
 
     const reactRowElements = [];
     {
-      const dataTable_DataRowEntries_Length = this.props.dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length;
+      const dataTable_DataRowEntries_Length = this.props.dataTable_INTERNAL_DataGroupRowEntry.dataTable_DataRowEntries__INTERNAL.length;
       let counter = 0;
-      for ( const dataTable_DataRowEntry of this.props.dataTable_DataGroupRowEntry.dataTable_DataRowEntries ) {
+      for ( const dataTable_DataRowEntry_INTERNAL of this.props.dataTable_INTERNAL_DataGroupRowEntry.dataTable_DataRowEntries__INTERNAL ) {
         counter++;
         const isLastRow = dataTable_DataRowEntries_Length === counter;
         const reactRowElement = (
             <DataTable_Table_DataRow 
-              columns={ this.props.columns } 
-              dataObject={ dataTable_DataRowEntry } 
+              columns={ this.props.columns }
+              dataTable_DataRowEntry_INTERNAL={ dataTable_DataRowEntry_INTERNAL }
               tableOptions={ this.props.tableOptions }
-              dataTable_RootTableDataObject={ this.props.dataTable_RootTableDataObject }
+              dataTable_RootTableDataObject_INTERNAL={ this.props.dataTable_RootTableDataObject_INTERNAL }
               dataTableId={ this.props.dataTableId }
               isLastRow={ isLastRow }
-              key={ dataTable_DataRowEntry.uniqueId } />
+              key={ dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.uniqueId } />
         );
 
         reactRowElements.push( reactRowElement );

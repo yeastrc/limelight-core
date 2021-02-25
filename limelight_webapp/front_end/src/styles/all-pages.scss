@@ -92,6 +92,10 @@ img.icon-small, input[type="image"].icon-small  {
   max-width:12px;
 }
 
+img.icon-small-svg, input[type="image"].icon-small-svg  {
+  height: 16px; //  svg not display without a height or width
+}
+
 //  For pointer-right.png and pointer-down.png icons used with icon-small, A containing <div> to create standard padding to right
 //    (This is not used where the icon is positioned to the left of the primary block using CSS class child-table-show-hide-icon-container with CSS class child-table-show-hide-icon
 div.pointer-right-down-icon-small-container {
@@ -103,7 +107,10 @@ img.icon-large, input[type="image"].icon-large {
     max-width: 20px;
     max-height: 20px;
 }
-  
+
+img.icon-large-svg, input[type="image"].icon-large-svg  {
+  height: 20px; //  svg not display without a height or width
+}
     
 //  Basic error text color
 .error-text { color: $error-text-color }
@@ -124,6 +131,16 @@ img.icon-large, input[type="image"].icon-large {
 }
 .standard-border-color-gray {
   border-color: $site-color-gray
+}
+
+
+.standard-background-color-very-dark {
+  background-color: $site-color-very-dark;
+  color: white;
+}
+.standard-background-color-dark {
+  background-color: $site-color-dark;
+  color: white;
 }
 
 .peptide-filter--not-border-color {

@@ -390,7 +390,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                         </span>
                     </div>
                     <div >
-                        <span >Currently showing: </span>
+                        <span >Total Found: </span>
                         <span >{ numberOfPeptidesShown }</span>
                         <span > peptides ({ numberOfUniquePeptides } unique) </span>
                         <span >{ numberOfPSMsForReportedPeptidesShown } PSMs</span>
@@ -406,7 +406,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             // Peptide Download Link
                             <span className=" fake-link "
                                   onClick={ this.props.downloadPeptides_Shown_ClickHandler }
-                            >Download Peptides</span>
+                            >Download All Peptides</span>
                         ) : null }
                         { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler && this.props.downloadPsms_Shown_ClickHandler ) ) ? (
                             //  Separator
@@ -416,7 +416,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             // PSM Download Link
                             <span className=" fake-link "
                                   onClick={ this.props.downloadPsms_Shown_ClickHandler }
-                            >Download PSMs</span>
+                            >Download All PSMs</span>
                         ) : null }
                     </div>
                 </div>

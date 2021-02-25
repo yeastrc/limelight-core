@@ -407,11 +407,10 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
             columns : dataTable_Columns,
             columns_tableDownload : dataTable_Column_DownloadTable_Entries,
-            dataTable_DataRowEntries,
-            highlightingOneOrMoreRowsWithBorder : true
+            dataTable_DataRowEntries
         });
 
-        const tableOptions = new DataTable_TableOptions({});
+        const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
         const dataTable_RootTableObject = new DataTable_RootTableObject({
             dataTableId : "Mod Mass Selection",

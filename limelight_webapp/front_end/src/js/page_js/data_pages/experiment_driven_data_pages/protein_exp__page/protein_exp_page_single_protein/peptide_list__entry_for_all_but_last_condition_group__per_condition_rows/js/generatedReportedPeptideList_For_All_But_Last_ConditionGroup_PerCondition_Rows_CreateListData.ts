@@ -474,7 +474,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
         dataTable_DataRowEntries
     });
 
-    const tableOptions = new DataTable_TableOptions({});
+    const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

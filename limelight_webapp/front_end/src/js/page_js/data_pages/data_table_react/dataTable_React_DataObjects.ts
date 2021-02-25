@@ -26,7 +26,7 @@ class DataTable_RootTableObject {
     tableOptions : DataTable_TableOptions 
     tableDataObject : DataTable_RootTableDataObject
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      * @throws Error if not valid
@@ -78,31 +78,33 @@ class DataTable_RootTableObject {
  */
 class DataTable_TableOptions {
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    enable_Pagination_Download_Search : boolean
 
-    constructor({} : {
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
-    }) {
+    /**
+     *
+     * @param params - Change from optional '?' if require any of the parameters in the object to be passed
+     */
+    constructor( params : DataTable_TableOptions_ContructorParams) {
+        if ( params ) {
+            this.enable_Pagination_Download_Search = params.enable_Pagination_Download_Search;
+        }
     }
 }
 
-/////
-
-// SortColumnsInfo
-
 /**
- * Data Table - SortColumnsInfo Entry
+ * Change constructor 'params' from optional '?' if require any of the parameters in the object to be passed
  */
-class DataTable_SortColumnsInfoEntry {
-
-    columnId : DataTable_ColumnId;
-    sortDirection : string
-    sortPosition : number
+interface DataTable_TableOptions_ContructorParams {
+    enable_Pagination_Download_Search : boolean
 }
 
 
 /**
  * Data Table - columns: Array<DataTable_Column> AND columns_tableDownload: Array<DataTable_Column_DownloadTable>
+ *
+ *     Convenience Class
  */
 class DataTable_RootTableDataObject_Both_ColumnArrays {
 
@@ -136,30 +138,21 @@ class DataTable_RootTableDataObject {
     columns : Array<DataTable_Column>
     columns_tableDownload : Array<DataTable_Column_DownloadTable>
 
-    /**
-     * MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.
-     * This property can be true neither of them are true to hold space for when setting them true
-     */
-    highlightingOneOrMoreRowsWithBorder? : boolean
-
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
-     * @param highlightingOneOrMoreRowsWithBorder - MUST be true if DataTable_DataRowEntry.highlightRowWithBorderSolid or DataTable_DataRowEntry.highlightRowWithBorderSolid is true.  Can be true neither of them are true to hold space for when setting them true
      *
      */
-    constructor({ columns, columns_tableDownload, dataTable_DataRowEntries, dataTable_DataGroupRowEntries, highlightingOneOrMoreRowsWithBorder } : {
+    constructor({ columns, columns_tableDownload, dataTable_DataRowEntries, dataTable_DataGroupRowEntries } : {
         dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
         dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
         columns : Array<DataTable_Column>
         columns_tableDownload : Array<DataTable_Column_DownloadTable>
-        highlightingOneOrMoreRowsWithBorder? : boolean
     }) {
         this.columns = columns;
         this.columns_tableDownload = columns_tableDownload;
         this.dataTable_DataRowEntries = dataTable_DataRowEntries;
         this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
-        this.highlightingOneOrMoreRowsWithBorder = highlightingOneOrMoreRowsWithBorder
 
         DataTable_RootTableDataObject.constructorDataValidation( this )
     }
@@ -217,8 +210,7 @@ class DataTable_RootTableDataObject {
 
         const clone = new DataTable_RootTableDataObject({
             columns : this.columns, columns_tableDownload: this.columns_tableDownload,
-            dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries,
-            highlightingOneOrMoreRowsWithBorder : this.highlightingOneOrMoreRowsWithBorder
+            dataTable_DataGroupRowEntries : this.dataTable_DataGroupRowEntries, dataTable_DataRowEntries : this.dataTable_DataRowEntries
         });
         return clone;
     }
@@ -278,7 +270,7 @@ class DataTable_Column {
     style_override_HeaderRowCell_React?: React.CSSProperties; //  Must be object with property names that are compatible with format  domElement.style.<property name>.  IE: domElement.style.fontWeight = "bold"
 
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      *
@@ -417,7 +409,7 @@ class DataTable_Column_DownloadTable {
 
     cell_ColumnHeader_String : string
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      *
@@ -453,7 +445,7 @@ class DataTable_DataGroupRowEntry {
 
     /////////
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      *
@@ -559,7 +551,7 @@ class DataTable_DataRowEntry {
 
     /////////
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      *
@@ -917,7 +909,7 @@ class DataTable_DataRowEntry_DownloadTable {
 
     dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn>
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      *
@@ -941,7 +933,7 @@ class DataTable_DataRowEntry_DownloadTable_SingleColumn {
 
     cell_ColumnData_String : string
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      *
@@ -1002,7 +994,7 @@ class DataTable_DataRow_ColumnEntry {
 
     //  graphFraction : number;  //  Not Supported Yet
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      * A column in a Data Row
@@ -1104,7 +1096,7 @@ class DataTable_DataRow_ColumnEntry_SearchTableData {
 
     searchEntriesForColumn : Array<string>
 
-    private _DO_NOT_CALL__ForceUse_ClassContructor() {} // added to prevent construct object without calling constructor
+    private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
      * A column in a Data Row
@@ -1125,7 +1117,7 @@ class DataTable_DataRow_ColumnEntry_SearchTableData {
 ////////////////////////////////////
 
 export {
-
+    DataTable_UniqueId,
     DataTable_ColumnId,
 
     DataTable_RootTableObject,
@@ -1136,7 +1128,6 @@ export {
 
     DataTable_Column,
     DataTable_Column_sortFunction_Param,
-    DataTable_SortColumnsInfoEntry,
     DataTable_Column_DownloadTable,
 
     DataTable_RootTableDataObject,

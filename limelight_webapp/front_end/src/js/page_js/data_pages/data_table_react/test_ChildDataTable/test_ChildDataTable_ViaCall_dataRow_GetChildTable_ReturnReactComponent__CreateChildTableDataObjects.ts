@@ -177,7 +177,7 @@ export const fake_Create_ChildTableData = () : DataTable_RootTableObject => {
         dataTable_DataRowEntries : dataTable_DataRowEntries
     });
     
-    const tableOptions = new DataTable_TableOptions({});
+    const tableOptions = new DataTable_TableOptions({ enable_Pagination_Download_Search: true });
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

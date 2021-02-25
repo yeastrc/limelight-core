@@ -11,9 +11,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import {
     DataTable_TableOptions,
     DataTable_Column,
-    DataTable_DataRowEntry,
     DataTable_RootTableObject,
-    DataTable_RootTableDataObject,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_RowDOM_Rect,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_ClickEventData,
@@ -28,6 +26,10 @@ import {
 
 import { DataTable_TableRoot } from './dataTable_TableRoot_React';
 import { DataTable_Table_DataRowEntry } from './dataTable_Table_DataRowEntry_React';
+import {
+    DataTable_INTERNAL_DataRowEntry,
+    DataTable_INTERNAL_RootTableDataObject
+} from "page_js/data_pages/data_table_react/dataTable_React_INTERNAL_DataObjects";
 
 
 /**
@@ -35,10 +37,10 @@ import { DataTable_Table_DataRowEntry } from './dataTable_Table_DataRowEntry_Rea
  */
 export interface DataTable_Table_DataRow_Props {
 
-    dataObject : DataTable_DataRowEntry
+    dataTable_DataRowEntry_INTERNAL : DataTable_INTERNAL_DataRowEntry
     tableOptions : DataTable_TableOptions
     columns : Array<DataTable_Column>
-    dataTable_RootTableDataObject : DataTable_RootTableDataObject
+    dataTable_RootTableDataObject_INTERNAL :  DataTable_INTERNAL_RootTableDataObject
     dataTableId : string
     isLastRow : boolean   //  NOT Currently used since it changes after the user sorts the table.  Was only used for minor formatting.
 }
@@ -119,9 +121,9 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         //  Return new state (like return from setState(callback)) or null
 
         if ( 
-            props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent === state.dataRow_Get_RowChildContent_Return_ChildContent_FromProps
-            && props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent === state.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps
-            && props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent === state.dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps
+            props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent === state.dataRow_Get_RowChildContent_Return_ChildContent_FromProps
+            && props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent === state.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps
+            && props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent === state.dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps
             && props.tableOptions === state.tableOptions_FromProps 
         ) {
             //  No changes so just return
@@ -130,13 +132,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         //  Props props.dataObject.dataRow_GetChildTableDataParameter or props.tableOptions changed so clear child table (clear childDataTable_RootTableObject and displayChildTable)
         return {
-            dataRow_Get_RowChildContent_Return_ChildContent : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent,
-            dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
-            dataRow_Get_RowChildContent_Return_Promise_ChildContent : props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent,
+            dataRow_Get_RowChildContent_Return_ChildContent : props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent,
+            dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent : props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
+            dataRow_Get_RowChildContent_Return_Promise_ChildContent : props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent,
             tableOptions : props.tableOptions,
-            dataRow_Get_RowChildContent_Return_ChildContent_FromProps : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent,
-            dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps : props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
-            dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps : props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent,
+            dataRow_Get_RowChildContent_Return_ChildContent_FromProps : props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent,
+            dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent_FromProps : props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
+            dataRow_Get_RowChildContent_Return_Promise_ChildContent_FromProps : props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent,
             tableOptions_FromProps : props.tableOptions,
             //  Clear out all child content objects
             dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender : null,
@@ -159,16 +161,16 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         //  Only update if changed: props: dataObject
 
-        if ( this.props.dataObject !== nextProps.dataObject ) {
+        if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry !== nextProps.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry ) {
             return true;
         }
-        if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent !== nextProps.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ) {
+        if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent !== nextProps.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ) {
             return true;
         }
-        if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent !== nextProps.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ) {
+        if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent !== nextProps.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ) {
             return true;
         }
-        if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent !== nextProps.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+        if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent !== nextProps.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
             return true;
         }
         if ( this.props.tableOptions !== nextProps.tableOptions ) {
@@ -204,7 +206,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                 //  Eat exception
             }
 
-            if ( this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ) {
+            if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.tableRowClickHandler_Callback_NoDataPassThrough ) {
 
                 const targetDOMElement_domRect = this._row_OfTable_Ref.current.getBoundingClientRect();
 
@@ -232,19 +234,19 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     rowDOM_Rect
                 }
 
-                this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough( clickHandlerParams );
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.tableRowClickHandler_Callback_NoDataPassThrough( clickHandlerParams );
 
             }
 
-            if ( this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-                this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
-                this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ) {
+            if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ) {
 
                 this._processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject({ event });
 
-            } else if ( this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
-                this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
-                this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+            } else if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
                 this._processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent({ event });
             }
@@ -290,18 +292,18 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             let childDataTable_RootTableObject: DataTable_RootTableObject = undefined
             let promise_childDataTable_RootTableObject: Promise<DataTable_RootTableObject> = undefined
 
-            if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject) {
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject) {
 
                 const get_RowChildTableData_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
 
-                childDataTable_RootTableObject = this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject(get_RowChildTableData_Params);
+                childDataTable_RootTableObject = this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject(get_RowChildTableData_Params);
 
-            } else if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject) {
+            } else if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject) {
 
                 const get_RowChildTableData_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
 
                 const result: DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue =
-                    this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject(get_RowChildTableData_Params);
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject(get_RowChildTableData_Params);
 
                 if (result.dataTable_RootTableObject) {
                     childDataTable_RootTableObject = result.dataTable_RootTableObject;
@@ -313,12 +315,12 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     throw Error(msg);
                 }
 
-            } else if (this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject) {
+            } else if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject) {
 
                 const get_RowDataTable_Params: DataTable_DataRowEntry__GetChildTableData_CallbackParams = {};
 
                 promise_childDataTable_RootTableObject =
-                    this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject(get_RowDataTable_Params);
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject(get_RowDataTable_Params);
 
             } else {
                 const msg = "NEITHER populated: this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject NOR this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject NOR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject";
@@ -407,18 +409,18 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
             let dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = undefined
             let promise_childContent_Callback: Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent> = undefined
 
-            if (this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent) {
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent) {
 
                 const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
 
-                dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender = this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent;
+                dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender = this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent;
 
-            } else if (this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent) {
+            } else if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent) {
 
                 const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
 
                 const result: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue =
-                    this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent(get_RowChildContent_Params);
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent(get_RowChildContent_Params);
 
                 if (result.getchildContentCallback) {
                     dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender = result.getchildContentCallback;
@@ -430,12 +432,12 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     throw Error(msg);
                 }
 
-            } else if (this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent) {
+            } else if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent) {
 
                 const get_RowChildContent_Params: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {};
 
                 promise_childContent_Callback =
-                    this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent(get_RowChildContent_Params);
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent(get_RowChildContent_Params);
 
             } else {
                 const msg = "NEITHER populated: this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent NOR this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent";
@@ -503,7 +505,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         let className_Row = " data-table-data-row ";
 
-        if ( this.props.dataObject.highlightRowWithBackgroundColor ) {
+        if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBackgroundColor ) {
 
             className_Row += "  table-row-highlight-with-background-color  ";
         }
@@ -512,13 +514,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         let rowClickHandler = undefined;
 
-        if (this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
-            this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+        if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.tableRowClickHandler_Callback_NoDataPassThrough ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
             rowClickHandler = this._row_onClick_BindThis;
         }
@@ -527,12 +529,12 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         let childTableShowHideIcon = undefined;
 
         if (
-            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
-            this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
             if (this.state.displayChildTable) {
 
@@ -611,7 +613,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         //  Create Components for columns
 
         const columnComponents = (
-            this.props.dataObject.columnEntries.map((dataObject_columnEntry, index) => {
+            this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.columnEntries.map((dataObject_columnEntry, index) => {
 
                 const column = this.props.columns[index];
 
@@ -638,9 +640,9 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         {
             let className_outerContainingDiv_Border = "";
 
-            if (this.props.dataTable_RootTableDataObject.highlightingOneOrMoreRowsWithBorder) {
+            if (this.props.dataTable_RootTableDataObject_INTERNAL.highlightingOneOrMoreRowsWithBorder) {
 
-                if ( this.props.dataObject.highlightRowWithBorder_peptideFilter_NOT_borderColor || this.props.dataObject.highlightRowWithBorderSolid || this.props.dataObject.highlightRowWithBorderDash ) {
+                if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor || this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBorderSolid || this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBorderDash ) {
                     className_outerContainingDiv_Border = " row-border-padding ";
                 } else {
                     className_outerContainingDiv_Border = " row-border-place-holder ";
@@ -655,45 +657,45 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         {
             let className_innerContainingDiv_classNameClickable = " ";
 
-            if (this.props.dataObject.tableRowClickHandler_Callback_NoDataPassThrough ||
-                this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
-                this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
-                this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
-                this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent ||
-                this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
-                this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.tableRowClickHandler_Callback_NoDataPassThrough ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+                this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
                 className_innerContainingDiv_classNameClickable = " clickable "
             }
 
             let className_innerContainingDiv_HighlightRow = "";
 
-            if (this.props.dataObject.highlightRowWithBackgroundColor) {
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBackgroundColor) {
                 className_innerContainingDiv_HighlightRow = " table-row-highlight-with-background-color ";
             }
 
             let className_innerContainingDiv_GreyOut = "";
 
-            if (this.props.dataObject.greyOutRow) {
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.greyOutRow) {
                 className_innerContainingDiv_GreyOut = " grey-out-row ";
             }
 
             let className_innerContainingDiv_Border = "";
 
-            if (this.props.dataObject.highlightRowWithBorder_peptideFilter_NOT_borderColor) {
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBorder_peptideFilter_NOT_borderColor) {
                 className_innerContainingDiv_Border = " row-border row-border-style-solid table-row-border-peptide-filter--not-border-color ";
 
-            } else if (this.props.dataObject.highlightRowWithBorderSolid) {
+            } else if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBorderSolid) {
                 className_innerContainingDiv_Border = " row-border row-border-style-solid ";
 
-            } else if (this.props.dataObject.highlightRowWithBorderDash) {
+            } else if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.highlightRowWithBorderDash) {
                 className_innerContainingDiv_Border = " row-border row-border-style-dashed ";
             }
 
             let className_innerContainingDiv_row_CSS_Additions = "";
 
-            if (this.props.dataObject.row_CSS_Additions) {
-                className_innerContainingDiv_row_CSS_Additions = this.props.dataObject.row_CSS_Additions;
+            if (this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.row_CSS_Additions) {
+                className_innerContainingDiv_row_CSS_Additions = this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.row_CSS_Additions;
             }
 
             className_innerContainingDiv = " data-table-data-rows-inner-containing-div table-row-hovered-highlight " +
@@ -706,8 +708,8 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         let styleOverrides_innerContainingDiv : React.CSSProperties = undefined
 
-        if ( this.props.dataObject.styleOverrides_innerContainingDiv ) {
-            styleOverrides_innerContainingDiv = this.props.dataObject.styleOverrides_innerContainingDiv;
+        if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.styleOverrides_innerContainingDiv ) {
+            styleOverrides_innerContainingDiv = this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.styleOverrides_innerContainingDiv;
         }
 
 
