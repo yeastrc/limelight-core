@@ -74,6 +74,17 @@ export class ModalOverlay_No_Titlebar_Limelight_Component_v001 extends React.Com
 
         const background_ClassName = background_ClassName_Main + background_ClassName_Addition;
 
+        //  Adjust for scrolled window, unless setting position: fixed
+        let leftAddition = window.scrollX;
+        if ( this.props.set_CSS_Position_Fixed ) {
+            leftAddition = 0;
+        }
+
+        let topAddition = window.scrollY;
+        if ( this.props.set_CSS_Position_Fixed ) {
+            topAddition = 0;
+        }
+
         //  Width and Height:
         //          Starting size Computation: Smaller of  (80% of viewport) OR (100% viewport - 100 px)  --  100px to provide 50 px margin on each side
         //          Restricted by provided __Minimum and __Maximum values
@@ -84,11 +95,11 @@ export class ModalOverlay_No_Titlebar_Limelight_Component_v001 extends React.Com
 
         const width = "min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px )";
 
-        const left = "max( calc( calc( calc( 100vw - 6px ) / 2) - calc( min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px ) / 2 ) ), 10px)";
+        const left = "calc( " + leftAddition + "px + max( calc( calc( calc( 100vw - 6px ) / 2) - calc( min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px ) / 2 ) ), 10px) )";
 
         const height = "min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px )";
 
-        const top = "max( calc( calc( calc( 100vh - 6px ) / 2) - calc( min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px ) / 2 ) ), 10px)";
+        const top = "calc( " + topAddition + "px + max( calc( calc( calc( 100vh - 6px ) / 2) - calc( min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px ) / 2 ) ), 10px) )";
 
         const modal_overlay_container_css : React.CSSProperties = {
             width: width,

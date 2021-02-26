@@ -93,7 +93,7 @@ export class ModalOverlay_Limelight_Component extends React.Component< ModalOver
 
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
-        // const windowScrollX = window.scrollX;
+        const windowScrollX = window.scrollX;
         const windowScrollY = window.scrollY;
 
         let topOfModalOverlay = ( windowHeight / 2 ) - ( height /* modal overlay height */ / 2 ) + windowScrollY;
@@ -104,7 +104,7 @@ export class ModalOverlay_Limelight_Component extends React.Component< ModalOver
             topOfModalOverlay = windowScrollY;
         }
 
-        let leftOfModalOverlay = ( windowWidth / 2 ) - ( width /* modal overlay width */ / 2 );
+        let leftOfModalOverlay = ( windowWidth / 2 ) - ( width /* modal overlay width */ / 2 ) + windowScrollX;
         if ( leftOfModalOverlay < 1 ) {
             leftOfModalOverlay = 1;
         }

@@ -114,11 +114,11 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
 
         const width = "min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px )";
 
-        const left = "calc( " + leftAddition + "px +  max( calc( calc( calc( 100vw - 6px ) / 2) - calc( min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px ) / 2 ) ), 10px))";
+        const left = "calc( " + leftAddition + "px + max( calc( calc( calc( 100vw - 6px ) / 2) - calc( min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px ) / 2 ) ), 10px) )";
 
         const height = "min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px )";
 
-        const top = "calc( " + topAddition + "px +  max( calc( calc( calc( 100vh - 6px ) / 2) - calc( min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px ) / 2 ) ), 10px))";
+        const top = "calc( " + topAddition + "px + max( calc( calc( calc( 100vh - 6px ) / 2) - calc( min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px ) / 2 ) ), 10px) )";
 
         const modal_overlay_container_css : React.CSSProperties = {
             width: width,
