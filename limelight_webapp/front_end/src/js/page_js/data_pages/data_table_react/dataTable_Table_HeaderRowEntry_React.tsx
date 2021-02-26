@@ -7,7 +7,7 @@ import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { DataTable_Column } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
+import {DataTable_Column, DataTable_ColumnId} from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { DataTable_Table_HeaderRowEntry_SortIcon_InContainer } from './dataTable_HeaderRowEntry_SortIcon_InContainer'
 import {
@@ -16,16 +16,18 @@ import {
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 
 
+export type DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback = ({ shiftKeyDown, columnId } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId }) => void
+
 /**
  * 
  */
 export interface DataTable_Table_HeaderRowEntry_Props {
 
   column : DataTable_Column
-  column_sortDirection: any
-  column_sortPosition: any
-  lastColumn: any
-  headerColumnClicked_Callback: any
+  column_sortDirection: string
+  column_sortPosition: number
+  lastColumn: boolean
+  headerColumnClicked_Callback: DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback
 }
 
 /**

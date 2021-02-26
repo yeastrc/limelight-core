@@ -17,11 +17,14 @@ import {
     DataTable_RootTableObject,
     DataTable_ColumnId,
     DataTable_TableOptions,
-    DataTable_RootTableDataObject,
+    DataTable_RootTableDataObject, DataTable_Column_DownloadTable,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 
-import { DataTable_Table_HeaderRowEntry }  from './dataTable_Table_HeaderRowEntry_React';
+import {
+    DataTable_Table_HeaderRowEntry,
+    DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback
+} from './dataTable_Table_HeaderRowEntry_React';
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
 import { DataTable_Table_DataRow_Group } from './dataTable_Table_DataRow_Group_React';
 
@@ -48,6 +51,7 @@ import {
     DataTable_TableRoot_React_Table_PageNavigation_Component,
     DataTable_TableRoot_React_Table_PageNavigation_Component__InputField_NewValueEntered_Callback
 } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Table_PageNavigation";
+import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 
 /**
  *  !!!  Smallest/First entry in _showItemsPerPage_SelectValue_OPTIONS
@@ -103,16 +107,20 @@ interface DataTable_TableRoot_State {
  */
 export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Props, DataTable_TableRoot_State > {
 
-    private _headerColumnClicked_BindThis : ({ shiftKeyDown, columnId } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId }) => void = this._headerColumnClicked.bind(this);
+    private _headerColumnClicked_BindThis = this._headerColumnClicked.bind(this);
     private _searchInputField_NewValueEntered_Callback_BindThis = this._searchInputField_NewValueEntered_Callback.bind(this);
     private _showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback_BindThis = this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback.bind(this);
     private _currentPage_CurrentValue_Update_Callback_BindThis = this._currentPage_CurrentValue_Update_Callback.bind(this);
+
+    private _downloadTableContents_All_Clicked_BindThis = this._downloadTableContents_All.bind(this);
+    private _downloadTableContents_Filtered_Clicked_BindThis = this._downloadTableContents_Filtered.bind(this);
 
     /**
      * !!  Only exists to check function casts to type
      */
     private _DO_NOT_CALL_BoundMethods_TypeTest() { // Function only to test that methods that are .bind(this) are correct function signature
 
+        const _headerColumnClicked_BindThis : DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback = this._headerColumnClicked;
         const _searchInputField_NewValueEntered_Callback : DataTable_TableRoot__FindAllRows_SearchInput_Component__InputField_NewValueEntered_Callback = this._searchInputField_NewValueEntered_Callback;
         const _showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback : DataTable_TableRoot__ShowItemsPerPage_Select_Component__InputField_NewValueEntered_Callback =
             this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback;
@@ -476,7 +484,193 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     }
 
     /**
-     * 
+     *
+     */
+    private _downloadTableContents_All() {
+        try {
+
+            //  Array of Arrays of reportLineParts
+            const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
+
+            //  reportLineParts will be joined with separator '\t'
+
+            //  Header Line
+            this._downloadTableContents__Process_Header({
+                columns_tableDownload : this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns_tableDownload, reportLineParts_AllLines
+            });
+
+            //  Data Lines -
+
+            if ( this.state.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_All ) {
+
+                for ( const entry of this.state.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_All ) {
+
+                    this._downloadTableContents__Process_dataTable_DataRowEntries__INTERNAL({
+                        dataTable_DataRowEntries__INTERNAL:  entry.dataTable_DataRowEntries__INTERNAL, reportLineParts_AllLines
+                    });
+                }
+
+            } else if ( this.state.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_All ) {
+
+                this._downloadTableContents__Process_dataTable_DataRowEntries__INTERNAL({
+                    dataTable_DataRowEntries__INTERNAL: this.state.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_All, reportLineParts_AllLines
+                });
+            } else {
+                throw Error("_downloadTableContents_All_Clicked: Neither Populated: tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_All NOR tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_All");
+            }
+
+            //  Join all line parts into strings, delimit on '\t'
+
+            const reportLine_AllLines = [];
+
+            let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
+            const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
+
+            for ( const reportLineParts of reportLineParts_AllLines ) {
+
+                reportLineParts_AllLinesIndex++;
+
+                let reportLine = reportLineParts.join( "\t" );
+                if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
+                    reportLine += '\n'; // Add '\n' to last line
+                }
+                reportLine_AllLines.push( reportLine );
+            }
+
+            //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
+
+            const reportLinesSingleString = reportLine_AllLines.join( '\n' );
+
+            StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportLinesSingleString, filename: 'table_contents.txt' });
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _downloadTableContents_Filtered() {
+        try {
+            //  Array of Arrays of reportLineParts
+            const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
+
+            //  reportLineParts will be joined with separator '\t'
+
+            //  Header Line
+            this._downloadTableContents__Process_Header({
+                columns_tableDownload : this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns_tableDownload, reportLineParts_AllLines
+            });
+
+            //  Data Lines -
+
+            if ( this.state.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing ) {
+
+                for ( const entry of this.state.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing ) {
+
+                    this._downloadTableContents__Process_dataTable_DataRowEntries__INTERNAL({
+                        dataTable_DataRowEntries__INTERNAL:  entry.dataTable_DataRowEntries__INTERNAL, reportLineParts_AllLines
+                    });
+                }
+
+            } else if ( this.state.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_CurrentlyShowing ) {
+
+                this._downloadTableContents__Process_dataTable_DataRowEntries__INTERNAL({
+                    dataTable_DataRowEntries__INTERNAL: this.state.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_CurrentlyShowing, reportLineParts_AllLines
+                });
+            } else {
+                throw Error("_downloadTableContents_All_Clicked: Neither Populated: _downloadTableContents__Process_dataTable_DataRowEntries__INTERNAL NOR dataTable_DataRowEntries__INTERNAL_CurrentlyShowing");
+            }
+
+            //  Join all line parts into strings, delimit on '\t'
+
+            const reportLine_AllLines = [];
+
+            let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
+            const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
+
+            for ( const reportLineParts of reportLineParts_AllLines ) {
+
+                reportLineParts_AllLinesIndex++;
+
+                let reportLine = reportLineParts.join( "\t" );
+                if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
+                    reportLine += '\n'; // Add '\n' to last line
+                }
+                reportLine_AllLines.push( reportLine );
+            }
+
+            //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
+
+            const reportLinesSingleString = reportLine_AllLines.join( '\n' );
+
+            StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportLinesSingleString, filename: 'table_contents_filtered.txt' });
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _downloadTableContents__Process_Header(
+        {
+            columns_tableDownload, reportLineParts_AllLines
+        } : {
+            columns_tableDownload: DataTable_Column_DownloadTable[]
+            reportLineParts_AllLines : Array<Array<string>>
+        }) : void {
+
+        const reportLineParts : Array<string> = [];
+        let index = 0;
+
+        for ( const column of columns_tableDownload ) {
+
+            reportLineParts.push( column.cell_ColumnHeader_String );
+
+            index++;
+        }
+
+        reportLineParts_AllLines.push( reportLineParts );
+    }
+
+    /**
+     *
+     */
+    private _downloadTableContents__Process_dataTable_DataRowEntries__INTERNAL(
+        {
+            dataTable_DataRowEntries__INTERNAL, reportLineParts_AllLines
+        } : {
+            dataTable_DataRowEntries__INTERNAL: DataTable_INTERNAL_DataRowEntry[]
+            reportLineParts_AllLines : Array<Array<string>>
+        }) : void {
+
+        for ( const dataTable_DataRowEntry__INTERNAL of dataTable_DataRowEntries__INTERNAL ) {
+
+            const reportLineParts : Array<string> = [];
+            let index = 0;
+
+            for ( const columnEntry of dataTable_DataRowEntry__INTERNAL.dataTable_DataRowEntry.dataTable_DataRowEntry_DownloadTable.dataColumns_tableDownload ) {
+
+                let cellContentsString = columnEntry.cell_ColumnData_String;
+
+                reportLineParts.push( cellContentsString );
+
+                index++;
+            }
+
+            reportLineParts_AllLines.push( reportLineParts );
+        }
+    }
+
+    //////////////////////////////
+
+    /**
+     *
      */
     render() {
 
@@ -519,8 +713,8 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                 const columnId = column.id;
 
-                let column_sortDirection = undefined;
-                let column_sortPosition = undefined;
+                let column_sortDirection: string = undefined;
+                let column_sortPosition: number = undefined;
 
                 if ( sortColumnsInfo ) {
 
@@ -769,12 +963,16 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 </span>
                                 ) : null }
 
-                                <span className=" fake-link " style={ { marginLeft: 15 } } onClick={ ()=>{ window.alert("Not Implemented") }}>
+                                <span className=" fake-link " style={ { marginLeft: 15 } }
+                                      onClick={ this._downloadTableContents_All_Clicked_BindThis }
+                                >
                                     Download Table Data
                                 </span>
 
                                 { ( this.state.searchInputValue_CurrentValue ) ? (
-                                    <span className=" fake-link " style={ { marginLeft: 15 } } onClick={ ()=>{ window.alert("Not Implemented") }}>
+                                    <span className=" fake-link " style={ { marginLeft: 15 } }
+                                          onClick={ this._downloadTableContents_Filtered_Clicked_BindThis }
+                                    >
                                         Download Filtered Table Data
                                     </span>
                                 ) : null }
