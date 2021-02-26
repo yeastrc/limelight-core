@@ -211,8 +211,15 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         //  Props changed so create new state
         const new_state : DataTable_TableRoot_State = _createStateObjectFrom_DataTable_RootTableObject({
             tableObject : props.tableObject, resortTableOnUpdate : props.resortTableOnUpdate,
-            sortColumnsInfo : state.sortColumnsInfo, searchInputValue: state.searchInputValue_CurrentValue, showItemsPerPage_SelectValue: state.showItemsPerPage_SelectValue
+            sortColumnsInfo : state.sortColumnsInfo,
+            searchInputValue: state.searchInputValue_CurrentValue,
+            showItemsPerPage_SelectValue: state.showItemsPerPage_SelectValue,
         });
+
+        if ( props.tableObject.tableDataObject !== state.tableDataObject_FromProps ) {
+            // New Table data so reset current page to 1
+            new_state.currentPage_CurrentValue = 1;
+        }
 
         return new_state;
     }
@@ -870,7 +877,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
             if ( dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged.length > 0 ) {
 
-                const pagedIndex = this.state.currentPage_CurrentValue - 1; // change from 1 based to zero based.
+                let pagedIndex = this.state.currentPage_CurrentValue - 1; // change from 1 based to zero based.
 
                 const dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry =
                     dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged[ pagedIndex ];
