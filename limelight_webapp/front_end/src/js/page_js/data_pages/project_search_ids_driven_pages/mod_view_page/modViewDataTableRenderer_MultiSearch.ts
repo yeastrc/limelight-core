@@ -142,11 +142,12 @@ export class ModViewDataTableRenderer_MultiSearch {
 		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
 
 		const dataTableRows : Array<DataTable_DataRowEntry> = [];
-		const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
 		// create a row for each mod mass
 		for(const modMass of sortedModsToDisplay) {
+			
 			const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+			const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
 			{
 				const valueDisplay = modMass.toString();
