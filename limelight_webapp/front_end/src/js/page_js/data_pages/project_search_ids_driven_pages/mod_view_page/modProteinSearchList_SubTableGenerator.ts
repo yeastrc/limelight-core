@@ -87,7 +87,7 @@ export class ModProteinSearchList_SubTableGenerator {
                 displayName,
                 width : 500,
                 sortable : true,
-                style_override_DataRowCell_React : { overflowX: "auto" },
+                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
             });
             dataTableColumns.push( dataTableColumn );
 

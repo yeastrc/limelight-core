@@ -88,7 +88,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 displayName,
                 width : 500,
                 sortable : true,
-                style_override_DataRowCell_React : { overflowX: "auto" },
+                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
             });
             dataTableColumns.push( dataTableColumn );
 
@@ -103,8 +103,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 id : "searchProteinPSMCount", // Used for tracking sort order. Keep short
                 displayName,
                 width : 100,
-                sortable : true,
-                style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
+                sortable : true
             });
             dataTableColumns.push( dataTableColumn );
 
@@ -135,7 +134,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 displayName,
                 width : 100,
                 sortable : true,
-                style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
                 sortFunction:sortFunction
             });
             dataTableColumns.push( dataTableColumn );
@@ -152,8 +150,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 id : "searchProteinModRes", // Used for tracking sort order. Keep short
                 displayName,
                 width : 100,
-                sortable : true,
-                style_override_DataRowCell_React : { display: "inline-block", fontSize: 12 },
+                sortable : true
             });
             dataTableColumns.push( dataTableColumn );
 

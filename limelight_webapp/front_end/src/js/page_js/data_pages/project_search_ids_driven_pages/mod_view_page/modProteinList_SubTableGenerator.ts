@@ -98,7 +98,7 @@ export class ModProteinList_SubTableGenerator {
                 displayName,
                 width : 200,
                 sortable : true,
-                style_override_DataRowCell_React : { overflowX: "auto" },
+                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
             });
             dataTableColumns.push( dataTableColumn );
 

@@ -139,8 +139,7 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
             id : "psmCount", // Used for tracking sort order. Keep short
             displayName,
             width : 75,
-            sortable : true,
-            style_override_DataRowCell_React : { fontSize: 12 }
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
 
