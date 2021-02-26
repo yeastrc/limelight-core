@@ -27,6 +27,7 @@ export interface DataTable_Table_HeaderRowEntry_Props {
   column_sortDirection: string
   column_sortPosition: number
   lastColumn: boolean
+  no_Columns_Are_Sortable: boolean
   headerColumnClicked_Callback: DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback
 }
 
@@ -236,10 +237,15 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
       if ( ! this.props.lastColumn ) {
 
+        let svg_BottomPosition = 0;
+        if ( this.props.no_Columns_Are_Sortable ) {
+          svg_BottomPosition = -4;
+        }
+
         //  Column separator vertical line positioned to be on the edge between cells in the table
         columnSeparator = (
           <div style={ { position: "relative", display: "inline-block" } }>
-            <div style={ { position: "absolute", left: "4px", bottom: "-0px" } }>
+            <div style={ { position: "absolute", left: 4, bottom: svg_BottomPosition } }>
                 <svg preserveAspectRatio="none" height="16px" width="2px"><line x1="0" y1="0" x2="0" y2="16" style={ { stroke: "#d3d3d3", strokeWidth:2 } } /></svg>
             </div>
           </div>

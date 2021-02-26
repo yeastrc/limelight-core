@@ -707,45 +707,57 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         //  Create Header Row Components
 
-        const headerColumnsReactComponents = (
+        let headerColumnsReactComponents: JSX.Element[] = undefined;
 
-            this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns.map( (column, index ) => {
-
-                const columnId = column.id;
-
-                let column_sortDirection: string = undefined;
-                let column_sortPosition: number = undefined;
-
-                if ( sortColumnsInfo ) {
-
-                    for ( const sortColumnsInfoEntry_InArray of sortColumnsInfo ) {
-
-                        const columnId_InSortEntry = sortColumnsInfoEntry_InArray.columnId;
-                        if ( columnId === columnId_InSortEntry ) {
-                            column_sortDirection = sortColumnsInfoEntry_InArray.sortDirection;
-                            if ( sortColumnsInfo.length !== 1 ) {
-                                column_sortPosition = sortColumnsInfoEntry_InArray.sortPosition;
-                            }
-                            break;
-                        }
-                    }    
+        {
+            let no_Columns_Are_Sortable = true;
+            for ( const column of this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns ) {
+                if ( column.sortable ) {
+                    no_Columns_Are_Sortable = false;
+                    break;
                 }
+            }
 
-                const lastColumn = index === ( columnsArrayLength - 1 );
+            headerColumnsReactComponents = (
 
-                //   return inside a array.map
-                return (
-                    <DataTable_Table_HeaderRowEntry 
-                        column={ column } 
-                        column_sortDirection={ column_sortDirection } 
-                        column_sortPosition={ column_sortPosition }
-                        // index={ index } 
-                        lastColumn={ lastColumn }
-                        headerColumnClicked_Callback={ this._headerColumnClicked_BindThis }
-                        key={ index } />
-                );
-            })
-        );
+                this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns.map( (column, index ) => {
+
+                    const columnId = column.id;
+
+                    let column_sortDirection: string = undefined;
+                    let column_sortPosition: number = undefined;
+
+                    if ( sortColumnsInfo ) {
+
+                        for ( const sortColumnsInfoEntry_InArray of sortColumnsInfo ) {
+
+                            const columnId_InSortEntry = sortColumnsInfoEntry_InArray.columnId;
+                            if ( columnId === columnId_InSortEntry ) {
+                                column_sortDirection = sortColumnsInfoEntry_InArray.sortDirection;
+                                if ( sortColumnsInfo.length !== 1 ) {
+                                    column_sortPosition = sortColumnsInfoEntry_InArray.sortPosition;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    const lastColumn = index === ( columnsArrayLength - 1 );
+
+                    //   return inside a array.map
+                    return (
+                        <DataTable_Table_HeaderRowEntry
+                            column={ column }
+                            column_sortDirection={ column_sortDirection }
+                            column_sortPosition={ column_sortPosition }
+                            lastColumn={ lastColumn }
+                            no_Columns_Are_Sortable={ no_Columns_Are_Sortable }
+                            headerColumnClicked_Callback={ this._headerColumnClicked_BindThis }
+                            key={ index } />
+                    );
+                })
+            );
+        }
 
         let tableHeaderContainerDiv_ClassNames : string = " table-header-container-div "
 
