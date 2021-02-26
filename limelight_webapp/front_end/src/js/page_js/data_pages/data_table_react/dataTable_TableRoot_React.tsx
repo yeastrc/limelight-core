@@ -949,13 +949,13 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                     (showingEnd === 1) ? (
                                         <span>1</span>
                                     ) : (
-                                        <span>{showingStart}-{showingEnd}</span>
+                                        <span>{showingStart.toLocaleString()}-{showingEnd.toLocaleString()}</span>
                                     )
                                 ) : (
                                     <span>0</span>
                                 )}
                                 <span>&nbsp;of&nbsp;</span>
-                                <span>{ this.state.tableDataObject_INTERNAL.getTotalCount_ForCurrentlyShowing() }</span>
+                                <span>{ this.state.tableDataObject_INTERNAL.getTotalCount_ForCurrentlyShowing().toLocaleString() }</span>
 
                                 { ( this.state.searchInputValue_CurrentValue ) ? (
                                     <span >
