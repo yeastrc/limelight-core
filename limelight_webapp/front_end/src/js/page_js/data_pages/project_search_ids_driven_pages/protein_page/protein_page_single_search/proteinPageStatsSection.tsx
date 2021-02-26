@@ -7,7 +7,7 @@
  */
 
 
-import React from 'react'
+import React, {FC} from 'react'
 import {
     DataTable_Column, DataTable_Column_DownloadTable,
     DataTable_DataRow_ColumnEntry, DataTable_DataRow_ColumnEntry_SearchTableData,
@@ -17,6 +17,19 @@ import {
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 
+/**
+ *
+ */
+export const ProteinViewPage_StatsSection_LoadingMessage : FC = function () : JSX.Element {
+
+    return (
+        <div style={ { paddingLeft: 10, paddingBottom: 20 } }>
+            Loading Data
+        </div>
+    );
+}
+
+///////////////
 
 export interface ProteinViewPage_StatsSection_Props {
 

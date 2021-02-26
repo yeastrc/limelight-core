@@ -14,7 +14,11 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-import {ProteinViewPage_StatsSection, ProteinViewPage_StatsSection_Props} from './proteinPageStatsSection';
+import {
+    ProteinViewPage_StatsSection,
+    ProteinViewPage_StatsSection_Props,
+    ProteinViewPage_StatsSection_LoadingMessage
+} from './proteinPageStatsSection';
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 /**
@@ -115,6 +119,30 @@ export class ProteinViewPage_StatsSectionCreator_SingleSearch {
 	 * 
 	 */
     _getDataAndPopulateStatsSection() {
+
+        {
+            const containerDOMElement = document.getElementById("stats_data_container");
+
+            if ( containerDOMElement === undefined || containerDOMElement === null ) {
+                throw Error("No DOM element with id 'stats_data_container'");
+            }
+
+            const proteinViewPage_StatsSection_Component = (
+                React.createElement(
+                    ProteinViewPage_StatsSection_LoadingMessage,
+                    {},
+                    null
+                )
+            );
+
+            const renderedReactComponent = ReactDOM.render(
+                proteinViewPage_StatsSection_Component,
+                containerDOMElement,
+                null
+            );
+
+            containerDOMElement.style.display = ""; // show
+        }
 
         const promise_getDataStatsSection = this._getDataStatsSection();
 
