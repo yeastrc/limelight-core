@@ -944,7 +944,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */
     _clearAllSelections() {
         try {
-            this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass.clearAll();
+            if ( this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass ) {
+                this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass.clearAll();
+            }
 
             this.props.propsValue.modificationMass_UserSelections_StateObject.clear_selectedModifications();
 
