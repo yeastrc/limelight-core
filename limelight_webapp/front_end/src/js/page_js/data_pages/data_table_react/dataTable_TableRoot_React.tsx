@@ -66,7 +66,7 @@ const _showItemsPerPage_SelectValue_DEFAULT = 50;
 /**
  *   !!! MUST contain as one of the entries
  */
-const _showItemsPerPage_SelectValue_OPTIONS = [ _showItemsPerPage_SelectValue_Minimum_Value, 25, _showItemsPerPage_SelectValue_DEFAULT, 100, 250 ];
+const _showItemsPerPage_SelectValue_OPTIONS = [ _showItemsPerPage_SelectValue_Minimum_Value, 25, _showItemsPerPage_SelectValue_DEFAULT, 100, 250, 500, 1000 ];
 
 /**
  * 
@@ -962,7 +962,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                         <div>
                             <div style={ { marginBottom: 5 } }>
 
-                                <span>Currently Showing:&nbsp;</span>
+                                <span style={ { fontWeight: "bold" } }>Currently Showing:&nbsp;</span>
 
                                 {(showingStart) ? (
                                     (showingEnd === 1) ? (
@@ -1034,7 +1034,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                     { header }
                     { ( ! dataRows ) ? (
-                        <div style={ { marginLeft: 10, marginTop: 10, fontWeight: "bold" } }>
+                        <div style={ { marginLeft: 10, marginTop: 10, marginBottom: 20, fontWeight: "bold" } }>
                             No rows contain '{ this.state.searchInputValue_CurrentValue }'
                         </div>
                         ) : (

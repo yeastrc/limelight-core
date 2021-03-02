@@ -300,11 +300,13 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-start-gray.svg"
+                                    title={"At first page"}
                                     style={ { width: svgImage_Width } }
                                 />
                             ) : (
                                 <img
                                     src="static/images/icon-page-to-start.svg"
+                                    title={"Go to first page"}
                                     className=" fake-link-image " style={ { width: svgImage_Width } }
                                     onClick={ () => { this._change_PageNumber( 1 ) } }
                                 />
@@ -315,11 +317,13 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-previous-gray.svg"
+                                    title={"At first page"}
                                     style={ { width: svgImage_Width } }
                                 />
                             ) : (
                                 <img
                                     src="static/images/icon-page-to-previous.svg"
+                                    title={"Go to previous page"}
                                     className=" fake-link-image " style={ { width: svgImage_Width } }
                                     onClick={ () => { this._change_PageNumber( this.props.pageNavigation_SelectValue_Prop - 1 ) } }
                                 />
@@ -335,11 +339,13 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-next-gray.svg"
+                                    title={"At last page"}
                                     style={ { width: svgImage_Width } }
                                 />
                             ) : (
                                 <img
                                     src="static/images/icon-page-to-next.svg"
+                                    title={"Go to next page"}
                                     className=" fake-link-image " style={ { width: svgImage_Width } }
                                     onClick={ () => { this._change_PageNumber( this.props.pageNavigation_SelectValue_Prop + 1 ) } }
                                 />
@@ -350,11 +356,13 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-end-gray.svg"
+                                    title={"At last page"}
                                     style={ { width: svgImage_Width } }
                                 />
                             ) : (
                                 <img
                                     src="static/images/icon-page-to-end.svg"
+                                    title={"Go to last page"}
                                     className=" fake-link-image " style={ { width: svgImage_Width } }
                                     onClick={ () => { this._change_PageNumber( this.props.pageNavigation_TotalPagesCount ) } }
                                 />
