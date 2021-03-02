@@ -63,6 +63,11 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 
 
 /**
+ * !!!  WARNING:  Webservice Response is CACHED  !!!!
+ * 
+ * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
+ * 
+ * 
  * Mod Page - !!!  Special Specific Web Service !!!
  * 
  * Retrieve Open and Variable Mod Position Data per psm
@@ -99,9 +104,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private static final Logger log = LoggerFactory.getLogger( ModPageSpecial_Get_OpenMod_Info_For_Cutoffs_Single_ProjSearchID_RestWebserviceController.class );
 
 	/**
-	 * Path for this Controller
+	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.MOD_PAGE_SPECIAL__GET_OPEN_MOD_INFO_FOR_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.MOD_PAGE_SPECIAL__GET_OPEN_MOD_INFO_FOR_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -427,6 +432,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     ////////////////////////
     
     //  Web Service Request and Response Classes
+    
+    //  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
     
     /**
      * 

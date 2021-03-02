@@ -353,8 +353,8 @@ public class AA_RestWSControllerPaths_Constants {
 	//    Pass in Project Search Id and Cutoff Criteria
 	//    Returns Reported Peptide Ids and in some cases the Number of PSMs
 	//     Not currently used for Reported Peptides Page, PEPTIDE_VIEW_PAGE_PEPTIDE_LIST_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER used instead there
-	public static final String REPORTED_PEPTIDE_LIST_REPORTED_PEPTIDE_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/reported-peptide-id-list-for-search-criteria-single-project-search-id";
+	public static final String REPORTED_PEPTIDE_LIST_REPORTED_PEPTIDE_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/reported-peptide-id-list-for-search-criteria-single-project-search-id-version-0001";
 
 	//  Search SubGroups at Reported Peptide Level for Project Search Id, Reported Peptide Ids
 	public static final String SEARCH_SUB_GROUPS_REPORTED_PEPTIDE_LEVEL_SINGLE_PROJECT_SEARCH_ID =
@@ -370,8 +370,8 @@ public class AA_RestWSControllerPaths_Constants {
 
 	//  PSM Info
 	
-	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
 	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID__SUB_SEARCH_GROUP__FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
@@ -380,14 +380,14 @@ public class AA_RestWSControllerPaths_Constants {
 	 * Retrieve Sub Search Group Id, PSM Id, Reported Peptide Id for Reported Peptide Ids, Project Search ID, and Search Criteria
 	 * 
 	 */
-	public static final String SUB_SEARCH_GROUP_ID_PSM_ID_REPORTED_PEPTIDE_ID____FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+	public static final String SUB_SEARCH_GROUP_ID_PSM_ID_REPORTED_PEPTIDE_ID____FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
-	public static final String PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+	public static final String PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
-	public static final String PSM_INFO_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/psm-info-per-reported-peptide-id-for-searchcriteria-single-project-search-id";
+	public static final String PSM_INFO_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-info-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
 
 	public static final String PSM_FILT_ANN_VALUES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_ANN_TYPE_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-filt-ann-values-per-reported-peptide-id-for-rep-pept-ids-ann-type-ids-searchcriteria-single-project-search-id";
@@ -395,8 +395,8 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 
-	public static final String PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+	public static final String PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
 
 	//  PSM Best (at Reported Peptide level) Filterable Annotation data for Reported Peptide Ids, Annotation Type Ids, Project Search Id
@@ -421,11 +421,11 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PSM_PEPTIDE_LIST_DISPLAY_WITH_SPECTRUM_VIEWER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
 	
-	public static final String PSM_COUNT_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-count-searchcriteria";
+	public static final String PSM_COUNT_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = "d/rws/for-page/psb/psm-count-searchcriteria-version-0001";
 
 	public static final String PSM_COUNT_FOR_RESIDUES_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-count-for-residues-searchcriteria";
 
-	public static final String SCAN_COUNT_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/scan-count-searchcriteria";
+	public static final String SCAN_COUNT_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = "d/rws/for-page/psb/scan-count-searchcriteria-version-0001";
 
 	public static final String PEPTIDE_IDS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids";
 
@@ -437,7 +437,7 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PROTEIN_INFO_PROTEIN_SEQUENCE_VERSION_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-info-prot-seq-v-ids-list";
 
-	public static final String PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-info-searchcriteria-list";
+	public static final String PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = "d/rws/for-page/psb/protein-info-searchcriteria-list-version-0001";
 
 	public static final String PROTEIN_MOD_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-mod-info-searchcriteria-list";
 
@@ -449,36 +449,36 @@ public class AA_RestWSControllerPaths_Constants {
 
 
 	//  Protein Sequence Version Ids for each Reported Peptide Id in request
-	public static final String PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/protein-seq-version-id-list-for-reported-peptide-ids-single-project-search-id";
+	public static final String PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/protein-seq-version-id-list-for-reported-peptide-ids-single-project-search-id-version-0001";
 
 	//  Protein Sequence Coverage for each Reported Peptide Id in request
-	public static final String PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
+	public static final String PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0001";
 
 	//  !! SPECIAL !!  for MOD PAGE Protein Coverage and Open Mod Data  in request
 	public static final String MOD_PAGE_SPECIAL__PROTEIN_COVERAGE_OPEN_MOD_DATA_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/mod-page-special-protein-coverage-map-open-mod-data-single-project-search-id";
 
 	//  !! SPECIAL !!  for MOD PAGE Mod Data Per Rounded Mod Masses in request
-	public static final String MOD_PAGE_SPECIAL__GET_MOD_INFO_FOR_Rounded_MOD_MASSES_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id";
+	public static final String MOD_PAGE_SPECIAL__GET_MOD_INFO_FOR_Rounded_MOD_MASSES_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0001";
 
 	//  !! SPECIAL !!  for MOD PAGE Open Mod Data All PSMs for cutoffs in request
-	public static final String MOD_PAGE_SPECIAL__GET_OPEN_MOD_INFO_FOR_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id";
+	public static final String MOD_PAGE_SPECIAL__GET_OPEN_MOD_INFO_FOR_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id-version-0001";
 
 	//  !! SPECIAL !!  for MOD PAGE Mod Data Per Scans in request
-	public static final String MOD_PAGE_SPECIAL__GET_MODS_FOR_SCANS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id";
+	public static final String MOD_PAGE_SPECIAL__GET_MODS_FOR_SCANS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id-version-0001";
 
 	//  !! SPECIAL !!  for MOD PAGE Mod Data Per PSMs in request
-	public static final String MOD_PAGE_SPECIAL__GET_MODS_FOR_PSMS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id";
+	public static final String MOD_PAGE_SPECIAL__GET_MODS_FOR_PSMS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id-version-0001";
 
 	//  !! SPECIAL !!  for MOD PAGE  Protein Positions and Varible Mod Positions in request
-	public static final String MOD_PAGE_SPECIAL__PROTEIN_POSITIONS_VAR_MODS_FOR_REPORTED_PEPTIDES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/mod-page-special-protein-positions-var-mods-per-reported-peptide-single-project-search-id";
+	public static final String MOD_PAGE_SPECIAL__PROTEIN_POSITIONS_VAR_MODS_FOR_REPORTED_PEPTIDES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/mod-page-special-protein-positions-var-mods-per-reported-peptide-single-project-search-id-version-0001";
 
 	
 	

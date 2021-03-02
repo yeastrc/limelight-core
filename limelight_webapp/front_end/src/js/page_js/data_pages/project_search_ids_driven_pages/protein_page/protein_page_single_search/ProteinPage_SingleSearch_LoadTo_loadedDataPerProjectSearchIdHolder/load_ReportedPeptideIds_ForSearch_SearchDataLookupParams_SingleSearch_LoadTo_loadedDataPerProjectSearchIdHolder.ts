@@ -36,7 +36,7 @@ export const load_ReportedPeptideIds_ForSearch_SearchDataLookupParams_SingleSear
 
             console.log("AJAX Call to get Peptide List START, Now: " + new Date() );
 
-            const url = "d/rws/for-page/psb/reported-peptide-id-list-for-search-criteria-single-project-search-id";
+            const url = "d/rws/for-page/psb/reported-peptide-id-list-for-search-criteria-single-project-search-id-version-0001";
 
             const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 

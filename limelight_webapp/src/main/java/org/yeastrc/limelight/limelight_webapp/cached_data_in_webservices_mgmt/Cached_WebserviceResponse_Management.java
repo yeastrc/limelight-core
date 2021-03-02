@@ -182,6 +182,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			}
 		}
 		
+		//  Store Cached Data to In Memory Cache
+		
 		LocalCacheKey localCacheKey = new LocalCacheKey();
 		localCacheKey.controllerPathForCachedResponse = controllerPathForCachedResponse;
 		localCacheKey.requestBodyBytes = requestPostBody;
@@ -190,6 +192,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		localCacheValue.responseBodyBytes = responseBodyBytes;
 		
 		dataCache.put( localCacheKey, localCacheValue );
+		
+		//  Write Cached Data to Disk File for use after webapp restart/re-install
 		
 		CachedDataInFileMgmt_WriteFile_Parameters cachedDataInFileMgmt_WriteFile_Parameters = new CachedDataInFileMgmt_WriteFile_Parameters();
 		cachedDataInFileMgmt_WriteFile_Parameters.setControllerPath( controllerPathForCachedResponse );

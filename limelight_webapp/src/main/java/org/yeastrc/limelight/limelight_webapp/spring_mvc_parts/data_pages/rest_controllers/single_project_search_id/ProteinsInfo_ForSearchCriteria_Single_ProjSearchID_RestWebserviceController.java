@@ -56,6 +56,13 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 
 
 /**
+ * 
+ * !!!  WARNING:  Webservice Response is CACHED  !!!!
+ * 
+ * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
+ * 
+ * 
+ * 
  * Retrieve Protein Annotation Info for Project Search ID and Search Criteria
  *
  */
@@ -71,7 +78,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0001;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )

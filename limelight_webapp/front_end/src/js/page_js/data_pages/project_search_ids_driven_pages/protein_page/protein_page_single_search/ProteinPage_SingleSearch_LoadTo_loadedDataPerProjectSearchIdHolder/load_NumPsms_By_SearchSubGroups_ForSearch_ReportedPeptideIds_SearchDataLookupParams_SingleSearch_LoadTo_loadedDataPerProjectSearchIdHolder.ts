@@ -54,7 +54,7 @@ export const load_NumPsms_By_SearchSubGroup_ForSearch_ReportedPeptideIds_SearchD
 
             console.log("AJAX Call to get psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
 
-            const url = "d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+            const url = "pageNumber_InputValue";
 
             const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 

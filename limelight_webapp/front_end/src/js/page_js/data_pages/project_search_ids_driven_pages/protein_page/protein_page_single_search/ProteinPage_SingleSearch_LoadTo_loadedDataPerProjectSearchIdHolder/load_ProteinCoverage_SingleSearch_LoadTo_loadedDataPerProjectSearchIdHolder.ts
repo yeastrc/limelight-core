@@ -176,7 +176,7 @@ const _getProteinCoverageData_From_ReportedPeptideIds = function ( { projectSear
 
             console.log("AJAX Call to get protein-coverage-per-reported-peptide-id START, Now: " + new Date() );
 
-            const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id";
+            const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0001";
 
             const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
