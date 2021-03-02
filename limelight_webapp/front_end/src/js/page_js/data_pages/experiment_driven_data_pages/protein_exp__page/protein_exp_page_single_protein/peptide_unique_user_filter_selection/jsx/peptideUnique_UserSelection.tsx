@@ -161,7 +161,7 @@ export class PeptideUnique_UserSelection extends React.Component< PeptideUnique_
                 <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }
                      title="Check to only show peptides only found in this protein."
                 >
-                    Filter On Unique Peptides:
+                    Show only Unique Peptides:
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">

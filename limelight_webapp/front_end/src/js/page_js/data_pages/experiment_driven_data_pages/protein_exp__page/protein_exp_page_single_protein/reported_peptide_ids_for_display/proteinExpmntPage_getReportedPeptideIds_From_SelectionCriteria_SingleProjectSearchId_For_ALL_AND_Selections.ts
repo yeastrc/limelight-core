@@ -1064,7 +1064,7 @@ const _updateFor__SelectionType_ALL___For__ReporterIonMassesSelected = function 
 }
 
 /**
- * User has selected 'Filter On Unique Peptides:'
+ * User has selected 'Show only Unique Peptides:'
  *
  */
 const _updateFor_peptideUniqueSelected = function (
