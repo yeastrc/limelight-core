@@ -97,8 +97,7 @@ export class ModProteinList_SubTableGenerator {
                 id : "proteinName", // Used for tracking sort order. Keep short
                 displayName,
                 width : 200,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+                sortable : true
             });
             dataTableColumns.push( dataTableColumn );
 
