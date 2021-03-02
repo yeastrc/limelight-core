@@ -373,8 +373,8 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
 			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
-	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID__SUB_SEARCH_GROUP__FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
+	public static final String PSM_COUNT_PER_REPORTED_PEPTIDE_ID__SUB_SEARCH_GROUP__FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 	
 	/**
 	 * Retrieve Sub Search Group Id, PSM Id, Reported Peptide Id for Reported Peptide Ids, Project Search ID, and Search Criteria
