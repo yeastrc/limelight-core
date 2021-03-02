@@ -25,9 +25,17 @@ import {setDefaultView_dataPages_ProcessRequest_Common} from "page_js/data_pages
 
 
 /**
- *
+ * @returns null if not Project Owner
  */
 export const setDefaultView_Create_Component_React : Get_SetDefaultView_Component_React_Type = function( params : SetDefaultView_Component_React_Params ) : JSX.Element {
+
+    //  Get is user Project Owner
+    const $page_auth_access_level_project_owner_allowed = $("#page_auth_access_level_project_owner_allowed");
+    if ( $page_auth_access_level_project_owner_allowed.length === 0 ) {
+
+        //  Not Project Owner Access Level so Exit
+        return null; // EARLY RETURN
+    }
 
     return (
         <SetDefaultView_Component
