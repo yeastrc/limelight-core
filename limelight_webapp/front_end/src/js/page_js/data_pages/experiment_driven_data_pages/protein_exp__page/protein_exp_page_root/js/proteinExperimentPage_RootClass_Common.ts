@@ -13,15 +13,6 @@
 
 
 /**
- * Always do in Root Javascript for page:
- */
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-
-
-/**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
@@ -164,6 +155,11 @@ export class ProteinExperimentPage_RootClass_Common {
 	initialize() {
 
 		catchAndReportGlobalOnError.init();
+
+		window.onpopstate = function(event) {
+			//  User clicked the back button so reload so page reflects that URL
+			window.location.reload(true);
+		};
 
 		/////////////////////////
 

@@ -635,6 +635,10 @@ export class ProteinExperimentPage_Display {
         try {
             const proteinSequenceVersionId = params.tableRowData.proteinSequenceVersionId;
 
+            //  Push current state on to Browser History before update for Single Protein
+
+            window.history.pushState( {}, "" );
+
             this._singleProtein_ExpPage_CentralStateManagerObjectClass.setProteinSequenceVersionId( { proteinSequenceVersionId } );
 
             this._singleProteinRowShowSingleProteinOverlay({ tableRowData : params.tableRowData });

@@ -153,6 +153,11 @@ export class ProteinViewPage_RootClass_Common {
 		
 		catchAndReportGlobalOnError.init();
 
+		window.onpopstate = function(event) {
+			//  User clicked the back button so reload so page reflects that URL
+			window.location.reload(true);
+		};
+
 		this._page_UserDefault_processing.page_UserDefault_processing();
 		
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();

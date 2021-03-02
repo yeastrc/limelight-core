@@ -717,6 +717,10 @@ export class ProteinViewPage_Display_SingleSearch {
 			return; //  EARLY RETURN
 		}
 
+		//  Push current state on to Browser History before update for Single Protein
+
+		window.history.pushState( {}, "" );
+
 		this._singleProtein_CentralStateManagerObject.setProteinSequenceVersionId( { proteinSequenceVersionId } );
 		
 		this._singleProteinRowShowSingleProteinOverlay( { proteinSequenceVersionId } );

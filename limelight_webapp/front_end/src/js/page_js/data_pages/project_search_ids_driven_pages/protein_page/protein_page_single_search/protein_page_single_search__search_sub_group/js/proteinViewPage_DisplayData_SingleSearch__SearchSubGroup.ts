@@ -769,12 +769,17 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             params.dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params.clickEventData.metaKey_From_ClickEvent ) {
 
             this._singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId});
-            return;
+
+        } else {
+
+            //  Push current state on to Browser History before update for Single Protein
+
+            window.history.pushState( {}, "" );
+
+            this._singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({proteinSequenceVersionId});
+
+            this._singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId});
         }
-
-        this._singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({proteinSequenceVersionId});
-
-        this._singleProteinRowShowSingleProteinOverlay({ proteinSequenceVersionId});
     }
 
     /**
