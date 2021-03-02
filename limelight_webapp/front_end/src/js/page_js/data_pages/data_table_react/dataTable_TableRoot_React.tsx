@@ -53,6 +53,12 @@ import {
 } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Table_PageNavigation";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 
+
+/**
+ *
+ */
+export const DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL = -1;
+
 /**
  *  !!!  Smallest/First entry in _showItemsPerPage_SelectValue_OPTIONS
  */
@@ -66,7 +72,7 @@ const _showItemsPerPage_SelectValue_DEFAULT = 50;
 /**
  *   !!! MUST contain as one of the entries
  */
-const _showItemsPerPage_SelectValue_OPTIONS = [ _showItemsPerPage_SelectValue_Minimum_Value, 25, _showItemsPerPage_SelectValue_DEFAULT, 100, 250, 500, 1000 ];
+const _showItemsPerPage_SelectValue_OPTIONS = [ _showItemsPerPage_SelectValue_Minimum_Value, 25, _showItemsPerPage_SelectValue_DEFAULT, 100, 250, 500, 1000, DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL ];
 
 /**
  * 

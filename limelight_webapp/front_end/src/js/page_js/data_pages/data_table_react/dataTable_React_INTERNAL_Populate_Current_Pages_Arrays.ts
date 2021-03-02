@@ -12,6 +12,7 @@ import {
     DataTable_INTERNAL_DataRowEntry,
     DataTable_INTERNAL_RootTableDataObject
 } from "page_js/data_pages/data_table_react/dataTable_React_INTERNAL_DataObjects";
+import {DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 
 /**
  *
@@ -91,7 +92,9 @@ const get_dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged = funct
 
         dataTable_INTERNAL_DataGroupRowEntries.push( entry );
 
-        if ( enable_Pagination_Download_Search && ( itemsCountTotal % itemsPerPage_Count === 0 ) ) {
+        if ( enable_Pagination_Download_Search &&
+            itemsPerPage_Count !== DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL &&
+            ( itemsCountTotal % itemsPerPage_Count === 0 ) ) {
 
             const resultEntry = new DataTable_INTERNAL_DataGroupRowEntries_SinglePage({ dataTable_INTERNAL_DataGroupRowEntries, itemCount_pageStart, itemCount_pageEnd : itemsCountTotal });
             result.push( resultEntry );
@@ -182,7 +185,9 @@ const get_dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged = function(
 
         dataTable_INTERNAL_DataRowEntries.push( entry );
 
-        if ( enable_Pagination_Download_Search && ( itemsCountTotal % itemsPerPage_Count === 0 ) ) {
+        if ( enable_Pagination_Download_Search &&
+            itemsPerPage_Count !== DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL &&
+            ( itemsCountTotal % itemsPerPage_Count === 0 ) ) {
 
             const resultEntry = new DataTable_INTERNAL_DataRowEntries_SinglePage({ dataTable_INTERNAL_DataRowEntries, itemCount_pageStart, itemCount_pageEnd : itemsCountTotal });
             result.push( resultEntry );

@@ -7,6 +7,7 @@
  */
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 
 
 //  Delay after input change before call callback, to wait for additional keyboard input
@@ -139,11 +140,16 @@ export class DataTable_TableRoot__ShowItemsPerPage_Select_Component extends Reac
 
         for ( const selectValue of this.props.showItemsPerPage_SelectValue_Options ) {
 
+            let selectValue_Display = selectValue.toLocaleString();
+            if ( selectValue === DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL ) {
+                selectValue_Display = "All";
+            }
+
             const selectEntry = (
                 <option key={ selectValue }
                         value={ selectValue }
                 >
-                    { selectValue }
+                    { selectValue_Display }
                 </option>
             );
 
