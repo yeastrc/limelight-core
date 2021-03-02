@@ -46,6 +46,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SavedViewListForProjectI
 import org.yeastrc.limelight.limelight_webapp.searchers_results.SavedViewListForProjectIdItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -151,6 +152,7 @@ public class ProjectView_SavedViewsList_RestWebserviceController {
 					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
 
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
 
 			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
 					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
@@ -173,12 +175,17 @@ public class ProjectView_SavedViewsList_RestWebserviceController {
     				savedViewItem.setId( savedViewItenDB.getId() );
     				savedViewItem.setLabel( savedViewItenDB.getLabel() );
     				savedViewItem.setUrl( savedViewItenDB.getUrl() );
-
-    				if ( webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed() ) {
-    					// Researcher or Project owner so can change or delete this entry
+    				
+    				if ( webSessionAuthAccessLevel.isProjectOwnerAllowed()
+    						|| ( webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed()
+    								&& userSession != null 
+    								&& userSession.getUserId() != null
+    								&& savedViewItenDB.getUserIdCreated() == userSession.getUserId() ) ) {
+    					// Project owner or ( Researcher and this user created it ) so can change or delete this entry
     					savedViewItem.setCanEdit(true);
     					savedViewItem.setCanDelete(true);
     				}
+    				    				
     				savedViewList.add( savedViewItem );
     			}
 

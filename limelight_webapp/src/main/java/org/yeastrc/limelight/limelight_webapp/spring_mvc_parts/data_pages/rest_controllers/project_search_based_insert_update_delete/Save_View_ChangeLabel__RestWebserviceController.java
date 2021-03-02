@@ -36,9 +36,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.DataPageSavedViewDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -163,7 +165,8 @@ public class Save_View_ChangeLabel__RestWebserviceController {
 			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
 					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
 					.validateAssistantProjectOwnerAllowed( projectIds, httpServletRequest );
-    		
+
+			WebSessionAuthAccessLevel webSessionAuthAccessLevel = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getWebSessionAuthAccessLevel();
     		UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession();
 
     		Integer userId = null;
@@ -174,6 +177,19 @@ public class Save_View_ChangeLabel__RestWebserviceController {
     		if ( userId == null ) {
     			throw new LimelightInternalErrorException( "userId == null and passed access check" );
     		}
+
+			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed()
+					|| ( webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed()
+							&& userSession != null 
+							&& userSession.getUserId() != null
+							&& dataPageSavedViewDTO.getUserIdCreated() == userSession.getUserId() ) ) {
+			} else {
+				// NOT ( Project owner or ( Researcher and this user created it ) so can change or delete this entry )
+				
+				//  This user is NOT supposed to be able to change this entry
+				throw new Limelight_WS_AuthError_Forbidden_Exception();
+			}
+			
     		
     		dataPageSavedViewDAO.updateLabel( labelText, userId, savedViewId );
     		
