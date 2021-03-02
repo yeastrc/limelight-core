@@ -137,7 +137,7 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                 const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
                 {
-                    { // Protein Name
+                    { // Search Name
                         const searchNameDisplay = "(" + perSearchEntry.searchId + ") " + perSearchEntry.searchName;
                         const valueDisplay = searchNameDisplay;
                         const searchEntriesForColumn : Array<string> = [ valueDisplay ]
@@ -145,8 +145,9 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
                             searchTableData,
                             valueDisplay,
-                            valueSort: searchNameDisplay
-                        })
+                            valueSort: searchNameDisplay,
+                            tooltipText: searchNameDisplay
+                        });
                         columnEntries.push(columnEntry);
 
                         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
@@ -160,7 +161,7 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                             searchTableData,
                             valueDisplay,
                             valueSort: perSearchEntry.proteinCount_TotalForSearch
-                        })
+                        });
                         columnEntries.push(columnEntry);
 
                         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
@@ -188,7 +189,7 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                             searchTableData,
                             valueDisplay,
                             valueSort: perSearchEntry.psmCount_TotalForSearch
-                        })
+                        });
                         columnEntries.push(columnEntry);
 
                         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
