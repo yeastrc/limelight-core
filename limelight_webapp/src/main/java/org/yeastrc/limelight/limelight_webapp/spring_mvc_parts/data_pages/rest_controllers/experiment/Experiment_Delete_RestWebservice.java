@@ -133,7 +133,7 @@ public class Experiment_Delete_RestWebservice {
     		}
     		
     		Integer projectId = experimentDAO.getProjectIdForId( experimentId );
-
+    		
     		if ( projectId == null ) {
     			log.warn( "id not in database: " + experimentId );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -183,6 +183,21 @@ public class Experiment_Delete_RestWebservice {
 	    					+ ", userId_InSession: " + userId_InSession );
 	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 	    		}
+
+	    		Boolean isDraft = experimentDAO.getIsDraftForId( experimentId );
+
+	    		if ( isDraft == null ) {
+	    			log.warn( "id not in database: " + experimentId );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+	    		}
+	    		
+	    		if ( ! isDraft.booleanValue() ) {
+	    			log.warn( "User is researcher (assistant project owner) and this experiment is not a draft experiment. Experiment to delete: " 
+	    					+ experimentId
+	    					+ ", userId_InSession: " + userId_InSession );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+	    		}
+
 			}
     		
     		experimentDAO.delete( experimentId );

@@ -27,7 +27,7 @@ import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
-import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
+import { initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
 
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
@@ -39,6 +39,9 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
+
+import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
+
 import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction';
 import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
@@ -56,6 +59,8 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 	private _projectIdentifierFromURL : string
 
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
+
+	private _projectPage_ExperimentsSection_AllUsersInteraction : ProjectPage_ExperimentsSection_AllUsersInteraction
 
 	private _projectPage_SearchesSection_AllUsersInteraction : ProjectPage_SearchesSection_AllUsersInteraction
 
@@ -99,7 +104,11 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 		
 		this._projectPage_ProjectSection_AllUsersInteraction = 
 			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
-		
+
+		this._projectPage_ExperimentsSection_AllUsersInteraction = new ProjectPage_ExperimentsSection_AllUsersInteraction( {
+			projectIdentifierFromURL : this._projectIdentifierFromURL
+		} );
+
 		this._projectPage_SearchesSection_AllUsersInteraction = 
 			new ProjectPage_SearchesSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
 		
@@ -121,6 +130,9 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 		
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
+
+		this._projectPage_ExperimentsSection_AllUsersInteraction.initialize();
+
 		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 

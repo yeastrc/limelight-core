@@ -65,13 +65,7 @@
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SavedViews.jsp" %>
 
 	<%--  Experiments List --%>
-<%--   
-	<div style="color: red; font-size: 18px; font-weight: bold; margin-top: 30px;">
-		Search for "Comment out Experiment Code" to comment out Experiment
-	</div>
---%>	
-<%--   //  Comment out Experiment Code
---%>	
+
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_ExperimentList.jsp" %>
 
 

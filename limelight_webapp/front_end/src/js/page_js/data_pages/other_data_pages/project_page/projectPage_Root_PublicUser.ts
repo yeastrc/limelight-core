@@ -39,7 +39,6 @@ import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
 
-//  Comment out Experiment Code 
 import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
 
 import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction';
@@ -56,7 +55,6 @@ class ProjectViewPage_Root_PublicUser {
 
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
-	//  Comment out Experiment Code
 	private _projectPage_ExperimentsSection_AllUsersInteraction : ProjectPage_ExperimentsSection_AllUsersInteraction
 
 	private _projectPage_SearchesSection_AllUsersInteraction : ProjectPage_SearchesSection_AllUsersInteraction
@@ -92,7 +90,6 @@ class ProjectViewPage_Root_PublicUser {
 		this._projectPage_ProjectSection_AllUsersInteraction = 
 			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
 		
-		//  Comment out Experiment Code
 		this._projectPage_ExperimentsSection_AllUsersInteraction =
 			new ProjectPage_ExperimentsSection_AllUsersInteraction( {
 				projectIdentifierFromURL : this._projectIdentifierFromURL
@@ -107,13 +104,11 @@ class ProjectViewPage_Root_PublicUser {
 		
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 
-		//  Comment out Experiment Code
 		this._projectPage_ExperimentsSection_AllUsersInteraction.initialize();
 		
 		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 
-		////Instance of class
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		
 		mainPagesPopulateHeader.initialize();

@@ -244,7 +244,7 @@ public class AddSaveExperiment_RestWebservice {
     				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     			}
     			
-    			//  If current user is Researcher (), they can only change their own experiments.
+    			//  If current user is Researcher (), they can only change their own DRAFT experiments.
     			
 
         		if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
@@ -267,6 +267,20 @@ public class AddSaveExperiment_RestWebservice {
     	    		
     	    		if ( userId_InSession != userId_Experiment.intValue() ) {
     	    			log.warn( "User is researcher (assistant project owner) and this experiment is not this user's to update: " 
+    	    					+ experimentId
+    	    					+ ", userId_InSession: " + userId_InSession );
+    	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    	    		}
+
+    	    		Boolean isDraft = experimentDAO.getIsDraftForId( experimentId );
+
+    	    		if ( isDraft == null ) {
+    	    			log.warn( "id not in database: " + experimentId );
+    	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    	    		}
+    	    		
+    	    		if ( ! isDraft.booleanValue() ) {
+    	    			log.warn( "User is researcher (assistant project owner) and this experiment is not a draft experiment. Experiment to update: " 
     	    					+ experimentId
     	    					+ ", userId_InSession: " + userId_InSession );
     	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();

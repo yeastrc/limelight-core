@@ -185,12 +185,12 @@ public class Experiment_Get_RestWebservice {
 	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 	    		}
 	    		
-	    		if ( userId_InSession != userId_Experiment.intValue() ) {
-	    			log.warn( "User is researcher (assistant project owner) and this experiment is not this user's to retrieve for edit or delete: " 
-	    					+ experimentId
-	    					+ ", userId_InSession: " + userId_InSession );
-	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-	    		}
+//	    		if ( userId_InSession != userId_Experiment.intValue() ) {
+//	    			log.warn( "User is researcher (assistant project owner) and this experiment is not this user's to retrieve for edit or delete: " 
+//	    					+ experimentId
+//	    					+ ", userId_InSession: " + userId_InSession );
+//	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//	    		}
 			}
     		
     		String searchDataLookupParamsRootJSON = null;
