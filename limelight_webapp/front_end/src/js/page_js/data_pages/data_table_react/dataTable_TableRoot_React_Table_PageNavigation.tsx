@@ -10,6 +10,7 @@
  */
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {DataTable_INTERNAL_RootTableDataObject} from "page_js/data_pages/data_table_react/dataTable_React_INTERNAL_DataObjects";
 
 
 const pageNavigation_GoToPage_Button_Text = "Go to page";
@@ -26,6 +27,7 @@ export interface DataTable_TableRoot_React_Table_PageNavigation_Component_Props 
 
     pageNavigation_SelectValue_Prop : number
     pageNavigation_TotalPagesCount: number // Number of pages
+    tableDataObject_INTERNAL : DataTable_INTERNAL_RootTableDataObject
     pageNavigation_NewValueEntered_Callback : DataTable_TableRoot_React_Table_PageNavigation_Component__InputField_NewValueEntered_Callback
 }
 
@@ -37,6 +39,7 @@ interface DataTable_TableRoot_React_Table_PageNavigation_Component_State {
     pageNavigation_InputField_Value? : string
     pageNavigation_InputField_Value_NotEmpty_NotANumber? : boolean
     pageNavigation_GoToPage_Button_Disabled_Message? : string
+    show_pageSelectionOverlay? : boolean
 }
 
 /**
@@ -45,6 +48,8 @@ interface DataTable_TableRoot_React_Table_PageNavigation_Component_State {
 export class DataTable_TableRoot_React_Table_PageNavigation_Component extends React.Component< DataTable_TableRoot_React_Table_PageNavigation_Component_Props, DataTable_TableRoot_React_Table_PageNavigation_Component_State > {
 
     private _inputFieldChanged_PageNumber_BindThis = this._inputFieldChanged_PageNumber.bind(this);
+    private _inputField_PageNumber_OnFocus_BindThis = this._inputField_PageNumber_OnFocus.bind(this);
+    private _inputField_PageNumber_OnBlur_BindThis = this._inputField_PageNumber_OnBlur.bind(this);
     private _goToPage_InputField_Form_Submitted_BindThis = this._goToPage_InputField_Form_Submitted.bind(this);
 
     private readonly _inputField_PageNumber_Ref: React.RefObject<HTMLInputElement>
@@ -155,6 +160,43 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                 pageNavigation_InputField_Value_NotEmpty_NotANumber: false,
                 pageNavigation_GoToPage_Button_Disabled_Message: null
             });
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     * @param event
+     */
+    private _inputField_PageNumber_OnFocus( event: React.FocusEvent<HTMLInputElement> ) {
+        try {
+
+            this.setState({ show_pageSelectionOverlay : true });
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     * @param event
+     */
+    private _inputField_PageNumber_OnBlur( event: React.FocusEvent<HTMLInputElement> ) {
+        try {
+            window.setTimeout( () => {
+                try {
+                    this.setState({ show_pageSelectionOverlay : false });
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 150 );
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -285,6 +327,13 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
             numberedPages_JSX_Array.push( numberedPage_JSX );
         }
 
+        let pageSelectionOverlay : JSX.Element = null;
+
+        if ( this.state.show_pageSelectionOverlay ) {
+
+            pageSelectionOverlay = this._create_pageSelectionOverlay();
+        }
+
         return (
             <React.Fragment>
 
@@ -377,7 +426,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
 
                             <form onSubmit={ this._goToPage_InputField_Form_Submitted_BindThis } >
 
-                                <div style={ { display: "inline-block", marginLeft: 10 } } >
+                                <div style={ { position: "relative", display: "inline-block", marginLeft: 10 } } >
                                     <input
                                         type="text"
                                         placeholder="pg #"
@@ -386,7 +435,12 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                                         ref={ this._inputField_PageNumber_Ref }
                                         value={ this.state.pageNavigation_InputField_Value }
                                         onChange={ this._inputFieldChanged_PageNumber_BindThis }
+                                        onFocus={ this._inputField_PageNumber_OnFocus_BindThis }
+                                        onBlur={ this._inputField_PageNumber_OnBlur_BindThis }
                                     />
+
+                                    { pageSelectionOverlay }
+
                                 </div>
                                 <div style={ { position: "relative", display: "inline-block", marginLeft: 10 } } >
                                     <input
@@ -415,5 +469,92 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
             </React.Fragment>
         );
     }
+
+    /**
+     *
+     *
+     */
+    private _create_pageSelectionOverlay() : JSX.Element{
+
+        const entries : Array<JSX.Element> = [];
+
+        if ( this.props.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged ) {
+
+            let pageNumber = 1;
+            for ( const pagedEntry of this.props.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged ) {
+
+                const entry = this._create_pageSelectionOverlay_SingleEntry({ pageNumber, rangeStart: pagedEntry.itemCount_pageStart, rangeEnd: pagedEntry.itemCount_pageEnd });
+                entries.push( entry );
+                pageNumber++;
+            }
+        } else if ( this.props.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged ) {
+
+            let pageNumber = 1;
+            for ( const pagedEntry of this.props.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged ) {
+
+                const entry = this._create_pageSelectionOverlay_SingleEntry({ pageNumber, rangeStart: pagedEntry.itemCount_pageStart, rangeEnd: pagedEntry.itemCount_pageEnd });
+                entries.push( entry );
+                pageNumber++;
+            }
+
+        } else {
+            throw Error("_create_pageSelectionOverlay: Neither dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged NOR dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged populated ")
+        }
+
+        const pageSelectionOverlay = (
+            <div style={{position: "relative"}}>
+                <div
+                    className=" standard-border-color-very-dark "
+                    style={{
+                        position: "absolute",
+                        zIndex: 2,
+                        // width: 150,
+                        maxHeight: 200,
+                        // overflowX: "hidden",
+                        overflowY: "auto",
+                        borderStyle: "solid",
+                        borderWidth: 2
+                    }}
+                >
+                    <div style={{ padding: 5}} className={"default-generic-overlay-background-color"}>
+
+                        {  entries }
+                    </div>
+                </div>
+            </div>
+        );
+
+        return pageSelectionOverlay;
+    }
+
+    /**
+     *
+     *
+     */
+    private _create_pageSelectionOverlay_SingleEntry(
+        {
+            pageNumber,
+            rangeStart,
+            rangeEnd
+        } : {
+            pageNumber : number
+            rangeStart : number
+            rangeEnd : number
+
+        }) : JSX.Element{
+
+        const entry = (
+            <div
+                key={ pageNumber }
+                className={" fake-link hovered-div-highlight "}
+                style={ { paddingTop: 2, paddingBottom: 2, width: "100%", whiteSpace: "nowrap" } }
+                onClick={ () => { this._change_PageNumber(pageNumber) } }
+            >
+                Page:&nbsp;{pageNumber.toLocaleString()}:&nbsp;Items&nbsp;{rangeStart.toLocaleString()}-{rangeEnd.toLocaleString()}
+            </div>
+        );
+        return entry;
+    }
+
 
 }

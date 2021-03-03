@@ -1011,6 +1011,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                     <DataTable_TableRoot_React_Table_PageNavigation_Component
                                         pageNavigation_SelectValue_Prop={ this.state.currentPage_CurrentValue }
                                         pageNavigation_TotalPagesCount={ this.state.tableDataObject_INTERNAL.getPageCount() }
+                                        tableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
                                         pageNavigation_NewValueEntered_Callback={ this._currentPage_CurrentValue_Update_Callback_BindThis }
                                     />
 

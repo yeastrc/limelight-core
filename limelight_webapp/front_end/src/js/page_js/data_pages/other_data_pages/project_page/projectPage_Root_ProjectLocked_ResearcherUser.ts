@@ -139,7 +139,7 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		
 		mainPagesPopulateHeader.initialize();
-		
+
 		this._projectPage_ProjectSection_AllUsersInteraction.getProjectData();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.getSavedViewsData();
 		this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
