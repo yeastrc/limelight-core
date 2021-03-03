@@ -991,7 +991,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 <span className=" fake-link " style={ { marginLeft: 15 } }
                                       onClick={ this._downloadTableContents_All_Clicked_BindThis }
                                 >
-                                    Download Table Data
+                                    Download All Table Data
                                 </span>
 
                                 { ( this.state.searchInputValue_CurrentValue ) ? (
@@ -1003,7 +1003,9 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 ) : null }
                             </div>
 
-                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() >= _showItemsPerPage_SelectValue_Minimum_Value ) ? (
+                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() >= _showItemsPerPage_SelectValue_Minimum_Value && this.state.tableDataObject_INTERNAL.getPageCount() > 0 ) ? (
+
+                                // Show this line if:  Have more items than for 1 page.  Page Count is > 0 (Page Count is Zero if user search finds NO rows)
 
                                 <div style={ { marginBottom: 5 } }>
 

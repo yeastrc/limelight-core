@@ -345,7 +345,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
 
                         {/*  Icons for First and Previous. Add -grey for greyed out */}
                         <div style={ { display: "inline-block" } }>
-                            { (this.props.pageNavigation_SelectValue_Prop === 1 ) ? (
+                            { (this.props.pageNavigation_SelectValue_Prop === 1 || this.props.tableDataObject_INTERNAL.getPageCount() === 0 ) ? (
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-start-gray.svg"
@@ -362,7 +362,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                             )}
                         </div>
                         <div style={ { display: "inline-block", marginLeft: 2, marginRight: 2 } }>
-                            { (this.props.pageNavigation_SelectValue_Prop === 1 ) ? (
+                            { (this.props.pageNavigation_SelectValue_Prop === 1 || this.props.tableDataObject_INTERNAL.getPageCount() === 0 ) ? (
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-previous-gray.svg"
@@ -384,7 +384,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
 
                         {/*  Icons for Next and Last */}
                         <div style={ { display: "inline-block", marginLeft: 2, marginRight: 2 } }>
-                            { (this.props.pageNavigation_SelectValue_Prop === this.props.pageNavigation_TotalPagesCount ) ? (
+                            { (this.props.pageNavigation_SelectValue_Prop === this.props.pageNavigation_TotalPagesCount || this.props.tableDataObject_INTERNAL.getPageCount() === 0 ) ? (
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-next-gray.svg"
@@ -401,7 +401,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                             )}
                         </div>
                         <div style={ { display: "inline-block" } }>
-                            { (this.props.pageNavigation_SelectValue_Prop === this.props.pageNavigation_TotalPagesCount ) ? (
+                            { (this.props.pageNavigation_SelectValue_Prop === this.props.pageNavigation_TotalPagesCount || this.props.tableDataObject_INTERNAL.getPageCount() === 0 ) ? (
                                 //  Grayed out
                                 <img
                                     src="static/images/icon-page-to-end-gray.svg"
