@@ -20,6 +20,7 @@ import {
 	DataTable_DataRowEntry_DownloadTable,
 	DataTable_DataRowEntry__GetChildTableData_CallbackParams,
 	DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+	DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
 
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
@@ -35,6 +36,7 @@ import {
 	ModView_VizOptionsData,
 	ModView_VizOptionsData_SubPart_selectedStateObject
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalModLinks_Contents} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch_Subcomponents";
 
 export class ModViewDataTableRenderer_MultiSearch {
 
@@ -164,6 +166,27 @@ export class ModViewDataTableRenderer_MultiSearch {
 				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
+			// THIS IS THE COLUMN ENTRY I WANT LINKS IN
+			{
+				const searchTableData_SearchContent = '';		// not searchable
+
+				const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+					( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+						return modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalModLinks_Contents({ modMass });
+					};
+
+				const searchEntriesForColumn : Array<string> = [ searchTableData_SearchContent ]
+				const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+				const columnEntry = new DataTable_DataRow_ColumnEntry({
+					searchTableData,
+					valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+					valueSort : modMass
+				});
+				columnEntries.push( columnEntry );
+
+			}
+
 			// add a value for each project search id
 			for(const projectSearchId of projectSearchIdsToDisplay) {
 
@@ -261,7 +284,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			const dataTableColumn = new DataTable_Column({
 				id : "modMass", // Used for tracking sort order. Keep short
 				displayName,
-				width : 100,
+				width : 75,
 				sortable : true,
 				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
 			});
@@ -269,6 +292,21 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 			const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
 			dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+		}
+
+		{
+			const displayName = "Info";
+
+			const dataTableColumn = new DataTable_Column({
+				id : "info", // Used for tracking sort order. Keep short
+				displayName,
+				width : 85,
+				sortable : false,
+				columnHeader_Tooltip_HTML_TitleAttribute : "Links to annotations for this modification mass in external sites.",
+				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+			});
+			dataTableColumns.push( dataTableColumn );
+
 		}
 
 		// add a column for each project search id
