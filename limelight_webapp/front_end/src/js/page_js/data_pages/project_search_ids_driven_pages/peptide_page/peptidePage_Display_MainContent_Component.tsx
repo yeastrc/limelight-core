@@ -786,7 +786,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             for ( const columnEntry of dataTable_DataRowEntry.columnEntries ) {
 
-                let cellContentsString = columnEntry.valueSort;
+                let cellContentsString = columnEntry.valueDisplay;
+                if ( columnEntry.valueSort !== undefined && columnEntry.valueSort !== null ) {
+                    cellContentsString = columnEntry.valueSort.toString();
+                }
                 if ( index === 1 && ( columnEntry.valueDisplay === "*" || columnEntry.valueDisplay === "" ) ) { // Unique column
                     cellContentsString = columnEntry.valueDisplay;
                 }

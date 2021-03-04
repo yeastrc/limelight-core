@@ -223,12 +223,20 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
             }
 
             if ( dataTable_ColumnEntry.sortable ) {
-                // Column Marked Sortable so property valueSort must have a value
-                if ( dataTable_DataRow_ColumnEntry.valueSort === undefined || dataTable_DataRow_ColumnEntry.valueSort === null ) {
-                    const msg = "Validator: column.sortable is true and dataObject_columnEntry.valueSort is undefined or null.  dataTable_DataRow_ColumnEntry.sortable: " +
-                        dataTable_DataRow_ColumnEntry.valueSort + ", dataTableId: " + dataTableId;
-                    console.warn( msg );
-                    throw Error( msg );
+                if ( dataTable_ColumnEntry.sortFunction ) {
+                    // Column Marked Sortable and have sortFunction so property valueSort_FOR_DataTable_Column_sortFunction must have a value
+                    if (dataTable_DataRow_ColumnEntry.valueSort_FOR_DataTable_Column_sortFunction === undefined || dataTable_DataRow_ColumnEntry.valueSort_FOR_DataTable_Column_sortFunction === null) {
+                        const msg = "Validator: column.sortable is true and column.sortFunction is populated and dataObject_columnEntry.valueSort_FOR_DataTable_Column_sortFunction is undefined or null.  dataTableId: " + dataTableId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                } else {
+                    // Column Marked Sortable and NOT have sortFunction so property valueSort must have a value
+                    if (dataTable_DataRow_ColumnEntry.valueSort === undefined || dataTable_DataRow_ColumnEntry.valueSort === null) {
+                        const msg = "Validator: column.sortable is true and dataObject_columnEntry.valueSort is undefined or null.  dataTableId: " + dataTableId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
                 }
             }
 
