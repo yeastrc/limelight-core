@@ -521,13 +521,14 @@ const _get_DataTable_DataRowEntries = function({
                     return get_PsmList_ViewSpectrumCell_ExternalReactComponent({ psmId, projectSearchId, openModPosition });
                 }
 
-            const searchEntriesForColumn : Array<string> = [];
+            //  NO Data for searchTableData
 
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            // const searchEntriesForColumn : Array<string> = [];
+            // const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 
             const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
-                searchTableData
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+                //  NO Data for searchTableData
             })
             columnEntries.push( columnEntry );
         }

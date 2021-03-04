@@ -1005,11 +1005,14 @@ class DataTable_DataRow_ColumnEntry {
     constructor(
         {
             searchTableData,
-            valueDisplay, valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough, valueSort, tooltipText,
+            valueDisplay,
+            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+            valueSort,
+            tooltipText,
             tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         }: {
 
-            searchTableData : DataTable_DataRow_ColumnEntry_SearchTableData
+        searchTableData? : DataTable_DataRow_ColumnEntry_SearchTableData
 
         //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
 
