@@ -1113,7 +1113,7 @@ export class ProteinViewPage_Display_SingleSearch {
 			
 				let dataForColumn = columnEntry.valueDisplay;
 				if ( columnEntry.valueSort !== undefined && columnEntry.valueSort !== null ) {
-					dataForColumn = columnEntry.valueSort;
+					dataForColumn = columnEntry.valueSort.toString();
 				}
 				reportLineParts.push( dataForColumn )
 			}

@@ -261,7 +261,7 @@ class DataTable_Column {
     columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
 
     sortable?: boolean  // Assumed false if missing
-    sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell sortValue for custom sorting
+    sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell valueSort_FOR_DataTable_Column_sortFunction for custom sorting
 
     hideColumnHeader?: boolean  // Assumed false if missing
 
@@ -319,7 +319,7 @@ class DataTable_Column {
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
 
             sortable?: boolean  // Assumed false if missing
-            sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell sortValue for custom sorting
+            sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell valueSort_FOR_DataTable_Column_sortFunction for custom sorting
 
             hideColumnHeader?: boolean  // Assumed false if missing
 
@@ -966,8 +966,9 @@ class DataTable_DataRow_ColumnEntry {
 
     //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
 
-    valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
-    //  Passed to DataTable_Column.sortFunction if that is populated
+    valueSort?: string | number  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
+
+    valueSort_FOR_DataTable_Column_sortFunction?: unknown  //  Must be populated if DataTable_Column.sortFunction is populated
 
     ///////
 
@@ -1008,6 +1009,7 @@ class DataTable_DataRow_ColumnEntry {
             valueDisplay,
             valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
             valueSort,
+            valueSort_FOR_DataTable_Column_sortFunction,
             tooltipText,
             tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         }: {
@@ -1016,8 +1018,11 @@ class DataTable_DataRow_ColumnEntry {
 
         //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
 
-        valueSort?: any  //  Must be sortable using Javascript < > comparators - MUST be populated if object of DataTable_Column has 'sortable' property set to true
-        //  Passed to DataTable_Column.sortFunction if that is populated
+        valueSort?: string | number  //  Must be sortable using Javascript < > comparators
+
+
+        valueSort_FOR_DataTable_Column_sortFunction?: unknown  //  Must be populated if DataTable_Column.sortFunction is populated
+
 
         ///////
 
@@ -1047,6 +1052,7 @@ class DataTable_DataRow_ColumnEntry {
         this.valueDisplay = valueDisplay
         this.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
         this.valueSort = valueSort
+        this.valueSort_FOR_DataTable_Column_sortFunction = valueSort_FOR_DataTable_Column_sortFunction;
         this.tooltipText = tooltipText
         this.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
 

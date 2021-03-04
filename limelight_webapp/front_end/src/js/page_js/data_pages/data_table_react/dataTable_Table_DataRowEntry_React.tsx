@@ -220,7 +220,9 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           throw Error( msg );
         }
 
-        let fractionOfMaxValue = dataObject_columnEntry.valueSort / column.graphMaxValue;
+        const valueSort_AsNumber = dataObject_columnEntry.valueSort as number;
+
+        let fractionOfMaxValue = valueSort_AsNumber / column.graphMaxValue;
         if ( fractionOfMaxValue > 1 ) {
           fractionOfMaxValue = 1; // limit to max of 1
         }
@@ -254,14 +256,23 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       }
 
       {
-        if ( column.sortable ) {
-          const valueSort = dataObject_columnEntry.valueSort
-          if ( valueSort === undefined || valueSort === null ) {
-            const msg = "DataTable_Table_DataRowEntry: column.sortable is true.  Invalid value for valueSort: (valueSort === undefined || valueSort === null) is true: valueSort: " + valueSort + ", column.id " + column.id + ", dataObject_columnEntry: ";
-            console.warn( msg, dataObject_columnEntry );
-            throw Error( msg )
+          if ( column.sortable ) {
+              if ( column.sortFunction ) {
+                  // Column Marked Sortable and have sortFunction so property valueSort_FOR_DataTable_Column_sortFunction must have a value
+                  if (dataObject_columnEntry.valueSort_FOR_DataTable_Column_sortFunction === undefined || dataObject_columnEntry.valueSort_FOR_DataTable_Column_sortFunction === null) {
+                      const msg = "DataTable_Table_DataRowEntry: column.sortable is true and column.sortFunction is populated and dataObject_columnEntry.valueSort_FOR_DataTable_Column_sortFunction is undefined or null.";
+                      console.warn(msg);
+                      throw Error(msg);
+                  }
+              } else {
+                  // Column Marked Sortable and NOT have sortFunction so property valueSort must have a value
+                  if (dataObject_columnEntry.valueSort === undefined || dataObject_columnEntry.valueSort === null) {
+                      const msg = "DataTable_Table_DataRowEntry: column.sortable is true and dataObject_columnEntry.valueSort is undefined or null. ";
+                      console.warn(msg);
+                      throw Error(msg);
+                  }
+              }
           }
-        }
       }
 
       //  React auto escapes '"' to &quot; for contents of 'title' property

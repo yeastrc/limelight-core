@@ -231,11 +231,11 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             // add modded positions
             {
                 let valueString:string;
-                let valueSort:any;
+                let valueSort_FOR_DataTable_Column_sortFunction:unknown;
 
                 if(proteinData.modifiedPositions && proteinData.modifiedPositions.size > 0) {
                     valueString = Array.from(proteinData.modifiedPositions).sort((a, b) => a - b).join(', ');
-                    valueSort = Array.from(proteinData.modifiedPositions).sort((a, b) => a - b);
+                    valueSort_FOR_DataTable_Column_sortFunction = Array.from(proteinData.modifiedPositions).sort((a, b) => a - b);
                 } else if(proteinData.unlocalizedPositionRanges && proteinData.unlocalizedPositionRanges.length > 0) {
                     const ranges = new Array<string>();
                     const sorts = new Array<number>();
@@ -247,10 +247,10 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                     }
 
                     valueString = ranges.join(', ');
-                    valueSort = sorts;
+                    valueSort_FOR_DataTable_Column_sortFunction = sorts;
                 } else {
                     valueString = '';
-                    valueSort = [];
+                    valueSort_FOR_DataTable_Column_sortFunction = [];
                 }
 
                 const valueDisplay = valueString;
@@ -259,7 +259,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : valueSort
+                    valueSort_FOR_DataTable_Column_sortFunction : valueSort_FOR_DataTable_Column_sortFunction
                 });
 
                 columnEntries.push( columnEntry );
