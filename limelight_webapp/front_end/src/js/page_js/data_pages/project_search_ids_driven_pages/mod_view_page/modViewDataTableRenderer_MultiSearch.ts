@@ -166,7 +166,6 @@ export class ModViewDataTableRenderer_MultiSearch {
 				dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 			}
 
-			// THIS IS THE COLUMN ENTRY I WANT LINKS IN
 			{
 				const searchTableData_SearchContent = '';		// not searchable
 
