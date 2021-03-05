@@ -1064,11 +1064,6 @@ class DataTable_DataRow_ColumnEntry {
      */
     static constructorDataValidation(dataTable_DataRow_ColumnEntry: DataTable_DataRow_ColumnEntry) {
 
-        if ( ! dataTable_DataRow_ColumnEntry.searchTableData) {
-            const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ! searchTableData';
-            console.warn(msg)
-            throw Error(msg);
-        }
         if ( (dataTable_DataRow_ColumnEntry.valueDisplay === undefined || dataTable_DataRow_ColumnEntry.valueDisplay === null)
             && (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null) ) {
             const msg = 'DataTable_DataRow_ColumnEntry.constructorDataValidation: ( ( ( valueDisplay === undefined || valueDisplay === null || valueDisplay === "" )&& (dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === undefined || dataTable_DataRow_ColumnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough === null)  )';
