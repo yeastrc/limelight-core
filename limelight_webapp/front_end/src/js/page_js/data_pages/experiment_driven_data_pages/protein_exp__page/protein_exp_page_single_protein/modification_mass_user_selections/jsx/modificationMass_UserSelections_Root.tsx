@@ -10,10 +10,7 @@ import React from 'react'
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import { 
-    modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnNumber_Function
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
@@ -23,6 +20,9 @@ import { ModificationMass_UserSelections_ComponentData } from 'page_js/data_page
 
 import { ModificationMass_UserSelections_StaticModifications } from './modificationMass_UserSelections_StaticModifications';
 import { ModificationMass_UserSelections_Variable_or_Open_Modifications } from './modificationMass_UserSelections_Variable_or_Open_Modifications';
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/jsx/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 
 /**
@@ -33,6 +33,11 @@ export interface ModificationMass_UserSelections_Root_Props {
     openModification_OpenSelectMassOverlay_Override_Callback : () => void
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData;
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
+
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
+    updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback : () => void;
+
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
     proteinNames : string
@@ -59,28 +64,8 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
     constructor(props : ModificationMass_UserSelections_Root_Props) {
         super(props);
 
-        //  bind to 'this' for passing as parameters
-        // this._callbackMethodForSelectedProteinSequenceChange_BindThis = this._callbackMethodForSelectedProteinSequenceChange.bind(this);
-
         this.state = { _placeholder: null };
     }
-
-
-    /**
-     * After render()
-     */
-    // componentDidMount() {
-
-    //     console.log("ModificationMass_UserSelections_Root: componentDidMount");
-    // }
-
-    /**
-     * Clean Up
-     */
-    // componentWillUnmount() {
-
-    // }
-
 
     /**
      * Must be Static
@@ -113,6 +98,9 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
         if ( this.props.modificationMass_UserSelections_ComponentData !== nextProps.modificationMass_UserSelections_ComponentData ) {
             return true;
         }
+        if ( this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData !== nextProps.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData ) {
+            return true;
+        }
         return false;
 
         //  If Comment out prev code, comment out this method
@@ -134,16 +122,6 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
     //     // if ( this.dataObject_columnEntry_NewValue_Callback ) {
     //     //     this.dataObject_columnEntry_NewValue_Callback({ dataObject_columnEntry : this.props.dataObject_columnEntry });
     //     // }
-    // }
-
-    /**
-     * 
-     */
-    // _callbackMethodForSelectedProteinSequenceChange( params ) {
-
-    //     console.log("ModificationMass_UserSelections_Root: _callbackMethodForSelectedProteinSequenceChange. params: ");
-    //     console.log( params );
-
     // }
 
     /**
@@ -196,6 +174,16 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                     modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
                 />
+
+                {/*  Checkbox for User to specify that Open Mod masses that round to Zero are not considered to be Open Mod Masses  */}
+                { //  TDOO TEMP ONLY Show when have data
+                    this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData ?
+                        <ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component
+                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData }
+                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
+                            updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback={ this.props.updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback }
+                        />
+                : null }
 
                 {/* Static Modifications --}} */}
                 <ModificationMass_UserSelections_StaticModifications 

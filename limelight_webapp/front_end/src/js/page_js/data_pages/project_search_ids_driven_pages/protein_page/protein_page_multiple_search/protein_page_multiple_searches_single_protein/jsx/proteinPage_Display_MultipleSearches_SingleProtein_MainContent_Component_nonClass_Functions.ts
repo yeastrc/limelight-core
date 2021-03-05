@@ -61,6 +61,9 @@ import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js
 import {ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/jsx/proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component";
 import {searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Are_All_SearchSubGroupIds_Selected";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
 
 
 
@@ -87,6 +90,7 @@ const initialPopulate = function({
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     loadedDataCommonHolder,
     modificationMass_UserSelections_StateObject,
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
     reporterIonMass_UserSelections_StateObject,
     peptideUnique_UserSelection_StateObject,
     peptideSequence_UserSelections_StateObject,
@@ -99,6 +103,7 @@ const initialPopulate = function({
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
@@ -114,6 +119,7 @@ const initialPopulate = function({
     protein_fractionCovered_Unfiltered : number,
     psmCountForUnfiltered : number,
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData,
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
     reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
     peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData;
     peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
@@ -137,6 +143,12 @@ const initialPopulate = function({
         projectSearchIds,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds 
     });
+
+    const modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData = create_modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData({
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    })
 
     const reporterIons_UserSelections_ComponentData = create_ReporterIons_UserSelections_ComponentData({
 
@@ -170,6 +182,7 @@ const initialPopulate = function({
         loadedDataCommonHolder,
         proteinSequenceWidget_StateObject,
         modificationMass_UserSelections_StateObject,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         reporterIonMass_UserSelections_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
@@ -229,6 +242,7 @@ const initialPopulate = function({
         protein_fractionCovered_Unfiltered,
         psmCountForUnfiltered,
         modificationMass_UserSelections_ComponentData,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData,
         reporterIons_UserSelections_ComponentData,
         peptideUnique_UserSelection_ComponentData,
         peptideSequence_UserSelections_ComponentData,
@@ -567,6 +581,30 @@ const create_ModificationMass_UserSelections_ComponentData = function({
     });
     
     return modificationMass_UserSelections_ComponentData;
+}
+
+/**
+ *
+ */
+const create_modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData = function(
+    {
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    } : {
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        projectSearchIds : Array<number>
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+
+    }) : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData {
+
+    const modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData = modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent({
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    });
+
+    return modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData;
 }
 
 /**

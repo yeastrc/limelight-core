@@ -11,11 +11,6 @@
 
 import React from 'react'
 
-import { ProteinSequenceWidget_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/protein_sequence_display_widget/js/proteinSequenceWidget_StateObject';
-import { PeptideSequence_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject';
-import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
-import { ReporterIonMass_UserSelections_StateObject } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject';
-
 import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {ProteinPositionFilter_UserSelections_ComponentData_SelectionDisplay_Entry} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_ComponentData";
@@ -23,9 +18,7 @@ import {ProteinPositionFilter_UserSelections_ComponentData_SelectionDisplay_Entr
 /**
  * 
  */
-export interface PeptideFiltersDisplay_clearAllFiltersClickHandler {
-    () : void
-}
+export type PeptideFiltersDisplay_clearAllFiltersClickHandler = () => void;
 
 /**
  * 
@@ -33,8 +26,9 @@ export interface PeptideFiltersDisplay_clearAllFiltersClickHandler {
 export interface PeptideFiltersDisplay_Props {
 
     peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData;
-    clearAllFiltersClickHandler : PeptideFiltersDisplay_clearAllFiltersClickHandler;
 
+    //  All called clearAllFiltersClickHandler  has been modified to NOT clear ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+    clearAllFiltersClickHandler : PeptideFiltersDisplay_clearAllFiltersClickHandler;
 }
 
 /**
@@ -43,7 +37,6 @@ export interface PeptideFiltersDisplay_Props {
 interface PeptideFiltersDisplay_State {
 
     prev_peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData;
-
 }
 
 /**
@@ -112,6 +105,15 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             const is_Any_OpenModification_Selected = modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected();
             const is_Any_StaticModification_Selected = modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected();
 
+            let is_Treat_Mass_0_As_Unmodified_Selected = false;
+
+            //  Comment out since never display this info
+
+            // if ( this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+            //     && this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+            //     is_Treat_Mass_0_As_Unmodified_Selected = true;
+            // }
+
             const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
 
             let peptideUniqueSelected = false;
@@ -131,6 +133,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 && ( ! is_Any_VariableModification_Selected )
                 && ( ! is_Any_OpenModification_Selected )
                 && ( ! is_Any_StaticModification_Selected )
+                // && ( ! is_Treat_Mass_0_As_Unmodified_Selected )  //  Comment out since never display this info
                 && ( ( ! reporterIonssSelectedsSet ) || ( reporterIonssSelectedsSet.size === 0 ) )
                 && ( ! peptideUniqueSelected )
                 && ( ! peptideSearchString )
@@ -467,6 +470,14 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             }
         }
 
+        let is_Treat_Mass_0_As_Unmodified_Selected : boolean = false;
+
+        //  Comment out since never display this info
+        // if ( this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        //     && this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+        //     is_Treat_Mass_0_As_Unmodified_Selected = true;
+        // }
+
         let peptideUniqueSelected : boolean = false;
 
         if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
@@ -700,6 +711,13 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                             No peptides may contain: { selection_NOT_Group_Display_Entries }
                         </div>
                         : null /* Display nothing */ }
+
+                      {/*  Comment out since never display this info  */}
+                    {/*{ ( is_Treat_Mass_0_As_Unmodified_Selected ) ?*/}
+                    {/*    <div >*/}
+                    {/*        <span style={{whiteSpace: "nowrap"}}>{"Do not treat open modification masses that round to 0 (0.5 <= mass < 0.5) as open modifications."}</span>*/}
+                    {/*    </div>*/}
+                    {/*    : null / * Display nothing * / }*/}
 
                     { ( peptideUniqueSelected ) ?
                         <div >

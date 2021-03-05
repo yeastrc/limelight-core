@@ -25,6 +25,7 @@ import {
     ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 ///////////////////
 
@@ -92,6 +93,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
         generatedPeptideContents_UserSelections_StateObject,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         proteinSequenceVersionId,  // Not Populated on Peptide Page
         projectSearchIds,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -100,6 +102,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         proteinSequenceVersionId : number  // Not Populated on Peptide Page
         projectSearchIds : Array<number>
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
@@ -212,6 +215,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                     staticModificationsForProjectSearchId: staticModificationsForProjectSearchId_Key_ResidueLetter,
                     loadedDataPerProjectSearchIdHolder,
                     generatedPeptideContents_UserSelections_StateObject,
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
                     peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
                 });
@@ -315,6 +319,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         staticModificationsForProjectSearchId,
         loadedDataPerProjectSearchIdHolder,
         generatedPeptideContents_UserSelections_StateObject,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
         peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
     } : {
@@ -333,6 +338,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         staticModificationsForProjectSearchId : Map<string, number>
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
         peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> //  UPDATED
     }) {
@@ -429,7 +435,17 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
             psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall.set( subGroupId, 1 );
         }
 
-        const psmOpenModificationMassForPsmId = psmOpenModificationMassPerPSM_ForPsmIdMap.psmOpenModificationMassPerPSM_ForPsmIdMap.get( psmId );
+        let psmOpenModificationMassForPsmId = psmOpenModificationMassPerPSM_ForPsmIdMap.psmOpenModificationMassPerPSM_ForPsmIdMap.get( psmId );
+
+        if (
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection()
+            && psmOpenModificationMassForPsmId.openModificationMass_Rounded === 0
+        ) {
+            //  Open Mod Mass Rounded is Zero and User has selected to Treat Open Mod Mass Zero as Unmodified
+            //    So Remove Open Mod Mass from for PSM from Generation of this Generated Reported Peptide for this PSM.
+
+            psmOpenModificationMassForPsmId = null;
+        }
 
         if ( ! psmOpenModificationMassForPsmId ) {
 

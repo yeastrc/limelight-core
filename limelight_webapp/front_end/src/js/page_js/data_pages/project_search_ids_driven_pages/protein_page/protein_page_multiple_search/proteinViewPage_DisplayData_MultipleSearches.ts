@@ -69,6 +69,7 @@ import {
 	ProteinPageSearchesSummarySectionData_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySection";
 import {downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 /**
  * Entry in proteinList
@@ -155,6 +156,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 	private _searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager: CentralPageStateManager;
+	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 	private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass;
@@ -205,6 +207,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager,
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass,
 			proteinGrouping_CentralStateManagerObjectClass,
@@ -215,6 +218,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			dataPageStateManager_DataFrom_Server: DataPageStateManager,
 			searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing,
 			centralPageStateManager: CentralPageStateManager,
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 			singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass,
 			proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass
 			proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
@@ -244,6 +248,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 		this._centralPageStateManager = centralPageStateManager;
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
@@ -1569,6 +1574,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			proteinList_CentralStateManagerObjectClass: this._proteinList_CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
 			searchSubGroup_CentralStateManagerObjectClass : undefined,
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
 			singleProteinCloseCallback
 		});

@@ -117,7 +117,7 @@ export class DataTable_TableRoot__FindAllRows_SearchInput_Component extends Reac
                 <span>Find all rows containing:&nbsp;</span>
 
                 <input
-                    type="text" style={ { width: 150 } }
+                    type="text" style={ { width: 250 } }
                     ref={ this._input_Ref }
                     value={ this.state.searchInputValue_CurrentLocal } onChange={ this._inputFieldChanged_BindThis }
                 />

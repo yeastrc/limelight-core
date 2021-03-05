@@ -23,6 +23,7 @@ import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_sea
 import {modificationMass_CommonRounding_ReturnNumber} from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
 import {UserSearchString_LocationsOn_ProteinSequence_Root} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/userSearchString_LocationsOn_ProteinSequence/userSearchString_LocationsOn_ProteinSequence_ComponentData";
 import {ProteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 
 ////////////////////////////////////////////
@@ -46,6 +47,7 @@ export const proteinExpmntPage_update_reportedPeptideIds_AndTheir_PSM_IDs__For_A
         loadedDataCommonHolder,
         projectSearchId,
         modificationMass_UserSelections_StateObject,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         reporterIonMass_UserSelections_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
@@ -59,6 +61,7 @@ export const proteinExpmntPage_update_reportedPeptideIds_AndTheir_PSM_IDs__For_A
         loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
         projectSearchId: number
         modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
@@ -167,7 +170,8 @@ export const proteinExpmntPage_update_reportedPeptideIds_AndTheir_PSM_IDs__For_A
         _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificationMassSection({
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
             loadedDataPerProjectSearchIdHolder,
-            projectSearchId
+            projectSearchId,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         });
     }
     if (is_Any_OpenModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection) {
@@ -175,7 +179,8 @@ export const proteinExpmntPage_update_reportedPeptideIds_AndTheir_PSM_IDs__For_A
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
             proteinSequenceVersionId,
             loadedDataPerProjectSearchIdHolder,
-            modificationMass_UserSelections_StateObject
+            modificationMass_UserSelections_StateObject,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         });
     }
 
@@ -703,11 +708,14 @@ const _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificati
     {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         loadedDataPerProjectSearchIdHolder,
-        projectSearchId
+        projectSearchId,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     }: {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
         loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         projectSearchId: number // for error logging
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+
     }): void {
 
     // const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
@@ -744,8 +752,13 @@ const _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificati
             } else {
                 //  Process Existing Entry for this filter
 
-                if (psmIdsForReportedPeptideId.length === psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass.size) {
-                    //  All PSM IDs for reportedPeptideId have Open Mods so remove reportedPeptideId entry
+                if ( ( ! modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() )
+                    && ( psmIdsForReportedPeptideId.length === psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass.size)) {
+
+                    //  Not:  User Selected 'TreatOpenModMassZeroAsUnmodified'
+                    //  and:  All PSM IDs for reportedPeptideId have Open Mods
+                    //      So remove reportedPeptideId entry
+
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.delete_EntryFor_reportedPeptideId(reportedPeptideId)
 
                 } else {
@@ -759,8 +772,28 @@ const _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificati
                         psmIncludes_New = new Set(psmIdsForReportedPeptideId);
                     }
 
-                    for (const psmId_ContainAnyOpenModificationMass of psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass) {
-                        psmIncludes_New.delete(psmId_ContainAnyOpenModificationMass);
+                    if ( modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+
+                        if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.openModificationMass_RoundedMap ) {
+                            const msg = "( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.openModificationMass_RoundedMap ) NOT return a value. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+                        for (const openModificationMass_RoundedMap_Entry of psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.openModificationMass_RoundedMap.entries()) {
+                            const openModificationMass_RoundedMap_EntryValue = openModificationMass_RoundedMap_Entry[1];
+                            if ( openModificationMass_RoundedMap_EntryValue.openModificationMass_Rounded !== 0 ) { //  Exclude Rounded Mass of Zero
+                                // Processing all BUT Mass Zero since User selected TreatOpenModMassZeroAsUnmodified
+                                for ( const psmId of openModificationMass_RoundedMap_EntryValue.psmIds_Set ) {
+                                    psmIncludes_New.delete(psmId);
+                                }
+                            }
+                        }
+                    } else {
+                        //  Not TreatOpenModMassZeroAsUnmodified so Simpler code
+
+                        for (const psmId_ContainAnyOpenModificationMass of psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass) {
+                            psmIncludes_New.delete(psmId_ContainAnyOpenModificationMass);
+                        }
                     }
 
                     //  Merge existing entry for reportedPeptideId with new PSM Ids to Include
@@ -790,13 +823,33 @@ const _updateFor__SelectionType_ALL___For__OpenModificationMassesSelected_OtherT
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         proteinSequenceVersionId,
         loadedDataPerProjectSearchIdHolder,
-        modificationMass_UserSelections_StateObject
+        modificationMass_UserSelections_StateObject,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     }: {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
         proteinSequenceVersionId: number
         loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+
     }): void {
+
+
+    if ( modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+
+        const selectedModificationMasses = new Set(modificationMass_UserSelections_StateObject.get_OpenModificationSelections().get_ModificationsSelected__OnlyModMasses_Only__ALL_SelectionType_AsSet())
+
+        if ( selectedModificationMasses.has( 0 ) ) {
+
+            //  User has selected TreatOpenModMassZeroAsUnmodified And has selected Open Mod Mass Zero type 'ALL'
+
+            //   Clear all entries and return  since Open Mod Mass Zero is Not being considered an Open Mod Mass
+
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.clearAllEntries()
+
+            return  //  EARLY RETURN
+        }
+    }
 
     const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
 

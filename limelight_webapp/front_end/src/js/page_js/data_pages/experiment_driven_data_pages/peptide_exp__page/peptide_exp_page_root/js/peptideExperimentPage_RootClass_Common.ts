@@ -74,6 +74,7 @@ import {
 import {PeptideExperimentPageRoot_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPageRoot_CentralStateManagerObjectClass";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 /**
  * 
@@ -90,6 +91,9 @@ export class PeptideExperimentPage_RootClass_Common {
 	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
+
+	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
+
 	private _reporterIonMass_UserSelections_StateObject = new ReporterIonMass_UserSelections_StateObject();
 	private _peptideUnique_UserSelection_StateObject = new PeptideUnique_UserSelection_StateObject();
 	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
@@ -124,6 +128,10 @@ export class PeptideExperimentPage_RootClass_Common {
 		this._peptideExperimentPageRoot_CentralStateManagerObjectClass = new PeptideExperimentPageRoot_CentralStateManagerObjectClass({
 			centralPageStateManager : this._centralPageStateManager
 		})
+
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
+			new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager });
+
 		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject();
 
 		//  Instances of class DataPageStateManager
@@ -158,6 +166,8 @@ export class PeptideExperimentPage_RootClass_Common {
 		this._page_UserDefault_processing.page_UserDefault_processing();
 		
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize();
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
 
@@ -272,6 +282,7 @@ export class PeptideExperimentPage_RootClass_Common {
 					searchNamesMap_KeyProjectSearchId,
 					experimentConditions_GraphicRepresentation_PropsData,
 					experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
 					peptideExperimentPageRoot_CentralStateManagerObjectClass: this._peptideExperimentPageRoot_CentralStateManagerObjectClass,
 					modificationMass_UserSelections_StateObject: this._modificationMass_UserSelections_StateObject,

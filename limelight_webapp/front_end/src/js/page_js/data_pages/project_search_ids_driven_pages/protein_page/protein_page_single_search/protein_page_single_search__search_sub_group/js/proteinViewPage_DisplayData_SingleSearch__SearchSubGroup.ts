@@ -81,6 +81,7 @@ import {
     ProteinDisplayData_From_createProteinDisplayData_SingleSearch_SearchSubGroup,
     ProteinNameDescriptionCacheEntry_SingleSearch_SearchSubGroup
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search__search_sub_group/js/proteinViewPage_DisplayData_SingleSearch_SearchSubGroup_CreateProteinDisplayData";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 
 
@@ -120,6 +121,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass;
     private _proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass;
     private _searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass;
+    private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     private _proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass;
     private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
@@ -172,6 +174,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             singleProtein_CentralStateManagerObject,
             proteinList_CentralStateManagerObjectClass,
             searchSubGroup_CentralStateManagerObjectClass,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             proteinGrouping_CentralStateManagerObjectClass,
             generatedPeptideContents_UserSelections_StateObject,
 
@@ -185,6 +188,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass,
             proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass
             searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
             proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
             generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
@@ -218,6 +222,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
         this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
         this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
         this._searchSubGroup_CentralStateManagerObjectClass = searchSubGroup_CentralStateManagerObjectClass;
+        this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
         this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
         this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
@@ -929,6 +934,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
             proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
             searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
             singleProteinCloseCallback : singleProteinCloseCallback
         } );

@@ -45,6 +45,7 @@ import {ProteinList_CentralStateManagerObjectClass} from "page_js/data_pages/pro
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 
 /**
@@ -79,6 +80,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	private _searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 
 	private _searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+
+	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
 	private _proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass
 	
@@ -135,7 +138,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			singleProtein_CentralStateManagerObject,
 			dataPages_LoggedInUser_CommonObjectsFactory,
 
-			searchSubGroup_CentralStateManagerObjectClass
+			searchSubGroup_CentralStateManagerObjectClass,
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 		} : {
 
 			singleProteinCloseCallback : ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
@@ -154,6 +158,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
 
 			searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass //  Only for with Single Search and Search Sub Groups
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 		}) {
 
 		this._singleProteinCloseCallback = singleProteinCloseCallback;
@@ -174,6 +179,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
 
 		this._searchSubGroup_CentralStateManagerObjectClass = searchSubGroup_CentralStateManagerObjectClass;
+
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
 
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 
@@ -408,6 +415,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			modificationMass_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject ,
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject ,
 			peptideUnique_UserSelection_StateObject : this._peptideUnique_UserSelection_StateObject ,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
