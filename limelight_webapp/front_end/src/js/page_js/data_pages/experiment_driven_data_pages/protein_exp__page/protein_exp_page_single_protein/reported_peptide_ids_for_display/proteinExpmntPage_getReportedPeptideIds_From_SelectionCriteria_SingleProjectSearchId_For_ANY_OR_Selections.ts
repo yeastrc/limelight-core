@@ -152,11 +152,25 @@ export const proteinExpmntPage_get_reportedPeptideIds_AndTheir_PSM_IDs__For_ANY_
 
     //  Variable Mods
     if (is_VariableModification_Unmodified___SelectionType__REQUESTED_TYPE__Selected) {  //  Variable Mod ANY/NOT selection (includes unmodified)
-        _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_VariableModificationMassSection({ //  Variable Mod Unmodified type ANY/NOT selection
-            reportedPeptideIds_All,
-            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
-            loadedDataPerProjectSearchIdHolder
-        })
+        const result =
+            _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_VariableModificationMassSection({ //  Variable Mod Unmodified type ANY/NOT selection
+                reportedPeptideIds_All,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
+                loadedDataPerProjectSearchIdHolder
+            })
+        if ( result && result.includeAll ) {
+
+            //  Include All is returned so create All and Return it
+
+            const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = _get_ALL_Result({
+                reportedPeptideIds_All,
+                searchSubGroup_Ids_Selected,
+                loadedDataPerProjectSearchIdHolder,
+                numPsmsForReportedPeptideIdMap
+            });
+
+            return reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId; //  EARLY RETURN
+        }
     }
     if (is_Any_VariableModification__REQUESTED_TYPE__Modification_Selected_Excludes_UnmodifiedSelection) {  //  Variable Mod type ANY/NOT selection (excludes unmodified)
         _updateFor__SelectionType_ANY_NOT___For__VariableModificationMassesSelected_OtherThanUnmodified({
@@ -601,13 +615,14 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_VariableMo
         reportedPeptideIds_All: Array<number>
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
         loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-    }): void {
+    }) : { includeAll : boolean } {
 
     const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
 
-    if (!dynamicModificationsOnReportedPeptide_KeyReportedPeptideId) {
-        //  No values for this search, skip
-        return; // EARLY RETURN
+    if ((!dynamicModificationsOnReportedPeptide_KeyReportedPeptideId) || dynamicModificationsOnReportedPeptide_KeyReportedPeptideId.size === 0 ) {
+        //  No values for this search, Add Everything
+
+        return { includeAll: true }; // EARLY RETURN
     }
 
     for (const reportedPeptideId of reportedPeptideIds_All) {
