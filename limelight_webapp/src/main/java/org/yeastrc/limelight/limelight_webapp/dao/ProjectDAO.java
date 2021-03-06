@@ -598,6 +598,8 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 							counter++;
 							pstmt.setString( counter, shortName );
 							counter++;
+							pstmt.setInt( counter, userId );
+							counter++;
 							pstmt.setInt( counter, projectId );
 
 							return pstmt;
