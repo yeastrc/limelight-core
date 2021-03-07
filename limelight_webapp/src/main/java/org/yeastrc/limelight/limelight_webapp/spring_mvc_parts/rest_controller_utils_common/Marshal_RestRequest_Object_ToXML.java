@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controller_utils;
+package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common;
 
 import java.io.ByteArrayOutputStream;
 
