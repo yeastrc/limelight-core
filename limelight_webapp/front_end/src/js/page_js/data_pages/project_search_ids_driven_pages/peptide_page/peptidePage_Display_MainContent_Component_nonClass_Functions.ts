@@ -62,6 +62,7 @@ import {ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root} 
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
+import {SearchSubGroups_Root__DataPageStateManagerEntry} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 /**
  *
@@ -842,19 +843,19 @@ const create_ProteinPositionFilter_UserSelections_ComponentData = function(
  * 
  * @returns null if no data to load, otherwise returns Promise<any>
  */
-const load_ReporterIonMasses_IfNeeded = function({
+const load_ReporterIonMasses_IfNeeded = function(
+    {
+        searchSubGroups_Root, // May be null or undefined
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        searchDataLookupParamsRoot
+    } : {
+        searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
-    getSearchSubGroupIds,
-    projectSearchIds,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-    searchDataLookupParamsRoot
-} : {
-    getSearchSubGroupIds : boolean
-    projectSearchIds : Array<number>,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
-
-}) : Promise<any> {
+    }) : Promise<any> {
 
     const promises_LoadData_Array = [];
 
@@ -877,6 +878,17 @@ const load_ReporterIonMasses_IfNeeded = function({
             const msg = "_loadDataForInitialOverlayShow_GetPer_projectSearchId: No value in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
             console.warn( msg );
             throw Error( msg );
+        }
+
+        let getSearchSubGroupIds = false;
+        if ( searchSubGroups_Root ) {
+            const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
+            if ( searchSubGroups_ForProjectSearchId ) {
+                const searchSubGroups_Array__ = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode();
+                if (searchSubGroups_Array__ && searchSubGroups_Array__.length > 0) {
+                    getSearchSubGroupIds = true;
+                }
+            }
         }
 
         const promise = (
@@ -914,19 +926,19 @@ const load_ReporterIonMasses_IfNeeded = function({
  *
  * @returns null if no data to load, otherwise returns Promise<any>
  */
-const load_OpenModificationMasses_IfNeeded = function({
+const load_OpenModificationMasses_IfNeeded = function(
+    {
+        searchSubGroups_Root, // May be null or undefined
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        searchDataLookupParamsRoot
+    } : {
+        searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
-     getSearchSubGroupIds,
-     projectSearchIds,
-     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-     searchDataLookupParamsRoot
- } : {
-    getSearchSubGroupIds : boolean
-    projectSearchIds : Array<number>,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
-
-}) : Promise<any> {
+    }) : Promise<any> {
 
     const promises_LoadData_Array = [];
 
@@ -949,6 +961,17 @@ const load_OpenModificationMasses_IfNeeded = function({
             const msg = "_loadDataForInitialOverlayShow_GetPer_projectSearchId: No value in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
             console.warn( msg );
             throw Error( msg );
+        }
+
+        let getSearchSubGroupIds = false;
+        if ( searchSubGroups_Root ) {
+            const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
+            if ( searchSubGroups_ForProjectSearchId ) {
+                const searchSubGroups_Array__ = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode();
+                if (searchSubGroups_Array__ && searchSubGroups_Array__.length > 0) {
+                    getSearchSubGroupIds = true;
+                }
+            }
         }
 
         const promise = (

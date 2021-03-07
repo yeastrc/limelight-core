@@ -211,11 +211,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 
 		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
-		let getSearchSubGroupIds = false;
-		if ( this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() ) {
-			getSearchSubGroupIds = true;
-		}
-
 		this._renderOverlayOutline(); //  Will just return if already done
 
         {
@@ -254,7 +249,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
         }
 
 		const promise_loadDataForInitialOverlayShow = loadDataForInitialOverlayShow_MultipleSearch_SingleProtein({
-			getSearchSubGroupIds,
+			searchSubGroups_Root: this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root(),
 			proteinSequenceVersionId, 
 			projectSearchIds : this._projectSearchIds,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,

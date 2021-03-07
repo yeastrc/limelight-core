@@ -381,11 +381,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
                 });
 
-                let getSearchSubGroupIds = false;
-                if ( this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-                    getSearchSubGroupIds = true;
-                }
-
                 const promises_Load_ = [];
                 const modificationMass_UserSelections_StateObject = this.props.propsValue.modificationMass_UserSelections_StateObject;
 
@@ -393,7 +388,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     && modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() ) {
 
                     const promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
-                        getSearchSubGroupIds,
+                        searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                         projectSearchIds : this.props.propsValue.projectSearchIds,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                         searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot
@@ -405,7 +400,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 if ( this.props.propsValue.reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
 
                     const promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_ReporterIonMasses_IfNeeded({
-                        getSearchSubGroupIds,
+                        searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                         projectSearchIds : this.props.propsValue.projectSearchIds,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                         searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot
@@ -1358,12 +1353,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback() : void {
         try {
-
-            let getSearchSubGroupIds = false;
-            if ( this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-                getSearchSubGroupIds = true;
-            }
-
             window.setTimeout( () => {
                 try {
                     this._selectedModificationsChange_UpdateURL();  //  Update URL
@@ -1385,7 +1374,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             if ( this.props.propsValue.modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() ) {
 
                                 promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
-                                    getSearchSubGroupIds,
+                                    searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                                     projectSearchIds : this.props.propsValue.projectSearchIds,
                                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                                     searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot
@@ -1655,12 +1644,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */ 
     _updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback() : void {
         try {
-
-            let getSearchSubGroupIds = false;
-            if ( this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-                getSearchSubGroupIds = true;
-            }
-
             window.setTimeout( () => {
                 try {
                     this._reporterIonMassesChange_UpdateURL();  //  Update URL
@@ -1678,7 +1661,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     if ( this.props.propsValue.reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
                 
                         promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_ReporterIonMasses_IfNeeded({
-                            getSearchSubGroupIds,
+                            searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                             projectSearchIds : this.props.propsValue.projectSearchIds,
                             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                             searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot

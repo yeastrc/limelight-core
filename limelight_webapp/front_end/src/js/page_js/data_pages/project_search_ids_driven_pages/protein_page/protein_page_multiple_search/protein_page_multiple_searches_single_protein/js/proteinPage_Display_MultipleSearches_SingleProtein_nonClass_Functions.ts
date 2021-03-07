@@ -21,7 +21,10 @@ import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
-import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+	DataPageStateManager,
+	SearchSubGroups_Root__DataPageStateManagerEntry
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
@@ -437,7 +440,7 @@ const update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function(
  */
 const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 
-	getSearchSubGroupIds,
+	searchSubGroups_Root,
 	proteinSequenceVersionId, 
 	projectSearchIds, 
 	dataPageStateManager_DataFrom_Server, 
@@ -448,7 +451,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	open_Modifications_Subpart_UserSelections_StateObject,
 	generatedPeptideContents_UserSelections_StateObject
 } : {
-	getSearchSubGroupIds : boolean
+	searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
 	proteinSequenceVersionId: number
 	projectSearchIds :  number[]
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
@@ -469,7 +472,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	// console.log("Experiment: Single Protein: _loadDataForInitialOverlayShow(...)")
 
 	const promise_FirstRetrieval = _loadDataForInitialOverlayShow_FirstRetrieval({
-		getSearchSubGroupIds,
+		searchSubGroups_Root,
 		proteinSequenceVersionId, 
 		projectSearchIds, 
 		dataPageStateManager_DataFrom_Server, 
@@ -557,7 +560,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
  */
 const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 
-	getSearchSubGroupIds,
+	searchSubGroups_Root,
 	proteinSequenceVersionId, 
 	projectSearchIds, 
 	dataPageStateManager_DataFrom_Server, 
@@ -568,7 +571,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	open_Modifications_Subpart_UserSelections_StateObject,
 	generatedPeptideContents_UserSelections_StateObject
 } : {
-	getSearchSubGroupIds : boolean
+	searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
 	proteinSequenceVersionId: number
 	projectSearchIds :  number[]
 	dataPageStateManager_DataFrom_Server : DataPageStateManager
@@ -632,6 +635,17 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	//  Get data per projectSearchId
 
 	for ( const projectSearchId of projectSearchIds ) {
+
+		let getSearchSubGroupIds = false;
+		if ( searchSubGroups_Root ) {
+			const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
+			if ( searchSubGroups_ForProjectSearchId ) {
+				const searchSubGroups_Array__ = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode();
+				if (searchSubGroups_Array__ && searchSubGroups_Array__.length > 0) {
+					getSearchSubGroupIds = true;
+				}
+			}
+		}
 
 		const promise = _loadDataForInitialOverlayShow_GetPer_projectSearchId({
 			getSearchSubGroupIds,
