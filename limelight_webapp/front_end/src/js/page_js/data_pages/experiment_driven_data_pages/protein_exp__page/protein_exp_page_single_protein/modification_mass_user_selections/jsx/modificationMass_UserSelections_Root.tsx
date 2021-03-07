@@ -155,9 +155,13 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     proteinDescriptions={ this.props.proteinDescriptions }
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                     modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
+                    //  For Enclosed <ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component>
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ null }
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ null }
+                    updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback={ null }
                 />
 
-                {/*   Open Modifications */}
+                {/*   Open Modifications.  Includes: Checkbox for User to specify that Open Mod masses that round to Zero are not considered to be Open Mod Masses */}
                 <ModificationMass_UserSelections_Variable_or_Open_Modifications
                     variable_Modifications_DISPLAY={ false }
                     open_Modifications_DISPLAY={ true }
@@ -173,20 +177,14 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     proteinDescriptions={ this.props.proteinDescriptions }
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                     modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
+                    //  For Enclosed <ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component>
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData }
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
+                    updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback={ this.props.updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback }
                 />
 
-                {/*  Checkbox for User to specify that Open Mod masses that round to Zero are not considered to be Open Mod Masses  */}
-                { //  TDOO TEMP ONLY Show when have data
-                    this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData ?
-                        <ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component
-                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData }
-                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
-                            updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback={ this.props.updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback }
-                        />
-                : null }
-
                 {/* Static Modifications --}} */}
-                <ModificationMass_UserSelections_StaticModifications 
+                <ModificationMass_UserSelections_StaticModifications
                     staticModificationsData={ staticModificationsData }
                     modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }

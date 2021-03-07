@@ -23,6 +23,7 @@ export interface ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Compon
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
     updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback : () => void;
+    skipRenderConditional : boolean
 }
 
 interface ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component_State {
@@ -155,11 +156,13 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component 
      */
     render() {
 
-        if ( ! this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData.searchesHaveOpenModMassEntries ) {
+        if ( ! this.props.skipRenderConditional ) {
+            if (!this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData.searchesHaveOpenModMassEntries) {
 
-            //  NO searches contain OPEN Mod Masses so do NOT show this Component
+                //  NO searches contain OPEN Mod Masses so do NOT show this Component
 
-            return null;  //  EARLY RETURN
+                return null;  //  EARLY RETURN
+            }
         }
 
         const treatOpenModMassZeroAsUnmodified_UserSelection = this.state.treatOpenModMassZeroAsUnmodified_UserSelection;
