@@ -99,11 +99,38 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Override
 	public void registerControllerPathForCachedResponse( String controllerPathForCachedResponse, Object registeringObject ) {
 		
+		_validate_controllerPathForCachedResponse(controllerPathForCachedResponse);
+		
 		Object prevValue = registered_ControllerPathForCachedResponse_Map.put( controllerPathForCachedResponse, registeringObject );
 		
 		if ( prevValue != null ) {
 			
 			String msg = "Duplicate controllerPathForCachedResponse value passed to registerControllerPathForCachedResponse(...): " + controllerPathForCachedResponse;
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+	}
+	
+	/**
+	 * @param controllerPathForCachedResponse
+	 */
+	private void _validate_controllerPathForCachedResponse( String controllerPathForCachedResponse ) {
+		
+		//  Require that controllerPathForCachedResponse end with '-version-' and a number
+		
+		int versionLabel_Index = controllerPathForCachedResponse.lastIndexOf( "-version-" );
+		if ( versionLabel_Index == -1 ) {
+			String msg = "controllerPathForCachedResponse does NOT contain string '-version-'. controllerPathForCachedResponse: " + controllerPathForCachedResponse;
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+		String versionNumber_String = controllerPathForCachedResponse.substring( versionLabel_Index + "-version-".length() );
+		try {
+			@SuppressWarnings("unused")
+			int versionNumber = Integer.parseInt(versionNumber_String);
+		} catch ( Exception e ) {
+			String msg = "controllerPathForCachedResponse after string '-version-' is NOT a Number. versionNumber_String: '" + versionNumber_String 
+					+ "', controllerPathForCachedResponse: " + controllerPathForCachedResponse;
 			log.error(msg);
 			throw new LimelightInternalErrorException(msg);
 		}
