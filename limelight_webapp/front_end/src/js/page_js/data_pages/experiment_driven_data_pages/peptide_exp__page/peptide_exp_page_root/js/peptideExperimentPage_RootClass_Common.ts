@@ -73,7 +73,6 @@ import {
 } from "page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/jsx/peptideExperimentPage_Display_Root_Component";
 import {PeptideExperimentPageRoot_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPageRoot_CentralStateManagerObjectClass";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
-import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 
 /**
@@ -171,6 +170,43 @@ export class PeptideExperimentPage_RootClass_Common {
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
 
+		this._peptideExperimentPageRoot_CentralStateManagerObjectClass.initialize();
+		{
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.getModsSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._modificationMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.getReporterIonMassesSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._reporterIonMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.getPeptideUniqueFilterSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideUnique_UserSelection_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+		{
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.getPeptideSequenceFilterSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideSequence_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+		{
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.get_proteinPositionFilter_UserSelections_EncodedStateData();
+			if ( encodedStateData ) {
+				this._proteinPositionFilter_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+		{
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 		let referrerFromURL = initialStateFromURL.referrer;
 		
 		if ( referrerFromURL === _REFERRER_PATH_STRING ) {

@@ -35,10 +35,8 @@ import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pag
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
-//  From main_pages
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
-//  Import for typing only
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";

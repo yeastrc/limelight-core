@@ -63,7 +63,7 @@ import {
 
 ////
 
-import { peptidePage_Display_MainContent_Component_nonClass_Functions } from './peptidePage_Display_MainContent_Component_nonClass_Functions';
+import { PeptidePage_Display_MainContent_Component_nonClass_Functions } from './peptidePage_Display_MainContent_Component_nonClass_Functions';
 
 import {
     SearchDetailsAndFilterBlock_MainPage_Root,
@@ -282,7 +282,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
 
         const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =
-            peptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({
+            PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({
             propsValue : props.propsValue
         });
 
@@ -383,11 +383,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                 const promises_Load_ = [];
                 const modificationMass_UserSelections_StateObject = this.props.propsValue.modificationMass_UserSelections_StateObject;
+                const generatedPeptideContents_UserSelections_StateObject = this.props.propsValue.generatedPeptideContents_UserSelections_StateObject;
 
-                if ( modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
-                    && modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() ) {
+                if ( ( modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
+                    && modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() )
+                    || generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
+                    || generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) {
 
-                    const promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
+                    const promise = PeptidePage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
                         searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                         projectSearchIds : this.props.propsValue.projectSearchIds,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -399,7 +402,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 }
                 if ( this.props.propsValue.reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
 
-                    const promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_ReporterIonMasses_IfNeeded({
+                    const promise = PeptidePage_Display_MainContent_Component_nonClass_Functions.load_ReporterIonMasses_IfNeeded({
                         searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                         projectSearchIds : this.props.propsValue.projectSearchIds,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -412,7 +415,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                 if ( this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
-                    const promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_ProteinCoverage_IfNeeded({
+                    const promise = PeptidePage_Display_MainContent_Component_nonClass_Functions.load_ProteinCoverage_IfNeeded({
                         projectSearchIds : this.props.propsValue.projectSearchIds,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
                     });
@@ -475,7 +478,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             //  remove from selection state objects values that are not in the loaded data. (Values that have been for: searches removed, or for values that don't meet new filter cutoffs)
 
-            peptidePage_Display_MainContent_Component_nonClass_Functions.purge_Selections_OfValues_NotInCurrentLoadedData({
+            PeptidePage_Display_MainContent_Component_nonClass_Functions.purge_Selections_OfValues_NotInCurrentLoadedData({
                 projectSearchIds : this.props.propsValue.projectSearchIds,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
@@ -512,7 +515,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             proteinPositionFilter_UserSelections_ComponentData? : ProteinPositionFilter_UserSelections_ComponentData;
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 
-        }  = peptidePage_Display_MainContent_Component_nonClass_Functions.compute_FullPage_Except_SearchDetails({
+        }  = PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_FullPage_Except_SearchDetails({
 
             propsValue : this.props.propsValue,
             projectSearchIds : this.props.propsValue.projectSearchIds,
@@ -622,10 +625,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     private _searchSubGroup_CentralStateManagerObjectClass_Changed_UpdateState() {
 
         const searchSubGroup_PropValue: SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData =
-            peptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_PropValue({ propsValue : this.props.propsValue });
+            PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_PropValue({ propsValue : this.props.propsValue });
 
         const searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean =
-            peptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected({ propsValue : this.props.propsValue });
+            PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected({ propsValue : this.props.propsValue });
 
         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 
@@ -992,7 +995,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 	 */   
     _downloadPsms_Shown_ClickHandler() : void {
         try {
-            const searchSubGroup_Ids_Selected : Set<number> = peptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Ids_Selected({ propsValue : this.props.propsValue });
+            const searchSubGroup_Ids_Selected : Set<number> = PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Ids_Selected({ propsValue : this.props.propsValue });
 
             let searchSubGroup_Ids_Selected_Array : Array<number> = undefined;
 
@@ -1373,7 +1376,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                             if ( this.props.propsValue.modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() ) {
 
-                                promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
+                                promise = PeptidePage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
                                     searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                                     projectSearchIds : this.props.propsValue.projectSearchIds,
                                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -1572,7 +1575,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     _modificationMass_Update_modificationMass_UserSelections_ComponentData() {
 
         const modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData =
-            peptidePage_Display_MainContent_Component_nonClass_Functions.create_ModificationMass_UserSelections_ComponentData({
+            PeptidePage_Display_MainContent_Component_nonClass_Functions.create_ModificationMass_UserSelections_ComponentData({
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                 projectSearchIds : this.props.propsValue.projectSearchIds,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
@@ -1660,7 +1663,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                     if ( this.props.propsValue.reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
                 
-                        promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_ReporterIonMasses_IfNeeded({
+                        promise = PeptidePage_Display_MainContent_Component_nonClass_Functions.load_ReporterIonMasses_IfNeeded({
                             searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(), // May be null or undefined
                             projectSearchIds : this.props.propsValue.projectSearchIds,
                             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -1746,7 +1749,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */ 
     _reporterIonMass_Update_reporterIonMass_UserSelections_ComponentData() {
 
-        const reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData = peptidePage_Display_MainContent_Component_nonClass_Functions.create_ReporterIons_UserSelections_ComponentData({
+        const reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData = PeptidePage_Display_MainContent_Component_nonClass_Functions.create_ReporterIons_UserSelections_ComponentData({
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             projectSearchIds : this.props.propsValue.projectSearchIds,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
@@ -1840,7 +1843,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */ 
     _peptideSequence_Update_peptideSequence_UserSelections_ComponentData() {
 
-        const peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData = peptidePage_Display_MainContent_Component_nonClass_Functions.create_PeptideSequence_UserSelections_ComponentData({
+        const peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData = PeptidePage_Display_MainContent_Component_nonClass_Functions.create_PeptideSequence_UserSelections_ComponentData({
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject
         });
 
@@ -1873,7 +1876,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                     if ( this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
-                        promise = peptidePage_Display_MainContent_Component_nonClass_Functions.load_ProteinCoverage_IfNeeded({
+                        promise = PeptidePage_Display_MainContent_Component_nonClass_Functions.load_ProteinCoverage_IfNeeded({
                             projectSearchIds : this.props.propsValue.projectSearchIds,
                             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
                         });
@@ -1957,7 +1960,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     _proteinPositionFilter_Update_proteinPositionFilter_UserSelections_ComponentData() {
 
         const proteinPositionFilter_UserSelections_ComponentData : ProteinPositionFilter_UserSelections_ComponentData =
-            peptidePage_Display_MainContent_Component_nonClass_Functions.create_ProteinPositionFilter_UserSelections_ComponentData({
+            PeptidePage_Display_MainContent_Component_nonClass_Functions.create_ProteinPositionFilter_UserSelections_ComponentData({
                 proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper,
                 proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -2152,7 +2155,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                     window.setTimeout( () => {
                         try {
-                            const searchSubGroup_Ids_Selected : Set<number> = peptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Ids_Selected({ propsValue : this.props.propsValue });
+                            const searchSubGroup_Ids_Selected : Set<number> = PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Ids_Selected({ propsValue : this.props.propsValue });
 
                             const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
                                 not_filtered_position_modification_selections : false,

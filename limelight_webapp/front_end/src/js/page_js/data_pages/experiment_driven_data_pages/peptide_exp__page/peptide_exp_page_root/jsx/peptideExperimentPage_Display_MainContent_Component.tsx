@@ -513,9 +513,12 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
                 const promises_Load_ = [];
                 const modificationMass_UserSelections_StateObject = this.props.propsValue.modificationMass_UserSelections_StateObject;
+                const generatedPeptideContents_UserSelections_StateObject = this.props.propsValue.generatedPeptideContents_UserSelections_StateObject;
 
-                if ( modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
-                    && modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() ) {
+                if ( ( modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
+                    && modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected() )
+                    || generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
+                    || generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) {
 
                     const promise = peptideExperimentPage_Display_MainContent_Component_nonClass_Functions.load_OpenModificationMasses_IfNeeded({
                         getSearchSubGroupIds : false,

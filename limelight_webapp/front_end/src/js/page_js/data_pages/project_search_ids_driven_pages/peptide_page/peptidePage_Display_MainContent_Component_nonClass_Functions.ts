@@ -292,6 +292,8 @@ const _purge_dynamic_or_open_mods_selections = function(
     }
 }
 
+//////////////
+//////////////
 
 /**
  * 
@@ -875,7 +877,7 @@ const load_ReporterIonMasses_IfNeeded = function(
             }
         }
         if ( ! searchDataLookupParams_For_projectSearchId ) {
-            const msg = "_loadDataForInitialOverlayShow_GetPer_projectSearchId: No value in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
+            const msg = "load_ReporterIonMasses_IfNeeded: No value in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
             console.warn( msg );
             throw Error( msg );
         }
@@ -1061,20 +1063,20 @@ const load_ProteinCoverage_IfNeeded = function(
 ///////////////////////////////////////////////
 
 
-const peptidePage_Display_MainContent_Component_nonClass_Functions = {
-    purge_Selections_OfValues_NotInCurrentLoadedData,
-    compute_FullPage_Except_SearchDetails,
-    compute_searchSubGroup_Ids_Selected,
-    compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected,
-    compute_searchSubGroup_PropValue,
-    compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
-    create_ModificationMass_UserSelections_ComponentData, 
-    create_ReporterIons_UserSelections_ComponentData, 
-    create_PeptideSequence_UserSelections_ComponentData,
-    create_ProteinPositionFilter_UserSelections_ComponentData,
-    load_ReporterIonMasses_IfNeeded,
-    load_OpenModificationMasses_IfNeeded,
-    load_ProteinCoverage_IfNeeded
+class PeptidePage_Display_MainContent_Component_nonClass_Functions {
+    static purge_Selections_OfValues_NotInCurrentLoadedData = purge_Selections_OfValues_NotInCurrentLoadedData
+    static compute_FullPage_Except_SearchDetails = compute_FullPage_Except_SearchDetails
+    static compute_searchSubGroup_Ids_Selected = compute_searchSubGroup_Ids_Selected
+    static compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected = compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected
+    static compute_searchSubGroup_PropValue = compute_searchSubGroup_PropValue
+    static compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+    static create_ModificationMass_UserSelections_ComponentData = create_ModificationMass_UserSelections_ComponentData
+    static create_ReporterIons_UserSelections_ComponentData = create_ReporterIons_UserSelections_ComponentData
+    static create_PeptideSequence_UserSelections_ComponentData = create_PeptideSequence_UserSelections_ComponentData
+    static create_ProteinPositionFilter_UserSelections_ComponentData = create_ProteinPositionFilter_UserSelections_ComponentData
+    static load_ReporterIonMasses_IfNeeded = load_ReporterIonMasses_IfNeeded
+    static load_OpenModificationMasses_IfNeeded = load_OpenModificationMasses_IfNeeded
+    static load_ProteinCoverage_IfNeeded = load_ProteinCoverage_IfNeeded
 }
 
-export { peptidePage_Display_MainContent_Component_nonClass_Functions }
+export { PeptidePage_Display_MainContent_Component_nonClass_Functions }
