@@ -265,7 +265,7 @@ let addFlotMainToJquery = function( $ ) {
 						bottom: 0,
 						right: 0,
 						'font-size': "smaller",
-						color: "#545454"
+						color: "#172B4D"
 					})
 					.insertAfter(this.element);
 			}
