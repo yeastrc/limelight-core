@@ -22,7 +22,7 @@ body {
 }
 
 a {
-  text-decoration: none;
+  text-decoration: underline dashed $link-color-underline;
 
   &:link {
     color: $link-color-unvisited;
@@ -41,7 +41,30 @@ a {
   }
 }
 
+// use this to create a true link with no underline
+// e.g. <a href="asdf" class="no-underline">
+a.no-underline {
+  text-decoration:none;
+}
+
+// a fake link with an underline decoration
 .fake-link {
+  color: $link-color-unvisited;
+  cursor: pointer;
+  text-decoration: underline dashed $link-color-underline;
+
+  &:hover {
+    color: $link-color-hover;
+  }
+
+  &:active {
+    color: $font-color-dark;
+  }
+
+}
+
+// used to create a fake link without an underline (instead of using .fake-link)
+.fake-link-no-underline {
   color: $link-color-unvisited;
   cursor: pointer;
 
