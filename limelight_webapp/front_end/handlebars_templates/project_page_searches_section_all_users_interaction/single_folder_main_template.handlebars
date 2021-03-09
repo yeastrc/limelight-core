@@ -21,8 +21,9 @@
 	</div>
 
 	<div >
-		<span class=" folder-name-display folder_name_jq "
-			>Folder: {{ folder.folderName }}</span>
+		<span class=" folder-name-display "
+			>Folder: <span class=" folder_name_jq "
+        >{{ folder.folderName }}</span></span>
 			
 		{{#if folder.canEdit }} 
 			<img  src="static/images/icon-edit.png" 
