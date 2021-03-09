@@ -28,6 +28,25 @@ export class ModViewPage_DataLoader {
         return requestObject;
     }
 
+    __createRequestForSingleProjectSearchIdProteinIds(
+        {
+            projectSearchId,
+            proteinSequenceVersionIds
+        } : {
+            projectSearchId: number,
+            proteinSequenceVersionIds: Array<number>
+        }
+    ) {
+
+
+        let requestObject = {
+            projectSearchIds : [projectSearchId],
+            proteinSequenceVersionIds : proteinSequenceVersionIds
+        };
+
+        return requestObject;
+    }
+
     /**
      * Get scan data (scan numbers, scan file names, etc) for all psms for this project search id that meet
      * the passed-in filters
@@ -340,6 +359,54 @@ export class ModViewPage_DataLoader {
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
                         resolve(responseData.resultRoot);
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
+    /**
+     * Get the sequence of the protein of interest
+     * 
+     * @param projectSearchId
+     * @param proteinSequenceVersionIds
+     */
+    getProteinSequencesForProjectSearchId(
+        {
+            projectSearchId,
+            proteinSequenceVersionIds
+        } : {
+            projectSearchId: number,
+            proteinSequenceVersionIds:Array<number>
+        }) {
+
+        console.log('called getProteinSequencesForProjectSearchId', projectSearchId, proteinSequenceVersionIds);
+
+        let objectThis = this;
+
+        return new Promise( function( resolve, reject ) {
+            try {
+                let requestObject = objectThis.__createRequestForSingleProjectSearchIdProteinIds({ projectSearchId, proteinSequenceVersionIds });
+
+                const url = "d/rws/for-page/psb/protein-sequences-for-prot-seq-ver-ids";
+
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+
+                promise_webserviceCallStandardPost.then( ({ responseData }) => {
+                    try {
+
+                        console.log(responseData);
+                        resolve(responseData.proteinSequences);
 
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
