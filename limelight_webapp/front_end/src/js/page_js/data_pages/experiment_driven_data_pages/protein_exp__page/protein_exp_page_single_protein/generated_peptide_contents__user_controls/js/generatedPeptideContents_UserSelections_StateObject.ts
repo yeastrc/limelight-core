@@ -44,11 +44,23 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
 
     private _staticModifications_Selected : boolean;
 
+    private _valueChangedCallback: () => void;
+
     /**
      *
      */
-    constructor() {
+    constructor(
+        {
+            valueChangedCallback
+        } : {
+            valueChangedCallback: () => void
+        }) {
 
+        if ( ! valueChangedCallback ) {
+            throw Error("constructor::( ! valueChangedCallback )")
+        }
+
+        this._valueChangedCallback = valueChangedCallback;
     }
 
     /**
@@ -67,6 +79,8 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     setStaticModifications_Selected( selected : boolean ) : void {
 
         this._staticModifications_Selected = selected;
+
+        this._valueChangedCallback();
     }
 
     /**
@@ -85,6 +99,8 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     setVariableModifications_Selected( selected : boolean ) : void {
 
         this._variableModifications_Selected = selected;
+
+        this._valueChangedCallback();
     }
 
     /**
@@ -103,6 +119,8 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     setOpenModifications_Selected( selected : boolean ) : void {
 
         this._openModifications_Selected = selected;
+
+        this._valueChangedCallback();
     }
 
     /**
@@ -121,6 +139,8 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     setOpenModifications_WithLocalization_Selected( selected : boolean ) : void {
 
         this._openModifications_WithLocalization_Selected = selected;
+
+        this._valueChangedCallback();
     }
 
     //////////////////////////////////////

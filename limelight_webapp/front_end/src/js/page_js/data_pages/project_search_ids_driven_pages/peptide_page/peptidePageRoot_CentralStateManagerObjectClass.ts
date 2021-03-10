@@ -36,6 +36,7 @@ const _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME =
 const _PEPTIDE_UNIQUE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'e';
 const _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'f';
 const _PROTEIN_POSITION_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'g';
+const _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'h';
 
 /**
  * 
@@ -49,6 +50,7 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		peptideSequenceFilterSelectedEncodedStateData? : any
 		proteinPositionFilter_UserSelections_EncodedStateData? : any
 		generatedPeptideContentsSelectedEncodedStateData? : any
+		generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay? : any
 	}
 
 	_centralPageStateManager? : CentralPageStateManager
@@ -78,7 +80,9 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 				peptideUniqueFilterSelectedEncodedStateData : encodedStateData[ _PEPTIDE_UNIQUE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				peptideSequenceFilterSelectedEncodedStateData : encodedStateData[ _PEPTIDE_SEQUENCE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				proteinPositionFilter_UserSelections_EncodedStateData : encodedStateData[ _PROTEIN_POSITION_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				generatedPeptideContentsSelectedEncodedStateData : encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+				generatedPeptideContentsSelectedEncodedStateData : encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay :
+					encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -164,9 +168,35 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		}
 		this._centralPageStateManager.setState( { component : this } );
 	}
-
 	getGeneratedPeptideContentsSelectedEncodedStateData() {
 		return this._value.generatedPeptideContentsSelectedEncodedStateData;
+	}
+
+
+	/**
+	 * generatedPeptideContentsSelectedEncodedStateData  For  SingleProteinOverlay
+	 *
+	 * @param generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay
+	 */
+	setGeneratedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay(
+		{
+			generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay
+		} :{
+			generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay: any
+		} ) {
+		this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay = generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay;
+
+		if ( ! this._centralPageStateManager ) {
+			throw Error( "this._centralPageStateManager not set" );
+		}
+		this._centralPageStateManager.setState( { component : this } );
+	}
+
+	/**
+	 * generatedPeptideContentsSelectedEncodedStateData  For  SingleProteinOverlay
+	 */
+	getGeneratedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay() {
+		return this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay;
 	}
 
     /**
@@ -180,6 +210,7 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
      * Called by Central State Manager and maybe other code
 	 */
 	getDataForEncoding() {
+
 		const dataForEncoding = {}
 		// @ts-ignore
 		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
@@ -208,6 +239,11 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 			// @ts-ignore
 			dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.generatedPeptideContentsSelectedEncodedStateData;
 		}
+		if ( this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay !== undefined ) {
+			// @ts-ignore
+			dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay;
+		}
+
 		return dataForEncoding;
 	}
 }

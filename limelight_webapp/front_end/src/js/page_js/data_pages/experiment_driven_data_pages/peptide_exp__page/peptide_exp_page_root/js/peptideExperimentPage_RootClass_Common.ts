@@ -131,7 +131,13 @@ export class PeptideExperimentPage_RootClass_Common {
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
 			new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager });
 
-		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject();
+
+		const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = () : void => {
+
+			const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
+			this._peptideExperimentPageRoot_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
+		}
+		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : generatedPeptideContents_UserSelections_StateObject_valueChangedCallback });
 
 		//  Instances of class DataPageStateManager
 		

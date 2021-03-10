@@ -1522,7 +1522,8 @@ export class ProteinViewPage_Display_MultipleSearches {
 			this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY});
 		}
 
-		this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
+		this._proteinViewPage_Display_MultipleSearches_SingleProtein.
+		openOverlay({
 			proteinSequenceVersionId,
 			proteinNameDescription: proteinNameDescriptionParam,
 			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
@@ -1541,17 +1542,19 @@ export class ProteinViewPage_Display_MultipleSearches {
 			this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
 
 			//  Show Main Div inside of header/footer
-			const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-			$data_page_overall_enclosing_block_div.show();
+			const data_page_overall_enclosing_block_divDOM = document.getElementById("data_page_overall_enclosing_block_div");
+			if (!data_page_overall_enclosing_block_divDOM) {
+				const msg = "No element on DOM with id 'data_page_overall_enclosing_block_div'";
+				console.warn(msg);
+				throw Error(msg);
+			}
+			data_page_overall_enclosing_block_divDOM.style.display = "";
 
 			if (currentWindowScrollY) {
 
 				//  Scroll window down to original position when protein was clicked to open Single Protein view
 
-				//  Web standard, should be supported in Edge but doesn't seem to work in Edge
-				// window.scrollTo({ top : currentWindowScrollY });
-
-				$(window).scrollTop(currentWindowScrollY);
+				window.scrollTo({ top : currentWindowScrollY });
 			}
 		}
 
@@ -1571,7 +1574,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 			loadedDataCommonHolder: this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-			proteinList_CentralStateManagerObjectClass: this._proteinList_CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
 			searchSubGroup_CentralStateManagerObjectClass : undefined,
 			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
