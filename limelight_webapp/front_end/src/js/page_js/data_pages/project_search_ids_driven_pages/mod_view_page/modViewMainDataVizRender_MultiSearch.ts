@@ -258,103 +258,131 @@ export class ModViewDataVizRenderer_MultiSearch {
             modViewDataManager : ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
+    	
+    	//  Container
+    	const $data_viz_container = $("div#data-viz-container");
+    	
+    	{
+    		const html = "<span class=\"clickable\">[Download ZScore Report]</span>"
+			const $html = $(html)
+	
+	        $html.click(function() {
+	
+	            // calculate and show stats
+	            ModStatsUtils.downloadSignificantMods({
+	                vizOptionsData,
+	                sortedModMasses,
+	                projectSearchIds: vizOptionsData.data.projectSearchIds,
+	                modViewDataManager,
+	                dataPageStateManager_DataFrom_Server
+	            });
+	
+	        });
+	        
+	        const divContainerHTML = "<div></div>";
+	        const $divContainer = $(divContainerHTML);
+	        
+	        $divContainer.append($html)
+	
+	        $data_viz_container.append($divContainer);
+    	}
+    	{
+    		const html = "<span class=\"clickable\">[View ZScore Report]</span>"
+			const $html = $(html)
 
-        let html = "<div class=\"clickable\">[Download ZScore Report]</div>"
-        let $html = $(html)
+			$html.click(function() {
 
-        $html.click(function() {
+				// calculate and show stats
+				ModStatsUtils.viewSignificantMods({
+					vizOptionsData,
+					sortedModMasses,
+					projectSearchIds: vizOptionsData.data.projectSearchIds,
+					modViewDataManager,
+					dataPageStateManager_DataFrom_Server
+				});
 
-            // calculate and show stats
-            ModStatsUtils.downloadSignificantMods({
-                vizOptionsData,
-                sortedModMasses,
-                projectSearchIds: vizOptionsData.data.projectSearchIds,
-                modViewDataManager,
-                dataPageStateManager_DataFrom_Server
-            });
+			});
 
-        });
+	        const divContainerHTML = "<div></div>";
+	        const $divContainer = $(divContainerHTML);
+	        
+	        $divContainer.append($html)
+	
+	        $data_viz_container.append($divContainer);
+    	}
+    	{
+    		const html = "<span class=\"clickable\">[View Replicate ZScore Report (Experimental)]</span>"
+			const $html = $(html)
 
-        $("div#data-viz-container").append($html);
+			$html.click(function() {
 
-        html = "<div class=\"clickable\">[View ZScore Report]</div>"
-        $html = $(html)
+				// calculate and show stats
+				ModStatsUtils.viewSignificantMods_CombineReps({
+					vizOptionsData,
+					sortedModMasses,
+					projectSearchIds: vizOptionsData.data.projectSearchIds,
+					modViewDataManager,
+					dataPageStateManager_DataFrom_Server
+				});
 
-        $html.click(function() {
+			});
 
-            // calculate and show stats
-            ModStatsUtils.viewSignificantMods({
-                vizOptionsData,
-                sortedModMasses,
-                projectSearchIds: vizOptionsData.data.projectSearchIds,
-                modViewDataManager,
-                dataPageStateManager_DataFrom_Server
-            });
+    		const divContainerHTML = "<div></div>";
+    		const $divContainer = $(divContainerHTML);
 
-        });
+    		$divContainer.append($html)
 
-        $("div#data-viz-container").append($html);
+    		$data_viz_container.append($divContainer);
+    	}
+    	{
+    		const html = "<span class=\"clickable\">[Download Data Table]</span>"
+			const $html = $(html)
 
+			$html.click(function() {
 
-        html = "<div class=\"clickable\">[View Replicate ZScore Report (Experimental)]</div>"
-        $html = $(html)
+				// calculate and show stats
+				ModStatsUtils.downloadSummaryStatistics({
+					vizOptionsData,
+					sortedModMasses,
+					projectSearchIds: vizOptionsData.data.projectSearchIds,
+					modViewDataManager,
+					dataPageStateManager_DataFrom_Server
+				});
 
-        $html.click(function() {
+			});
 
-            // calculate and show stats
-            ModStatsUtils.viewSignificantMods_CombineReps({
-                vizOptionsData,
-                sortedModMasses,
-                projectSearchIds: vizOptionsData.data.projectSearchIds,
-                modViewDataManager,
-                dataPageStateManager_DataFrom_Server
-            });
+	        const divContainerHTML = "<div></div>";
+	        const $divContainer = $(divContainerHTML);
+	        
+	        $divContainer.append($html)
+	
+	        $data_viz_container.append($divContainer);
+    	}
+    	{
+    		const html = "<span class=\"clickable\">[Download PSM Localization Report]</span>"
+			const $html = $(html)
 
-        });
+			$html.click(async function() {
 
-        $("div#data-viz-container").append($html);
+				// calculate and show stats
+				const textToDownload = await PSMLocalizationReportDownloadGenerator.getPsmLocalizationReportText({
+					vizOptionsData,
+					sortedModMasses,
+					projectSearchIds: vizOptionsData.data.projectSearchIds,
+					modViewDataManager,
+					dataPageStateManager_DataFrom_Server
+				});
 
+				StringDownloadUtils.downloadStringAsFile( { stringToDownload : textToDownload, filename: 'psm_modification_localization_report.txt' } );
+			});
 
-        html = "<div class=\"clickable\">[Download Data Table]</div>"
-        $html = $(html)
+    		const divContainerHTML = "<div></div>";
+    		const $divContainer = $(divContainerHTML);
 
-        $html.click(function() {
+    		$divContainer.append($html)
 
-            // calculate and show stats
-            ModStatsUtils.downloadSummaryStatistics({
-                vizOptionsData,
-                sortedModMasses,
-                projectSearchIds: vizOptionsData.data.projectSearchIds,
-                modViewDataManager,
-                dataPageStateManager_DataFrom_Server
-            });
-
-        });
-
-        $("div#data-viz-container").append($html);
-
-        html = "<div class=\"clickable\">[Download PSM Localization Report]</div>"
-        $html = $(html)
-
-        $html.click(async function() {
-
-            // calculate and show stats
-            const textToDownload = await PSMLocalizationReportDownloadGenerator.getPsmLocalizationReportText({
-                vizOptionsData,
-                sortedModMasses,
-                projectSearchIds: vizOptionsData.data.projectSearchIds,
-                modViewDataManager,
-                dataPageStateManager_DataFrom_Server
-            });
-
-            StringDownloadUtils.downloadStringAsFile( { stringToDownload : textToDownload, filename: 'psm_modification_localization_report.txt' } );
-        });
-
-        $("div#data-viz-container").append($html);
-
-
-
-
+    		$data_viz_container.append($divContainer);
+    	}
 
     }
 
