@@ -97,6 +97,42 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         }
 
         {
+            const displayName = "Pre";
+
+            const dataTableColumn = new DataTable_Column({
+                id : "pre-residue", // Used for tracking sort order. Keep short
+                displayName,
+                width : 40,
+                sortable : true,
+                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+                columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the n-terminus of this peptide in the protein sequence.'
+            });
+            dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+
+        {
+            const displayName = "Post";
+
+            const dataTableColumn = new DataTable_Column({
+                id : "post-residue", // Used for tracking sort order. Keep short
+                displayName,
+                width : 40,
+                sortable : true,
+                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+                columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the c-terminus of this peptide in the protein sequence.'
+
+            });
+            dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+
+
+        {
             const displayName = "PSMs";
 
             const dataTableColumn = new DataTable_Column({
@@ -205,6 +241,38 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                     searchTableData,
                     valueDisplay,
                     valueSort : proteinData.peptideString
+                });
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+
+            // add the pre residue
+            {
+                const valueDisplay = (await ModViewDataUtilities.getPreResidueForPeptideProtein({modViewDataManager, proteinSequenceVersionId:proteinId, reportedPeptideIds:proteinData.reportedPeptideIds, projectSearchId})).join(',');
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort : valueDisplay
+                });
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+
+            // add the post residue
+            {
+                const valueDisplay = (await ModViewDataUtilities.getPostResidueForPeptideProtein({modViewDataManager, proteinSequenceVersionId:proteinId, reportedPeptideIds:proteinData.reportedPeptideIds, projectSearchId})).join(',');
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort : valueDisplay
                 });
                 columnEntries.push( columnEntry );
 
@@ -354,6 +422,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const proteinResidueMapByPeptideString:Map<string, Set<string>> =  new Map();
         const psmIdsByPeptideString:Map<string, Set<number>> = new Map();
         const unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>> = new Map();
+        const reportedPeptideIdsByPeptideString:Map<string, Set<number>> = new Map();
 
         // the open mod localization associated with a specific peptide--a peptide can have max 1--can be a number or 'n' or 'c'
         const openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType> = new Map();
@@ -365,6 +434,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             psmIdsByPeptideString,
             unlocalizedLocsByPeptideString,
             openModPositionOverrideByPeptideString,
+            reportedPeptideIdsByPeptideString,
             modViewDataManager,
             projectSearchId,
             modMass,
@@ -380,6 +450,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 projectSearchId:projectSearchId,
                 modifiedResidues:proteinResidueMapByPeptideString.get(peptideString),
                 modifiedPositions:proteinPositionMapByPeptideString.get(peptideString),
+                reportedPeptideIds:Array.from(reportedPeptideIdsByPeptideString.get(peptideString)),
                 psmIds:psmIdsByPeptideString.get(peptideString),
                 unlocalizedPositionRanges:unlocalizedLocsByPeptideString.get(peptideString),
                 openModPositionOverride:openModPositionOverrideByPeptideString.get(peptideString)
@@ -398,6 +469,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             psmIdsByPeptideString,
             unlocalizedLocsByPeptideString,
             openModPositionOverrideByPeptideString,
+            reportedPeptideIdsByPeptideString,
             modViewDataManager,
             projectSearchId,
             modMass,
@@ -409,6 +481,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             psmIdsByPeptideString:Map<string, Set<number>>,
             unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>>,
             openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType>,
+            reportedPeptideIdsByPeptideString:Map<string, Set<number>>,
             modViewDataManager:ModViewDataManager,
             projectSearchId:number,
             modMass:number,
@@ -465,6 +538,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             psmIdsByPeptideString,
             unlocalizedLocsByPeptideString,
             openModPositionOverrideByPeptideString,
+            reportedPeptideIdsByPeptideString,
             reportedPeptidePSMMap,
             proteinId,
             reportedPeptidesForProtein,
@@ -482,6 +556,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             reportedPeptidePSMMap,
             unlocalizedLocsByPeptideString,
             openModPositionOverrideByPeptideString,
+            reportedPeptideIdsByPeptideString,
             proteinId,
             psmIdsByPeptideString,
             reportedPeptidesForProtein,
@@ -495,6 +570,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             psmIdsByPeptideString:Map<string, Set<number>>,
             unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>>,
             openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType>,
+            reportedPeptideIdsByPeptideString:Map<string, Set<number>>,
             reportedPeptidesForProtein:Set<ReportedPeptide>,
             reportedPeptides:Map<number, ReportedPeptide>,
             modMass:number
@@ -534,6 +610,13 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 
                     // add this psm to the appropriate map
                     psmIdsByPeptideString.get(generatedReportedPeptide).add(psm.psmId);
+
+                    // add this reported peptide to a set of reported peptides tied to this generated peptide string
+                    if(!reportedPeptideIdsByPeptideString.has(generatedReportedPeptide)) {
+                        reportedPeptideIdsByPeptideString.set(generatedReportedPeptide, new Set());
+                    }
+
+                    reportedPeptideIdsByPeptideString.get(generatedReportedPeptide).add(reportedPeptide.reportedPeptideId);
                 }
 
 
@@ -1037,6 +1120,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 class PeptideDataForModProteinSearch {
 
     private readonly _peptideString:string;
+    private readonly _reportedPeptideIds:Array<number>;
     private readonly _modifiedResidues:Set<string>;
     private readonly _modifiedPositions:Set<number>;
     private readonly _projectSearchId:number;
@@ -1054,7 +1138,8 @@ class PeptideDataForModProteinSearch {
             projectSearchId,
             modMass,
             unlocalizedPositionRanges,
-            openModPositionOverride
+            openModPositionOverride,
+            reportedPeptideIds
         }:{
             peptideString:string
             modifiedResidues:Set<string>,
@@ -1063,7 +1148,8 @@ class PeptideDataForModProteinSearch {
             projectSearchId:number,
             modMass:number,
             unlocalizedPositionRanges:Array<UnlocalizedStartEnd>,
-            openModPositionOverride:OpenModPosition_DataType
+            openModPositionOverride:OpenModPosition_DataType,
+            reportedPeptideIds:Array<number>
         }
     ) {
         this._peptideString = peptideString;
@@ -1074,6 +1160,7 @@ class PeptideDataForModProteinSearch {
         this._modMass = modMass;
         this._unlocalizedPositionRanges = unlocalizedPositionRanges;
         this._openModPositionOverride = openModPositionOverride;
+        this._reportedPeptideIds = reportedPeptideIds;
     }
 
 
@@ -1107,6 +1194,10 @@ class PeptideDataForModProteinSearch {
 
     get openModPositionOverride(): OpenModPosition_DataType {
         return this._openModPositionOverride;
+    }
+
+    get reportedPeptideIds(): Array<number> {
+        return this._reportedPeptideIds;
     }
 }
 

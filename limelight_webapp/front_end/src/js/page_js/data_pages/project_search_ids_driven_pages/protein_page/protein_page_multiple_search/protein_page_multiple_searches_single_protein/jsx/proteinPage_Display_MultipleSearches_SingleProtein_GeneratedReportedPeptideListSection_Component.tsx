@@ -31,6 +31,7 @@ import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchI
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {
     createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein,
+    CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function,
     GetDataTableDataObjects_MultipleSearch_SingleProtein_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
 
@@ -57,6 +58,9 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedRep
     showUpdatingMessage : boolean 
     showGettingDataMessage : boolean
     showProteins? : boolean  // For Peptide Page
+
+    //  Required when showProteins is true.  For Peptide Page
+    proteinName_Clicked_Callback_Function? : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function
 
     // For Peptide Page
     downloadPeptides_Shown_ClickHandler? : ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
@@ -163,6 +167,15 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReporte
      */    
     render() {
 
+        //  Validate props
+        if ( this.props.showProteins  // For Peptide Page
+            && ( ! this.props.proteinName_Clicked_Callback_Function ) ) {  //  Required when showProteins is true.  For Peptide Page
+
+            const msg = "( this.props.showProteins && ( ! this.props.proteinName_Clicked_Callback_Function ) )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
         let updatingMessage = undefined;
         let gettingDataMessage = undefined;
 
@@ -200,6 +213,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReporte
                         dataPageStateManager={ this.props.dataPageStateManager }
                         showUpdatingMessage={ this.props.showUpdatingMessage }
                         showProteins={ this.props.showProteins }
+                        proteinName_Clicked_Callback_Function={ this.props.proteinName_Clicked_Callback_Function }
                         downloadPeptides_Shown_ClickHandler={ this.props.downloadPeptides_Shown_ClickHandler }
                         downloadPsms_Shown_ClickHandler={ this.props.downloadPsms_Shown_ClickHandler }
                     />
@@ -233,6 +247,9 @@ export interface ReportedPeptideList_Component_Props {
     dataPageStateManager : DataPageStateManager
     showUpdatingMessage : boolean
     showProteins? : boolean  // For Peptide Page
+
+    //  Required when showProteins is true.  For Peptide Page
+    proteinName_Clicked_Callback_Function? : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function
 
     downloadPeptides_Shown_ClickHandler : ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
     downloadPsms_Shown_ClickHandler : ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
@@ -291,6 +308,15 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
      */    
     render() {
 
+        //  Validate props
+        if ( this.props.showProteins  // For Peptide Page
+            && ( ! this.props.proteinName_Clicked_Callback_Function ) ) {  //  Required when showProteins is true.  For Peptide Page
+
+            const msg = "( this.props.showProteins && ( ! this.props.proteinName_Clicked_Callback_Function ) )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
         const getDataTableDataObjects_Result : GetDataTableDataObjects_MultipleSearch_SingleProtein_Result = createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein({ //  External Function
 
             create_GeneratedReportedPeptideListData_Result : this.props.create_GeneratedReportedPeptideListData_Result,
@@ -298,13 +324,13 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
             searchSubGroup_Ids_Selected : this.props.searchSubGroup_Ids_Selected,
 
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-            proteinSequenceVersionId : this.props.proteinSequenceVersionId,
             projectSearchIds : this.props.projectSearchIds,
             searchDataLookupParamsRoot : this.props.searchDataLookupParamsRoot,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder : this.props.loadedDataCommonHolder,
             dataPageStateManager : this.props.dataPageStateManager,
-            showProteins : this.props.showProteins
+            showProteins : this.props.showProteins,
+            proteinName_Clicked_Callback_Function : this.props.proteinName_Clicked_Callback_Function
         });
 
         const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;

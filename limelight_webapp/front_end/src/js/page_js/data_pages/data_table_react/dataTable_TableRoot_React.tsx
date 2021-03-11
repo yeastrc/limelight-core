@@ -97,6 +97,8 @@ interface DataTable_TableRoot_State {
     sortColumnsInfo? : Array<DataTable_INTERNAL_SortColumnsInfoEntry>
     show_updatingTableOrder_Message? : boolean
 
+    show_updatingTable_Message? : boolean
+
     searchInputValue_CurrentValue? : string
     showItemsPerPage_SelectValue? : number
 
@@ -244,6 +246,10 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         if ( this.state.show_updatingTableOrder_Message !== nextState.show_updatingTableOrder_Message ) {
             return true;
         }
+        if ( this.state.show_updatingTable_Message !== nextState.show_updatingTable_Message ) {
+            return true;
+        }
+
         if ( this.state.searchInputValue_CurrentValue !== nextState.searchInputValue_CurrentValue ) {
             return true;
         }
@@ -268,30 +274,53 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         //  !!!!  IMPORTANT: If restore this code, it NEEDS to use the size of the current page, not the size of all table rows like it does now.
 
-        // const displayUpdatingMsg_TriggerMinLength = 300;
-        //
-        // if ( this.props.tableObject.tableDataObject.dataTable_DataRowEntries && this.props.tableObject.tableDataObject.dataTable_DataRowEntries.length > displayUpdatingMsg_TriggerMinLength ) {
-        //
-        //     displayUpdatingMsg = true;
-        // }
-        //
-        // if ( this.props.tableObject.tableDataObject.dataTable_DataGroupRowEntries && this.props.tableObject.tableDataObject.dataTable_DataGroupRowEntries.length > 0 ) {
-        //
-        //     //  Get Total count of dataTable_DataRowEntries
-        //
-        //     let dataTable_DataRowEntries_TotalCount = 0;
-        //
-        //     for ( const dataTable_DataGroupRowEntry of this.props.tableObject.tableDataObject.dataTable_DataGroupRowEntries ) {
-        //         if ( dataTable_DataGroupRowEntry.dataTable_DataRowEntries && dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length > 0 ) {
-        //
-        //             dataTable_DataRowEntries_TotalCount += dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length;
-        //         }
-        //     }
-        //     if ( dataTable_DataRowEntries_TotalCount > displayUpdatingMsg_TriggerMinLength ) {
-        //
-        //         displayUpdatingMsg = true;
-        //     }
-        // }
+        const displayUpdatingMsg_TriggerMinLength = 300;
+
+        try {
+
+            const pagedIndex = this.state.currentPage_CurrentValue - 1; // change from 1 based to zero based.
+
+            const dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged = this.state.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged;
+
+            if (dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged && dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged.length > 0) {
+
+                const dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry =
+                    dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged[pagedIndex];
+
+                if (dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry) {
+
+                    let dataRowsInGroups = 0;
+
+                    for ( const dataTable_INTERNAL_DataGroupRowEntry of dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry.dataTable_INTERNAL_DataGroupRowEntries ) {
+
+                        dataRowsInGroups += dataTable_INTERNAL_DataGroupRowEntry.dataTable_DataRowEntries__INTERNAL.length;
+                    }
+
+                    if ( dataRowsInGroups > displayUpdatingMsg_TriggerMinLength) {
+
+                        displayUpdatingMsg = true;
+                    }
+                }
+            }
+
+            const dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged = this.state.tableDataObject_INTERNAL.dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged;
+
+            if (dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged && dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged.length > 0) {
+
+                const dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry =
+                    dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged[pagedIndex];
+
+                if (dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry
+                    && dataTable_DataRowEntries__INTERNAL_CurrentlyShowing_Paged_Entry.dataTable_INTERNAL_DataRowEntries.length > displayUpdatingMsg_TriggerMinLength) {
+
+                    displayUpdatingMsg = true;
+                }
+            }
+
+        } catch (e) {
+            var zNOTHING = 0;
+            //  Eat exception
+        }
 
         if ( displayUpdatingMsg ) {
 
@@ -452,6 +481,36 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
      * @private
      */
     private _showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback( newValue : number ) : void {
+
+        if ( newValue > 100 || newValue === DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL
+            || this.state.showItemsPerPage_SelectValue > 100 || this.state.showItemsPerPage_SelectValue === DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL ) {
+
+            //  Show updating message then perform main update
+
+            this.setState({ show_updatingTable_Message: true });
+
+            window.setTimeout( () => {
+
+                this.setState({ show_updatingTable_Message: false });
+
+                this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback__MainPart( newValue );
+            })
+
+        } else {
+
+            // main update immediately
+            this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback__MainPart(newValue);
+        }
+
+    }
+
+
+    /**
+     *
+     * @param newValue
+     * @private
+     */
+    private _showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback__MainPart( newValue : number ) : void {
 
         this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
 
@@ -945,18 +1004,6 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             }
         }
 
-        let updatingTableOrder_Message : JSX.Element = undefined;
-
-        if ( this.state.show_updatingTableOrder_Message ) {
-
-            updatingTableOrder_Message = (
-
-                <div className=" block-updating-overlay-container " >
-                    Updating Table Order
-                </div>
-            )
-        }
-
         return (
             <React.Fragment>
                 <div className={ divCssClass }  style={ { position: "relative" }} data-react-component="DataTable_TableRoot">
@@ -1049,8 +1096,22 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                         ) : (
                         dataRows
                     )}
-                    { updatingTableOrder_Message }
-                
+
+                    { ( this.state.show_updatingTableOrder_Message ) ? (
+
+                        <div className=" block-updating-overlay-container " >
+                            Updating Table Order
+                        </div>
+                    ) : null }
+
+                    { ( this.state.show_updatingTable_Message ) ? (
+
+                        <div className=" block-updating-overlay-container " >
+                            Updating Table
+                        </div>
+                    ) : null }
+
+
                 </div>
                 <br />  {/* <br/> Added since <div> before it has 'display: inline-block' in CSS class data-table-container-react */}
             </React.Fragment>

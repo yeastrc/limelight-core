@@ -43,7 +43,7 @@ export class ProteinList_CentralStateManagerObjectClass {
 
 	private _value : { 
 		groupProteins_OLD_V1? : any //  OLD V1 value for groupProteins.  Only here for Backwards compatibility.   Now Handled in proteinGrouping_CentralStateManagerObjectClass.ts.
-		generatedPeptideContentsSelectedEncodedStateData? : any
+		generatedPeptideContentsSelectedEncodedStateData? : any  //  Used on Single Protein. Saved here for continuity from view Single Protein to next view Single Protein
 	};
 
 	private _centralPageStateManager : CentralPageStateManager;

@@ -12,6 +12,7 @@ import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 export class ModViewDataManager {
 
@@ -21,6 +22,7 @@ export class ModViewDataManager {
     private readonly _scanModData : Map<number, object>;
 
     private readonly _proteinData : Map<number, Map<number, Protein>>;  // keyed on search id then protein version id
+    private readonly _proteinSequences : Map<number, string>;   // cached sequences for protein sequence version ids
 
     private readonly _psmsForModMasses : Map<number, Map<number, Array<any>>>;
 
@@ -46,6 +48,7 @@ export class ModViewDataManager {
         this._proteinData = new Map();
         this._openModPsmsForModMassReportedPeptideId = new Map();
         this._scanInfoForPsms = new Map();
+        this._proteinSequences = new Map();
 
         this._searchDetailsProjectMap = new Map();
         for(const searchDetails of searchDataLookupParameters_Root.paramsForProjectSearchIds.paramsForProjectSearchIdsList) {
@@ -60,6 +63,29 @@ export class ModViewDataManager {
 
     get searchDataLookupParameters_Root(): SearchDataLookupParameters_Root {
         return this._searchDataLookupParameters_Root;
+    }
+
+    async getProteinSequence({projectSearchId, proteinSequenceVersionId}:{projectSearchId:number, proteinSequenceVersionId:number}) {
+
+        // have to go get the data
+        if(!(this._proteinSequences.has(proteinSequenceVersionId))) {
+            const response: any = await this._dataLoader.getProteinSequencesForProjectSearchId({
+                proteinSequenceVersionIds: [proteinSequenceVersionId],
+                projectSearchId
+            });
+
+            for(const proteinSequenceVersionId of Object.keys(response)) {
+                this._proteinSequences.set(parseInt(proteinSequenceVersionId), response[proteinSequenceVersionId].sequence);
+            }
+        }
+
+        if(!(this._proteinSequences.has(proteinSequenceVersionId))) {
+            const e = new Error("Could not find sequence for proteinSequenceVersionId: " + proteinSequenceVersionId);
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+
+        return this._proteinSequences.get(proteinSequenceVersionId);
     }
 
     async getReportedPeptides({projectSearchId}:{projectSearchId:number}): Promise<Map<number, ReportedPeptide>> {

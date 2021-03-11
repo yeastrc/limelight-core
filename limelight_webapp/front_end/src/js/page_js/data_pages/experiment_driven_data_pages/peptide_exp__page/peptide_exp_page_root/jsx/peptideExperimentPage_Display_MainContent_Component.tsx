@@ -1886,8 +1886,6 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
             window.setTimeout( () => {
                 try {
-                    this._selected_generatedPeptideContents_UserSelections_Change_UpdateURL();
-
                     if ( ( this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
                         || this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() )
                         && this._load_PsmOpenModificationMasses_InProgress ) {
@@ -2030,15 +2028,6 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
         const encodedStateData = this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper.getEncodedStateData();
         this.props.propsValue.peptideExperimentPageRoot_CentralStateManagerObjectClass.set_proteinPositionFilter_UserSelections_EncodedStateData({ proteinPositionFilter_UserSelections_EncodedStateData : encodedStateData });
-    }
-
-    /**
-     * Update State to URL for Generated Peptide Contents selection change
-     */
-    _selected_generatedPeptideContents_UserSelections_Change_UpdateURL() {
-
-        const encodedStateData = this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
-        this.props.propsValue.peptideExperimentPageRoot_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
     }
 
     ////////////////////////////////////////

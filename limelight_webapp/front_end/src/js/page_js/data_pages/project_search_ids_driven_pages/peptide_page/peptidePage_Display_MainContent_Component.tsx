@@ -110,6 +110,8 @@ import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "
 import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
 import {
     createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein,
+    CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function,
+    CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function_Params,
     GetDataTableDataObjects_MultipleSearch_SingleProtein_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
 import {DataTable_RootTableObject} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
@@ -121,6 +123,13 @@ import {get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_L
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
+import {
+    ProteinPage_Display_MultipleSearches_SingleProtein,
+    ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
+import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
+import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
+import {getpeptidePage_Display_MainContent_Component__UpdatingOverlay} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/peptidePage_Display_MainContent_Component__Loading_UpdatingOverlays";
 
 
 /////////////////////////
@@ -147,6 +156,7 @@ export class PeptidePage_Display_MainContent_Component_Props_Prop {
     dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
     searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 
+    centralPageStateManager: CentralPageStateManager
     searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     peptidePageRoot_CentralStateManagerObjectClass: PeptidePageRoot_CentralStateManagerObjectClass
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
@@ -157,6 +167,9 @@ export class PeptidePage_Display_MainContent_Component_Props_Prop {
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
 
     generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
+
+    singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
+    generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay : GeneratedPeptideContents_UserSelections_StateObject
     
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
 }
@@ -225,6 +238,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
 
+    private _proteinName_Clicked_Callback_Function_BindThis = this._proteinName_Clicked_Callback_Function.bind(this);
+
     // private _downloadPeptides_All_ClickHandler_BindThis = this._downloadPeptides_All_ClickHandler.bind(this);
     private _downloadPeptides_Shown_ClickHandler_BindThis = this._downloadPeptides_Shown_ClickHandler.bind(this);
     // private _downloadPsms_All_ClickHandler_BindThis = this._downloadPsms_All_ClickHandler.bind(this);
@@ -233,6 +248,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     private _NOT_CALLED_Function() {
 
         //  Test function cast
+
+
+        //  Required when showProteins is true.  For Peptide Page
+        const proteinName_Clicked_Callback_Function : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function = this._proteinName_Clicked_Callback_Function;
+
 
         const downloadPeptides_Shown_ClickHandler_CastTest : ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback = this._downloadPeptides_Shown_ClickHandler;
         const downloadPsms_All_ClickHandler_CastTest : ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback = this._downloadPsms_Shown_ClickHandler;
@@ -264,6 +284,12 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
     private _proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component>
+
+    private _proteinViewPage_Display_MultipleSearches_SingleProtein: ProteinPage_Display_MultipleSearches_SingleProtein;
+
+    private _subGroupSelection_WhenOpened_SingleProteinOverlay : Set<number>;
+
+    private _Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay : boolean;
 
     /**
      * 
@@ -317,7 +343,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         try {
             window.setTimeout( () => {
                 try {
-                    this._recompute_FullPage_Except_SearchDetails({ initialPageLoad: true });
+                    this._runOnPageLoad();
 
                 } catch( e ) {
                     console.warn("Exception caught in componentDidMount inside setTimeout");
@@ -348,6 +374,37 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 	// 		throw e;
 	// 	}
     // }
+
+    /**
+     *  Run on Page Load.  call from componentDidMount
+     */
+    private _runOnPageLoad() {
+
+        if (this.props.propsValue.singleProtein_CentralStateManagerObject) {
+            //  If Have Single Protein to display in URL, Immediately hide the Main Display <div id="data_page_overall_enclosing_block_div" >
+
+            const proteinSequenceVersionId_FromURL = this.props.propsValue.singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
+
+            if (proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null) {
+                //  Have proteinSequenceVersionId_FromURL so going to display Single Protein Overlay
+
+                //  Hide Main Div inside of header/footer
+                const data_page_overall_enclosing_block_divDOM = document.getElementById("data_page_overall_enclosing_block_div");
+                if (!data_page_overall_enclosing_block_divDOM) {
+                    const msg = "No element on DOM with id 'data_page_overall_enclosing_block_div'";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                data_page_overall_enclosing_block_divDOM.style.display = "none";
+
+                if (!this._proteinViewPage_Display_MultipleSearches_SingleProtein) {
+                    this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY: undefined});
+                }
+                this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay_OnlyLoadingMessage();
+            }
+        }
+        this._recompute_FullPage_Except_SearchDetails({ initialPageLoad: true });
+    }
 
     /**
      *
@@ -425,7 +482,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 }
 
                 if ( promises_Load_.length === 0 ) {
-                    this._recompute_FullPage_Except_SearchDetails__SubPart({
+                    this._recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain({
                         initialPageLoad,
                         proteinPositionFilter_UserSelections_StateObject_Wrapper,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -438,7 +495,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     })
                     promiseAll.then( (result) => {
                         try {
-                            this._recompute_FullPage_Except_SearchDetails__SubPart({
+                            this._recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain({
                                 initialPageLoad,
                                 proteinPositionFilter_UserSelections_StateObject_Wrapper,
                                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -460,7 +517,70 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     //////
 
-    private _recompute_FullPage_Except_SearchDetails__SubPart(
+    /**
+     *
+     * @param initialPageLoad
+     * @param proteinPositionFilter_UserSelections_StateObject_Wrapper
+     * @param loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+     * @param loadedDataCommonHolder
+     * @private
+     */
+    private _recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain(
+        {
+            initialPageLoad,
+            proteinPositionFilter_UserSelections_StateObject_Wrapper,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+            loadedDataCommonHolder
+        } : {
+            initialPageLoad : boolean
+            proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+            loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+        }
+    ) : void {
+        const proteinSequenceVersionId_FromURL = this.props.propsValue.singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
+
+        if (proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null) {
+            //  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
+            this._singleProteinRowShowSingleProteinOverlay({
+                proteinSequenceVersionId: proteinSequenceVersionId_FromURL,
+                loadedDataCommonHolder,
+                loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+            });
+
+            //  Delay render Peptide List since currently hidden.  Probably could skip render until close Single Protein Overlay
+            window.setTimeout(() => {
+
+                this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
+                    initialPageLoad,
+                    proteinPositionFilter_UserSelections_StateObject_Wrapper,
+                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+                    loadedDataCommonHolder
+                });
+            }, 2000);
+
+        } else {
+
+            //  render Peptide List immediately
+
+            this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
+                initialPageLoad,
+                proteinPositionFilter_UserSelections_StateObject_Wrapper,
+                loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+                loadedDataCommonHolder
+            });
+        }
+    }
+
+    /**
+     *
+     * @param initialPageLoad
+     * @param proteinPositionFilter_UserSelections_StateObject_Wrapper
+     * @param loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+     * @param loadedDataCommonHolder
+     * @private
+     */
+    private _recompute_FullPage_Except_SearchDetails__SubPart_Main(
         {
             initialPageLoad,
             proteinPositionFilter_UserSelections_StateObject_Wrapper,
@@ -636,6 +756,274 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         });
     }
 
+    /**
+     *
+     */
+    private _proteinName_Clicked_Callback_Function( params : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function_Params ) {
+
+        const proteinSequenceVersionId = params.proteinSequenceVersionId;
+
+        if (params.ctrlKey_From_ClickEvent || params.metaKey_From_ClickEvent) {
+
+            // User held CTRL key or Meta key (Mac Command key) when clicking on protein name so open in new window
+
+            this._singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId});
+
+            return; // EARLY RETURN
+        }
+
+        //  Push current state on to Browser History before update for Single Protein
+
+        window.history.pushState( {}, "" );
+
+        this.props.propsValue.singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({proteinSequenceVersionId});
+
+        this._singleProteinRowShowSingleProteinOverlay({
+            proteinSequenceVersionId,
+            loadedDataCommonHolder: this.state.loadedDataCommonHolder,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+        });
+    }
+
+    /**
+     *
+     */
+    private _singleProteinRowShowSingleProteinNewWindow({proteinSequenceVersionId}: {proteinSequenceVersionId: number}) {
+
+        //  Create URL for new Window about to open
+
+        //  Create to override the value of proteinSequenceVersionId from the URL
+        const singleProtein_CentralStateManagerObjectClass_ForNewWindow = new SingleProtein_CentralStateManagerObjectClass({
+            initialProteinSequenceVersionId: proteinSequenceVersionId,
+            centralPageStateManager: undefined
+        });
+
+        const newWindowURL = this.props.propsValue.centralPageStateManager.getURL_ForCurrentState({componentOverridesAdditions: [singleProtein_CentralStateManagerObjectClass_ForNewWindow]})
+
+        // MUST open window before make AJAX Call.  This is a Browser Security requirement
+        //  window.open(...): Must run in code directly triggered by click event
+
+        const newWindow = window.open(newWindowURL, "_blank");
+    }
+
+    /**
+     *
+     */
+    private _singleProteinRowShowSingleProteinOverlay(
+        {
+            proteinSequenceVersionId,
+
+            //  Pass to here since not in state yet for show Single Protein overlay on Page load
+            loadedDataCommonHolder,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+
+        }: {
+            proteinSequenceVersionId: number
+
+            //  Pass to here since not in state yet for show Single Protein overlay on Page load
+            loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
+
+        }) : void {
+
+        // const proteinNameDescription = this._proteinNameDescription_Key_ProteinSequenceVersionId.get(proteinSequenceVersionId);
+        // if (proteinNameDescription === undefined) {
+        //     return "Description Not Found";
+        // }
+        //
+        // const proteinNameDescriptionParam = {name: proteinNameDescription.name, description: proteinNameDescription.description};
+
+        this.props.propsValue.singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({ proteinSequenceVersionId });
+
+        //  Current Window Scroll position
+        const currentWindowScrollY = window.scrollY;
+
+        //  Hide Main Div inside of header/footer
+        const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
+        $data_page_overall_enclosing_block_div.hide();
+
+        if (!this._proteinViewPage_Display_MultipleSearches_SingleProtein) {
+            this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY});
+        }
+
+        {  //  save off selected "Treat Mass 0 As Unmodified:" before open Single Protein
+
+            if ( this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+                this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay = true;
+            } else {
+                this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay = false;
+            }
+        }
+        {  //  save off selected Sub Groups before open Single Protein
+
+            const projectSearchIds = this.props.propsValue.projectSearchIds;
+            const searchSubGroups_Root = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root()
+
+            if ( projectSearchIds.length === 1 && searchSubGroups_Root ) {
+
+                // Have Single projectSearchId and searchSubGroups_Root
+
+                const projectSearchId = projectSearchIds[0];
+                const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId(projectSearchId);
+                if (searchSubGroups_ForProjectSearchId) {
+
+                    this._subGroupSelection_WhenOpened_SingleProteinOverlay = searchSubGroup_Get_Selected_SearchSubGroupIds({
+                        searchSubGroup_CentralStateManagerObjectClass: this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+                        searchSubGroups_ForProjectSearchId
+                    });
+                }
+            }
+        }
+
+
+        this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
+            proteinSequenceVersionId,
+            generatedPeptideContents_UserSelections_StateObject: this.props.propsValue.generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay,
+            proteinNameDescription: null, // Let Single Protein compute it
+
+            //  Pass Here since for sure populated by here
+            loadedDataCommonHolder,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+        });
+    }
+
+    /**
+     * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
+     */
+    private _instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY}: {currentWindowScrollY: number}) {
+
+        //  Create callback function to call on single protein close
+
+        const singleProteinCloseCallback : ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback = () : void => {
+
+            this._singleProteinCloseCallback_CalledFromInlineFunction({ currentWindowScrollY });
+        }
+
+        this._proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinPage_Display_MultipleSearches_SingleProtein({
+
+            forPeptidePage: true,
+
+            singleProteinCloseCallback,
+
+            loadedDataCommonHolder: this.state.loadedDataCommonHolder,
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+
+            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+            dataPageStateManager_DataFrom_Server: this.props.propsValue.dataPageStateManager,
+            searchDetailsBlockDataMgmtProcessing: this.props.propsValue.searchDetailsBlockDataMgmtProcessing,
+            projectSearchIds: this.props.propsValue.projectSearchIds,
+            searchDataLookupParamsRoot: this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_searchDetailsCriteriaData(),
+            singleProtein_CentralStateManagerObject: this.props.propsValue.singleProtein_CentralStateManagerObject,
+            dataPages_LoggedInUser_CommonObjectsFactory: this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory,
+
+            searchSubGroup_CentralStateManagerObjectClass: this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        });
+    }
+
+    /**
+     *
+     */
+    private _singleProteinCloseCallback_CalledFromInlineFunction({ currentWindowScrollY } : { currentWindowScrollY : number }) : void {
+
+        //  Show Main Div inside of header/footer
+        const data_page_overall_enclosing_block_divDOM = document.getElementById("data_page_overall_enclosing_block_div");
+        if (!data_page_overall_enclosing_block_divDOM) {
+            const msg = "No element on DOM with id 'data_page_overall_enclosing_block_div'";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        data_page_overall_enclosing_block_divDOM.style.display = "";
+
+        this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
+
+        let subGroupSelection_Changed = false; // True if subGroupSelection Changed
+
+        if ( this._subGroupSelection_WhenOpened_SingleProteinOverlay ) {
+
+            {  //  save off selected Sub Groups before open Single Protein
+
+                const projectSearchIds = this.props.propsValue.projectSearchIds;
+                const searchSubGroups_Root = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root()
+
+                if ( projectSearchIds.length === 1 && searchSubGroups_Root ) {
+
+                    // Have Single projectSearchId and searchSubGroups_Root
+
+                    const projectSearchId = projectSearchIds[0];
+                    const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId(projectSearchId);
+                    if (searchSubGroups_ForProjectSearchId) {
+
+                        const searchSubGroup_Ids_Selected_Current = searchSubGroup_Get_Selected_SearchSubGroupIds({
+                            searchSubGroup_CentralStateManagerObjectClass: this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+                            searchSubGroups_ForProjectSearchId
+                        })
+
+                        if (this._subGroupSelection_WhenOpened_SingleProteinOverlay.size !== searchSubGroup_Ids_Selected_Current.size) {
+
+                            subGroupSelection_Changed = true;
+                        } else {
+
+                            for (const searchSubGroup_Id of this._subGroupSelection_WhenOpened_SingleProteinOverlay) {
+                                if (!searchSubGroup_Ids_Selected_Current.has(searchSubGroup_Id)) {
+                                    subGroupSelection_Changed = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        this._subGroupSelection_WhenOpened_SingleProteinOverlay = undefined;
+
+        let Treat_Mass_0_As_Unmod_Selection_Changed = false;
+
+        if (
+            ( ( this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() )
+            && ( ! this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay ) )
+            ||  ( ( ! this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() )
+            && ( this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay ) ) ) {
+
+            Treat_Mass_0_As_Unmod_Selection_Changed = true;
+        }
+
+        if ( subGroupSelection_Changed || Treat_Mass_0_As_Unmod_Selection_Changed  ) {
+
+            //  Show Updating Overlay with Spinner then run rest in setTimeout
+
+            const overlayComponent = getpeptidePage_Display_MainContent_Component__UpdatingOverlay();
+
+            const overlayComponent_Overlay =
+                limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
+
+            window.setTimeout( () => {
+
+                overlayComponent_Overlay.removeContents_AndContainer_FromDOM();
+
+                this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
+                    initialPageLoad: false,
+                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+                    loadedDataCommonHolder: this.state.loadedDataCommonHolder,
+                    proteinPositionFilter_UserSelections_StateObject_Wrapper: this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
+                });
+            }, 10 )
+
+        }  else {
+
+
+            if (currentWindowScrollY && (!subGroupSelection_Changed) && (!Treat_Mass_0_As_Unmod_Selection_Changed)) {
+
+                //  Scroll window down to original position when protein was clicked to open Single Protein view
+
+                window.scrollTo({top: currentWindowScrollY});
+            }
+        }
+    }
+
+
+
     //  NOT CURRENTLY USED.  May be OUT OF DATE
 
 	// /**
@@ -753,13 +1141,13 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             searchSubGroup_Ids_Selected : searchSubGroup_Ids_Selected,
 
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList,
-            proteinSequenceVersionId : null,
             projectSearchIds : this.props.propsValue.projectSearchIds,
             searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder : this.state.loadedDataCommonHolder,
             dataPageStateManager : this.props.propsValue.dataPageStateManager,
-            showProteins : true
+            showProteins : true,
+            proteinName_Clicked_Callback_Function : null
         });
 
         const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;
@@ -1985,8 +2373,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             window.setTimeout( () => {
                 try {
-                    this._selected_generatedPeptideContents_UserSelections_Change_UpdateURL();
-
                     if ( ( this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
                         || this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() )
                         && this._load_PsmOpenModificationMasses_InProgress ) {
@@ -2129,15 +2515,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         const encodedStateData = this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper.getEncodedStateData();
         this.props.propsValue.peptidePageRoot_CentralStateManagerObjectClass.set_proteinPositionFilter_UserSelections_EncodedStateData({ proteinPositionFilter_UserSelections_EncodedStateData : encodedStateData });
-    }
-
-    /**
-     * Update State to URL for Generated Peptide Contents selection change
-     */
-    _selected_generatedPeptideContents_UserSelections_Change_UpdateURL() {
-
-        const encodedStateData = this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
-        this.props.propsValue.peptidePageRoot_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
     }
 
     ////////////////////////////////////////
@@ -2461,6 +2838,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                                 showProteins={ true }
 
+                                proteinName_Clicked_Callback_Function={ this._proteinName_Clicked_Callback_Function_BindThis }
+
                                 showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                                 showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
 
@@ -2582,5 +2961,3 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     }
 
 }
-
-

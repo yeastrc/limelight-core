@@ -128,7 +128,13 @@ export class ProteinExperimentPage_RootClass_Common {
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
 			new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager: this._centralPageStateManager });
 
-		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject();
+
+		const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = () : void => {
+
+			const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
+			this._proteinList_ExpPage_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
+		}
+		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : generatedPeptideContents_UserSelections_StateObject_valueChangedCallback });
 
 		// this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 		// this._searchColors_CentralStateManagerObject = new SearchColorManager( { centralPageStateManager : this._centralPageStateManager } );

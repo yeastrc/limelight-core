@@ -1,6 +1,7 @@
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 
 export class ModViewDataUtilities {
@@ -258,6 +259,149 @@ export class ModViewDataUtilities {
         }
 
         return false;
+    }
+
+    /**
+     * Get the n-terminal residue(s) (single letter amino acid code) in the sequence for this protein for this reported peptide id.
+     * This is based on the mapping of this peptide to this protein from the database, not a direct
+     * string match. If this peptide is found in multiple places in this same protein, all unique
+     * n-terminal residues are returned. If there is no n-terminal residue (peptide is n-terminal)
+     * in the protein, 'n' will be returned as the residue.
+     *
+     * @param projectSearchId
+     * @param proteinSequenceVersionId
+     * @param reportedPeptideId
+     */
+    static async getPreResidueForPeptideProtein(
+        {
+            projectSearchId,
+            proteinSequenceVersionId,
+            reportedPeptideIds,
+            modViewDataManager
+        } : {
+            projectSearchId:number,
+            proteinSequenceVersionId:number,
+            reportedPeptideIds:Array<number>,
+            modViewDataManager:ModViewDataManager
+        }
+    ):Promise<Array<string>> {
+
+        const proteinSequence = await modViewDataManager.getProteinSequence({projectSearchId, proteinSequenceVersionId});
+        const reportedPeptides = await modViewDataManager.getReportedPeptides({projectSearchId});
+
+        const residuesSet:Set<string> = new Set();
+        let isNTerminal = false;
+
+        for(const reportedPeptideId of reportedPeptideIds) {
+            const reportedPeptide = reportedPeptides.get(reportedPeptideId);
+
+
+            // this reported peptide wasn't found.
+            if (!reportedPeptide) {
+                const error = new Error("Could not find reported peptide in the supplied search.");
+                reportWebErrorToServer.reportErrorObjectToServer({errorException: error});
+                throw(error);
+            }
+
+            if (reportedPeptide.proteinMatches.has(proteinSequenceVersionId)) {
+
+                for (const position of reportedPeptide.proteinMatches.get(proteinSequenceVersionId)) {
+
+                    if (position !== 1) {
+                        residuesSet.add(proteinSequence.substring(position - 2, position - 1));
+                    } else {
+                        isNTerminal = true;
+                    }
+                }
+
+            } else {
+
+                const error = new Error("Could not find reported peptide in supplied protein.");
+                reportWebErrorToServer.reportErrorObjectToServer({errorException: error});
+                throw(error);
+            }
+        }
+
+
+        const residues:Array<string> = Array.from(residuesSet).sort();
+        if(isNTerminal) {
+            residues.unshift('n');
+        }
+
+        return residues;
+    }
+
+
+    /**
+     * Get the c-terminal residue(s) (single letter amino acid code) in the sequence for this protein for this reported peptide id.
+     * This is based on the mapping of this peptide to this protein from the database, not a direct
+     * string match. If this peptide is found in multiple places in this same protein, all unique
+     * c-terminal residues are returned. If there is no c-terminal residue (peptide is c-terminal)
+     * in the protein, 'c' will be returned as the residue.
+     *
+     * @param projectSearchId
+     * @param proteinSequenceVersionId
+     * @param reportedPeptideId
+     */
+    static async getPostResidueForPeptideProtein(
+        {
+            projectSearchId,
+            proteinSequenceVersionId,
+            reportedPeptideIds,
+            modViewDataManager
+        } : {
+            projectSearchId:number,
+            proteinSequenceVersionId:number,
+            reportedPeptideIds:Array<number>,
+            modViewDataManager:ModViewDataManager
+        }
+    ):Promise<Array<string>> {
+
+        const proteinSequence = await modViewDataManager.getProteinSequence({projectSearchId, proteinSequenceVersionId});
+        const reportedPeptides = await modViewDataManager.getReportedPeptides({projectSearchId});
+
+        const residuesSet:Set<string> = new Set();
+        let isCTerminal = false;
+
+        for(const reportedPeptideId of reportedPeptideIds) {
+
+            const reportedPeptide = reportedPeptides.get(reportedPeptideId);
+
+            // this reported peptide wasn't found.
+            if (!reportedPeptide) {
+                const error = new Error("Could not find reported peptide in the supplied search.");
+                reportWebErrorToServer.reportErrorObjectToServer({errorException: error});
+                throw(error);
+            }
+
+            if (reportedPeptide.proteinMatches.has(proteinSequenceVersionId)) {
+
+                const peptideLength = reportedPeptide.sequence.length;
+
+                for (const position of reportedPeptide.proteinMatches.get(proteinSequenceVersionId)) {
+
+                    if (position <= proteinSequence.length - peptideLength + 1) {
+                        residuesSet.add(proteinSequence.substring(position + peptideLength - 1, position + peptideLength));
+                    } else {
+                        isCTerminal = true;
+                    }
+
+                }
+
+            } else {
+
+                const error = new Error("Could not find reported peptide in supplied protein.");
+                reportWebErrorToServer.reportErrorObjectToServer({errorException: error});
+                throw(error);
+            }
+        }
+
+        const residues:Array<string> = Array.from(residuesSet).sort();
+        if(isCTerminal) {
+            residues.push('c');
+        }
+
+        return residues;
     }
 
 }

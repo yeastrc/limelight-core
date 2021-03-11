@@ -113,7 +113,14 @@ export class ProteinViewPage_RootClass_Common {
 		this._singleProtein_CentralStateManagerObject = new SingleProtein_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined } );
 		this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 		this._proteinGrouping_CentralStateManagerObjectClass = new ProteinGrouping_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager, proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass });
-		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject();
+
+		const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = () : void => {
+
+			const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
+			this._proteinList_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
+		}
+		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : generatedPeptideContents_UserSelections_StateObject_valueChangedCallback });
+
 
 		//  Instances of class DataPageStateManager
 		
