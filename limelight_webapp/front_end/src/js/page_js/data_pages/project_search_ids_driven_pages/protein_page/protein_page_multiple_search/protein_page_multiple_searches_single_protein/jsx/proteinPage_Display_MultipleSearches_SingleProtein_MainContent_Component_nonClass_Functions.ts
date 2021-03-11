@@ -265,6 +265,11 @@ const compute_searchSubGroup_Ids_Selected = function (
         propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
     }) :  Set<number>
 {
+    if ( ! propsValue.searchSubGroup_CentralStateManagerObjectClass ) {
+        // If NO Page State Object, nothing can be selected
+        return undefined;
+    }
+
     let searchSubGroup_Ids_Selected : Set<number> = undefined;
 
     if ( propsValue.projectSearchIds.length === 1 && propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
@@ -334,7 +339,10 @@ const compute_searchSubGroup_PropValue = function (
 
     let searchSubGroup_PropValue: SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData = null;
 
-    if ( propsValue.projectSearchIds.length === 1 && propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+    if (
+        propsValue.searchSubGroup_CentralStateManagerObjectClass
+        && propsValue.projectSearchIds.length === 1
+        && propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
 
         //  Only display for 1 search
 

@@ -22,6 +22,11 @@ export const searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn = function (
     searchSubGroups_ForProjectSearchId: SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry
 }) : boolean {
 
+    if ( ! searchSubGroup_CentralStateManagerObjectClass ) {
+
+        return true;
+    }
+
     if ( searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
 
         return false;

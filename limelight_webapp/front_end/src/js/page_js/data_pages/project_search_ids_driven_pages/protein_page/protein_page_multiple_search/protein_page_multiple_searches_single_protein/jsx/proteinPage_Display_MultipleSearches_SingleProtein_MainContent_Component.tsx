@@ -2407,7 +2407,10 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
         let searchSubGroup_Ids_Selected : Set<number> = undefined;
 
-        if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+        if (
+            this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass
+            && this.props.propsValue.projectSearchIds.length === 1 &&
+            this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
 
             //  Only display for 1 search
 
