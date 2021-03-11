@@ -1,0 +1,8 @@
+
+/.idea/
+/Gemfile
+/.jekyll-cache/
+/_site/
+/Gemfile.lock
+
+/how_to_build.txt

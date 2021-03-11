@@ -1,0 +1,34 @@
+# ----------------------- #
+#      Main Configs       #
+# ----------------------- #
+
+url: http://yoursite.com
+title: limelight
+email: limelight-help@yeastrc.org
+author: Michael Riffle
+description: > # "Write an awesome description for your new site here. 
+  Limelight is a platform for analyzing, visualizing, and sharing mass spectrometry proteomics data.
+copyright: 'Copyright &copy; 2021 Michael Riffle. All Rights Reserved.'
+
+# ----------------------- #
+#    Jekyll & Plugins     #
+# ----------------------- #
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+
+# ----------------------- #
+#   3rd Party Settings    #
+# ----------------------- #
+
+social:
+  - icon: external-link
+    text: Use Limelight
+    url: https://limelight.yeastrc.org/limelight/
+  - icon: external-link
+    text: Try Demo
+    url: https://limelight.yeastrc.org/limelight/
+  - icon: question-circle
+    text: Documentation
+    url: http://www.yeastrc.org/limelight_docs/
