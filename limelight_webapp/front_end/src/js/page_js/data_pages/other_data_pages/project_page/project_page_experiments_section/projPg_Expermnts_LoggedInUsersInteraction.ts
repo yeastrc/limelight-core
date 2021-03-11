@@ -266,6 +266,15 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	closeOverlay() {
 
 		//  React Unmount Single Experiment Maint
+		
+		console.warn("closeOverlay(): this._create_Update_Experiment_addedDivElementDOM: ", this._create_Update_Experiment_addedDivElementDOM )
+		
+		if ( ! this._create_Update_Experiment_addedDivElementDOM ) {
+			
+			//  No longer has a value so code has already run.
+			
+			return; // EARLY RETURN
+		}
 
 		ReactDOM.unmountComponentAtNode( this._create_Update_Experiment_addedDivElementDOM );
 
