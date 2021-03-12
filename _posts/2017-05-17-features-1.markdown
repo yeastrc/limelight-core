@@ -5,7 +5,7 @@ category: Features
 title: Upload Data From Any Software Pipeline
 description: |
 ---
- Whether you're using <a href="http://www.kojak-ms.org/">Kojak</a>, <a href="http://pfind.ict.ac.cn/software/pLink/">pLink</a>, <a href="http://prottools.ethz.ch/orinner/public/htdocs/xquest/">xQuest</a>, Trans-Proteomic Pipeline (TPP), <a href="http://crux.ms/">Crux</a>, <a href="http://www.stavrox.com/">StavroX</a>, <a href="https://github.com/smith-chem-wisc/MetaMorpheus">MetaMorpheus</a>, or any other software pipeline, proxl supports
- data from any software pipeline using that pipeline's native scoring. There are also no restrictions on which FASTA database you use. To learn more, see
- proxl's [upload documentation](http://limelight-core.readthedocs.io/en/latest/using/upload_data.html){:target="_blank"}. To
- see it in action, see [the proxl demo](https://yeastrc.org/proxl_public/go?H0DHw08DUM){:target="_blank"}.
+Limelight is designed to support the native results from any bottom up proteomics pipeline. Results are converted to limelight XML
+using a converter and any data represented as limelight XML may be uploaded into limelight. Converters currently
+exist for Comet, Crux, Magnum, MetaMorpheus, MSFragger, Trans-Proteomic Pipeline (TPP), and more. To learn more about converting
+and uploading results, see limelights's [upload documentation](http://limelight.readthedocs.io/en/latest/using/upload_data.html){:target="_blank"}.
