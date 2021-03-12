@@ -64,6 +64,7 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
+import {SearchSubGroups_Root__DataPageStateManagerEntry} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 
@@ -862,14 +863,14 @@ const _get_variableModificationMasses_All_OnProteinByPosition = function(
  */
 const load_ReporterIonMasses_IfNeeded = function({
 
-    getSearchSubGroupIds,
+    searchSubGroups_Root,
     proteinSequenceVersionId,
     projectSearchIds,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
     loadedDataCommonHolder,
     searchDataLookupParamsRoot
 } : {
-    getSearchSubGroupIds : boolean
+    searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
     proteinSequenceVersionId : number,
     projectSearchIds : Array<number>,
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
@@ -882,6 +883,16 @@ const load_ReporterIonMasses_IfNeeded = function({
 
     for ( const projectSearchId of projectSearchIds ) {
 
+        let getSearchSubGroupIds = false;
+        if ( projectSearchIds.length === 1 && searchSubGroups_Root ) {
+            const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
+            if ( searchSubGroups_ForProjectSearchId ) {
+                const searchSubGroups_Array__ = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode();
+                if (searchSubGroups_Array__ && searchSubGroups_Array__.length > 0) {
+                    getSearchSubGroupIds = true;
+                }
+            }
+        }
         const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
 
         const reportedPeptideIdsKeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();

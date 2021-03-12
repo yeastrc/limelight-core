@@ -779,7 +779,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 	for ( const projectSearchId of projectSearchIds ) {
 
 		let getSearchSubGroupIds = false;
-		if ( searchSubGroups_Root ) {
+		if ( projectSearchIds.length === 1 && searchSubGroups_Root ) {
 			const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
 			if ( searchSubGroups_ForProjectSearchId ) {
 				const searchSubGroups_Array__ = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode();

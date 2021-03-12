@@ -227,7 +227,7 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
         			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
         				Integer searchSubGroupId = searchSubGroupIdMap_Key_PsmId.get( psmId );
         				if ( searchSubGroupId == null ) {
-        					String msg = "No searchSubGroupId found for psmId: " + psmId;
+        					String msg = "No searchSubGroupId found for psmId: " + psmId + ", webserviceRequest: " + webserviceRequest;
         					log.error( msg );
         					throw new LimelightDatabaseException(msg);
         				}
@@ -272,7 +272,15 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
     	private Integer projectSearchId;
     	private List<Integer> reportedPeptideIds;
     	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
-    	
+
+		@Override
+		public String toString() {
+			return "WebserviceRequest [getSearchSubGroupIds=" + getSearchSubGroupIds + ", projectSearchId="
+					+ projectSearchId + ", reportedPeptideIds=" + reportedPeptideIds
+					+ ", searchDataLookupParams_For_Single_ProjectSearchId="
+					+ searchDataLookupParams_For_Single_ProjectSearchId + "]";
+		}
+		
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
 		}

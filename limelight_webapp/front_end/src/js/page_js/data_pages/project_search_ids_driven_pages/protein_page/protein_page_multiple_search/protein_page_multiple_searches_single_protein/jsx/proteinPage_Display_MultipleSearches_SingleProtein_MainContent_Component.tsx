@@ -1507,12 +1507,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */ 
     _updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback() : void {
         try {
-
-            let getSearchSubGroupIds = false;
-            if ( this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-                getSearchSubGroupIds = true;
-            }
-
             window.setTimeout( () => {
                 try {
                     this._reporterIonMassesChange_UpdateURL();  //  Update URL
@@ -1530,7 +1524,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                     if ( this.props.propsValue.reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
                 
                         promise = load_ReporterIonMasses_IfNeeded({
-                            getSearchSubGroupIds,
+                            searchSubGroups_Root: this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root(),
                             proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                             projectSearchIds : this.props.propsValue.projectSearchIds,
                             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
