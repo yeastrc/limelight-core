@@ -56,7 +56,9 @@ import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_ScanInfo_ForSearc
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_Ids_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
+import org.yeastrc.limelight.limelight_webapp.web_utils.Gzip_ByteArray_To_ByteArray_IF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -100,6 +102,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
+
+	@Autowired
+	private Gzip_ByteArray_To_ByteArray_IF gzip_ByteArray_To_ByteArray;
+	
+	@Autowired
+	private RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF restControllerUtils__Request_Accept_GZip_Response_Set_GZip;
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
@@ -224,10 +232,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		////////////////
 
     		{ // Return cached value if available
+
+    			boolean accept_GZIP = restControllerUtils__Request_Accept_GZip_Response_Set_GZip.does_HttpServletRequest_Accept_GZip( httpServletRequest );
     			
-    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, this );
+    			byte[] cachedResponse = cached_WebserviceResponse_Management.getCachedResponse( accept_GZIP, CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, this );
     			
     			if ( cachedResponse != null ) {
+    				
+    				if ( accept_GZIP ) {
+    					restControllerUtils__Request_Accept_GZip_Response_Set_GZip.set_GZIP_On_HttpServletResponse( httpServletResponse );
+    				}
     				
     				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( cachedResponse );
     			}
@@ -314,12 +328,29 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
+    		
+    		byte[] responseAsJSON_GZIPPED = gzip_ByteArray_To_ByteArray.gzip_ByteArray_To_ByteArray(responseAsJSON);
+    		
+
+			boolean accept_GZIP = restControllerUtils__Request_Accept_GZip_Response_Set_GZip.does_HttpServletRequest_Accept_GZip( httpServletRequest );
+			
+
     		{ // Save cached value 
     			
-    			cached_WebserviceResponse_Management.putCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON, this );
+    			cached_WebserviceResponse_Management.putCachedResponse_GZIPPED( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, postBody, responseAsJSON_GZIPPED, this );
     		}
     		
-    		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
+    		byte[] responseAsJSON_FINAL = responseAsJSON;
+    		
+
+			if ( accept_GZIP ) {
+				restControllerUtils__Request_Accept_GZip_Response_Set_GZip.set_GZIP_On_HttpServletResponse( httpServletResponse );
+				
+				responseAsJSON_FINAL = responseAsJSON_GZIPPED;
+			}
+			
+    		
+    		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body( responseAsJSON_FINAL );
 
     	} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
     		

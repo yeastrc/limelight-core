@@ -9,12 +9,13 @@ public interface Cached_WebserviceResponse_Management_IF {
 	void registerControllerPathForCachedResponse( String controllerPathForCachedResponse, Object registeringObject );
 	
 	/**
+	 * @param accept_GZIP TODO
 	 * @param controllerPathForCachedResponse
 	 * @param requestPostBody
 	 * @param callingOjbect TODO
 	 * @return null if not in cache
 	 */
-	byte[] getCachedResponse(String controllerPathForCachedResponse, byte[] requestPostBody, Object callingOjbect) throws Exception;
+	byte[] getCachedResponse(boolean accept_GZIP, String controllerPathForCachedResponse, byte[] requestPostBody, Object callingOjbect) throws Exception;
 
 	/**
 	 * @param requestPostBody
@@ -22,6 +23,6 @@ public interface Cached_WebserviceResponse_Management_IF {
 	 * @param callingObject TODO
 	 * @param controllerPath
 	 */
-	void putCachedResponse(String controllerPathForCachedResponse, byte[] requestPostBody, byte[] responseBodyBytes, Object callingObject) throws Exception;
+	void putCachedResponse_GZIPPED(String controllerPathForCachedResponse, byte[] requestPostBody, byte[] responseBodyBytes, Object callingObject) throws Exception;
 
 }

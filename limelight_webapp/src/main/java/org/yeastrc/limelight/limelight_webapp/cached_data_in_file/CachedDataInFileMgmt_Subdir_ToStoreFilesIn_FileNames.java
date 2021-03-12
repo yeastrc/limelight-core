@@ -36,7 +36,7 @@ public class CachedDataInFileMgmt_Subdir_ToStoreFilesIn_FileNames implements Cac
 	private static final Logger log = LoggerFactory.getLogger( CachedDataInFileMgmt_Subdir_ToStoreFilesIn_FileNames.class );
 	
 	private static final String FILENAME_SUFFIX__REQUEST_DATA = ".request_data";
-	private static final String FILENAME_SUFFIX__RESPONSE_DATA = ".response_data";
+	private static final String FILENAME_SUFFIX__RESPONSE_DATA = ".response_data.gz";
 	private static final String FILENAME_SUFFIX__DONE = ".done";
 	
 	private static final String SHA_384_ALGORITHM = "SHA-384";

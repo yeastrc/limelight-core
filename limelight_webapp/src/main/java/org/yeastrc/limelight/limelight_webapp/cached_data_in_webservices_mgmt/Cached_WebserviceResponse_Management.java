@@ -17,6 +17,8 @@ import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.Cache_I
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CentralRegistry_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CommonIF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.web_utils.GUNzip_ByteArray_To_ByteArray_IF;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -42,6 +44,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private static final int CACHE_TIMEOUT_FULL_SIZE = 20; // in days
 	private static final int CACHE_TIMEOUT_SMALL = 20; // in days
 
+	@Autowired
+	private GUNzip_ByteArray_To_ByteArray_IF gUNzip_ByteArray_To_ByteArray;
 	
 	@Autowired
 	private CachedData_InMemory_CentralRegistry_IF cachedData_InMemory_CentralRegistry;
@@ -141,7 +145,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#getCachedResponse(java.lang.String, byte[])
 	 */
 	@Override
-	public byte[] getCachedResponse( String controllerPathForCachedResponse, byte[] requestPostBody, Object callingObject ) throws Exception {
+	public byte[] getCachedResponse( boolean accept_GZIP, String controllerPathForCachedResponse, byte[] requestPostBody, Object callingObject ) throws Exception {
 		
 		{
 			Object registeringObject = registered_ControllerPathForCachedResponse_Map.get( controllerPathForCachedResponse );
@@ -159,39 +163,80 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			}
 		}
 		
-		LocalCacheKey localCacheKey = new LocalCacheKey();
-		localCacheKey.controllerPathForCachedResponse = controllerPathForCachedResponse;
-		localCacheKey.requestBodyBytes = requestPostBody;
-		
-		LocalCacheValue localCacheValue = dataCache.getIfPresent( localCacheKey );
-		
-		if ( localCacheValue == null ) {
+		{
+			//  First Try Retrieve from In Memory Cache with accept_GZIP value
 			
-			CachedDataInFileMgmt_ReadFile_Parameters parameters = new CachedDataInFileMgmt_ReadFile_Parameters();
-			parameters.setControllerPath(controllerPathForCachedResponse);
-			parameters.setRequestPostBody( requestPostBody );
-			byte[] fromCacheOnFile = cachedDataInFileMgmt_ReadFile.cachedDataInFileMgmt_ReadFile( parameters );
+			LocalCacheKey localCacheKey = new LocalCacheKey();
+			localCacheKey.controllerPathForCachedResponse = controllerPathForCachedResponse;
+			localCacheKey.requestBodyBytes = requestPostBody;
 			
-			if ( fromCacheOnFile != null ) {
+			LocalCacheValue localCacheValue = dataCache.getIfPresent( localCacheKey );
+			
+			if ( localCacheValue != null ) {
 				
-				//  Put fromCacheOnFile into the in memory cache
-				LocalCacheValue localCacheValueToStore = new LocalCacheValue();
-				localCacheValueToStore.responseBodyBytes = fromCacheOnFile;
-						
-				dataCache.put( localCacheKey, localCacheValueToStore );
+				//  FOUND in Cache so return
+				
+				if ( accept_GZIP ) {
+	
+					return localCacheValue.responseBodyBytes;  // EARLY RETURN
+				}
+				
+				// NOT accept_GZIP so Unzip to return 
+
+				byte[] responseBodyBytes_UNZIPPED = gUNzip_ByteArray_To_ByteArray.gUNzip_ByteArray_To_ByteArray(localCacheValue.responseBodyBytes);
+				
+				//  RETURN UnZipped Data
+				
+				return responseBodyBytes_UNZIPPED;  // EARY RETURN
 			}
-			
-			return fromCacheOnFile;
 		}
 		
-		return localCacheValue.responseBodyBytes;
+		//  NOT Found in Cache
+
+		CachedDataInFileMgmt_ReadFile_Parameters parameters = new CachedDataInFileMgmt_ReadFile_Parameters();
+		parameters.setControllerPath(controllerPathForCachedResponse);
+		parameters.setRequestPostBody( requestPostBody );
+		byte[] fromCacheOnFile = cachedDataInFileMgmt_ReadFile.cachedDataInFileMgmt_ReadFile( parameters );
+
+		if ( fromCacheOnFile != null ) {
+
+			//  Put fromCacheOnFile into the in memory cache
+
+			LocalCacheKey localCacheKey = new LocalCacheKey();
+			localCacheKey.controllerPathForCachedResponse = controllerPathForCachedResponse;
+			localCacheKey.requestBodyBytes = requestPostBody;
+
+			LocalCacheValue localCacheValueToStore = new LocalCacheValue();
+			localCacheValueToStore.responseBodyBytes = fromCacheOnFile;
+
+			dataCache.put( localCacheKey, localCacheValueToStore );
+			
+			if ( accept_GZIP ) {
+				
+				// Data from file is GZIP so just return it
+			
+				return fromCacheOnFile;
+			}
+
+			// NOT accept_GZIP so Unzip to return 
+
+			byte[] responseBodyBytes_UNZIPPED = gUNzip_ByteArray_To_ByteArray.gUNzip_ByteArray_To_ByteArray(fromCacheOnFile);
+			
+			//  RETURN UnZipped Data
+			
+			return responseBodyBytes_UNZIPPED;  // EARY RETURN
+		}
+		
+		//  NOT Found on disk so return null
+		
+		return null;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#putCachedResponse(java.lang.String, byte[], byte[])
 	 */
 	@Override
-	public void putCachedResponse( String controllerPathForCachedResponse, byte[] requestPostBody, byte[] responseBodyBytes, Object callingObject ) throws Exception {
+	public void putCachedResponse_GZIPPED( String controllerPathForCachedResponse, byte[] requestPostBody, byte[] responseBodyBytes, Object callingObject ) throws Exception {
 
 		{
 			Object registeringObject = registered_ControllerPathForCachedResponse_Map.get( controllerPathForCachedResponse );
@@ -276,7 +321,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((controllerPathForCachedResponse == null) ? 0 : controllerPathForCachedResponse.hashCode());
+			result = prime * result
+					+ ((controllerPathForCachedResponse == null) ? 0 : controllerPathForCachedResponse.hashCode());
 			result = prime * result + Arrays.hashCode(requestBodyBytes);
 			return result;
 		}
@@ -298,7 +344,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				return false;
 			return true;
 		}
-		
 	}
 	private static class LocalCacheValue {
 		
