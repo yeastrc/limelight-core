@@ -443,6 +443,7 @@ const update_Overlay_OnWindowResize_MultipleSearch_SingleProtein = function(
 const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 
 	forPeptidePage,
+	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 	searchSubGroups_Root,
 	proteinSequenceVersionId, 
 	projectSearchIds, 
@@ -455,6 +456,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	forPeptidePage: boolean
+	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
 	searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
 	proteinSequenceVersionId: number
 	projectSearchIds :  number[]
@@ -477,6 +479,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 
 	const promise_FirstRetrieval = _loadDataForInitialOverlayShow_FirstRetrieval({
 		forPeptidePage,
+		load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 		searchSubGroups_Root,
 		proteinSequenceVersionId, 
 		projectSearchIds, 
@@ -576,6 +579,7 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 
 	forPeptidePage,
+	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 	searchSubGroups_Root,
 	proteinSequenceVersionId, 
 	projectSearchIds, 
@@ -588,6 +592,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	forPeptidePage: boolean
+	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
 	searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
 	proteinSequenceVersionId: number
 	projectSearchIds :  number[]
@@ -659,6 +664,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 						const promise = _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART(
 							{
 								forPeptidePage,
+								load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 								projectSearchId_Contains_proteinSequenceVersionId,
 								searchSubGroups_Root,
 								proteinSequenceVersionId,
@@ -704,6 +710,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	const promise = _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART(
 		{
 			forPeptidePage,
+			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 			projectSearchId_Contains_proteinSequenceVersionId,
 			searchSubGroups_Root,
 			proteinSequenceVersionId,
@@ -726,6 +733,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 	{
 		forPeptidePage,
+		load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 		projectSearchId_Contains_proteinSequenceVersionId,
 		searchSubGroups_Root,
 		proteinSequenceVersionId,
@@ -739,6 +747,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 		generatedPeptideContents_UserSelections_StateObject
 	} : {
 		forPeptidePage: boolean
+		load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
 		projectSearchId_Contains_proteinSequenceVersionId: number
 		searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
 		proteinSequenceVersionId: number
@@ -782,6 +791,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 
 		const promise = _loadDataForInitialOverlayShow_GetPer_projectSearchId({
 			forPeptidePage,
+			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 			getSearchSubGroupIds,
 			proteinSequenceVersionId, 
 			projectSearchId, 
@@ -913,6 +923,7 @@ const _initialLoad_For_PeptidePage_SingleSearch = function (
 const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 
 	forPeptidePage,
+	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 	getSearchSubGroupIds,
 	proteinSequenceVersionId, 
 	projectSearchId, 
@@ -925,6 +936,7 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 	generatedPeptideContents_UserSelections_StateObject
 } : {
 	forPeptidePage: boolean
+	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
 	getSearchSubGroupIds : boolean
 	proteinSequenceVersionId: number
 	projectSearchId :  number
@@ -1008,6 +1020,7 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 						open_Modifications_Subpart_UserSelections_StateObject.is_Any_Modification_Selected()
 						|| generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
 						|| generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected()
+						|| load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage
 					)
 
 					if ( anyReporterIonMassesSelected || anyOpenModificationMassesSelected ) {

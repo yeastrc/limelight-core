@@ -31,6 +31,7 @@ import {
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__TableEntryContainer";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import {ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_ModMasses_PSM_Counts_PerMass";
 
 //  Main Dialog
 
@@ -97,7 +98,7 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
         callback_updateSelectedMods
     } : {
         proteinName : string
-        modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
+        modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
@@ -120,7 +121,7 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
  */
 interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_Props {
     proteinName : string
-    modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}> //  []; // {mass, psmCount}
+    modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
     selectedModificationMasses_MapClone : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
@@ -254,7 +255,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
      */
     private _create_DataTableObjects({ modUniqueMassesWithTheirPsmCountsArray } : {
 
-        modUniqueMassesWithTheirPsmCountsArray : Array<{mass : number, psmCount: number}>
+        modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
 
     }) : DataTable_RootTableObject {
 
@@ -303,7 +304,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
 
         {
-            for (const modUniqueMassesWithTheirPsmCountsEntry of modUniqueMassesWithTheirPsmCountsArray) {
+            for (const modUniqueMassesWithTheirPsmCountsEntry of modUniqueMassesWithTheirPsmCountsArray.entries) {
 
 
                 const columnEntries: DataTable_DataRow_ColumnEntry[] = [];

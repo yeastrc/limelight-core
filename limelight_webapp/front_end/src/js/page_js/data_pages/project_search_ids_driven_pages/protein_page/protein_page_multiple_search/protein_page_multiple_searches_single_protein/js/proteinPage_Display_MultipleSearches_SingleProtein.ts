@@ -12,6 +12,11 @@ import ReactDOM from 'react-dom';
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
+//   Modification Mass Rounding to provide some level of commonality between searches
+import {
+	modificationMass_CommonRounding_ReturnNumber,
+} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
+
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
@@ -46,6 +51,7 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass";
 
 
 /**
@@ -203,6 +209,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	openOverlay(
 		{
 			proteinSequenceVersionId,
+			modMass_Rounded_From_ModPage_ForInitialSelection, // Optional.  ONLY populated when called from Mod Page. Used for Initial Population of selected Variable and Open Modifications.
 			proteinNameDescription,
 			generatedPeptideContents_UserSelections_StateObject,
 
@@ -214,6 +221,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 		} : {
 
 			proteinSequenceVersionId: number
+
+			modMass_Rounded_From_ModPage_ForInitialSelection?: number
+
 			proteinNameDescription : {name: string, description: string}
 			generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
@@ -243,6 +253,17 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
 			});
 		}
+
+		////
+
+		let load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage = false;
+
+		if ( modMass_Rounded_From_ModPage_ForInitialSelection !== undefined && modMass_Rounded_From_ModPage_ForInitialSelection !== null ) {
+
+			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage = true;
+		}
+
+		////
 
 		this._renderOverlayOutline(); //  Will just return if already done
 
@@ -283,6 +304,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 
 		const promise_loadDataForInitialOverlayShow = loadDataForInitialOverlayShow_MultipleSearch_SingleProtein({
 			forPeptidePage: this._forPeptidePage,
+			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 			searchSubGroups_Root: this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root(),
 			proteinSequenceVersionId, 
 			projectSearchIds : this._projectSearchIds,
@@ -298,7 +320,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 		if ( promise_loadDataForInitialOverlayShow ) {
 			promise_loadDataForInitialOverlayShow.then( () => {
 				try {
-					this._showAfterIntialLoad();
+					this._showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection });
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 					throw e;
@@ -309,7 +331,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 				try {
 					//  Run in next paint cycle
 
-					this._showAfterIntialLoad();
+					this._showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection });
 
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -480,7 +502,24 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	/**
 	 * 
 	 */
-	private _showAfterIntialLoad() {
+	private _showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection }: {modMass_Rounded_From_ModPage_ForInitialSelection: number}) {
+
+		if ( modMass_Rounded_From_ModPage_ForInitialSelection !== undefined && modMass_Rounded_From_ModPage_ForInitialSelection !== null ) {
+
+			//  modMass_Rounded_From_ModPage_ForInitialSelection has a value so set Variable and Open Modification Selection Masses using it.
+
+			// console.warn("_showAfterInitialLoad: modMass_Rounded_From_ModPage_ForInitialSelection has a value so set Variable and Open Modification Selection Masses using it.")
+
+			proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass({
+				modMass_Rounded_From_ModPage_ForInitialSelection,
+				modificationMass_UserSelections_StateObject: this._modificationMass_UserSelections_StateObject,
+				proteinSequenceVersionId: this._proteinSequenceVersionId,  //  Not populated on Peptide page
+				projectSearchIds: this._projectSearchIds,
+				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+				modificationMass_CommonRounding_ReturnNumber
+			});
+		}
+
 
         //  For getting search info for projectSearchIds
         const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
