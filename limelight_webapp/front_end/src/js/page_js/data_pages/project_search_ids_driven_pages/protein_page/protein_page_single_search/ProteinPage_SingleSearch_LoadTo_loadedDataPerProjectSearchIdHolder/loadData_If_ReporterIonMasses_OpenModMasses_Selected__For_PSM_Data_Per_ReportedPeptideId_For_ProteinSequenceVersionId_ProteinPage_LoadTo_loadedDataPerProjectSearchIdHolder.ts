@@ -135,7 +135,7 @@ export const loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_
 
 
 
-    if ( anyReporterIonMassesSelected ) {
+    if ( anyReporterIonMassesSelected && ( ! ( reportedPeptideIds_Get_ReporterIonData_For === undefined || reportedPeptideIds_Get_ReporterIonData_For === null ) ) ) {
 
         //  Get Reporter Ion data
 
@@ -152,7 +152,7 @@ export const loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_
         }
     }
 
-    if ( anyOpenModificationMassesSelected ) {
+    if ( anyOpenModificationMassesSelected && ( ! ( reportedPeptideIds_Get_OpenModificationData_For === undefined || reportedPeptideIds_Get_OpenModificationData_For === null ) ) ) {
 
         //  Get Open Modification data
 
