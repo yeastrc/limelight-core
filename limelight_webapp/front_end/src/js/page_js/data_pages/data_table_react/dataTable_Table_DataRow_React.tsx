@@ -341,7 +341,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     try {
                         const msg = "Promise reject from this.props.dataObject.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject OR this.props.dataObject.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject. dataTableId: " + this.props.dataTableId + ", reject reason: ";
                         console.warn(msg, reason)
-                        throw Error(msg)
+
+                        //  Comment out throw since causing "Page Error" message when reject from server
+
+                        // throw Error(msg)
 
                     } catch (e) {
                         console.warn("Error Caught: ", e);
@@ -458,7 +461,10 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                     try {
                         const msg = "Promise reject from this.props.dataObject.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent OR this.props.dataObject.dataRow_Get_RowChildContent_Return_Promise_ChildContent. dataTableId: " + this.props.dataTableId + ", reject reason: "
                         console.warn(msg, reason)
-                        throw Error(msg)
+
+                        //  Comment out throw since causing "Page Error" message when reject from server
+
+                        // throw Error(msg)
 
                     } catch (e) {
                         console.warn("Error Caught: ", e);
