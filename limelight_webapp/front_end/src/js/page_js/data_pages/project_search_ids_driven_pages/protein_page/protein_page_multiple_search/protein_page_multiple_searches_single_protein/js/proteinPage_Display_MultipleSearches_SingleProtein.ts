@@ -52,6 +52,7 @@ import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/experi
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass";
+import {Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass";
 
 
 /**
@@ -218,6 +219,10 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 
+			//  Optional.  Values Cleared once modMass_Rounded_From_ModPage_ForInitialSelection is used to set Single Protein Page State to URL
+
+			protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
+
 		} : {
 
 			proteinSequenceVersionId: number
@@ -229,6 +234,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 
 			loadedDataCommonHolder? : ProteinView_LoadedDataCommonHolder;
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds? : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
+
+			protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass?: Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
 
 		} ) : void {
 
@@ -320,7 +327,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 		if ( promise_loadDataForInitialOverlayShow ) {
 			promise_loadDataForInitialOverlayShow.then( () => {
 				try {
-					this._showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection });
+					this._showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection, protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass });
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 					throw e;
@@ -331,7 +338,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 				try {
 					//  Run in next paint cycle
 
-					this._showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection });
+					this._showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection, protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass });
 
 				} catch( e ) {
 					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -502,13 +509,19 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	/**
 	 * 
 	 */
-	private _showAfterInitialLoad({ modMass_Rounded_From_ModPage_ForInitialSelection }: {modMass_Rounded_From_ModPage_ForInitialSelection: number}) {
+	private _showAfterInitialLoad(
+		{
+			modMass_Rounded_From_ModPage_ForInitialSelection,
+			protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
+		}: {
+			modMass_Rounded_From_ModPage_ForInitialSelection: number
+			protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass: Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
+
+		}) : void {
 
 		if ( modMass_Rounded_From_ModPage_ForInitialSelection !== undefined && modMass_Rounded_From_ModPage_ForInitialSelection !== null ) {
 
 			//  modMass_Rounded_From_ModPage_ForInitialSelection has a value so set Variable and Open Modification Selection Masses using it.
-
-			// console.warn("_showAfterInitialLoad: modMass_Rounded_From_ModPage_ForInitialSelection has a value so set Variable and Open Modification Selection Masses using it.")
 
 			proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass({
 				modMass_Rounded_From_ModPage_ForInitialSelection,
@@ -518,6 +531,15 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 				modificationMass_CommonRounding_ReturnNumber
 			});
+
+			//  Then update URL
+			const modsSelectedEncodedStateData = this._modificationMass_UserSelections_StateObject.getEncodedStateData();
+			this._singleProtein_CentralStateManagerObject.setModsSelectedEncodedStateData( { modsSelectedEncodedStateData : modsSelectedEncodedStateData } );
+
+			//  Update URL to remove initial Mod Mass selection from Mod Page so not processed on page reload
+			if ( protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass ) {
+				protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass.clearAll();
+			}
 		}
 
 

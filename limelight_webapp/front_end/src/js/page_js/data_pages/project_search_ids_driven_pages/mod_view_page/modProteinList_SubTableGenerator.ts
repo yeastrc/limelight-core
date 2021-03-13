@@ -2,6 +2,7 @@ import {
     DataTable_Column,
     DataTable_Column_DownloadTable,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
     DataTable_DataRowEntry__GetChildTableData_CallbackParams,
@@ -30,6 +31,11 @@ import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_searc
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {
+    modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents,
+    modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator_Cell_Components";
+import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
 
 
 export class ModProteinList_SubTableGenerator {
@@ -189,12 +195,41 @@ export class ModProteinList_SubTableGenerator {
 
             // add the name
             {
+                const clickCallback =
+                    (params: modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params) : void => {
+
+                        if ( params.ctrlKey_From_ClickEvent || params.metaKey_From_ClickEvent ) {
+
+                            get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().show_SingleProtein_InNewWindow({
+                                proteinSequenceVersionId: params.proteinId, modMass_Rounded_From_ModPage_ForInitialSelection: modMass
+                            });
+
+                        } else {
+
+                            get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().show_SingleProtein_InOverlay({
+                                proteinSequenceVersionId: params.proteinId, modMass_Rounded_From_ModPage_ForInitialSelection: modMass
+                            });
+                        }
+                    }
+
+                const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                        return modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents({
+                            proteinName: proteinData.proteinName,
+                            proteinId: proteinData.proteinId,
+                            modMass,
+                            clickCallback
+                        });
+                    }
+
+
                 const valueDisplay = proteinData.proteinName;
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
-                    valueDisplay,
+                    valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
                     valueSort : proteinData.proteinName
                 });
                 columnEntries.push( columnEntry );

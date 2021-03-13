@@ -45,6 +45,7 @@ import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeade
 //  From local dir
 import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
 import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
+import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
 
 //  From data_pages_common
 
@@ -64,7 +65,10 @@ export class ModViewPage_RootClass_Common {
 	_dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
 	_searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+
 	_modViewPage_DisplayDataOnPage : ModViewPage_DisplayDataOnPage;
+
+	private _called__populateModDataBlock: boolean = false;
 
 	_getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
 	_sharePage_dataPages : SharePage_dataPages;
@@ -119,6 +123,11 @@ export class ModViewPage_RootClass_Common {
 		let objectThis = this;
 		
 		catchAndReportGlobalOnError.init();
+
+		window.onpopstate = function(event) {
+			//  User clicked the back button so reload so page reflects that URL
+			window.location.reload(true);
+		};
 
 		this._page_UserDefault_processing.page_UserDefault_processing();
 
@@ -232,6 +241,30 @@ export class ModViewPage_RootClass_Common {
 
 		//  Have all data in page variables to render the page
 
+		const singleProteinCloseCallback = () : void =>  {
+
+			if ( ! this._called__populateModDataBlock ) {
+
+				this._modViewPage_DisplayDataOnPage.populateModDataBlock();
+
+				this._called__populateModDataBlock = true;
+			}
+		}
+
+		const singleProtein_InitializeResult =
+			get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().initialize({
+
+				singleProteinCloseCallback,
+
+				dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+				searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+				centralPageStateManager : this._centralPageStateManager,
+
+				projectSearchIds: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds(),
+				searchDataLookupParamsRoot : this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
+			});
 
 		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
 
@@ -243,8 +276,11 @@ export class ModViewPage_RootClass_Common {
 		});
 
 		this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFiltersBlock();
-		
-		this._modViewPage_DisplayDataOnPage.populateModDataBlock();
+
+		if ( ! singleProtein_InitializeResult.directlyShowing_SingleProteinOverlay ) {
+
+			this._modViewPage_DisplayDataOnPage.populateModDataBlock();
+		}
 	}
 	
 
