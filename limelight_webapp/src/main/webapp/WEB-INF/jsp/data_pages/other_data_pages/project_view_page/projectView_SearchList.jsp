@@ -21,8 +21,11 @@
 		<%-- Left align search text with 'Title' in Project Info so 40(pos of Title) - 16(width of cell for icon) --%>
 	<div class="  selector_collapsable_item" style="margin-left: 26px;">
 	
-			<%--  This contains the Search List with buttons above and below, or other items like Organize Searches --%>
+			<%--  This contains the Search List with buttons above and below --%>
 		<div id="explore_data_section__contents_block"></div>
+		
+			<%--  This contains the Organize Searches Block --%>
+		<div id="explore_data_section__organize_searches__contents_block"></div>
 		
   	</div>
   	

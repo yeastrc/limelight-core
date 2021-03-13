@@ -172,17 +172,27 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 	 * 
 	 */
     _startSearchesOrganize() {
-        
-        const $explore_data_section__contents_block = $("#explore_data_section__contents_block");
-        if ( $explore_data_section__contents_block.length === 0 ) {
-            throw Error("No DOM element found with id 'explore_data_section__contents_block'");
-        }
 
-        $explore_data_section__contents_block.empty();
+		{
+			//  First HIDE main contents under 'Explore Data'
 
-        const project__organize_searches_root_HTML = _project_page__searches_section_organize_searches_template.project__organize_searches_root();
+			const explore_data_section__contents_blockDOM = document.getElementById("explore_data_section__contents_block");
+			if ( ! explore_data_section__contents_blockDOM ) {
+				throw Error("No DOM element found with id 'explore_data_section__contents_block'");
+			}
+			explore_data_section__contents_blockDOM.style.display = 'none';
+		}
+
+        const $explore_data_section__organize_searches__contents_block = $("#explore_data_section__organize_searches__contents_block");
+		if ( $explore_data_section__organize_searches__contents_block.length === 0 ) {
+			throw Error("No DOM element found with id 'explore_data_section__organize_searches__contents_block'");
+		}
+
+		$explore_data_section__organize_searches__contents_block.empty();
+
+		const project__organize_searches_root_HTML = _project_page__searches_section_organize_searches_template.project__organize_searches_root();
         const $project__organize_searches_root = $( project__organize_searches_root_HTML );
-        $project__organize_searches_root.appendTo( $explore_data_section__contents_block );
+        $project__organize_searches_root.appendTo( $explore_data_section__organize_searches__contents_block );
 
 		$("#organize_searches_done_organizing_button").click( (eventObject) => {
 			try {
@@ -259,8 +269,28 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 	 * 
 	 */
     _doneSearchOrganizing() {
-    
-        this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
+
+    	//  Empty out Organize container <div>
+
+		const $explore_data_section__organize_searches__contents_block = $("#explore_data_section__organize_searches__contents_block");
+		if ( $explore_data_section__organize_searches__contents_block.length === 0 ) {
+			throw Error("No DOM element found with id 'explore_data_section__organize_searches__contents_block'");
+		}
+
+		$explore_data_section__organize_searches__contents_block.empty();
+
+		{
+			//  Next  SHOW main contents under 'Explore Data'
+
+			const explore_data_section__contents_blockDOM = document.getElementById("explore_data_section__contents_block");
+			if ( ! explore_data_section__contents_blockDOM ) {
+				throw Error("No DOM element found with id 'explore_data_section__contents_block'");
+			}
+			explore_data_section__contents_blockDOM.style.display = '';
+		}
+
+
+		this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
     }
 
     ////////////////
