@@ -41,6 +41,9 @@ public class CachedDataInFileMgmt_Subdir_ToStoreFilesIn_FileNames implements Cac
 	
 	private static final String SHA_384_ALGORITHM = "SHA-384";
 	
+	/**
+	 * Holds: Current_Root_Subdir_ToStoreFilesIn
+	 */
 	@Autowired
 	CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn_IF cachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn;
 	
@@ -98,6 +101,23 @@ public class CachedDataInFileMgmt_Subdir_ToStoreFilesIn_FileNames implements Cac
 			log.error( msg );
 			throw new IllegalArgumentException( msg );
 		}
+		if ( controllerPath_String.contains( "\\" ) ) {
+			String msg = "controllerPath_String cannot contain '\\'";
+			log.error( msg );
+			throw new IllegalArgumentException( msg );
+		}
+		if ( controllerPath_String.contains( File.separator ) ) {
+			String msg = "controllerPath_String cannot contain '" + File.separator + "'";
+			log.error( msg );
+			throw new IllegalArgumentException( msg );
+		}
+		if ( controllerPath_String.contains( File.pathSeparator ) ) {
+			String msg = "controllerPath_String cannot contain '" + File.pathSeparator + "'";
+			log.error( msg );
+			throw new IllegalArgumentException( msg );
+		}
+		
+		//  Configured cache subdir + subdirs added.
 		
 		File current_Root_Subdir_ToStoreFilesIn = cachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn.get_current_Root_Subdir_ToStoreFilesIn();
 

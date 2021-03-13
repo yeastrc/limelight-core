@@ -150,7 +150,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		try {
-			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
 			
 		} catch (Exception e) {
 			String msg = "In afterPropertiesSet(): Exception in processing";

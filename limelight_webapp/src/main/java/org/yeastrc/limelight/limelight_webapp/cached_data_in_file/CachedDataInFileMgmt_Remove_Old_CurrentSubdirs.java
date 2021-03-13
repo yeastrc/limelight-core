@@ -18,10 +18,12 @@
 package org.yeastrc.limelight.limelight_webapp.cached_data_in_file;
 
 import java.io.File;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 
 /**
@@ -34,8 +36,10 @@ public class CachedDataInFileMgmt_Remove_Old_CurrentSubdirs implements Runnable 
 	
 	private static volatile boolean shutdownRequested = false;
 	
-	private File root_Subdirectory_ToStoreFilesIn;
-	private String current_SubDir_String; //  'Current' subdir.  Delete all but this
+	private File subDir_Cache_For_Versioned_Webservices_CURRENT;   // Subdir to check and clean out
+	private File subDir_Cache_For_Versioned_Webservices_TO_DELETE; // Move to here before delete 
+	
+	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
 	
 	/**
 	 * 
@@ -55,28 +59,28 @@ public class CachedDataInFileMgmt_Remove_Old_CurrentSubdirs implements Runnable 
 	public void run() {
 		
 		try {
-			if ( this.root_Subdirectory_ToStoreFilesIn == null ) {
-				String msg = "this.root_Subdirectory_ToStoreFilesIn == null";
+			if ( this.subDir_Cache_For_Versioned_Webservices_CURRENT == null ) {
+				String msg = "this.subDir_Cache_For_Versioned_Webservices_CURRENT == null";
 				log.error(msg);
 				throw new LimelightInternalErrorException(msg);
 			}
-			if ( StringUtils.isEmpty( this.current_SubDir_String ) ) {
-				String msg = "this.current_SubDir_String is empty or null";
+			if ( this.subDir_Cache_For_Versioned_Webservices_TO_DELETE == null ) {
+				String msg = "this.subDir_Cache_For_Versioned_Webservices_TO_DELETE == null";
 				log.error(msg);
 				throw new LimelightInternalErrorException(msg);
 			}
 
+			log.info( "INFO: Sleeping for 5 seconds to allow all web services to register: " );
+			
+			Thread.sleep( 5000 );
+
 			log.info( "INFO: Starting cleanup of dir: " 
-					+ root_Subdirectory_ToStoreFilesIn.getAbsolutePath() 
-					+ " except for new subdir: "
-					+ current_SubDir_String );
+					+ subDir_Cache_For_Versioned_Webservices_CURRENT.getAbsolutePath() );
 			
 			processRootSubdir();
 
 			log.info( "INFO: Finished cleanup of dir: " 
-					+ root_Subdirectory_ToStoreFilesIn.getAbsolutePath() 
-					+ " except for new subdir: "
-					+ current_SubDir_String );
+					+ subDir_Cache_For_Versioned_Webservices_CURRENT.getAbsolutePath()  );
 			
 		} catch ( Throwable t ) {
 			log.error( "In Main run(). Throwable caught.", t );
@@ -87,30 +91,58 @@ public class CachedDataInFileMgmt_Remove_Old_CurrentSubdirs implements Runnable 
 	 * 
 	 */
 	private void processRootSubdir() {
+
+		Set<String> registered_ControllerPaths = cached_WebserviceResponse_Management.get_registered_ControllerPaths_Copy();
 		
-		for ( File subdir : this.root_Subdirectory_ToStoreFilesIn.listFiles() ) {
+		File[] currentDir_FileList = this.subDir_Cache_For_Versioned_Webservices_CURRENT.listFiles() ;
+		
+		if ( currentDir_FileList == null ) {
+			
+			//  Empty 
+			
+			return; // EARLY RETURN
+		}
+		
+		//  FIRST:   Move Subdirs that are to be deleted to   this.subDir_Cache_For_Versioned_Webservices_TO_DELETE
+		
+		
+		for ( File subdir : this.subDir_Cache_For_Versioned_Webservices_CURRENT.listFiles() ) {
 			
 			if ( CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.shutdownRequested ) {
 				
 				return; // EARLY RETURN 
 			}
 			
-			if ( ! subdir.getName().equals( this.current_SubDir_String ) ) {
+			if ( ! registered_ControllerPaths.contains( subdir.getName() ) ) {
 				
-				//  Subdir other than this.current_SubDir_String
+				//  Subdir NOT in current registered Controller Paths, Move to TO DELETE
 				
-				deleteSubdir_Contents( subdir );
+				File subDir_Under_TO_DELETE = new File( this.subDir_Cache_For_Versioned_Webservices_TO_DELETE, subdir.getName() );
 				
-				try {
-					if ( ! subdir.delete() ) {
+				subdir.renameTo(subDir_Under_TO_DELETE);
+			}
+		}
 
-						log.error( "Failed to delete subdir: " + subdir.getAbsolutePath() );
-					}
-				} catch ( Exception e ) {
-					
-					String msg = "Failed to delete subdir: " + subdir.getAbsolutePath();
-					log.error(msg);
+		//  SECOND:   Delete Subdirs that have been Moved to be deleted to   this.subDir_Cache_For_Versioned_Webservices_TO_DELETE
+		
+		for ( File subdir : this.subDir_Cache_For_Versioned_Webservices_TO_DELETE.listFiles() ) {
+			
+			if ( CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.shutdownRequested ) {
+				
+				return; // EARLY RETURN 
+			}
+
+			deleteSubdir_Contents( subdir );
+
+			try {
+				if ( ! subdir.delete() ) {
+
+					log.error( "Failed to delete subdir: " + subdir.getAbsolutePath() );
 				}
+			} catch ( Exception e ) {
+
+				String msg = "Failed to delete subdir: " + subdir.getAbsolutePath();
+				log.error(msg);
 			}
 		}
 	}
@@ -120,7 +152,15 @@ public class CachedDataInFileMgmt_Remove_Old_CurrentSubdirs implements Runnable 
 	 */
 	private void deleteSubdir_Contents( File subdir ) {
 		
-		for ( File subdirEntry : subdir.listFiles() ) {
+		File[] subDirList = subdir.listFiles();
+		
+		if ( subDirList == null ) {
+			//  NO entries
+			
+			return; // EARLY RETURN
+		}
+		
+		for ( File subdirEntry : subDirList ) {
 
 			if ( CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.shutdownRequested ) {
 				
@@ -155,20 +195,17 @@ public class CachedDataInFileMgmt_Remove_Old_CurrentSubdirs implements Runnable 
 		CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.shutdownRequested = shutdownRequested;
 	}
 
-	public File getRoot_Subdirectory_ToStoreFilesIn() {
-		return root_Subdirectory_ToStoreFilesIn;
+	public void setSubDir_Cache_For_Versioned_Webservices_CURRENT(File subDir_Cache_For_Versioned_Webservices_CURRENT) {
+		this.subDir_Cache_For_Versioned_Webservices_CURRENT = subDir_Cache_For_Versioned_Webservices_CURRENT;
 	}
 
-	public void setRoot_Subdirectory_ToStoreFilesIn(File root_Subdirectory_ToStoreFilesIn) {
-		this.root_Subdirectory_ToStoreFilesIn = root_Subdirectory_ToStoreFilesIn;
+	public void setSubDir_Cache_For_Versioned_Webservices_TO_DELETE(File subDir_Cache_For_Versioned_Webservices_TO_DELETE) {
+		this.subDir_Cache_For_Versioned_Webservices_TO_DELETE = subDir_Cache_For_Versioned_Webservices_TO_DELETE;
 	}
 
-	public String getCurrent_SubDir_String() {
-		return current_SubDir_String;
-	}
-
-	public void setCurrent_SubDir_String(String current_SubDir_String) {
-		this.current_SubDir_String = current_SubDir_String;
+	public void setCached_WebserviceResponse_Management(
+			Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management) {
+		this.cached_WebserviceResponse_Management = cached_WebserviceResponse_Management;
 	}
 	
 	

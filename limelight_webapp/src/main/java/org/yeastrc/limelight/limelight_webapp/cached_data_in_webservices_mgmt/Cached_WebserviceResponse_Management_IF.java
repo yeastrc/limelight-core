@@ -1,12 +1,19 @@
 package org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt;
 
+import java.util.Set;
+
 public interface Cached_WebserviceResponse_Management_IF {
 
 	/**
 	 * @param controllerPathForCachedResponse
 	 * @param registeringObject TODO
 	 */
-	void registerControllerPathForCachedResponse( String controllerPathForCachedResponse, Object registeringObject );
+	void registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( String controllerPathForCachedResponse, Object registeringObject );
+	
+	/**
+	 * @return
+	 */
+	Set<String> get_registered_ControllerPaths_Copy();
 	
 	/**
 	 * @param accept_GZIP TODO

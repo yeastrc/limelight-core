@@ -1,6 +1,8 @@
 package org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -23,8 +25,11 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 /**
+ * Cache of Webservice Response
  * 
- *
+ *    !!!  Currently hard coded to ONLY accept VERSIONED Web Services:  URI ends in '-version-' and ### version number
+ * 
+ * It is REQUIRED that all Controller Paths that will use this class register first and at Webapp Startup
  */
 @Component
 public class Cached_WebserviceResponse_Management 
@@ -98,10 +103,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	//////////////
 	
 	/**
+	 * Register Controller Path for Cached Response Processing.
+	 * 
+	 * It is REQUIRED that all Controller Paths that will use this class register first and at Webapp Startup
+	 * 
+	 * Required that controllerPathForCachedResponse end with '-version-' and a number
+	 * 
 	 * @param controllerPathForCachedResponse
 	 */
 	@Override
-	public void registerControllerPathForCachedResponse( String controllerPathForCachedResponse, Object registeringObject ) {
+	public void registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( String controllerPathForCachedResponse, Object registeringObject ) {
 		
 		_validate_controllerPathForCachedResponse(controllerPathForCachedResponse);
 		
@@ -116,6 +127,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	}
 	
 	/**
+	 * Require that controllerPathForCachedResponse end with '-version-' and a number
+	 * 
 	 * @param controllerPathForCachedResponse
 	 */
 	private void _validate_controllerPathForCachedResponse( String controllerPathForCachedResponse ) {
@@ -138,6 +151,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			log.error(msg);
 			throw new LimelightInternalErrorException(msg);
 		}
+	}
+	
+	/**
+	 * @return
+	 */
+	public Set<String> get_registered_ControllerPaths_Copy() {
+		
+		Set<String> registered_ControllerPaths = new HashSet<>( registered_ControllerPathForCachedResponse_Map.keySet() );
+		return registered_ControllerPaths;
 	}
 	
 
