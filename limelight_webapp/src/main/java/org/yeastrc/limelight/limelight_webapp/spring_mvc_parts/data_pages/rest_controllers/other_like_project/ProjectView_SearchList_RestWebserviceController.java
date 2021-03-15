@@ -21,7 +21,6 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,19 +36,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookup_CreatedByUserType;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
-import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.objects.ProjectPageSingleFolder;
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
-import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInListIF;
-import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
@@ -67,17 +62,11 @@ public class ProjectView_SearchList_RestWebserviceController {
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
-//	@Autowired
-//	private SearchListForProjectIdSearcherIF searchListForProjectIdSearcher;
-
 	@Autowired
 	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
 	
 	@Autowired
 	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
-
-	@Autowired
-	private SearchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInListIF searchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList;
 
 	@Autowired
 	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
@@ -304,44 +293,15 @@ public class ProjectView_SearchList_RestWebserviceController {
 		for ( SearchItemMinimal searchItemMinimal : searchesFromDB_List ) {
 			projectSearchIds.add( searchItemMinimal.getProjectSearchId() );
 		}
-
-		SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo = new SearchDataLookupParams_CreatedByInfo();
-
-		if ( requestFromActualUser ) {
-			searchDataLookupParams_CreatedByInfo.setCreatedByUserId( userSession.getUserId() );
-			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(
-					SearchDataLookupParametersLookup_CreatedByUserType.WEB_USER );
-			
-		} else {
-			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(
-					SearchDataLookupParametersLookup_CreatedByUserType.WEB_NON_USER );
-		}
 		
-		searchDataLookupParams_CreatedByInfo.setCreatedByRemoteIP( requestingIPAddress );
-
-		//  Return Map<[Project Search Id], [SearchDataLookupParamsCode]>
-		Map<Integer, String> searchDataLookupParamsCodesForProjectSearchIds = 
-				searchDataLookupParams_GetCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList
-				.getSearchDataLookupParamsCodesForDefaultCutoffsAnnTypesForEachProjSrchIdInList( 
-						projectSearchIds, 
-						searchDataLookupParams_CreatedByInfo );
-
 		searchList = new ArrayList<>( searchesFromDB_List.size() );
 		for ( SearchItemMinimal searchListDBItem : searchesFromDB_List ) {
 
-			String searchDataLookupParamsCode = 
-					searchDataLookupParamsCodesForProjectSearchIds.get( searchListDBItem.getProjectSearchId() );
-			if ( searchDataLookupParamsCode == null ) {
-				String msg = "searchDataLookupParamsCode not found for ProjectSearchId: " + searchListDBItem.getProjectSearchId();
-				log.error( msg );
-				throw new LimelightInternalErrorException(msg);
-			}
 			WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
 			resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
 			resultItem.searchId = searchListDBItem.getSearchId();
 			resultItem.displayOrder = searchListDBItem.getDisplayOrder();
 			resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchListDBItem.getName(), searchListDBItem.getSearchId() );
-			resultItem.searchDataLookupParamsCode = searchDataLookupParamsCode;
 			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 				resultItem.setCanChangeSearchName(true);
 				resultItem.setCanDelete(true);
@@ -458,7 +418,6 @@ public class ProjectView_SearchList_RestWebserviceController {
     	private int searchId;
     	private int displayOrder; // zero if no display order applied
     	private String name;
-    	private String searchDataLookupParamsCode;
     	private boolean canChangeSearchName;
     	private boolean canDelete;
     	
@@ -479,12 +438,6 @@ public class ProjectView_SearchList_RestWebserviceController {
 		}
 		public void setName(String name) {
 			this.name = name;
-		}
-		public String getSearchDataLookupParamsCode() {
-			return searchDataLookupParamsCode;
-		}
-		public void setSearchDataLookupParamsCode(String searchDataLookupParamsCode) {
-			this.searchDataLookupParamsCode = searchDataLookupParamsCode;
 		}
 		public boolean isCanChangeSearchName() {
 			return canChangeSearchName;

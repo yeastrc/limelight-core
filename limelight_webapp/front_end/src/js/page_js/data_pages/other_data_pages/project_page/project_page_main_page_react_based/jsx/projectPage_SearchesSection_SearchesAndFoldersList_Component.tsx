@@ -17,6 +17,7 @@ import {
 import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
+import {ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Open_DataPages_PeptideProteinMod";
 
 /**
  * Create new Object and pass in as Props to force all Show Search Details to the new boolean value of true or false
@@ -320,6 +321,10 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
     private _deleteSearch_Clicked_BindThis = this._deleteSearch_Clicked.bind(this);
 
+    private _peptide_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
+    private _protein_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
+    private _modifications_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
+
     private _checkboxChanged_BindThis = this._checkboxChanged.bind(this);
 
 
@@ -508,6 +513,54 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
     }
 
     /**
+     *
+     */
+    private _peptide_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        event.stopPropagation();
+
+        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        const projectSearchIds = new Set<number>();
+        projectSearchIds.add( projectSearchId );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.peptide_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+    }
+
+    /**
+     *
+     */
+    private _protein_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        event.stopPropagation();
+
+        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        const projectSearchIds = new Set<number>();
+        projectSearchIds.add( projectSearchId );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.protein_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+    }
+
+    /**
+     *
+     */
+    private _modifications_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        event.stopPropagation();
+
+        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        const projectSearchIds = new Set<number>();
+        projectSearchIds.add( projectSearchId );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.mod_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+    }
+
+    /**
      * Add Search Details to DOM
      */
     private _addSearchDetailToDOM() {
@@ -591,7 +644,7 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
                                 { ( ! this.state.changeSearchName_Active ) ? (
                                     <React.Fragment>
                                         <span
-                                            style={ { overflowWrap : "break-word"}}
+                                            style={ { overflowWrap : "break-word"} }
                                             className=" clickable "
                                             onClick={ this._searchName_Clicked_BindThis }
                                         >
@@ -607,7 +660,7 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
                                         ): null }
                                     </React.Fragment>
                                 ) : (
-                                    <div style={ { whiteSpace: "nowrap" }}>
+                                    <div style={ { whiteSpace: "nowrap" } }>
                                         <input
                                             style={ { width: 600 } }
                                             value={ this.state.searchName_InputField_Value }
@@ -626,11 +679,31 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
                                 )}
                             </div>
                             <div style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
-                                <a href={ "d/pg/psb/peptide/" + searchDisplayListItem.searchDataLookupParamsCode + "/r" }>[Peptides]</a>
+
+                                {/* Navigation Fake Links to Peptide, Protein, Modifications pages for Single Search */}
+
+                                <span
+                                    className=" fake-link "
+                                    onClick={ this._peptide_Page_FakeLink_Clicked_BindThis }
+                                >
+                                    [Peptides]
+                                </span>
                                 <span> </span>
-                                <a href={ "d/pg/psb/protein/" + searchDisplayListItem.searchDataLookupParamsCode + "/r" }>[Proteins]</a>
+                                <span
+                                    className=" fake-link "
+                                    onClick={ this._protein_Page_FakeLink_Clicked_BindThis }
+                                >
+                                    [Proteins]
+                                </span>
                                 <span> </span>
-                                <a href={ "d/pg/psb/mod-view/" + searchDisplayListItem.searchDataLookupParamsCode + "/r" }>[Modifications]</a>
+                                <span
+                                    className=" fake-link "
+                                    onClick={ this._modifications_Page_FakeLink_Clicked_BindThis }
+                                >
+                                    [Modifications]
+                                </span>
+
+                                {/* Delete Search Icon */}
                                 <span> </span>
                                 { ( searchDisplayListItem.canDelete ) ? (
                                     <img className="icon-small clickable  "

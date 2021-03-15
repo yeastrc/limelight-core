@@ -34,7 +34,7 @@ export class ProjectPage_SearchesSection_Searches_Folders_SingleSearch {
     searchId: number;
     displayOrder: number; // zero if no display order applied
     name: string;
-    searchDataLookupParamsCode: string;
+    // searchDataLookupParamsCode: string;  Removed
     canChangeSearchName: boolean;
     canDelete: boolean;
 }
@@ -180,14 +180,6 @@ const _validateSearchArray = function (
             if ( ! limelight__IsVariableAString( search.name ) ) {
                 throw Error("( ! limelight__IsVariableAString( search.name ) )")
             }
-
-            if ( search.searchDataLookupParamsCode === undefined || search.searchDataLookupParamsCode === null ) {
-                throw Error("( search.searchDataLookupParamsCode === undefined || search.searchDataLookupParamsCode === null )")
-            }
-            if ( ! limelight__IsVariableAString( search.searchDataLookupParamsCode ) ) {
-                throw Error("( ! limelight__IsVariableAString( search.searchDataLookupParamsCode ) )")
-            }
-
         }
     }
 }
@@ -211,6 +203,6 @@ const _validateSearchArray = function (
 //     private int searchId;
 //     private int displayOrder; // zero if no display order applied
 //     private String name;
-//     private String searchDataLookupParamsCode;
+//     private String searchDataLookupParamsCode;  REMOVED
 //     private boolean canChangeSearchName;
 //     private boolean canDelete;
