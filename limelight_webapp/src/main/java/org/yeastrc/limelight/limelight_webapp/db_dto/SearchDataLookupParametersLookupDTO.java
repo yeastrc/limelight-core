@@ -29,11 +29,6 @@ public class SearchDataLookupParametersLookupDTO {
 	private int id;
 	private String hashOfMainParams;
 	private int hashCollisionIndex;
-	/**
-	 * Set to project_search_id if this record is for the defaults 
-	 * for that project_search_id and defaults computed by server
-	 */
-	private Integer singleProjectSearchIdDefaultValues;
 	
 	private SearchDataLookupParametersLookupRootIdTypes rootIdType;
 	private String rootIdsOnlyJSON;
@@ -67,12 +62,6 @@ public class SearchDataLookupParametersLookupDTO {
 	}
 	public void setHashCollisionIndex(int hashCollisionIndex) {
 		this.hashCollisionIndex = hashCollisionIndex;
-	}
-	public Integer getSingleProjectSearchIdDefaultValues() {
-		return singleProjectSearchIdDefaultValues;
-	}
-	public void setSingleProjectSearchIdDefaultValues(Integer singleProjectSearchIdDefaultValues) {
-		this.singleProjectSearchIdDefaultValues = singleProjectSearchIdDefaultValues;
 	}
 	public String getRootIdsOnlyJSON() {
 		return rootIdsOnlyJSON;

@@ -174,10 +174,6 @@ public class SearchDataLookupParametersLookupDAO extends Limelight_JDBC_Base imp
 		result.setId( rs.getInt( "id" ) );
 		result.setHashOfMainParams( rs.getString( "hash_of_main_params" ) );
 		result.setHashCollisionIndex( rs.getInt( "hash_collision_index" ) );
-		int singleProjectSearchIdDefaultValues = rs.getInt( "single_project_search_id__default_values" );
-		if ( ! rs.wasNull() ) {
-			result.setSingleProjectSearchIdDefaultValues( singleProjectSearchIdDefaultValues );
-		}
 		result.setLookupParametersJSONMainData( rs.getString( "lookup_parameters_json__main_data" ) );
 		result.setVersionNumber(  rs.getInt( "version_number_main_json" ) );
 		result.setRootIdsOnlyJSON( rs.getString( "root_ids_only_json" ) );
@@ -189,7 +185,7 @@ public class SearchDataLookupParametersLookupDAO extends Limelight_JDBC_Base imp
 	private static final String INSERT_SQL =
 			"INSERT INTO search_data_lookup_parameters "
 			+ " ( "
-			+ " hash_of_main_params, hash_collision_index, single_project_search_id__default_values, "
+			+ " hash_of_main_params, hash_collision_index, "
 			+ " root_id_type_id, root_ids_only_json, "
 			+ " lookup_parameters_json__main_data, version_number_main_json, "
 			+ " created_by_user_id, created_by_user_type, created_date_time, created_by_remote_ip "
@@ -222,13 +218,6 @@ public class SearchDataLookupParametersLookupDAO extends Limelight_JDBC_Base imp
 							pstmt.setString( counter, item.getHashOfMainParams() );
 							counter++;
 							pstmt.setInt( counter, item.getHashCollisionIndex() );
-							counter++;
-							if ( item.getSingleProjectSearchIdDefaultValues() != null ) {
-								pstmt.setInt( counter, item.getSingleProjectSearchIdDefaultValues() );
-							} else {
-								pstmt.setNull(counter, java.sql.Types.INTEGER );
-							}
-
 							counter++;
 							pstmt.setInt( counter, item.getRootIdType().value() );
 							counter++;
@@ -272,50 +261,6 @@ public class SearchDataLookupParametersLookupDAO extends Limelight_JDBC_Base imp
 			throw e;
 		}
 	}
-
-	////
-	
-	private static final String UPDATE_single_project_search_id__default_values_SQL =
-			"UPDATE search_data_lookup_parameters "
-			+ " SET single_project_search_id__default_values = ? WHERE id = ?";
-	//  Spring DB Transactions
-	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	
-	@Override
-	/* 
-	 * SET single_project_search_id__default_values =? WHERE id = ?
-	 */
-	public void updateSingleProjecSearchIdDefaultValues( int singleProjecSearchIdDefaultValues, int id ) {
-		
-		// Use Spring JdbcTemplate so Transactions work properly
-		
-		//  How to get the auto-increment primary key for the inserted record
-		
-		try {
-			int rowsUpdated = this.getJdbcTemplate().update(
-					new PreparedStatementCreator() {
-						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-
-							PreparedStatement pstmt =
-									connection.prepareStatement( UPDATE_single_project_search_id__default_values_SQL );
-							int counter = 0;
-							counter++;
-							pstmt.setInt( counter, singleProjecSearchIdDefaultValues );
-							counter++;
-							pstmt.setInt( counter, id );
-
-							return pstmt;
-						}
-					});
-
-		} catch ( RuntimeException e ) {
-			String msg = "singleProjecSearchIdDefaultValues: " + singleProjecSearchIdDefaultValues
-					+ ", id: " + id + ", SQL: " + UPDATE_single_project_search_id__default_values_SQL;
-			log.error( msg, e );
-			throw e;
-		}
-	}
-
 
 	////
 	

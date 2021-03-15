@@ -79,7 +79,7 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo ) throws SQLException {
 		
 		SearchDataLookupParametersLookupDTO searchDataLookupParametersLookupDTO =
-				searchDataLookupParams_Save_ReturnObject( searchDataLookupParamsRoot, searchDataLookupParametersLookupType, singleProjectSearchIdCreatedDefaultsFor, searchDataLookupParams_CreatedByInfo );
+				searchDataLookupParams_Save_ReturnObject( searchDataLookupParamsRoot, searchDataLookupParametersLookupType, searchDataLookupParams_CreatedByInfo );
 		
 		searchDataLookupParametersLookupDAO.updateLastAccessed( searchDataLookupParametersLookupDTO.getId() );
 		
@@ -99,7 +99,6 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 	public SearchDataLookupParametersLookupDTO searchDataLookupParams_Save_ReturnObject( 
 			SearchDataLookupParamsRoot searchDataLookupParamsRoot,
 			SearchDataLookupParametersLookupRootIdTypes searchDataLookupParametersLookupType,
-			Integer singleProjectSearchIdCreatedDefaultsFor,
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo ) throws SQLException {
 		
 		sortFilterAnnotationTypeEntries( searchDataLookupParamsRoot );
@@ -137,7 +136,6 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 						searchDataLookupParamsRoot_JSON, 
 						versionNumber,
 						messageDigestHexString, 
-						singleProjectSearchIdCreatedDefaultsFor,
 						searchDataLookupParams_CreatedByInfo );
 		
 		save_IfNeeded_SearchDataLookupParametersLookupDTO_AndChildren__HandleDuplicateHashCodes( searchDataLookupParametersLookupDTO, rootIdsObj );
@@ -197,30 +195,6 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 			for ( SearchDataLookupParametersLookupDTO dbItem : searchDataLookupParametersLookupDTO_For_hashOfParamsMD5Hex_List ) {
 
 				if ( searchDataLookupParametersLookupDTO.getLookupParametersJSONMainData().equals( dbItem.getLookupParametersJSONMainData() ) ) {
-					
-					if ( searchDataLookupParametersLookupDTO.getSingleProjectSearchIdDefaultValues() != null ) {
-						
-						if ( dbItem.getSingleProjectSearchIdDefaultValues() != null ) {
-							
-							if ( ! searchDataLookupParametersLookupDTO.getSingleProjectSearchIdDefaultValues() 
-									.equals( dbItem.getSingleProjectSearchIdDefaultValues() ) ) {
-								//  ERROR: The value of SingleProjectSearchIdDefaultValues is already set in the
-								//         db but is different from the request.
-								String msg = "The value of SingleProjectSearchIdDefaultValues is already set in the db but is different from the request.  dbItem value: "
-										+ dbItem.getSingleProjectSearchIdDefaultValues()
-										+ ", incoming value: "
-										+ searchDataLookupParametersLookupDTO.getSingleProjectSearchIdDefaultValues();
-								log.error( msg );
-								throw new LimelightInternalErrorException(msg);
-							}
-						} else {
-							//  DB not have value so update with SingleProjectSearchIdDefaultValues from incoming
-							searchDataLookupParametersLookupDAO.updateSingleProjecSearchIdDefaultValues( 
-									searchDataLookupParametersLookupDTO.getSingleProjectSearchIdDefaultValues(), 
-									dbItem.getId() );
-						}
-						
-					}
 					
 					//  Already in DB with same lookupParametersJSONMainData:
 					//     Update local entry.HashCollisionIndex and return
@@ -286,7 +260,6 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 			String searchDataLookupParamsRoot_JSON,
 			int versionNumber,
 			String messageDigestHexString,
-			Integer singleProjectSearchIdCreatedDefaultsFor,
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo ) {
 		
 		SearchDataLookupParametersLookupRootIdTypes rootIdType = null;
@@ -303,7 +276,6 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 		
 		searchDataLookupParametersLookupDTO.setHashOfMainParams(messageDigestHexString );
 		searchDataLookupParametersLookupDTO.setHashCollisionIndex( 1 );
-		searchDataLookupParametersLookupDTO.setSingleProjectSearchIdDefaultValues( singleProjectSearchIdCreatedDefaultsFor );
 		searchDataLookupParametersLookupDTO.setRootIdType( rootIdType );
 		searchDataLookupParametersLookupDTO.setRootIdsOnlyJSON( rootIdsObj_JSON );
 		searchDataLookupParametersLookupDTO.setLookupParametersJSONMainData( searchDataLookupParamsRoot_JSON );

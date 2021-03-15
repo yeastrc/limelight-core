@@ -1653,7 +1653,6 @@ CREATE TABLE  search_data_lookup_parameters (
   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   hash_of_main_params VARCHAR(200) CHARACTER SET 'latin1' NOT NULL,
   hash_collision_index INT NOT NULL COMMENT 'Increment for hash collisions',
-  single_project_search_id__default_values INT NULL COMMENT 'Set to project_search_id if this record is for the defaults \nfor that project_search_id and defaults computed by server.\nIMPORTANT:  Assumes default cutoffs \nand default ann type display do NOT change.',
   root_id_type_id SMALLINT UNSIGNED NOT NULL COMMENT 'Project_search_ids, etc',
   root_ids_only_json MEDIUMTEXT NOT NULL COMMENT 'Just Root ids, in ARRAY JSON',
   lookup_parameters_json__main_data MEDIUMTEXT NOT NULL COMMENT 'Main Data - JSON',
@@ -1674,8 +1673,6 @@ ENGINE = InnoDB;
 CREATE INDEX search_data_lookup_parameters_type_id_fk_idx ON search_data_lookup_parameters (root_id_type_id ASC);
 
 CREATE UNIQUE INDEX hash_hash_index ON search_data_lookup_parameters (hash_of_main_params ASC, hash_collision_index ASC);
-
-CREATE INDEX single_project_search_id__default_values ON search_data_lookup_parameters (single_project_search_id__default_values ASC);
 
 
 -- -----------------------------------------------------

@@ -57,14 +57,6 @@ public interface SearchDataLookupParametersLookupDAO_IF {
 	void save(SearchDataLookupParametersLookupDTO item);
 	
 	/**
-	 * SET single_project_search_id__default_values =? WHERE id = ?
-	 * 
-	 * @param singleProjecSearchIdDefaultValues
-	 * @param id
-	 */
-	void updateSingleProjecSearchIdDefaultValues( int singleProjecSearchIdDefaultValues, int id );
-	
-	/**
 	 * SET last_accessed = NOW() WHERE id = ?
 	 * @param id
 	 */

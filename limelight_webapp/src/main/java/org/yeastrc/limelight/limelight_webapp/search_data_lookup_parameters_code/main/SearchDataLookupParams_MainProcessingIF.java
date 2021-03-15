@@ -41,7 +41,6 @@ public interface SearchDataLookupParams_MainProcessingIF {
 	SearchDataLookupParametersLookupDTO searchDataLookupParams_Save_ReturnObject(
 			SearchDataLookupParamsRoot searchDataLookupParamsRoot,
 			SearchDataLookupParametersLookupRootIdTypes searchDataLookupParametersLookupType,
-			Integer singleProjectSearchIdCreatedDefaultsFor,
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo) throws SQLException;
 
 	
