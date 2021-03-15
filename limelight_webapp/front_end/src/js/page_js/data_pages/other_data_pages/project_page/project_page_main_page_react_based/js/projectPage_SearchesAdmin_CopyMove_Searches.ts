@@ -18,13 +18,14 @@
 
 //  Import Handlebars templates
 
-import { _project_page_searches_section_researcher_user_interaction_template } from './projectPage__Common__ImportHandlebarsTemplates'
+import { _project_page_searches_section_researcher_user_interaction_template } from '../../projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { ModalOverlay } from 'page_js/data_pages/display_utilities/modalOverlay';
+import {ProjectPage_SearchesSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction";
 
 
 
@@ -38,10 +39,8 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
     private _projectIdentifierFromURL;
 
-    private _projectPage_SearchesSection_AllUsersInteraction = undefined;  //  Set in initialize(...) method
+    private _projectPage_SearchesSection_AllUsersInteraction : ProjectPage_SearchesSection_AllUsersInteraction = undefined;  //  Set in initialize(...) method
 
-    private _project_searches_admin_buttons_template =
-        _project_page_searches_section_researcher_user_interaction_template.project_searches_admin_buttons_template;
     private _project_searches_copy_move_container_template =
         _project_page_searches_section_researcher_user_interaction_template.project_searches_copy_move_container_template;
     private _project_searches_copy_move_item_template =
@@ -63,9 +62,6 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 
         this._projectIdentifierFromURL = projectIdentifierFromURL;
 
-        if ( ! _project_page_searches_section_researcher_user_interaction_template.project_searches_admin_buttons_template ) {
-            throw Error("Nothing in _project_page_searches_section_researcher_user_interaction_template.project_searches_admin_buttons_template");
-        }
         if ( ! _project_page_searches_section_researcher_user_interaction_template.project_searches_copy_move_container_template ) {
             throw Error("Nothing in _project_page_searches_section_researcher_user_interaction_template.project_searches_copy_move_container_template");
         }
@@ -83,190 +79,52 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches {
 	/**
 	 * 
 	 */
-	initialize( { projectPage_SearchesSection_AllUsersInteraction }) {
+	initialize(
+	    {
+            projectPage_SearchesSection_AllUsersInteraction
+	    } : {
+            projectPage_SearchesSection_AllUsersInteraction: ProjectPage_SearchesSection_AllUsersInteraction
+        }) {
 
         this._projectPage_SearchesSection_AllUsersInteraction = projectPage_SearchesSection_AllUsersInteraction;
 
         this._initializeCalled = true;
     }
 
-	/**
-	 * Called each time the search list is populated, which means that also the buttons above and below were removed
-	 */
-	searchListPopulated() {
+    /**
+     *
+     * @param doCopy
+     * @param doMove
+     * @param projectSearchIdsSelected
+     */
+    openOverlay_ForCopyMoveSearches(
+        {
+            doCopy, doMove, projectSearchIdsSelected
+        } : {
 
-        const objectThis = this;
+            doCopy: boolean
+            doMove: boolean
+            projectSearchIdsSelected: Set<number>
 
-        //  Add Copy Move Buttons
-
-        const $search_list_above_block = $("#search_list_above_block");
-
-        let adminButtons_HTML = this._project_searches_admin_buttons_template({});
-
-        $search_list_above_block.append( adminButtons_HTML );
-
-        $("#copy_search_button").click(function(eventObject) {
-            try {
-                eventObject.preventDefault();
-                const clickThis = this;
-                objectThis._openCopySearchesOverlay( clickThis, eventObject );
-                return false;
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
-        $("#move_search_button").click(function(eventObject) {
-            try {
-                eventObject.preventDefault();
-                const clickThis = this;
-                objectThis._openMoveSearchesOverlay( clickThis, eventObject );
-                return false;
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
-    }
-
-	/**
-	 * 
-	 */
-	addChangeHandlersSelectSearch({projectSearchId, searchId, $search_entry}) {
-
-		let objectThis = this;
-
-		if (!this._initializeCalled) {
-			throw Error("initialize method not called");
-		}
-
-		let $single_search_checkbox_jq = $search_entry.find(".single_search_checkbox_jq");
-		if ($single_search_checkbox_jq.length === 0) {
-			throw Error("Unable to find '.single_search_checkbox_jq'");
-		}
-		$single_search_checkbox_jq.change(function(eventObject) {
-			try {
-				event.preventDefault(); // to stop the 
-				let elementThis = this;
-				objectThis._selectSearchChanged({
-					elementThis,
-					projectSearchId,
-					searchId
-				});
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-		});
-	}
-
-    //////////////////
-    
-	/**
-	 * Selection of Searches Changed
-	 */    
-    _selectSearchChanged({ elementThis, projectSearchId, searchId }) {
-
-        this._enableDisable_CopyMove_Buttons();
-    }
-
-	/**
-	 * Selection of Searches Changed
-	 */  
-    _enableDisable_CopyMove_Buttons() {
-
-        const $search_list = $("#search_list");
-        if ($search_list.length === 0) {
-            throw Error("Unable to find '#search_list'");
-        }
-
-        let $single_search_checkbox_jqAll = $search_list.find(".single_search_checkbox_jq:checked");
-        if ($single_search_checkbox_jqAll.length === 0) {
-            // No search items or none selected, disable Copy and Hide buttons
-            $("#copy_search_button").attr("disabled", "disabled");
-            //  show covering div
-            $("#copy_search_button_cover_when_disabled").show();
-            //  Move Searches button
-            // disable button
-            $("#move_search_button").attr("disabled", "disabled");
-            //  show covering div
-            $("#move_search_button_cover_when_disabled").show();
-
-        } else {
-            // Have search items selected, enable Copy and Hide buttons
-
-            $("#copy_search_button").removeAttr("disabled");
-            //  hide covering div
-            $("#copy_search_button_cover_when_disabled").hide();
-            //  Move Searches button
-            // enable button
-            $("#move_search_button").removeAttr("disabled");
-            //  hide covering div
-            $("#move_search_button_cover_when_disabled").hide();
-        }
-    }
-
-	/**
-	 * 
-	 */  
-    _openCopySearchesOverlay(clickThis, eventObject) {
-        $(".copy_searches_display_copy_part_jq").show();
-        $(".copy_searches_display_move_part_jq").hide();
-        
-        $("#copy-searches-overlay-confirm-project-block").data( "copyToOtherProject", true );
-        $("#copy-searches-overlay-confirm-project-block").data( "moveToOtherProject", false );
-        
-        if ( ! this._getDataForPopulateOtherProjectsForCopyMoveSearchesOverlay( { doCopy : true, doMove : undefined } ) ) {
-            $(".copy_searches_display_copy_part_jq").hide();
-            $(".copy_searches_display_move_part_jq").show();
-        }
-    }
-
-	/**
-	 * 
-	 */  
-    _openMoveSearchesOverlay(clickThis, eventObject) {
-        $(".copy_searches_display_move_part_jq").show();
-        $(".copy_searches_display_copy_part_jq").hide();
-    
-        $("#copy-searches-overlay-confirm-project-block").data( "moveToOtherProject", true );
-        $("#copy-searches-overlay-confirm-project-block").data( "copyToOtherProject", false );
-    
-        if ( ! this._getDataForPopulateOtherProjectsForCopyMoveSearchesOverlay( { doMove : true, doCopy : undefined } ) ) {
-            $(".copy_searches_display_move_part_jq").hide();
-            $(".copy_searches_display_copy_part_jq").show();
-        }
-    }
-    
-	/**
-	 * 
-	 */  
-    _getDataForPopulateOtherProjectsForCopyMoveSearchesOverlay( { doCopy, doMove } ) {
+        } ) : boolean {
     
         const objectThis = this;
 
-        const projectSearchIdsSearchIdsSelected = this._projectPage_SearchesSection_AllUsersInteraction.getSelectedSearches(); //  Select Project Search Ids
-
-        if ( projectSearchIdsSearchIdsSelected.length === 0 ) {
+        if ( projectSearchIdsSelected.size === 0 ) {
             return false; // No project search ids found to process
         }
 
 		//  Copy to array of just project each ids
-		const projectSearchIdsSelected = [];
-		for ( const entry of projectSearchIdsSearchIdsSelected) {
-			projectSearchIdsSelected.push(entry.projectSearchId);
-        }
+		const projectSearchIdsSelected_Array = Array.from( projectSearchIdsSelected );;
 
         const getOtherProjectsCanCopyMoveProjectSearchIdsTo_Promise =
-            this._getOtherProjectsCanCopyMoveProjectSearchIdsTo({ projectIdentifier: this._projectIdentifierFromURL, projectSearchIdsSelected });
+            this._getOtherProjectsCanCopyMoveProjectSearchIdsTo({ projectIdentifier: this._projectIdentifierFromURL, projectSearchIdsSelected: projectSearchIdsSelected_Array });
 
         getOtherProjectsCanCopyMoveProjectSearchIdsTo_Promise.catch((reason) => {});
 
         getOtherProjectsCanCopyMoveProjectSearchIdsTo_Promise.then((responseData) => {
             try {
-                objectThis._populateOtherProjectsForCopySearchesOverlay( { projectSearchIdsSelected, responseData, doCopy, doMove } );
+                objectThis._populateOtherProjectsForCopySearchesOverlay( { projectSearchIdsSelected: projectSearchIdsSelected_Array, responseData, doCopy, doMove } );
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;

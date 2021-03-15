@@ -18,7 +18,7 @@
 
 //  Import Handlebars templates
 
-import { _project_page__searches_section_organize_searches_template } from './projectPage__Common__ImportHandlebarsTemplates'
+import { _project_page__searches_section_organize_searches_template } from '../../projectPage__Common__ImportHandlebarsTemplates'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
@@ -66,9 +66,6 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 		this._projectPage_ProjectSection_LoggedInUsersInteraction = projectPage_ProjectSection_LoggedInUsersInteraction;
 
-        if ( ! _project_page__searches_section_organize_searches_template.project__organize_searches_button_template ) {
-            throw Error("Not Found: _project_page__searches_section_organize_searches_template.project__organize_searches_button_template")
-        }
         if ( ! _project_page__searches_section_organize_searches_template.project__organize_searches_root ) {
             throw Error("Not Found: _project_page__searches_section_organize_searches_template.project__organize_searches_root")
         }
@@ -98,72 +95,54 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
         this._initializeCalled = true;
     }
-
-    
-	/**
-	 * Called each time the search list is populated, which means that also the buttons above and below were removed
-	 */
-	searchListPopulated() {
-
-        const objectThis = this;
-
-        //  Add Organize Searches Button
-
-        const $search_list_above_block = $("#search_list_above_block");
-
-        let adminButtons_HTML = _project_page__searches_section_organize_searches_template.project__organize_searches_button_template({});
-
-        $search_list_above_block.append( adminButtons_HTML );
-
-        $("#organize_searches_button").click( (eventObject) => {
-            try {
-                eventObject.preventDefault();
-                // const eventTarget = eventObject.target;
-                this._openOrganizeSearches( eventObject );
-                return false;
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
-
-        //  Add click handlers for delete and rename folder in main search section
-
-        const $search_list = $("#search_list");
-
-        //  Add click handler to delete icon each folder
-		const $folder_delete_button_jq_InBlock = $search_list.find(".folder_delete_button_jq");
-		$folder_delete_button_jq_InBlock.click(function(eventObject) {
-			try {
-				eventObject.stopPropagation();
-				const clickThis = this;
-				objectThis._deleteFolderClickHandler({ clickThis, eventObject, inOrganizeOverlay : false });
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-		//  Add click handler to rename icon each folder
-		const $folder_rename_button_jq_InBlock = $search_list.find(".folder_rename_button_jq");
-		$folder_rename_button_jq_InBlock.click(function(eventObject) {
-			try {
-				eventObject.stopPropagation();
-				const clickThis = this;
-				objectThis._renameFolderClickHandler({ clickThis, eventObject, inOrganizeOverlay : false });
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-
-    }
+	//
+    //
+	// /**
+	//  * Called each time the search list is populated, which means that also the buttons above and below were removed
+	//  */
+	// searchListPopulated() {
+	//
+    //     const objectThis = this;
+	//
+    //     //  Add Organize Searches Button
+	//
+    //     const $search_list_above_block = $("#search_list_above_block");
+	//
+    //     //  Add click handlers for delete and rename folder in main search section
+	//
+    //     const $search_list = $("#search_list");
+	//
+    //     //  Add click handler to delete icon each folder
+	// 	const $folder_delete_button_jq_InBlock = $search_list.find(".folder_delete_button_jq");
+	// 	$folder_delete_button_jq_InBlock.click(function(eventObject) {
+	// 		try {
+	// 			eventObject.stopPropagation();
+	// 			const clickThis = this;
+	// 			objectThis._deleteFolderClickHandler({ clickThis, eventObject, inOrganizeOverlay : false });
+	// 		} catch( e ) {
+	// 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+	// 			throw e;
+	// 		}
+	// 	});
+	// 	//  Add click handler to rename icon each folder
+	// 	const $folder_rename_button_jq_InBlock = $search_list.find(".folder_rename_button_jq");
+	// 	$folder_rename_button_jq_InBlock.click(function(eventObject) {
+	// 		try {
+	// 			eventObject.stopPropagation();
+	// 			const clickThis = this;
+	// 			objectThis._renameFolderClickHandler({ clickThis, eventObject, inOrganizeOverlay : false });
+	// 		} catch( e ) {
+	// 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+	// 			throw e;
+	// 		}
+	// 	});
+	//
+    // }
 
 	/**
 	 * 
 	 */
-    _openOrganizeSearches( eventObject ) {
-
-        // const eventTarget = eventObject.target;
+    openOrganizeSearches() {
 
         this._startSearchesOrganize();
     }
@@ -1255,8 +1234,24 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 
 
 	//  Rename Folder processing
+
+	/**
+	 *
+	 */
+	changeFolderName_MainFolderList(
+		{
+			folderName, folderId
+		} : {
+			folderName: string
+			folderId: number
+		}) : void {
+
+		this._openConfirmRenameFolderOverlay_Internal({ folderName, folderId, inOrganizeOverlay: false });
+	}
+
 	/////////////////
 	_renameFolderClickHandler({ clickThis, eventObject, inOrganizeOverlay }) {
+
 		this._openConfirmRenameFolderOverlay({ clickThis, eventObject, inOrganizeOverlay });
 		return;
 	}
@@ -1266,14 +1261,19 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 		const $clickThis = $(clickThis);
 //		get root div for this folder
 		const $folder_root_jq = $clickThis.closest(".folder_root_jq");
-		const folderId = $folder_root_jq.attr("data-folder_id");	
-		if ( folderId === undefined ) {
-			throw Error( "Error: attribute 'data-folder_id' not found on element with class 'folder_root_jq'" );
+		const folderId = $folder_root_jq.attr("data-folder_id");
+		if (folderId === undefined) {
+			throw Error("Error: attribute 'data-folder_id' not found on element with class 'folder_root_jq'");
 		}
-        const in_organize_overlay = $folder_root_jq.attr("data-in_organize_overlay");
+		const in_organize_overlay = $folder_root_jq.attr("data-in_organize_overlay");
 //		copy the folder name to the overlay
 		const $folder_name_jq = $folder_root_jq.find(".folder_name_jq");
-        const folderName = $folder_name_jq.text();
+		const folderName = $folder_name_jq.text();
+
+		this._openConfirmRenameFolderOverlay_Internal({ folderName, folderId, inOrganizeOverlay });
+	}
+
+	_openConfirmRenameFolderOverlay_Internal({ folderName, folderId, inOrganizeOverlay }) {
 
         const project__rename_folder_modal_dialogContext = { folderName };
         const modalHTLM = _project_page__searches_section_organize_searches_template.project__rename_folder_modal_dialog( project__rename_folder_modal_dialogContext );

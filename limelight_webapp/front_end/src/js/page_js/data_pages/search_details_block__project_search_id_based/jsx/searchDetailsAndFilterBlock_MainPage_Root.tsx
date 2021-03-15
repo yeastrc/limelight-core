@@ -862,7 +862,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                     )}
                 </td>
                 <td style={ searchName_TD_Style }>
-                    <div className=" selector_search_name_details_holder " >
+                    <div >
                         <div style={ { wordBreak: "break-word" } }>
                             { searchNameObject.name } ({ searchNameObject.searchId })
                         </div>

@@ -41,7 +41,7 @@ import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_Pr
 
 import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
 
-import { ProjectPage_SearchesSection_AllUsersInteraction } from './projectPage_SearchesSection_AllUsersInteraction';
+import { ProjectPage_SearchesSection_AllUsersInteraction } from './project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction';
 import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
 /**
@@ -96,7 +96,7 @@ class ProjectViewPage_Root_PublicUser {
 			} );
 
 		this._projectPage_SearchesSection_AllUsersInteraction = 
-			new ProjectPage_SearchesSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
+			new ProjectPage_SearchesSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: null } );
 
 		this._projectPage_SavedViews_Section_AllUsersInteraction =
 			new ProjectPage_SavedViews_Section_AllUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
