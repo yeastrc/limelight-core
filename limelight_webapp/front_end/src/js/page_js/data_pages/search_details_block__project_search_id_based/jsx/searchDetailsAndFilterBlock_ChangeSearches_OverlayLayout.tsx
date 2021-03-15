@@ -468,21 +468,21 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                     >
 
                         {/* 2 column grid */}
-                        <div className={"folder-collapsable-link-container"}>
+                        <div style={ { paddingRight: 6 } } className={"folder-collapsable-link-container"}>
                             {
                                 ( this.state.folderExpanded ) ? (
-                                    <img src="static/images/pointer-down.png"
-                                         className=" icon-small fake-link-image "
+                                    <img src="static/images/icon-folder-open.png"
+                                         className=" icon-large fake-link-image "
                                     />
                                 ) : (
-                                    <img src="static/images/pointer-right.png"
-                                         className=" icon-small fake-link-image "
+                                    <img src="static/images/icon-folder-closed.png"
+                                         className=" icon-large fake-link-image "
                                     />
                                 )
                             }
                         </div>
                         <div >
-                            <span className=" folder-name-display ">Folder: { this.props.searchDisplayListItem.folderName }</span>
+                            <span className=" folder-name-display ">{ this.props.searchDisplayListItem.folderName }</span>
                         </div>
 
                     </div>

@@ -549,8 +549,6 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
      */
     private _modifications_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
 
-        event.stopPropagation();
-
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
@@ -939,15 +937,14 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
                         {/* 2 column grid */}
                         <div className={"folder-collapsable-link-container"}>
-                            {
-                                ( folderExpanded ) ? (
-                                    <img src="static/images/pointer-down.png"
-                                         className=" icon-small fake-link-image "
-                                    />
-                                ) : (
-                                    <img src="static/images/pointer-right.png"
-                                         className=" icon-small fake-link-image "
-                                    />
+                              { ( folderExpanded ) ? (
+                                  <img src="static/images/icon-folder-open.png"
+                                       className=" icon-large fake-link-image "
+                                  />
+                              ) : (
+                                  <img src="static/images/icon-folder-closed.png"
+                                       className=" icon-large fake-link-image "
+                                  />
                                 )
                             }
                         </div>
