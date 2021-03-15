@@ -837,11 +837,15 @@
         }
         
         .view-single-protein-overlay-header { 
-            
-            height: 35px;
+
             background-color: $site-color-very-dark;
-            
+
+            height: 35px;
             padding-bottom: 5px;
+
+            position: -webkit-sticky;
+            position: sticky;
+            z-index: 1;  // So main content scrolls under it
         
             border-width: 0px;
             border-bottom-width: 1px;

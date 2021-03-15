@@ -40,6 +40,8 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Compone
 
     closeOverlayClickHandler : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_closeOverlayClickHandler;
 
+    standard_Page_Header_Height: number
+
     //  Optional.  Do NOT have when loading URL and directly displaying Single Protein Overlay
     proteinNames : string
     proteinDescriptions : string
@@ -366,7 +368,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
 
                     <div id="view_single_protein_inner_overlay_div"  className=" view-single-protein-overlay-div " ref={ this._view_single_protein_inner_overlay_div_Ref }>
 
-                        <div className="view-single-protein-overlay-header">
+                        <div className="view-single-protein-overlay-header" style={ { top: this.props.standard_Page_Header_Height } }>
 
                             <div ref={ this.view_single_protein_overlay_header_inner_container_Ref }
                                 style={  { width: view_single_protein_overlay_header_Style_width_maxWidth,  maxWidth: view_single_protein_overlay_header_Style_width_maxWidth } }

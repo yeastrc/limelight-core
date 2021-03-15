@@ -36,7 +36,10 @@ import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/
 
 import { ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop } from '../jsx/proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component'
 
-import { ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component } from '../jsx/proteinPage_Display_MultipleSearches_SingleProtein_Root_Component';
+import {
+	ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component,
+	ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props
+} from '../jsx/proteinPage_Display_MultipleSearches_SingleProtein_Root_Component';
 
 
 import {
@@ -484,16 +487,21 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			proteinDescriptions = this._proteinListItem.description
 		}
 
+		const standard_Page_Header_Height = this._get_Standard_Page_Header_Height();
+
+		const props : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props = {
+			closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
+			standard_Page_Header_Height,
+			proteinNames,
+			proteinDescriptions
+		}
+
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
 		
 		const proteinExperimentPage_SingleProtein_Root_Component = (
 			React.createElement(
 				ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component,
-				{
-					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
-					proteinNames,
-					proteinDescriptions
-				},
+				props,
 				null
 			)
 		);
@@ -679,6 +687,27 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
+	}
+
+	/**
+	 * Return the height of the Page header at the top of the page
+	 */
+	private _get_Standard_Page_Header_Height() : number {
+
+		// const $header_outer_container_div = $("#header_outer_container_div");
+		// if ( $header_outer_container_div.length === 0 ) {
+		// 	throw Error("No DOM element found with id 'header_outer_container_div'");
+		// }
+		// const headerOuterHeight = $header_outer_container_div.outerHeight( true /* [includeMargin ] */ );
+
+		const header_outer_container_div_DOM = document.getElementById("header_outer_container_div");
+		if ( ! header_outer_container_div_DOM ) {
+			throw Error("No DOM element found with id 'header_outer_container_div'");
+		}
+		const header_outer_container_div_BoundingClientRect = header_outer_container_div_DOM.getBoundingClientRect();
+		const height = header_outer_container_div_BoundingClientRect.height;
+
+		return height;
 	}
 }
 
