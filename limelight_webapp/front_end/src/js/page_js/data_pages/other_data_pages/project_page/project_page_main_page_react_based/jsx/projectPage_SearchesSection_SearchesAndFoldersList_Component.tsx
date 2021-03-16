@@ -949,7 +949,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                             }
                         </div>
                         <div>
-                            <span className=" folder-name-display ">Folder: { this.props.searchDisplayListItem.folderName }</span>
+                            <span className=" folder-name-display ">{ this.props.searchDisplayListItem.folderName }</span>
 
                             <span> </span>
                             <img src="static/images/icon-edit.png"
