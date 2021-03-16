@@ -85,7 +85,6 @@ const limelight__header_main_pages_PopulateProjects = function () {
                     console.warn("response.text() reject: ", reason)
                 })
                 response_text.then( value => {
-                    console.log("response.text().then(value): ", value)
 
                     const header_projects_list_dropdown_outer_containerDOM = document.getElementById("header_projects_list_dropdown_outer_container")
                     if (!header_projects_list_dropdown_outer_containerDOM) {
