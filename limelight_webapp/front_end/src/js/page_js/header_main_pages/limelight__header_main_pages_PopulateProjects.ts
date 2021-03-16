@@ -57,7 +57,6 @@ const limelight__header_main_pages_PopulateProjects = function () {
         })
         promise_fetch.then( response => {
             try {
-                console.log("fetch response: ", response)
                 console.log("fetch response.ok: ", response.ok)
                 console.log("fetch response.status: ", response.status)
 
