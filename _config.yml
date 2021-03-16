@@ -24,11 +24,11 @@ permalink: pretty
 
 social:
   - icon: external-link
-    text: Use Limelight
-    url: https://limelight.yeastrc.org/limelight/
-  - icon: external-link
     text: Try Demo
     url: https://limelight.yeastrc.org/limelight/
   - icon: question-circle
     text: Documentation
     url: http://www.yeastrc.org/limelight_docs/
+  - icon: github
+    text: View Source Code
+    url: https://github.com/yeastrc/limelight-core

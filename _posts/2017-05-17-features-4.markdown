@@ -5,6 +5,5 @@ category: Features
 title: Interactive Analysis Tools and Data Visualization
 description: |
 ---
- Proxl contains numerous, interactive views of the data--including tables, downloadable reports,
- interactive graphical visualizations, 3D structure viewer, and exports formatted for 3<sup>rd</sup> party
- visualization tools.
+ Limelight contains numerous, interactive views of the data--including tables, downloadable reports,
+ and interactive graphical visualizations.
