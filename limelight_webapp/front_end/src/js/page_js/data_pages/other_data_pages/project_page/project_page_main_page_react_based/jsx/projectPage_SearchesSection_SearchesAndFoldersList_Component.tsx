@@ -322,8 +322,8 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
     private _deleteSearch_Clicked_BindThis = this._deleteSearch_Clicked.bind(this);
 
     private _peptide_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
-    private _protein_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
-    private _modifications_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
+    private _protein_Page_FakeLink_Clicked_BindThis = this._protein_Page_FakeLink_Clicked.bind(this);
+    private _modifications_Page_FakeLink_Clicked_BindThis = this._modifications_Page_FakeLink_Clicked.bind(this);
 
     private _checkboxChanged_BindThis = this._checkboxChanged.bind(this);
 
