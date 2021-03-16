@@ -24,6 +24,7 @@ const limelight__header_main_pages_Setup = function () {
                 //  Comment out call to   limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu();
 
                 // Get DOM element that will contain the Project Lists Overlay fake tooltip
+
                 // const header_projects_list_dropdown_outer_containerDOM = document.getElementById("header_projects_list_dropdown_outer_container")
                 // if ( ! header_projects_list_dropdown_outer_containerDOM ) {
                 //     console.log("limelight__header_main_pages_PopulateProjects: Exit populate. No DOM element with id 'header_projects_list_dropdown_outer_container'");
@@ -69,15 +70,12 @@ const set_ProjectsDiv_Position = function () {
         return; // EARLY RETURN
     }
 
-    const window_scrollX = window.scrollX;
-    const window_scrollY = window.scrollY;
-
     const left_Shift = -4;
     const top_Shift = 2;
 
     const header_projects_list_position_reference_div_BoundingClientRect = header_projects_list_position_reference_divDOM.getBoundingClientRect();
-    const header_projects_list_position_reference_div_LEFT = Math.round( header_projects_list_position_reference_div_BoundingClientRect.left + window_scrollX ) + left_Shift;
-    const header_projects_list_position_reference_div_TOP = Math.round( header_projects_list_position_reference_div_BoundingClientRect.top + window_scrollY ) + top_Shift;
+    const header_projects_list_position_reference_div_LEFT = Math.round( header_projects_list_position_reference_div_BoundingClientRect.left ) + left_Shift;
+    const header_projects_list_position_reference_div_TOP = Math.round( header_projects_list_position_reference_div_BoundingClientRect.top ) + top_Shift;
 
     header_projects_list_dropdown_outer_containerDOM.style.left = header_projects_list_position_reference_div_LEFT + "px";
     header_projects_list_dropdown_outer_containerDOM.style.top = header_projects_list_position_reference_div_TOP + "px";
