@@ -24,6 +24,7 @@ import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {limelight__header_main_pages_PopulateProjects_After_Delay} from "page_js/header_main_pages/limelight__header_main_pages_PopulateProjects";
 
 //  Local imports
 
@@ -269,6 +270,9 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		$header_project_title.text( requestObj.projectTitle );
 		
 		this._closeChangeProjectTitle( { clickThis } );
+
+		//  Refresh Project List Drop Down
+		limelight__header_main_pages_PopulateProjects_After_Delay();
 	}
 	
 	/**
