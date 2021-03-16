@@ -81,7 +81,9 @@
 		</div>
 		  <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
 
-			  <div id="change_project_title_container" style="display: none; margin-left: 40px; position: relative;" >
+			  <div id="change_project_title_container" style="display: none;  position: relative;" 
+			   class="second-level-text project-info-text" 
+			  >
 
 		  		<div class="error-message-container error_message_container_jq" id="error_message_project_title_required">
 		  			<div class="error-message-inner-container" style="width: 300px;">

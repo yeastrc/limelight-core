@@ -217,6 +217,9 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		
 		let $change_project_title_container = $("#change_project_title_container");
 		$change_project_title_container.show();
+
+		const $title_container_div = $("#title_container_div")
+		$title_container_div.hide()
 	}
 
 	/**
@@ -289,6 +292,9 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		let $change_project_title_container = $("#change_project_title_container");
 		$change_project_title_container.hide();
+
+		const $title_container_div = $("#title_container_div")
+		$title_container_div.show()
 	}
 
 
