@@ -1,0 +1,10 @@
+---
+layout: default
+img: filters.png
+category: Features
+title: Advanced Filtering Options
+description: |
+---
+Limelight includes advanced filtering options to help you focus on the data that matter to you. Filter peptides
+by pipeline scores, sequence, their uniqueness, protein positions, modification masses, and more. When
+applicable, all filters use the native scores present in any respective pipeline.
