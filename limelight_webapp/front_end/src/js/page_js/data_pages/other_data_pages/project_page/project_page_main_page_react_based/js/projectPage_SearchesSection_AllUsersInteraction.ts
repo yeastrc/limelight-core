@@ -16,20 +16,6 @@
 
 //  module import 
 
-//  Import Handlebars templates
-
-import { _project_page_searches_section_all_users_interaction_template } from '../../projectPage__Common__ImportHandlebarsTemplates'
-
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
-
-import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collapsableSection_StandardProcessing';
-
-import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
-
-import { sortSearchesOnDisplayOrder_OrDefaultOrder } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder';
-
 //  Local imports
 
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
@@ -40,11 +26,16 @@ import {
 import React from "react";
 import ReactDOM from "react-dom";
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
+import {
+	ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback,
+	ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Params
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_SearchesAndFoldersList_Component";
+import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
-//  prefix for DOM element 'id' attribute, followed by project search id
-const _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_CHECKBOX_ID_PREFIX = "search_item_checkbox_root_id_";
-const _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_COLLAPSE_EXPAND_ID_PREFIX = "search_item_expand_collapse_root_id_";
-const _SEARCH_ITEM_GRID_DOM_ELEMENT_FOR_MAIN_ID_PREFIX = "search_item_main_root_id_";
+
+const _SESSION_STORAGE_KEY = "limelight_project_page_folders_expanded_ids"
+
+
 
 /**
  * 
@@ -58,6 +49,15 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 	private _projectPage_SearchesAdmin : ProjectPage_SearchesAdmin
 
 	private _dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
+
+	private _callback_Update_folderIds_ExpandedFolders_BindThis = this._callback_Update_folderIds_ExpandedFolders.bind(this);
+
+	private _DO_NOT_CALL() {
+		const callback_Update_folderIds_ExpandedFolders: ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback =
+			this._callback_Update_folderIds_ExpandedFolders
+	}
+
+	private _initial__folderIds_ExpandedFolders : Set<number>
 
 	/**
 	 * searchSelectionChangeCallback - function called when the search selection changes
@@ -86,6 +86,39 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 	initialize() {
 
 		this._initializeCalled = true;
+
+		this._initial__folderIds_ExpandedFolders = new Set();
+
+		const storedValueJSON = window.sessionStorage.getItem(_SESSION_STORAGE_KEY )
+		if ( ! storedValueJSON ) {
+
+
+		} else {
+
+			let storageValue = null
+			try {
+				storageValue = JSON.parse( storedValueJSON );
+			} catch (e) {
+				
+			}
+			if ( storageValue ) {
+				if ( storageValue.projectIdentifier === this._projectIdentifierFromURL ) {
+
+					if ( storageValue.folderIds_ExpandedFolders && ( storageValue.folderIds_ExpandedFolders instanceof Array )) {
+
+						for ( const entry of storageValue.folderIds_ExpandedFolders ) {
+							if ( variable_is_type_number_Check(entry) ) {
+								this._initial__folderIds_ExpandedFolders.add(entry)
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		this._save_folderIds_ExpandedFolders_To_SessionStorage( this._initial__folderIds_ExpandedFolders );
+
 	};
 
 	/**
@@ -111,8 +144,10 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 
 			const projectPage_SearchesSection_ROOT_Component_Props : ProjectPage_SearchesSection_ROOT_Component_Props = {
 				projectIdentifier,
+				folderIds_ExpandedFolders_InitialValue: this._initial__folderIds_ExpandedFolders,
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: this._dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
 				projectPage_SearchesAdmin: this._projectPage_SearchesAdmin,
+				callback_Update_folderIds_ExpandedFolders: this._callback_Update_folderIds_ExpandedFolders_BindThis
 			};
 
 
@@ -137,5 +172,32 @@ export class ProjectPage_SearchesSection_AllUsersInteraction {
 		}
 
 	};
+
+	private _callback_Update_folderIds_ExpandedFolders( params: ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Params ) {
+
+		this._initial__folderIds_ExpandedFolders = params.updated_folderIds_ExpandedFolders;
+
+		this._save_folderIds_ExpandedFolders_To_SessionStorage( params.updated_folderIds_ExpandedFolders )
+	}
+
+	private _save_folderIds_ExpandedFolders_To_SessionStorage( updated_folderIds_ExpandedFolders_Set : Set<number> ) {
+
+		window.setTimeout( () => {
+
+			let updated_folderIds_ExpandedFolders = [];
+			if ( updated_folderIds_ExpandedFolders_Set ) {
+				updated_folderIds_ExpandedFolders = Array.from( updated_folderIds_ExpandedFolders_Set )
+			}
+
+			const storageValue = {
+				folderIds_ExpandedFolders: updated_folderIds_ExpandedFolders,
+				projectIdentifier: this._projectIdentifierFromURL
+			}
+			const storedValueJSON = JSON.stringify( storageValue );
+
+			window.sessionStorage.setItem(_SESSION_STORAGE_KEY, storedValueJSON )
+
+		}, 50 );
+	}
 
 }

@@ -33,6 +33,17 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expan
 /**
  *
  */
+export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Params {
+    updated_folderIds_ExpandedFolders : Set<number>
+}
+
+export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback =
+    ( params : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Params ) => void
+
+
+/**
+ *
+ */
 export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds_Params {
     updated_selected_ProjectSearchIds : Set<number>
 }
@@ -47,12 +58,14 @@ export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_
  */
 export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Props {
     projectIdentifier : string
+    folderIds_ExpandedFolders_InitialValue : Set<number>;
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
     searchesAndFolders: ProjectPage_SearchesSection_Searches_Folders_Root
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     callback_updateSelected_Searches : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds
+    callback_Update_folderIds_ExpandedFolders: ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback
 }
 
 /**
@@ -91,7 +104,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
 
         this.state = {
             projectSearchIds_Selected_InProgress : new Set(),
-            folderIds_ExpandedFolders_InProgress : new Set(),
+            folderIds_ExpandedFolders_InProgress : new Set( props.folderIds_ExpandedFolders_InitialValue ),
             expand_All_Folders__ShowSearchDetailsTo_Global_Force_FromProps: props.expand_All_Folders__ShowSearchDetailsTo_Global_Force,
             fakeTriggerRender: {}
         };
@@ -127,6 +140,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                         const id = entry.id;
                         folderIds_ExpandedFolders_InProgress.add( id );
                     }
+
+                    props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
+
                     newState.folderIds_ExpandedFolders_InProgress = folderIds_ExpandedFolders_InProgress;
                 } else {
                     newState.folderIds_ExpandedFolders_InProgress = new Set();
@@ -151,6 +167,8 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     folderIds_ExpandedFolders_InProgress.add(params.folderId);
                 }
             }
+
+            props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
 
             return { folderIds_ExpandedFolders_InProgress };
         });

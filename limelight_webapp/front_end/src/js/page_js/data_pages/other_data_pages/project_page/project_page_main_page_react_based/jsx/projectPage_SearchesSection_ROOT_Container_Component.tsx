@@ -13,6 +13,7 @@ import React from "react";
 import {
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component,
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force,
+    ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback,
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds,
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_SearchesAndFoldersList_Component";
@@ -28,13 +29,17 @@ import {
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
 
+
+
 /**
  *
  */
 export interface ProjectPage_SearchesSection_ROOT_Component_Props {
     projectIdentifier : string
+    folderIds_ExpandedFolders_InitialValue : Set<number>;
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+    callback_Update_folderIds_ExpandedFolders: ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback
 }
 
 /**
@@ -301,11 +306,13 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
 
                     <ProjectPage_SearchesSection_SearchesAndFoldersList_Component
                         projectIdentifier={ this.props.projectIdentifier }
+                        folderIds_ExpandedFolders_InitialValue={ this.props.folderIds_ExpandedFolders_InitialValue }
                         searchesAndFolders={ this.state.searchesAndFolders }
                         expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.state.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails}
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         callback_updateSelected_Searches={ this._callback_updateSelected_Searches_BindThis }
+                        callback_Update_folderIds_ExpandedFolders={ this.props.callback_Update_folderIds_ExpandedFolders }
                     />
 
                     <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
