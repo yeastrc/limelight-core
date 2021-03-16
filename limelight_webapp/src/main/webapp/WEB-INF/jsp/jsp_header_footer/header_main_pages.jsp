@@ -7,9 +7,27 @@
 <%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
 <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
 
+	
+	<%--  Project List Drop Down Menu
+	
+			Here to be oustide the CSS Grid
+	
+	 --%>
+	 <%-- --%>
+	<div style="position: relative; height: 0px">
+		<div id="header_projects_list_dropdown_outer_container" 
+			class=" header-projects-list-container " 
+			style=" width: MIN( 800px, 60vw ); max-height: MIN( 800px, CALC( 80vh - 40px ) ); "
+		>
+			
+			Loading Projects...
+			
+	    </div>
+	</div>
+	
   <div class=" header-outer-container " id="header_outer_container_div">  <%--  Outer Container for the Header --%>
-  
-  		<%--  Grid:  Logo, Project Title, User Name(username), Logout or Login Icon  --%>
+	
+	<%--  Grid:  Logo, Project Title, User Name(username), Logout or Login Icon  --%>
     <div class=" header-middle-container " 
     	style="display: grid; grid-template-columns: 120px auto <c:if test="${ not empty headerUserInfo }"> min-content </c:if> min-content;">
 	<%-- Left Side contents --%>
@@ -52,13 +70,70 @@
 		
 	</div>
 
+ 	 <c:if test="${ not empty headerUserInfo }">
+<%--  	
+	  <div class="header-pointer-right">
+		<span style="padding-left: 5px; padding-right: 5px;"> 
+			<img src="static/images/pointer-right.png">
+		</span>
+	  </div>
+--%>
+<%-- 
+	  <div class="header-projects-label-div" style="position: relative;">
+--%>	  
+	  	<%--  Projects List for User --%>
+<%-- 
+	  </div>
+--%>
+		
+	 </c:if>
+	 
 			<%-- Project Title:  Keep all on one line, Hide overflow, show ... when have overflow --%>
 	<div class="header-left-main-container" style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">
 	
+	 <c:if test="${ not empty headerUserInfo }">
+	 
+	 
+	  <div class="header-pointer-right">
+		<span > <%-- style="padding-left: 5px; padding-right: 5px;" --%>
+		 
+			<img src="static/images/pointer-right.png" class=" icon-small ">
+		</span>
+	  </div>
+
+	  <div
+	    id="header_projects_outer_container" 
+	  	class="header-projects-label-div" style="position: relative;"
+  	  >
+	  	<div id="header_projects_inner_container" >
+			<a href="" class="header-projects-label" id="header_projects_link">
+	
+				<span class="header-projects-label">
+					Projects  <%--  PROJECTS Label on Page in HEader --%>
+				</span>
+	
+				<img src="static/images/pointer-down.png" class=" icon-small ">
+			</a>
+		</div>
+		<div id="header_projects_list_position_reference_div"
+			style="position: relative"	
+		>
+			<div style="position: absolute; left: 0; top: 0; right: 0; height: 100px;">
+			</div>
+		</div> 
+	   
+	   </div>
+	   
+	 </c:if>
+	 
 	 <%--  Current Project --%>
 
 	 <c:if test="${ not empty headerProjectInfo }">  <%--  Also used in generalError.jsp --%>
 	  
+		<div class="header-projects-pointer-right--right-of-projects">
+			<img src="static/images/pointer-right.png" class=" icon-small ">
+		</div>
+		  
 		<a href="d/pg/project/<c:out value="${ headerProjectInfo.projectId }" ></c:out>"  
 				class=" no-underline header-project-title  selector_tool_tip_attached "  id="header_project_title_link"
 				data-tooltip="<c:out value="${ headerProjectInfo.projectTitle }"></c:out>"

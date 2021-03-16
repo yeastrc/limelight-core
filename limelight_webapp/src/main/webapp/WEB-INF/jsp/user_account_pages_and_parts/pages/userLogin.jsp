@@ -55,8 +55,11 @@
 
 <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>	
 	
+  <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_right_before_closing_body_tag.jsp" %>
+  
+<%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_main_script_include__script_include_libs__page_header_js.jsp" %>
+  			
 <script type="text/javascript" src="static/js_generated_bundles/user_pages/userLoginPage_Root-bundle.js?x=${ cacheBustValue }"></script>
 	
-  <%@ include file="//WEB-INF/jsp/jsp_includes_body_start_body_end/body_right_before_closing_body_tag.jsp" %>	
 </body>
 </html>

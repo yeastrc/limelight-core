@@ -143,17 +143,6 @@ head_section_include_every_page.jsp
 <script id="webservice_sync_tracking_code" type="text/text" >${ webserviceSyncTracking }</script>
 
 
-	<script type="text/javascript" src="static/js/libs/jquery-3.3.1.min.js"></script>
-
-	<script type="text/javascript" src="static/js/libs/jquery-migrate-3.1.0.min.js"></script>
-	
-	<script type="text/javascript" src="static/js/libs/jquery-ui.min.js"></script>
-
-<%-- 
---%>
-	<script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>
-
-
    <link rel="stylesheet" href="static/css/jquery-ui.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
    <link rel="stylesheet" href="static/css/jquery-ui.structure.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
    <link rel="stylesheet" href="static/css/jquery-ui.theme.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />

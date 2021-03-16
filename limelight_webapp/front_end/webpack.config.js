@@ -56,6 +56,10 @@ const mainConfig = {
 
 	entry: {
 
+		//  Main Pages Header: for header_main_pages.jsp
+
+		'header_main_pages/limelight__header_main_pages_Setup' : './src/js/page_js/header_main_pages/limelight__header_main_pages_Setup.ts',
+
 		//  Data Pages
 		//  
 		
