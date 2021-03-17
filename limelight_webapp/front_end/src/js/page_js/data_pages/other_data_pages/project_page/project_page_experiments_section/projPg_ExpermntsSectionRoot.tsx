@@ -971,13 +971,52 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                     <div className=" hovered-div-highlight ">
                         <div style={ { float: "right", paddingLeft: 10 } }>
 
-                            <a href={ peptideLink }>[Peptides]</a>
+                            <span
+                                className=" fake-link "
+                                onClick={ (event => {
+                                    event.stopPropagation();
+                                    if ( event.ctrlKey || event.metaKey ) {
+                                        window.open( peptideLink, "_blank" )
+                                    } else {
+                                        window.location.href = peptideLink
+                                    }
+                                })}
+                            >
+                                [Peptides]
+                            </span>
                             <span>&nbsp;</span>
 
-                            <a href={ proteinLink }>[Proteins]</a>
+                            <span
+                                className=" fake-link "
+                                onClick={ (event => {
+                                    event.stopPropagation();
+                                    if ( event.ctrlKey || event.metaKey ) {
+                                        window.open( proteinLink, "_blank" )
+                                    } else {
+                                        window.location.href = proteinLink
+                                    }
+                                })}
+                            >
+                                [Proteins]
+                            </span>
 
-                            {/*<span>&nbsp;</span>*/}
-                            {/*<a href={ modViewLink }>[Modifications]</a>*/}
+                            {/*
+                            <span>&nbsp;</span>
+
+                            <span
+                                className=" fake-link "
+                                onClick={ (event => {
+                                    event.stopPropagation();
+                                    if ( event.ctrlKey || event.metaKey ) {
+                                        window.open( modViewLink, "_blank" )
+                                    } else {
+                                        window.location.href = modViewLink
+                                    }
+                                })}
+                            >
+                                [Modifications]
+                            </span>
+                            */}
 
                             { deleteIcon }
 

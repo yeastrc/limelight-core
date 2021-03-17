@@ -219,9 +219,32 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 	/**
 	 * 
 	 */
-	_addSavedViewItem_ClickHandlers({ $saved_view_entry, savedViewItem }: { $saved_view_entry: any, savedViewItem: any }) {
+	_addSavedViewItem_ClickHandlers({ $saved_view_entry, savedViewItem }: { $saved_view_entry: JQuery<HTMLElement>, savedViewItem: any }) {
 
-		const objectThis = this;
+		const $selector_saved_view_item_label = $saved_view_entry.find(".selector_saved_view_item_label");
+		if ( $selector_saved_view_item_label.length === 0 ) {
+			console.log("WARN: No DOM element found with class 'selector_saved_view_item_label'");
+		}
+
+		$selector_saved_view_item_label.click((eventObject) => {
+			try {
+				eventObject.preventDefault(); // to stop the
+				eventObject.stopPropagation();
+
+				if ( eventObject.ctrlKey || eventObject.metaKey ) {
+
+					window.open(savedViewItem.url, "_blank");
+				} else {
+					window.location.href = savedViewItem.url
+				}
+
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
+			}
+		});
 
 		if ( ! this._projectPage_SavedViews_Section_LoggedInUsersInteraction ) {
 
@@ -235,5 +258,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.add_ClickHandlers({ $saved_view_entry, savedViewItem });
 
 	}
+
+
 
 }

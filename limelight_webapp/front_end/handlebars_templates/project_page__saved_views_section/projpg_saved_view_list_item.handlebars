@@ -5,8 +5,7 @@
 <div style="margin-bottom: 5px;" class=" selector_saved_view_item_root_container">
 
     <div  class=" selector_saved_view_item_display_container">
-        <a href="{{ savedViewItem.url }}"
-            ><span class=" selector_saved_view_item_label">{{ savedViewItem.label }}</span></a>
+        <span class=" fake-link selector_saved_view_item_label">{{ savedViewItem.label }}</span>
         {{#if canEdit }}
             <img class="icon-small clickable  selector_edit_saved_view_label selector_tool_tip_attached " src="static/images/icon-edit.png"
                 title="Edit name of Saved View">
@@ -15,10 +14,5 @@
             <img class="icon-small clickable  selector_delete_saved_view selector_tool_tip_attached " src="static/images/icon-circle-delete.png"
                 title="Delete Saved View">
         {{/if}}
-        {{!--
-        {{#if savedViewItem.defaultView }}
-            (default)
-        {{/if}}
-        --}}
     </div>
 </div>
