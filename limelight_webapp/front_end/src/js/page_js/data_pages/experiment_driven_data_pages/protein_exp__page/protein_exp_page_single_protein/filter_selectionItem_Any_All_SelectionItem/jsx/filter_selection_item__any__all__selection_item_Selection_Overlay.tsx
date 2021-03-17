@@ -275,7 +275,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                         />
                         <span > </span>
                         <OverlayUpdateButton
-                            buttonLabel={ "NOT" }
+                            buttonLabel={ "EXCLUDE" }
                             isCurrentSelection={ current_selection_SelectionType_NOT }
                             buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._NOT__TOOLTIP_MAIN_TEXT_STRING }
                             buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
