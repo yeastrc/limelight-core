@@ -546,11 +546,18 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
         const entry = (
             <div
                 key={ pageNumber }
-                className={" fake-link hovered-div-highlight "}
-                style={ { paddingTop: 2, paddingBottom: 2, width: "100%", whiteSpace: "nowrap" } }
-                onClick={ () => { this._change_PageNumber(pageNumber) } }
+                //  adding className=" hovered-div-highlight " results in highlighted background when hover over div but on on text
+                //    that when clicked does NOT trigger this click handler when this click handler is on the div
+                style={ { paddingTop: 2, paddingBottom: 2, whiteSpace: "nowrap" } }
             >
-                Page:&nbsp;{pageNumber.toLocaleString()}:&nbsp;Items&nbsp;{rangeStart.toLocaleString()}-{rangeEnd.toLocaleString()}
+                <span
+                    key={ pageNumber }
+                    className={" fake-link "}
+                    style={ { whiteSpace: "nowrap" } }
+                    onClick={ () => { this._change_PageNumber(pageNumber) } }
+                >
+                    Page:&nbsp;{pageNumber.toLocaleString()}:&nbsp;Items&nbsp;{rangeStart.toLocaleString()}-{rangeEnd.toLocaleString()}
+                </span>
             </div>
         );
         return entry;
