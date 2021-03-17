@@ -190,7 +190,7 @@ public class SearchDataLookupParametersLookupDAO extends Limelight_JDBC_Base imp
 			+ " lookup_parameters_json__main_data, version_number_main_json, "
 			+ " created_by_user_id, created_by_user_type, created_date_time, created_by_remote_ip "
 			+ " ) "
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ? )";
 	
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.dao.SearchDataLookupParametersLookupDAO_IF#save(org.yeastrc.limelight.limelight_webapp.db_dto.SearchDataLookupParametersLookupDTO)

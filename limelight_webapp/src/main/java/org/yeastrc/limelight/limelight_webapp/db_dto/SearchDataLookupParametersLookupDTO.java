@@ -44,6 +44,15 @@ public class SearchDataLookupParametersLookupDTO {
 
 	private String createdByRemoteIP;
 	
+
+	@Override
+	public String toString() {
+		return "SearchDataLookupParametersLookupDTO [id=" + id + ", hashOfMainParams=" + hashOfMainParams
+				+ ", hashCollisionIndex=" + hashCollisionIndex + ", rootIdType=" + rootIdType + ", rootIdsOnlyJSON="
+				+ rootIdsOnlyJSON + ", lookupParametersJSONMainData=" + lookupParametersJSONMainData
+				+ ", versionNumber=" + versionNumber + ", createdByUserId=" + createdByUserId + ", createdByUserType="
+				+ createdByUserType + ", createdByRemoteIP=" + createdByRemoteIP + "]";
+	}
 	
 	public int getId() {
 		return id;
