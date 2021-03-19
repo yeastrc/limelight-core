@@ -119,6 +119,11 @@ import {
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
+import {
+    ModificationMass_ReporterIon__UserSelections__Coordinator_Class,
+    ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /////////////////////////
@@ -231,6 +236,9 @@ interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Compone
     //  User made a selection that resulted in a AJAX request for data.  Page update for filtered Peptides will wait for the AJAX to complete.  Display message loading data.
     gettingDataFor_Filtering_reportedPeptideIdsForDisplay? : boolean;
 
+    //
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     saveView_Component_React?: any //  React Component for Save View
     saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
@@ -245,6 +253,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     // private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis = this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback.bind(this);
 
     private _downloadPeptides_All_ClickHandler_BindThis = this._downloadPeptides_All_ClickHandler.bind(this);
     private _downloadPeptides_Shown_ClickHandler_BindThis = this._downloadPeptides_Shown_ClickHandler.bind(this);
@@ -273,6 +282,14 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
     private _updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback.bind(this);
 
+    private _NOT_CALLED_Function() {
+
+        //  Test function cast
+
+        const modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback: ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback;
+    }
+
     private _load_PsmOpenModificationMasses_InProgress = false;  //  Flag that Loading PSM Open Modification Masses is In Progress
     private _load_ReporterIonMasses_InProgress = false;  //  Flag that Loading Reporter Ion Masses is In Progress
 
@@ -289,6 +306,8 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
     // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
 
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
+
     /**
      * 
      */    
@@ -301,6 +320,16 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
+
+        this._modificationMass_ReporterIon__UserSelections__Coordinator_Class =
+            new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
+                contents_Changed_Callback: this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis,
+                modificationMass_UserSelections_StateObject: props.propsValue.modificationMass_UserSelections_StateObject,
+                reporterIonMass_UserSelections_StateObject: props.propsValue.reporterIonMass_UserSelections_StateObject
+            })
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
 
         const {
             searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
@@ -430,6 +459,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             create_GeneratedReportedPeptideListData_Result,
             peptideFiltersDisplay_ComponentData,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
             saveView_Component_React, 
             saveView_Component_Props_Prop
         };
@@ -524,6 +554,21 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 	// 		throw e;
 	// 	}
 	// }
+
+    /**
+     *
+     */
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback() {
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
+        this.setState({ modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class });
+
+        this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
+
+        this._reporterIonMass_Update_reporterIonMass_UserSelections_ComponentData();
+    }
 
     /**
      * User has changed the Search Sub Group Selections.
@@ -2484,6 +2529,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                 <ModificationMass_UserSelections_Root
                                     openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                                     modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
+                                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                                     modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
                                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
@@ -2500,6 +2546,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                                 <ReporterIonMass_UserSelections
                                     reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
+                                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                                     reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
                                     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
                                 />

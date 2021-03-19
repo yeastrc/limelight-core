@@ -14,6 +14,7 @@ import {tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip} fro
 import {filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants";
 import ReactDOM from "react-dom";
 import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /**
@@ -22,6 +23,7 @@ import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable
 export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create = function (
     {
         current_selection_SelectionType,
+        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
         position_Left,
         position_Top,
         any_Selected_Callback,
@@ -30,6 +32,9 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
         remove_Selected_Callback
     } : {
         current_selection_SelectionType : SingleProtein_Filter_SelectionType
+
+        //  TODO  TEMP "?"
+        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class?: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
         position_Left : number
         position_Top : number
         any_Selected_Callback : () => void;
@@ -65,6 +70,7 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
             Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay,
             {
                 current_selection_SelectionType,
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
                 position_Left,
                 position_Top,
                 any_Selected_Callback,
@@ -89,6 +95,7 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
 interface Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Props {
 
     current_selection_SelectionType : SingleProtein_Filter_SelectionType
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     position_Left : number
     position_Top : number
     any_Selected_Callback : () => void;
@@ -245,6 +252,13 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
             throw Error( msg )
         }
 
+        let show_Add_Option_InsteadOf_OR_AND = false;
+
+        if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+            && this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class.show_Add_Option_InsteadOf_OR_AND ) {
+            show_Add_Option_InsteadOf_OR_AND = true
+        }
+
         const overlayPosition_Left = this.props.position_Left
         const overlayPosition_Top = this.props.position_Top
 
@@ -258,21 +272,35 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                      className="standard-border-color-very-dark"
                 >
                     <div>
-                        <OverlayUpdateButton
-                            buttonLabel={ "OR" }
-                            isCurrentSelection={ current_selection_SelectionType_ANY }
-                            buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._OR__TOOLTIP_MAIN_TEXT_STRING }
-                            buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
-                            buttonClicked_Callback={ this._choice_ANY_Clicked_BindThis }
-                        />
-                        <span > </span>
-                        <OverlayUpdateButton
-                            buttonLabel={ "AND" }
-                            isCurrentSelection={ current_selection_SelectionType_ALL }
-                            buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING }
-                            buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
-                            buttonClicked_Callback={ this._choice_ALL_Clicked_BindThis }
-                        />
+                        { show_Add_Option_InsteadOf_OR_AND ? (
+                            //  Show ADD button
+                            <OverlayUpdateButton
+                                buttonLabel={ "ADD" }
+                                isCurrentSelection={ current_selection_SelectionType_ALL }
+                                buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._ADD__ONLY__TOOLTIP_MAIN_TEXT_STRING }
+                                buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
+                                buttonClicked_Callback={ this._choice_ALL_Clicked_BindThis }
+                            />
+                        ) : (
+                            //  Show OR and AND buttons
+                            <React.Fragment>
+                                <OverlayUpdateButton
+                                    buttonLabel={ "OR" }
+                                    isCurrentSelection={ current_selection_SelectionType_ANY }
+                                    buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._OR__TOOLTIP_MAIN_TEXT_STRING }
+                                    buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
+                                    buttonClicked_Callback={ this._choice_ANY_Clicked_BindThis }
+                                />
+                                <span > </span>
+                                <OverlayUpdateButton
+                                    buttonLabel={ "AND" }
+                                    isCurrentSelection={ current_selection_SelectionType_ALL }
+                                    buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING }
+                                    buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
+                                    buttonClicked_Callback={ this._choice_ALL_Clicked_BindThis }
+                                />
+                            </React.Fragment>
+                            )}
                         <span > </span>
                         <OverlayUpdateButton
                             buttonLabel={ "EXCLUDE" }

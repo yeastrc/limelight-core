@@ -130,6 +130,11 @@ import {
 import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
 import {getpeptidePage_Display_MainContent_Component__UpdatingOverlay} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/protein_position_filter_component/peptidePage_Display_MainContent_Component__Loading_UpdatingOverlays";
+import {
+    ModificationMass_ReporterIon__UserSelections__Coordinator_Class,
+    ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /////////////////////////
@@ -225,6 +230,9 @@ interface PeptidePage_Display_MainContent_Component_State {
     //  User made a selection that resulted in a AJAX request for data.  Page update for filtered Peptides will wait for the AJAX to complete.  Display message loading data.
     gettingDataFor_Filtering_reportedPeptideIdsForDisplay? : boolean;
 
+    //
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     saveView_Component_React?: any //  React Component for Save View
     saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
@@ -237,6 +245,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     //  bind to 'this' for passing as parameters
 
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis = this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback.bind(this);
 
     private _proteinName_Clicked_Callback_Function_BindThis = this._proteinName_Clicked_Callback_Function.bind(this);
 
@@ -249,6 +258,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         //  Test function cast
 
+        const modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback;
 
         //  Required when showProteins is true.  For Peptide Page
         const proteinName_Clicked_Callback_Function : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function = this._proteinName_Clicked_Callback_Function;
@@ -287,6 +298,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     private _proteinViewPage_Display_MultipleSearches_SingleProtein: ProteinPage_Display_MultipleSearches_SingleProtein;
 
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
+
     private _subGroupSelection_WhenOpened_SingleProteinOverlay : Set<number>;
 
     private _Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay : boolean;
@@ -302,6 +315,15 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
+        this._modificationMass_ReporterIon__UserSelections__Coordinator_Class =
+            new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
+                contents_Changed_Callback: this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis,
+                modificationMass_UserSelections_StateObject: props.propsValue.modificationMass_UserSelections_StateObject,
+                reporterIonMass_UserSelections_StateObject: props.propsValue.reporterIonMass_UserSelections_StateObject
+            })
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
 
         const searchDataLookupParamsRoot: SearchDataLookupParameters_Root =
             props.propsValue.searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
@@ -332,7 +354,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             searchDataLookupParamsRoot,
             searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
             saveView_Component_React,
-            saveView_Component_Props_Prop
+            saveView_Component_Props_Prop,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
         };
     }
 
@@ -677,9 +700,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         } );
 
 
-        console.log("Peptide List Data Generated (in call to _recompute_FullPage_Except_SearchDetails__SubPart): create_GeneratedReportedPeptideListData_Result.peptideList_Length: "
-            + create_GeneratedReportedPeptideListData_Result.peptideList_Length
-            + ", create_GeneratedReportedPeptideListData_Result: ", create_GeneratedReportedPeptideListData_Result )
+        // console.log("Peptide List Data Generated (in call to _recompute_FullPage_Except_SearchDetails__SubPart): create_GeneratedReportedPeptideListData_Result.peptideList_Length: "
+        //     + create_GeneratedReportedPeptideListData_Result.peptideList_Length
+        //     + ", create_GeneratedReportedPeptideListData_Result: ", create_GeneratedReportedPeptideListData_Result )
 
         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 
@@ -709,6 +732,21 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 create_GeneratedReportedPeptideListData_Result,
             };
         });
+    }
+
+    /**
+     *
+     */
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback() {
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
+        this.setState({ modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class });
+
+        this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
+
+        this._reporterIonMass_Update_reporterIonMass_UserSelections_ComponentData();
     }
 
     /**
@@ -1707,7 +1745,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             variable_Modifications_DISPLAY: false,
             open_Modifications_DISPLAY: true,
             modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject.get_OpenModificationSelections(),
-            proteinNames: null, //  TODO
+            proteinNames: null,
             proteinDescriptions: null,
             proteinSequenceVersionId : null,
             projectSearchIds : this.props.propsValue.projectSearchIds,
@@ -2903,9 +2941,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
                         />
 
-                        <ModificationMass_UserSelections_Root
+                          <ModificationMass_UserSelections_Root
                             openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                             modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
+                            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                             modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
@@ -2922,6 +2961,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                         <ReporterIonMass_UserSelections
                             reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
+                            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                             reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
                             updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
                         />

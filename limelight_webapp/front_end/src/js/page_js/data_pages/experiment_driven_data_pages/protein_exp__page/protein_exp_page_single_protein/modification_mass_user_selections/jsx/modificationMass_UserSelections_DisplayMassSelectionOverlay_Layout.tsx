@@ -48,6 +48,9 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterCo
     updated_selectedModificationMasses_Map : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 }
 
+export type ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods =
+    ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
+
 /**
  *
  */
@@ -101,7 +104,7 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
         modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
         callbackOn_Cancel_Close_Clicked : () => void;
-        callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
+        callback_updateSelectedMods : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods
 
     }) : JSX.Element {
 
@@ -124,7 +127,7 @@ interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterConta
     modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
     selectedModificationMasses_MapClone : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
     callbackOn_Cancel_Close_Clicked : () => void;
-    callback_updateSelectedMods : ( params : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params ) => void
+    callback_updateSelectedMods : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods
 }
 
 /**

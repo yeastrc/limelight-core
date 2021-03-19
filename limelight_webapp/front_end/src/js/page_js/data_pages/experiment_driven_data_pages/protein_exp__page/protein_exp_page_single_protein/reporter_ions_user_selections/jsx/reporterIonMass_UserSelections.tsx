@@ -14,6 +14,7 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /**
@@ -22,6 +23,10 @@ import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filt
 export interface ReporterIonMass_UserSelections_Props {
 
     reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData;
+
+    //  TODO  TEMP "?"
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class?: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback : () => void;
 }
@@ -50,17 +55,17 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState:ReporterIonMass_UserSelections_State) {
-
-        //  Only update if changed: props:
-
-        if ( this.props.reporterIons_UserSelections_ComponentData !== nextProps.reporterIons_UserSelections_ComponentData ) {
-            return true;
-        }
-        return false;
-
-         //  If Comment out prev code, comment out this method
-    }
+    // shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState:ReporterIonMass_UserSelections_State) {
+    //
+    //     //  Only update if changed: props:
+    //
+    //     if ( this.props.reporterIons_UserSelections_ComponentData !== nextProps.reporterIons_UserSelections_ComponentData ) {
+    //         return true;
+    //     }
+    //     return false;
+    //
+    //      //  If Comment out prev code, comment out this method
+    // }
 
     /**
      * 
@@ -85,8 +90,10 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
             singleReporterIon_Entries = reporterIonEntries.map( (reporterIonEntry, index) => {
 
                 return (
-                    <SingleReporterIon_Entry key={ reporterIonEntry.reporterIonMass } 
+                    <SingleReporterIon_Entry
+                        key={ reporterIonEntry.reporterIonMass }
                         reporterIonEntry={ reporterIonEntry }
+                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                         reporterIonMass_UserSelections_StateObject={ this.props.reporterIonMass_UserSelections_StateObject }
                         updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback }
                     />
@@ -122,6 +129,7 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
  */
 interface SingleReporterIon_Entry_Props {
     reporterIonEntry : {reporterIonMass: number, selected: boolean} //  selected NOT USED
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback : () => void;
 }
@@ -200,17 +208,21 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : SingleReporterIon_Entry_Props, nextState : SingleReporterIon_Entry_State ) {
-
-        //  Only update if changed: props or state:
-
-        if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
-            return true;
-        }
-        return false;
-
-        //  If Comment out prev code, comment out this method
-    }
+    // shouldComponentUpdate(nextProps : SingleReporterIon_Entry_Props, nextState : SingleReporterIon_Entry_State ) {
+    //
+    //     //  Only update if changed: props or state:
+    //
+    //     if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
+    //         return true;
+    //     }
+    //     if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+    //         return true;
+    //     }
+    //
+    //     return false;
+    //
+    //     //  If Comment out prev code, comment out this method
+    // }
 
     /**
      *
@@ -342,6 +354,7 @@ class SingleReporterIon_Entry extends React.Component< SingleReporterIon_Entry_P
             <Filter_selectionItem_Any_All_SelectionItem_Container
                 textLabel={ textLabel }
                 current_selection_SelectionType={ this.state.selection_SelectionType }
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                 any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
                 all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
                 not_Selected_Callback={ this._choice_NOT_Clicked_Callback_BindThis }

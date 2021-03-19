@@ -23,6 +23,7 @@ import { ModificationMass_UserSelections_Variable_or_Open_Modifications } from '
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/jsx/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /**
@@ -35,6 +36,10 @@ export interface ModificationMass_UserSelections_Root_Props {
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
 
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
+
+    //  TODO  TEMP "?"
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class?: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
     updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback : () => void;
 
@@ -98,9 +103,13 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
         if ( this.props.modificationMass_UserSelections_ComponentData !== nextProps.modificationMass_UserSelections_ComponentData ) {
             return true;
         }
+        if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+            return true;
+        }
         if ( this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData !== nextProps.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData ) {
             return true;
         }
+
         return false;
 
         //  If Comment out prev code, comment out this method
@@ -145,6 +154,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     open_Modifications_DISPLAY={ false }
                     openSelectMassOverlay_Override_Callback={ undefined }
                     variable_or_Open_ModificationsData={ variableModificationsData }
+                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject.get_VariableModificationSelections() }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                     update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
@@ -167,6 +177,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     open_Modifications_DISPLAY={ true }
                     openSelectMassOverlay_Override_Callback={ this.props.openModification_OpenSelectMassOverlay_Override_Callback }
                     variable_or_Open_ModificationsData={ open_ModificationsData }
+                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject.get_OpenModificationSelections() }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                     update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
@@ -186,6 +197,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                 {/* Static Modifications --}} */}
                 <ModificationMass_UserSelections_StaticModifications
                     staticModificationsData={ staticModificationsData }
+                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                 />

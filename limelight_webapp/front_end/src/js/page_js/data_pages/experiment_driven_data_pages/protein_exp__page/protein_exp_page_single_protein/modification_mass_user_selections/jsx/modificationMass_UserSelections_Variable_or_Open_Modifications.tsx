@@ -10,10 +10,7 @@ import React from 'react'
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import { 
-    modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
-    modificationMass_CommonRounding_ReturnString 
+    modificationMass_CommonRounding_ReturnNumber_Function
 } from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
@@ -31,6 +28,7 @@ import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filt
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/jsx/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 
@@ -46,6 +44,8 @@ export interface ModificationMass_UserSelections_Variable_or_Open_Modifications_
     openSelectMassOverlay_Override_Callback : () => void  //  Overrides default behavior of open "Add/Change selected modification mass" overlay
 
     variable_or_Open_ModificationsData : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData;
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;  //  Called when need to update other checkboxes or when updates from overlay
@@ -136,21 +136,24 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, nextState: ModificationMass_UserSelections_Variable_or_Open_Modifications_State ) {
-
-        // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
-
-        //  Only update if changed: props: 
-        if ( this.props.variable_or_Open_ModificationsData !== nextProps.variable_or_Open_ModificationsData ) {
-            return true;
-        }
-        if ( this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData !== nextProps.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData ) {
-            return true;
-        }
-        return false;
-
-        //  If Comment out prev code, comment out this method
-    }
+    // shouldComponentUpdate(nextProps : ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, nextState: ModificationMass_UserSelections_Variable_or_Open_Modifications_State ) {
+    //
+    //     // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
+    //
+    //     //  Only update if changed: props:
+    //     if ( this.props.variable_or_Open_ModificationsData !== nextProps.variable_or_Open_ModificationsData ) {
+    //         return true;
+    //     }
+    //     if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+    //         return true;
+    //     }
+    //     if ( this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData !== nextProps.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData ) {
+    //         return true;
+    //     }
+    //     return false;
+    //
+    //     //  If Comment out prev code, comment out this method
+    // }
 
     // getSnapshotBeforeUpdate( <see docs> ) {
 
@@ -247,8 +250,10 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
             singleModification_Entries = variable_or_Open_ModificationEntries.map( (variable_or_Open_ModificationEntry, index) => {
 
                 return (
-                    <SingleModification_Entry key={ variable_or_Open_ModificationEntry.modMass }
+                    <SingleModification_Entry
+                        key={ variable_or_Open_ModificationEntry.modMass }
                         variable_or_Open_ModificationEntry={ variable_or_Open_ModificationEntry }
+                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject }
                         updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                         update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
@@ -318,6 +323,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
                                 <div >
                                     <Unmodified_Entry 
                                         variable_or_Open_ModificationsData={ variable_or_Open_ModificationsData }
+                                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                                         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject }
                                         updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                                         update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
@@ -349,6 +355,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
 
 interface SingleModification_Entry_Props {
     variable_or_Open_ModificationEntry :  ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry;
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class;
     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;  //  Called when need to update other checkboxes or when updates from overlay
@@ -409,19 +416,22 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : SingleModification_Entry_Props, nextState : SingleModification_Entry_State ) {
-
-        // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
-
-        //  Only update if changed: props or state: 
-
-        if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
-            return true;
-        }
-        return false;
-
-        //  If Comment out prev code, comment out this method
-    }
+    // shouldComponentUpdate(nextProps : SingleModification_Entry_Props, nextState : SingleModification_Entry_State ) {
+    //
+    //     // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
+    //
+    //     //  Only update if changed: props or state:
+    //
+    //     if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
+    //         return true;
+    //     }
+    //     if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+    //         return true;
+    //     }
+    //     return false;
+    //
+    //     //  If Comment out prev code, comment out this method
+    // }
 
     /**
      *
@@ -555,6 +565,7 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
             <Filter_selectionItem_Any_All_SelectionItem_Container
                 textLabel={ modMass }
                 current_selection_SelectionType={ this.state.selection_SelectionType }
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                 any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
                 all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
                 not_Selected_Callback={ this._choice_NOT_Clicked_Callback_BindThis }
@@ -570,6 +581,7 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
 
 interface Unmodified_Entry_Props {
     variable_or_Open_ModificationsData : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData;
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;  //  Called when need to update other checkboxes or when updates from overlay
@@ -638,19 +650,23 @@ class Unmodified_Entry extends React.Component< Unmodified_Entry_Props, Unmodifi
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate(nextProps : Unmodified_Entry_Props, nextState : Unmodified_Entry_State ) {
-
-        // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
-
-        //  Only update if changed: props or state: 
-
-        if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
-            return true;
-        }
-        return false;
-
-        //  If Comment out prev code, comment out this method
-    }
+    // shouldComponentUpdate(nextProps : Unmodified_Entry_Props, nextState : Unmodified_Entry_State ) {
+    //
+    //     // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
+    //
+    //     //  Only update if changed: props or state:
+    //
+    //     if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
+    //         return true;
+    //     }
+    //     if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+    //         return true;
+    //     }
+    //
+    //     return false;
+    //
+    //     //  If Comment out prev code, comment out this method
+    // }
 
     /**
      *
@@ -771,6 +787,7 @@ class Unmodified_Entry extends React.Component< Unmodified_Entry_Props, Unmodifi
             <Filter_selectionItem_Any_All_SelectionItem_Container
                 textLabel={ "Unmodified" }
                 current_selection_SelectionType={ this.state.selection_SelectionType }
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                 any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
                 all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
                 not_Selected_Callback={ this._choice_NOT_Clicked_Callback_BindThis }

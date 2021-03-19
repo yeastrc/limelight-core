@@ -13,6 +13,7 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 import {filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /**
@@ -22,6 +23,8 @@ export interface Filter_selectionItem_Any_All_SelectionItem_Props {
 
     textLabel : string
     current_selection_SelectionType : SingleProtein_Filter_SelectionType
+
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
 }
 
 interface Filter_selectionItem_Any_All_SelectionItem_State { //  Keep shouldComponentUpdate up to date
@@ -59,6 +62,7 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
 
         if (this.props.textLabel !== nextProps.textLabel
             || this.props.current_selection_SelectionType !== nextProps.current_selection_SelectionType
+            || this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class === nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
         ) {
             return true;
         }
@@ -83,7 +87,13 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
         if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ANY ) {
             tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._OR__TOOLTIP_MAIN_TEXT_STRING
         } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
-            tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING
+
+            if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+                && this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class.single_OR_AND_Selected ) {
+                tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._ADD__ONLY__TOOLTIP_MAIN_TEXT_STRING
+            } else {
+                tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING
+            }
         } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.NOT ) {
             tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._NOT__TOOLTIP_MAIN_TEXT_STRING
         } else {

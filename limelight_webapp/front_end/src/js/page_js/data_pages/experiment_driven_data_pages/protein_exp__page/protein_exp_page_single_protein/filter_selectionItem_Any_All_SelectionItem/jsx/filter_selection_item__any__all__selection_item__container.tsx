@@ -13,6 +13,7 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Filter_selectionItem_Any_All_SelectionItem} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item";
 import {filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 /**
  *
@@ -21,6 +22,9 @@ export interface Filter_selectionItem_Any_All_SelectionItem_Container_Props {
 
     textLabel : string
     current_selection_SelectionType : SingleProtein_Filter_SelectionType
+
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     any_Selected_Callback : () => void;
     all_Selected_Callback : () => void;
     not_Selected_Callback : () => void;
@@ -60,11 +64,13 @@ export class Filter_selectionItem_Any_All_SelectionItem_Container extends React.
 
         //  Only update if changed: props:
 
-        if (this.props.textLabel !== nextProps.textLabel
-            || this.props.current_selection_SelectionType !== nextProps.current_selection_SelectionType
-        ) {
+        if (this.props.textLabel !== nextProps.textLabel || this.props.current_selection_SelectionType !== nextProps.current_selection_SelectionType ) {
             return true;
         }
+        if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+            return true;
+        }
+
         return false;
 
         //  If Comment out prev code, comment out this method
@@ -94,6 +100,7 @@ export class Filter_selectionItem_Any_All_SelectionItem_Container extends React.
             filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create({  // External Function
 
                 current_selection_SelectionType : this.props.current_selection_SelectionType,
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class : this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
                 position_Left,
                 position_Top,
                 any_Selected_Callback : this.props.any_Selected_Callback,
@@ -126,6 +133,7 @@ export class Filter_selectionItem_Any_All_SelectionItem_Container extends React.
                     <Filter_selectionItem_Any_All_SelectionItem
                           textLabel={ this.props.textLabel }
                           current_selection_SelectionType={ this.props.current_selection_SelectionType }
+                          modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     />
                 </div>
 

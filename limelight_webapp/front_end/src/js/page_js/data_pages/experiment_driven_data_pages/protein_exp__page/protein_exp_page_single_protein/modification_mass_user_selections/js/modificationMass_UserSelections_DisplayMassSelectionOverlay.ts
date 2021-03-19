@@ -4,21 +4,19 @@
  * Variable or Open Modification Mass Selection - Overlay for Large number of Modification masses
  * 
  * Re-uses Selection from Project Search based code for Large number of Modification masses
- * 
+ *
  */
 
 //   Modification Mass Rounding to provide some level of commonality between searches
-import { 
-    modificationMass_CommonRounding_ReturnNumber_Function
-} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
+import {modificationMass_CommonRounding_ReturnNumber_Function} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
 
-
-import { ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject } from './modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject';
+import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from './modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject';
 import {
     get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout,
+    ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods,
     ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods_Params
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/jsx/modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout";
 import {
@@ -29,6 +27,7 @@ import {
     ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass,
     ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_ModMasses_PSM_Counts_PerMass";
+import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 
 //  Modal Dialog for selecting mod masses when count > _MAX_MODS_DISPLAY_NON_SELECTED
 
@@ -44,13 +43,16 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
     private _remove_ModalOverlay_BindThis = this._remove_ModalOverlay.bind(this);
     private _updateSelectedMods_BindThis = this._updateSelectedMods.bind(this);
 
+    private _DO_NOT_CALL() {
+        const updateSelectedMods : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods = this._updateSelectedMods
+    }
+
     private _proteinNames : string  //  Not populated on Peptide page
     private _proteinDescriptions : string  //  Not populated on Peptide page
 
     private _modificationSelectionChanged_Callback : () => void;
 
     private _modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
-
     private _proteinSequenceVersionId : number  //  Not populated on Peptide page
     private _projectSearchIds : Array<number> 
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
@@ -105,6 +107,7 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
         this._open_Modifications_DISPLAY = open_Modifications_DISPLAY;
 
         this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject = modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
+
         this._proteinNames = proteinNames;
         this._proteinDescriptions = proteinDescriptions;
         this._modificationSelectionChanged_Callback = modificationSelectionChanged_Callback;
@@ -194,15 +197,29 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
         this._remove_ModalOverlay();
 
-
         //  Clear main mod mass selections
         this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.clear_selectedModifications_ExceptUnmodified();
 
         //  Add in newly selected mod masses
+
+        //  First add Type AND (Triggers processing in called code)
+
         for ( const mapEntry of updated_selectedModificationMasses_Map.entries() ) {
             const entryKey = mapEntry[ 0 ]
             const entryValue = mapEntry[ 1 ]
-            this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected( entryKey, entryValue );
+            if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected(entryKey, entryValue);
+            }
+        }
+
+        //  Second add Type other than AND (Triggers processing in called code)
+
+        for ( const mapEntry of updated_selectedModificationMasses_Map.entries() ) {
+            const entryKey = mapEntry[ 0 ]
+            const entryValue = mapEntry[ 1 ]
+            if ( entryValue.selectionType !== SingleProtein_Filter_SelectionType.ALL ) {
+                this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected(entryKey, entryValue);
+            }
         }
 
         this._modificationSelectionChanged_Callback();  //  Call function in object property _modificationSelectionChanged_Callback

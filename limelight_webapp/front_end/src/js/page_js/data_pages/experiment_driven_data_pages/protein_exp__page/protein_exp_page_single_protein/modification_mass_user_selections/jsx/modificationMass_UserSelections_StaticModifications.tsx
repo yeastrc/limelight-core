@@ -17,6 +17,7 @@ import {
     ModificationMass_UserSelections_ComponentData_StaticModificationsData,
     ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 
 
 /**
@@ -25,6 +26,7 @@ import {
 export interface ModificationMass_UserSelections_StaticModifications_Props {
 
     staticModificationsData :  ModificationMass_UserSelections_ComponentData_StaticModificationsData
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
 }
@@ -100,6 +102,10 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
         if ( this.props.staticModificationsData !== nextProps.staticModificationsData ) {
             return true;
         }
+        if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+            return true;
+        }
+
         return false;
 
         //  If Comment out prev code, comment out this function
@@ -156,8 +162,10 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
             singleModification_Entries = staticModificationEntries.map( (staticModificationEntry, index) => {
 
                 return (
-                    <SingleModification_Entry key={ staticModificationEntry.modMass + "," + staticModificationEntry.residueLetter } 
+                    <SingleModification_Entry
+                        key={ staticModificationEntry.modMass + "," + staticModificationEntry.residueLetter }
                         staticModificationEntry={ staticModificationEntry }
+                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                         modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
                         updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                     />
@@ -188,6 +196,7 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
 
 interface SingleModification_Entry_Props {
     staticModificationEntry :  ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
 }
@@ -277,6 +286,10 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
         if ( this.state.selection_SelectionType !== nextState.selection_SelectionType ) {
             return true;
         }
+        if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class !== nextProps.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class ) {
+            return true;
+        }
+
         return false;
 
         //  If Comment out prev code, comment out this method
@@ -423,6 +436,7 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
             <Filter_selectionItem_Any_All_SelectionItem_Container
                 textLabel={ textLabel }
                 current_selection_SelectionType={ this.state.selection_SelectionType }
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                 any_Selected_Callback={ this._choice_ANY_Clicked_Callback_BindThis }
                 all_Selected_Callback={ this._choice_ALL_Clicked_Callback_BindThis }
                 not_Selected_Callback={ this._choice_NOT_Clicked_Callback_BindThis }

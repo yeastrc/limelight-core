@@ -30,6 +30,12 @@ export const tooltip_Limelight_Create_Tooltip = function({
 
 }) : Tooltip_Limelight_Created_Tooltip {
 
+    if ( ! tooltip_target_DOM_Element ) {
+
+        const tooltip_Limelight_Created_Tooltip = new Tooltip_Limelight_Created_Tooltip({ tooltip_addedDivElementDOM: null });
+
+        return tooltip_Limelight_Created_Tooltip; // EARLY RETURN
+    }
 
     const tooltip_addedDivElementDOM = document.createElement("div");
 

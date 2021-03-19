@@ -11,11 +11,16 @@
  *      modificationMass_UserSelections_Root.tsx
  */
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import {variable_is_type_number_Check} from 'page_js/variable_is_type_number_Check';
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
-
+import {
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback_Params,
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM,
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback,
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 
 
 ////////////////////
@@ -64,19 +69,98 @@ export class ModificationMass_UserSelections_StateObject {
     private _initializeCalled : boolean = false;
 
     //  Selected Variable Modification
-    private _variableModificationsSelected = new ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject();
+    private _variableModificationsSelected : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
 
     //  Selected Open Modification
-    private _openModificationsSelected = new ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject();
+    private _openModificationsSelected : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
 
     //  Map of Selected Static Modification Residue Letter And Mass <String, Map<Number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> <Residue Letter, <Mass, Entry>>
     private _staticModificationsSelected : Map<string, Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> = new Map();  // call .clear() to reset the selected
 
-	/**
+    //////
+
+    //  Maps of callbacks to External for changes to Page State of this and sub parts
+
+    private _selection__Added__Pre_Set_Callbacks :
+        Map<ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback,ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback> =
+        new Map();
+
+    private _selection__Updated_Callbacks :
+        Map<ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback,ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback> =
+        new Map();
+
+    ///  Bind local callback functions that are passed to the sub part objects for Variable and Open Modifications
+
+    //  Callbacks from Modifications State Object on on change
+    private _selection__Added__Pre_Set_Callback_BindThis = this._selection__Added__Pre_Set_Callback.bind(this);
+    private _selection__Updated_Callback_BindThis = this._selection__Updated_Callback.bind(this);
+
+    private _DO_NOT_CALL() {
+
+        const _selection__Added__Pre_Set_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback = this._selection__Added__Pre_Set_Callback;
+        const _selection__Updated_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback = this._selection__Updated_Callback;
+    }
+
+    //  Callbacks from this object and sub parts on change
+
+    private _selection__Added__Pre_Set_Callback( params : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback_Params) : void {
+
+        for ( const entry of this._selection__Added__Pre_Set_Callbacks.entries() )  {
+            const callbackFunction = entry[ 1 ]
+            callbackFunction(params);
+        }
+    }
+
+    private _selection__Updated_Callback() : void {
+
+        for ( const entry of this._selection__Updated_Callbacks.entries() )  {
+            const callbackFunction = entry[ 1 ]
+            callbackFunction();
+        }
+    }
+
+    /**
 	 * 
 	 */
-	constructor() {
+    constructor() {
 
+        //  Selected Variable Modification
+        this._variableModificationsSelected = new ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject({
+            selection__Added__Pre_Set_Callback: this._selection__Added__Pre_Set_Callback_BindThis,
+            selection__Updated__Callback : this._selection__Updated_Callback_BindThis
+        });
+
+        //  Selected Open Modification
+        this._openModificationsSelected = new ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject({
+            selection__Added__Pre_Set_Callback: this._selection__Added__Pre_Set_Callback_BindThis,
+            selection__Updated__Callback : this._selection__Updated_Callback_BindThis
+        });
+
+    }
+
+    /**
+     * callback
+     * @param callback
+     */
+    add__ModificationMass_UserSelections_StateObject__Selection__Added__Pre_Post_Set_Callback(callback: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback) {
+	    this._selection__Added__Pre_Set_Callbacks.set( callback, callback );
+    }
+    /**  MUST pass same function reference as was passed to add__...
+     */
+    remove__ModificationMass_UserSelections_StateObject__Selection__Added__Pre_Set_Callback(callback: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback) {
+        this._selection__Added__Pre_Set_Callbacks.delete( callback );
+    }
+    /**
+     * callback
+     * @param callback
+     */
+    add__ModificationMass_UserSelections_StateObject__Selection__Updated__Callback(callback: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback) {
+        this._selection__Updated_Callbacks.set( callback, callback );
+    }
+    /**  MUST pass same function reference as was passed to add__...
+     */
+    remove__ModificationMass_UserSelections_StateObject__Selection__Updated__Callback(callback: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback) {
+        this._selection__Updated_Callbacks.delete( callback );
     }
 
 	/**
@@ -87,6 +171,8 @@ export class ModificationMass_UserSelections_StateObject {
         this._variableModificationsSelected.clear_selectedModifications(); // Reset to None
         this._openModificationsSelected.clear_selectedModifications(); // Reset to None
         this._staticModificationsSelected.clear(); // Reset to None
+
+        this._selection__Updated_Callback();
     }
 
     /**
@@ -95,6 +181,73 @@ export class ModificationMass_UserSelections_StateObject {
     clear_selected_Static_Modifications() : void {
 
         this._staticModificationsSelected.clear(); // Reset to None
+
+        this._selection__Updated_Callback();
+    }
+
+    //   For ALL Mods Selections
+
+    /**
+     * Return number of selections of type ANY or ALL
+     */
+    get_NumberOf_ANY_ALL_Selections() : number {
+
+        let count = 0;
+
+        //  First count static mods
+        if ( this._staticModificationsSelected && this._staticModificationsSelected.size !== 0 ) {
+            for ( const mapEntry of this._staticModificationsSelected.entries() ) {
+                const entryValue = mapEntry[ 1 ]
+                for ( const mapEntrySecondary of entryValue.entries() ) {
+                    const entryValueSecondary = mapEntrySecondary[1]
+                    if (entryValueSecondary.selectionType === SingleProtein_Filter_SelectionType.ANY
+                        || entryValueSecondary.selectionType === SingleProtein_Filter_SelectionType.ALL) {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        count += this._variableModificationsSelected.get_NumberOf_ANY_ALL_Selections();
+
+        count += this._openModificationsSelected.get_NumberOf_ANY_ALL_Selections();
+
+        return count;
+    }
+
+    /**
+     *
+     * @param entry -
+     */
+    forceUpdate_SetEvery_ANY_ALL_Entries_To_SingleProtein_Filter_SelectionType_Parameter(forceUpdate_To_SelectionType : SingleProtein_Filter_SelectionType) {
+
+        //  First process static mods
+        if ( this._staticModificationsSelected && this._staticModificationsSelected.size !== 0 ) {
+            for ( const mapEntry of this._staticModificationsSelected.entries() ) {
+
+                const mapSecondary = mapEntry[ 1 ]
+
+                const mapSecondary_MapKeys = new Set( mapSecondary.keys() );
+                for ( const mapKey of mapSecondary_MapKeys ) {
+                    const mapValue = mapSecondary.get( mapKey );
+                    if ( ! mapValue ) {
+                        throw Error("forceUpdate_SetEvery_ANY_ALL_Entries_To_SingleProtein_Filter_SelectionType_Parameter: ( ! mapValue )")
+                    }
+                    const mapEntry_SelectionType = mapValue.selectionType;
+                    if ( mapEntry_SelectionType === SingleProtein_Filter_SelectionType.ANY || mapEntry_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
+
+                        const newMapEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({selectionType: forceUpdate_To_SelectionType});
+                        mapSecondary.set( mapKey, newMapEntry);
+                    }
+                }
+            }
+        }
+
+
+        this._variableModificationsSelected.forceUpdate_SetEvery_ANY_ALL_Entries_To_SingleProtein_Filter_SelectionType_Parameter(forceUpdate_To_SelectionType);
+
+        this._openModificationsSelected.forceUpdate_SetEvery_ANY_ALL_Entries_To_SingleProtein_Filter_SelectionType_Parameter(forceUpdate_To_SelectionType);
+
     }
 
     //////////////////////////////////
@@ -256,12 +409,40 @@ export class ModificationMass_UserSelections_StateObject {
 	 * 
 	 */
     set_StaticModification_Selected({ residueLetter, modMass, entry } : { residueLetter : string, modMass : number, entry : SingleProtein_Filter_PerUniqueIdentifier_Entry }) : void {
+
+        //  Create Parent Map if not exist
         let entryFor_ResidueLetter = this._staticModificationsSelected.get( residueLetter );
         if ( ! entryFor_ResidueLetter ) {
             entryFor_ResidueLetter = new Map();
             this._staticModificationsSelected.set( residueLetter, entryFor_ResidueLetter )
         }
+
+        let oldEntry_selectionType: SingleProtein_Filter_SelectionType = null;
+        {
+            const oldEntry = entryFor_ResidueLetter.get(modMass);
+            if (oldEntry) {
+                oldEntry_selectionType = oldEntry.selectionType;
+            }
+        }
+
+        //  Update callback
+        this._selection__Added__Pre_Set_Callback({
+            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+            newValue_singleProtein_Filter_SelectionType: entry.selectionType,
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
+        });
+
+        //  Actual UPDATE
         entryFor_ResidueLetter.set( modMass, entry );
+
+        //  Update callback
+        this._selection__Added__Pre_Set_Callback({
+            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+            newValue_singleProtein_Filter_SelectionType: entry.selectionType,
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
+        });
+
+        this._selection__Updated_Callback();
     }
 
     /**
@@ -269,6 +450,8 @@ export class ModificationMass_UserSelections_StateObject {
      */
     delete_StaticModification_Selected_AllFor_ResidueLetter({ residueLetter }: { residueLetter: string }) {
         this._staticModificationsSelected.delete( residueLetter );
+
+        this._selection__Updated_Callback();
     }
 
 	/**
@@ -283,6 +466,8 @@ export class ModificationMass_UserSelections_StateObject {
         if ( entryFor_ResidueLetter.size === 0 ) {
             this._staticModificationsSelected.delete( residueLetter );
         }
+
+        this._selection__Updated_Callback();
     }
 
 

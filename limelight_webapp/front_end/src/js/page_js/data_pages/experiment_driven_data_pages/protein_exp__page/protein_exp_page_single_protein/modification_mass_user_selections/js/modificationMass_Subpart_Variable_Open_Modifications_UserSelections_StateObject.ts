@@ -11,9 +11,14 @@
  *      modificationMass_UserSelections_Root.tsx
  */
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import {variable_is_type_number_Check} from 'page_js/variable_is_type_number_Check';
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
+import {
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback,
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM,
+    ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 
 
 ////////////////////
@@ -64,7 +69,7 @@ const _VARIABLE_MODIFICATION__UNMODIFIED_SELECTED = "U"; // A value that a mod m
 ///////
 
 /**
- * 
+ * Only intended to be sub part of class ModificationMass_UserSelections_StateObject
  */
 export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject {
 
@@ -80,11 +85,25 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
      */
     private _UN_Modified_Selected : SingleProtein_Filter_PerUniqueIdentifier_Entry = undefined;
 
+    //  Callbacks on change
+
+    private _selection__Added__Pre_Set_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback
+    private _selection__Updated_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback
+
 	/**
 	 * 
 	 */
-	constructor() {
-
+	constructor(
+        {
+            selection__Added__Pre_Set_Callback,
+            selection__Updated__Callback
+        } : {
+            selection__Added__Pre_Set_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_Callback
+            selection__Updated__Callback : ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback
+        }
+    ) {
+	    this._selection__Added__Pre_Set_Callback = selection__Added__Pre_Set_Callback;
+	    this._selection__Updated_Callback = selection__Updated__Callback;
     }
 
 	/**
@@ -94,7 +113,66 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 
         this._modificationsSelected.clear(); // Reset to None
         this._UN_Modified_Selected = undefined;
+
+        this._selection__Updated_Callback();
     }
+
+    /**
+     * Return number of selections of type ANY or ALL
+     */
+    get_NumberOf_ANY_ALL_Selections() : number {
+
+        let count = 0;
+
+        if ( this._modificationsSelected && this._modificationsSelected.size !== 0 ) {
+            for ( const mapEntry of this._modificationsSelected.entries() ) {
+                const entryValue = mapEntry[ 1 ]
+                if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ANY
+                    || entryValue.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                    count++;
+                }
+            }
+        }
+
+        if ( this._UN_Modified_Selected ) {
+            if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ANY
+                || this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     *
+     * @param entry -
+     */
+    forceUpdate_SetEvery_ANY_ALL_Entries_To_SingleProtein_Filter_SelectionType_Parameter(forceUpdate_To_SelectionType : SingleProtein_Filter_SelectionType) {
+
+        const modificationsSelected_MapKeys = new Set( this._modificationsSelected.keys() );
+        for ( const mapKey of modificationsSelected_MapKeys ) {
+            const mapValue = this._modificationsSelected.get( mapKey );
+            if ( ! mapValue ) {
+                throw Error("forceUpdate_SetEvery_ANY_ALL_Entries_To_SingleProtein_Filter_SelectionType_Parameter: ( ! mapValue )")
+            }
+            const mapEntry_SelectionType = mapValue.selectionType;
+            if ( mapEntry_SelectionType === SingleProtein_Filter_SelectionType.ANY || mapEntry_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
+
+                const newMapEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({selectionType: forceUpdate_To_SelectionType});
+                this._modificationsSelected.set( mapKey, newMapEntry);
+            }
+        }
+
+        if ( this._UN_Modified_Selected ) {
+            if ( this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ANY
+                || this._UN_Modified_Selected.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
+
+                const newEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({selectionType: forceUpdate_To_SelectionType});
+                this._UN_Modified_Selected = newEntry;
+            }
+        }
+    }
+
 
     /**
      *
@@ -102,6 +180,8 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
     clear_selectedModifications_ExceptUnmodified() : void {
 
         this._modificationsSelected.clear(); // Reset to None
+
+        this._selection__Updated_Callback();
     }
 
 	/**
@@ -262,7 +342,33 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             console.warn( msg )
             throw Error( msg )
         }
+
+        let oldEntry_selectionType: SingleProtein_Filter_SelectionType = null;
+        {
+            const oldEntry = this._modificationsSelected.get(modMass);
+            if (oldEntry) {
+                oldEntry_selectionType = oldEntry.selectionType;
+            }
+        }
+
+        //  Update callback
+        this._selection__Added__Pre_Set_Callback({
+            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+            newValue_singleProtein_Filter_SelectionType: entry.selectionType,
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
+        });
+
+        //  Actual UPDATE
         this._modificationsSelected.set(modMass, entry);
+
+        //  Update callback
+        this._selection__Added__Pre_Set_Callback({
+            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+            newValue_singleProtein_Filter_SelectionType: entry.selectionType,
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.POST_SET
+        });
+
+        this._selection__Updated_Callback();
     }
 
 	/**
@@ -270,6 +376,8 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 	 */
     delete_Modification_Selected( modMass : number ) : void {
         this._modificationsSelected.delete( modMass );
+
+        this._selection__Updated_Callback();
     }
 
 	/**
@@ -286,7 +394,32 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             console.warn( msg )
             throw Error( msg )
         }
+
+        let oldEntry_selectionType: SingleProtein_Filter_SelectionType = null;
+        {
+            if (this._UN_Modified_Selected) {
+                oldEntry_selectionType = this._UN_Modified_Selected.selectionType;
+            }
+        }
+
+        //  Update callback
+        this._selection__Added__Pre_Set_Callback({
+            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+            newValue_singleProtein_Filter_SelectionType: value.selectionType,
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
+        });
+
+        //  Actual UPDATE
         this._UN_Modified_Selected = value;
+
+        //  Update callback
+        this._selection__Added__Pre_Set_Callback({
+            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+            newValue_singleProtein_Filter_SelectionType: value.selectionType,
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.POST_SET
+        });
+
+        this._selection__Updated_Callback();
     }
 
 	/**
@@ -294,6 +427,8 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 	 */
     remove_NO_Modification_AKA_Unmodified_Selected() : void {
         this._UN_Modified_Selected = undefined;
+
+        this._selection__Updated_Callback();
     }
 
     //////////////////////////////////////

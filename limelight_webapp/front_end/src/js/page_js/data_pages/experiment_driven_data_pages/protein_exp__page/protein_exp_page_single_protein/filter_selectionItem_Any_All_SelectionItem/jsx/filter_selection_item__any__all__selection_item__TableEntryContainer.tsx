@@ -74,6 +74,7 @@ export class Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer exte
             <Filter_selectionItem_Any_All_SelectionItem
                 textLabel={ this.props.textLabel }
                 current_selection_SelectionType={ this.props.current_selection_SelectionType }
+                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ null }  // Not Passed in for now
             />
         );
     }
