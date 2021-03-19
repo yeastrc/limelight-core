@@ -18,7 +18,10 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.multiple_project_search_id;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,9 +41,12 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParam
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.objects.ProjectPageSingleFolder;
+import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.constants.SearchDataLookupParams_VersionNumber;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_ProjectSearchIds;
@@ -53,6 +59,8 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_c
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
+import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFoldersIF;
+import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFolders.ProjectPageFoldersSearches;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
@@ -74,6 +82,9 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+
+	@Autowired
+	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
 	
 	@Autowired
 	private SearchDataLookupParams_MainProcessingIF searchDataLookupParams_MainProcessing;
@@ -162,6 +173,8 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
 //    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 //    		}
     		
+    		Integer projectId = null;
+    		
     		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null ) {
     			
         		////////////////
@@ -174,6 +187,20 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
         				validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds
         				.validatePublicAccessCodeReadAllowed( webserviceRequest.getProjectSearchIds_CreateDefault(), httpServletRequest );
 
+        		List<Integer> projectIdsForProjectSearchIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
+        		if ( projectIdsForProjectSearchIds.isEmpty() ) {
+        			String msg = "( projectIdsForProjectSearchIds.isEmpty() ). projectIdsForProjectSearchIds: " + projectIdsForProjectSearchIds;
+        			log.error(msg);
+        			throw new LimelightInternalErrorException(msg);
+        		}
+        		if ( projectIdsForProjectSearchIds.size() > 1 ) {
+        			String msg = "( projectIdsForProjectSearchIds.size() > 1 ). projectIdsForProjectSearchIds: " + projectIdsForProjectSearchIds;
+        			log.error(msg);
+        			throw new LimelightInternalErrorException(msg);
+        		}
+        		
+        		projectId = projectIdsForProjectSearchIds.get(0);
+        		
         		////////////////
        		
         		UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getUserSession();
@@ -214,6 +241,25 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
         				validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds
         				.validatePublicAccessCodeReadAllowed( projectSearchIds, httpServletRequest );
 
+        		List<Integer> projectIdsForProjectSearchIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
+        		if ( projectIdsForProjectSearchIds.isEmpty() ) {
+        			String msg = "( projectIdsForProjectSearchIds.isEmpty() ). projectIdsForProjectSearchIds: " + projectIdsForProjectSearchIds;
+        			log.error(msg);
+        			throw new LimelightInternalErrorException(msg);
+        		}
+        		if ( projectIdsForProjectSearchIds.size() > 1 ) {
+        			String msg = "( projectIdsForProjectSearchIds.size() > 1 ). projectIdsForProjectSearchIds: " + projectIdsForProjectSearchIds;
+        			log.error(msg);
+        			throw new LimelightInternalErrorException(msg);
+        		}
+        		
+        		if ( projectId != null && ( ! projectId.equals( projectIdsForProjectSearchIds.get(0) ) ) ) {
+        			log.warn( "searchDataLookupParamsRoot populated but ( projectId != null && ( ! projectId.equals( projectIdsForProjectSearchIds.get(0) ) ) )" );
+        			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+        		}
+        		
+        		projectId = projectIdsForProjectSearchIds.get(0);
+        		
         		////////////////
        		
         		UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getUserSession();
@@ -239,7 +285,7 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
     		SearchDataLookupParamsRoot newSearchDataLookupParamsRoot = null;
     		
 
-    		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null ) {
+    		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null && ( ! webserviceRequest.getProjectSearchIds_CreateDefault().isEmpty() ) ) {
     			
     			if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
     				
@@ -255,11 +301,82 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
         						+ versionNumber + ", Current: " + SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER );
         			}
     			}
+    			
+    			//  Put ProjectSearchIds_CreateDefault in same order as displayed on Project Page
+    			
+    			List<Integer> projectSearchIds_CreateDefault_InOrder = new ArrayList<>( webserviceRequest.getProjectSearchIds_CreateDefault().size() );
+    			
+
+//    			if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
+//    				
+//    				//  Also have SearchDataLookupParamsRoot so just copy in array provided
+//    				
+//    				projectSearchIds_CreateDefault_InOrder.addAll( webserviceRequest.getProjectSearchIds_CreateDefault() );
+//    			
+//    			} else {
+    				
+    				//  No SearchDataLookupParamsRoot so set order based on order on project page
+	    				
+	    			if ( webserviceRequest.getProjectSearchIds_CreateDefault().size() == 1 ) {
+	    				//  Only 1 entry so no need to put it in order
+	    				
+	    				projectSearchIds_CreateDefault_InOrder.add( webserviceRequest.getProjectSearchIds_CreateDefault().get( 0 ) );
+	    			
+	    			} else {
+	    				// > 1 entry so get searches i order of project page
+	    			
+	    				Set<Integer> projectSearchIds_CreateDefault_Set = new HashSet<>( webserviceRequest.getProjectSearchIds_CreateDefault() );
+	
+	    				//  Get the searches and put them in folders
+	    				ProjectPageFoldersSearches projectPageFoldersSearches = 
+	    						viewProjectSearchesInFolders.getProjectPageFoldersSearches( projectId );
+	    				
+	    				
+	    				if (  projectPageFoldersSearches.getFolders() != null ) {
+	    					
+	    					for ( ProjectPageSingleFolder folder : projectPageFoldersSearches.getFolders() ) {
+	    						
+	    						if ( folder.getSearches() != null ) {
+	    							for ( SearchItemMinimal search : folder.getSearches() ) {
+	    								Integer projectSearchId_Of_Search = search.getProjectSearchId();
+	    								if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
+	    									
+	    									projectSearchIds_CreateDefault_InOrder.add(projectSearchId_Of_Search);
+	    									projectSearchIds_CreateDefault_Set.remove(projectSearchId_Of_Search);
+	    								}
+	    							}
+	    						}
+	    					}
+	    				}
+	    				
+	    				if ( projectPageFoldersSearches.getSearchesNotInFolders() != null ) {
+	    					for ( SearchItemMinimal search : projectPageFoldersSearches.getSearchesNotInFolders() ) {
+								Integer projectSearchId_Of_Search = search.getProjectSearchId();
+								if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
+									
+									projectSearchIds_CreateDefault_InOrder.add(projectSearchId_Of_Search);
+									projectSearchIds_CreateDefault_Set.remove(projectSearchId_Of_Search);
+								}
+							}
+	    				}
+	    				
+	    				if ( ! projectSearchIds_CreateDefault_Set.isEmpty() ) {
+	    					log.warn( "The following Project Search Ids are in webserviceRequest.getProjectSearchIds_CreateDefault() but not in projectPageFoldersSearches:"
+	    							+ projectSearchIds_CreateDefault_Set );
+	    					
+	    					List<Integer> projectSearchIds_CreateDefault_Leftovers = new ArrayList<>( projectSearchIds_CreateDefault_Set );
+	    					Collections.sort( projectSearchIds_CreateDefault_Leftovers );
+	    					projectSearchIds_CreateDefault_InOrder.addAll(projectSearchIds_CreateDefault_Leftovers);
+	    				}
+//	    			}
+    			}
+    			
+    			
     			        		
     			SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result result = 
     			searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds
     			.create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(
-    					webserviceRequest.getProjectSearchIds_CreateDefault(), 
+    					projectSearchIds_CreateDefault_InOrder, 
     					searchDataLookupParams_CreatedByInfo,
     					null /* projectSearchIdsToSearchIds */, 
     					searchDataLookupParamsRoot );
