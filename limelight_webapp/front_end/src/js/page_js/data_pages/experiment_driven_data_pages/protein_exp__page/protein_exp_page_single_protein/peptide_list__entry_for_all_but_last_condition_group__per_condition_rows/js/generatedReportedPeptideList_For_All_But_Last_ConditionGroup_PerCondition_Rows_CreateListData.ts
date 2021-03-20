@@ -43,7 +43,7 @@ import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/expe
 
 //  returns React Component to insert below current data row
 
-import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {
@@ -77,7 +77,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
 
     projectSearchIds : Array<number>
     reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
-    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
@@ -110,7 +110,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
 
             projectSearchIds : Array<number>,
             reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
-            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
             searchDataLookupParamsRoot : SearchDataLookupParameters_Root
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
@@ -171,7 +171,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     const projectSearchIds : Array<number> = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.projectSearchIds
 
     const reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>> = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.reportedPeptideIdsMap_KeyProjectSearchId
-    const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds =
+    const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =
         createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     const searchDataLookupParamsRoot = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.searchDataLookupParamsRoot
     const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds

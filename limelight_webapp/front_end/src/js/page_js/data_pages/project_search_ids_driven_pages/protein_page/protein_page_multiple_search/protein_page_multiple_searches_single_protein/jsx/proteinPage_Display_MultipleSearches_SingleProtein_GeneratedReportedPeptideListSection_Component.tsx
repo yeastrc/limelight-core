@@ -27,7 +27,7 @@ import { DataTable_RootTableObject } from 'page_js/data_pages/data_table_react/d
 
 import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result } from '../js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
 
-import {ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/reported_peptide_ids_for_display/proteinExpmntPage_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {
     createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein,
@@ -48,7 +48,7 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedRep
 
     searchSubGroup_Ids_Selected : Set<number>
 
-    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
     proteinSequenceVersionId : number
     projectSearchIds : Array<number>
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
@@ -238,7 +238,7 @@ export interface ReportedPeptideList_Component_Props {
 
     searchSubGroup_Ids_Selected : Set<number>
 
-    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : ProteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
     proteinSequenceVersionId : number, 
     projectSearchIds : Array<number>,
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root,
