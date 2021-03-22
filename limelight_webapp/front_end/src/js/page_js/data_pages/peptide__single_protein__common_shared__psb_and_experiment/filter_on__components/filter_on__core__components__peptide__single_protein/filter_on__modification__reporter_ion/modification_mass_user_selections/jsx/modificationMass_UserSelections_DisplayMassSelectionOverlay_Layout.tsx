@@ -232,6 +232,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
         filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create({  // External Function
 
             current_selection_SelectionType,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class : null, // Not Passed in Mod Mass Selection Overlay
             position_Left,
             position_Top,
             any_Selected_Callback,

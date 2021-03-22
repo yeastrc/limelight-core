@@ -53,7 +53,6 @@ class ModificationMass_UserSelections_ComponentData_Variable_or_Open_Modificatio
     unmodified_Selection_Variable_or_Open_Modifications? : SingleProtein_Filter_PerUniqueIdentifier_Entry
     showAdd_Variable_or_Open_ModificationsSelectionLink? : boolean
     variable_or_Open_ModificationEntries? : Array<ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry>
-    showChange_Variable_or_Open_ModificationsSelectionLink? : boolean
 
     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject? : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
     proteinSequenceVersionId? : number

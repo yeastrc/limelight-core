@@ -32,9 +32,7 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
         remove_Selected_Callback
     } : {
         current_selection_SelectionType : SingleProtein_Filter_SelectionType
-
-        //  TODO  TEMP "?"
-        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class?: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
         position_Left : number
         position_Top : number
         any_Selected_Callback : () => void;

@@ -331,7 +331,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 	/**
 	 * 
 	 */
-    set_Modification_Selected(modMass : number, entry : SingleProtein_Filter_PerUniqueIdentifier_Entry ) : void {
+    set_Modification_Selected(modMass : number, entry : SingleProtein_Filter_PerUniqueIdentifier_Entry, skipChangeOtherSelectionsBasedOnThisSelection?: boolean ) : void {
         if ( ! entry ) {
             const msg = "set_Modification_Selected(...): No value for entry"
             console.warn( msg )
@@ -351,22 +351,28 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
             }
         }
 
-        //  Update callback
-        this._selection__Added__Pre_Set_Callback({
-            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
-            newValue_singleProtein_Filter_SelectionType: entry.selectionType,
-            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
-        });
+        if ( ! skipChangeOtherSelectionsBasedOnThisSelection ) {
+
+            //  Update callback
+            this._selection__Added__Pre_Set_Callback({
+                oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+                newValue_singleProtein_Filter_SelectionType: entry.selectionType,
+                pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
+            });
+        }
 
         //  Actual UPDATE
         this._modificationsSelected.set(modMass, entry);
 
-        //  Update callback
-        this._selection__Added__Pre_Set_Callback({
-            oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
-            newValue_singleProtein_Filter_SelectionType: entry.selectionType,
-            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.POST_SET
-        });
+        if ( ! skipChangeOtherSelectionsBasedOnThisSelection ) {
+
+            //  Update callback
+            this._selection__Added__Pre_Set_Callback({
+                oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
+                newValue_singleProtein_Filter_SelectionType: entry.selectionType,
+                pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.POST_SET
+            });
+        }
 
         this._selection__Updated_Callback();
     }

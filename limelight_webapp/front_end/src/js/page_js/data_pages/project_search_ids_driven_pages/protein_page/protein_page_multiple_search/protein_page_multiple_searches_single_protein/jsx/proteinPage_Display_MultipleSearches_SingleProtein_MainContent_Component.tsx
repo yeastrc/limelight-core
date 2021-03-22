@@ -214,6 +214,7 @@ interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Compone
     protein_percentageCovered_Unfiltered_Rounded? : string;
     psmCountForUnfilteredDisplay? : string;
 
+    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange?: object  //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
     modificationMass_UserSelections_ComponentData? : ModificationMass_UserSelections_ComponentData; // Only updated when new updated need to push new values from above components
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData? : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData; // Only updated when new updated need to push new values from above components
     reporterIons_UserSelections_ComponentData? : ReporterIonMass_UserSelections_ComponentData;
@@ -1034,6 +1035,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                     window.setTimeout( () => {
                         try {
+                            //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
+                            this.setState({ modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} });
+
                             this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
 
                             //  NOT Reset this for "Clear All"
@@ -1245,7 +1249,16 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         this._modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback();
 
         window.setTimeout( () => {
-            this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback();
+            try {
+                //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
+                this.setState({ modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} });
+
+                this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         }, 1 );
     }
 
@@ -1344,9 +1357,15 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             //  No Promise so run immediately
 
                             window.setTimeout( () => {
-                                //  Now update dependent page parts
+                                try {
+                                    //  Now update dependent page parts
 
-                                this._updateRestOfPage_ForUserInteraction();
+                                    this._updateRestOfPage_ForUserInteraction();
+
+                                } catch( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                    throw e;
+                                }
                             }, 0 );
                         } catch( e ) {
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -2527,6 +2546,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                 />
 
                                 <ModificationMass_UserSelections_Root
+                                    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                                     openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                                     modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
                                     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }

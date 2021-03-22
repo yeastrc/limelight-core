@@ -204,21 +204,26 @@ export class ModificationMass_UserSelections_DisplayMassSelectionOverlay {
 
         //  First add Type AND (Triggers processing in called code)
 
+        let found_AND_Selection = false;
+
         for ( const mapEntry of updated_selectedModificationMasses_Map.entries() ) {
             const entryKey = mapEntry[ 0 ]
             const entryValue = mapEntry[ 1 ]
             if ( entryValue.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
                 this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected(entryKey, entryValue);
+                found_AND_Selection = true;
             }
         }
 
         //  Second add Type other than AND (Triggers processing in called code)
 
+        const skipChangeOtherSelectionsBasedOnThisSelection = found_AND_Selection;
+
         for ( const mapEntry of updated_selectedModificationMasses_Map.entries() ) {
             const entryKey = mapEntry[ 0 ]
             const entryValue = mapEntry[ 1 ]
             if ( entryValue.selectionType !== SingleProtein_Filter_SelectionType.ALL ) {
-                this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected(entryKey, entryValue);
+                this._modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.set_Modification_Selected(entryKey, entryValue, skipChangeOtherSelectionsBasedOnThisSelection);
             }
         }
 

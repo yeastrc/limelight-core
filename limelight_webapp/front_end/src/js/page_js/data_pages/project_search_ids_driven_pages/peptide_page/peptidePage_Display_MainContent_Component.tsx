@@ -208,6 +208,7 @@ interface PeptidePage_Display_MainContent_Component_State {
 
     psmCountForUnfilteredDisplay? : string;
 
+    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange?: object  //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
     modificationMass_UserSelections_ComponentData? : ModificationMass_UserSelections_ComponentData; // Only updated when new updated need to push new values from above components
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData? : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData; // Only updated when new updated need to push new values from above components
     reporterIons_UserSelections_ComponentData? : ReporterIonMass_UserSelections_ComponentData;
@@ -1570,6 +1571,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                     window.setTimeout( () => {
                         try {
+                            //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
+                            this.setState({ modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} });
+
                             this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
 
                             //  NOT Reset this for "Clear All"
@@ -1769,7 +1773,16 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         this._modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback();
 
         window.setTimeout( () => {
-            this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback();
+            try {
+                //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
+                this.setState({ modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} });
+
+                this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         }, 1 );
     }
 
@@ -2941,7 +2954,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
                         />
 
-                          <ModificationMass_UserSelections_Root
+                        <ModificationMass_UserSelections_Root
+                            modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                             openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                             modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
                             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }

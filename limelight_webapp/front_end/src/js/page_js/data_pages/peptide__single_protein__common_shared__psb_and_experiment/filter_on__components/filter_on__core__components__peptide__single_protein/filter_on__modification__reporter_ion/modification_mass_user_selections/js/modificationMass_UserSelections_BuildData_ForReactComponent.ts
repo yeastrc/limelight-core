@@ -34,11 +34,6 @@ import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_Stat
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 
-const _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS = 20;
-
-// for Open Mods: Always display Add/Change Links. Never initially show not selected mass values
-const _MAX_MODS_DISPLAY_NON_SELECTED__OPEN_MODS = 0;
-
 
 /**
  * 
@@ -229,7 +224,6 @@ const _variable_modificationMass_UserSelections_BuildData_ForReactComponent = fu
     }
 
     return _variable_or_open_modificationMass_UserSelections_BuildData_ForReactComponent({
-        maxModsDisplay_Unselected : _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS,
         modificationsUniqueMassesSet,
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
         proteinSequenceVersionId,
@@ -277,7 +271,6 @@ const _open_modificationMass_UserSelections_BuildData_ForReactComponent = functi
     }
 
     return _variable_or_open_modificationMass_UserSelections_BuildData_ForReactComponent({
-        maxModsDisplay_Unselected : _MAX_MODS_DISPLAY_NON_SELECTED__OPEN_MODS,
         modificationsUniqueMassesSet,
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
         proteinSequenceVersionId,
@@ -296,7 +289,6 @@ const _open_modificationMass_UserSelections_BuildData_ForReactComponent = functi
  */
 const _variable_or_open_modificationMass_UserSelections_BuildData_ForReactComponent = function({
 
-   maxModsDisplay_Unselected,
    modificationsUniqueMassesSet,
    modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
    proteinSequenceVersionId,
@@ -304,7 +296,6 @@ const _variable_or_open_modificationMass_UserSelections_BuildData_ForReactCompon
    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
    modificationMass_CommonRounding_ReturnNumber
 } : {
-    maxModsDisplay_Unselected : number
     modificationsUniqueMassesSet: Set<number>
     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
     proteinSequenceVersionId : number,
@@ -315,35 +306,17 @@ const _variable_or_open_modificationMass_UserSelections_BuildData_ForReactCompon
 
     const unmodified_Selection_Variable_or_Open_Modifications : SingleProtein_Filter_PerUniqueIdentifier_Entry = modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_NO_Modification_AKA_Unmodified_Selected();
 
-    //   Set
-    const modificationsSelected__OnlyModMasses_AsSet = modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__OnlyModMasses_AsSet()
-
     const result : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData = {
         unmodified_Selection_Variable_or_Open_Modifications,
         showAdd_Variable_or_Open_ModificationsSelectionLink : false,
         variable_or_Open_ModificationEntries : undefined,
-        showChange_Variable_or_Open_ModificationsSelectionLink : undefined,
-    
+
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
         proteinSequenceVersionId, 
         projectSearchIds, 
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, 
         modificationMass_CommonRounding_ReturnNumber
     }; 
-
-    if ( ( modificationsSelected__OnlyModMasses_AsSet.size === 0 ) && ( modificationsUniqueMassesSet.size > maxModsDisplay_Unselected ) ) {
-
-        result.showAdd_Variable_or_Open_ModificationsSelectionLink = true;
-        return result; // EARLY EXIT
-    }
-
-    let showChange_Variable_or_Open_ModificationsSelectionLink = false;
-
-    if ( ( modificationsUniqueMassesSet.size > maxModsDisplay_Unselected )
-        && ( modificationsUniqueMassesSet.size !== ( modificationsSelected__OnlyModMasses_AsSet.size ) ) ) {
-        //  more mod masses than normally display and not all are selected
-        showChange_Variable_or_Open_ModificationsSelectionLink = true;
-    }
 
     //  Masses as Array so can sort
     const modUniqueMassesArray = Array.from( modificationsUniqueMassesSet );
@@ -377,14 +350,10 @@ const _variable_or_open_modificationMass_UserSelections_BuildData_ForReactCompon
             selectionType
         };
 
-        if ( ( ! showChange_Variable_or_Open_ModificationsSelectionLink ) || ( selectionType ) ) {
-            //  Either not > _MAX_MODS_DISPLAY_NON_SELECTED mod masses OR the mod has has been selected
-            variable_or_Open_ModificationEntries.push( resultEntry );
-        }
+        variable_or_Open_ModificationEntries.push( resultEntry );
     }
 
     result.variable_or_Open_ModificationEntries = variable_or_Open_ModificationEntries;
-    result.showChange_Variable_or_Open_ModificationsSelectionLink = showChange_Variable_or_Open_ModificationsSelectionLink;
 
     return result;
 }

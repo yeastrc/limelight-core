@@ -24,8 +24,7 @@ export interface ReporterIonMass_UserSelections_Props {
 
     reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData;
 
-    //  TODO  TEMP "?"
-    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class?: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
 
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback : () => void;

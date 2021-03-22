@@ -134,6 +134,11 @@ import {get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_L
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
+import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {
+    ModificationMass_ReporterIon__UserSelections__Coordinator_Class,
+    ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
+} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 
 
 ////
@@ -230,6 +235,7 @@ interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
     protein_percentageCovered_Unfiltered_Rounded? : string;
     psmCountForUnfilteredDisplay? : string;
 
+    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange?: object  //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
     modificationMass_UserSelections_ComponentData? : ModificationMass_UserSelections_ComponentData; // Only updated when new updated need to push new values from above components
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData? : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData; // Only updated when new updated need to push new values from above components
     reporterIons_UserSelections_ComponentData? : ReporterIonMass_UserSelections_ComponentData;
@@ -254,6 +260,9 @@ interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
 
     graphicRepresentation_SelectedCells? : ExperimentConditions_GraphicRepresentation_SelectedCells
 
+    //
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+
     saveView_Component_React?: any //  React Component for Save View
     saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
@@ -273,8 +282,14 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
 
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis = this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback.bind(this);
+
     private _DO_NOT_CALL() { //  Test Cast of method
         const mainCell_getHoverContents: ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = this._mainCell_getHoverContents;
+
+        const modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback : ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback;
+
     }
 
     //  bind to 'this' for passing as parameters
@@ -323,6 +338,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
 
     // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
+
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
 
     /**
      * 
@@ -387,6 +404,16 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 }
             }
         }
+
+        this._modificationMass_ReporterIon__UserSelections__Coordinator_Class =
+            new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
+                contents_Changed_Callback: this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis,
+                modificationMass_UserSelections_StateObject: props.propsValue.modificationMass_UserSelections_StateObject,
+                reporterIonMass_UserSelections_StateObject: props.propsValue.reporterIonMass_UserSelections_StateObject
+            })
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
 
         const {
             linksToExternalResources,
@@ -506,6 +533,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             create_GeneratedReportedPeptideListData_Result,
             peptideFiltersDisplay_ComponentData,
             graphicRepresentation_SelectedCells,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
             saveView_Component_React, 
             saveView_Component_Props_Prop
         };
@@ -687,6 +715,20 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         });
     }
 
+    /**
+     *
+     */
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback() {
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
+        this.setState({ modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class });
+
+        this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
+
+        this._reporterIonMass_Update_reporterIonMass_UserSelections_ComponentData();
+    }
 
 	/**
 	 * 
@@ -1128,6 +1170,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                     window.setTimeout( () => {
                         try {
+                            //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
+                            this.setState({ modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} });
+
                             this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
 
                             //  NOT Reset this for "Clear All"
@@ -1314,7 +1359,16 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         this._modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback();
 
         window.setTimeout( () => {
-            this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback();
+            try {
+                //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
+                this.setState({ modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} });
+
+                this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         }, 1 );
     }
 
@@ -2497,8 +2551,10 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                             <div className=" filter-common-block-selection-container-block ">
 
                                 <ModificationMass_UserSelections_Root
+                                    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                                     openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                                     modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
+                                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                                     modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
                                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
@@ -2515,6 +2571,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                                 <ReporterIonMass_UserSelections
                                     reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
+                                    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                                     reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
                                     updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
                                 />

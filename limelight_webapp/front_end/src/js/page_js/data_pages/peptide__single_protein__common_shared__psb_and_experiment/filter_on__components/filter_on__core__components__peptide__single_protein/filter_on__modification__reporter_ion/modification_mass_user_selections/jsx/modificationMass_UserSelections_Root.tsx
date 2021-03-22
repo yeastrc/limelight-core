@@ -31,14 +31,15 @@ import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData
  */
 export interface ModificationMass_UserSelections_Root_Props {
 
+    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: object  //  Clear modificationMassSelections_AlwaysShow when this object reference changes
+
     openModification_OpenSelectMassOverlay_Override_Callback : () => void
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData;
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
 
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
 
-    //  TODO  TEMP "?"
-    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class?: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class: ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
 
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
     updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback : () => void;
@@ -152,6 +153,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                 <ModificationMass_UserSelections_Variable_or_Open_Modifications
                     variable_Modifications_DISPLAY={ true }
                     open_Modifications_DISPLAY={ false }
+                    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                     openSelectMassOverlay_Override_Callback={ undefined }
                     variable_or_Open_ModificationsData={ variableModificationsData }
                     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
@@ -175,6 +177,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                 <ModificationMass_UserSelections_Variable_or_Open_Modifications
                     variable_Modifications_DISPLAY={ false }
                     open_Modifications_DISPLAY={ true }
+                    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                     openSelectMassOverlay_Override_Callback={ this.props.openModification_OpenSelectMassOverlay_Override_Callback }
                     variable_or_Open_ModificationsData={ open_ModificationsData }
                     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }

@@ -29,7 +29,13 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component} from
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {DataTable_TableRoot_Props} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 
+
+const _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS = 20;
+
+// for Open Mods: Always display Add/Change Links. Never initially show not selected mass values
+const _MAX_MODS_DISPLAY_NON_SELECTED__OPEN_MODS = 0;
 
 
 /**
@@ -40,6 +46,8 @@ export interface ModificationMass_UserSelections_Variable_or_Open_Modifications_
     //  Exactly 1 of following has to be true
     variable_Modifications_DISPLAY : boolean
     open_Modifications_DISPLAY : boolean
+
+    modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: object  //  Clear modificationMassSelections_AlwaysShow when this object reference changes
 
     openSelectMassOverlay_Override_Callback : () => void  //  Overrides default behavior of open "Add/Change selected modification mass" overlay
 
@@ -66,8 +74,14 @@ export interface ModificationMass_UserSelections_Variable_or_Open_Modifications_
 
 interface ModificationMass_UserSelections_Variable_or_Open_Modifications_State {
 
-    _placeholder: any
+    showChange_Variable_or_Open_ModificationsSelectionLink?: boolean
+    modificationMassSelections_AlwaysShow? : Set<number>   //  Always show these Modification Masses, even if not selected
+
+    prevFromProps__modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange?: object  //  Also updated with new {} in _updateFor_OverlaySelectionChanges
+
+    // _placeholder: any
 }
+
 /**
  * 
  */
@@ -76,6 +90,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
     //  bind to 'this' for passing as parameters
     private _open_OverlaySelectionChanges_BindThis = this._open_OverlaySelectionChanges.bind(this);
     private _updateFor_OverlaySelectionChanges_BindThis = this._updateFor_OverlaySelectionChanges.bind(this);
+    private _modificationMassSelection_Removed_Callback_BindThis = this._modificationMassSelection_Removed_Callback.bind(this);
 
     /**
      * 
@@ -94,11 +109,68 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
             throw Error( msg )
         }
 
-        this.state = { _placeholder: null };
+        this.state = {
+            showChange_Variable_or_Open_ModificationsSelectionLink: false,
+            modificationMassSelections_AlwaysShow: new Set(),
+            prevFromProps__modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange
+        };
     }
 
-
     /**
+     * Must be Static, called by React
+     * Called before
+     *   Initial render: 'render()'
+     *   Rerender : 'shouldComponentUpdate()'
+     *
+     * Check out getSnapshotBeforeUpdate( <see docs> )
+     *
+     * Return new state (like return from setState(callback)) or null
+     */
+    static getDerivedStateFromProps( props : ModificationMass_UserSelections_Variable_or_Open_Modifications_Props, state: ModificationMass_UserSelections_Variable_or_Open_Modifications_State ) : ModificationMass_UserSelections_Variable_or_Open_Modifications_State {
+
+        let maxModsDisplay_Unselected = _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS;
+
+        if ( props.open_Modifications_DISPLAY ) {
+            maxModsDisplay_Unselected = _MAX_MODS_DISPLAY_NON_SELECTED__OPEN_MODS;
+        }
+
+        //   Set
+        const modificationsSelected__OnlyModMasses_AsSet = props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__OnlyModMasses_AsSet()
+
+        // if ( ( modificationsSelected__OnlyModMasses_AsSet.size === 0 ) && ( modificationsUniqueMassesSet.size > maxModsDisplay_Unselected ) ) {
+        //
+        //     result.showAdd_Variable_or_Open_ModificationsSelectionLink = true;
+        //     return result; // EARLY EXIT
+        // }
+
+        let showChange_Variable_or_Open_ModificationsSelectionLink = false;
+
+        if ( props.variable_or_Open_ModificationsData && props.variable_or_Open_ModificationsData.variable_or_Open_ModificationEntries ) {
+
+            if ( ( props.variable_or_Open_ModificationsData.variable_or_Open_ModificationEntries.length > maxModsDisplay_Unselected )
+                && ( props.variable_or_Open_ModificationsData.variable_or_Open_ModificationEntries.length !== ( modificationsSelected__OnlyModMasses_AsSet.size ) ) ) {
+
+                //  more mod masses than normally display and not all are selected
+                showChange_Variable_or_Open_ModificationsSelectionLink = true;
+            }
+        }
+
+        let newState : ModificationMass_UserSelections_Variable_or_Open_Modifications_State = {
+            showChange_Variable_or_Open_ModificationsSelectionLink
+        };
+
+        if ( state.prevFromProps__modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange !== props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange ) {
+
+            newState.prevFromProps__modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange = props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange;
+
+            newState.modificationMassSelections_AlwaysShow = new Set();  //  Reset to empty
+        }
+
+
+        return newState;
+    }
+
+                                         /**
      * After render()
      */
     // componentDidMount() {
@@ -113,25 +185,6 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
 
     // }
 
-
-    /**
-     * Must be Static
-     * Called before 
-     *   Initial render: 'render()'
-     *   Rerender : 'shouldComponentUpdate()'
-     * 
-     * Return new state (like return from setState(callback)) or null
-     */
-    // static getDerivedStateFromProps( props, state ) {
-
-      // console.log("called: static getDerivedStateFromProps(): " );
-
-      //  Return new state (like return from setState(callback)) or null
-
-    //   return null;
-
-    // }
-  
 
     /**
      * @returns true if should update, false otherwise
@@ -155,12 +208,6 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
     //     //  If Comment out prev code, comment out this method
     // }
 
-    // getSnapshotBeforeUpdate( <see docs> ) {
-
-
-    // }
-
-
     /**
      * After render()
      */
@@ -172,6 +219,17 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
     //     //     this.dataObject_columnEntry_NewValue_Callback({ dataObject_columnEntry : this.props.dataObject_columnEntry });
     //     // }
     // }
+
+    private _modificationMassSelection_Removed_Callback( modificationMass: number ) {
+
+        this.setState( (state: ModificationMass_UserSelections_Variable_or_Open_Modifications_State, props: ModificationMass_UserSelections_Variable_or_Open_Modifications_Props) : ModificationMass_UserSelections_Variable_or_Open_Modifications_State => {
+
+            const modificationMassSelections_AlwaysShow = new Set( state.modificationMassSelections_AlwaysShow );
+            modificationMassSelections_AlwaysShow.add( modificationMass );
+
+            return { modificationMassSelections_AlwaysShow }
+        });
+    }
 
     /**
      * 
@@ -213,6 +271,9 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
         this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback();
         
         window.setTimeout( () => {
+
+            this.setState({ prevFromProps__modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange: {} })
+
             this.props.update_modificationMass_UserSelections_ComponentData_Callback();
         }, 1 );   
 
@@ -240,26 +301,33 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
         const variable_or_Open_ModificationEntries = variable_or_Open_ModificationsData.variable_or_Open_ModificationEntries;
         
         const showAdd_Variable_or_Open_ModificationsSelectionLink = variable_or_Open_ModificationsData.showAdd_Variable_or_Open_ModificationsSelectionLink;
-        const showChange_Variable_or_Open_ModificationsSelectionLink = variable_or_Open_ModificationsData.showChange_Variable_or_Open_ModificationsSelectionLink;
+        const showChange_Variable_or_Open_ModificationsSelectionLink = this.state.showChange_Variable_or_Open_ModificationsSelectionLink;
         
 
-        let singleModification_Entries = null;
+        let singleModification_Entries: Array<JSX.Element> = [];
 
         if ( variable_or_Open_ModificationEntries ) {
 
-            singleModification_Entries = variable_or_Open_ModificationEntries.map( (variable_or_Open_ModificationEntry, index) => {
+            for ( const variable_or_Open_ModificationEntry of variable_or_Open_ModificationEntries ) {
 
-                return (
-                    <SingleModification_Entry
-                        key={ variable_or_Open_ModificationEntry.modMass }
-                        variable_or_Open_ModificationEntry={ variable_or_Open_ModificationEntry }
-                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
-                        modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject }
-                        updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
-                        update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
-                    />
-                );
-            });
+                if ( ( ! showChange_Variable_or_Open_ModificationsSelectionLink )  //  Not show link so show all entries
+                    || variable_or_Open_ModificationEntry.selectionType || this.state.modificationMassSelections_AlwaysShow.has( variable_or_Open_ModificationEntry.modMass ) ) {
+
+                    const entry = (
+                        <SingleModification_Entry
+                            key={ variable_or_Open_ModificationEntry.modMass }
+                            variable_or_Open_ModificationEntry={ variable_or_Open_ModificationEntry }
+                            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
+                            modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject }
+                            updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
+                            update_modificationMass_UserSelections_ComponentData_Callback={ this.props.update_modificationMass_UserSelections_ComponentData_Callback }
+                            modificationMassSelection_Removed={ this._modificationMassSelection_Removed_Callback_BindThis }
+                        />
+                    );
+
+                    singleModification_Entries.push( entry )
+                }
+            }
         }
 
         let open_OverlaySelectionChanges = this._open_OverlaySelectionChanges_BindThis
@@ -359,6 +427,9 @@ interface SingleModification_Entry_Props {
     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject;
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;  //  Called when need to update other checkboxes or when updates from overlay
+
+    // Internal
+    modificationMassSelection_Removed: ( mass: number ) => void;  // Called when a modification mass is removed
 }
 
 interface SingleModification_Entry_State {
@@ -520,6 +591,8 @@ class SingleModification_Entry extends React.Component< SingleModification_Entry
             const modMass = this.props.variable_or_Open_ModificationEntry.modMass;
 
             this.props.modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.delete_Modification_Selected( modMass );
+
+            this.props.modificationMassSelection_Removed( modMass );
 
             this._updateRestofPage();
 
