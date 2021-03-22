@@ -30,7 +30,10 @@ import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/
 
 import { ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop } from '../jsx/proteinExperimentPage_SingleProtein_MainContent_Component'
 
-import { ProteinExperimentPage_SingleProtein_Root_Component } from '../jsx/proteinExperimentPage_SingleProtein_Root_Component';
+import {
+	ProteinExperimentPage_SingleProtein_Root_Component,
+	ProteinExperimentPage_SingleProtein_Root_Component_Props
+} from '../jsx/proteinExperimentPage_SingleProtein_Root_Component';
 
 
 
@@ -48,6 +51,7 @@ import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptid
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ProteinList_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinList_ExpPage_CentralStateManagerObjectClass";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/jsx/proteinPage_Display_MultipleSearches_SingleProtein_Root_Component";
 
 
 /**
@@ -337,16 +341,22 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			proteinDescriptions = this._proteinListItem.description
 		}
 
+
+		const standard_Page_Header_Height = this._get_Standard_Page_Header_Height();
+
+		const props : ProteinExperimentPage_SingleProtein_Root_Component_Props = {
+			closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
+			standard_Page_Header_Height,
+			proteinNames,
+			proteinDescriptions
+		}
+
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
 		
 		const proteinExperimentPage_SingleProtein_Root_Component = (
 			React.createElement(
 				ProteinExperimentPage_SingleProtein_Root_Component,
-				{
-					closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
-					proteinNames,
-					proteinDescriptions
-				},
+				props,
 				null
 			)
 		);
@@ -487,6 +497,27 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
 		}
+	}
+
+	/**
+	 * Return the height of the Page header at the top of the page
+	 */
+	private _get_Standard_Page_Header_Height() : number {
+
+		// const $header_outer_container_div = $("#header_outer_container_div");
+		// if ( $header_outer_container_div.length === 0 ) {
+		// 	throw Error("No DOM element found with id 'header_outer_container_div'");
+		// }
+		// const headerOuterHeight = $header_outer_container_div.outerHeight( true /* [includeMargin ] */ );
+
+		const header_outer_container_div_DOM = document.getElementById("header_outer_container_div");
+		if ( ! header_outer_container_div_DOM ) {
+			throw Error("No DOM element found with id 'header_outer_container_div'");
+		}
+		const header_outer_container_div_BoundingClientRect = header_outer_container_div_DOM.getBoundingClientRect();
+		const height = header_outer_container_div_BoundingClientRect.height;
+
+		return height;
 	}
 }
 

@@ -47,6 +47,8 @@ export interface ProteinExperimentPage_SingleProtein_Root_Component_Props {
 
     closeOverlayClickHandler : ProteinExperimentPage_SingleProtein_Root_Component_closeOverlayClickHandler;
 
+    standard_Page_Header_Height: number
+
     //  Optional.  Do NOT have when loading URL and directly displaying Single Protein Overlay
     proteinNames : string
     proteinDescriptions : string
@@ -335,7 +337,7 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
 
                     <div id="view_single_protein_inner_overlay_div"  className=" view-single-protein-overlay-div " ref={ this._view_single_protein_inner_overlay_div_Ref }>
 
-                        <div id="view_single_protein_overlay_header" className="view-single-protein-overlay-header" >
+                        <div id="view_single_protein_overlay_header" className="view-single-protein-overlay-header" style={ { top: this.props.standard_Page_Header_Height } } >
 
                             <div ref={ this.view_single_protein_overlay_header_inner_container_Ref }
                                  style={  { width: view_single_protein_overlay_header_Style_width_maxWidth,  maxWidth: view_single_protein_overlay_header_Style_width_maxWidth } }
