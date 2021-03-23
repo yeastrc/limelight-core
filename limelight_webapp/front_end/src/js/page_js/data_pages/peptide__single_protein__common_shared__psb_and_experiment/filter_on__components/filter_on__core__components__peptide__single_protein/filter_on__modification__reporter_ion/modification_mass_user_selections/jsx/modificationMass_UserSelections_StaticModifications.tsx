@@ -12,7 +12,7 @@ import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../../../../../experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
+import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
 import {
     ModificationMass_UserSelections_ComponentData_StaticModificationsData,
     ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry

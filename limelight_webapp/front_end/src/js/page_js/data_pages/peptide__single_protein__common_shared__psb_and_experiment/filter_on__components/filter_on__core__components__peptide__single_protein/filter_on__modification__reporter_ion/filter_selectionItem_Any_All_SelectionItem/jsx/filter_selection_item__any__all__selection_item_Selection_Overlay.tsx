@@ -11,10 +11,9 @@ import React from 'react'
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants";
 import ReactDOM from "react-dom";
-import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {filter_selection_item__any__all__selection_item_TooltipText__Buttons} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_TooltipText__Selected_and_Buttons";
 
 
 /**
@@ -275,7 +274,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                             <OverlayUpdateButton
                                 buttonLabel={ "ADD" }
                                 isCurrentSelection={ current_selection_SelectionType_ALL }
-                                buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._ADD__ONLY__TOOLTIP_MAIN_TEXT_STRING }
+                                buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_TooltipText__Buttons._ADD__ONLY__TOOLTIP_MAIN_TEXT_STRING }
                                 buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
                                 buttonClicked_Callback={ this._choice_ALL_Clicked_BindThis }
                             />
@@ -285,7 +284,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                                 <OverlayUpdateButton
                                     buttonLabel={ "OR" }
                                     isCurrentSelection={ current_selection_SelectionType_ANY }
-                                    buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._OR__TOOLTIP_MAIN_TEXT_STRING }
+                                    buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_TooltipText__Buttons._OR__TOOLTIP_MAIN_TEXT_STRING }
                                     buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
                                     buttonClicked_Callback={ this._choice_ANY_Clicked_BindThis }
                                 />
@@ -293,7 +292,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                                 <OverlayUpdateButton
                                     buttonLabel={ "AND" }
                                     isCurrentSelection={ current_selection_SelectionType_ALL }
-                                    buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING }
+                                    buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_TooltipText__Buttons._AND__TOOLTIP_MAIN_TEXT_STRING }
                                     buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
                                     buttonClicked_Callback={ this._choice_ALL_Clicked_BindThis }
                                 />
@@ -303,7 +302,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
                         <OverlayUpdateButton
                             buttonLabel={ "EXCLUDE" }
                             isCurrentSelection={ current_selection_SelectionType_NOT }
-                            buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._NOT__TOOLTIP_MAIN_TEXT_STRING }
+                            buttonTooltip_MainText={ filter_selection_item__any__all__selection_item_TooltipText__Buttons._NOT__TOOLTIP_MAIN_TEXT_STRING }
                             buttonTooltip_WhenCurrentSelectionText={ "Current Selection" }
                             buttonClicked_Callback={ this._choice_NOT_Clicked_BindThis }
                         />

@@ -10,10 +10,9 @@
 
 import React from 'react'
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {filter_selection_item__any__all__selection_item_TooltipText__Selected} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_TooltipText__Selected_and_Buttons";
 
 
 /**
@@ -85,17 +84,17 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
         let tooltipMainText : string = undefined
 
         if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ANY ) {
-            tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._OR__TOOLTIP_MAIN_TEXT_STRING
+            tooltipMainText = filter_selection_item__any__all__selection_item_TooltipText__Selected._OR__TOOLTIP_MAIN_TEXT_STRING
         } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.ALL ) {
 
             if ( this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
                 && this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class.single_OR_AND_Selected ) {
-                tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._ADD__ONLY__TOOLTIP_MAIN_TEXT_STRING
+                tooltipMainText = filter_selection_item__any__all__selection_item_TooltipText__Selected._ADD__ONLY__TOOLTIP_MAIN_TEXT_STRING
             } else {
-                tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._AND__TOOLTIP_MAIN_TEXT_STRING
+                tooltipMainText = filter_selection_item__any__all__selection_item_TooltipText__Selected._AND__TOOLTIP_MAIN_TEXT_STRING
             }
         } else if ( this.props.current_selection_SelectionType === SingleProtein_Filter_SelectionType.NOT ) {
-            tooltipMainText = filter_selection_item__any__all__selection_item_Selection_Overlay_LocalConstants._NOT__TOOLTIP_MAIN_TEXT_STRING
+            tooltipMainText = filter_selection_item__any__all__selection_item_TooltipText__Selected._NOT__TOOLTIP_MAIN_TEXT_STRING
         } else {
 
             return // EARLY RETURN
