@@ -36,11 +36,16 @@ import { createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReported
 import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {PeptideFiltersDisplay_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData";
+import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 
 /**
  * 
  */
 export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_Props {
+
+    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData
+    clearAllSelections_Callback : () => void
 
     showProteins? : boolean
 
@@ -184,6 +189,10 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
             <div style={ { position: "relative" }}>
                 <div style={ { position: "relative" }}>
                     <ReportedPeptideList_Component
+
+                        peptideFiltersDisplay_ComponentData={ this.props.peptideFiltersDisplay_ComponentData }
+                        clearAllSelections_Callback={ this.props.clearAllSelections_Callback }
+
                         create_GeneratedReportedPeptideListData_Result={ this.props.create_GeneratedReportedPeptideListData_Result }
 
                         conditionGroupsContainer={ this.props.conditionGroupsContainer }
@@ -215,6 +224,9 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
  * 
  */
 export interface ReportedPeptideList_Component_Props {
+
+    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData
+    clearAllSelections_Callback : () => void
 
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result;  //  For dispaying the peptide list in sub component
     
@@ -275,6 +287,10 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         if ( this.props.create_GeneratedReportedPeptideListData_Result !== nextProps.create_GeneratedReportedPeptideListData_Result ) {
             return true;
         }
+        if ( this.props.peptideFiltersDisplay_ComponentData !== nextProps.peptideFiltersDisplay_ComponentData ) {
+            return true;
+        }
+
         return false;
 
         //  If Comment out prev code, comment out this method
@@ -339,8 +355,21 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             <span >(Click row to expand.)</span>
                         </span>
                     </div>
+
                     <div >
-                        <span >Total Found: </span>
+
+                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
+
+                        <PeptideFiltersDisplay
+                            peptideFiltersDisplay_ComponentData={ this.props.peptideFiltersDisplay_ComponentData }
+                            clearAllFiltersClickHandler={ this.props.clearAllSelections_Callback }
+                        />
+
+                    </div>
+
+                    <div style={ { marginTop: 10 } }>
+                        <span style={ { fontWeight: "bold" } }>Total Found: </span>
+
                         <span >{ numberOfPeptidesShown }</span>
                         <span > peptides </span>
                         <span >({ numberOfPSMsForReportedPeptidesShown } PSMs)</span>

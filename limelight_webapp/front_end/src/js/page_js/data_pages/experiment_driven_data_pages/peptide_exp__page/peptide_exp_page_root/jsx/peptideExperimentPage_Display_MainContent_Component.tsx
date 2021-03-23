@@ -44,7 +44,6 @@ import { ReporterIonMass_UserSelections } from 'page_js/data_pages/peptide__sing
 
 import { PeptideSequence_UserSelections } from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_sequence_selected/jsx/peptideSequence_UserSelections';
 
-import { PeptideFiltersDisplay } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay';
 import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 
 
@@ -2387,6 +2386,9 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
                             <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component
 
+                                peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                                clearAllSelections_Callback={ this._clearAllSelections_BindThis }
+
                                 showProteins={ true }
 
                                 conditionGroupsContainer={ this.props.propsValue.conditionGroupsContainer }
@@ -2496,12 +2498,15 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
                 </div>
 
+                {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
+
                 {/* Display of User Selected Modifications and Protein Positions filtering on  */}
 
-                <PeptideFiltersDisplay
+                {/* <PeptideFiltersDisplay
                     peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
                     clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                />
+                /> */}
+
             </React.Fragment>
         )
     }

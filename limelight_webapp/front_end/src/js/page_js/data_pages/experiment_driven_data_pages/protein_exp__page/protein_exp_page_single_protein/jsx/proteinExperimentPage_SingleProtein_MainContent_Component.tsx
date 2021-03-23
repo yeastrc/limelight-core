@@ -82,7 +82,6 @@ import {PeptideSequence_UserSelections} from 'page_js/data_pages/experiment_driv
 
 import {ProteinSequenceWidgetDisplay_Root_Component_React} from '../../../../peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/jsx/proteinSequenceWidgetDisplay_Root_Component_React'
 
-import {PeptideFiltersDisplay} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay';
 import {PeptideFiltersDisplay_ComponentData} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 
 
@@ -2605,12 +2604,14 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                             />
                         </div>
 
+                        {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
+
                         {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-                        
-                        <PeptideFiltersDisplay
+
+                        {/* <PeptideFiltersDisplay
                             peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
                             clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                        />
+                        /> */}
 
                     </div>  {/* END: Main Content above Reported Peptides  */}
 
@@ -2770,7 +2771,10 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 <div style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
                     ref={ this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
 
-                    <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component  
+                    <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component
+
+                        peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                        clearAllSelections_Callback={ this._clearAllSelections_BindThis }
 
                         showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                         showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }

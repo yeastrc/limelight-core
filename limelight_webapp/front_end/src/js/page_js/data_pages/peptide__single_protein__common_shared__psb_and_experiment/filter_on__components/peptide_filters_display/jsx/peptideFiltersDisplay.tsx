@@ -651,7 +651,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
         return (
             <div style={ { marginTop: 10 } }>
                 <div>
-                    <span  style={ { fontSize: 18, fontWeight: 700 } } >
+                    <span  style={ { fontWeight: "bold" } } >
                         Current peptide filters:
                     </span>
                     <span> </span>

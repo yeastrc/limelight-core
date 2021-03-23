@@ -52,7 +52,6 @@ import { PeptideSequence_UserSelections } from 'page_js/data_pages/experiment_dr
 
 import { ProteinSequenceWidgetDisplay_Root_Component_React } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/jsx/proteinSequenceWidgetDisplay_Root_Component_React'
 
-import { PeptideFiltersDisplay } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay';
 import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 
 
@@ -2600,12 +2599,14 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             />
                         </div>
 
+                        {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
+
                         {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-                        
-                        <PeptideFiltersDisplay
+
+                        {/* <PeptideFiltersDisplay
                             peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
                             clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                        />
+                        /> */}
 
                     </div>  {/* END: Main Content above Reported Peptides  */}
 
@@ -2769,7 +2770,10 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                         showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                         showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
-                    
+
+                        peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                        clearAllSelections_Callback={ this._clearAllSelections_BindThis }
+
                         create_GeneratedReportedPeptideListData_Result={ this.state.create_GeneratedReportedPeptideListData_Result }
 
                         searchSubGroup_Ids_Selected={ searchSubGroup_Ids_Selected }
