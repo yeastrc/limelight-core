@@ -46,6 +46,12 @@ export class Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
 export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry {
 
     peptideSequenceDisplay : string
+
+    protein_Pre_Residues : Set<string> = new Set()
+    protein_Pre_Residue_N_Term : boolean
+    protein_Post_Residues : Set<string> = new Set()
+    protein_Post_Residue_C_Term : boolean
+
     peptideUnique : boolean;
     numPsmsTotal : number = 0;  //  Can NOT be summed across all Peptide List entries to get numberOfPsmIds_NonRedundant_AcrossAllPeptides
     psmCountsMap_KeyProjectSearchId : Map<number, number>
@@ -203,6 +209,8 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                     reportedPeptideId,
                     psmIds_ToProcess : psmIds_Include,
 
+                    proteinSequenceVersionId,  // Not Populated on Peptide Page,
+
                     searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                     psmCount_after_Include_Map_Key_SearchSubGroupId,
                     psmIds_IncludeSet_Map_Key_SearchSubGroupId,
@@ -214,6 +222,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                     variableModificationsRoundedArray_KeyPosition,
                     staticModificationsForProjectSearchId: staticModificationsForProjectSearchId_Key_ResidueLetter,
                     loadedDataPerProjectSearchIdHolder,
+                    loadedDataCommonHolder,
                     generatedPeptideContents_UserSelections_StateObject,
                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
@@ -227,6 +236,8 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                     reportedPeptideId,
                     psmIds_ToAdd : undefined,
 
+                    proteinSequenceVersionId,
+
                     searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                     psmCount_after_Include_Map_Key_SearchSubGroupId,
 
@@ -239,6 +250,9 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                     open_Modification_Rounded : undefined,
                     open_Modification_Rounded_Position : undefined,
                     open_Modification_Rounded_NoPosition : undefined,
+
+                    loadedDataPerProjectSearchIdHolder,
+                    loadedDataCommonHolder,
 
                     peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
                 });
@@ -307,6 +321,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
     {
         reportedPeptideId,
         psmIds_ToProcess,
+
+        proteinSequenceVersionId, // Not Populated on Peptide Page
+
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         psmCount_after_Include_Map_Key_SearchSubGroupId,
         psmIds_IncludeSet_Map_Key_SearchSubGroupId,
@@ -318,6 +335,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         variableModificationsRoundedArray_KeyPosition,
         staticModificationsForProjectSearchId,
         loadedDataPerProjectSearchIdHolder,
+        loadedDataCommonHolder,
         generatedPeptideContents_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
@@ -325,6 +343,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
     } : {
         reportedPeptideId : number
         psmIds_ToProcess : ReadonlySet<number>  // Optional
+
+        proteinSequenceVersionId : number  // Not Populated on Peptide Page
 
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         psmCount_after_Include_Map_Key_SearchSubGroupId: ReadonlyMap<number, number>
@@ -337,6 +357,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         variableModificationsRoundedArray_KeyPosition: Map<number, Set<number>>
         staticModificationsForProjectSearchId : Map<string, number>
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
@@ -454,6 +475,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                 reportedPeptideId,
                 psmIds_ToAdd,
 
+                proteinSequenceVersionId,
+
                 searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                 psmCount_after_Include_Map_Key_SearchSubGroupId : psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall,
 
@@ -466,6 +489,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                 open_Modification_Rounded : undefined,
                 open_Modification_Rounded_Position : undefined,
                 open_Modification_Rounded_NoPosition : undefined,
+
+                loadedDataPerProjectSearchIdHolder,
+                loadedDataCommonHolder,
 
                 peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
             });
@@ -482,6 +508,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                     reportedPeptideId,
                     psmIds_ToAdd,
 
+                    proteinSequenceVersionId,
+
                     searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                     psmCount_after_Include_Map_Key_SearchSubGroupId : psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall,
 
@@ -494,6 +522,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                     open_Modification_Rounded: undefined,
                     open_Modification_Rounded_Position: undefined,
                     open_Modification_Rounded_NoPosition: psmOpenModificationMassForPsmId.openModificationMass_Rounded.toString(),
+
+                    loadedDataPerProjectSearchIdHolder,
+                    loadedDataCommonHolder,
 
                     peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
                 });
@@ -517,6 +548,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                             reportedPeptideId,
                             psmIds_ToAdd,
 
+                            proteinSequenceVersionId,
+
                             searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                             psmCount_after_Include_Map_Key_SearchSubGroupId : psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall,
 
@@ -529,6 +562,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                             open_Modification_Rounded: psmOpenModificationMassForPsmId.openModificationMass_Rounded,
                             open_Modification_Rounded_Position,
                             open_Modification_Rounded_NoPosition: undefined,
+
+                            loadedDataPerProjectSearchIdHolder,
+                            loadedDataCommonHolder,
 
                             peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
                         });
@@ -549,6 +585,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         reportedPeptideId,
         psmIds_ToAdd,
 
+        proteinSequenceVersionId,  //  NOT populated for Peptide page
+
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         psmCount_after_Include_Map_Key_SearchSubGroupId,
 
@@ -562,10 +600,15 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         open_Modification_Rounded_Position,
         open_Modification_Rounded_NoPosition,
 
+        loadedDataPerProjectSearchIdHolder,
+        loadedDataCommonHolder,
+
         peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
     } : {
         reportedPeptideId : number
         psmIds_ToAdd : Set<number>  // Optional
+
+        proteinSequenceVersionId : number  // Not Populated on Peptide Page
 
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         psmCount_after_Include_Map_Key_SearchSubGroupId: ReadonlyMap<number, number>
@@ -579,6 +622,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         open_Modification_Rounded : number
         open_Modification_Rounded_Position : number
         open_Modification_Rounded_NoPosition : string
+
+        loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
 
         peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> //  UPDATED
     }) {
@@ -684,13 +730,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         staticModificationsRounded_KeyPosition : undefined
     });
 
-    // peptideSequence : string,
-    //     variable_Modifications_RoundedArray_KeyPosition : Map<number, Array<string>> //  Map<position, Array<mass rounded as string>> - N and C Terminus positions see const above
-    // open_Modifications_RoundedArray_KeyPosition : Map<number, Array<string>> //  Map<position, Array<mass rounded as string>> - N and C Terminus positions see const above
-    // open_Modification_NoPosition : string
-    // staticModificationsRounded_KeyPosition : Map<number, string> //  Map<position, mass rounded as string>
-
-
     let peptideItem : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
     if ( ! peptideItem ) {
 
@@ -702,6 +741,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
 
         peptideItems_Map_Key_peptideSequenceDisplayString.set( peptideSequenceDisplay, peptideItem );
     }
+
+    _update_peptideItem_Pre_Post_Residues({reportedPeptideId,proteinSequenceVersionId,loadedDataPerProjectSearchIdHolder,loadedDataCommonHolder,peptideItem});
 
     if ( numPsms !== undefined ) {
         peptideItem.numPsmsTotal += numPsms;  // TODO  Maybe do something different instead
@@ -794,6 +835,78 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         }
     }
 }
+
+const _update_peptideItem_Pre_Post_Residues = function (
+    {
+        reportedPeptideId,
+        proteinSequenceVersionId,
+        loadedDataPerProjectSearchIdHolder,
+        loadedDataCommonHolder,
+
+        peptideItem  // Updated
+    } : {
+        reportedPeptideId: number
+        proteinSequenceVersionId: number
+        loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+        loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
+
+        peptideItem : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry
+    }
+) : void {
+
+    {
+        const proteinCoverage_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyReportedPeptideId()
+        if ( !proteinCoverage_KeyReportedPeptideId ) {
+            //  Coverage Data NOT loaded so Skip
+
+            return; // EARLY RETURN
+        }
+
+        const proteinCoverageEntries = proteinCoverage_KeyReportedPeptideId.get(reportedPeptideId);
+        if (proteinCoverageEntries) {
+            for (const proteinCoverageEntry of proteinCoverageEntries) {
+
+                if ( proteinSequenceVersionId && proteinSequenceVersionId !== proteinCoverageEntry.proteinSequenceVersionId ) {
+
+                    //  Processing this function specifically for proteinSequenceVersionId (Single Protein Page)
+                    //     AND the proteinSequenceVersionId for this Coverage Entry does NOT match SO SKIP
+
+                    continue;  // EARLY CONTINUE
+                }
+
+                const proteinSequenceVersionId_In_Entry = proteinCoverageEntry.proteinSequenceVersionId
+                const proteinStartPosition = proteinCoverageEntry.proteinStartPosition
+                const proteinEndPosition = proteinCoverageEntry.proteinEndPosition
+
+                const proteinSequenceData = loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId({proteinSequenceVersionId: proteinSequenceVersionId_In_Entry})
+                if ( !proteinSequenceData ) {
+                    throw Error("loadedDataCommonHolder.get_proteinSequenceData_For_proteinSequenceVersionId({proteinSequenceVersionId}) returned nothing")
+                }
+                const proteinSequence = proteinSequenceData.getProteinSequence();
+
+                if ( proteinStartPosition === 1 ) {
+
+                    peptideItem.protein_Pre_Residue_N_Term = true
+                } else {
+                    const preResidue_Index = proteinStartPosition -  1 - 1;  //  - 1 for convert from One based to Zero based,  - 1 for get position one before the start of the peptide
+                    const preResidue = proteinSequence.substring( preResidue_Index, preResidue_Index + 1 );
+                    peptideItem.protein_Pre_Residues.add( preResidue );
+                }
+
+                if ( proteinEndPosition === proteinSequence.length ) {
+
+                    peptideItem.protein_Post_Residue_C_Term = true
+                } else {
+                    const postResidue_Index = proteinEndPosition - 1 + 1;  //  - 1 for convert from One based to Zero based,  + 1 for get position one after the end of the peptide
+                    const postResidue = proteinSequence.substring( postResidue_Index, postResidue_Index + 1 );
+                    peptideItem.protein_Post_Residues.add( postResidue );
+                }
+            }
+        }
+    }
+
+}
+
 
 ///////////
 
