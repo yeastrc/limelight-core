@@ -40,3 +40,10 @@ hs_err_pid*
 
 # Eclipse project file
 .project
+
+# Jekyll/github pages items
+/.jekyll-cache
+/_site
+/Gemfile
+/Gemfile.lock
+/how_to_build.txt
