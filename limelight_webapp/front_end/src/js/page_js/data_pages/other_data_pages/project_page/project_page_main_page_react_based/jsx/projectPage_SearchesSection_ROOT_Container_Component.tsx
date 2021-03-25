@@ -228,8 +228,14 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         return (
              ( ! this.state.searchesAndFolders ) ? (
                 <div>Loading Searches</div>
-            ): (
-                <div>
+            ): ( this.state.searchesAndFolders.noSearchesFound ) ? (
+
+                 <div >
+                     No searches in this project.
+                 </div>
+
+             ) : (
+                 <div>
                     {/*  Only For Logged In User  */}
                     { ( this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails ) ? (
 
