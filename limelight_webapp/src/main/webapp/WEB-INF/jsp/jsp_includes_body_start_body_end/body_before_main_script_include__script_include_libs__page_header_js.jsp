@@ -24,11 +24,13 @@
 	<script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>
 
 
+ 	<script type="text/javascript" src="static/js_generated_bundles/header_main_pages/limelight__header_main_pages__all_users_Setup-bundle.js?x=${ cacheBustValue }"></script>
+	 
 	 <c:if test="${ not empty headerUserInfo }">
 	 
-	 	<%--  Run Javascript to set up Header Section.  --%>
+	 	<%--  Run Javascript to set up Header Section for Logged In User  --%>
 	 	
-	 	<script type="text/javascript" src="static/js_generated_bundles/header_main_pages/limelight__header_main_pages_Setup-bundle.js?x=${ cacheBustValue }"></script>
+	 	<script type="text/javascript" src="static/js_generated_bundles/header_main_pages/limelight__header_main_pages__logged_in_user_Setup-bundle.js?x=${ cacheBustValue }"></script>
 	 
 	 </c:if>
 	

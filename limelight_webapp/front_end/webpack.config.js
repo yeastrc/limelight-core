@@ -58,7 +58,8 @@ const mainConfig = {
 
 		//  Main Pages Header: for header_main_pages.jsp
 
-		'header_main_pages/limelight__header_main_pages_Setup' : './src/js/page_js/header_main_pages/limelight__header_main_pages_Setup.ts',
+		'header_main_pages/limelight__header_main_pages__all_users_Setup' : './src/js/page_js/header_main_pages/header_main_pages__all_users/limelight__header_main_pages__all_users_Setup.ts',
+		'header_main_pages/limelight__header_main_pages__logged_in_user_Setup' : './src/js/page_js/header_main_pages/header_main_pages__logged_in_user/limelight__header_main_pages__logged_in_user_Setup.ts',
 
 		//  Data Pages
 		//  

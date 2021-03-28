@@ -1,6 +1,6 @@
 
 /**
- * limelight__header_main_pages_PopulateProjects.ts
+ * limelight__header_main_pages__logged_in_user_PopulateProjects.ts
  *
  * Code for Main Pages Header: for header_main_pages.jsp
  *
@@ -12,7 +12,7 @@ let timeoutId = undefined
 /**
  *
  */
-const limelight__header_main_pages_PopulateProjects_After_Delay = function () {
+const limelight__header_main_pages__LoggedInUser_PopulateProjects_After_Delay = function () {
 
     timeoutId = window.setTimeout( () => {
         try {
@@ -24,7 +24,7 @@ const limelight__header_main_pages_PopulateProjects_After_Delay = function () {
 
                 return; // EARLY RETURN
             }
-            limelight__header_main_pages_PopulateProjects()
+            limelight__header_main_pages__LoggedInUser_PopulateProjects()
 
         } catch (e) {
             console.warn( "Exception in limelight__header_main_pages_js: ", e );
@@ -36,7 +36,7 @@ const limelight__header_main_pages_PopulateProjects_After_Delay = function () {
 /**
  *
  */
-const limelight__header_main_pages_PopulateProjects = function () {
+const limelight__header_main_pages__LoggedInUser_PopulateProjects = function () {
     try {
         if ( timeoutId ) {
             window.clearTimeout( timeoutId )
@@ -109,5 +109,5 @@ const limelight__header_main_pages_PopulateProjects = function () {
     }
 }
 
-export { limelight__header_main_pages_PopulateProjects_After_Delay }
+export { limelight__header_main_pages__LoggedInUser_PopulateProjects_After_Delay }
 

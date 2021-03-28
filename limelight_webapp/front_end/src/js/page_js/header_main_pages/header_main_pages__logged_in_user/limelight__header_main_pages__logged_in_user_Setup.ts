@@ -1,17 +1,17 @@
 
 /**
- * limelight__header_main_pages_Setup.ts
+ * limelight__header_main_pages__logged_in_user_Setup.ts
  *
- * Code for set up  Main Pages Header: for header_main_pages.jsp
+ * Code for set up  Main Pages Header - Logged In Users : for header_main_pages.jsp
  */
 
-import {limelight__header_main_pages_PopulateProjects_After_Delay} from "page_js/header_main_pages/limelight__header_main_pages_PopulateProjects";
-import {limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu} from "page_js/header_main_pages/limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu";
+import {limelight__header_main_pages__LoggedInUser_PopulateProjects_After_Delay} from "page_js/header_main_pages/header_main_pages__logged_in_user/limelight__header_main_pages__logged_in_user_PopulateProjects";
+import {limelight__header_main_pages__LoggedInUser_Setup_Show_Hide_Project_List_OverlayMenu} from "page_js/header_main_pages/header_main_pages__logged_in_user/limelight__header_main_pages__logged_in_user_Setup_Show_Hide_Project_List_OverlayMenu";
 
 /**
  *
  */
-const limelight__header_main_pages_Setup = function () {
+const limelight__header_main_pages__LoggedInUser_Setup = function () {
 
     window.setTimeout( () => {
         try {
@@ -36,12 +36,12 @@ const limelight__header_main_pages_Setup = function () {
             }
 
             //  TODO  TEMP Comment Out
-            limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu();
+            limelight__header_main_pages__LoggedInUser_Setup_Show_Hide_Project_List_OverlayMenu();
 
-            limelight__header_main_pages_PopulateProjects_After_Delay();
+            limelight__header_main_pages__LoggedInUser_PopulateProjects_After_Delay();
 
         } catch (e) {
-            console.warn( "Exception in limelight__header_main_pages_js: ", e );
+            console.warn( "Exception in limelight__header_main_pages logged in users js: ", e );
             //  swallow exceptions
         }
     }, 50 );
@@ -82,7 +82,7 @@ const set_ProjectsDiv_Position = function () {
 
 }
 
-limelight__header_main_pages_Setup()
+limelight__header_main_pages__LoggedInUser_Setup()
 
-export { limelight__header_main_pages_Setup }
+export { limelight__header_main_pages__LoggedInUser_Setup }
 

@@ -1,6 +1,6 @@
 
 /**
- * limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu.ts
+ * limelight__header_main_pages__logged_in_user_Setup_Show_Hide_Project_List_OverlayMenu.ts
  *
  * Code for Main Pages Header: for header_main_pages.jsp
  *
@@ -10,7 +10,7 @@
 /**
  *
  */
-const limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu = function () {
+const limelight__header_main_pages__LoggedInUser_Setup_Show_Hide_Project_List_OverlayMenu = function () {
 
     window.setTimeout( () => {
         try {
@@ -124,5 +124,5 @@ const limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu = fu
     }, 10 );
 }
 
-export { limelight__header_main_pages_Setup_Show_Hide_Project_List_OverlayMenu }
+export { limelight__header_main_pages__LoggedInUser_Setup_Show_Hide_Project_List_OverlayMenu }
 

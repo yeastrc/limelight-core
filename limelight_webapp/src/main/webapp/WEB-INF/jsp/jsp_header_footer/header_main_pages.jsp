@@ -159,11 +159,10 @@
   	  
   	   <div class="header-right-icons-container" style="position: relative;">
 		
-	  		<a href="user/login?useDefaultURL=yes"  id="signin_header_link" 
-	  			class=" selector_tool_tip_attached "
-	  			title="Signin"
-	  			><img src="static/images/icon-login.png" class=" icon-small "
-	  		></a>
+	  		<img src="static/images/icon-login.png" class=" icon-small fake-link-image selector_tool_tip_attached"
+		  			id="signin_header_link" 
+		  			title="Signin"
+	  		>
 	   </div>  	  
 
   	  </c:when>
