@@ -1,0 +1,56 @@
+{{!--  user_login_form_public_access_code_template.handlebars
+
+    User Enters a Public Access Code
+
+    Only for when URL is for Project Page for Project that has Public Access Code exists and is enabled
+--}}
+
+<div >
+
+  	<div  style="position: relative;" class="page-label">
+
+        <div class="error-message-container error_message_container_jq" id="error_message_code_invalid">
+            <div class="error-message-inner-container" >
+                <div class="error-message-close-x error_message_close_x_jq">X</div>
+                <div class="error-message-text" >Code is invalid</div>
+            </div>
+        </div>
+        <div class="error-message-container error_message_container_jq" id="error_message_code_invalid_for_project_id">
+            <div class="error-message-inner-container" >
+                <div class="error-message-close-x error_message_close_x_jq">X</div>
+                <div class="error-message-text" >Code is invalid for project</div>
+            </div>
+        </div>
+        <div class="error-message-container error_message_container_jq" id="error_message_system_error">
+            <div class="error-message-inner-container" >
+                <div class="error-message-close-x error_message_close_x_jq">X</div>
+                <div class="error-message-text" >System Error</div>
+            </div>
+        </div>
+
+  		Please Enter Reviewer Access Code
+  	</div>
+  	
+    <div id="main_spinner_block"></div>
+		
+	<div >
+
+        <form  id="public_access_code_form" action="">
+
+            <div>
+                <input type="text" id="public_access_code_value" placeholder="Reviewer Access Code" class="input-field input_field_jq" maxlength="40" autofocus/> <!--  size="20" size controlled by CSS -->
+            </div>
+
+            <div style="position: relative">
+                <input type="submit" class="submit-button" value="Submit" id="public_access_code_submit_button">
+                </div>
+            </div>
+        </form>
+
+	</div>
+
+    <div style="margin-top: 20px;">
+        If you are a Limelight user, sign in
+        <span class="fake-link " id="public_access_code__open_signin_link" >here</span>
+    </div>
+</div>

@@ -395,8 +395,8 @@ public class Share_Page_Insert_RestWebserviceController {
 			for ( char entry : encodedLongArray ) {
 				if ( ( entry >= 'a' && entry <= 'z' )
 						|| ( entry >= 'A' && entry <= 'Z' )
-						|| ( entry >= '0' && entry <= '9' ) ) {
-					//  Only take a-z, A-Z, 0-9.
+						|| ( entry >= '1' && entry <= '9' ) ) {
+					//  Only take a-z, A-Z, 1-9.
 					randomStringSB.append( entry );
 					insertedCharacterCount++;
 					if ( insertedCharacterCount >= RETURN_LENGTH ) {

@@ -23,6 +23,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessContro
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevelBuilder;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
+import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectUserDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
@@ -70,6 +72,8 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 		
 		private boolean projectNotEnabledOrIsMarkedForDeletion;
 		
+		private boolean project_Has_Enabled_ProjectAccessCode;
+		
 		public WebSessionAuthAccessLevel getWebSessionAuthAccessLevel() {
 			return webSessionAuthAccessLevel;
 		}
@@ -93,6 +97,12 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 		}
 		public void setProjectNotEnabledOrIsMarkedForDeletion(boolean projectNotEnabledOrIsMarkedForDeletion) {
 			this.projectNotEnabledOrIsMarkedForDeletion = projectNotEnabledOrIsMarkedForDeletion;
+		}
+		public boolean isProject_Has_Enabled_ProjectAccessCode() {
+			return project_Has_Enabled_ProjectAccessCode;
+		}
+		public void setProject_Has_Enabled_ProjectAccessCode(boolean project_Has_Enabled_ProjectAccessCode) {
+			this.project_Has_Enabled_ProjectAccessCode = project_Has_Enabled_ProjectAccessCode;
 		}
 	}
 
@@ -157,6 +167,8 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 			
 			if ( publicAccessLevel != null && publicAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_NONE ) {
 				
+				//  Project is Public Access level of other than NONE
+				
 				WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
 						WebSessionAuthAccessLevelBuilder.getBuilder()
 						.set_authAccessLevel( publicAccessLevel )
@@ -183,6 +195,25 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 			result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
 			result.noSession = true;
 			
+
+			ProjectDTO projectOnly_PublicAccessCodePublicAccessCodeEnabled = projectDAO.getPublicAccessCodePublicAccessCodeEnabledForProjectId( projectId );
+
+			if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled == null ) {
+				throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
+			}
+
+			if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() && StringUtils.isNotEmpty( projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() ) ) {
+				
+				result.project_Has_Enabled_ProjectAccessCode = true;
+				
+				//  Put for Sign In Page
+				
+				httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_PROJECT_ID, projectId );
+				
+				httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_HAS_PROJECT_ACCESS_CODE_ENABLED, true );
+				
+			}
+			
 			return result;  //  EARLY EXIT
 		}
 		
@@ -204,15 +235,72 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 			authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN;
 			authAccessLevelForProjectIdsIfNotLocked = AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN;
 		} else {
-		
-			int userId = userSession.getUserId();
-
-			ProjectUserDTO projectUserDTO = projectUserDAO.getForProjectIdUserId( projectId, userId );
-		
-			if ( projectUserDTO != null ) {
+			
+			if ( ! userSession.isActualUser() ) {
 				
-				authAccessLevel = projectUserDTO.getAccessLevel();
-				authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
+				//  NOT a signed in user so test public access code
+				
+				if ( StringUtils.isEmpty( userSession.getPublicAccessCode() ) || userSession.getProjectId_ForPublicAccessCode() == null ) {
+					
+					//  No Public Access code in session so NO access
+					
+
+				} else {
+
+					if ( userSession.getProjectId_ForPublicAccessCode().intValue() == projectId ) {
+
+						//  Only if Public Access Code is for current Project Id
+
+						ProjectDTO projectOnly_PublicAccessCodePublicAccessCodeEnabled = projectDAO.getPublicAccessCodePublicAccessCodeEnabledForProjectId( projectId );
+
+						if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled == null ) {
+							throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
+						}
+
+						if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() ) {
+
+							//  Only if Public Access Code is Enabled
+
+							if ( userSession.getPublicAccessCode().equals( projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() ) ) {
+
+								//  Public Access Code is Enabled and matches code in session and project Id matches so give Public User access
+
+								WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+										WebSessionAuthAccessLevelBuilder.getBuilder()
+										.set_authAccessLevel( AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY )
+										.set_authAaccessLevelForProjectIdsIfNotLocked( AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY )
+										.build();
+
+								GetWebSessionAuthAccessLevelForProjectIds_Result result = new GetWebSessionAuthAccessLevelForProjectIds_Result();
+								result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+								
+								result.noSession = true;
+								
+								return result;  //  EARLY EXIT
+							}
+						}
+					}
+				}
+
+			} else {
+		
+				//  IS a signed in user
+
+				Integer userId = userSession.getUserId();
+				
+				if ( userId == null ) {
+					String msg = "userSession.isActualUser() is true and userSession.getUserId() returns null";
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+
+				ProjectUserDTO projectUserDTO = projectUserDAO.getForProjectIdUserId( projectId, userId );
+
+				if ( projectUserDTO != null ) {
+
+					authAccessLevel = projectUserDTO.getAccessLevel();
+					authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
+				}
 			}
 		}
 

@@ -23,6 +23,13 @@ package org.yeastrc.limelight.limelight_webapp.user_session_management;
  */
 public class UserSession {
 
+	//  When Access using Public Access Code at Sign in Page
+	
+	String publicAccessCode;
+	Integer projectId_ForPublicAccessCode;
+
+	/////////
+	
 	/**
 	 * Set false if Public Access or something else
 	 */
@@ -52,6 +59,9 @@ public class UserSession {
 		
 		UserSession newUserSession = new UserSession();
 		
+		newUserSession.publicAccessCode = this.publicAccessCode;
+		newUserSession.projectId_ForPublicAccessCode  = this.projectId_ForPublicAccessCode;
+		
 		newUserSession.actualUser = this.actualUser;
 		
 		newUserSession.userId = this.userId;
@@ -74,7 +84,22 @@ public class UserSession {
 
 
 	// public getters
-	
+
+	/**
+	 * When Access using Public Access Code at Sign in Page
+	 * @return
+	 */
+	public String getPublicAccessCode() {
+		return publicAccessCode;
+	}
+	/**
+	 * When Access using Public Access Code at Sign in Page
+	 * @return
+	 */
+	public Integer getProjectId_ForPublicAccessCode() {
+		return projectId_ForPublicAccessCode;
+	}
+
 	/**
 	 * Set false if Public Access or something else
 	 * @return
@@ -120,7 +145,5 @@ public class UserSession {
 	public boolean isGlobalAdminUser() {
 		return globalAdminUser;
 	}
-
-
 
 }

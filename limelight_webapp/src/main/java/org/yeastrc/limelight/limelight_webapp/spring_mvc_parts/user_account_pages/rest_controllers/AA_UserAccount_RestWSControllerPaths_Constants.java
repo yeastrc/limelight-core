@@ -41,6 +41,8 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 	
 	
 	public static final String USER_LOGIN_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/login";
+	
+	public static final String USER_PROCESS_PUBLIC_ACCESS_CODE_VALUE = "user/rws/for-page/process_public_access_code_value";
 
 	public static final String USER_INFO_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/userInfo";
 

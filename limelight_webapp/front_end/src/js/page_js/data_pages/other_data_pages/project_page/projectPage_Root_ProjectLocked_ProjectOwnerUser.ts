@@ -47,7 +47,7 @@ import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPag
 
 import { ProjectPage_ProjectUserAccessAdminSection } from './projectPage_ProjectUserAccessAdminSection';
 import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './projectPage_ProjectSection_ProjectOwnerInteraction';
-import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction } from './projectPage_PublicAccessSection_ProjectOwnerInteraction';
+import {add_Component_to_Page__ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
 
 /**
  * 
@@ -68,9 +68,6 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 
 	private _projectPage_ProjectSection_ProjectOwnerInteraction : ProjectPage_ProjectSection_ProjectOwnerInteraction
 	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
-
-	private _projectPage_PublicAccessSection_ProjectOwnerInteraction : ProjectPage_PublicAccessSection_ProjectOwnerInteraction
-
 
 	/**
 	 * 
@@ -125,10 +122,6 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
-		this._projectPage_PublicAccessSection_ProjectOwnerInteraction =
-			new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
-		
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 
 		this._projectPage_ExperimentsSection_AllUsersInteraction.initialize();
@@ -143,8 +136,10 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 			this._projectPage_ProjectUserAccessAdminSection.initialize();
 		}, 10 );
 
-		this._projectPage_PublicAccessSection_ProjectOwnerInteraction.initialize();
-		
+		add_Component_to_Page__ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component({
+			projectIdentifierFromURL: this._projectIdentifierFromURL, projectIsLocked: projectLocked
+		});
+
 		////Instance of class
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		

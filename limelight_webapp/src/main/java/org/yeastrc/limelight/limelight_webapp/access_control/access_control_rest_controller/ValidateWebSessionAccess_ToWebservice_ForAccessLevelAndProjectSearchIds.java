@@ -23,6 +23,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -378,6 +379,7 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearc
 		////////////////////////////
 		
 		//  Signed in user or at least a user session
+		
 
 		//  Start at no access level
 		int authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL_NONE;
@@ -385,40 +387,89 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearc
 		//  Start at no access level
 		int authAccessLevelForProjectIdsIfNotLocked = AuthAccessLevelConstants.ACCESS_LEVEL_NONE;
 
-		int userId = userSession.getUserId();
-
-		ProjectUserDTO projectUserDTO = projectUserDAO.getForProjectIdUserId( projectId, userId );
-
-		if ( projectUserDTO != null ) {
-
-			authAccessLevel = projectUserDTO.getAccessLevel();
-			authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
-		}
 		
-		if ( userSession.getUserAccessLevel() != null 
-				&& userSession.getUserAccessLevel() == AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN ) {
-			
-			//  User is admin
-			
-			authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN;
-			authAccessLevelForProjectIdsIfNotLocked = AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN;
-			
-			if ( projectOnlyProjectLockedPublicAccessLevel.isProjectLocked() ) {
-				
-				authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY;
+		if ( userSession.isActualUser() ) {
+
+			//  Signed in user
+
+			Integer userId = userSession.getUserId();
+
+			ProjectUserDTO projectUserDTO = projectUserDAO.getForProjectIdUserId( projectId, userId );
+
+			if ( projectUserDTO != null ) {
+
+				authAccessLevel = projectUserDTO.getAccessLevel();
+				authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
 			}
 
-			WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
-					WebSessionAuthAccessLevelBuilder.getBuilder()
-					.set_authAccessLevel( authAccessLevel )
-					.set_authAaccessLevelForProjectIdsIfNotLocked( authAccessLevelForProjectIdsIfNotLocked )
-					.build();
+			if ( userSession.getUserAccessLevel() != null 
+					&& userSession.getUserAccessLevel() == AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN ) {
 
-			result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+				//  User is admin
+
+				authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN;
+				authAccessLevelForProjectIdsIfNotLocked = AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN;
+
+				if ( projectOnlyProjectLockedPublicAccessLevel.isProjectLocked() ) {
+
+					authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY;
+				}
+
+				WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+						WebSessionAuthAccessLevelBuilder.getBuilder()
+						.set_authAccessLevel( authAccessLevel )
+						.set_authAaccessLevelForProjectIdsIfNotLocked( authAccessLevelForProjectIdsIfNotLocked )
+						.build();
+
+				result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+
+				return result;  //  EARLY EXIT
+			}
+		} else {
 			
-			return result;  //  EARLY EXIT
+			//  NOT Signed in user so validate Public Access Code
+
+			//  NOT a signed in user so test public access code
+			
+			if ( StringUtils.isEmpty( userSession.getPublicAccessCode() ) || userSession.getProjectId_ForPublicAccessCode() == null ) {
+				
+				//  No Public Access code in session so NO access
+				
+
+			} else {
+
+				if ( userSession.getProjectId_ForPublicAccessCode().intValue() == projectId ) {
+
+					//  Only if Public Access Code is for current Project Id
+
+					ProjectDTO projectOnly_PublicAccessCodePublicAccessCodeEnabled = projectDAO.getPublicAccessCodePublicAccessCodeEnabledForProjectId( projectId );
+
+					if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled == null ) {
+						throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
+					}
+
+					if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() ) {
+
+						//  Only if Public Access Code is Enabled
+
+						if ( userSession.getPublicAccessCode().equals( projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() ) ) {
+
+							//  Public Access Code is Enabled and matches code in session and project Id matches so give Public User access
+
+							WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+									WebSessionAuthAccessLevelBuilder.getBuilder()
+									.set_authAccessLevel( AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY )
+									.set_authAaccessLevelForProjectIdsIfNotLocked( AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY )
+									.build();
+
+							result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+
+							return result;  //  EARLY EXIT
+						}
+					}
+				}
+			}
 		}
-		
 
 		
 		if ( projectOnlyProjectLockedPublicAccessLevel.isProjectLocked() && authAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_NONE ) {

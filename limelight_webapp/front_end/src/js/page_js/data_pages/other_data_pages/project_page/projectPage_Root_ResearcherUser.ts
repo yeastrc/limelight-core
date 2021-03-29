@@ -50,8 +50,10 @@ import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPag
 
 import { ProjectPage_ProjectUserAccessAdminSection } from './projectPage_ProjectUserAccessAdminSection';
 import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './projectPage_ProjectSection_LoggedInUsersInteraction';
-import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction } from './projectPage_PublicAccessSection_ProjectOwnerInteraction';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
+import {ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/researcher_aka_assistant_project_owner/projectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction";
+
+
 
 /**
  * 
@@ -76,7 +78,7 @@ class ProjectViewPage_Root_ResearcherUser {
 
 	private _projectPage_SavedViews_Section_AllUsersInteraction : ProjectPage_SavedViews_Section_AllUsersInteraction
 	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
-	private _projectPage_PublicAccessSection_ProjectOwnerInteraction : ProjectPage_PublicAccessSection_ProjectOwnerInteraction
+	private _projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction : ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction
 
 	/**
 	 * 
@@ -140,9 +142,8 @@ class ProjectViewPage_Root_ResearcherUser {
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
-		this._projectPage_PublicAccessSection_ProjectOwnerInteraction =
-				new ProjectPage_PublicAccessSection_ProjectOwnerInteraction( { 
-					projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
+		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction =
+				new ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction();
 
 		this._projectPage_ExperimentsSection_LoggedInUsersInteraction.initialize({ projectPage_ExperimentsSection_AllUsersInteraction : this._projectPage_ExperimentsSection_AllUsersInteraction });
 
@@ -162,7 +163,7 @@ class ProjectViewPage_Root_ResearcherUser {
 			this._projectPage_ProjectUserAccessAdminSection.initialize();
 		}, 10 );
 
-		this._projectPage_PublicAccessSection_ProjectOwnerInteraction.initialize();
+		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction.initialize();
 		
 		////  Instance of class
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();

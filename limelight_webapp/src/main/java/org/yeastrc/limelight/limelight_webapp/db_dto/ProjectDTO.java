@@ -36,19 +36,23 @@ public class ProjectDTO {
 	private Integer publicAccessLevel;
 	private boolean publicAccessLocked;
 	
+	private String publicAccessCode;
+	private boolean publicAccessCodeEnabled;
+	
 	private Integer createdByUserId;
 	private Integer updatedByUserId;
+
 
 	@Override
 	public String toString() {
 		return "ProjectDTO [id=" + id + ", title=" + title + ", abstractText=" + abstractText + ", enabled=" + enabled
 				+ ", markedForDeletion=" + markedForDeletion + ", markedForDeletionAuthUserId="
 				+ markedForDeletionAuthUserId + ", projectLocked=" + projectLocked + ", publicAccessLevel="
-				+ publicAccessLevel + ", publicAccessLocked=" + publicAccessLocked + ", createdByUserId="
+				+ publicAccessLevel + ", publicAccessLocked=" + publicAccessLocked + ", publicAccessCode="
+				+ publicAccessCode + ", publicAccessCodeEnabled=" + publicAccessCodeEnabled + ", createdByUserId="
 				+ createdByUserId + ", updatedByUserId=" + updatedByUserId + "]";
 	}
-
-
+	
 	public int getId() {
 		return id;
 	}
@@ -118,5 +122,17 @@ public class ProjectDTO {
 
 	public void setUpdatedByUserId(Integer updatedByUserId) {
 		this.updatedByUserId = updatedByUserId;
+	}
+	public String getPublicAccessCode() {
+		return publicAccessCode;
+	}
+	public void setPublicAccessCode(String publicAccessCode) {
+		this.publicAccessCode = publicAccessCode;
+	}
+	public boolean isPublicAccessCodeEnabled() {
+		return publicAccessCodeEnabled;
+	}
+	public void setPublicAccessCodeEnabled(boolean publicAccessCodeEnabled) {
+		this.publicAccessCodeEnabled = publicAccessCodeEnabled;
 	}
 }

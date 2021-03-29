@@ -50,8 +50,17 @@ public interface ProjectDAO_IF {
 	 * @return null if not found
 	 * @throws Exception
 	 */
-	public ProjectDTO getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( int projectId ) throws SQLException;
-
+	ProjectDTO getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( int projectId ) throws SQLException;
+	
+	/**
+	 * !!!  Only populates properties PublicAccessCode, PublicAccessCodeEnabled
+	 * 
+	 * @param projectId
+	 * @return null if not found
+	 * @throws SQLException
+	 */
+	ProjectDTO getPublicAccessCodePublicAccessCodeEnabledForProjectId( int projectId ) throws SQLException;
+	
 	/**
 	 * @param id
 	 * @return
@@ -98,6 +107,14 @@ public interface ProjectDAO_IF {
 	 * @param userId TODO
 	 */
 	void updatePublicAccessLevel( Integer publicAccessLevel, int projectId, int userId );
+	
+	/**
+	 * @param publicAccessCode
+	 * @param publicAccessCodeEnabled
+	 * @param projectId
+	 * @param userId
+	 */
+	void updatePublicAccessCodePublicAccessCodeEnabled( String publicAccessCode, Boolean publicAccessCodeEnabled, int projectId, int userId );
 	
 	/**
 	 * @param shortName

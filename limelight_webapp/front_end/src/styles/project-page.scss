@@ -26,12 +26,14 @@ body.project-page {
 			opacity:0.6; filter:alpha(opacity=60);
 		}
 
+		div.second-level-label { font-weight: bold; }
+
+		//   Project Information block
+
         div.project-info-block {
             margin-left: 40px;
         }
-        
-        div.second-level-label { font-weight: bold; }
-        
+
         .project-info-block { margin-left: 40px; }
 		.project-info-single-block { margin-bottom: 10px; clear: both; }
 		.project-info-label { float: left;  }
@@ -40,7 +42,8 @@ body.project-page {
 		
 		
 		.note-display-div { margin-bottom: 10px; }
-		
+
+		//    Researchers block
 		
 		.researchers-block { margin-left: 30px; }
 		
@@ -240,10 +243,71 @@ body.project-page {
 		.limelight-xml-file-upload-complete-successfully-overlay-containing-outer-div { position: relative; }
 		
 		.limelight-xml-file-upload-complete-successfully-overlay-container { width: 450px; position: fixed; top: 100px; left: 100px; }
-		
-		
-		
-		
+
+
+
+		/////////////////////////////////////////
+
+		//  Share Data block
+
+		&.share-data-root {  // Parent in this file is div.top-level-container and this class is put on same DOM element so use "&."
+
+			.share-data--text-large {
+				font-size: 20px;
+			}
+
+			.share-data-tag-common {
+
+				padding: 3px;
+				border-radius: 5px;
+				border-color: $site-color-very-dark;
+				background-color: $site-color-very-dark;
+				color: white;
+			}
+
+			div.share-data-top-level-label-block {
+
+				.share-data-tag-container {  //  offset from content to left
+					margin-left: 6px;
+
+					.share-data-tag {
+
+						font-size: 16px;
+					}
+				}
+			}
+
+			div.share-data-public-access-reviewer-access-root-block {
+
+				div.share-data-public-access--or--reviewer-access-root-block {  //  outer box of "Public Access" or "Reviewer Mode"
+					border-width: 1px;
+					border-style: solid;
+					border-color: $site-color-dark;
+
+					.share-data-pa-or-ra--enabled-label {
+						background-color: $site-color-very-dark;
+						color: white;
+					}
+					.share-data-pa-or-ra--disabled-label {
+						background-color: $font-background-color-disabled;
+						color: white;
+					}
+
+					.disabled-reviewer-access-code {
+						color: $font-color-light-gray
+					}
+
+					.disabled-generate-link {
+						color: $font-color-light-gray
+					}
+				}
+			}
+		}
+
+		/////////////////////////////////////////
+
+		//   Explore Data block
+
 		//  Folders for searches
 
 		.folder-container { padding-top: 3px; padding-bottom: 3px; clear: left; } //  Use padding-left: from left-margin-same-as-checkbox
@@ -256,8 +320,7 @@ body.project-page {
 
 		.empty-folder-text { color: $site-color-gray-text }
 
-		
-		/////////////////////////////////////////
+		/////////
 		
 		//   Searches
 
@@ -325,8 +388,9 @@ body.project-page {
 	#organize_searches_main_data_block .highlighted-item { color: $font-color-dark; background-color: $site-color-light; } 
 	
 	#organize_searches_folder_searches_not_in_any_folder:hover {  background-color: $site-color-light; }
-	
-	
+
+
+
 
 
 }

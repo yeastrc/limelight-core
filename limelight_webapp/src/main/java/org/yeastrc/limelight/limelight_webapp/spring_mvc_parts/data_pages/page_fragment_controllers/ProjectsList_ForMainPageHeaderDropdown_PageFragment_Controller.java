@@ -55,8 +55,8 @@ public class ProjectsList_ForMainPageHeaderDropdown_PageFragment_Controller {
 	@Autowired
 	private UserIsAdminCheckIF userIsAdminCheck;
 	
-	@Autowired
-	private ProjectDAO_IF projectDAO;
+//	@Autowired
+//	private ProjectDAO_IF projectDAO;
 	
 	@Autowired
 	private ProjectListAllSearcherIF projectListAllSearcher;

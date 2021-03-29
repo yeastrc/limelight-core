@@ -136,6 +136,8 @@ public class ProjectsList_RestWebserviceController {
     				if ( ! projectItemFromDB.isProjectLocked() ) {
     					projectItem.canDelete = true;
     				}
+    				projectItem.projectPublic = projectItemFromDB.isProjectPublic();
+    				projectItem.projectPublicAccessEnabled = projectItemFromDB.isProjectPublicAccessEnabled();
     				projectList.add( projectItem );
     			}
     		} else {
@@ -199,6 +201,8 @@ public class ProjectsList_RestWebserviceController {
 		private String title;
 		private boolean projectLocked;
 		private boolean canDelete;
+		private boolean projectPublic;
+		private boolean projectPublicAccessEnabled;
 		
 		public int getId() {
 			return id;
@@ -223,6 +227,18 @@ public class ProjectsList_RestWebserviceController {
 		}
 		public void setCanDelete(boolean canDelete) {
 			this.canDelete = canDelete;
+		}
+		public boolean isProjectPublic() {
+			return projectPublic;
+		}
+		public void setProjectPublic(boolean projectPublic) {
+			this.projectPublic = projectPublic;
+		}
+		public boolean isProjectPublicAccessEnabled() {
+			return projectPublicAccessEnabled;
+		}
+		public void setProjectPublicAccessEnabled(boolean projectPublicAccessEnabled) {
+			this.projectPublicAccessEnabled = projectPublicAccessEnabled;
 		}
 	}
 

@@ -54,7 +54,11 @@
 	
 	<%--  Admin of Project is Public or Private --%>
 	
-	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_PublicAccess.jsp" %>
+		<%--  For Project Owner --%>
+	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_PublicAccess_ProjectOwner.jsp" %>
+
+		<%--  For Assistant Project Owner - AKA Researcher --%>
+	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_PublicAccess_AssistantProjectOwner_AKA_Researcher.jsp" %>
 	
 	<%--  Project Owner Upload Data to Project --%>
 

@@ -83,6 +83,21 @@ public class UserSessionBuilder {
 		return this;
 	}
 
+	//////////////////////////
+	
+	//  Single property set
+
+	public UserSessionBuilder setPublicAccessCode(String publicAccessCode) {
+		userSession.publicAccessCode = publicAccessCode;
+		return this;
+	}
+
+	public UserSessionBuilder setProjectId_ForPublicAccessCode(Integer projectId_ForPublicAccessCode) {
+		userSession.projectId_ForPublicAccessCode = projectId_ForPublicAccessCode;
+		return this;
+	}
+
+
 	public UserSessionBuilder setUserId(int userId) {
 		userSession.userId = userId;
 		return this;

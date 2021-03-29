@@ -19,7 +19,26 @@
 		{{/if}}
 	 </div>
 	</td>
-	<td>			
-		<a href="d/pg/project/{{ id }}">{{ title }}</a>
+	<td>
+        {{!-- "Tags" before the Project Title if  applicable  --}}
+        {{!--  Project is Public --}}
+        {{#if projectPublic }}
+            <span class=" standard-border-color-very-dark  standard-background-color-very-dark "
+                  style="margin-right: 10px;  padding: 3px; border-radius: 5px;"
+            >Public</span>
+        {{else}}
+        {{!-- 	Reviewer Mode is Enabled --}}
+            {{#if projectPublicAccessEnabled }}
+                <span class=" standard-border-color-very-dark  standard-background-color-very-dark "
+                      style="margin-right: 10px;  padding: 3px; border-radius: 5px;"
+                >Reviewer Mode</span>
+            {{/if}}
+        {{/if}}
+
+        {{!--  Link to Project  --}}
+        <a href="d/pg/project/{{ id }}">
+            {{!--  Project Title --}}
+            {{ title }}
+        </a>
 	</td>
 </tr>

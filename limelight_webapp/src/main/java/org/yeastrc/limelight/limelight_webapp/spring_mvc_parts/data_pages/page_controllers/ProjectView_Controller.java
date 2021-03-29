@@ -23,6 +23,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,7 @@ import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
 import org.yeastrc.limelight.limelight_webapp.searchers.Experiments_AnyForProjectId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SavedView_AnyForProjectId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
@@ -199,6 +201,31 @@ public class ProjectView_Controller {
 				
 				projectItem.setProjectPublicAccessEnabled(true);
 				httpServletRequest.setAttribute( "projectPublicAccessEnabled", true );
+			}
+			
+			if ( webSessionAuthAccessLevel.isProjectOwnerIfProjectNotLockedAllowed() ) {
+				
+				ProjectDTO projectOnly_PublicAccessCodePublicAccessCodeEnabled = projectDAO.getPublicAccessCodePublicAccessCodeEnabledForProjectId( projectId );
+
+				if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled == null ) {
+					throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
+				}
+				
+				httpServletRequest.setAttribute( "projectPublicAccessCode", projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() );
+
+				if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() ) {
+
+					
+					httpServletRequest.setAttribute( "projectPublicAccessCodeEnabled", true );
+				}
+			
+			} else if ( webSessionAuthAccessLevel.isAssistantProjectOwnerIfProjectNotLockedAllowed() ) {
+				
+				//  Only needed for Assistant Project Owner (AKA Researcher)
+				
+				String projectShortName = projectDAO.get_ShortName_ForId( projectId );
+				
+				httpServletRequest.setAttribute( "projectShortName", projectShortName );
 			}
 			
 			String projectIdsJSON = marshalObjectToJSON.getJSONString( projectIds );

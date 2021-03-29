@@ -134,6 +134,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	 * @return null if not found
 	 * @throws Exception
 	 */
+	@Override
 	public ProjectDTO getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( int projectId ) throws SQLException {
 		
 		ProjectDTO returnItem = null;
@@ -169,10 +170,52 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	}
 
 	/**
+	 * !!!  Only populates properties PublicAccessCode, PublicAccessCodeEnabled
+	 * 
 	 * @param projectId
 	 * @return null if not found
 	 * @throws Exception
 	 */
+	@Override
+	public ProjectDTO getPublicAccessCodePublicAccessCodeEnabledForProjectId( int projectId ) throws SQLException {
+		
+		ProjectDTO returnItem = null;
+		
+		final String querySQL = "SELECT public_access_code, public_access_code_enabled FROM project_tbl WHERE id = ?";
+		
+		try ( Connection dbConnection = super.getDBConnection();
+			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
+			
+			preparedStatement.setInt( 1, projectId );
+			try ( ResultSet rs = preparedStatement.executeQuery() ) {
+				if( rs.next() ) {
+					returnItem = new ProjectDTO();
+					returnItem.setId( projectId );
+					returnItem.setPublicAccessCode( rs.getString( "public_access_code" ) );
+					{
+						int publicAccessCodeEnabled_Int = rs.getInt( "public_access_code_enabled" );
+						if ( publicAccessCodeEnabled_Int == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							returnItem.setPublicAccessCodeEnabled( true );
+						} else {
+							returnItem.setPublicAccessCodeEnabled( false );
+						}
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			String msg = "Failed to select subset, projectId: " + projectId + ", sql: " + querySQL;
+			log.error( msg, e );
+			throw e;
+		}
+		return returnItem;
+	}
+
+	/**
+	 * @param projectId
+	 * @return null if not found
+	 * @throws Exception
+	 */
+	@Override
 	public String get_ShortName_ForId( int id ) throws SQLException {
 		
 		String result = null;
@@ -237,6 +280,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -283,6 +327,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 //			int rowsUpdated = 
 			this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt = connection.prepareStatement( DELETE_SQL );
@@ -317,6 +362,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 //			KeyHolder keyHolder = new GeneratedKeyHolder();
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -379,6 +425,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		try {
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -420,6 +467,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		try {
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -461,6 +509,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		try {
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -504,6 +553,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		try {
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -545,6 +595,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		try {
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =
@@ -573,6 +624,78 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 	}
 
 	/**
+	 * @param publicAccessCode - null if not updated
+	 * @param publicAccessCodeEnabled - null if not updated
+	 * @param projectId
+	 */
+	//  Spring DB Transactions
+	@Override
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	public void updatePublicAccessCodePublicAccessCodeEnabled( String publicAccessCode, Boolean publicAccessCodeEnabled, int projectId, int userId ) {
+		
+		if ( publicAccessCode == null && publicAccessCodeEnabled == null ) {
+			throw new IllegalArgumentException( "publicAccessCode is null and publicAccessCodeEnabled is null");
+		}
+
+		String sql = "UPDATE project_tbl SET ";
+		if ( publicAccessCode != null ) {
+			sql += " public_access_code = ? ";
+		}
+		if ( publicAccessCodeEnabled != null ) {
+			if ( publicAccessCode != null ) {
+				sql += " , ";
+			}	
+			sql += " public_access_code_enabled = ? ";
+		}
+		
+		sql += ", updated_by_user_id = ? WHERE id = ?";
+		
+		final String sqlFinal = sql;
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		//  How to get the auto-increment primary key for the inserted record
+		
+		try {
+			int rowsUpdated = this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						@Override
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt =
+									connection.prepareStatement( sqlFinal );
+							int counter = 0;
+							if ( publicAccessCode != null ) {
+								counter++;
+								pstmt.setString( counter, publicAccessCode );
+							}
+							if ( publicAccessCodeEnabled != null ) {
+								counter++;
+								if ( publicAccessCodeEnabled ) {
+									pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+								} else {
+									pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+								}
+							}
+							
+							counter++;
+							pstmt.setInt( counter, userId );
+							counter++;
+							pstmt.setInt( counter, projectId );
+
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "publicAccessCode: " + publicAccessCode + ", publicAccessCodeEnabled: " + publicAccessCodeEnabled + ", projectId: " + projectId + ", SQL: " + sql;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+
+	/**
 	 * @param shortName
 	 * @param projectId
 	 */
@@ -590,6 +713,7 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		try {
 			int rowsUpdated = this.getJdbcTemplate().update(
 					new PreparedStatementCreator() {
+						@Override
 						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 							PreparedStatement pstmt =

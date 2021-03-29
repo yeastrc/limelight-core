@@ -30,22 +30,32 @@ import { initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
 import { UserLogin_Subpart } from 'page_js/user_account_page_js/sub_parts/userLogin_Subpart';
 
 import { UserResetPassword_Subpart } from 'page_js/user_account_page_js/sub_parts/userResetPassword_Subpart';
+import {UserEnter_PublicAccessCode_Subpart} from "page_js/user_account_page_js/sub_parts/userEnter_PublicAccessCode_Subpart";
 
 /**
  * 
  */
-class UserLoginPage {
+export class UserLoginPage_Root {
 
 	private _initializeCalled = false;
 
 	private _userLogin_Subpart = new UserLogin_Subpart();
 	private _userResetPassword_Subpart = new UserResetPassword_Subpart();
+	private _userEnter_PublicAccessCode_Subpart = new UserEnter_PublicAccessCode_Subpart( this );
 
 	/**
 	 * 
 	 */
 	constructor() {
 
+	}
+
+	/**
+	 *
+	 */
+	switch_To_Login_From_Enter_PublicAccessCode() {
+
+		this._showLoginForm();
 	}
 
 	/**
@@ -65,21 +75,8 @@ class UserLoginPage {
 			try {
 				eventObject.preventDefault();
 
-				const main_container_below_logo = objectThis._get_main_container_below_logo();
-				objectThis._showResetPasswordForm( { main_container_below_logo } );
-				
-				const $signin_tab = $("#signin_tab");
-				if ( $signin_tab.length === 0 ) {
-					throw Error("No element with id 'signin_tab'");
-				}
-				$signin_tab.show();
-				
-				const $reset_password_tab = $("#reset_password_tab");
-				if ( $reset_password_tab.length === 0 ) {
-					throw Error("No element with id 'reset_password_tab'");
-				}
-				$reset_password_tab.hide();
-				
+				objectThis._showResetPasswordForm();
+
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -91,30 +88,22 @@ class UserLoginPage {
 			try {
 				eventObject.preventDefault();
 
-				const main_container_below_logo = objectThis._get_main_container_below_logo();
-				objectThis._showLoginForm( { main_container_below_logo } );
+				objectThis._showLoginForm();
 
-				const $reset_password_tab = $("#reset_password_tab");
-				if ( $reset_password_tab.length === 0 ) {
-					throw Error("No element with id 'reset_password_tab'");
-				}
-				$reset_password_tab.show();
-				
-				const $signin_tab = $("#signin_tab");
-				if ( $signin_tab.length === 0 ) {
-					throw Error("No element with id 'signin_tab'");
-				}
-				$signin_tab.hide();
-				
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
 			}
 		});	
-		
-		const main_container_below_logo = this._get_main_container_below_logo();
-		this._showLoginForm( { main_container_below_logo } );
-		
+
+		const sign_in_page_project_has_ceDOM = document.getElementById("sign_in_page_project_has_ce");
+
+		if ( sign_in_page_project_has_ceDOM ) {
+			this._showEnterPublicAccessCode_Form();
+		} else {
+			this._showLoginForm();
+		}
+
 		this._initializeCalled = true;
 	};
 	
@@ -133,15 +122,50 @@ class UserLoginPage {
 	/**
 	 * Show Login Form
 	 */
-	_showLoginForm( { main_container_below_logo } ) {
+	_showLoginForm() {
+
+		const main_container_below_logo = this._get_main_container_below_logo();
+
+		const $reset_password_tab = $("#reset_password_tab");
+		if ( $reset_password_tab.length === 0 ) {
+			throw Error("No element with id 'reset_password_tab'");
+		}
+		$reset_password_tab.show();
+
+		const $signin_tab = $("#signin_tab");
+		if ( $signin_tab.length === 0 ) {
+			throw Error("No element with id 'signin_tab'");
+		}
+		$signin_tab.hide();
 
 		this._userLogin_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo, inviteTrackingCode : undefined } );
+	}
+
+	_showEnterPublicAccessCode_Form() {
+
+		const main_container_below_logo = this._get_main_container_below_logo();
+
+		this._userEnter_PublicAccessCode_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo, inviteTrackingCode : undefined } );
 	}
 
 	/**
 	 * Show Reset Password Form
 	 */
-	_showResetPasswordForm( { main_container_below_logo } ) {
+	_showResetPasswordForm() {
+
+		const main_container_below_logo = this._get_main_container_below_logo();
+
+		const $signin_tab = $("#signin_tab");
+		if ( $signin_tab.length === 0 ) {
+			throw Error("No element with id 'signin_tab'");
+		}
+		$signin_tab.show();
+
+		const $reset_password_tab = $("#reset_password_tab");
+		if ( $reset_password_tab.length === 0 ) {
+			throw Error("No element with id 'reset_password_tab'");
+		}
+		$reset_password_tab.hide();
 
 		this._userResetPassword_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo } );
 	}
@@ -152,10 +176,9 @@ class UserLoginPage {
 
 ///////////////
 
-$(document).ready(function() {
-
+{
 	//Instance of class
-	var userLoginPage = new UserLoginPage();
+	var userLoginPage = new UserLoginPage_Root();
 
 	try {
 		userLoginPage.initialize();
@@ -165,4 +188,4 @@ $(document).ready(function() {
 		throw e;
 	}
 
-});
+}

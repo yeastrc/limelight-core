@@ -48,7 +48,16 @@ public class WebConstants {
 	
 	//////////     Values stored in the HTTP Request
 	
-	
+
+	/**
+	 * Sign In Page 
+	 */
+	public static final String REQUEST_SIGNIN_PAGE_PROJECT_ID = "signInPage_projectId";
+
+	/**
+	 * Sign In Page 
+	 */
+	public static final String REQUEST_SIGNIN_PAGE_HAS_PROJECT_ACCESS_CODE_ENABLED = "signInPage_Has_ProjectAccessCodeEnabled";
 
 //	public static final String REQUEST_FULL_URL_WITH_QUERY_STRING = "intialIncomingURL";
 //

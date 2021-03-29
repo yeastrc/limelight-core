@@ -75,6 +75,10 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PROJECT_ENABLE_PUBLIC_ACCESS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-enable-public-access";
 	public static final String PROJECT_DISABLE_PUBLIC_ACCESS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-disable-public-access";
+
+	public static final String PROJECT_ENABLE_PUBLIC_ACCESS_CODE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-enable-public-access-code";
+	public static final String PROJECT_DISABLE_PUBLIC_ACCESS_CODE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-disable-public-access-code";
+	public static final String PROJECT_GENERATE_NEW_PUBLIC_ACCESS_CODE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-generate-new-public-access-code";
 	
 	
 	public static final String PROJECT_UPDATE_PROJECT_TITLE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-update-title";

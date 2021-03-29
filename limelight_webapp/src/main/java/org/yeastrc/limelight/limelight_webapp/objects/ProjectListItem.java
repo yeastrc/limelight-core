@@ -26,14 +26,17 @@ public class ProjectListItem {
 	private int id;
 	private String title;
 	private boolean projectLocked;
+	private boolean projectPublic;
+	private boolean projectPublicAccessEnabled;
 	private int userAccessLevel;
 	
 	@Override
 	public String toString() {
 		return "ProjectListItem [id=" + id + ", title=" + title + ", projectLocked=" + projectLocked
+				+ ", projectPublic=" + projectPublic + ", projectPublicAccessEnabled=" + projectPublicAccessEnabled
 				+ ", userAccessLevel=" + userAccessLevel + "]";
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -57,6 +60,22 @@ public class ProjectListItem {
 	}
 	public void setUserAccessLevel(int userAccessLevel) {
 		this.userAccessLevel = userAccessLevel;
+	}
+
+	public boolean isProjectPublic() {
+		return projectPublic;
+	}
+
+	public void setProjectPublic(boolean projectPublic) {
+		this.projectPublic = projectPublic;
+	}
+
+	public boolean isProjectPublicAccessEnabled() {
+		return projectPublicAccessEnabled;
+	}
+
+	public void setProjectPublicAccessEnabled(boolean projectPublicAccessEnabled) {
+		this.projectPublicAccessEnabled = projectPublicAccessEnabled;
 	}
 
 }

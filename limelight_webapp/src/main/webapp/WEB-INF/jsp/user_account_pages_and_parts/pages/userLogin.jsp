@@ -14,6 +14,15 @@
 <head>
 	<title>Limelight - User Login</title>
  <%@ include file="/WEB-INF/jsp/user_account_pages_and_parts/jsp_includes/head_section_include_user_pages.jsp" %>
+ 
+ 
+ <%--  signInPage_projectId and signInPage_Has_ProjectAccessCodeEnabled only populated when Project has project access code enabled --%>
+ <c:if test="${ not empty signInPage_projectId }">
+ 	<script type="text/text" id="sign_in_page_project_id"><c:out value="${ signInPage_projectId }"></c:out></script>
+ </c:if>
+ <c:if test="${ signInPage_Has_ProjectAccessCodeEnabled }">
+ 	<script type="text/text" id="sign_in_page_project_has_ce">true</script>
+ </c:if>
 	
 </head>
 <body class="
@@ -41,7 +50,8 @@
   		
   </div>
   
-  <div id="reset_password_tab" class="bottom-tab" > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+  		<%-- Not Shown initially --%>
+  <div id="reset_password_tab" class="bottom-tab" style="display: none;"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
 		<span id="reset_password_fake_link" class=" fake-link " >Reset Password</span>
   </div>
 
