@@ -48,7 +48,5 @@ hs_err_pid*
 /Gemfile.lock
 /how_to_build.txt
 
-JAVA_HOME=/home/myuser/sandbox/java/7u55/jdk1.7.0_55
-
 # sphinx items
 /docs/build
