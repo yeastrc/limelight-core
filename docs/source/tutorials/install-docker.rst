@@ -1,21 +1,20 @@
 =======================
 Installing Docker
 =======================
+.. image:: /_static/docker-logo.png
+    :width: 250
+
 Many of these tutorials will assume Docker is installed on your system. Docker allows you to securely
 run any software on your own system using the same environment, regardless of your own operating
 system or other installed software. If Docker is not already installed on your system, see below
 for instructions to install Docker on most major operating systems.
 
-For more information about Docker, see `the official Docker website <https://www.docker.com/L>`_
+For more information about Docker, see `the official Docker website <https://www.docker.com/>`_
 
 Windows
 ===========
-There are two ways to install Docker on Windows--the Windows Subsystem for Linux (WSL 2) method and the
-virtual machine (Hyper-V) method.
-
-Windows Subsystem for Linux (WSL 2) **(Recommended)**
---------------------------------------------------------
-One of the latest capabilities of Windows to to natively install Linux running right alongside Windows at the same
+We recommend installing Docker via the Windows Subsystem for Linux (WSL 2). WSL 2 one of the latest
+features of Windows that supports to natively running Linux right alongside Windows at the same
 time. This opens the Linux ecosystem up to Windows users and makes installing and using many Linux applications
 much simpler.
 
@@ -24,10 +23,20 @@ To enable WSL 2 on your Windows 10 installation,
 to the **Manual Installation Steps** section and follow the instructions. Once you get to **Step 6** these instructions
 will assume you have installed **Ubuntu 20.04 LTS**.
 
-Once you have completed the installation, please view the :ref:`Linux` section below.
+Windows Terminal
+-------------------
+We recommend installing **Windows Terminal** at this time.
+`Follow these directions from Microsoft to install Windows Terminal <https://docs.microsoft.com/en-us/windows/terminal/get-started>`_. Once installed
+you can easily access the command line of your new Ubuntu 20.04 LTS installation by launching Windows Terminal
+and clicking the menu icon as depicted below.
 
-Virtual Machine (Hyper-V) Method
-----------------------------------
+.. image:: /_static/windows-terminal-ubuntu.png
+
+If you do not install Windows Terminal, you can access your new Ubuntu 20.04 LTS installation by opening
+a command prompt (Press the Win + R keys on your keyboard, then type cmd, and press Enter on your keyboard or click/tap OK).
+Enter ``bash`` into the command prompt and hit enter.
+
+Once you have completed the installation of WSL 2, please view the :ref:`Linux` section below to install Docker.
 
 
 Apple Macintosh
