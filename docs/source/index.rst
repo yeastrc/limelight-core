@@ -34,5 +34,5 @@ asdf
    :maxdepth: 1
 
    self
-   foo.rst
+   tutorials
 

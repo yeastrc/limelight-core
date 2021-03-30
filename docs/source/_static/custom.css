@@ -3,6 +3,7 @@ a,
 a:hover,
 a:visited {
     color: #005606;
+    font-weight:1000;
 }
 
 /** bold **/
