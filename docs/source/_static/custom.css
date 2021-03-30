@@ -1,11 +1,13 @@
 /** links **/
-a {
-    color: #24B8A0;
+a,
+a:hover,
+a:visited {
+    color: #005606;
 }
 
 /** bold **/
 :not(dt) > strong, :not(dt) > b {
-    color: #24B8A0;
+    color: #32cd32;
 }
 
 /** Nav-bar titles **/
@@ -14,11 +16,41 @@ a {
     color: #32cd32;
 }
 
+/** Side bar non-highlighted header text **/
 .wy-nav-side,
-.wy-side-nav-search,
-.wy-body-for-nav {
-    background: #e4f9e4;
+.wy-side-nav-search {
+    background: #124c05;
 }
+
+.wy-menu-vertical li.toctree-l3.current li.toctree-l4>a,
+.wy-menu-vertical li.toctree-l2.current li.toctree-l3>a,
+.wy-menu-vertical li.toctree-l1.current li.toctree-l2>a
+{
+    background: #056203;
+    border:none;
+}
+
+/** Side bar current page block **/
+.wy-menu-vertical li.current {
+    background: #056203;
+    border:none;
+}
+
+/** Side bar current page link **/
+.wy-menu-vertical li.toctree-l2 a {
+    color: #ffffff;
+}
+
+
+.wy-body-for-nav {
+    background: #f5fff3;
+}
+
+.wy-menu-vertical a {
+    color: #cdffc8;
+}
+
+
 
 
 /** Signature text **/

@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
 # -- Project information -----------------------------------------------------
 project = "limelight"
-copyright = "2020, Michael Riffle"
+copyright = "2021, Michael Riffle"
 author = "Michael Riffle"
 
 # -- General configuration ---------------------------------------------------
@@ -61,4 +61,4 @@ html_css_files = [
     "custom.css",
 ]
 
-html_logo = "_static/limelight-logo.png"
+html_logo = "_static/limelight-logo-left.png"
