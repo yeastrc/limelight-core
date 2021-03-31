@@ -36,7 +36,7 @@ If you do not install Windows Terminal, you can access your new Ubuntu 20.04 LTS
 a command prompt (Press the Win + R keys on your keyboard, then type cmd, and press Enter on your keyboard or click/tap OK).
 Enter ``bash`` into the command prompt and hit enter.
 
-Once you have completed the installation of WSL 2, please view the :ref:`Linux` section below to install Docker.
+Once you have completed the installation of WSL 2, please view the :ref:`Ubuntu` section below to install Docker.
 
 Apple macOS
 ====================
@@ -45,4 +45,34 @@ Once installed and running, Docker may be accessed by opening a new Terminal and
 
 Linux
 ==============
-asdf
+Below are instructions and links to instructions for installing Docker on the most popular Linux distributions. If
+you installed WSL 2 on Windows per the instructions above, follow the **Ubuntu** instructions.
+
+Ubuntu
+---------
+The simplest way to install Docker on Ubuntu is opening a terminal and entering:
+
+.. code-block:: bash
+
+   sudo apt update -y
+   sudo apt install docker.io -y
+
+However, you will not always receive updates to the Docker engine when they are released. To ensure updates
+to Docker always immediately available, `follow these alternative instructions <https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04>`_.
+
+CentOS
+------
+`Follow the official Docker instructions for CentOS <https://docs.docker.com/engine/install/centos/>`_.
+
+Debian
+------
+`Follow the official Docker instructions for Debian <https://docs.docker.com/engine/install/debian/>`_.
+
+Fedora
+------
+`Follow the official Docker instructions for Fedora <https://docs.docker.com/engine/install/fedora/>`_.
+
+Other Linux Distributions
+--------------------------
+`Please see the offical Docker install guides <https://docs.docker.com/engine/install/>`_ for more information
+about installing Docker on other Linux distributions.
