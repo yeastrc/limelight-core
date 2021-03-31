@@ -127,7 +127,7 @@ have the following files (plus others) in your project directory:
  2. ``spectra.pep.xml`` - Magnum search results in pepxml format. This will have the prefix of your mzml file name
     and the suffix of ``pep.xml``.
  3. ``percout.xml`` - The results from running percolator.
- 4. ``yeast.fasta`` - The FASTA file you used to perform the Magnums earch.
+ 4. ``yeast.fasta`` - The FASTA file you used to perform the Magnum search.
 
 To generate the Limelight XML file, enter the following:
 
