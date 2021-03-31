@@ -4,17 +4,17 @@ Installing Docker
 .. image:: /_static/docker-logo.png
     :width: 250
 
-Many of these tutorials will assume Docker is installed on your system. Docker allows you to securely
-run any software on your own system using the same environment, regardless of your own operating
-system or other installed software. If Docker is not already installed on your system, see below
+Many of these tutorials will assume Docker is installed on your system. Docker allows you to run software
+on your computer in containers that include the tested environment for running that software--regardless
+of your own operating system or other installed programs. If Docker is not already installed on your system, see below
 for instructions to install Docker on most major operating systems.
 
 For more information about Docker, see `the official Docker website <https://www.docker.com/>`_
 
-Windows
-===========
+Microsoft Windows
+====================
 We recommend installing Docker via the Windows Subsystem for Linux (WSL 2). WSL 2 one of the latest
-features of Windows that supports to natively running Linux right alongside Windows at the same
+features of Windows that supports natively running Linux right alongside Windows at the same
 time. This opens the Linux ecosystem up to Windows users and makes installing and using many Linux applications
 much simpler.
 
@@ -38,10 +38,10 @@ Enter ``bash`` into the command prompt and hit enter.
 
 Once you have completed the installation of WSL 2, please view the :ref:`Linux` section below to install Docker.
 
-
-Apple Macintosh
+Apple macOS
 ====================
-asdf
+`Follow the official directions to install Docker on macOS <https://docs.docker.com/docker-for-mac/install/>`_
+Once installed and running, Docker may be accessed by opening a new Terminal and typing ``docker``.
 
 Linux
 ==============
