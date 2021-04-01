@@ -28,7 +28,7 @@ social:
     url: https://limelight.yeastrc.org/limelight/
   - icon: question-circle
     text: Documentation
-    url: http://www.yeastrc.org/limelight_docs/
+    url: https://limelight-ms.readthedocs.org/
   - icon: github
     text: View Source Code
     url: https://github.com/yeastrc/limelight-core

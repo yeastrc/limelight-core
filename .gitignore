@@ -4,6 +4,7 @@
 /.jekyll-cache/
 /_site/
 /Gemfile.lock
+/docs
 
 /how_to_build.txt
 /limelight_webapp
