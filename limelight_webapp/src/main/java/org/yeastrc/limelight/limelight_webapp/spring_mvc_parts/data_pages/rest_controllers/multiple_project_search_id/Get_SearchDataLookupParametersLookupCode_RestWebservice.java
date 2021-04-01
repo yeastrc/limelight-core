@@ -376,10 +376,10 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
     			SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result result = 
     			searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds
     			.create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(
-    					projectSearchIds_CreateDefault_InOrder, 
-    					searchDataLookupParams_CreatedByInfo,
-    					null /* projectSearchIdsToSearchIds */, 
-    					searchDataLookupParamsRoot );
+    					projectId, 
+    					projectSearchIds_CreateDefault_InOrder,
+    					searchDataLookupParams_CreatedByInfo, 
+    					null /* projectSearchIdsToSearchIds */, searchDataLookupParamsRoot );
 
     			searchDataLookupParamsCode = result.getSearchDataLookupParamsCode();
     			

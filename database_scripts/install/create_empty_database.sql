@@ -2451,6 +2451,112 @@ COLLATE = latin1_bin
 COMMENT = '\"Other\" flags for a search';
 
 
+-- -----------------------------------------------------
+-- Table project_level_default_fltr_ann_cutoffs_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_level_default_fltr_ann_cutoffs_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NOT NULL,
+  search_program_name VARCHAR(200) NOT NULL,
+  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein') NOT NULL COMMENT '\'peptide\' is actually reported peptide\'',
+  annotation_type_name VARCHAR(255) NOT NULL,
+  annotation_cutoff_value DOUBLE UNSIGNED NOT NULL,
+  created_user_id INT UNSIGNED NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_user_id INT UNSIGNED NOT NULL,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'User Entered Annotation Cutoffs that apply to all searches in the project';
+
+CREATE INDEX fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk_idx ON project_level_default_fltr_ann_cutoffs_tbl (project_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table project_level_default_fltr_ann_cutoffs_cutoff_as_string_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_level_default_fltr_ann_cutoffs_cutoff_as_string_tbl (
+  project_level_default_fltr_ann_cutoffs_id INT UNSIGNED NOT NULL,
+  annotation_cutoff_value_string VARCHAR(45) NOT NULL,
+  PRIMARY KEY (project_level_default_fltr_ann_cutoffs_id),
+  CONSTRAINT prj_lvl_dfltfltr_ann_ctffs_as_str_fk
+    FOREIGN KEY (project_level_default_fltr_ann_cutoffs_id)
+    REFERENCES project_level_default_fltr_ann_cutoffs_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table project_level_default_fltr_ann_cutoffs_prev_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_level_default_fltr_ann_cutoffs_prev_tbl (
+  id INT UNSIGNED NOT NULL,
+  project_id INT UNSIGNED NOT NULL,
+  search_program_name VARCHAR(200) NOT NULL,
+  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein') NOT NULL COMMENT '\'peptide\' is actually reported peptide\'',
+  annotation_type_name VARCHAR(255) NOT NULL,
+  annotation_cutoff_value DOUBLE UNSIGNED NOT NULL,
+  created_user_id INT UNSIGNED NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_user_id INT UNSIGNED NOT NULL,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id_prev_record INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  copy_create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_prev_record),
+  CONSTRAINT fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk0
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'User Entered Annotation Cutoffs that apply to all searches in the project';
+
+CREATE INDEX fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk_idx ON project_level_default_fltr_ann_cutoffs_prev_tbl (project_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table project_level_default_fltr_ann_cutoffs_cutoff_as_string_prev_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_level_default_fltr_ann_cutoffs_cutoff_as_string_prev_tbl (
+  project_level_default_fltr_ann_cutoffs_id INT UNSIGNED NOT NULL,
+  annotation_cutoff_value_string VARCHAR(45) NOT NULL,
+  id_prev_record INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id_prev_record),
+  CONSTRAINT prj_lvl_dfltfltr_ann_ctffs_as_str_prev_fk
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX prj_lvl_dfltfltr_ann_ctffs_as_str_prev_fk_idx ON project_level_default_fltr_ann_cutoffs_cutoff_as_string_prev_tbl (project_id ASC);
+
+
+-- -----------------------------------------------------
+-- Table project_search_id_code_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_id_code_tbl (
+  project_search_id INT(10) UNSIGNED NOT NULL,
+  project_search_id_code VARCHAR(20) CHARACTER SET 'latin1' NOT NULL,
+  created_date_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (project_search_id),
+  CONSTRAINT project_search_id_code_project_search_fk
+    FOREIGN KEY (project_search_id)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX project_search_id_code_UNIQUE ON project_search_id_code_tbl (project_search_id_code ASC);
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

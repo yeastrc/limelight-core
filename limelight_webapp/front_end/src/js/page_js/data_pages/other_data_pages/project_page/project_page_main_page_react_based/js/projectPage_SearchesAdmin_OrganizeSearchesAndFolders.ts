@@ -50,7 +50,6 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 	private _initializeCalled = false;
 
 	private _projectIdentifierFromURL;
-	private _projectPage_ProjectSection_LoggedInUsersInteraction;
 
 	private _selectedFolderId = null;
 	private _selectedFolderSearchesNotInAnyFolder = false;
@@ -59,12 +58,11 @@ export class ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders {
 	/**
 	 * 
 	 */
-	constructor( { projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction } ) {
+	constructor( { projectIdentifierFromURL } ) {
 
 		this._initializeCalled = false;
 		
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
-		this._projectPage_ProjectSection_LoggedInUsersInteraction = projectPage_ProjectSection_LoggedInUsersInteraction;
 
         if ( ! _project_page__searches_section_organize_searches_template.project__organize_searches_root ) {
             throw Error("Not Found: _project_page__searches_section_organize_searches_template.project__organize_searches_root")

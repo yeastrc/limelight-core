@@ -30,6 +30,10 @@ import {
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {SearchProgramsPerSearchDataRetrieval} from "page_js/data_pages/data_pages_common/searchProgramsPerSearchDataRetrieval";
 import {AnnotationTypeDataRetrieval} from "page_js/data_pages/data_pages_common/annotationTypeDataRetrieval";
+import {
+	defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval,
+	DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
+} from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
 
 /**
  *
@@ -44,6 +48,8 @@ export class GetSearchesDataForProject_ExperimentProcessing_Result {
 		searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
 		annotationTypeData_Root : AnnotationTypeData_Root
 	}
+
+	defaultFilter_Cutoffs_Overrides_ProjectWide_Root: DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 
 	private _DO_NOT_CALL(){} // Only here to force creating an object of this class using new ...
 }
@@ -76,11 +82,16 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 						return; // EARLY RETURN
 					}
 
+					const promise_defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval = defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval({ projectIdentifier });
+
 					const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList_OnlySearches });
 
-					promise_getSearchesSubDataFromServer.catch( () => {} );
+					const promiseAll = Promise.all([ promise_defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval, promise_getSearchesSubDataFromServer ]);
+					promiseAll.catch( (reason) => {
+						reject(reason)
+					} );
 
-					promise_getSearchesSubDataFromServer.then( ({ searchProgramsPerSearchData_Root, annotationTypeData_Root }) => {
+					promiseAll.then( ([ defaultFilter_Cutoffs_Overrides_ProjectWide_Root , { searchProgramsPerSearchData_Root, annotationTypeData_Root } ]) => {
 						try {
 							//  Get Final Search List and Per Search and Ann Type data for the searches
 
@@ -89,6 +100,7 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 							result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesAndFolders_SingleProject_PromiseResponse;
 							result.searchList_OnlySearches = searchList_OnlySearches;
 							result.searchesSubData = { searchProgramsPerSearchData_Root, annotationTypeData_Root };
+							result.defaultFilter_Cutoffs_Overrides_ProjectWide_Root = defaultFilter_Cutoffs_Overrides_ProjectWide_Root;
 
 							resolve(result);
 

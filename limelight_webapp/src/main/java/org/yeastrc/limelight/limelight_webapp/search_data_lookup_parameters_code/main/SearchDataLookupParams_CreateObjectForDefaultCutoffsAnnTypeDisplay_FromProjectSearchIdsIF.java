@@ -30,12 +30,13 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 interface SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF {
 
 	/**
+	 * @param projectId TODO
 	 * @param projectSearchIds
 	 * @param existingSearchDataLookupParamsRoot TODO
 	 * @return
 	 * @throws SQLException 
 	 */
-	SearchDataLookupParamsRoot createSearchDataLookupParamsRoot_forDefaults(List<Integer> projectSearchIds,
-			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException;
+	SearchDataLookupParamsRoot createSearchDataLookupParamsRoot_forDefaults(int projectId,
+			List<Integer> projectSearchIds, Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException;
 
 }

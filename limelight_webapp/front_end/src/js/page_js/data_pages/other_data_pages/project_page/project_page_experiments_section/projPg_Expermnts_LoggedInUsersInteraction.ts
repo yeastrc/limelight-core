@@ -36,6 +36,7 @@ import {
 	SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ProjectPage_ExperimentsSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_AllUsersInteraction";
+import {DefaultFilter_Cutoffs_Overrides_ProjectWide_Root} from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
 
 
 /**
@@ -140,6 +141,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 						searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
 						annotationTypeData_Root : AnnotationTypeData_Root
 					}
+					defaultFilter_Cutoffs_Overrides_ProjectWide_Root?: DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 
 					experimentData?: any
 
@@ -154,6 +156,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
 						results.searchList_OnlySearches = promiseResult.searchList_OnlySearches;
 						results.searchesSubData = promiseResult.searchesSubData;
+						results.defaultFilter_Cutoffs_Overrides_ProjectWide_Root = promiseResult.defaultFilter_Cutoffs_Overrides_ProjectWide_Root
 					} else if ( promiseResult.experimentData ) {
 						results.experimentData = promiseResult.experimentData;
 					} else {
@@ -192,6 +195,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 			noSearchesFound,
 			searchList_OnlySearches,
 			searchesSubData,
+			defaultFilter_Cutoffs_Overrides_ProjectWide_Root,
 			experimentData
 		} :  {
 			makeClone? : boolean
@@ -203,6 +207,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 				searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
 				annotationTypeData_Root : AnnotationTypeData_Root
 			}
+			defaultFilter_Cutoffs_Overrides_ProjectWide_Root?: DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 
 			experimentData?: any
 
@@ -223,7 +228,8 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 		const searchesData = {
 			searches_TopLevelAndNestedInFolders,
 			searchList_OnlySearches,
-			searchesSubData
+			searchesSubData,
+			defaultFilter_Cutoffs_Overrides_ProjectWide_Root
 		};
 
 		const projectPage_ExperimentsSection_LoggedInUsersInteraction_ForReactComponent = this;

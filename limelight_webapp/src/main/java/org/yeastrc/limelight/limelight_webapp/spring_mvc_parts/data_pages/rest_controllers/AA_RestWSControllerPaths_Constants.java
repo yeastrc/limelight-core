@@ -229,7 +229,18 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String COPY_OR_MOVE_PROJECT_SEARCH_IDS_TO_NEW_PROJECT_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/copy-or-move-project-search-ids-to-new-project";
+	
+	////
+	
+	//   Project Level Filter Default Cutoffs Override ( Override Cutoffs Default at Search level )
+	
 
+	public static final String PROJECT_LEVEL_FILTER_DEFAULT_CUTOFFS_OVERRIDE_MAINT__GET__REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-level-filter-default-cutoffs-override-maint--get";
+	
+	public static final String PROJECT_LEVEL_FILTER_DEFAULT_CUTOFFS_OVERRIDE_MAINT__SAVE__REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-level-filter-default-cutoffs-override_MAINT--save";
+	
 	////////////
 	
 	//   Project Search Id driven Update DB

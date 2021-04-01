@@ -32,6 +32,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 public interface SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF {
 
 	/**
+	 * @param projectId TODO
 	 * @param projectSearchIds
 	 * @param searchDataLookupParams_CreatedByInfo
 	 * @param projectSearchIdsToSearchIds
@@ -39,8 +40,8 @@ public interface SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisp
 	 * @return
 	 * @throws SQLException
 	 */
-	SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(List<Integer> projectSearchIds,
-			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo,
-			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot) throws SQLException;
+	SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(int projectId,
+			List<Integer> projectSearchIds,
+			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo, Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot) throws SQLException;
 
 }

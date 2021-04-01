@@ -69,6 +69,7 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
     private _copySearches_Clicked_BindThis = this._copySearches_Clicked.bind(this);
     private _moveSearches_Clicked_BindThis = this._moveSearches_Clicked.bind(this);
     private _organizeSearches_Clicked_BindThis = this._organizeSearches_Clicked.bind(this);
+    private _openFilterOverridesOverlay_Clicked_BindThis = this._openFilterOverridesOverlay_Clicked.bind(this);
     private _expand_All_Button_Clicked_BindThis = this._expand_All_Button_Clicked.bind(this);
     private _collapse_All_Button_Clicked_BindThis = this._collapse_All_Button_Clicked.bind(this);
 
@@ -207,6 +208,14 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
     /**
      *
      */
+    private _openFilterOverridesOverlay_Clicked(event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+
+        this.props.projectPage_SearchesAdmin.set_ProjectWide_DefaultFilter_Cutoffs_Overrides.openSet_ProjectWide_DefaultFilter_Cutoffs_Overrides();
+    }
+
+    /**
+     *
+     */
     private _expand_All_Button_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
         this.setState({ expand_All_Folders__ShowSearchDetailsTo_Global_Force: { expand_All_Folders__ShowSearchDetails_Global_ForceToValue: true } });
@@ -278,6 +287,7 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
                                             ></div>
                                         ): null }
                                     </div>
+
                                     <span> </span>
 
                                     {/*  Move Searches */}
@@ -294,12 +304,23 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
                                             ></div>
                                         ): null }
                                     </div>
+
                                     <span> </span>
 
                                     {/*  Organize Searches */}
                                     <div style={ { position: "relative", display: "inline-block" } }>
                                         <input type="button" value="Organize Searches"
                                                onClick={ this._organizeSearches_Clicked_BindThis }
+                                        />
+                                    </div>
+
+                                    <span> </span>
+
+                                    {/*  Open Set Filter Overrides Overlay  */}
+                                    <div style={ { position: "relative", display: "inline-block" } }>
+                                        <input type="button" value="Filter Overrides"
+                                               title="Click here to set custom cutoffs for all searches.."
+                                               onClick={ this._openFilterOverridesOverlay_Clicked_BindThis }
                                         />
                                     </div>
 

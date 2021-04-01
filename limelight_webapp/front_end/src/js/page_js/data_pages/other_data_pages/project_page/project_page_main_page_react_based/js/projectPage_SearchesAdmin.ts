@@ -26,6 +26,7 @@ import { ProjectPage_SearchesAdmin_CopyMove_Searches } from "./projectPage_Searc
 
 import { ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders } from "./projectPage_SearchesAdmin_OrganizeSearchesAndFolders";
 import {ProjectPage_SearchesSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction";
+import {Set_ProjectWide_DefaultFilter_Cutoffs_Overrides} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides";
 
 /**
  * 
@@ -39,6 +40,8 @@ export class ProjectPage_SearchesAdmin {
 	projectPage_SearchesAdmin_CopyMove_Searches: ProjectPage_SearchesAdmin_CopyMove_Searches;
 
 	projectPage_SearchesAdmin_OrganizeSearchesAndFolders: ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders;
+
+	set_ProjectWide_DefaultFilter_Cutoffs_Overrides: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides;
 
 	private _projectPage_SearchesSection_AllUsersInteraction: ProjectPage_SearchesSection_AllUsersInteraction;
 
@@ -54,8 +57,11 @@ export class ProjectPage_SearchesAdmin {
 		this.projectPage_SearchesAdmin_CopyMove_Searches = new ProjectPage_SearchesAdmin_CopyMove_Searches({ projectIdentifierFromURL });
 		
 		this.projectPage_SearchesAdmin_OrganizeSearchesAndFolders = new ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders({
-			projectIdentifierFromURL,
-			projectPage_ProjectSection_LoggedInUsersInteraction : undefined
+			projectIdentifierFromURL
+		});
+
+		this.set_ProjectWide_DefaultFilter_Cutoffs_Overrides = new Set_ProjectWide_DefaultFilter_Cutoffs_Overrides({
+			projectIdentifierFromURL
 		});
     }
 
@@ -74,6 +80,8 @@ export class ProjectPage_SearchesAdmin {
 		this.projectPage_SearchesAdmin_CopyMove_Searches.initialize( { projectPage_SearchesSection_AllUsersInteraction });
 		
 		this.projectPage_SearchesAdmin_OrganizeSearchesAndFolders.initialize( { projectPage_SearchesSection_AllUsersInteraction });
+
+		this.set_ProjectWide_DefaultFilter_Cutoffs_Overrides.initialize();
 
         this._initializeCalled = true;
     }

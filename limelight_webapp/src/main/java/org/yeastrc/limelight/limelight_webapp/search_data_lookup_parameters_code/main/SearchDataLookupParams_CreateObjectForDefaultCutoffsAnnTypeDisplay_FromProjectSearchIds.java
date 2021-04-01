@@ -30,7 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
+import org.yeastrc.limelight.limelight_shared.enum_classes.PsmPeptideMatchedProteinAnnotationType;
 import org.yeastrc.limelight.limelight_webapp.annotation_type_utils.GetAnnotationTypeDataIF;
 import org.yeastrc.limelight.limelight_webapp.annotation_type_utils.GetAnnotationTypeData.GetAnnotationTypeDataResult;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -39,7 +41,10 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_Filter_Per_AnnotationType;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_ProjectSearchIds;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher.ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem;
 
 /**
  * Create SearchDataLookupParamsRoot
@@ -58,15 +63,21 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
+
+	@Autowired
+	private ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher_IF projectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher;
+
+	@Autowired
+	private SearchProgramsPerSearchListForSearchIdSearcherIF searchProgramsPerSearchListForSearchIdSearcher;
 	
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_CreateForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF#createSearchDataLookupParamsRoot_forDefaults(java.util.List, java.util.Map)
 	 */
 	@Override
 	public SearchDataLookupParamsRoot createSearchDataLookupParamsRoot_forDefaults( 
-			List<Integer> projectSearchIds,
-			Map<Integer, Integer> projectSearchIdsToSearchIds, 
-			SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException {
+			int projectId,
+			List<Integer> projectSearchIds, 
+			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException {
 	
 		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
 			throw new IllegalArgumentException( "projectSearchIds is null or empty" );
@@ -101,10 +112,38 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 			paramsForProjectSearchIds.setParamsForProjectSearchIdsList( paramsForProjectSearchIdsList );
 		}
 		
+
+		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List =
+				projectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher.getAllForProjectId( projectId );
+		
+		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__PSM = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
+		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Peptide = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
+		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Protein = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
+		
+		for ( ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem item : projectLevelDefaultFltrAnnCutoffs_List ) {
+			if ( item.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PSM ) {
+				projectLevelDefaultFltrAnnCutoffs_List__PSM.add(item);
+			} else if ( item.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PEPTIDE ) {
+				projectLevelDefaultFltrAnnCutoffs_List__Peptide.add(item);
+			} else if ( item.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
+				projectLevelDefaultFltrAnnCutoffs_List__Protein.add(item);
+			} else {
+				String msg = "item.getPsmPeptideMatchedProteinAnnotationType() is unknown value.  item.getPsmPeptideMatchedProteinAnnotationType(): " + item.getPsmPeptideMatchedProteinAnnotationType();
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+		}
+		
 		for ( Integer projectSearchId : projectSearchIds ) {
 			
 			SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId =
-					createSearchDataLookupParams_For_Single_ProjectSearchId( projectSearchId, projectSearchIdsToSearchIds );
+					createSearchDataLookupParams_For_Single_ProjectSearchId( 
+							projectSearchId, 
+							projectSearchIdsToSearchIds, 
+							projectLevelDefaultFltrAnnCutoffs_List__PSM,
+							projectLevelDefaultFltrAnnCutoffs_List__Peptide,
+							projectLevelDefaultFltrAnnCutoffs_List__Protein );
+			
 			paramsForProjectSearchIdsList.add( searchDataLookupParams_For_Single_ProjectSearchId );
 		}
 		
@@ -119,7 +158,10 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 	 */
 	private SearchDataLookupParams_For_Single_ProjectSearchId createSearchDataLookupParams_For_Single_ProjectSearchId( 
 			Integer projectSearchId,
-			Map<Integer, Integer> projectSearchIdsToSearchIds ) throws SQLException {
+			Map<Integer, Integer> projectSearchIdsToSearchIds,
+			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__PSM,
+			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Peptide,
+			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Protein ) throws SQLException {
 
 		Integer searchId = null;
 		
@@ -139,8 +181,12 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 				throw new LimelightInternalErrorException( msg );
 			}
 		}
-		GetAnnotationTypeDataResult getAnnotationTypeDataResult =
-				getAnnotationTypeData.getAnnotationTypeDataForSearchId( searchId );
+		
+		List<SearchProgramsPerSearchDTO> searchProgramsPerSearchDTOList =
+				searchProgramsPerSearchListForSearchIdSearcher.getSearchProgramsPerSearchForSearchId( searchId );
+
+		
+		GetAnnotationTypeDataResult getAnnotationTypeDataResult = getAnnotationTypeData.getAnnotationTypeDataForSearchId( searchId );
 		
 		Map<Integer, AnnotationTypeDTO> psmFilterableAnnotationTypeData = getAnnotationTypeDataResult.getPsmFilterableAnnotationTypeData();
 		Map<Integer, AnnotationTypeDTO> psmDescriptiveAnnotationTypeData = getAnnotationTypeDataResult.getPsmDescriptiveAnnotationTypeData();
@@ -156,9 +202,12 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 		searchDataLookupParams_For_Single_ProjectSearchId.setProjectSearchId( projectSearchId );
 
 		//  Filter values (cutoffs per annotation type)
-		List<SearchDataLookupParams_Filter_Per_AnnotationType> psmFilters_Default = createDefaultFilters( psmFilterableAnnotationTypeData );
-		List<SearchDataLookupParams_Filter_Per_AnnotationType> reportedPeptideFilters_Default = createDefaultFilters( reportedPeptideFilterableAnnotationTypeData );
-		List<SearchDataLookupParams_Filter_Per_AnnotationType> matchedProteinFilters_Default = createDefaultFilters( matchedProteinFilterableAnnotationTypeData );
+		List<SearchDataLookupParams_Filter_Per_AnnotationType> psmFilters_Default = 
+				createDefaultFilters( psmFilterableAnnotationTypeData, projectLevelDefaultFltrAnnCutoffs_List__PSM, searchProgramsPerSearchDTOList );
+		List<SearchDataLookupParams_Filter_Per_AnnotationType> reportedPeptideFilters_Default = 
+				createDefaultFilters( reportedPeptideFilterableAnnotationTypeData, projectLevelDefaultFltrAnnCutoffs_List__Peptide, searchProgramsPerSearchDTOList );
+		List<SearchDataLookupParams_Filter_Per_AnnotationType> matchedProteinFilters_Default = 
+				createDefaultFilters( matchedProteinFilterableAnnotationTypeData, projectLevelDefaultFltrAnnCutoffs_List__Protein, searchProgramsPerSearchDTOList );
 
 		//  Annotation Type Ids to Display
 		List<Integer> psmAnnTypeDisplay_Default = createDefaultAnnTypesDisplay( psmFilterableAnnotationTypeData, psmDescriptiveAnnotationTypeData );
@@ -244,7 +293,12 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 	 * @param filterableAnnTypes
 	 * @return
 	 */
-	private List<SearchDataLookupParams_Filter_Per_AnnotationType> createDefaultFilters( Map<Integer, AnnotationTypeDTO> filterableAnnTypes ) {
+	private List<SearchDataLookupParams_Filter_Per_AnnotationType> createDefaultFilters( 
+			
+			Map<Integer, AnnotationTypeDTO> filterableAnnTypes,
+			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List,
+			List<SearchProgramsPerSearchDTO> searchProgramsPerSearchDTOList
+			) {
 		
 		if ( filterableAnnTypes == null ) {
 			return new ArrayList<>();
@@ -262,10 +316,56 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 					log.error( msg );
 					throw new LimelightInternalErrorException(msg);
 				}
+				
+				//  Default Filter Value 
+				
+				Double defaultFilterValue = null;
+				
+				//  First  Get from Annotation Type, if set
+
 				if ( annotationTypeFilterableDTO.getDefaultFilterValue() != null ) {
+
+					//  Have Default value on Annotation Type record so apply that
+					
+					defaultFilterValue = annotationTypeFilterableDTO.getDefaultFilterValue();
+				}
+
+				//  Second  Get from Project Wide override value, if set.  Override value from Annotation Type if also set there.
+				
+				for ( ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem item : projectLevelDefaultFltrAnnCutoffs_List ) {
+					
+					if ( annotationTypeDTO.getName().equals( item.getAnnotationTypeName() ) ) {
+
+						//  Annotation type name matches
+						
+						//  Get Search Program
+						
+						for ( SearchProgramsPerSearchDTO searchProgramsPerSearchDTO : searchProgramsPerSearchDTOList ) {
+							
+							if ( annotationTypeDTO.getSearchProgramsPerSearchId() == searchProgramsPerSearchDTO.getId() ) {
+
+								if ( searchProgramsPerSearchDTO.getName().equals( item.getSearchProgramName() ) ) {
+								
+									//  Everything matches so apply Project Wide default filter value override
+									
+									defaultFilterValue = item.getAnnotationCutoffValue();
+									
+									break;
+								}
+							}
+						}
+					}
+				}
+				
+				
+				if ( defaultFilterValue != null ) {
+					
+					//  Have Default Filter Value 
+					
 					SearchDataLookupParams_Filter_Per_AnnotationType searchDataLookupParams_Filter_Per_AnnotationType = new SearchDataLookupParams_Filter_Per_AnnotationType();
 					searchDataLookupParams_Filter_Per_AnnotationType.setAnnTypeId( annotationTypeDTO.getId() );
-					searchDataLookupParams_Filter_Per_AnnotationType.setValue( annotationTypeFilterableDTO.getDefaultFilterValue() );
+					searchDataLookupParams_Filter_Per_AnnotationType.setValue( defaultFilterValue );
+					
 					resultList.add( searchDataLookupParams_Filter_Per_AnnotationType );
 				}
 			}
