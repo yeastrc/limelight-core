@@ -199,7 +199,8 @@ Get the untreated data
     .. note::
        If you are using macOS, you may not have ``wget`` installed on your system so the above step may fail. You can
        download ``treated.tgz`` using a web browser using
-       `this link <https://drive.google.com/file/d/1HHur4Vm8s20VYwp6eWUxReIy4nax-4GF/view?usp=sharing>`_.
+       `this link <https://drive.google.com/file/d/1HHur4Vm8s20VYwp6eWUxReIy4nax-4GF/view?usp=sharing>`_, and then
+       save it to your project directory and run tar -xvzf untreated.tgz.
 
     If the above was successful, you can delete ``untreated.tgz``
 
