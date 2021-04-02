@@ -17,14 +17,17 @@ We have also made example data input files available, and the steps below includ
 Set Up Your Project Folder
 =============================
 
- 1. Create a project folder
+ 1. Open up a terminal. If you are on Windows, follow the directions on our :ref:`Docker Installation Tutorial <Installing Docker>`
+    to open a Linux terminal.
+
+ 2. Create a project folder
 
     .. code-block:: bash
 
        mkdir ~/my-project
        cd ~/my-project
 
- 2. Copy the example input data into the project folder
+ 3. Copy the example input data into the project folder
 
     .. code-block:: bash
 
