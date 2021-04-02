@@ -148,7 +148,9 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         const projectSearchIds = this.state.projectSearchIds_Selected_InProgress;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.peptide_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+        const projectSearchIdCodes = this._get_projectSearchIdCodes__From_projectSearchIds({ projectSearchIds });
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.peptide_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
     }
 
     /**
@@ -159,7 +161,9 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         const projectSearchIds = this.state.projectSearchIds_Selected_InProgress;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.protein_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+        const projectSearchIdCodes = this._get_projectSearchIdCodes__From_projectSearchIds({ projectSearchIds });
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.protein_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
     }
 
     /**
@@ -170,7 +174,37 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         const projectSearchIds = this.state.projectSearchIds_Selected_InProgress;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.mod_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+        const projectSearchIdCodes = this._get_projectSearchIdCodes__From_projectSearchIds({ projectSearchIds });
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.mod_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
+    }
+
+    /**
+     *
+     */
+    private _get_projectSearchIdCodes__From_projectSearchIds({ projectSearchIds } : { projectSearchIds:  Set<number> }) : Set<string> {
+
+        const projectSearchIdCodes = new Set<string>();
+
+        if ( this.state.searchesAndFolders.searchesNotInFolders ) {
+            for (const search of this.state.searchesAndFolders.searchesNotInFolders) {
+                if ( projectSearchIds.has( search.projectSearchId) ) {
+                    projectSearchIdCodes.add(search.projectSearchIdCode);
+                }
+            }
+        }
+        if ( this.state.searchesAndFolders.folderList ) {
+            for ( const folder of this.state.searchesAndFolders.folderList ) {
+                if ( folder.searchesInFolder ) {
+                    for (const search of folder.searchesInFolder) {
+                        if ( projectSearchIds.has( search.projectSearchId) ) {
+                            projectSearchIdCodes.add(search.projectSearchIdCode);
+                        }
+                    }
+                }
+            }
+        }
+        return projectSearchIdCodes;
     }
 
     /**

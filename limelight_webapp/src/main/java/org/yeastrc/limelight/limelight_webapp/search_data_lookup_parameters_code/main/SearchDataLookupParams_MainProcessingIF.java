@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookupRootIdTypes;
 import org.yeastrc.limelight.limelight_webapp.db_dto.SearchDataLookupParametersLookupDTO;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_MainProcessing.SearchDataLookupParams_MainProcessing_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 
 /**
@@ -31,7 +32,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 public interface SearchDataLookupParams_MainProcessingIF {
 
 
-	String searchDataLookupParams_Save_Create_Code(
+	SearchDataLookupParams_MainProcessing_Result searchDataLookupParams_Save_Create_Code(
 			SearchDataLookupParamsRoot searchDataLookupParamsRoot,
 			SearchDataLookupParametersLookupRootIdTypes searchDataLookupParametersLookupType,
 			Integer singleProjectSearchIdCreatedDefaultsFor,

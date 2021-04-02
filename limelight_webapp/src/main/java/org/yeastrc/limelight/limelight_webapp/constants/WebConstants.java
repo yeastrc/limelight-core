@@ -124,6 +124,10 @@ public class WebConstants {
 
 	public static final String REQUEST_DEFAULT_URL = "defaultURL";
 	
+	//  searchDataLookupParametersLookupCode created/computed when URL has Project Search Id Code values
+	
+	public static final String SEARCH_DATA_LOOKUP_PARAMETERS_LOOKUP_CODE__COMPUTED = "searchDataLookupParametersLookupCode_Computed";
+	
 	//  Project Page:
 	
 	public static final String REQUEST_PROJECT_PAGE_PROJECT_INFO = "project";

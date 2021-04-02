@@ -31,6 +31,7 @@ export class ProjectPage_SearchesSection_Searches_Folders_SingleFolder {
 export class ProjectPage_SearchesSection_Searches_Folders_SingleSearch {
 
     projectSearchId: number;
+    projectSearchIdCode: string;
     searchId: number;
     displayOrder: number; // zero if no display order applied
     name: string;
@@ -159,6 +160,13 @@ const _validateSearchArray = function (
             if ( ! variable_is_type_number_Check( search.projectSearchId ) ) {
                 throw Error("( ! variable_is_type_number_Check( search.projectSearchId ) )")
             }
+            if ( search.projectSearchIdCode === undefined || search.projectSearchIdCode === null ) {
+                throw Error("( search.projectSearchIdCode === undefined || search.projectSearchIdCode === null )")
+            }
+            if ( ! limelight__IsVariableAString( search.projectSearchIdCode ) ) {
+                throw Error("( ! limelight__IsVariableAString( search.projectSearchIdCode ) )")
+            }
+
 
             if ( search.searchId === undefined || search.searchId === null ) {
                 throw Error("( search.searchId === undefined || search.searchId === null )")
@@ -200,6 +208,7 @@ const _validateSearchArray = function (
 // class WebserviceResult_SingleSearch {
 //
 //     private int projectSearchId;
+//      private String projectSearchIdCode;
 //     private int searchId;
 //     private int displayOrder; // zero if no display order applied
 //     private String name;

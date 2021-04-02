@@ -69,11 +69,27 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
 	
+	/**
+	 *
+	 */
+	public static class SearchDataLookupParams_MainProcessing_Result {
+		
+		private String searchDataLookupParamsCode;
+		private SearchDataLookupParametersLookupDTO searchDataLookupParametersLookupDTO;
+		
+		public String getSearchDataLookupParamsCode() {
+			return searchDataLookupParamsCode;
+		}
+		public SearchDataLookupParametersLookupDTO getSearchDataLookupParametersLookupDTO() {
+			return searchDataLookupParametersLookupDTO;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_MainProcessingIF#searchDataLookupParams_Save_Create_Code(org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot, org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookupRootIdTypes, java.lang.Integer, org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo)
 	 */
 	@Override
-	public String searchDataLookupParams_Save_Create_Code( SearchDataLookupParamsRoot searchDataLookupParamsRoot,
+	public SearchDataLookupParams_MainProcessing_Result searchDataLookupParams_Save_Create_Code( SearchDataLookupParamsRoot searchDataLookupParamsRoot,
 			SearchDataLookupParametersLookupRootIdTypes searchDataLookupParametersLookupType,
 			Integer singleProjectSearchIdCreatedDefaultsFor,
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo ) throws SQLException {
@@ -88,7 +104,12 @@ public class SearchDataLookupParams_MainProcessing implements SearchDataLookupPa
 						searchDataLookupParametersLookupDTO.getHashOfMainParams(),
 						searchDataLookupParametersLookupDTO.getHashCollisionIndex() );
 		
-		return searchDataLookupParamsCode;
+		SearchDataLookupParams_MainProcessing_Result result = new SearchDataLookupParams_MainProcessing_Result();
+		
+		result.searchDataLookupParamsCode = searchDataLookupParamsCode;
+		result.searchDataLookupParametersLookupDTO = searchDataLookupParametersLookupDTO;
+		
+		return result;
 	}
 	
 	/* (non-Javadoc)
