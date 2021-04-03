@@ -144,6 +144,8 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
 
     window.location.href = url;
 
+    return;  // EARLY RETURN
+
     // const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
     //
     //
