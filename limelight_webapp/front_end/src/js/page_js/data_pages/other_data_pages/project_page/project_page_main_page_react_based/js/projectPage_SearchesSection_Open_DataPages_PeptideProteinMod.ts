@@ -129,11 +129,12 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
         return;
     }
 
+    const projectSearchIdCodes_EncodedForURL = get_projectSearchIdCodes_EncodedForURL({ projectSearchIdCodes });
+
+    const url = urlPath + projectSearchIdCodes_EncodedForURL + "/r";
+
     if ( ctrlKeyOrMetaKey ) {
 
-        const projectSearchIdCodes_EncodedForURL = get_projectSearchIdCodes_EncodedForURL({ projectSearchIdCodes });
-
-        const url = urlPath + projectSearchIdCodes_EncodedForURL + "/r";
         window.open(url, "_blank", "");
 
         return;  // EARLY RETURN
@@ -141,10 +142,12 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
 
     //  NO ctrlKeyOrMetaKey
 
-    const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
+    window.location.href = url;
 
-
-    let newWindow = null;  // Always null since handled above
+    // const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
+    //
+    //
+    // let newWindow = null;  // Always null since handled above
 
     //  Handled above
 
@@ -158,17 +161,17 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
     // }
 
 
-    promise_getSearchDataLookupParamsCode.catch((reason) => { });
-
-    promise_getSearchDataLookupParamsCode.then((result) => {
-        try {
-            const url = urlPath + result.searchDataLookupParamsCode + "/r";
-            _goToURL_DataPage({ url, newWindow });
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    });
+    // promise_getSearchDataLookupParamsCode.catch((reason) => { });
+    //
+    // promise_getSearchDataLookupParamsCode.then((result) => {
+    //     try {
+    //         const url = urlPath + result.searchDataLookupParamsCode + "/r";
+    //         _goToURL_DataPage({ url, newWindow });
+    //     } catch( e ) {
+    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+    //         throw e;
+    //     }
+    // });
 };
 
 /**
@@ -187,18 +190,18 @@ const get_projectSearchIdCodes_EncodedForURL = function ({ projectSearchIdCodes 
 /**
  * Go to Data Page URL
  */
-const _goToURL_DataPage = function ({ url, newWindow }) {
-
-    //  CANNOT OPEN WINDOW HERE - MUST Open the window before make the AJAX call
-
-    if ( newWindow != null ) {
-
-        newWindow.location.href = url;
-        return;
-    }
-
-    window.location.href = url;
-}
+// const _goToURL_DataPage = function ({ url, newWindow }) {
+//
+//     //  CANNOT OPEN WINDOW HERE - MUST Open the window before make the AJAX call
+//
+//     if ( newWindow != null ) {
+//
+//         newWindow.location.href = url;
+//         return;
+//     }
+//
+//     window.location.href = url;
+// }
 
 /**
  * Get searchDataLookupParamsCode for merged Project Search Ids
