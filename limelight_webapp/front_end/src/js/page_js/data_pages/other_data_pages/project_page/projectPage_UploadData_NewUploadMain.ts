@@ -805,12 +805,10 @@ export class ProjectPage_UploadData_NewUploadMain {
 	 * 
 	 */
 	uploadFile( params ) {
-		
-		let objectThis = this;
-		
+
 		let isLimelightXMLFile = params.isLimelightXMLFile;
 		let $containingBlock = params.$containingBlock;
-		let fileToUpload; 
+		let fileToUpload;
 		let filename;
 		let projectPage_UploadData_NewSingleFileEntry;
 		let fileIndex = this.getFileIndexAsIntFromDOM( { $domElement : $containingBlock } );
@@ -830,7 +828,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 			//  TODO  show error to user?
 			throw Error( "upload key cannot be not set" );
 		}
-		
+
 		try {
 			//  fileIndex is an int
 			projectPage_UploadData_NewSingleFileEntry = this.getFileData( { fileIndex : fileIndex } );
@@ -839,13 +837,41 @@ export class ProjectPage_UploadData_NewUploadMain {
 			}
 			fileToUpload = projectPage_UploadData_NewSingleFileEntry.getFile();
 			filename = fileToUpload.name;
-			
-		} catch(e) { 
+
+		} catch(e) {
 			alert( "Javascript File API not supported.  Please use a newer browser" );
 			return;
 		}
 		this.progressBarClear( { $containingBlock : $containingBlock } );
-		
+
+		this._uploadFile_ActualSend({
+			projectPage_UploadData_NewSingleFileEntry,
+			isLimelightXMLFile,
+			$containingBlock,
+			filename,
+			uploadKey,
+			fileIndex,
+			fileType
+		})
+	}
+
+	/**
+	 *
+	 */
+	private _uploadFile_ActualSend({
+		  projectPage_UploadData_NewSingleFileEntry,
+		  isLimelightXMLFile,
+		  $containingBlock,
+		  filename,
+		  uploadKey,
+		  fileIndex,
+		  fileType
+	  }) {
+
+		let objectThis = this;
+
+		const fileToUpload = projectPage_UploadData_NewSingleFileEntry.getFile();
+
 		//  Create the XMLHttpRequest to send the file
 		let xmlHttpRequest = new XMLHttpRequest();
 		
@@ -1061,7 +1087,8 @@ export class ProjectPage_UploadData_NewUploadMain {
 		xmlHttpRequest.upload.addEventListener('progress', function(event){
 			try {
 				let progressPercent = Math.ceil(( event.loaded / event.total) * 100 );
-				objectThis.progressBarUpdate( { progressPercent : progressPercent, $containingBlock : params.$containingBlock }  );
+				progressPercent = Math.min( progressPercent, 95 );  // Show max of 95
+				objectThis.progressBarUpdate( { progressPercent : progressPercent, $containingBlock : $containingBlock }  );
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
