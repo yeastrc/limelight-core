@@ -22,6 +22,9 @@ package org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.c
  *
  */
 public class FileUploadMaxFileSizeConstants {
+	
+	
+	public static final int MAX_FILE_UPLOAD_CHUNK_SIZE = ( 5 * ( 1024 * 1024 ) ); // 5MB max
 
 
 	//  Must Keep these ..._SIZE in sync with following ..._SIZE_FORMATTED 

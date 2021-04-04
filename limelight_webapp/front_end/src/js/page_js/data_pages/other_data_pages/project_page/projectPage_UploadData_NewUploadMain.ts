@@ -37,6 +37,8 @@ import { ProjectPage_UploadData_NewSingleFileEntry } from './projectPage_UploadD
 
 const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json"  //  Keep in sync with server side
 
+const LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR = "REJECT_ON_NETWORK_ERROR";
+
 
 /**
  * 
@@ -51,6 +53,8 @@ export class ProjectPage_UploadData_NewUploadMain {
 	private _per_upload_file_template = _project_page_upload_data_section_project_owner_user_interaction_template.per_upload_file_template;
 
 	private uploadingScanFiles = undefined;
+
+	private maxFileUploadChunkSize = undefined;
 	private maxLimelightXMLFileUploadSize = undefined;
 	private maxLimelightXMLFileUploadSizeFormatted = undefined;
 	private maxScanFileUploadSize = undefined;
@@ -93,6 +97,20 @@ export class ProjectPage_UploadData_NewUploadMain {
 					this.uploadingScanFiles = true;
 				}
 			}
+
+
+
+			//  Get max File upload Chunk size
+			let $limelight_max_file_upload_chunk_size = $("#limelight_max_file_upload_chunk_size");
+			if ( $limelight_max_file_upload_chunk_size.length === 0 ) {
+				throw Error( "#limelight_max_file_upload_chunk_size input field missing" );
+			}
+			let limelight_max_file_upload_chunk_size_val : any = $limelight_max_file_upload_chunk_size.val();
+			this.maxFileUploadChunkSize = parseInt( limelight_max_file_upload_chunk_size_val, 10 );
+			if ( isNaN( this.maxFileUploadChunkSize ) ) {
+				throw Error( "Unable to parse #limelight_max_file_upload_chunk_size: " + limelight_max_file_upload_chunk_size_val );
+			}
+
 			//  Get max Limelight XML upload size
 			let $limelight_xml_file_max_file_upload_size = $("#limelight_xml_file_max_file_upload_size");
 			if ( $limelight_xml_file_max_file_upload_size.length === 0 ) {
@@ -844,51 +862,194 @@ export class ProjectPage_UploadData_NewUploadMain {
 		}
 		this.progressBarClear( { $containingBlock : $containingBlock } );
 
-		this._uploadFile_ActualSend({
+
+
+
+		const start = 0;
+		const step = this.maxFileUploadChunkSize;   // size of one chunk.  this.maxFileUploadChunkSize  from server max size
+		const totalFileSize = fileToUpload.size;  // total size of file
+
+
+
+		let processedBytes_OfFile = 0;
+
+		const reader = new FileReader();
+		const blob = fileToUpload.slice(start, step); //a single chunk in starting of step size
+		reader.readAsBinaryString(blob);   // reading that chunk. when it read it, onload will be invoked
+
+
+		reader.onload = (e) => {
+
+			const contentToSend = reader.result
+
+			const promise_uploadFile_Send_A_Block_HandleResponse_HighLevel =
+				this._uploadFile_Send_A_Block_HandleResponse_HighLevel(
+					{
+						projectPage_UploadData_NewSingleFileEntry,
+						isLimelightXMLFile,
+						$containingBlock,
+						filename,
+						uploadKey,
+						fileIndex,
+						fileType,
+						uploadFileSize: totalFileSize,
+						fileChunk_StartByte: processedBytes_OfFile,
+						contentToSend
+					}
+				);
+
+			promise_uploadFile_Send_A_Block_HandleResponse_HighLevel.catch( reason => {
+
+				$("#import_limelight_xml_file_close_button").show();
+				$("#import_limelight_xml_file_cancel_button").hide();
+			});
+
+			promise_uploadFile_Send_A_Block_HandleResponse_HighLevel.then( result => {
+
+				processedBytes_OfFile += step;
+
+				if ( processedBytes_OfFile <= totalFileSize ) {
+
+					// file is NOT completely uploaded
+
+					let progressPercent = Math.ceil(( processedBytes_OfFile / totalFileSize) * 100 );
+					progressPercent = Math.min( progressPercent, 95 );  // Show max of 95
+					this.progressBarUpdate( { progressPercent : progressPercent, $containingBlock : $containingBlock }  );
+
+					const blob = fileToUpload.slice(processedBytes_OfFile, processedBytes_OfFile + step);  // getting next chunk
+					reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
+
+				} else {
+
+					// file IS completely uploaded
+
+
+					$("#import_limelight_xml_file_close_button").show();
+					$("#import_limelight_xml_file_cancel_button").hide();
+
+					this.successfulFileUpload(
+						{
+							isLimelightXMLFile: isLimelightXMLFile,
+							projectPage_UploadData_NewSingleFileEntry: projectPage_UploadData_NewSingleFileEntry,
+							$containingBlock: $containingBlock
+						});
+				}
+
+			})
+
+		}
+
+	}
+
+
+	/**
+	 *
+	 */
+	private async _uploadFile_Send_A_Block_HandleResponse_HighLevel(
+		{
 			projectPage_UploadData_NewSingleFileEntry,
 			isLimelightXMLFile,
 			$containingBlock,
 			filename,
 			uploadKey,
 			fileIndex,
-			fileType
-		})
+			fileType,
+			uploadFileSize,
+			fileChunk_StartByte,
+			contentToSend
+		}
+	) {
+
+		const retryCount_NetworkError_RetryCountMax = 4;
+		let retryCount_NetworkError = 0;
+
+		while (true) {  // Exit using 'return' inside loop
+			try {
+				const midLevel_Response = await this._uploadFile_Send_A_Block_HandleResponse_MidLevel(
+					{
+						projectPage_UploadData_NewSingleFileEntry,
+						isLimelightXMLFile,
+						$containingBlock,
+						filename,
+						uploadKey,
+						fileIndex,
+						fileType,
+						uploadFileSize,
+						fileChunk_StartByte,
+						contentToSend
+					})
+
+				return midLevel_Response;
+
+			} catch (error) {
+
+				if ( error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR ) {
+
+					retryCount_NetworkError++;
+
+					if ( retryCount_NetworkError > retryCount_NetworkError_RetryCountMax ) {
+
+						let errorMessage = "File NOT Uploaded.  Error connecting to server";
+						this.failedFileUpload(
+							{
+								isLimelightXMLFile: isLimelightXMLFile,
+								errorMessage: errorMessage,
+								filename: filename,
+								$containingBlock: $containingBlock
+							});
+
+						throw error;
+					}
+				} else {
+
+					throw error;
+				}
+			}
+		}
+
 	}
 
 	/**
 	 *
 	 */
-	private _uploadFile_ActualSend({
-		  projectPage_UploadData_NewSingleFileEntry,
-		  isLimelightXMLFile,
-		  $containingBlock,
-		  filename,
-		  uploadKey,
-		  fileIndex,
-		  fileType
-	  }) {
+	private _uploadFile_Send_A_Block_HandleResponse_MidLevel(
+		{
+			projectPage_UploadData_NewSingleFileEntry,
+			isLimelightXMLFile,
+			$containingBlock,
+			filename,
+			uploadKey,
+			fileIndex,
+			fileType,
+			uploadFileSize,
+			fileChunk_StartByte,
+			contentToSend
+		}
+	) {
 
-		let objectThis = this;
-
-		const fileToUpload = projectPage_UploadData_NewSingleFileEntry.getFile();
-
-		//  Create the XMLHttpRequest to send the file
-		let xmlHttpRequest = new XMLHttpRequest();
-		
-		projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( xmlHttpRequest );
-		
-		//  Add the callback functions to xmlHttpRequest
-		
-		xmlHttpRequest.onload = function() {
+		return new Promise<any> ( ( resolve, reject ) => {
 			try {
-				let currentXHRinOnLoad = xmlHttpRequest;
-				projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( undefined ); ///  clear reference to XMLHttpRequest
-				$("#import_limelight_xml_file_close_button").show();
-				$("#import_limelight_xml_file_cancel_button").hide();
-				let xhrStatus = currentXHRinOnLoad.status;
-				let xhrResponse = currentXHRinOnLoad.response;
-				let xhrResponseText = currentXHRinOnLoad.responseText;
-				if (xhrStatus === 200) {
+
+				const promise_send =
+					this._uploadFile_ActualSend_Block({
+						projectPage_UploadData_NewSingleFileEntry,
+						isLimelightXMLFile,
+						$containingBlock,
+						filename,
+						uploadKey,
+						fileIndex,
+						fileType,
+						uploadFileSize,
+						fileChunk_StartByte,
+						contentToSend
+					});
+
+				promise_send.catch( reason => {
+
+					reject( reason )
+				})
+
+				promise_send.then( xhrResponse => {
 					let resp = null;
 					try {
 						resp = JSON.parse(xhrResponse);
@@ -898,245 +1059,310 @@ export class ProjectPage_UploadData_NewUploadMain {
 //						data: 'Unknown error occurred: [' + xhrResponseText + ']'
 //						}
 						let errorMessage = "File Uploaded but failed to get information from server response.";
-						objectThis.failedFileUpload( 
-								{ isLimelightXMLFile : isLimelightXMLFile,
-									errorMessage :  errorMessage,
-									filename : filename,
-									$containingBlock : $containingBlock } );
+						this.failedFileUpload(
+							{ isLimelightXMLFile : isLimelightXMLFile,
+								errorMessage :  errorMessage,
+								filename : filename,
+								$containingBlock : $containingBlock } );
 					}
 					if ( resp !== null ) {
 						if ( resp.statusSuccess ) {
-							objectThis.successfulFileUpload( 
-									{
-										isLimelightXMLFile : isLimelightXMLFile,
-										fileUploadResponse : resp,
-										projectPage_UploadData_NewSingleFileEntry : projectPage_UploadData_NewSingleFileEntry,
-										$containingBlock : $containingBlock } );
+
+							resolve( resp )
+
 						} else {
 							let errorMessage = "File NOT Uploaded, service returned failed status";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
+							this.failedFileUpload(
+								{ isLimelightXMLFile : isLimelightXMLFile,
+									errorMessage :  errorMessage,
+									filename : filename,
+									$containingBlock : $containingBlock } );
+
+							reject()
 						}
 					}
-				} else if (xhrStatus === 400) {
-					let resp = null;
+				});
+
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+	}
+
+	/**
+	 *
+	 */
+	private _uploadFile_ActualSend_Block(
+		{
+			projectPage_UploadData_NewSingleFileEntry,
+			isLimelightXMLFile,
+			$containingBlock,
+			filename,
+			uploadKey,
+			fileIndex,
+			fileType,
+			uploadFileSize,
+			fileChunk_StartByte,
+			contentToSend
+
+		}) {
+
+		let objectThis = this;
+
+		return new Promise<any> ( ( resolve, reject ) => {
+			try {
+
+				//  Create the XMLHttpRequest to send the file
+				let xmlHttpRequest = new XMLHttpRequest();
+
+				projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( xmlHttpRequest );
+
+				//  Add the callback functions to xmlHttpRequest
+
+				xmlHttpRequest.onload = function() {
 					try {
-						resp = JSON.parse(xhrResponse);
-					} catch(e) {
-						let errorMessage = 'Unknown error occurred: [' + xhrResponseText + ']';
-						objectThis.failedFileUpload( 
+						let currentXHRinOnLoad = xmlHttpRequest;
+						projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( undefined ); ///  clear reference to XMLHttpRequest
+						let xhrStatus = currentXHRinOnLoad.status;
+						let xhrResponse = currentXHRinOnLoad.response;
+						let xhrResponseText = currentXHRinOnLoad.responseText;
+						if (xhrStatus === 200) {
+
+							resolve( xhrResponse );  //  Return response to promise
+
+							return; // EARLY RETURN
+
+						} else if (xhrStatus === 400) {
+							let resp = null;
+							try {
+								resp = JSON.parse(xhrResponse);
+							} catch(e) {
+								let errorMessage = 'Unknown error occurred: [' + xhrResponseText + ']';
+								objectThis.failedFileUpload(
+									{ isLimelightXMLFile : isLimelightXMLFile,
+										errorMessage :  errorMessage,
+										filename : filename,
+										$containingBlock : $containingBlock } );
+							}
+							if ( resp !== null ) {
+								if ( resp.fileSizeLimitExceeded ) {
+									let errorMessage = "File NOT Uploaded, file too large.  Max file size in bytes: " + resp.maxSizeFormatted;
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else if ( resp.ProjectLocked ) {
+									let errorMessage = "The project is locked so no imports are allowed.  Please reload the web page.";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else if ( resp.filenameInFormNotMatchFilenameInQueryString ) {
+									let errorMessage = "System Error";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else if ( resp.noUploadedFile ) {
+									let errorMessage = "System Error";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else if ( resp.limelightXMLFileFailsInitialParse ) {
+									let errorMessage = "The server failed to parse the Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else if ( resp.limelightXMLFilerootXMLNodeIncorrect ) {
+									let errorMessage = "The server failed to parse the Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else if ( resp.submittedScanFileNotAllowed ) {
+									let errorMessage = "Scan files are no longer allowed.  Please refresh the page.";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								} else {
+									let errorMessage = "File NOT Uploaded, input data error, status 400";
+									objectThis.failedFileUpload(
+										{ isLimelightXMLFile : isLimelightXMLFile,
+											errorMessage :  errorMessage,
+											filename : filename,
+											$containingBlock : $containingBlock } );
+								}
+							}
+							objectThis.progressBarClear( { $containingBlock : $containingBlock } );
+						} else if (xhrStatus === 401 || xhrStatus === 403) {
+							//  No Session or not Authorized
+							let handledResponse = handleRawAJAXError( currentXHRinOnLoad );
+							if ( handledResponse ) {
+
+								//  Probably reloading the page
+
+								reject()
+
+								return;  //  EARLY RETURN;
+
+							}
+							objectThis.progressBarClear( { $containingBlock : $containingBlock } );
+							if (xhrStatus === 401 ) {
+								let errorMessage = "File NOT Uploaded, server error, status 401";
+								objectThis.failedFileUpload(
+									{ isLimelightXMLFile : isLimelightXMLFile,
+										errorMessage :  errorMessage,
+										filename : filename,
+										$containingBlock : $containingBlock } );
+							} else {
+								let errorMessage = "File NOT Uploaded, server error, status 403";
+								objectThis.failedFileUpload(
+									{ isLimelightXMLFile : isLimelightXMLFile,
+										errorMessage :  errorMessage,
+										filename : filename,
+										$containingBlock : $containingBlock } );
+							}
+						} else if (xhrStatus === 500) {
+//					let resp = null;
+//					try {
+//					resp = JSON.parse(xhrResponse);
+//					} catch(e){
+//					resp = {
+//					statusSuccess: false,
+//					data: 'Unknown error occurred: [' + xhrResponseText + ']'
+//					}
+//					}
+							let errorMessage = "File NOT Uploaded, server error, status 500";
+							objectThis.failedFileUpload(
 								{ isLimelightXMLFile : isLimelightXMLFile,
 									errorMessage :  errorMessage,
 									filename : filename,
 									$containingBlock : $containingBlock } );
-					}
-					if ( resp !== null ) {
-						if ( resp.fileSizeLimitExceeded ) {
-							let errorMessage = "File NOT Uploaded, file too large.  Max file size in bytes: " + resp.maxSizeFormatted;
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
-						} else if ( resp.ProjectLocked ) {
-							let errorMessage = "The project is locked so no imports are allowed.  Please reload the web page.";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
-						} else if ( resp.filenameInFormNotMatchFilenameInQueryString ) {
-							let errorMessage = "System Error";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
-						} else if ( resp.noUploadedFile ) {
-							let errorMessage = "System Error";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
-						} else if ( resp.limelightXMLFileFailsInitialParse ) {
-							let errorMessage = "The server failed to parse the Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
-						} else if ( resp.limelightXMLFilerootXMLNodeIncorrect ) {
-							let errorMessage = "The server failed to parse the Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
-						} else if ( resp.submittedScanFileNotAllowed ) {
-							let errorMessage = "Scan files are no longer allowed.  Please refresh the page.";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
+						} else if (xhrStatus === 404) {
+//					let resp = null;
+//					try {
+//					resp = JSON.parse(xhrResponse);
+//					} catch(e){
+//					resp = {
+//					statusSuccess: false,
+//					data: 'Unknown error occurred: [' + xhrResponseText + ']'
+//					}
+//					}
+							let errorMessage = "File NOT Uploaded, Service not found on server. status 404";
+							objectThis.failedFileUpload(
+								{ isLimelightXMLFile : isLimelightXMLFile,
+									errorMessage :  errorMessage,
+									filename : filename,
+									$containingBlock : $containingBlock } );
 						} else {
-							let errorMessage = "File NOT Uploaded, input data error, status 400";
-							objectThis.failedFileUpload( 
-									{ isLimelightXMLFile : isLimelightXMLFile,
-										errorMessage :  errorMessage,
-										filename : filename,
-										$containingBlock : $containingBlock } );
+							let errorMessage = "File upload failed. xhrStatus: " + xhrStatus;
+							objectThis.failedFileUpload(
+								{ isLimelightXMLFile : isLimelightXMLFile,
+									errorMessage :  errorMessage,
+									filename : filename,
+									$containingBlock : $containingBlock } );
 						}
+
+
+						reject();
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
 					}
-					objectThis.progressBarClear( { $containingBlock : $containingBlock } );
-				} else if (xhrStatus === 401 || xhrStatus === 403) {
-					//  No Session or not Authorized
-					let handledResponse = handleRawAJAXError( currentXHRinOnLoad );
-					if ( handledResponse ) {
-						return;
-					}
-					objectThis.progressBarClear( { $containingBlock : $containingBlock } );
-					if (xhrStatus === 401 ) {
-						let errorMessage = "File NOT Uploaded, server error, status 401";
-						objectThis.failedFileUpload( 
-								{ isLimelightXMLFile : isLimelightXMLFile,
-									errorMessage :  errorMessage,
-									filename : filename,
-									$containingBlock : $containingBlock } );
-					} else {
-						let errorMessage = "File NOT Uploaded, server error, status 403";
-						objectThis.failedFileUpload( 
-								{ isLimelightXMLFile : isLimelightXMLFile,
-									errorMessage :  errorMessage,
-									filename : filename,
-									$containingBlock : $containingBlock } );
-					}
-				} else if (xhrStatus === 500) {
-//					let resp = null;
-//					try {
-//					resp = JSON.parse(xhrResponse);
-//					} catch(e){
-//					resp = {
-//					statusSuccess: false,
-//					data: 'Unknown error occurred: [' + xhrResponseText + ']'
-//					}
-//					}
-					let errorMessage = "File NOT Uploaded, server error, status 500";
-					objectThis.failedFileUpload( 
-							{ isLimelightXMLFile : isLimelightXMLFile,
-								errorMessage :  errorMessage,
-								filename : filename,
-								$containingBlock : $containingBlock } );
-				} else if (xhrStatus === 404) {
-//					let resp = null;
-//					try {
-//					resp = JSON.parse(xhrResponse);
-//					} catch(e){
-//					resp = {
-//					statusSuccess: false,
-//					data: 'Unknown error occurred: [' + xhrResponseText + ']'
-//					}
-//					}
-					let errorMessage = "File NOT Uploaded, Service not found on server. status 404";
-					objectThis.failedFileUpload( 
-							{ isLimelightXMLFile : isLimelightXMLFile,
-								errorMessage :  errorMessage,
-								filename : filename,
-								$containingBlock : $containingBlock } );
-				} else {
-					let errorMessage = "File upload failed. xhrStatus: " + xhrStatus;
-					objectThis.failedFileUpload( 
-							{ isLimelightXMLFile : isLimelightXMLFile,
-								errorMessage :  errorMessage,
-								filename : filename,
-								$containingBlock : $containingBlock } );
 				}
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		}
-		
-		xmlHttpRequest.upload.addEventListener('error', function(event){
-			try {
-				projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( undefined ); ///  clear reference to XMLHttpRequest
+
+				xmlHttpRequest.upload.addEventListener('error', function(event){
+					try {
+						projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( undefined ); ///  clear reference to XMLHttpRequest
 //				let currentXHRinOnLoad = xmlHttpRequest;
-				let errorMessage = "File NOT Uploaded.  Error connecting to server";
-				objectThis.failedFileUpload( 
-						{ isLimelightXMLFile : isLimelightXMLFile,
-							errorMessage :  errorMessage,
-							filename : filename,
-							$containingBlock : $containingBlock } );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		}, false);
-		
-		xmlHttpRequest.upload.addEventListener('abort', function(event){
+
+						reject( LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR );
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				}, false);
+
+				xmlHttpRequest.upload.addEventListener('abort', function(event){
 //			let currentXHRinOnLoad = xmlHttpRequest;
-			//  This is called when the "Abort" is called on the xmlHttpRequest object
-			projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( undefined ); ///  clear reference to XMLHttpRequest
+					//  This is called when the "Abort" is called on the xmlHttpRequest object
+					projectPage_UploadData_NewSingleFileEntry.setXMLHttpRequest( undefined ); ///  clear reference to XMLHttpRequest
 //			alert("Upload aborted");
-		}, false);
-		
-		xmlHttpRequest.upload.addEventListener('progress', function(event){
-			try {
-				let progressPercent = Math.ceil(( event.loaded / event.total) * 100 );
-				progressPercent = Math.min( progressPercent, 95 );  // Show max of 95
-				objectThis.progressBarUpdate( { progressPercent : progressPercent, $containingBlock : $containingBlock }  );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				}, false);
+
+				// xmlHttpRequest.upload.addEventListener('progress', function(event){
+				// 	try {
+				// 		let progressPercent = Math.ceil(( event.loaded / event.total) * 100 );
+				// 		progressPercent = Math.min( progressPercent, 95 );  // Show max of 95
+				// 		objectThis.progressBarUpdate( { progressPercent : progressPercent, $containingBlock : $containingBlock }  );
+				// 	} catch( e ) {
+				// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				// 		throw e;
+				// 	}
+				// }, false);
+
+				const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
+
+				let postURL = "d/rws/for-page/project-upload-data-upload-file";
+
+				xmlHttpRequest.open('POST', postURL);
+
+				xmlHttpRequest.setRequestHeader( "Content-Type", "application/octet-stream" );
+
+				//  Send values in Request Header
+
+				xmlHttpRequest.setRequestHeader( LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, webserviceSyncTrackingCode );
+
+				//	   parameters added to the Request Header are available when the request is first received at the server.
+
+				let uploadFileHeaderParams = {
+					projectIdentifier : this._projectIdentifierFromURL, // string
+					uploadKey : uploadKey,
+					fileIndex : fileIndex,
+					fileType : fileType,
+					filename : filename,
+					uploadFileSize,
+					fileChunk_StartByte
+				}
+				let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
+
+				xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, uploadFileHeaderParamsJSON );
+
+				//  ES Lint reports useless try/catch so remove
+				// try {
+				//  Send File object from page <input type="file"> element instead of creating a Form and appending a File to it
+
+				xmlHttpRequest.send( contentToSend );
+
+				// } catch( e ) {
+				// 	throw e;
+				// }
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException: e
+				});
 				throw e;
 			}
-		}, false);
-
-		const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
-		
-		let postURL = "d/rws/for-page/project-upload-data-upload-file";
-		
-		xmlHttpRequest.open('POST', postURL);
-		
-		xmlHttpRequest.setRequestHeader( "Content-Type", "application/octet-stream" );
-		
-		//  Send values in Request Header
-
-		xmlHttpRequest.setRequestHeader( LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, webserviceSyncTrackingCode );
-		
-		//	   parameters added to the Request Header are available when the request is first received at the server.
-		
-		let uploadFileHeaderParams = {
-				projectIdentifier : this._projectIdentifierFromURL, // string
-				uploadKey : uploadKey,
-				fileIndex : fileIndex,
-				fileType : fileType,
-				filename : filename
-		}
-		let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
-		
-		xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, uploadFileHeaderParamsJSON );
-		
-		//  ES Lint reports useless try/catch so remove
-		// try {
-			//  Send File object from page <input type="file"> element instead of creating a Form and appending a File to it
-			
-			xmlHttpRequest.send( fileToUpload );
-			
-		// } catch( e ) {
-		// 	throw e;
-		// }
-
+		});
 	}
 	
 	/**
 	 * 
 	 */
 	successfulFileUpload( params ) {
-//		let fileUploadResponse = params.fileUploadResponse;
 		let isLimelightXMLFile = params.isLimelightXMLFile;
 		let projectPage_UploadData_NewSingleFileEntry = params.projectPage_UploadData_NewSingleFileEntry;
 		let $containingBlock = params.$containingBlock;
