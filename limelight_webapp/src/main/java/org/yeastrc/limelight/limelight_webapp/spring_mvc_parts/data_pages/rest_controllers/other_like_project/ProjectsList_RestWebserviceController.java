@@ -156,6 +156,8 @@ public class ProjectsList_RestWebserviceController {
     				if ( ! projectItemFromDB.isProjectLocked() && projectItemFromDB.getUserAccessLevel() <= AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER ) {
     					projectItem.canDelete = true;
     				}
+    				projectItem.projectPublic = projectItemFromDB.isProjectPublic();
+    				projectItem.projectPublicAccessEnabled = projectItemFromDB.isProjectPublicAccessEnabled();
     				projectList.add( projectItem );
     			}
     		}
