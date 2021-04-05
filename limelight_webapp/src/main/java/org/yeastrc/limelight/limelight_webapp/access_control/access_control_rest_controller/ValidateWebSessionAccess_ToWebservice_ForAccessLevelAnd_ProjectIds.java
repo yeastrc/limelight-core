@@ -23,6 +23,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -372,10 +373,50 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds 
 			
 			return result; //  EARLY EXIT
 		}
+
+		//  Signed in user or at least a user session
+
+		if ( ! userSession.isActualUser() ) {
+
+			//  NOT a signed in user so test public access code
+
+			if ( StringUtils.isEmpty( userSession.getPublicAccessCode() ) || userSession.getProjectId_ForPublicAccessCode() == null ) {
+
+				//  No Public Access code in session so NO access
+
+				throw new Limelight_WS_AuthError_Forbidden_Exception(); //  EARLY EXIT
+
+			} else {
+
+				if ( userSession.getProjectId_ForPublicAccessCode().intValue() != projectId ) {
+
+					//  Project Id for Public Access code in session NOT match Project Id for Request so NO access
+
+					throw new Limelight_WS_AuthError_Forbidden_Exception(); //  EARLY EXIT
+				}
+
+				WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+						WebSessionAuthAccessLevelBuilder.getBuilder()
+						.set_authAccessLevel( AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY )
+						.set_authAaccessLevelForProjectIdsIfNotLocked( AuthAccessLevelConstants.ACCESS_LEVEL__PUBLIC_ACCESS_CODE_READ_ONLY__PUBLIC_PROJECT_READ_ONLY )
+						.build();
+
+				result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+				
+				return result; //  EARLY EXIT
+			}
+		}
 		
 		////////////////////////////
 		
 		//  Signed in user or at least a user session
+		
+		if ( userSession.getUserId() == null ) {
+			
+			//  NO User Id
+
+			throw new Limelight_WS_AuthError_Forbidden_Exception(); //  EARLY EXIT
+		}
 
 		//  Start at no access level
 		int authAccessLevel = AuthAccessLevelConstants.ACCESS_LEVEL_NONE;
