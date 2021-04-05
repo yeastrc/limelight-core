@@ -36,7 +36,7 @@ If you do not install Windows Terminal, you can access your new Ubuntu 20.04 LTS
 a command prompt (Press the Win + R keys on your keyboard, then type cmd, and press Enter on your keyboard or click/tap OK).
 Enter ``bash`` into the command prompt and hit enter.
 
-Once you have completed the installation of WSL 2, please view the :ref:`Ubuntu` section below to install Docker.
+Once you have completed the installation of WSL 2, please view the :ref:`Ubuntu 20.04` section below to install Docker.
 
 Apple macOS
 ====================
@@ -46,19 +46,37 @@ Once installed and running, Docker may be accessed by opening a new Terminal and
 Linux
 ==============
 Below are instructions and links to instructions for installing Docker on the most popular Linux distributions. If
-you installed WSL 2 on Windows per the instructions above, follow the **Ubuntu** instructions.
+you installed WSL 2 on Windows per the instructions above, follow the **Ubuntu 20.04** instructions.
 
-Ubuntu
----------
-The simplest way to install Docker on Ubuntu is opening a terminal and entering:
+Ubuntu 20.04
+---------------
+Copy and paste each of the following commands, one by one, into the Linux terminal:
 
-.. code-block:: bash
+    .. code-block:: bash
 
-   sudo apt update -y
-   sudo apt install docker.io -y
+       sudo apt update -y
+       sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+       sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+       sudo apt update -y
+       apt-cache policy docker-ce
+       sudo apt install docker-ce -y
 
-However, you will not always receive updates to the Docker engine when they are released. To ensure updates
-to Docker always immediately available, `follow these alternative instructions <https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04>`_.
+    .. note::
+       If you are using **Windows**, the Docker engine may not start automatically. To test this type:
+
+       .. code-block:: bash
+
+          sudo docker image ls
+
+       If you see ``Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`` docker is not
+       running. To start  docker type:
+
+       .. code-block:: bash
+
+          sudo service docker start
+
+       Windows users will need to do this every time they restart their computer and open a terminal to start Docker.
 
 CentOS
 ------
@@ -74,5 +92,5 @@ Fedora
 
 Other Linux Distributions
 --------------------------
-`Please see the offical Docker install guides <https://docs.docker.com/engine/install/>`_ for more information
+`Please see the official Docker install guides <https://docs.docker.com/engine/install/>`_ for more information
 about installing Docker on other Linux distributions.
