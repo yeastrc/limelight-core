@@ -783,8 +783,23 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 					limelightUploadTempDataFileContentsAndAssocDataList,
 					dirForImportTrackingId );
 		}
-		//  Remove the subdir the uploaded file(s) were in
-		deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+		
+		try {
+			//  Remove the subdir the uploaded file(s) were in
+			deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+		} catch ( Exception e ) {
+			String directoryCanonicalPath = "";
+			try {
+				directoryCanonicalPath = ", tempSubdir.getCanonicalPath: " + tempSubdir.getCanonicalPath();
+			} catch ( Exception e2 ) {
+				
+				// Swallow Exception since NOT mission critical
+			}
+			
+			String msg = "Failed to delete directory: " + tempSubdir.getAbsolutePath() + directoryCanonicalPath;
+			log.error( msg );
+			// Swallow Exception since NOT mission critical
+		}
 		
 		//  Save to the DB
 		FileImportTrackingDTO fileImportTrackingDTO = new FileImportTrackingDTO();

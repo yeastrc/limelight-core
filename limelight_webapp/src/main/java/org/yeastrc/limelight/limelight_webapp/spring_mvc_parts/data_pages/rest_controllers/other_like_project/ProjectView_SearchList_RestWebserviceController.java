@@ -18,10 +18,13 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 
+import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,9 +39,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchIdCodeDTO;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchIdCodeDAO.LogDuplicateSQLException;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchIdCodeDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -58,12 +65,18 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 public class ProjectView_SearchList_RestWebserviceController {
   
 	private static final Logger log = LoggerFactory.getLogger( ProjectView_SearchList_RestWebserviceController.class );
+	
+	private static final int RETRY_COUNT_MAX_ON_DUPLICATE_PROJECT_SEARCH_ID_CODE = 30;
 
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER;
+	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
 	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
+	
+	@Autowired ProjectSearchIdCodeDAO_IF projectSearchIdCodeDAO;
 	
 	@Autowired
 	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
@@ -99,7 +112,7 @@ public class ProjectView_SearchList_RestWebserviceController {
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER
+					+ CONTROLLER_PATH
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -288,17 +301,30 @@ public class ProjectView_SearchList_RestWebserviceController {
 			boolean requestFromActualUser
 			 ) throws SQLException {
 		
-		List<WebserviceResult_SingleSearch> searchList;
-		List<Integer> projectSearchIds = new ArrayList<>( searchesFromDB_List.size() );
+		
+		List<Integer> projectSearchIdList = new ArrayList<>( searchesFromDB_List.size() );
 		for ( SearchItemMinimal searchItemMinimal : searchesFromDB_List ) {
-			projectSearchIds.add( searchItemMinimal.getProjectSearchId() );
+			projectSearchIdList.add( searchItemMinimal.getProjectSearchId() );
 		}
 		
-		searchList = new ArrayList<>( searchesFromDB_List.size() );
+		List<ProjectSearchIdCodeDTO> projectSearchIdCodeDTOList = projectSearchIdCodeDAO.getByProjectSearchIdList(projectSearchIdList);
+		Map<Integer, ProjectSearchIdCodeDTO> projectSearchIdCodeDTOMap_Key_projectSearchId = new HashMap<>( projectSearchIdCodeDTOList.size() );
+		for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTOList ) {
+			projectSearchIdCodeDTOMap_Key_projectSearchId.put( projectSearchIdCodeDTO.getProjectSearchId(), projectSearchIdCodeDTO );
+		}
+		
+		
+		List<WebserviceResult_SingleSearch> searchList = new ArrayList<>( searchesFromDB_List.size() );
 		for ( SearchItemMinimal searchListDBItem : searchesFromDB_List ) {
+			
+			ProjectSearchIdCodeDTO projectSearchIdCodeDTO = projectSearchIdCodeDTOMap_Key_projectSearchId.get( searchListDBItem.getProjectSearchId() );
+			if ( projectSearchIdCodeDTO == null ) {
+				projectSearchIdCodeDTO = _create_Insert_projectSearchIdCodeDTO( searchListDBItem );
+			}
 
 			WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
 			resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
+			resultItem.projectSearchIdCode = projectSearchIdCodeDTO.getProjectSearchIdCode();
 			resultItem.searchId = searchListDBItem.getSearchId();
 			resultItem.displayOrder = searchListDBItem.getDisplayOrder();
 			resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchListDBItem.getName(), searchListDBItem.getSearchId() );
@@ -310,6 +336,125 @@ public class ProjectView_SearchList_RestWebserviceController {
 		}
 		
 		return searchList;
+	}
+	
+	/**
+	 * @param projectSearchId
+	 * @return
+	 * @throws SQLException 
+	 */
+	private ProjectSearchIdCodeDTO _create_Insert_projectSearchIdCodeDTO( SearchItemMinimal searchListDBItem ) throws SQLException {
+		
+		int projectSearchId = searchListDBItem.getProjectSearchId();
+		
+		ProjectSearchIdCodeDTO projectSearchIdCodeDTO = new ProjectSearchIdCodeDTO();
+		projectSearchIdCodeDTO.setProjectSearchId( searchListDBItem.getProjectSearchId() );
+		projectSearchIdCodeDTO.setSearchId( searchListDBItem.getSearchId() );
+		projectSearchIdCodeDTO.setProjectId_AtTimeOfInsert( searchListDBItem.getProjectId() );
+		
+
+		boolean saveSuccessful = false;
+		int saveAttemptCounter = 0;
+		
+		String projectSearchIdCode = null;
+
+		//  Loop to do retries since may create shortenedUrlKey that collides with existing records
+		while ( ( ! saveSuccessful ) ) {
+			saveAttemptCounter++;
+			try {
+				//  First try a read using projectSearchId since may have been inserted by a different thread in webapp from different request
+				
+				{
+					String projectSearchIdCode_FromGet = projectSearchIdCodeDAO.getByProjectSearchId( projectSearchId );
+					if ( projectSearchIdCode_FromGet != null ) {
+						
+						//  Found entry for projectSearchId so use it
+						
+						projectSearchIdCodeDTO.setProjectSearchIdCode( projectSearchIdCode_FromGet );
+						
+						return projectSearchIdCodeDTO; // EARLY RETURN
+					}
+				}
+				
+				//  Create and Attempt Save
+				
+				projectSearchIdCode = getProjectSearchIdCode();
+				projectSearchIdCodeDTO.setProjectSearchIdCode( projectSearchIdCode );
+				//  Only log insert Duplicate error in DAO if last attempt
+				LogDuplicateSQLException logDuplicateSQLException = LogDuplicateSQLException.FALSE;
+				if ( saveAttemptCounter >=  RETRY_COUNT_MAX_ON_DUPLICATE_PROJECT_SEARCH_ID_CODE ) {
+					logDuplicateSQLException = LogDuplicateSQLException.TRUE;
+				}
+
+				projectSearchIdCodeDAO.save(projectSearchIdCodeDTO, logDuplicateSQLException);
+				
+				saveSuccessful = true;
+
+			} catch ( org.springframework.dao.DuplicateKeyException e ) {
+
+				if ( saveAttemptCounter >=  RETRY_COUNT_MAX_ON_DUPLICATE_PROJECT_SEARCH_ID_CODE ) {
+					String msg = "Exceeded max number of attempts to insert and get Duplicate Key error."
+							+ "  Max # = " + RETRY_COUNT_MAX_ON_DUPLICATE_PROJECT_SEARCH_ID_CODE
+							+ ", current projectSearchIdCode: " + projectSearchIdCode;
+					log.error( msg, e );
+					throw new LimelightInternalErrorException( msg );
+				}
+			}
+		}
+		
+		return projectSearchIdCodeDTO; //  Also a return inside method after projectSearchIdCodeDAO.getByProjectSearchId
+		
+	}
+
+	/**
+	 * @return
+	 */
+	private String getProjectSearchIdCode() {
+
+		StringBuilder randomStringSB = new StringBuilder( 20 );
+
+		final int RETURN_LENGTH = 12;
+		
+		int insertedCharacterCount = 0;
+		
+		for ( int j = 0; j < 200; j++ ) { // for loop just provides an upper bound
+			double tosKeyMultiplier = Math.random();
+			if ( tosKeyMultiplier < 0.5 ) {
+				tosKeyMultiplier += 0.5;
+			}
+			long tosKeyLong = (long) ( System.currentTimeMillis() * tosKeyMultiplier );
+			ByteBuffer tosKeyBuffer = ByteBuffer.allocate(Long.BYTES);
+			tosKeyBuffer.putLong( tosKeyLong );
+			
+			String encodedLong = Base64.getEncoder().encodeToString( tosKeyBuffer.array() );
+			// Drop first 6 characters and last character
+			String encodedLongExtract = encodedLong.substring( 6, encodedLong.length() - 1 );
+			
+			char[] encodedLongArray = encodedLongExtract.toCharArray();
+			
+			for ( char entry : encodedLongArray ) {
+				if ( ( entry >= 'a' && entry <= 'v' )
+						|| ( entry >= 'A' && entry <= 'V' ) ) {
+					//  Only take a-v, A-v.
+					randomStringSB.append( entry );
+					insertedCharacterCount++;
+					if ( insertedCharacterCount >= RETURN_LENGTH ) {
+						break;
+					}
+				}
+			}
+			if ( insertedCharacterCount >= RETURN_LENGTH ) {
+				break;
+			}
+		}
+		if ( insertedCharacterCount < RETURN_LENGTH ) {
+			throw new LimelightInternalErrorException("Not find enough letters and numbers for randomString. insertedCharacterCount: " + insertedCharacterCount );
+		}
+		String randomString = randomStringSB.toString();
+		
+		randomString = randomString.toUpperCase();  //  Only Upper Case Letters
+
+		return randomString;
 	}
     
     ///////////////////////////
@@ -415,6 +560,7 @@ public class ProjectView_SearchList_RestWebserviceController {
     public static class WebserviceResult_SingleSearch {
     	
     	private int projectSearchId;
+    	private String projectSearchIdCode;
     	private int searchId;
     	private int displayOrder; // zero if no display order applied
     	private String name;
@@ -456,6 +602,9 @@ public class ProjectView_SearchList_RestWebserviceController {
 		}
 		public void setDisplayOrder(int displayOrder) {
 			this.displayOrder = displayOrder;
+		}
+		public String getProjectSearchIdCode() {
+			return projectSearchIdCode;
 		}
     	
     }

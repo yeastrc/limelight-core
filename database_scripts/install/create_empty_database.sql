@@ -2543,15 +2543,12 @@ CREATE INDEX prj_lvl_dfltfltr_ann_ctffs_as_str_prev_fk_idx ON project_level_defa
 -- Table project_search_id_code_tbl
 -- -----------------------------------------------------
 CREATE TABLE  project_search_id_code_tbl (
-  project_search_id INT(10) UNSIGNED NOT NULL,
+  project_search_id INT(10) UNSIGNED NOT NULL COMMENT 'Not Foreign Key',
   project_search_id_code VARCHAR(20) CHARACTER SET 'latin1' NOT NULL,
-  created_date_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (project_search_id),
-  CONSTRAINT project_search_id_code_project_search_fk
-    FOREIGN KEY (project_search_id)
-    REFERENCES project_search_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  project_id__at_time_of_insert INT UNSIGNED NOT NULL,
+  created_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (project_search_id))
 ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX project_search_id_code_UNIQUE ON project_search_id_code_tbl (project_search_id_code ASC);

@@ -50,7 +50,7 @@ const limelight__header_main_pages__LoggedInUser_PopulateProjects = function () 
             return; // EARLY RETURN
         }
 
-        const promise_fetch = fetch('d/pgf/project-list-for-main-page-header-drop-down')
+        const promise_fetch = window.fetch('d/pgf/project-list-for-main-page-header-drop-down')
 
         promise_fetch.catch( reason => {
             console.warn("fetch reject. reason: ", reason)

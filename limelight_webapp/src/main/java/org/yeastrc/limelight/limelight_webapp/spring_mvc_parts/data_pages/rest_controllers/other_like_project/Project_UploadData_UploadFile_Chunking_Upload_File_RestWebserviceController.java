@@ -71,12 +71,14 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 
 /**
  * For Upload Data, Upload File (Receive file from web app or from submitter program)
+ * 
+ * Accepts a File Chunk (Web App only for now)
  *
  */
 @RestController
-public class Project_UploadData_UploadFile_RestWebserviceController {
+public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceController {
 
-	private static final Logger log = LoggerFactory.getLogger( Project_UploadData_UploadFile_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceController.class );
 
 	private static final int COPY_FILE_ARRAY_SIZE = 32 * 1024;
 	
@@ -123,9 +125,6 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 
 
 	/////////////////////////////////////////////////////
-	
-	//  Web app using new Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceController
-	
 
 	//    From Web App
 
@@ -135,211 +134,213 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 	//    If they don't match, a 500 error is thrown and nothing is logged and the method is not called.
 	//    If there is no "value = " in the @PathVariable, the method parameter name is used.
 
-//	@PostMapping( 
-//			path = {
-//					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-//					+ AA_RestWSControllerPaths_Constants.PROJECT__UPLOAD_DATA_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER
-//			},
-//			consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
-//
-//	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_JSON(
-//
-//			//  No @RequestBody since the POST body will be read in this method and copied to a local file
-//			//  @RequestBody byte[] postBody,
-//
-//			HttpServletRequest httpServletRequest,
-//			HttpServletResponse httpServletResponse
-//			) throws Exception {
-//		
-//		try {
-//
-//			//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
-//			//    to return specific error to web app JS code if webserviceSyncTracking is not current value
-//			validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
-//
-//
-//			//    			String requestURL = httpServletRequest.getRequestURL().toString();
-//
-//			String uploadFileParamsJSON = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON );
-//
-//			if ( StringUtils.isEmpty( uploadFileParamsJSON ) ) {
-//				log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON + "' header parameter is not sent or is empty" );
-//				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-//			}
-//
-//			SubmitImport_UploadFile_Request_Common webserviceRequestHeaderContents = 
-//					unmarshalJSON_ToObject.getObjectFromJSONString( uploadFileParamsJSON, SubmitImport_UploadFile_Request_Common.class );
-//
-//			int projectId = getProjectId( webserviceRequestHeaderContents );
-//
-//			List<Integer> projectIds = new ArrayList<>( 1 );
-//			projectIds.add( projectId );
-//
-//			//  Restrict access to Project owners or above (admin), if project was not locked
-//			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
-//					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-//					.validateProjectOwnerAllowed( projectIds, httpServletRequest );
-//
-//			//  If NOT Limelight XML File Import is Fully Configured, 
-//			if ( ! isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured() ) {
-//				String msg = "Limelight XML File Import is NOT Fully Configured ";
-//				log.error( msg );
-//				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-//			}
-//			
-//			UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession();
-//			if ( userSession == null ) {
-//				throw new LimelightInternalErrorException( "userSession should not be null" );
-//			}
-//			Integer userId = userSession.getUserId();
-//			if ( userId == null ) {
-//				throw new LimelightInternalErrorException( "userId should not be null" );
-//			}
-//			
-//			SubmitImport_UploadFile_Response_WebJSON webserviceResult = new SubmitImport_UploadFile_Response_WebJSON();
-//
-//			WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
-//			webserviceMethod_Internal_Params.projectId = projectId;
-//			webserviceMethod_Internal_Params.userId = userId;
-//			webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
-//			
-//			WebserviceMethod_Internal_Results webserviceMethod_Internal_Results = 
-//					webserviceMethod_Internal( 
-//							webserviceRequestHeaderContents,
-//							webserviceMethod_Internal_Params,
-//							httpServletRequest );
-//			
-//			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
-//			
-//			if ( webserviceMethod_Internal_Results.returnBadRequestStatusCode ) {
-//				
-//				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
-//			}
-//			
-//			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
-//
-//		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
-//
-//			//  only rethrow Error Response Exceptions 
-//			throw e;
-//
-//		} catch ( Exception e ) {
-//			String msg = "Failed in controller: ";
-//			log.error( msg, e );
-//			throw new Limelight_WS_InternalServerError_Exception();
-//		}	
-//	}
+	@PostMapping( 
+			path = {
+					AA_RestWSControllerPaths_Constants.PATH_START_ALL
+					+ AA_RestWSControllerPaths_Constants.PROJECT__UPLOAD_DATA_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER
+			},
+			consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+
+	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_JSON(
+
+			//  No @RequestBody since the POST body will be read in this method and copied to a local file
+			//  @RequestBody byte[] postBody,
+
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse
+			) throws Exception {
 		
+		try {
+
+			//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
+			//    to return specific error to web app JS code if webserviceSyncTracking is not current value
+			validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
+
+
+			//    			String requestURL = httpServletRequest.getRequestURL().toString();
+
+			String uploadFileParamsJSON = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON );
+
+			if ( StringUtils.isEmpty( uploadFileParamsJSON ) ) {
+				log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON + "' header parameter is not sent or is empty" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			SubmitImport_UploadFile_Request_Common webserviceRequestHeaderContents = 
+					unmarshalJSON_ToObject.getObjectFromJSONString( uploadFileParamsJSON, SubmitImport_UploadFile_Request_Common.class );
+
+			int projectId = getProjectId( webserviceRequestHeaderContents );
+
+			List<Integer> projectIds = new ArrayList<>( 1 );
+			projectIds.add( projectId );
+
+			//  Restrict access to Project owners or above (admin), if project was not locked
+			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
+					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
+					.validateProjectOwnerAllowed( projectIds, httpServletRequest );
+
+			//  If NOT Limelight XML File Import is Fully Configured, 
+			if ( ! isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured() ) {
+				String msg = "Limelight XML File Import is NOT Fully Configured ";
+				log.error( msg );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession();
+			if ( userSession == null ) {
+				throw new LimelightInternalErrorException( "userSession should not be null" );
+			}
+			Integer userId = userSession.getUserId();
+			if ( userId == null ) {
+				throw new LimelightInternalErrorException( "userId should not be null" );
+			}
+			
+			SubmitImport_UploadFile_Response_WebJSON webserviceResult = new SubmitImport_UploadFile_Response_WebJSON();
+
+			WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
+			webserviceMethod_Internal_Params.projectId = projectId;
+			webserviceMethod_Internal_Params.userId = userId;
+			webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
+			
+			WebserviceMethod_Internal_Results webserviceMethod_Internal_Results = 
+					webserviceMethod_Internal( 
+							webserviceRequestHeaderContents,
+							webserviceMethod_Internal_Params,
+							httpServletRequest );
+			
+			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
+			
+			if ( webserviceMethod_Internal_Results.returnBadRequestStatusCode ) {
+				
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
+			}
+			
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
+
+		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
+
+			//  only rethrow Error Response Exceptions 
+			throw e;
+
+		} catch ( Exception e ) {
+			String msg = "Failed in controller: ";
+			log.error( msg, e );
+			throw new Limelight_WS_InternalServerError_Exception();
+		}	
+	}
+
+	
+	//  Submit Program currently using Project_UploadData_UploadFile_RestWebserviceController
 
 	//    From Submit Program XML
 	
-	@PostMapping( 
-			path = { 
-					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.PROJECT__UPLOAD_DATA_UPLOAD_FILE_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER
-			},
-			consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
-
-//	@RequestMapping( 
-//			path = AA_RestWSControllerPaths_Constants.,
-//			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-
-    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_XML(
-
-    		//  Remove since not in the 'path' in @PostMapping
-//			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
-//    		String webserviceSyncTracking,
-    		
-			//  No @RequestBody since the POST body will be read in this method and copied to a local file
-    		//  @RequestBody byte[] postBody,
-    		
-    		HttpServletRequest httpServletRequest,
-    		HttpServletResponse httpServletResponse
-    		) throws Exception {
-    	
-//    	String postBodyString = new String( postBody );
-    	
-    	SubmitImport_UploadFile_Request_Common webserviceRequestHeaderContents = null;
-
-		String uploadFileParamsXML = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML );
-
-		if ( StringUtils.isEmpty( uploadFileParamsXML ) ) {
-			log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML + "' header parameter is not sent or is empty" );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
-
-		Object webserviceRequestHeaderContentsAsObject = unmarshal_RestRequest_XML_ToObject.getObjectFromXMLString( uploadFileParamsXML );
-		if ( webserviceRequestHeaderContentsAsObject == null ) {
-			log.warn("webserviceRequestHeaderContentsAsObject == null");
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
-		try {
-			webserviceRequestHeaderContents = (SubmitImport_UploadFile_Request_Common) webserviceRequestHeaderContentsAsObject;
-		} catch ( Exception e ) {
-			final String msg = "Failed to cast returned webserviceRequestHeaderContentsAsObject from XML to SubmitImport_UploadFile_Request_Common."
-					+ " webserviceRequestHeaderContentsAsObject.getClass(): " + webserviceRequestHeaderContentsAsObject.getClass();
-			log.warn(msg );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
-
-		if ( StringUtils.isEmpty( webserviceRequestHeaderContents.getUserSubmitImportProgramKey() ) ) {
-			final String msg = "UserSubmitImportProgramKey is empty.";
-			log.warn(msg );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
-
-		int projectId = getProjectId( webserviceRequestHeaderContents );
-		
-		Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId_Result validateResult =
-				validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId
-				.validateProjectOwnerAllowed(
-						webserviceRequestHeaderContents.getUserSubmitImportProgramKey(), 
-						projectId,
-						null /* SubmitImport_Init_Response_PgmXML webserviceResult */ );
-    	
-		if ( ! validateResult.isSuccess() ) {
-			
-			SubmitImport_UploadFile_Response_PgmXML webserviceResult = new SubmitImport_UploadFile_Response_PgmXML();
-			
-			webserviceResult.setStatusSuccess( false );
-			
-			//  TODO  Set error reason
-//			webserviceResult.set 
-			
-			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
-
-			//  TODO  Return other than 200 code?
-			return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
-		}
-		
-		if ( validateResult.getUserId() == null ) {
-			final String msg = "ERROR: validateResult.getUserId() == null";
-			log.error( msg );
-			throw new LimelightInternalErrorException(msg);
-		}
-		
-		SubmitImport_UploadFile_Response_PgmXML webserviceResult = new SubmitImport_UploadFile_Response_PgmXML();
-
-		WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
-		webserviceMethod_Internal_Params.projectId = projectId;
-		webserviceMethod_Internal_Params.userId = validateResult.getUserId();
-		webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
-		
-		WebserviceMethod_Internal_Results webserviceMethod_Internal_Results = 
-				webserviceMethod_Internal(
-						webserviceRequestHeaderContents,
-						webserviceMethod_Internal_Params,
-						httpServletRequest );
-
-		byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
-
-		if ( webserviceMethod_Internal_Results.returnBadRequestStatusCode ) {
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_XML).body( responseAsXML );
-		}
-
-		return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
-    }
+//	@PostMapping( 
+//			path = { 
+//					AA_RestWSControllerPaths_Constants.PATH_START_ALL
+//					+ AA_RestWSControllerPaths_Constants.PROJECT__UPLOAD_DATA_UPLOAD_FILE_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER
+//			},
+//			consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
+//
+////	@RequestMapping( 
+////			path = AA_RestWSControllerPaths_Constants.,
+////			method = RequestMethod.POST,
+////			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//
+//    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_XML(
+//
+//    		//  Remove since not in the 'path' in @PostMapping
+////			@PathVariable(value = AA_RestWSControllerPaths_Constants.PATH_PARAMETER_LABEL_WEBSERVICE_SYNC_TRACKING) 
+////    		String webserviceSyncTracking,
+//    		
+//			//  No @RequestBody since the POST body will be read in this method and copied to a local file
+//    		//  @RequestBody byte[] postBody,
+//    		
+//    		HttpServletRequest httpServletRequest,
+//    		HttpServletResponse httpServletResponse
+//    		) throws Exception {
+//    	
+////    	String postBodyString = new String( postBody );
+//    	
+//    	SubmitImport_UploadFile_Request_Common webserviceRequestHeaderContents = null;
+//
+//		String uploadFileParamsXML = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML );
+//
+//		if ( StringUtils.isEmpty( uploadFileParamsXML ) ) {
+//			log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML + "' header parameter is not sent or is empty" );
+//			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//		}
+//
+//		Object webserviceRequestHeaderContentsAsObject = unmarshal_RestRequest_XML_ToObject.getObjectFromXMLString( uploadFileParamsXML );
+//		if ( webserviceRequestHeaderContentsAsObject == null ) {
+//			log.warn("webserviceRequestHeaderContentsAsObject == null");
+//			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//		}
+//		try {
+//			webserviceRequestHeaderContents = (SubmitImport_UploadFile_Request_Common) webserviceRequestHeaderContentsAsObject;
+//		} catch ( Exception e ) {
+//			final String msg = "Failed to cast returned webserviceRequestHeaderContentsAsObject from XML to SubmitImport_UploadFile_Request_Common."
+//					+ " webserviceRequestHeaderContentsAsObject.getClass(): " + webserviceRequestHeaderContentsAsObject.getClass();
+//			log.warn(msg );
+//			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//		}
+//
+//		if ( StringUtils.isEmpty( webserviceRequestHeaderContents.getUserSubmitImportProgramKey() ) ) {
+//			final String msg = "UserSubmitImportProgramKey is empty.";
+//			log.warn(msg );
+//			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//		}
+//
+//		int projectId = getProjectId( webserviceRequestHeaderContents );
+//		
+//		Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId_Result validateResult =
+//				validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId
+//				.validateProjectOwnerAllowed(
+//						webserviceRequestHeaderContents.getUserSubmitImportProgramKey(), 
+//						projectId,
+//						null /* SubmitImport_Init_Response_PgmXML webserviceResult */ );
+//    	
+//		if ( ! validateResult.isSuccess() ) {
+//			
+//			SubmitImport_UploadFile_Response_PgmXML webserviceResult = new SubmitImport_UploadFile_Response_PgmXML();
+//			
+//			webserviceResult.setStatusSuccess( false );
+//			
+//			//  TODO  Set error reason
+////			webserviceResult.set 
+//			
+//			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
+//
+//			//  TODO  Return other than 200 code?
+//			return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
+//		}
+//		
+//		if ( validateResult.getUserId() == null ) {
+//			final String msg = "ERROR: validateResult.getUserId() == null";
+//			log.error( msg );
+//			throw new LimelightInternalErrorException(msg);
+//		}
+//		
+//		SubmitImport_UploadFile_Response_PgmXML webserviceResult = new SubmitImport_UploadFile_Response_PgmXML();
+//
+//		WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
+//		webserviceMethod_Internal_Params.projectId = projectId;
+//		webserviceMethod_Internal_Params.userId = validateResult.getUserId();
+//		webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
+//		
+//		WebserviceMethod_Internal_Results webserviceMethod_Internal_Results = 
+//				webserviceMethod_Internal(
+//						webserviceRequestHeaderContents,
+//						webserviceMethod_Internal_Params,
+//						httpServletRequest );
+//
+//		byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
+//
+//		if ( webserviceMethod_Internal_Results.returnBadRequestStatusCode ) {
+//			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_XML).body( responseAsXML );
+//		}
+//
+//		return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
+//    }
 
     /**
      * @param webserviceRequest
@@ -384,15 +385,41 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 
 		WebserviceMethod_Internal_Results methodResults = new WebserviceMethod_Internal_Results();
 
+		//  contentLength is length of chunk
 
 		long contentLength = httpServletRequest.getContentLengthLong();
 
 		try {
 
+			///  Check chunk size (using contentLength)
+			
+			if ( contentLength > FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE ) {
+				
+				//  Return Error
+				webserviceResult.setStatusSuccess( false );
+
+				methodResults.returnBadRequestStatusCode = true;
+
+				//  EARLY RETURN
+				return methodResults;
+			}
+			
+
 			String uploadedFilename = webserviceRequestHeaderContents.getFilename();
 			String projectIdString = webserviceRequestHeaderContents.getProjectIdentifier();
 			String uploadKeyString = webserviceRequestHeaderContents.getUploadKey();
+			
+			Long uploadFileSize = webserviceRequestHeaderContents.getUploadFileSize();
+			Long fileChunk_StartByte = webserviceRequestHeaderContents.getFileChunk_StartByte();
 
+			if ( uploadFileSize == null ) {
+				log.warn( "'uploadFileSize' header JSON parameter is null" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			if ( fileChunk_StartByte == null ) {
+				log.warn( "'fileChunk_StartByte' header JSON parameter is null" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
 			if ( StringUtils.isEmpty( uploadedFilename ) ) {
 				log.warn( "'filename' header JSON parameter is not sent or is empty" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -460,9 +487,9 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				throw new LimelightWebappFileUploadFileSystemException( msg );
 			}
 			
-			///  Check of upload size (using contentLength)
+			///  Check of upload size (using uploadFileSize)
 			
-			if ( contentLength > webserviceMethod_Internal_Params.maxFileSize ) {
+			if ( uploadFileSize > webserviceMethod_Internal_Params.maxFileSize ) {
 				
 				//  Return Error
 				webserviceResult.setStatusSuccess( false );
@@ -497,6 +524,7 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			return processWebRequest( 
 					webserviceRequestHeaderContents, 
 					webserviceMethod_Internal_Params, 
+					contentLength,
 					httpServletRequest );
 
 		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
@@ -522,6 +550,7 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 	private WebserviceMethod_Internal_Results processWebRequest(
 			SubmitImport_UploadFile_Request_Common webserviceRequestHeaderContents,
 			WebserviceMethod_Internal_Params webserviceMethod_Internal_Params,
+			long contentLength,
 			HttpServletRequest httpServletRequest ) throws Exception {
 
 		WebserviceMethod_Internal_Results methodResults = new WebserviceMethod_Internal_Results();
@@ -595,7 +624,8 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 		File dataFile = 
 				limelight_XML_Importer_Work_Directory_And_SubDirs_Web
 				.getDataFile( webserviceRequestHeaderContents.getFileIndex(), uploadFileTempSubDirForThisRequestFileObj );
-		if ( dataFile.exists() ) {
+		
+		if ( dataFile.exists() && webserviceRequestHeaderContents.getFileChunk_StartByte().intValue() == 0 ) {
 			String msg = "dataFile already exists: " + dataFile.getCanonicalPath();
 			log.warn( msg );
 			throw new LimelightWebappFileUploadFileSystemException(msg);
@@ -610,27 +640,55 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 						webserviceMethod_Internal_Params.fileType,
 						uploadFileTempSubDirForThisRequestFileObj );
 		
-		//  Copy InputStream containing POST body into file on disk
+		long fileTotalSize = 0;
+		
 		{
-			long totalBytesCopied = 0;
+			if ( uploadedFileOnDisk.exists() ) {
+				
+				fileTotalSize = uploadedFileOnDisk.length();
+				
+				if ( webserviceRequestHeaderContents.getFileChunk_StartByte().longValue() < fileTotalSize ) {
+					
+					//  Already saved this block so skip
+	
+					webserviceResult.setStatusSuccess( true );
+					
+					return methodResults;  //  EARLY RETURN
+				}
+			}
+		}
+		
+		//  Copy InputStream containing POST body into memory buffer and then into file on disk
+		{
+			//  Copy to in memory buffer first to ensure get full chunk before append to file
+			
+			byte[] bytes_FullChunk = new byte[ FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE ];
+			int bytes_FullChunk__StartIndex = 0;
+			int bytes_FullChunk__BytesPopulatedCount = 0;
+
 			boolean fileTooLarge = false;
 
 			try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
 
-				try ( FileOutputStream fos = new FileOutputStream( uploadedFileOnDisk )) {
-					byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
-					int len;
-					while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
-						fos.write(buf, 0, len);
-						totalBytesCopied += len;
-						if ( totalBytesCopied > webserviceMethod_Internal_Params.maxFileSize ) {
-	
-							fileTooLarge = true;
-							break;
-						}
+				byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
+				int len;
+				while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
+
+					for ( int index = 0; index < len; index++ ) {
+						bytes_FullChunk[ bytes_FullChunk__StartIndex + index ] = buf[ index ];
+					}
+					bytes_FullChunk__StartIndex += len;
+					bytes_FullChunk__BytesPopulatedCount += len;
+
+					fileTotalSize += len;
+					if ( fileTotalSize > webserviceMethod_Internal_Params.maxFileSize ) {
+
+						fileTooLarge = true;
+						break;
 					}
 				}
 			}
+			
 			if ( fileTooLarge ) {
 				
 				if ( ! uploadedFileOnDisk.delete() ) {
@@ -647,6 +705,24 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				//  EARLY RETURN
 				return methodResults;
 			}
+
+			if ( bytes_FullChunk__BytesPopulatedCount != contentLength ) {
+				
+				log.warn("Failed to delete upload file, bytes read is not same as contentLength ");
+
+					//  Return Error -  Status Code 400
+				webserviceResult.setStatusSuccess(false);
+
+				methodResults.returnBadRequestStatusCode = true;
+
+				//  EARLY RETURN
+				return methodResults;
+			}
+
+			try ( FileOutputStream fos = new FileOutputStream( uploadedFileOnDisk, true /* append */ )) {
+				fos.write(bytes_FullChunk, 0, bytes_FullChunk__BytesPopulatedCount);
+			}
+			
 		}
 
 		{

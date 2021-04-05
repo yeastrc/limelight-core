@@ -18,11 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.multiple_project_search_id;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,7 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookupRootIdTypes;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookup_CreatedByUserType;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
@@ -45,22 +40,17 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.objects.ProjectPageSingleFolder;
-import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.constants.SearchDataLookupParams_VersionNumber;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_ProjectSearchIds;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
-import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF;
-import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_MainProcessingIF;
-import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
+import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service__Result;
+import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
-import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFoldersIF;
-import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFolders.ProjectPageFoldersSearches;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
@@ -70,7 +60,8 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  *  
  *  1)   Project Search Ids and their cutoffs and annotation types to display (or request defaults)
  * 
- * Returns List<WebserviceResultAnnotationTypeItem>
+ * Returns SearchDataLookupParamsRoot searchDataLookupParamsRoot
+ *         String searchDataLookupParamsCode
  */
 @RestController
 public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
@@ -84,13 +75,7 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
 
 	@Autowired
-	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
-	
-	@Autowired
-	private SearchDataLookupParams_MainProcessingIF searchDataLookupParams_MainProcessing;
-	
-	@Autowired
-	private SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds;
+	private SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF searchDataLookupParametersLookupCode__Create_InsertToDB__Service;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -160,8 +145,7 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
 			
 
     		SearchDataLookupParamsRoot searchDataLookupParamsRoot = null;
-    		String searchDataLookupParamsCode = null;
-    		
+
 
     		if ( webserviceRequest.getProjectSearchIds_CreateDefault() == null && webserviceRequest.getSearchDataLookupParamsRoot() == null ) {
     			log.warn( "Must specify ProjectSearchIds_CreateDefault or SearchDataLookupParamsRoot.  Neither are populated." );
@@ -282,128 +266,18 @@ public class Get_SearchDataLookupParametersLookupCode_RestWebservice {
     			}
     		}
     		
-    		SearchDataLookupParamsRoot newSearchDataLookupParamsRoot = null;
+    		SearchDataLookupParametersLookupCode__Create_InsertToDB__Service__Result serviceResult =
+    				searchDataLookupParametersLookupCode__Create_InsertToDB__Service
+    				.searchDataLookupParametersLookupCode__Create_InsertToDB__Service(
+    						projectId, 
+    						searchDataLookupParamsRoot, 
+    						webserviceRequest.projectSearchIds_CreateDefault, 
+    						searchDataLookupParams_CreatedByInfo );
     		
-
-    		if ( webserviceRequest.getProjectSearchIds_CreateDefault() != null && ( ! webserviceRequest.getProjectSearchIds_CreateDefault().isEmpty() ) ) {
-    			
-    			if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
-    				
-    				//  Adding to existing SearchDataLookupParamsRoot so Version must match
-
-        			Integer versionNumber = searchDataLookupParamsRoot.getVersionNumber();
-        			
-        			if ( versionNumber == null ) {
-        				throw new LimelightErrorDataInWebRequestException( "No Version Number" );
-        			}
-        			if ( versionNumber != SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER ) {
-        				throw new LimelightErrorDataInWebRequestException( "Version Number Not Match Current. versionNumber: " 
-        						+ versionNumber + ", Current: " + SearchDataLookupParams_VersionNumber.CURRENT_VERSION_NUMBER );
-        			}
-    			}
-    			
-    			//  Put ProjectSearchIds_CreateDefault in same order as displayed on Project Page
-    			
-    			List<Integer> projectSearchIds_CreateDefault_InOrder = new ArrayList<>( webserviceRequest.getProjectSearchIds_CreateDefault().size() );
-    			
-
-//    			if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
-//    				
-//    				//  Also have SearchDataLookupParamsRoot so just copy in array provided
-//    				
-//    				projectSearchIds_CreateDefault_InOrder.addAll( webserviceRequest.getProjectSearchIds_CreateDefault() );
-//    			
-//    			} else {
-    				
-    				//  No SearchDataLookupParamsRoot so set order based on order on project page
-	    				
-	    			if ( webserviceRequest.getProjectSearchIds_CreateDefault().size() == 1 ) {
-	    				//  Only 1 entry so no need to put it in order
-	    				
-	    				projectSearchIds_CreateDefault_InOrder.add( webserviceRequest.getProjectSearchIds_CreateDefault().get( 0 ) );
-	    			
-	    			} else {
-	    				// > 1 entry so get searches i order of project page
-	    			
-	    				Set<Integer> projectSearchIds_CreateDefault_Set = new HashSet<>( webserviceRequest.getProjectSearchIds_CreateDefault() );
-	
-	    				//  Get the searches and put them in folders
-	    				ProjectPageFoldersSearches projectPageFoldersSearches = 
-	    						viewProjectSearchesInFolders.getProjectPageFoldersSearches( projectId );
-	    				
-	    				
-	    				if (  projectPageFoldersSearches.getFolders() != null ) {
-	    					
-	    					for ( ProjectPageSingleFolder folder : projectPageFoldersSearches.getFolders() ) {
-	    						
-	    						if ( folder.getSearches() != null ) {
-	    							for ( SearchItemMinimal search : folder.getSearches() ) {
-	    								Integer projectSearchId_Of_Search = search.getProjectSearchId();
-	    								if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
-	    									
-	    									projectSearchIds_CreateDefault_InOrder.add(projectSearchId_Of_Search);
-	    									projectSearchIds_CreateDefault_Set.remove(projectSearchId_Of_Search);
-	    								}
-	    							}
-	    						}
-	    					}
-	    				}
-	    				
-	    				if ( projectPageFoldersSearches.getSearchesNotInFolders() != null ) {
-	    					for ( SearchItemMinimal search : projectPageFoldersSearches.getSearchesNotInFolders() ) {
-								Integer projectSearchId_Of_Search = search.getProjectSearchId();
-								if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
-									
-									projectSearchIds_CreateDefault_InOrder.add(projectSearchId_Of_Search);
-									projectSearchIds_CreateDefault_Set.remove(projectSearchId_Of_Search);
-								}
-							}
-	    				}
-	    				
-	    				if ( ! projectSearchIds_CreateDefault_Set.isEmpty() ) {
-	    					log.warn( "The following Project Search Ids are in webserviceRequest.getProjectSearchIds_CreateDefault() but not in projectPageFoldersSearches:"
-	    							+ projectSearchIds_CreateDefault_Set );
-	    					
-	    					List<Integer> projectSearchIds_CreateDefault_Leftovers = new ArrayList<>( projectSearchIds_CreateDefault_Set );
-	    					Collections.sort( projectSearchIds_CreateDefault_Leftovers );
-	    					projectSearchIds_CreateDefault_InOrder.addAll(projectSearchIds_CreateDefault_Leftovers);
-	    				}
-//	    			}
-    			}
-    			
-    			
-    			        		
-    			SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result result = 
-    			searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds
-    			.create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(
-    					projectId, 
-    					projectSearchIds_CreateDefault_InOrder,
-    					searchDataLookupParams_CreatedByInfo, 
-    					null /* projectSearchIdsToSearchIds */, searchDataLookupParamsRoot );
-
-    			searchDataLookupParamsCode = result.getSearchDataLookupParamsCode();
-    			
-    			newSearchDataLookupParamsRoot = result.getSearchDataLookupParamsRoot();
-    		
-    		} else if ( webserviceRequest.getSearchDataLookupParamsRoot() != null ) {
-    			
-    			newSearchDataLookupParamsRoot = webserviceRequest.getSearchDataLookupParamsRoot();
-
-    			//  Save and create code
-    			
-    			searchDataLookupParamsCode = 
-    					searchDataLookupParams_MainProcessing
-    					.searchDataLookupParams_Save_Create_Code( 
-    							searchDataLookupParamsRoot, 
-    							SearchDataLookupParametersLookupRootIdTypes.PROJECT_SEARCH_IDS, 
-    							null, // singleProjectSearchIdCreatedDefaultsFor, 
-    							searchDataLookupParams_CreatedByInfo );
-    		}
-
     		WebserviceResult webserviceResult = new WebserviceResult();
     	    		
-    		webserviceResult.setSearchDataLookupParamsRoot( newSearchDataLookupParamsRoot );
-    		webserviceResult.setSearchDataLookupParamsCode( searchDataLookupParamsCode );
+    		webserviceResult.setSearchDataLookupParamsRoot( serviceResult.getSearchDataLookupParamsRoot() );
+    		webserviceResult.setSearchDataLookupParamsCode( serviceResult.getSearchDataLookupParamsCode() );
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
     		

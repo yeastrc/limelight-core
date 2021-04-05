@@ -42,7 +42,6 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
-import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.DeleteDirectoryAndContentsUtilIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
@@ -199,8 +198,19 @@ public class Project_UploadData_UploadRemoveAbandoned_RestWebserviceController {
 		} catch ( Exception e ) {
 			String msg = "Failed in controller: ";
 			log.error( msg, e );
-			throw new Limelight_WS_InternalServerError_Exception();
+			
+			//  No Error returned to web app
+			
+//			throw new Limelight_WS_InternalServerError_Exception();
 		}
+
+		WebserviceResult webserviceResult = new WebserviceResult();
+		webserviceResult.statusSuccess = true;
+
+		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
+
 	}
     
 	/**
@@ -248,7 +258,15 @@ public class Project_UploadData_UploadRemoveAbandoned_RestWebserviceController {
 			return webserviceResult;
 		}
 		//  Remove the subdir the uploaded file(s) were in
-		deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+		try {
+			deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+		} catch ( Exception e ) {
+			String msg = "Exception deleting tempSubdir.  tempSubdir: " 
+					+ uploadFileTempDir.getAbsolutePath();
+			log.warn( msg, e );
+			
+			//  swallow error
+		}
 		
 		WebserviceResult webserviceResult = new WebserviceResult();
 		webserviceResult.statusSuccess = true;

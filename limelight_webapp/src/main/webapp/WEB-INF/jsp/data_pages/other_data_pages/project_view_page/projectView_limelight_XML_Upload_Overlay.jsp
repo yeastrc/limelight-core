@@ -16,6 +16,8 @@
 
 </c:if>
   
+<input type="hidden" id="limelight_max_file_upload_chunk_size" value="<%=FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE %>">
+
 <input type="hidden" id="limelight_xml_file_max_file_upload_size" value="<%=FileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_AS_STRING()%>">
 <input type="hidden" id="limelight_xml_file_max_file_upload_size_formatted" value="<%=FileUploadMaxFileSizeConstants.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>">
 

@@ -17,6 +17,9 @@ let url_path__peptide: string;
 let url_path__protein: string;
 let url_path__mod_view: string;
 
+let project_search_id_code_block_start_end_identifier_strings: string;
+let project_search_id_code_separator: string;
+
 /**
  *
  */
@@ -52,6 +55,18 @@ export const projectPage_SearchesSection_Open_DataPages_PeptideProteinMod__Initi
     }
     url_path__mod_view = url_path__mod_viewElement.innerHTML;
 
+    const project_search_id_code_block_start_end_identifier_stringsDOM = document.getElementById("project_search_id_code_block_start_end_identifier_strings");
+    if ( ! project_search_id_code_block_start_end_identifier_stringsDOM ) {
+        throw Error("No DOM element with id 'project_search_id_code_block_start_end_identifier_strings'")
+    }
+    project_search_id_code_block_start_end_identifier_strings = project_search_id_code_block_start_end_identifier_stringsDOM.innerHTML;
+
+    const project_search_id_code_separatorDOM = document.getElementById("project_search_id_code_separator");
+    if ( ! project_search_id_code_separatorDOM ) {
+        throw Error("No DOM element with id 'project_search_id_code_separator'")
+    }
+    project_search_id_code_separator = project_search_id_code_separatorDOM.innerHTML;
+
 }
 
 ///////
@@ -62,6 +77,7 @@ export const projectPage_SearchesSection_Open_DataPages_PeptideProteinMod__Initi
 export class ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams {
 
     projectSearchIds: Set<number>
+    projectSearchIdCodes: Set<string>
     ctrlKeyOrMetaKey: boolean
 }
 
@@ -74,35 +90,9 @@ export type ProjectPage_SearchesSection_Open_DataPage_PeptideProteinMod =
  */
 const peptide_View_OpenDataPage = function ( params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams ) : void {
 
-    const projectSearchIds = params.projectSearchIds;
-    const ctrlKeyOrMetaKey = params.ctrlKeyOrMetaKey;
+    const urlPath = url_path__peptide;
 
-    if (projectSearchIds.size < 1) {
-        return;
-    }
-
-    const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
-
-    let newWindow = null;
-
-    if ( ctrlKeyOrMetaKey ) {
-
-        //  Ctrl or meta (command on mac) key pressed while button clicked
-        // Open URL in new window
-        newWindow = window.open( "", "_blank", "" );
-    }
-
-    promise_getSearchDataLookupParamsCode.catch((reason) => { });
-
-    promise_getSearchDataLookupParamsCode.then((result) => {
-        try {
-            const url = url_path__peptide + result.searchDataLookupParamsCode;
-            _goToURL_DataPage({ url, newWindow });
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    });
+    _openDataPage( params, urlPath )
 };
 
 /**
@@ -110,35 +100,9 @@ const peptide_View_OpenDataPage = function ( params : ProjectPage_SearchesSectio
  */
 const protein_View_OpenDataPage = function ( params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams ) : void {
 
-    const projectSearchIds = params.projectSearchIds;
-    const ctrlKeyOrMetaKey = params.ctrlKeyOrMetaKey;
+    const urlPath = url_path__protein;
 
-    if (projectSearchIds.size < 1) {
-        return;
-    }
-
-    const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
-
-    let newWindow = null;
-
-    if ( ctrlKeyOrMetaKey ) {
-
-        //  Ctrl or meta (command on mac) key pressed while button clicked
-        // Open URL in new window
-        newWindow = window.open( "", "_blank", "" );
-    }
-
-    promise_getSearchDataLookupParamsCode.catch((reason) => { });
-
-    promise_getSearchDataLookupParamsCode.then((result) => {
-        try {
-            const url = url_path__protein + result.searchDataLookupParamsCode;
-            _goToURL_DataPage({ url, newWindow });
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    });
+    _openDataPage( params, urlPath )
 };
 
 /**
@@ -146,52 +110,100 @@ const protein_View_OpenDataPage = function ( params : ProjectPage_SearchesSectio
  */
 const mod_View_OpenDataPage = function ( params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams ) : void {
 
+    const urlPath = url_path__mod_view;
+
+    _openDataPage( params, urlPath )
+}
+
+
+/**
+ *
+ */
+const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams, urlPath: string ) : void {
+
     const projectSearchIds = params.projectSearchIds;
+    const projectSearchIdCodes = params.projectSearchIdCodes;
     const ctrlKeyOrMetaKey = params.ctrlKeyOrMetaKey;
 
     if (projectSearchIds.size < 1) {
         return;
     }
 
-    const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
+    const projectSearchIdCodes_EncodedForURL = get_projectSearchIdCodes_EncodedForURL({ projectSearchIdCodes });
 
-    let newWindow = null;
+    const url = urlPath + projectSearchIdCodes_EncodedForURL + "/r";
 
     if ( ctrlKeyOrMetaKey ) {
 
-        //  Ctrl or meta (command on mac) key pressed while button clicked
-        // Open URL in new window
-        newWindow = window.open( "", "_blank", "" );
+        window.open(url, "_blank", "");
+
+        return;  // EARLY RETURN
     }
 
-    promise_getSearchDataLookupParamsCode.catch((reason) => { });
+    //  NO ctrlKeyOrMetaKey
 
-    promise_getSearchDataLookupParamsCode.then((result) => {
-        try {
-            const url = url_path__mod_view + result.searchDataLookupParamsCode;
-            _goToURL_DataPage({ url, newWindow });
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    });
+    window.location.href = url;
+
+    return;  // EARLY RETURN
+
+    // const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
+    //
+    //
+    // let newWindow = null;  // Always null since handled above
+
+    //  Handled above
+
+    // if ( ctrlKeyOrMetaKey ) {
+    //
+    //     //  Ctrl or meta (command on mac) key pressed while button clicked
+    //     // Open URL in new window
+    //
+    //     //  Open Empty window to set the URL below in call to _goToURL_DataPage(...)
+    //      newWindow = window.open( "", "_blank", "" );
+    // }
+
+
+    // promise_getSearchDataLookupParamsCode.catch((reason) => { });
+    //
+    // promise_getSearchDataLookupParamsCode.then((result) => {
+    //     try {
+    //         const url = urlPath + result.searchDataLookupParamsCode + "/r";
+    //         _goToURL_DataPage({ url, newWindow });
+    //     } catch( e ) {
+    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+    //         throw e;
+    //     }
+    // });
 };
+
+/**
+ *
+ */
+const get_projectSearchIdCodes_EncodedForURL = function ({ projectSearchIdCodes } : { projectSearchIdCodes: Set<string>}) : string {
+
+
+    const projectSearchIdCodes_Encoded = project_search_id_code_block_start_end_identifier_strings +
+        Array.from( projectSearchIdCodes ).join( project_search_id_code_separator ) +
+        project_search_id_code_block_start_end_identifier_strings;
+
+    return projectSearchIdCodes_Encoded;
+}
 
 /**
  * Go to Data Page URL
  */
-const _goToURL_DataPage = function ({ url, newWindow }) {
-
-    //  CANNOT OPEN WINDOW HERE - MUST Open the window before make the AJAX call
-
-    if ( newWindow != null ) {
-
-        newWindow.location.href = url;
-        return;
-    }
-
-    window.location.href = url;
-}
+// const _goToURL_DataPage = function ({ url, newWindow }) {
+//
+//     //  CANNOT OPEN WINDOW HERE - MUST Open the window before make the AJAX call
+//
+//     if ( newWindow != null ) {
+//
+//         newWindow.location.href = url;
+//         return;
+//     }
+//
+//     window.location.href = url;
+// }
 
 /**
  * Get searchDataLookupParamsCode for merged Project Search Ids

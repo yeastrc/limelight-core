@@ -46,6 +46,7 @@ import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeade
 import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
 import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
+import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
 
 //  From data_pages_common
 
@@ -128,6 +129,8 @@ export class ModViewPage_RootClass_Common {
 			//  User clicked the back button so reload so page reflects that URL
 			window.location.reload(true);
 		};
+
+		page_Update_From_search_data_lookup_parameters_lookup_code__computed();
 
 		this._page_UserDefault_processing.page_UserDefault_processing();
 

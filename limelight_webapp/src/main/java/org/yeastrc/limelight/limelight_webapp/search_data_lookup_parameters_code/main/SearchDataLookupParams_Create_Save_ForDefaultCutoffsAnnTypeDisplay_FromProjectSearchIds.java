@@ -26,8 +26,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookupRootIdTypes;
+import org.yeastrc.limelight.limelight_webapp.db_dto.SearchDataLookupParametersLookupDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_MainProcessing.SearchDataLookupParams_MainProcessing_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 
 /**
@@ -53,12 +55,16 @@ public class SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_
 		
 		private String searchDataLookupParamsCode;
 		private SearchDataLookupParamsRoot searchDataLookupParamsRoot;
+		private SearchDataLookupParametersLookupDTO searchDataLookupParametersLookupDTO;
 		
 		public String getSearchDataLookupParamsCode() {
 			return searchDataLookupParamsCode;
 		}
 		public SearchDataLookupParamsRoot getSearchDataLookupParamsRoot() {
 			return searchDataLookupParamsRoot;
+		}
+		public SearchDataLookupParametersLookupDTO getSearchDataLookupParametersLookupDTO() {
+			return searchDataLookupParametersLookupDTO;
 		}
 	}
 	
@@ -98,7 +104,7 @@ public class SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_
 						projectSearchIds, 
 						projectSearchIdsToSearchIds, existingSearchDataLookupParamsRoot );
 
-		String searchDataLookupParamsCode = 
+		SearchDataLookupParams_MainProcessing_Result searchDataLookupParams_MainProcessing_Result =
 				searchDataLookupParams_MainProcessing
 				.searchDataLookupParams_Save_Create_Code( 
 						searchDataLookupParamsRoot, 
@@ -108,7 +114,8 @@ public class SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_
 		
 		SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result result = new SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result();
 		result.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
-		result.searchDataLookupParamsCode = searchDataLookupParamsCode;
+		result.searchDataLookupParamsCode = searchDataLookupParams_MainProcessing_Result.getSearchDataLookupParamsCode();
+		result.searchDataLookupParametersLookupDTO = searchDataLookupParams_MainProcessing_Result.getSearchDataLookupParametersLookupDTO();
 		
 		return result;
 	}

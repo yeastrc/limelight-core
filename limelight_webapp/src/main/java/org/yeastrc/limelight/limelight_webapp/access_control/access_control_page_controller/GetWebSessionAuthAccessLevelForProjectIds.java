@@ -273,12 +273,58 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 
 								GetWebSessionAuthAccessLevelForProjectIds_Result result = new GetWebSessionAuthAccessLevelForProjectIds_Result();
 								result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+
+								if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() && StringUtils.isNotEmpty( projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() ) ) {
+									
+									result.project_Has_Enabled_ProjectAccessCode = true;
+									
+									//  Put for Sign In Page
+									
+									httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_PROJECT_ID, projectId );
+									
+									httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_HAS_PROJECT_ACCESS_CODE_ENABLED, true );
+								}
 								
 								result.noSession = true;
 								
 								return result;  //  EARLY EXIT
 							}
 						}
+					} else {
+						
+						//  Public Access Code is for DIFFERENT Project Id
+
+						WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+								WebSessionAuthAccessLevelBuilder.getBuilder()
+								.set_authAccessLevel( AuthAccessLevelConstants.ACCESS_LEVEL_NONE )
+								.set_authAaccessLevelForProjectIdsIfNotLocked( AuthAccessLevelConstants.ACCESS_LEVEL_NONE )
+								.build();
+
+						GetWebSessionAuthAccessLevelForProjectIds_Result result = new GetWebSessionAuthAccessLevelForProjectIds_Result();
+						result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+						result.noSession = true;
+						
+
+						ProjectDTO projectOnly_PublicAccessCodePublicAccessCodeEnabled = projectDAO.getPublicAccessCodePublicAccessCodeEnabledForProjectId( projectId );
+
+						if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled == null ) {
+							throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
+						}
+
+						if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() && StringUtils.isNotEmpty( projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() ) ) {
+							
+							result.project_Has_Enabled_ProjectAccessCode = true;
+							
+							//  Put for Sign In Page
+							
+							httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_PROJECT_ID, projectId );
+							
+							httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_HAS_PROJECT_ACCESS_CODE_ENABLED, true );
+							
+						}
+						
+						return result;  //  EARLY EXIT
+						
 					}
 				}
 

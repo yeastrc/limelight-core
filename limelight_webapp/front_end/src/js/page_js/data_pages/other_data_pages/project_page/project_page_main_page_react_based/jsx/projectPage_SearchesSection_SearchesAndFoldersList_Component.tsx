@@ -538,12 +538,16 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
         event.stopPropagation();
 
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
         const projectSearchIds = new Set<number>();
         projectSearchIds.add( projectSearchId );
 
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.peptide_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+        const projectSearchIdCodes = new Set<string>();
+        projectSearchIdCodes.add( projectSearchIdCode );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.peptide_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
     }
 
     /**
@@ -554,12 +558,16 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
         event.stopPropagation();
 
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
         const projectSearchIds = new Set<number>();
         projectSearchIds.add( projectSearchId );
 
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.protein_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+        const projectSearchIdCodes = new Set<string>();
+        projectSearchIdCodes.add( projectSearchIdCode );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.protein_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
     }
 
     /**
@@ -568,12 +576,16 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
     private _modifications_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
 
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
         const projectSearchIds = new Set<number>();
         projectSearchIds.add( projectSearchId );
 
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.mod_View_OpenDataPage({ projectSearchIds, ctrlKeyOrMetaKey })
+        const projectSearchIdCodes = new Set<string>();
+        projectSearchIdCodes.add( projectSearchIdCode );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.mod_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
     }
 
     /**

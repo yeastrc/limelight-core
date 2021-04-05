@@ -42,6 +42,9 @@
 
 <script type="text/text" id="page_user_default_url"><html><body><c:out value="${ defaultURL }"/></body><html></script>
 
+<%--   created/computed when URL has Project Search Id Code values from Project Page JS code --%>
+<script type="text/text" id="search_data_lookup_parameters_lookup_code__computed"><html><body><c:out value="${ searchDataLookupParametersLookupCode_Computed }"/></body><html></script>
+
 
 <script type="text/text" id="page_navigation_links_data_json"
 >
