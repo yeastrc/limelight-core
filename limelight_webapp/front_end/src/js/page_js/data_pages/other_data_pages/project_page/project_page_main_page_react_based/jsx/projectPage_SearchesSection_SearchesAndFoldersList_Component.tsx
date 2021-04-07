@@ -981,18 +981,26 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                         <div>
                             <span className=" folder-name-display ">{ this.props.searchDisplayListItem.folderName }</span>
 
-                            <span> </span>
-                            <img src="static/images/icon-edit.png"
-                                 className=" clickable icon-small "
-                                 title="Edit name of folder"
-                                 onClick={ this._changeFolderName_Clicked_BindThis }
-                            />
-                            <span> </span>
-                            <img src="static/images/icon-circle-delete.png"
-                                 className=" clickable icon-small "
-                                 title="Delete folder.  Searches in it become 'Unfiled'."
-                                 onClick={ this._deleteFolder_Clicked_BindThis }
-                            />
+                            { ( this.props.searchDisplayListItem.canEdit ) ? (
+                                <React.Fragment>
+                                    <span> </span>
+                                    <img src="static/images/icon-edit.png"
+                                         className=" clickable icon-small "
+                                         title="Edit name of folder"
+                                         onClick={ this._changeFolderName_Clicked_BindThis }
+                                    />
+                                </React.Fragment>
+                            ) : null }
+                            { ( this.props.searchDisplayListItem.canDelete ) ? (
+                                <React.Fragment>
+                                    <span> </span>
+                                    <img src="static/images/icon-circle-delete.png"
+                                         className=" clickable icon-small "
+                                         title="Delete folder.  Searches in it become 'Unfiled'."
+                                         onClick={ this._deleteFolder_Clicked_BindThis }
+                                    />
+                                </React.Fragment>
+                            ) : null }
                         </div>
                     </div>
 
