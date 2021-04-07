@@ -185,7 +185,8 @@ interface Tooltip_Limelight_Component_State {
 
     tooltip_Left? : number;
     tooltip_Top_PositionAbsolute? : number;  // tooltip_Top when use position absolute
-    tootooltip_BottomltipTop?
+    tooltip_Bottom_tipTop?
+    tooltip_width? : number;
 }
 
 /**
@@ -203,13 +204,22 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
         this.state = { 
             tooltip_Top_PositionAbsolute : 0,
-            tooltip_Left : -7000 //  Initially render where not visible, off to left of viewport
+            tooltip_Left : -7000, //  Initially render where not visible, off to right of viewport
+            tooltip_width: null  // NOT initally set
         };
         // console.log("class TooltipComponent: constructor()");
     }
 
     componentDidMount() {
         // console.log("class TooltipComponent: componentDidMount()");
+
+        window.setTimeout( () => {
+            this._processAfter_componentDidMount();
+        }, 10 )
+
+    }
+
+    private _processAfter_componentDidMount() {
 
         //   Do this here so have width and height of rendered tooltip
 
@@ -218,17 +228,15 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         //    1)  position of cell (left edge)
         //    2)  width of viewport
         //    3)  width of tooltip
-
-
         const vertical_FromCell = 10;
 
         const minimumVertical_FromBottom = 20;
         const minimumHorizontal_FromRightEdge = 30;
 
-        const targetDOMElement_domRect_Left = this.props.targetDOMElement_domRect_Left;
-        // const targetDOMElement_domRect_Right = this.props.targetDOMElement_domRect_Right;
-        const targetDOMElement_domRect_Top = this.props.targetDOMElement_domRect_Top;
-        const targetDOMElement_domRect_Bottom = this.props.targetDOMElement_domRect_Bottom;
+        const targetDOMElement_domRect_Left = Math.min( this.props.targetDOMElement_domRect_Left );
+        // const targetDOMElement_domRect_Right = Math.ceil( this.props.targetDOMElement_domRect_Right );
+        const targetDOMElement_domRect_Top = Math.min( this.props.targetDOMElement_domRect_Top );
+        const targetDOMElement_domRect_Bottom = Math.ceil( this.props.targetDOMElement_domRect_Bottom );
 
 
         const windowWidth = window.innerWidth;
@@ -239,29 +247,32 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
         const tooltip_outer_Ref_DOM = this.tooltip_outer_Ref.current;
 
+        //   TODO   TEMP For seeing tooltip_outer_Ref_DOM
+        // tooltip_outer_Ref_DOM.style.backgroundColor = "red"
+
         const tooltipDiv_domRect = tooltip_outer_Ref_DOM.getBoundingClientRect();
 
         /// tooltipDiv_domRect properties: left, top, right, bottom, x, y, width, and height
 
-        // const tooltipDiv_domRect_Left = tooltipDiv_domRect.left;
-        // const tooltipDiv_domRect_Right = tooltipDiv_domRect.right;
-        // const tooltipDiv_domRect_Top = tooltipDiv_domRect.top;
-        // const tooltipDiv_domRect_Bottom = tooltipDiv_domRect.bottom;
+        // const tooltipDiv_domRect_Left = Math.min( tooltipDiv_domRect.left );
+        // const tooltipDiv_domRect_Right = Math.ceil( tooltipDiv_domRect.right );
+        // const tooltipDiv_domRect_Top = Math.min( tooltipDiv_domRect.top );
+        // const tooltipDiv_domRect_Bottom = Math.ceil( tooltipDiv_domRect.bottom );
 
-        const tooltipDiv_domRect_Width = tooltipDiv_domRect.width;
-        const tooltipDiv_domRect_Height = tooltipDiv_domRect.height;
+        const tooltipDiv_domRect_Width = Math.ceil( tooltipDiv_domRect.width );
+        const tooltipDiv_domRect_Height = Math.ceil( tooltipDiv_domRect.height );
 
         //  Compute Tooltip horizontal position
 
-        let tooltip_Left = targetDOMElement_domRect_Left; // Align tooltip to left side of cell
+        let tooltip_Left_FromLeftEdgeOfViewport = targetDOMElement_domRect_Left; // Align tooltip to left side of cell
 
-        if ( ( tooltip_Left + tooltipDiv_domRect_Width + minimumHorizontal_FromRightEdge ) > windowWidth ) {
+        if ( ( tooltip_Left_FromLeftEdgeOfViewport + tooltipDiv_domRect_Width + minimumHorizontal_FromRightEdge ) > windowWidth ) {
 
             //  Tooltip CSS for width ensures that the tooltip will fit inside the viewport.
             //     Need to find a value for left that allows the full width of the tooltip to fit inside the viewport.
 
             //  Tooltip does not fit in viewport with that left so adjust left to the left so tooltip fits in viewport
-            tooltip_Left = windowWidth - tooltipDiv_domRect_Width - minimumHorizontal_FromRightEdge;
+            tooltip_Left_FromLeftEdgeOfViewport = windowWidth - tooltipDiv_domRect_Width - minimumHorizontal_FromRightEdge;
         }
 
         //  Compute Tooltip vertical position
@@ -297,14 +308,15 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
             }
         }
 
-        let tooltip_Top_PositionAbsolute = tooltip_Top_FromTopOfViewport + windowScrollY;
+        const tooltip_Left_PositionAbsolute = tooltip_Left_FromLeftEdgeOfViewport + windowScrollX;
+        const tooltip_Top_PositionAbsolute = tooltip_Top_FromTopOfViewport + windowScrollY;
 
-        this.setState({ tooltip_Left, tooltip_Top_PositionAbsolute });
+        this.setState({ tooltip_width : tooltipDiv_domRect_Width, tooltip_Left: tooltip_Left_PositionAbsolute, tooltip_Top_PositionAbsolute });
     }
 
-    // componentWillUnmount() {
-    //     // console.log("class TooltipComponent: componentWillUnmount()");
-    // }
+    componentWillUnmount() {
+        // console.log("class TooltipComponent: componentWillUnmount()");
+    }
 
     /**
      * 
@@ -323,6 +335,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
                     pointerEvents: "none",
                     top: tooltip_Top,
                     left: tooltip_Left,
+                    width: this.state.tooltip_width,
                     minWidth: 50, 
                     maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
                 }}
