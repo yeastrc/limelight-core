@@ -221,7 +221,7 @@ Run Magnum on Untreated Data
 
     .. code-block:: bash
 
-       sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum ./untreated-Magnum.conf
+       sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum:alpha3 ./untreated-Magnum.conf
 
 Run Percolator on Untreated Data
 ---------------------------------
