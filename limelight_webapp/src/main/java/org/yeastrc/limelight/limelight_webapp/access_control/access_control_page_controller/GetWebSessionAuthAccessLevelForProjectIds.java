@@ -314,6 +314,39 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 								result.noSession = true;
 								
 								return result;  //  EARLY EXIT
+								
+							} else {
+								
+								// Project Id matches one for Public Access Code in Session
+								
+								// Public Access Code in Project does NOT match Public Access Code in Session
+								
+								//  Forward to Sign In page which will display Public Access Code Input
+								
+
+								WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+										WebSessionAuthAccessLevelBuilder.getBuilder()
+										.set_authAccessLevel( AuthAccessLevelConstants.ACCESS_LEVEL_NONE )
+										.set_authAaccessLevelForProjectIdsIfNotLocked( AuthAccessLevelConstants.ACCESS_LEVEL_NONE )
+										.build();
+
+								GetWebSessionAuthAccessLevelForProjectIds_Result result = new GetWebSessionAuthAccessLevelForProjectIds_Result();
+								result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+								result.noSession = true;
+
+								if ( projectOnly_PublicAccessCodePublicAccessCodeEnabled.isPublicAccessCodeEnabled() && StringUtils.isNotEmpty( projectOnly_PublicAccessCodePublicAccessCodeEnabled.getPublicAccessCode() ) ) {
+									
+									result.project_Has_Enabled_ProjectAccessCode = true;
+									
+									//  Put for Sign In Page
+									
+									httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_PROJECT_ID, projectId );
+									
+									httpServletRequest.setAttribute( WebConstants.REQUEST_SIGNIN_PAGE_HAS_PROJECT_ACCESS_CODE_ENABLED, true );
+									
+								}
+								
+								return result;  //  EARLY EXIT
 							}
 						}
 					} else {
