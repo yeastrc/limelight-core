@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
-import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.ProjectMarkForDeletion_UsingDBTransactionService_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -62,10 +62,10 @@ public class Project_MarkForDeletion_RestWebserviceController {
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds;
-
-	@Autowired
-	private ProjectDAO_IF projectDAO;
 	
+	@Autowired
+	private ProjectMarkForDeletion_UsingDBTransactionService_IF projectMarkForDeletion_UsingDBTransactionService;
+
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
@@ -157,7 +157,7 @@ public class Project_MarkForDeletion_RestWebserviceController {
 				throw new LimelightInternalErrorException(msg);
 			}
 
-			projectDAO.updateMarkedForDeletion( true /* markedForDeletion */, projectId, userId );
+			projectMarkForDeletion_UsingDBTransactionService.projectMarkForDeletion( projectId, userId );
 
     		WebserviceResult projectViewSearchListResult = new WebserviceResult();
     		projectViewSearchListResult.statusSuccess = true;
