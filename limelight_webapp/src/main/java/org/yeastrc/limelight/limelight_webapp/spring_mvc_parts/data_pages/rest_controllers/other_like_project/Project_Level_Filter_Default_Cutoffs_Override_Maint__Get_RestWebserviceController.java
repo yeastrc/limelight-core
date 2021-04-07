@@ -150,7 +150,7 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Get_RestWebser
 			
 //			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
 			validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-			.validateProjectOwnerAllowed( projectIds, httpServletRequest );
+			.validatePublicAccessCodeReadAllowed( projectIds, httpServletRequest );
 
 			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> dbList =
 					projectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher.getAllForProjectId( projectId );

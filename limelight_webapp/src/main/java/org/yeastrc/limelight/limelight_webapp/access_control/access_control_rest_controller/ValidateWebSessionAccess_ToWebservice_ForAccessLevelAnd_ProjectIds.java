@@ -345,7 +345,7 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds 
 			exc.setProjectIdNotEnabledOrMarkedforDeletion(true);
 			throw exc;
 		}
-
+		
 		if ( userSession == null ) {
 			//  No user logged in so all projects must be public projects
 
@@ -380,6 +380,29 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds 
 
 			//  NOT a signed in user so test public access code
 
+			{  //  Is it a Public Project
+
+				Integer publicAccessLevel = projectOnlyProjectLockedPublicAccessLevel.getPublicAccessLevel();
+				
+				if ( publicAccessLevel != null ) {
+					
+					if ( minimumAccessLevelRequired >= publicAccessLevel ) {
+						
+						//  It IS a Public Project
+						
+						WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+								WebSessionAuthAccessLevelBuilder.getBuilder()
+								.set_authAccessLevel( publicAccessLevel )
+								.set_authAaccessLevelForProjectIdsIfNotLocked( publicAccessLevel )
+								.build();
+						
+						result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+						
+						return result; //  EARLY EXIT
+					}
+				}
+			}
+			
 			if ( StringUtils.isEmpty( userSession.getPublicAccessCode() ) || userSession.getProjectId_ForPublicAccessCode() == null ) {
 
 				//  No Public Access code in session so NO access
@@ -432,6 +455,22 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds 
 
 			authAccessLevel = projectUserDTO.getAccessLevel();
 			authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
+
+		} else {
+			
+			//  No Project Access record for this User
+			
+			//  Check if Project is Public
+
+			Integer publicAccessLevel = projectOnlyProjectLockedPublicAccessLevel.getPublicAccessLevel();
+			
+			if ( publicAccessLevel != null && publicAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_NONE ) {
+				
+				//  Project is Public Access level of other than NONE
+				
+				authAccessLevel = publicAccessLevel;
+				authAccessLevelForProjectIdsIfNotLocked = publicAccessLevel;
+			}
 		}
 
 		if ( userSession.getUserAccessLevel() != null 

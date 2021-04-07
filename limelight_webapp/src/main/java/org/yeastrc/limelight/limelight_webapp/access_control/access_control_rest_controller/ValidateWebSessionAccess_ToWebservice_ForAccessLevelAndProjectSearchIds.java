@@ -400,6 +400,22 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearc
 
 				authAccessLevel = projectUserDTO.getAccessLevel();
 				authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
+
+			} else {
+				
+				//  No Project Access record for this User
+				
+				//  Check if Project is Public
+
+				Integer publicAccessLevel = projectOnlyProjectLockedPublicAccessLevel.getPublicAccessLevel();
+				
+				if ( publicAccessLevel != null && publicAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_NONE ) {
+					
+					//  Project is Public Access level of other than NONE
+					
+					authAccessLevel = publicAccessLevel;
+					authAccessLevelForProjectIdsIfNotLocked = publicAccessLevel;
+				}
 			}
 
 			if ( userSession.getUserAccessLevel() != null 

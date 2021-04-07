@@ -238,6 +238,32 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 			
 			if ( ! userSession.isActualUser() ) {
 				
+				//  Not a signed in user
+				
+				//  First test if project is public project
+				
+
+				Integer publicAccessLevel = projectOnlyProjectLockedPublicAccessLevel.getPublicAccessLevel();
+				
+				if ( publicAccessLevel != null && publicAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_NONE ) {
+					
+					//  Project is Public Access level of other than NONE
+					
+					WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+							WebSessionAuthAccessLevelBuilder.getBuilder()
+							.set_authAccessLevel( publicAccessLevel )
+							.set_authAaccessLevelForProjectIdsIfNotLocked( publicAccessLevel )
+							.build();
+
+					GetWebSessionAuthAccessLevelForProjectIds_Result result = new GetWebSessionAuthAccessLevelForProjectIds_Result();
+					result.webSessionAuthAccessLevel = webSessionAuthAccessLevel;
+					
+					result.noSession = true;
+					
+					return result;  //  EARLY EXIT
+				}
+				
+				
 				//  NOT a signed in user so test public access code
 				
 				if ( StringUtils.isEmpty( userSession.getPublicAccessCode() ) || userSession.getProjectId_ForPublicAccessCode() == null ) {
@@ -346,7 +372,26 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 
 					authAccessLevel = projectUserDTO.getAccessLevel();
 					authAccessLevelForProjectIdsIfNotLocked = projectUserDTO.getAccessLevel();
+				
+				} else {
+					
+					//  No Project Access record for this User
+					
+					//  Check if Project is Public
+
+					Integer publicAccessLevel = projectOnlyProjectLockedPublicAccessLevel.getPublicAccessLevel();
+					
+					if ( publicAccessLevel != null && publicAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_NONE ) {
+						
+						//  Project is Public Access level of other than NONE
+						
+						authAccessLevel = publicAccessLevel;
+						authAccessLevelForProjectIdsIfNotLocked = publicAccessLevel;
+					}
+					
 				}
+				
+				
 			}
 		}
 
