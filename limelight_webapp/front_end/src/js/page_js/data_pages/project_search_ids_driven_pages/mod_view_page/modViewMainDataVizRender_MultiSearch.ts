@@ -157,7 +157,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             .style("border-width", "1px")
             .style("visibility", "hidden")
             .style("padding", "10px")
-            .style("max-width", "250px");
+            .style("min-width", "250px")   //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
+            .style("max-width", "250px");  //  max-width
 
         // keep track of what the user has selected to see
         let selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject = vizOptionsData.data.selectedStateObject;
@@ -1194,14 +1195,14 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( d.projectSearchId );
 
-                    ModViewDataVizRenderer_MultiSearch.showToolTip({
-                        projectSearchId,
-                        modMass: d.modMass,
-                        psmCount: d.psmCount,
-                        tooltip,
-                        vizOptionsData,
-                        dataPageStateManager_DataFrom_Server
-                    })
+                ModViewDataVizRenderer_MultiSearch.showToolTip({
+                    projectSearchId,
+                    modMass: d.modMass,
+                    psmCount: d.psmCount,
+                    tooltip,
+                    vizOptionsData,
+                    dataPageStateManager_DataFrom_Server
+                })
             })
             .on("mouseleave", function (d, i) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
@@ -1227,7 +1228,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             projectSearchId, modMass, psmCount, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
             projectSearchId : number,
-            modMass, psmCount, tooltip,
+            modMass,
+            psmCount,
+            tooltip,
             vizOptionsData: ModView_VizOptionsData,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
@@ -1259,13 +1262,18 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         // @ts-ignore
-        const pageY = event.pageY
+        const mousePointer_pageY = window.event.pageY
         // @ts-ignore
-        const pageX = event.pageX
+        const mousePointer_pageX = window.event.pageX
+
+        const tooltip_horizontal_Offset = 20;
+
+        const tooltip_Left = mousePointer_pageX + tooltip_horizontal_Offset;
+        const tooltip_Top = mousePointer_pageY + 20;
 
         tooltip
-            .style("top", (pageY + 20)+"px")
-            .style("left",(pageX + 20)+"px")
+            .style("left", tooltip_Left + "px")
+            .style("top", tooltip_Top + "px")
             .style("visibility", "visible")
             .style("word-break", "break-word")
             .html( function() {
@@ -1286,6 +1294,42 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 return txt;
             });
+
+        //  If tooltip extends past right edge of viewport, position to left of mouse position
+
+        const widthAllowance_For_VerticalScrollbar = 10;
+        const widthAllowance_For_PaddingFrom_VerticalScrollbar = 10;
+        const widthAllowance_For_PaddingFrom_LeftViewportEdge = 10;
+
+        const window_innerWidth = window.innerWidth
+        const window_scrollX = window.scrollX
+
+        const mod_viz_tooltip_DOM = document.getElementById("mod-viz-tooltip");
+        const mod_viz_tooltip_BoundingRect = mod_viz_tooltip_DOM.getBoundingClientRect();
+
+        const tooltipWidth = mod_viz_tooltip_BoundingRect.width;
+
+        if ( ( ( tooltip_Left - window_scrollX ) + tooltipWidth + widthAllowance_For_VerticalScrollbar + widthAllowance_For_PaddingFrom_VerticalScrollbar ) > window_innerWidth ) {
+
+            let tooltip_Left_WithinViewport_PositionToLeft = mousePointer_pageX - tooltip_horizontal_Offset - tooltipWidth
+
+            // console.warn(
+            //     "mousePointer_pageX: " + mousePointer_pageX
+            //     + "tooltip_horizontal_Offset: " + tooltip_horizontal_Offset
+            //     + "tooltipWidth: " + tooltipWidth
+            // )
+
+            if ( tooltip_Left_WithinViewport_PositionToLeft < ( window_scrollX + widthAllowance_For_PaddingFrom_LeftViewportEdge ) ) {
+                tooltip_Left_WithinViewport_PositionToLeft = ( window_scrollX + widthAllowance_For_PaddingFrom_LeftViewportEdge );
+            }
+
+            const tooltip_Left_PositionToLeft = tooltip_Left_WithinViewport_PositionToLeft; // + window_scrollX;
+
+            tooltip
+                .style("left", tooltip_Left_PositionToLeft + "px")
+        }
+
+
     }
 
     static hideToolTip({ tooltip }) {
