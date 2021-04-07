@@ -78,7 +78,7 @@ Run Magnum
 
     .. code-block:: bash
 
-       sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum ./treated-Magnum.conf
+       sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum:alpha3 ./treated-Magnum.conf
 
     You should see Magnum output its progress as it searches the file.
 
