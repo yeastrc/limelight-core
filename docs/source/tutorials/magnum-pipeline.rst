@@ -164,12 +164,14 @@ Steps to upload your data to Limelight:
 
      .. image:: /_static/import-limelight-xml.png
 
- 5. Click on the ``+Add Limelight XML File`` link and select your Limelight XML file on your computer.
+ 5. Enter a description of this run. E.g., ``Treated``.
 
- 6. (Optional) Click on the ``+Add Scan File`` link and select your mzml file on your computer. This is required
+ 6. Click on the ``+Add Limelight XML File`` link and select your Limelight XML file on your computer.
+
+ 7. (Optional) Click on the ``+Add Scan File`` link and select your mzml file on your computer. This is required
     if you would like to view spectra associated with peptide identifications.
 
- 7. Click the ``Submit Upload`` button to submit your data to Limelight.
+ 8. Click the ``Submit Upload`` button to submit your data to Limelight.
 
 After several minutes, refresh the page and your search should appear under the ``Explore Data`` section
 of the project page. Click on the ``Peptides``, ``Proteins``, or ``Modifications`` links to view the
