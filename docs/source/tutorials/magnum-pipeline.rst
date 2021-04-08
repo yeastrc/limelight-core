@@ -193,7 +193,7 @@ Get the untreated data
     .. code-block:: bash
 
        # download data from Google Drive into your project directory
-       wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1HHur4Vm8s20VYwp6eWUxReIy4nax-4GF' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1HHur4Vm8s20VYwp6eWUxReIy4nax-4GF" -O untreated.tgz && rm -rf /tmp/cookies.txt
+       wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1AzGMBh9kCByX2K5esBS3RDF-7ZTxsSiK' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1AzGMBh9kCByX2K5esBS3RDF-7ZTxsSiK" -O treated.tgz && rm -rf /tmp/cookies.txt
        tar -xvzf untreated.tgz
 
     .. note::
