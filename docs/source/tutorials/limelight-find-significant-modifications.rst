@@ -71,7 +71,7 @@ Once your data are imported, the searches will appear under the ``Explore Data``
 
      .. image:: /_static/tutorials/explore-data.png
 
-You will see your two searches listed here. Two find the modifications with significantly different
+You will see your two searches listed here. To find the modifications with significantly different
 spectral counts between the searches, click the check box next to each search and click the
 ``Compare Mod View`` button:
 
