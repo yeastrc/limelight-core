@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -161,7 +162,12 @@ public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service im
     					for ( ProjectPageSingleFolder folder : projectPageFoldersSearches.getFolders() ) {
     						
     						if ( folder.getSearches() != null ) {
-    							for ( SearchItemMinimal search : folder.getSearches() ) {
+    							
+    							List<SearchItemMinimal> searchList = folder.getSearches();
+
+    							sortSearches( searchList );
+    							
+    							for ( SearchItemMinimal search : searchList ) {
     								Integer projectSearchId_Of_Search = search.getProjectSearchId();
     								if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
     									
@@ -174,6 +180,11 @@ public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service im
     				}
     				
     				if ( projectPageFoldersSearches.getSearchesNotInFolders() != null ) {
+
+						List<SearchItemMinimal> searchList = projectPageFoldersSearches.getSearchesNotInFolders();
+
+						sortSearches( searchList );
+						
     					for ( SearchItemMinimal search : projectPageFoldersSearches.getSearchesNotInFolders() ) {
 							Integer projectSearchId_Of_Search = search.getProjectSearchId();
 							if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
@@ -236,4 +247,37 @@ public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service im
 
 		return result;
 	}
+	
+	/**
+	 * @param searchList
+	 */
+	private void sortSearches( List<SearchItemMinimal> searchList ) {
+		
+		Collections.sort( searchList, new Comparator<SearchItemMinimal>() {
+
+			@Override
+			public int compare(SearchItemMinimal o1, SearchItemMinimal o2) {
+
+				// display order ascending
+				if ( o1.getDisplayOrder() < o2.getDisplayOrder() ) {
+					return -1;
+				}
+				if ( o1.getDisplayOrder() > o2.getDisplayOrder() ) {
+					return 1;
+				}
+				// search id descending
+				if ( o1.getSearchId() < o2.getSearchId() ) {
+					return 1;
+				}
+				if ( o1.getSearchId() > o2.getSearchId() ) {
+					return -1;
+				}
+
+				return 0;
+			}
+			
+		});
+		
+	}
+
 }
