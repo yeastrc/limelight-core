@@ -197,6 +197,9 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
     private tooltip_outer_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted: boolean = false;
+    private _timeoutId_ComponentDidMount_RunAfter_SetTimeout: number
+
     constructor(props : Tooltip_Limelight_Component_Props) {
         super(props);
 
@@ -205,7 +208,7 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         this.state = { 
             tooltip_Top_PositionAbsolute : 0,
             tooltip_Left : -7000, //  Initially render where not visible, off to right of viewport
-            tooltip_width: null  // NOT initally set
+            tooltip_width: null  // NOT initially set
         };
         // console.log("class TooltipComponent: constructor()");
     }
@@ -213,13 +216,34 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
     componentDidMount() {
         // console.log("class TooltipComponent: componentDidMount()");
 
-        window.setTimeout( () => {
-            this._processAfter_componentDidMount();
-        }, 10 )
+        this._componentMounted = true;
+
+        this._timeoutId_ComponentDidMount_RunAfter_SetTimeout =
+            window.setTimeout( () => {
+
+                this._processAfter_componentDidMount();
+
+            }, 10 )
 
     }
 
     private _processAfter_componentDidMount() {
+
+        if ( ! this._componentMounted ) {
+
+            //  Component no longer mounted.
+
+            return; // EARLY RETURN
+        }
+
+        const tooltip_outer_Ref_DOM = this.tooltip_outer_Ref.current;
+
+        if ( ! tooltip_outer_Ref_DOM ) {
+
+            //  DOM element NOT available
+
+            return; // EARLY RETURN
+        }
 
         //   Do this here so have width and height of rendered tooltip
 
@@ -244,8 +268,6 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         const windowScrollX = window.scrollX;
         const windowScrollY = window.scrollY;
 
-
-        const tooltip_outer_Ref_DOM = this.tooltip_outer_Ref.current;
 
         //   TODO   TEMP For seeing tooltip_outer_Ref_DOM
         // tooltip_outer_Ref_DOM.style.backgroundColor = "red"
@@ -316,6 +338,14 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
     componentWillUnmount() {
         // console.log("class TooltipComponent: componentWillUnmount()");
+
+        this._componentMounted = false;
+
+        try {
+            window.clearTimeout( this._timeoutId_ComponentDidMount_RunAfter_SetTimeout );
+        } catch (e) {
+            //  eat exception
+        }
     }
 
     /**
