@@ -488,6 +488,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+            forPeptidePage: false,
             searchSubGroup_Ids_Selected : null,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
@@ -766,6 +767,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+            forPeptidePage: false,
             searchSubGroup_Ids_Selected : null,
 
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
@@ -2063,6 +2065,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                             const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+                                forPeptidePage: false,
                                 searchSubGroup_Ids_Selected : null,
                                 generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,

@@ -96,6 +96,8 @@ export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Resul
  */
 export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein = function(
     {
+        forPeptidePage,
+
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
         generatedPeptideContents_UserSelections_StateObject,
@@ -105,6 +107,8 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         loadedDataCommonHolder
     } : {
+        forPeptidePage: boolean
+
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
@@ -206,6 +210,9 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                     || ( generatedPeptideContents_UserSelections_StateObject && generatedPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) ) ) {
 
                 _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMIds_AndOpenMods({
+
+                    forPeptidePage,
+
                     reportedPeptideId,
                     psmIds_ToProcess : psmIds_Include,
 
@@ -233,6 +240,9 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
                 //  No Open Mods or Not showing Open Mods
 
                 _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM({
+
+                    forPeptidePage,
+
                     reportedPeptideId,
                     psmIds_ToAdd : undefined,
 
@@ -319,6 +329,8 @@ const _anyOpenMods_For_ReportedPeptide = function (
  */
 const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMIds_AndOpenMods = function (
     {
+        forPeptidePage,
+
         reportedPeptideId,
         psmIds_ToProcess,
 
@@ -341,6 +353,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
         peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
     } : {
+        forPeptidePage: boolean
+
         reportedPeptideId : number
         psmIds_ToProcess : ReadonlySet<number>  // Optional
 
@@ -472,6 +486,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
             //  NO Open Mods for PSM
 
             _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM({
+
+                forPeptidePage,
+
                 reportedPeptideId,
                 psmIds_ToAdd,
 
@@ -505,6 +522,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                 //  No Position OR WithLocalization NOT selected
 
                 _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM({
+
+                    forPeptidePage,
+
                     reportedPeptideId,
                     psmIds_ToAdd,
 
@@ -545,6 +565,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                             open_Modification_Rounded_Position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX;
                         }
                         _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM({
+
+                            forPeptidePage,
+
                             reportedPeptideId,
                             psmIds_ToAdd,
 
@@ -582,6 +605,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
  */
 const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM = function (
     {
+        forPeptidePage,
+
         reportedPeptideId,
         psmIds_ToAdd,
 
@@ -605,6 +630,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
 
         peptideItems_Map_Key_peptideSequenceDisplayString //  UPDATED
     } : {
+        forPeptidePage: boolean
+
         reportedPeptideId : number
         psmIds_ToAdd : Set<number>  // Optional
 
@@ -742,7 +769,10 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         peptideItems_Map_Key_peptideSequenceDisplayString.set( peptideSequenceDisplay, peptideItem );
     }
 
-    _update_peptideItem_Pre_Post_Residues({reportedPeptideId,proteinSequenceVersionId,loadedDataPerProjectSearchIdHolder,loadedDataCommonHolder,peptideItem});
+    if ( ! forPeptidePage ) {
+
+        _update_peptideItem_Pre_Post_Residues({reportedPeptideId,proteinSequenceVersionId,loadedDataPerProjectSearchIdHolder,loadedDataCommonHolder,peptideItem});
+    }
 
     if ( numPsms !== undefined ) {
         peptideItem.numPsmsTotal += numPsms;  // TODO  Maybe do something different instead

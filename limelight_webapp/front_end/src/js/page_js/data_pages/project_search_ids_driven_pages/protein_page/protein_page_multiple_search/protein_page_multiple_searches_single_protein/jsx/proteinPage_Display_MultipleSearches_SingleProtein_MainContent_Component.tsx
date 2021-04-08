@@ -411,8 +411,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
         const psmCountForUnfilteredDisplay = psmCountForUnfiltered.toLocaleString();
         
-        const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({ 
+        const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+            forPeptidePage: false,
             searchSubGroup_Ids_Selected,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
@@ -673,6 +674,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
             const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+                forPeptidePage: false,
                 searchSubGroup_Ids_Selected,
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
 
@@ -2036,8 +2038,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
                             
 
-                            const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({ 
+                            const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+                                forPeptidePage: false,
                                 searchSubGroup_Ids_Selected,
                                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                                 generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,

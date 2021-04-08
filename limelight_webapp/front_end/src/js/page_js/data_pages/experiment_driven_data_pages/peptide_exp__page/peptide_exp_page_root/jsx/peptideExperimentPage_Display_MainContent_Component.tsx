@@ -695,6 +695,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result =
             create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+                forPeptidePage: true,
                 searchSubGroup_Ids_Selected : undefined,
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                 generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
@@ -762,6 +763,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
             const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+                forPeptidePage: true,
                 searchSubGroup_Ids_Selected : undefined,
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
 
@@ -2119,6 +2121,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
                             const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
 
+                                forPeptidePage: true,
                                 searchSubGroup_Ids_Selected : undefined,
                                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                                 generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
