@@ -64,6 +64,8 @@ export class ProjectPage_UploadData_NewUploadMain {
 	private xmlHttpRequest = undefined;
 	private uploadKey = undefined;
 
+	private uploadFile_UploadInProgress_Canceled: boolean = false;
+
 	/**
 	 * 
 	 */
@@ -606,7 +608,10 @@ export class ProjectPage_UploadData_NewUploadMain {
 	 */
 	abortXMLHttpRequestSend( params ) {
 		let fileIndex = params.fileIndex;
-		let projectPage_UploadData_NewSingleFileEntry = params.projectPage_UploadData_NewSingleFileEntry; 
+		let projectPage_UploadData_NewSingleFileEntry = params.projectPage_UploadData_NewSingleFileEntry;
+
+		this.uploadFile_UploadInProgress_Canceled = true;
+
 		if ( ! fileIndex && ! projectPage_UploadData_NewSingleFileEntry ) {
 			throw Error( "fileIndex or projectPage_UploadData_NewSingleFileEntry is required" ); 
 		}
@@ -863,10 +868,18 @@ export class ProjectPage_UploadData_NewUploadMain {
 		this.progressBarClear( { $containingBlock : $containingBlock } );
 
 
+		/////////////
+
+		//   Read the file to upload in blocks and send each block to the server in its own AJAX request
+
+
+		this.uploadFile_UploadInProgress_Canceled = false;  //  reset to false
 
 
 		const start = 0;
-		const step = this.maxFileUploadChunkSize;   // size of one chunk.  this.maxFileUploadChunkSize  from server max size
+
+		const step = this.maxFileUploadChunkSize;   // size of one chunk/block to send to the server.  this.maxFileUploadChunkSize  from server max size
+
 		const totalFileSize = fileToUpload.size;  // total size of file
 
 
@@ -879,6 +892,9 @@ export class ProjectPage_UploadData_NewUploadMain {
 
 
 		reader.onload = (e) => {
+
+			//  reader.onload  triggered by reader.readAsBinaryString
+			//     					reader.readAsBinaryString called above for first read and down below for each following read
 
 			const contentToSend = reader.result
 
@@ -906,6 +922,13 @@ export class ProjectPage_UploadData_NewUploadMain {
 
 			promise_uploadFile_Send_A_Block_HandleResponse_HighLevel.then( result => {
 
+				if ( this.uploadFile_UploadInProgress_Canceled ) {
+
+					//  Upload canceled so skip
+
+					return;  //  EARY RETURN
+				}
+
 				processedBytes_OfFile += step;
 
 				if ( processedBytes_OfFile <= totalFileSize ) {
@@ -917,6 +940,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 					this.progressBarUpdate( { progressPercent : progressPercent, $containingBlock : $containingBlock }  );
 
 					const blob = fileToUpload.slice(processedBytes_OfFile, processedBytes_OfFile + step);  // getting next chunk
+
 					reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
 
 				} else {
@@ -965,6 +989,15 @@ export class ProjectPage_UploadData_NewUploadMain {
 
 		while (true) {  // Exit using 'return' inside loop
 			try {
+
+				if ( this.uploadFile_UploadInProgress_Canceled ) {
+
+					//  Upload canceled so skip
+
+					return;  //  EARY RETURN
+				}
+
+
 				const midLevel_Response = await this._uploadFile_Send_A_Block_HandleResponse_MidLevel(
 					{
 						projectPage_UploadData_NewSingleFileEntry,
@@ -977,17 +1010,24 @@ export class ProjectPage_UploadData_NewUploadMain {
 						uploadFileSize,
 						fileChunk_StartByte,
 						contentToSend
-					})
+					});
 
 				return midLevel_Response;
 
 			} catch (error) {
 
+				console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error: ", error );
+
 				if ( error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR ) {
+
+					console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. retryCount_NetworkError before increment: "
+					+ retryCount_NetworkError + ", error: ", error );
 
 					retryCount_NetworkError++;
 
 					if ( retryCount_NetworkError > retryCount_NetworkError_RetryCountMax ) {
+
+						console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. ( retryCount_NetworkError > retryCount_NetworkError_RetryCountMax ) error: ", error );
 
 						let errorMessage = "File NOT Uploaded.  Error connecting to server";
 						this.failedFileUpload(
@@ -1001,6 +1041,8 @@ export class ProjectPage_UploadData_NewUploadMain {
 						throw error;
 					}
 				} else {
+
+					console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error !== LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. error: ", error );
 
 					throw error;
 				}
