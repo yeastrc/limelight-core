@@ -156,14 +156,14 @@ the mzml file.
 
       .. note::
          If you are using Windows, this step is greatly simplified by first copying your Limelight XML file to a
-         Windows filesystem drive, such as ``C:\``. To do this enter the following into the Linux terminal:
+         Windows filesystem drive, such as ``C:\``. To copy ``treated.limelight.xml`` to ``C:\data_directory\`` you would
+         enter the following into your terminal.
 
          .. code-block:: bash
 
           cp ~/my-project/treated.limelight.xml /mnt/c/data_directory/treated.limelight.xml
 
-         Where ``data_directory`` is a directory of your choice. This is the file's location that you will
-         upload to Limelight.
+         ``/mnt/c/`` corresponds to your ``C:\`` drive. ``/mnt/d/`` corresponds to your ``D:\`` drive, and so on.
 
 
 Steps to upload your data to Limelight:
