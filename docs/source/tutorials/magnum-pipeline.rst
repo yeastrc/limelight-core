@@ -82,6 +82,20 @@ Run Magnum
 
     You should see Magnum output its progress as it searches the file.
 
+    .. note::
+       If you are using **Windows**, the Docker engine may not be running. To test this type:
+
+       .. code-block:: bash
+
+          sudo docker image ls
+
+       If you see ``Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`` docker is not
+       running. To start  docker type:
+
+       .. code-block:: bash
+
+          sudo service docker start
+
 `Visit the official Magnum website <https://magnum-ms.org/>`_ for more information about Magnum.
 
 Run Percolator

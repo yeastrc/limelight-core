@@ -62,21 +62,9 @@ Copy and paste each of the following commands, one by one, into the Linux termin
        apt-cache policy docker-ce
        sudo apt install docker-ce -y
 
-    .. note::
-       If you are using **Windows**, the Docker engine may not start automatically. To test this type:
+       # If you are on Windows, start Docker with:
+       sudo service docker start
 
-       .. code-block:: bash
-
-          sudo docker image ls
-
-       If you see ``Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`` docker is not
-       running. To start  docker type:
-
-       .. code-block:: bash
-
-          sudo service docker start
-
-       Windows users will need to do this every time they restart their computer and open a terminal to start Docker.
 
 CentOS
 ------
