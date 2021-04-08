@@ -90,11 +90,13 @@ Run Magnum
           sudo docker image ls
 
        If you see ``Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`` docker is not
-       running. To start  docker type:
+       running. To start docker type:
 
        .. code-block:: bash
 
           sudo service docker start
+
+       You should now be able to run step 2 above.
 
 `Visit the official Magnum website <https://magnum-ms.org/>`_ for more information about Magnum.
 
