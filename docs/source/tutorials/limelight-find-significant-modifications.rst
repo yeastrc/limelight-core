@@ -94,7 +94,7 @@ To restrict the mod masses to those with a mass of 60 or higher, change the mini
 
 The page should update to the following:
 
-     .. image:: /_static/tutorials/mod-view-60-plus.png
+     .. image:: /_static/tutorials/mod-view-interesting-bands.png
 
 The heat map is more informative. Note the bands that appear near 470 in the treated sample, but not the untreated
 sample.
@@ -102,8 +102,9 @@ sample.
 Run the Report
 ===============
 To run a statistical analysis comparing the spectral counts for mod masses in the two searches, click the
-``View ZScore Report`` link below the data visualization, depicted in the previous screen shot with a
-red arrow.
+``View ZScore Report`` link below the data visualization:
+
+     .. image:: /_static/tutorials/mod-view-report-link.png
 
 This will compare the ratio of PSMs that have a given mod mass to all PSMs in each search using a test for
 proportions and produce the following report:
