@@ -1,9 +1,8 @@
-Getting Started
+=========================
+Welcome to Limelight
 =========================
 
-**limelight** is a web application for sharing and visualizing
-bottom up proteomics results.
-
+**Limelight** is a web application for analyzing, visualizing, and sharing and bottom-up proteomics results.
 
 Citing
 ===============
@@ -16,18 +15,22 @@ If you use limelight in your work, please cite:
 Introduction
 =============
 
-Coming Soon
+**Limelight** is designed to provide you with the full-stack of proteomics results, regardless of which processing
+pipeline you used to search your data. Full-stack means that you have access to the global views of your
+data (such as statistically comparing conditions), to viewing lists of proteins and peptides, to individual PSMs
+and spectra--all showing the native scores from whichever pipeline you used. Additionally, all native scores from
+your pipeline are available to you for filtering--even when contrasting multiple searches that each used different
+pipelines.
 
 
-Need help?
-##########
+Tutorials for Running Pipeline
+==================================
+We have developed tutorials to accompany Riffle M, Hoopmann M, et al. (2021) that describe the process for
+running the Magnum, Percolator, Limelight pipeline; and how to then perform the statistical test for finding
+mods of interest in Limelight. Please see our :ref:`Tutorials Page <Tutorials>`
 
-Coming soon
-
- 
 .. toctree::
-   :hidden:
-   :maxdepth: 1
+   :maxdepth: 2
 
    self
    tutorials
