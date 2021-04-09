@@ -134,7 +134,8 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             };
 
             if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force ) {
-                if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue ) {
+                if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue
+                    && props.searchesAndFolders && props.searchesAndFolders.folderList) {
 
                     const folderIds_ExpandedFolders_InProgress: Set<number> = new Set();
                     for ( const entry of props.searchesAndFolders.folderList ) {
