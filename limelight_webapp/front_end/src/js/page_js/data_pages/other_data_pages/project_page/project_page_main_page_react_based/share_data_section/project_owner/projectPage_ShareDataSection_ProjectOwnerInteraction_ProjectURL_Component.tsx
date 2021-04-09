@@ -453,6 +453,7 @@ class CustomizeProjectURL_Overlay_Component extends React.Component< CustomizePr
                                 <input type="text"
                                        style={ { width: 200 } }
                                        maxLength={ _projectLabelLengthMax }
+                                       autoFocus={ true }
                                        ref={ this._customLabel_Input_Ref }
                                        defaultValue={ ( this.props.currentCustomLabel ) ?  this.props.currentCustomLabel : "" }
                                        onChange={ this._customLabel_Input_Changed_BndThis }
