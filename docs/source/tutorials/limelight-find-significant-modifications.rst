@@ -19,10 +19,10 @@ Although uploading data is covered in our :ref:`Magnum Pipeline Tutorial <Magnum
 repeat those steps here. If you have already uploaded your ``treated.limelight.xml`` and ``untreated.limelight.xml``
 files to Limelight, skip this step.
 
-
       .. note::
-         If you are using Windows, this step is greatly simplified by first copying your Limelight XML file to a
-         Windows filesystem drive, such as ``C:\``. To do this enter the following into the Linux terminal:
+         If you are using Windows, this step is greatly simplified by first copying your Limelight XML files to a
+         Windows filesystem drive, such as ``C:\``. To copy ``treated.limelight.xml`` and ``untreated.limelight.xml``
+         to ``C:\data_directory\`` you would enter the following into your terminal.
 
          .. code-block:: bash
 
@@ -33,8 +33,7 @@ files to Limelight, skip this step.
           cp ~/my-project/treated.mzML /mnt/c/data_directory/treated.mzML
           cp ~/my-project/untreated.mzML /mnt/c/data_directory/untreated.mzML
 
-         Where ``data_directory`` is a directory of your choice. This is the file's location from which you will
-         upload to Limelight.
+         ``/mnt/c/`` corresponds to your ``C:\`` drive. ``/mnt/d/`` corresponds to your ``D:\`` drive, and so on.
 
 
 Steps to upload your data to Limelight:
