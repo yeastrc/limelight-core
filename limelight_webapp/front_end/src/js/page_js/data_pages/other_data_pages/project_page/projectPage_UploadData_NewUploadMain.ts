@@ -33,6 +33,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 //  Local Imports:
 
 import { ProjectPage_UploadData_NewSingleFileEntry } from './projectPage_UploadData_NewSingleFileEntry';
+import {createSpinner, destroySpinner} from "page_js/common_all_pages/spinner";
 
 
 const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json"  //  Keep in sync with server side
@@ -1634,11 +1635,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let $limelight_xml_file_upload_submit_in_progress = $("#limelight_xml_file_upload_submit_in_progress");
 		$limelight_xml_file_upload_submit_in_progress.show();
 
-		// @ts-ignore
-		const createSpinner = window.createSpinner
-		if ( createSpinner ) {
-			createSpinner();				// create spinner
-		}
+		createSpinner();				// create spinner
 	}
 	
 	/**
@@ -1649,11 +1646,7 @@ export class ProjectPage_UploadData_NewUploadMain {
 		let $limelight_xml_file_upload_submit_in_progress = $("#limelight_xml_file_upload_submit_in_progress");
 		$limelight_xml_file_upload_submit_in_progress.hide();
 
-		// @ts-ignore
-		const destroySpinner = window.destroySpinner;
-		if ( destroySpinner ) {
-			destroySpinner();				// destroy spinner
-		}
+		destroySpinner();				// destroy spinner
 	}
 	
 	/**
