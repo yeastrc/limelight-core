@@ -504,6 +504,11 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			//  only rethrow Error Response Exceptions 
 			throw e;
 
+		} catch ( java.io.EOFException e ) {
+			String msg = "Failed in controller with java.io.EOFException (Most likely aborted in browser but also network error): ";
+			log.warn( msg, e );
+			throw new Limelight_WS_InternalServerError_Exception();
+			
 		} catch ( Exception e ) {
 			String msg = "Failed in controller: ";
 			log.error( msg, e );

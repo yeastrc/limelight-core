@@ -42,12 +42,10 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.en
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_Base;
-import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_WebJSON;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectIdIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
-import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId_Result;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -532,6 +530,11 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 			//  only rethrow Error Response Exceptions 
 			throw e;
 
+		} catch ( java.io.EOFException e ) {
+			String msg = "Failed in controller with java.io.EOFException (Most likely aborted in browser but also network error): ";
+			log.warn( msg, e );
+			throw new Limelight_WS_InternalServerError_Exception();
+			
 		} catch ( Exception e ) {
 			String msg = "Failed in controller: ";
 			log.error( msg, e );
