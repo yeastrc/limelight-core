@@ -66,6 +66,7 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
 
     callback_updateSelected_Searches : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds
     callback_Update_folderIds_ExpandedFolders: ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback
+    callback_SearchDeleted: () => void
 }
 
 /**
@@ -209,6 +210,8 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
         this.props.searchesAndFolders.searchesNotInFolders = new_searchesInFolder;
 
         this.setState({ fakeTriggerRender: {} })
+
+        this.props.callback_SearchDeleted()
     }
 
     /**

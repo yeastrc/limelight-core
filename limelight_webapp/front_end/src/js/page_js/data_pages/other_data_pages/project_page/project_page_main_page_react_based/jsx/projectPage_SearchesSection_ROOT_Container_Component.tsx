@@ -28,6 +28,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Open_DataPages_PeptideProteinMod";
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
+import {ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint_Props} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_Single_ConditionGroupMaint";
 
 
 
@@ -55,6 +56,8 @@ interface ProjectPage_SearchesSection_ROOT_Component_State {
     copy_move_ButtonsDisabled?: boolean
 
     searchesAndFolders?: ProjectPage_SearchesSection_Searches_Folders_Root
+
+    showNoSearchesMessage?: boolean
 }
 
 /**
@@ -74,6 +77,7 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
     private _collapse_All_Button_Clicked_BindThis = this._collapse_All_Button_Clicked.bind(this);
 
     private _callback_updateSelected_Searches_BindThis = this._callback_updateSelected_Searches.bind(this);
+    private _callback_SearchDeleted_BindThis = this._callback_SearchDeleted.bind(this);
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
@@ -90,7 +94,8 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
             projectSearchIds_Selected_InProgress: new Set(),
             expand_All_Folders__ShowSearchDetailsTo_Global_Force: null,
             compareButtonsDisabled: true,
-            copy_move_ButtonsDisabled: true
+            copy_move_ButtonsDisabled: true,
+            showNoSearchesMessage: false
         }
     }
 
@@ -108,7 +113,13 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         })
         promise.then( (searchesAndFolders) => {
             try {
-                this.setState({ searchesAndFolders});
+
+                let showNoSearchesMessage = false;
+                if ( searchesAndFolders && searchesAndFolders.noSearchesFound ) {
+                    showNoSearchesMessage = true;
+                }
+
+                this.setState({ searchesAndFolders, showNoSearchesMessage });
 
             } catch (e) {
                 reportWebErrorToServer.reportErrorObjectToServer({
@@ -137,6 +148,40 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         this.setState({
             projectSearchIds_Selected_InProgress: params.updated_selected_ProjectSearchIds,
             compareButtonsDisabled, copy_move_ButtonsDisabled: copy_move_organize_ButtonsDisabled
+        });
+    }
+
+    /**
+     *
+     */
+    private _callback_SearchDeleted() : void {
+
+        this.setState( (state : ProjectPage_SearchesSection_ROOT_Component_State, props : ProjectPage_SearchesSection_ROOT_Component_Props ) : ProjectPage_SearchesSection_ROOT_Component_State => {
+
+            let found_A_Search = false;
+
+            if (  state.searchesAndFolders ) {
+                if ( state.searchesAndFolders.searchesNotInFolders ) {
+                    if ( state.searchesAndFolders.searchesNotInFolders.length > 0 ) {
+                        found_A_Search = true;
+                    }
+                }
+
+                if ( ! found_A_Search ) {
+                    if (state.searchesAndFolders.folderList) {
+                        for (const folder of state.searchesAndFolders.folderList) {
+                            if ( folder.searchesInFolder && folder.searchesInFolder.length > 0 ) {
+                                found_A_Search = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            const showNoSearchesMessage = ! found_A_Search; // showNoSearchesMessage true if NO searches in project
+
+            return { showNoSearchesMessage };
         });
     }
 
@@ -271,7 +316,7 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
         return (
              ( ! this.state.searchesAndFolders ) ? (
                 <div>Loading Searches</div>
-            ): ( this.state.searchesAndFolders.noSearchesFound ) ? (
+            ): ( this.state.showNoSearchesMessage ) ? (
 
                  <div >
                      No searches in this project.
@@ -374,6 +419,7 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         callback_updateSelected_Searches={ this._callback_updateSelected_Searches_BindThis }
                         callback_Update_folderIds_ExpandedFolders={ this.props.callback_Update_folderIds_ExpandedFolders }
+                        callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                     />
 
                     <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
