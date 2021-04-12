@@ -54,6 +54,9 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
 
     private readonly _inputField_PageNumber_Ref: React.RefObject<HTMLInputElement>
 
+    private _mouse_IsOver_PageNumberEntry_In_PageNumberSelectionsDropdown : boolean = false;
+    private _hideSelectionOverlay_TimeoutId : number = null;
+
     /**
      *
      */
@@ -173,6 +176,10 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
      */
     private _inputField_PageNumber_OnFocus( event: React.FocusEvent<HTMLInputElement> ) {
         try {
+            if ( this._hideSelectionOverlay_TimeoutId ) {
+                window.clearTimeout( this._hideSelectionOverlay_TimeoutId );
+                this._hideSelectionOverlay_TimeoutId = null;
+            }
 
             this.setState({ show_pageSelectionOverlay : true });
 
@@ -188,20 +195,54 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
      */
     private _inputField_PageNumber_OnBlur( event: React.FocusEvent<HTMLInputElement> ) {
         try {
-            window.setTimeout( () => {
-                try {
-                    this.setState({ show_pageSelectionOverlay : false });
+            let hideSelectionOverlay_Timeout = 150;
 
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 150 );
+            if ( this._mouse_IsOver_PageNumberEntry_In_PageNumberSelectionsDropdown ) {
+
+                hideSelectionOverlay_Timeout = 2000;  // Wait 2 seconds when mouse is over entry in selection overlay
+            }
+
+            this._hideSelectionOverlay_TimeoutId =
+                window.setTimeout( () => {
+                    try {
+                        this._hideSelectionOverlay_TimeoutId = null;
+
+                        this.setState({ show_pageSelectionOverlay : false });
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                }, hideSelectionOverlay_Timeout );
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }
+    }
+
+    /**
+     *
+     * @param pageNumber
+     */
+    private _overlay_PageNumberClicked( pageNumber: number ) {
+
+        if ( this._hideSelectionOverlay_TimeoutId ) {
+            window.clearTimeout( this._hideSelectionOverlay_TimeoutId );
+            this._hideSelectionOverlay_TimeoutId = null;
+        }
+
+        this.setState({ show_pageSelectionOverlay : false });
+        
+        window.setTimeout( () => {
+            try {
+                this._change_PageNumber( pageNumber )
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        }, 50 );
     }
 
     /**
@@ -549,12 +590,14 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                 //  adding className=" hovered-div-highlight " results in highlighted background when hover over div but on on text
                 //    that when clicked does NOT trigger this click handler when this click handler is on the div
                 style={ { paddingTop: 2, paddingBottom: 2, whiteSpace: "nowrap" } }
+                onMouseEnter={ event => { this._mouse_IsOver_PageNumberEntry_In_PageNumberSelectionsDropdown = true; } }
+                onMouseLeave={ event => { this._mouse_IsOver_PageNumberEntry_In_PageNumberSelectionsDropdown = false; } }
             >
                 <span
                     key={ pageNumber }
                     className={" fake-link "}
                     style={ { whiteSpace: "nowrap" } }
-                    onClick={ () => { this._change_PageNumber(pageNumber) } }
+                    onClick={ () => { this._overlay_PageNumberClicked(pageNumber) } }
                 >
                     Page:&nbsp;{pageNumber.toLocaleString()}:&nbsp;Items&nbsp;{rangeStart.toLocaleString()}-{rangeEnd.toLocaleString()}
                 </span>
