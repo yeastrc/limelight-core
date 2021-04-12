@@ -875,7 +875,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
 
         if ( this.props.experiment.canEdit && this.props.experimentEditClicked ) {
             // name_title = "Click to Edit Experiment"  //  Now show/hide Experiment details (Not on Draft)
-            name_className += " fake-link ";
+            name_className += " clickable ";
             name_onClick = this._experimentNameClicked_BindThis;
 
             editIcon = (
@@ -893,7 +893,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
             cloneIcon = (
                 <React.Fragment>
                     <span > </span>
-                    <span className=" fake-link " title="Clone Experiment" 
+                    <span className=" fake-link " title="Clone Experiment"
                         onClick={ this._experimentCloneClicked_BindThis }
                     >[clone experiment]</span>
                     {/* <img className=" fake-link-image icon-small " title="Clone Experiment" src="static/images/icon-edit.png"

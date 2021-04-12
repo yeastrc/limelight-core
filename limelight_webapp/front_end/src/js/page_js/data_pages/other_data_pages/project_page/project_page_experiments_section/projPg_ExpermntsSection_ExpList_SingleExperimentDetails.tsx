@@ -460,7 +460,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
                 <React.Fragment>
 
                     
-                    <div style={ { overflowX: "auto" } }>
+                    <div style={ { overflowX: "auto", marginTop: 10 } }>
 
                         <div style={ { borderColor: "black", borderStyle: "solid", borderWidth: 1, display: "inline-block" } }>
                             <div style={ { paddingTop: 1, paddingLeft: 3, paddingRight: 3, paddingBottom: 3 } }>
