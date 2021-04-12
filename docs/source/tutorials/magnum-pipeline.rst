@@ -14,6 +14,10 @@ the Limelight XML converter**.
 
 We have also made example data input files available, and the steps below include downloading those.
 
+    .. note::
+       Although this tutorial makes use of Docker, Docker is not required to run these programs. Please see
+       the web sites for the individual programs for more details on other ways to run the software.
+
 Set Up Your Project Folder
 =============================
 
