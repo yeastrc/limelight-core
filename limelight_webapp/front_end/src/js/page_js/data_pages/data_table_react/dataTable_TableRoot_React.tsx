@@ -550,9 +550,31 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
      */
     private _currentPage_CurrentValue_Update_Callback(newValue : number ) : void {
 
-        this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
-            return { currentPage_CurrentValue: newValue }
-        });
+        if ( this.state.showItemsPerPage_SelectValue > 250 ) {
+
+            //  Page is large so show Updating message while changing page
+
+            this.setState({show_updatingTable_Message: true });
+
+            window.setTimeout( () => {
+                try {
+
+                    this.setState({currentPage_CurrentValue: newValue, show_updatingTable_Message: false });
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            } , 40 );
+
+        } else {
+
+            //  Run Page change immediately
+
+            this.setState((existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props): DataTable_TableRoot_State => {
+                return {currentPage_CurrentValue: newValue}
+            });
+        }
     }
 
     /**

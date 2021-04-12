@@ -133,7 +133,10 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                 throw Error( msg );
             }
 
-            this.setState({ pageNavigation_InputField_Value: pageNumber_InputValue_String });
+            this.setState({
+                pageNavigation_InputField_Value: pageNumber_InputValue_String,
+                show_pageSelectionOverlay : true  // Show Page Number overlay
+            });
 
             const pageNumber_InputValue_String_Trimmed = pageNumber_InputValue_String.trim();
 
@@ -233,7 +236,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
         }
 
         this.setState({ show_pageSelectionOverlay : false });
-        
+
         window.setTimeout( () => {
             try {
                 this._change_PageNumber( pageNumber )
@@ -280,7 +283,9 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
             this.setState({
                 pageNavigation_InputField_Value: "",
                 pageNavigation_InputField_Value_NotEmpty_NotANumber: false,
-                pageNavigation_GoToPage_Button_Disabled_Message: null
+                pageNavigation_GoToPage_Button_Disabled_Message: null,
+
+                show_pageSelectionOverlay : false  // Hide Page Number overlay
             });
 
             this._change_PageNumber( pageNumber_InputValue );
