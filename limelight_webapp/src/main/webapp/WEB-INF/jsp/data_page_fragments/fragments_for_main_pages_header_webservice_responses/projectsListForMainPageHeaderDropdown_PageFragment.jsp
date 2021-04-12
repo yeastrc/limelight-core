@@ -1,3 +1,4 @@
+<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
 <%--
 
 	projectsListForMainPageHeaderDropdown_PageFragment.jsp
