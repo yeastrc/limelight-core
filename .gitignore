@@ -50,3 +50,5 @@ hs_err_pid*
 
 # sphinx items
 /docs/build
+
+/.env

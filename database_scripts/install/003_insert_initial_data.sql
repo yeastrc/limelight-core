@@ -1,4 +1,7 @@
 
+USE limelight ;
+
+
 --  INSERT INITIAL VALUES USED BY WEBAPP TO HANDLE PERMISSIONS,  Must match Java class AuthAccessLevelConstants
 
 INSERT INTO user_access_level_label_description_tbl (user_access_level_numeric_value, label, description) 

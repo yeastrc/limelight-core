@@ -9,6 +9,9 @@
 --  If no GUI for disabling accounts, disable the initial_user using
 --    UPDATE user_tbl SET enabled_app_specific = 0 WHERE id = 1;
 
+USE limelight ;
+
+
 INSERT INTO user_mgmt_user (id, username, email, first_name, last_name, organization, enabled, created_date, global_admin_user) 
 VALUES (1, 'initial_user', 'NONE', 'INITIAL USER', '', '', 1, NOW(), 1 );
 
