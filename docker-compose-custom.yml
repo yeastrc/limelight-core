@@ -1,17 +1,12 @@
 version: "3.9"
-
-volumes:
-  mysqldb:
-  spectr_upload:
-  spectr_storage:
-
 services:
   db:
     image: mysql:5.7
     container_name: limelight-mysql
+    command: ${MYSQL_OPTIONS}
     restart: always
     volumes:
-      - mysqldb:/var/lib/mysql
+      - /data/limelight-web-app/mysql:/var/lib/mysql
       - ./database_scripts/install:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -22,5 +17,5 @@ services:
     container_name: limelight-spectr
     restart: always
     volumes:
-      - spectr_upload:/data/upload
-      - spectr_storage:/data/storage
+      - /data/spectr/upload:/data/upload
+      - /data/spectr/storage:/data/storage
