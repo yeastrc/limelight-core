@@ -140,11 +140,11 @@ public class ImporterRunnerConfigData {
 			Integer waitTimeForNextCheckForImportToProcess_InSeconds) {
 		ImporterRunnerConfigData.waitTimeForNextCheckForImportToProcess_InSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
 	}
-	public static String getImporterPidFileWithPath() {
+	public static String getRunImporterPidFileWithPath() {
 		return importerPidFileWithPath;
 	}
-	public static void setImporterPidFileWithPath(String importerPidFileWithPath) {
-		ImporterRunnerConfigData.importerPidFileWithPath = importerPidFileWithPath;
+	public static void setRunImporterPidFileWithPath(String runImporterPidFileWithPath) {
+		ImporterRunnerConfigData.importerPidFileWithPath = runImporterPidFileWithPath;
 	}
 
 }	

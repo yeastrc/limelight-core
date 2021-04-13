@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
-import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFile;
+import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileConstants;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
@@ -418,7 +418,7 @@ public class ManagerThread extends Thread {
 	 */
 	private void removePIDFileOnShutdownViaRunControlFile() {
 		
-		String importerPidFileWithPath = ImporterRunnerConfigData.getImporterPidFileWithPath();
+		String importerPidFileWithPath = ImporterRunnerConfigData.getRunImporterPidFileWithPath();
 		
 		if ( StringUtils.isNotEmpty( importerPidFileWithPath ) ) {
 			try {
@@ -426,7 +426,7 @@ public class ManagerThread extends Thread {
 				if ( ! importerPidFileWithPath_File.exists() ) {
 					log.warn( "INFO: PID file configured, but not found so do not delete it."
 							+ " Config file property name: '"
-							+ ProcessImporterRunnerConfigFile.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
+							+ ProcessImporterRunnerConfigFileEnvironmentVariables.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
 							+ "'"
 							+ ", PID File: " + importerPidFileWithPath);
 					return; // EARLY EXIT
@@ -434,20 +434,20 @@ public class ManagerThread extends Thread {
 				if ( ! importerPidFileWithPath_File.delete() ) {
 					log.error( "PID file configured, but failed to delete it.  NO Exception. "
 							+ " Config file property name: '"
-							+ ProcessImporterRunnerConfigFile.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
+							+ ProcessImporterRunnerConfigFileEnvironmentVariables.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
 							+ "'"
 							+ ", PID File: " + importerPidFileWithPath );
 					return; // EARLY EXIT
 				}
 				log.warn( "INFO: PID file configured so deleted it."
 						+ " Config file property name: '"
-						+ ProcessImporterRunnerConfigFile.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
+						+ ProcessImporterRunnerConfigFileEnvironmentVariables.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
 						+ "'"
 						+ ", PID File: " + importerPidFileWithPath);
 			} catch ( Throwable t ) {
 				log.error( "PID file configured, but failed to delete it.  Exception. "
 						+ " Config file property name: '"
-						+ ProcessImporterRunnerConfigFile.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
+						+ ProcessImporterRunnerConfigFileEnvironmentVariables.PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
 						+ "'"
 						+ ", PID File: " + importerPidFileWithPath
 						,

@@ -29,16 +29,19 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFile;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.ConfigPropertiesFileErrorException;
 
 /**
  * 
  *
  */
-public class ProcessImporterRunnerConfigFile {
+public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 
-	private static final Logger log = LoggerFactory.getLogger( ProcessImporterRunnerConfigFile.class );
+	private static final Logger log = LoggerFactory.getLogger( ProcessImporterRunnerConfigFileEnvironmentVariables.class );
+	
+	private static String ENVIRONMENT_VARIABLE_NAME__JAVA_EXECUTABLE_PARAMETERS = "LIMELIGHT_JAVA_EXECUTE_PARAMS";
+
 
 	private static final String NO_PROPERTIES_FILE_ERROR_MESSAGE = "No DB Connection Properties file found.";
 	
@@ -47,12 +50,18 @@ public class ProcessImporterRunnerConfigFile {
 	private static final String PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS = "wait.time.for.next.check.for.import.to.process";
 
 	private static final String PROPERTY_NAME__JAVA_EXECUTABLE_WITH_PATH = "java.executable.with.path";
+	
 	private static String PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS = "java.executable.parameters";
 	
 	private static final String PROPERTY_NAME__IMPORTER_JAR_WITH_PATH = "importer.jar.with.path";
 	
 	private static final String PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH = "importer.db.config.file.with.path";
 	
+	public static final String PROPERTY_NAME__RUN_IMPORTER_PID_FILE_WITH_PATH = "run.importer.pid.file.with.path";
+
+	/**
+	 * 											Actually for Run Importer and stored in same Java DTO property as prev property "run.importer.pid.file.with.path"
+	 */
 	public static final String PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH = "importer.pid.file.with.path";
 	
 	private static final String PROPERTY_NAME__LIMELIGHT_WEB_APP_BASE_URL = "limelight.web.app.base.url";
@@ -63,13 +72,13 @@ public class ProcessImporterRunnerConfigFile {
 	/**
 	 * private constructor
 	 */
-	private ProcessImporterRunnerConfigFile() { }
+	private ProcessImporterRunnerConfigFileEnvironmentVariables() { }
 
 	/**
 	 * @return newly created instance
 	 */
-	public static ProcessImporterRunnerConfigFile getInstance() { 
-		return new ProcessImporterRunnerConfigFile(); 
+	public static ProcessImporterRunnerConfigFileEnvironmentVariables getInstance() { 
+		return new ProcessImporterRunnerConfigFileEnvironmentVariables(); 
 	}
 	
 	
@@ -82,7 +91,7 @@ public class ProcessImporterRunnerConfigFile {
 	 * @return
 	 * @throws Exception 
 	 */
-	public DBConnectionParametersProviderFromPropertiesFile processConfigFile( File configFileFromCommandLine ) throws Exception {
+	public DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables processConfigFile( File configFileFromCommandLine ) throws Exception {
 		
 		try {
 			Properties configProps = null;
@@ -149,10 +158,22 @@ public class ProcessImporterRunnerConfigFile {
 			String waitTimeForNextCheckForImportToProcess_InSecondsString = configProps.getProperty( PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS );
 			
 			String javaExecutableWithPath = configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_WITH_PATH );
-			String javaExecutableParametersString = configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS );
+			
+			//											First from Environment Variables
+			String javaExecutableParametersString = System.getenv( ENVIRONMENT_VARIABLE_NAME__JAVA_EXECUTABLE_PARAMETERS );
+
+//			if ( javaExecutableParametersString != null ) {
+//				System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE_NAME__JAVA_EXECUTABLE_PARAMETERS + "' has value : " + javaExecutableParametersString );
+//			}
+			
+			if ( javaExecutableParametersString == null ) {
+					configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS );
+			}
 			
 			String importerJarWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_JAR_WITH_PATH );
 			String importerDbConfigWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH );
+			
+			String runImporterPidFileWithPath = configProps.getProperty( PROPERTY_NAME__RUN_IMPORTER_PID_FILE_WITH_PATH );
 			
 			String importerPidFileWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH );
 			
@@ -213,17 +234,29 @@ public class ProcessImporterRunnerConfigFile {
 			if ( StringUtils.isNotEmpty( importerDbConfigWithPath ) ) {
 				ImporterRunnerConfigData.setImporterDbConfigWithPath( importerDbConfigWithPath );
 			}
-
+			
 			if ( StringUtils.isNotEmpty( importerPidFileWithPath ) ) {
 				
 				//  If not set, assumes that there is no pid file 
 				
-				ImporterRunnerConfigData.setImporterPidFileWithPath( importerPidFileWithPath );
+				ImporterRunnerConfigData.setRunImporterPidFileWithPath( importerPidFileWithPath );
 
 				String msg = "INFO::  PID file: parameter '" + PROPERTY_NAME__IMPORTER_PID_FILE_WITH_PATH 
 						+ "' is provided so deleting it when shut down using run control file.  value:  " + importerPidFileWithPath;
 				log.warn( msg );
 			}
+
+			if ( StringUtils.isNotEmpty( runImporterPidFileWithPath ) ) {
+				
+				//  If not set, assumes that there is no pid file 
+				
+				ImporterRunnerConfigData.setRunImporterPidFileWithPath( runImporterPidFileWithPath );
+
+				String msg = "INFO::  PID file: parameter '" + PROPERTY_NAME__RUN_IMPORTER_PID_FILE_WITH_PATH 
+						+ "' is provided so deleting it when shut down using run control file.  value:  " + runImporterPidFileWithPath;
+				log.warn( msg );
+			}
+			
 			
 			ImporterRunnerConfigData.setLimelightWebAppBaseURL( limelightWebAppBaseURL );
 
@@ -239,8 +272,8 @@ public class ProcessImporterRunnerConfigFile {
 			ImporterRunnerConfigData.setConfigured(true);
 			
 
-			DBConnectionParametersProviderFromPropertiesFile dbConnectionParametersProviderFromPropertiesFile =
-					new DBConnectionParametersProviderFromPropertiesFile();
+			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProviderFromPropertiesFile =
+					new DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables();
 
 			dbConnectionParametersProviderFromPropertiesFile.getConfigPropertiesFromPropertiesObj( configProps );
 

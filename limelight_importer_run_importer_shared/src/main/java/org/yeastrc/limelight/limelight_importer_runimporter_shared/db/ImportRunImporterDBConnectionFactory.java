@@ -102,7 +102,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 		
 		if ( dbConnectionParametersProvider == null ) {
 			
-			dbConnectionParametersProvider = new DBConnectionParametersProviderFromPropertiesFile();
+			dbConnectionParametersProvider = new DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables();
 			
 			dbConnectionParametersProvider.init();
 

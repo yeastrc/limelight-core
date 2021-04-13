@@ -29,10 +29,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFile;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderPropertiesFileErrorException;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFile;
+import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
@@ -125,13 +125,13 @@ public class RunImporterProgram {
 				}
 			}			
 
-			DBConnectionParametersProviderFromPropertiesFile dbConnectionParametersProvider = null;
+			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider = null;
 			try {
 				if ( log.isDebugEnabled() ) {
 					log.debug( "processing config file from command line: " + configFileFromCommandLine.getAbsolutePath() );
 				}
 				dbConnectionParametersProvider =
-						ProcessImporterRunnerConfigFile.getInstance().processConfigFile( configFileFromCommandLine );
+						ProcessImporterRunnerConfigFileEnvironmentVariables.getInstance().processConfigFile( configFileFromCommandLine );
 			} catch ( DBConnectionParametersProviderPropertiesFileErrorException e ) {
 				System.exit( 1 );
 			} catch ( Exception e ) {
