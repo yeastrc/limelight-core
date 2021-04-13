@@ -37,7 +37,9 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema limelight
 -- -----------------------------------------------------
-CREATE SCHEMA limelight DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+CREATE SCHEMA IF NOT EXISTS limelight;
+ALTER DATABASE limelight CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 USE limelight ;
 
 -- -----------------------------------------------------

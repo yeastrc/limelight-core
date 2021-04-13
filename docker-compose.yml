@@ -4,6 +4,7 @@ volumes:
   mysqldb:
   spectr_upload:
   spectr_storage:
+  limelight_upload:
 
 services:
   db:
@@ -15,6 +16,9 @@ services:
       - ./database_scripts/install:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: limelight
     ports:
       - 3370:3306
   spectr:
@@ -24,3 +28,18 @@ services:
     volumes:
       - spectr_upload:/data/upload
       - spectr_storage:/data/storage
+  importer:
+    image: mriffle/limelight-importer:755296c
+    container_name: limelight-importer
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - limelight_upload:/data/limelight_upload
+    environment:
+      LIMELIGHT_DB_USER: ${MYSQL_USER}
+      LIMELIGHT_DB_PASSWORD: ${MYSQL_PASSWORD}
+      LIMELIGHT_DB_HOST_ADDRESS: db
+      LIMELIGHT_DB_HOST_PORT: 3306
+      LIMELIGHT_DB_NAME: limelight
+      LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
