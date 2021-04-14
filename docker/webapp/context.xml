@@ -41,7 +41,7 @@
                   password="${LIMELIGHT_MYSQL_PASSWORD}"
                   driverClassName="com.mysql.jdbc.Driver"
 
-                  url="jdbc:mysql://localhost:3306/limelight?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;characterSetResults=UTF-8"
+                  url="jdbc:mysql://db:3306/limelight?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;characterSetResults=UTF-8"
     />
 
 </Context>
