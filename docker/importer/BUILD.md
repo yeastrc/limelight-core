@@ -10,7 +10,7 @@
    sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` --env HOME=. --entrypoint ant mriffle/build-limelight -f ant__build_all_limelight.xml
    ```
 
-   See https://github.com/yeastrc/limelight-build-docker for more informationi.
+   See https://github.com/yeastrc/limelight-build-docker for more information.
 
 2. Copy importer executable jars into this directory
 
