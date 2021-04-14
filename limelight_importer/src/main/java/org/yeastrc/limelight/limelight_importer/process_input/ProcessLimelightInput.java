@@ -180,6 +180,9 @@ public class ProcessLimelightInput {
 			ProjectSearchDAO.getInstance().saveToDatabase( projectSearchDTO );
 			projectSearchDTOInserted = projectSearchDTO;
 			
+			log.warn( "INFO:  First Insert to Database for Search Successful.  Continuing to process import and insert into database.");
+			log.warn( "!!!!!!!!!!!!!!!!!!" );
+			
 			//  Insert Conversion Program data
 			ProcessSaveConversionProgram.getInstance().processComments( limelightInput, searchDTO, userIdInsertingSearch );
 			

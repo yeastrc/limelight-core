@@ -111,6 +111,7 @@ public class ManagerThread extends Thread {
 //			clientStatusUpdateThread.start();
 			getImportAndProcessThread = new GetImportAndProcessThread( GET_IMPORT_AND_PROCESS_THREAD /* name */ );
 			getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
+			getImportAndProcessThread.setFirstInstanceOfThisThread(true);
 			getImportAndProcessThread.start();
 			
 			runProcessLoop( );  // Call main processing loop that will run while keepRunning == true

@@ -45,16 +45,20 @@ public class GetImportAndProcessThread extends Thread {
 	private volatile boolean keepRunning = true;
 	private volatile ProcessSubmittedImport processSubmittedImport;
 	
+	private volatile boolean firstInstanceOfThisThread;
+
+	private volatile boolean firstTimeQueriedDBForImportToProcess = true;
+	
 	private int waitTimeForNextCheckForImportToProcess_InSeconds = WAIT_TIME_TO_GET_SOMETHING_TO_PROCESS_DEFAULT;
 	
 	private int maxTrackingRecordPriorityToRetrieve;
 	
-	public static GetImportAndProcessThread getInstance( String s ) {
-		
-		GetImportAndProcessThread instance = new GetImportAndProcessThread();
-		instance.init();
-		return instance;
-	}
+//	public static GetImportAndProcessThread getInstance( String s ) {
+//		
+//		GetImportAndProcessThread instance = new GetImportAndProcessThread();
+//		instance.init();
+//		return instance;
+//	}
 	
 	/**
 	 * default Constructor
@@ -140,6 +144,21 @@ public class GetImportAndProcessThread extends Thread {
 					updateGetImportStatus_File_ERROR_GettingImportToProcess( t );
 					throw t;
 				}
+				
+				if ( firstInstanceOfThisThread && firstTimeQueriedDBForImportToProcess ) {
+					
+					firstTimeQueriedDBForImportToProcess = false;
+					
+					String msg = "No import was found to process.";
+					
+					if ( trackingDTOTrackingRunDTOPair != null ) {
+						
+						msg = "An import was found to process and will be processed next.";	
+					}
+					
+					log.warn( "INFO: First query of DB for Import to process is complete.  " + msg );
+				}
+				
 				if ( trackingDTOTrackingRunDTOPair != null ) {
 					updateGetImportStatus_File_YES_ImportToProcess( trackingDTOTrackingRunDTOPair );
 					synchronized (this) {
@@ -319,5 +338,8 @@ public class GetImportAndProcessThread extends Thread {
 	public void setMaxTrackingRecordPriorityToRetrieve(
 			int maxTrackingRecordPriorityToRetrieve) {
 		this.maxTrackingRecordPriorityToRetrieve = maxTrackingRecordPriorityToRetrieve;
+	}
+	public void setFirstInstanceOfThisThread(boolean firstInstanceOfThisThread) {
+		this.firstInstanceOfThisThread = firstInstanceOfThisThread;
 	}
 }
