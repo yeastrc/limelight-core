@@ -20,8 +20,6 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: limelight
-    ports:
-      - 3370:3306
   spectr:
     image: mriffle/spectr:755296c
     container_name: limelight-spectr
@@ -30,7 +28,7 @@ services:
       - spectr_upload:/data/upload
       - spectr_storage:/data/storage
   importer:
-    image: mriffle/limelight-importer:17c8348
+    image: mriffle/limelight-importer:0.0.1
     container_name: limelight-importer
     restart: always
     depends_on:
@@ -44,3 +42,13 @@ services:
       LIMELIGHT_DB_HOST_PORT: 3306
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
+  limelight:
+    image: mriffle/limelight-webapp:0.0.1
+    container_name: limelight-webapp
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - limelight_upload:/data/limelight_upload
+    ports:
+      - 8080:8080
