@@ -12,6 +12,7 @@ services:
     image: mysql:5.7
     container_name: limelight-mysql
     restart: always
+    command: ${MYSQL_OPTIONS}
     volumes:
       - mysqldb:/var/lib/mysql
       - ./database_scripts/install:/docker-entrypoint-initdb.d
@@ -43,7 +44,7 @@ services:
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
   limelight:
-    image: mriffle/limelight-webapp:0.0.3
+    image: mriffle/limelight-webapp:0.0.4
     container_name: limelight-webapp
     restart: always
     depends_on:
