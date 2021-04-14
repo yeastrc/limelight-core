@@ -41,10 +41,6 @@ public class CachedDataInFileMgmt_Read_ConfigFile_OnStartup implements CachedDat
 
 	private static final String PROPERTY_FILE_KEY__SUB_DIR = "subdir.to.store.files.in";
 
-	private static final String PROPERTY_FILE_KEY__USE_GIT_HASH = "use.git.hash";
-	
-	private static final String PROPERTY_FILE_VALUE__USE_GIT_HASH_TRUE = "true";
-
 	/**
 	 * 
 	 *
@@ -52,13 +48,9 @@ public class CachedDataInFileMgmt_Read_ConfigFile_OnStartup implements CachedDat
 	public static class CachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response {
 
 		private File root_Subdirectory_ToStoreFilesIn;
-		private boolean useGitHash;
 
 		public File getRoot_Subdirectory_ToStoreFilesIn() {
 			return root_Subdirectory_ToStoreFilesIn;
-		}
-		public boolean isUseGitHash() {
-			return useGitHash;
 		}
 	}
 
@@ -191,30 +183,9 @@ public class CachedDataInFileMgmt_Read_ConfigFile_OnStartup implements CachedDat
 			}
 
 		}
-		boolean useGitHash = false;
 		
-		if ( root_Subdirectory_ToStoreFilesIn != null ) {
-			
-			String useGitHash_String = configProps.getProperty( PROPERTY_FILE_KEY__USE_GIT_HASH );
-			
-			if ( PROPERTY_FILE_VALUE__USE_GIT_HASH_TRUE.equals( useGitHash_String ) ) {
-				
-				log.info( "Use GIT Hash is set to true. Config filename: " 
-						+ CONFIG_FILENAME);
-				useGitHash = true;
-			}
-
-		}
-		
-		response.root_Subdirectory_ToStoreFilesIn = root_Subdirectory_ToStoreFilesIn;
-		response.useGitHash = useGitHash;
-
 		return response;
 	}
-	//  Load Config file for:
-	//		directory to use for storing cached data
-	//      flag to indicate use the build GIT hash for creating the sub dir to use.
-
 
 
 }
