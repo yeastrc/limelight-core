@@ -17,9 +17,9 @@ Parameters:
 	
 	(the path may change but the filename will not change)
 	
-	Releases are at:   https://github.com/yeastrc/
+	Releases are at:   https://github.com/yeastrc/limelight-core
 	
 	The file run_importer_config_file.properties is also in the Github repository, currently at:
-	https://github.com/yeastrc/
+	https://github.com/yeastrc/limelight-core
 	
 	

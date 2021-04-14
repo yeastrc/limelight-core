@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,12 +13,12 @@ import org.slf4j.Logger;
 
 
 /**
- * Default version of IDBConnectionParametersProvider that reads a property file
+ * Default version of IDBConnectionParametersProvider that reads a property file and checks environment variables
  *
  */
-public class DBConnectionParametersProviderFromPropertiesFile implements IDBConnectionParametersProvider {
+public class DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables implements IDBConnectionParametersProvider {
 
-	private static final Logger log = LoggerFactory.getLogger( DBConnectionParametersProviderFromPropertiesFile.class );
+	private static final Logger log = LoggerFactory.getLogger( DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables.class );
 
 
 	private static final String NO_PROPERTIES_FILE_ERROR_MESSAGE = "No DB Connection Properties file found.";
@@ -37,6 +36,13 @@ public class DBConnectionParametersProviderFromPropertiesFile implements IDBConn
 	private static final String PROPERTY_NAME__LIMELIGHT_DB_NAME  = "limelight.db.name";
 
 
+	private static final String ENVIRONMENT_VARIABLE__USERNAME = "LIMELIGHT_DB_USER";
+	private static final String ENVIRONMENT_VARIABLE__PASSWORD = "LIMELIGHT_DB_PASSWORD";
+	private static final String ENVIRONMENT_VARIABLE__DB_HOST = "LIMELIGHT_DB_HOST_ADDRESS";
+	private static final String ENVIRONMENT_VARIABLE__DB_PORT = "LIMELIGHT_DB_HOST_PORT";
+
+	private static final String ENVIRONMENT_VARIABLE__LIMELIGHT_DB_NAME = "LIMELIGHT_DB_NAME";
+	
 	private File configFile;
 
 	private String username;
@@ -191,53 +197,79 @@ public class DBConnectionParametersProviderFromPropertiesFile implements IDBConn
 	 */
 	public void getConfigPropertiesFromPropertiesObj( Properties configProps )
 			throws DBConnectionParametersProviderPropertiesFileContentsErrorException {
+		
+		username = System.getenv( ENVIRONMENT_VARIABLE__USERNAME );
+		password = System.getenv( ENVIRONMENT_VARIABLE__PASSWORD );
+		dbHost = System.getenv( ENVIRONMENT_VARIABLE__DB_HOST );
+		dbPort = System.getenv( ENVIRONMENT_VARIABLE__DB_PORT );
 
-		username = configProps.getProperty( PROPERTY_NAME__USERNAME );
-		password = configProps.getProperty( PROPERTY_NAME__PASSWORD );
-		dbHost = configProps.getProperty( PROPERTY_NAME__DB_HOST );
-		dbPort = configProps.getProperty( PROPERTY_NAME__DB_PORT );
+		limelightDbName = System.getenv( ENVIRONMENT_VARIABLE__LIMELIGHT_DB_NAME );
+		
+		//  Get from Config file if NOT in Environment Variables
 
-		limelightDbName = configProps.getProperty( PROPERTY_NAME__LIMELIGHT_DB_NAME );
+		if ( username == null ) {
+			username = configProps.getProperty( PROPERTY_NAME__USERNAME );
+		}
+		if ( password == null ) {
+			password = configProps.getProperty( PROPERTY_NAME__PASSWORD );
+		}
+		if ( dbHost == null ) {
+			dbHost = configProps.getProperty( PROPERTY_NAME__DB_HOST );
+		}
+		if ( dbPort == null ) {
+			dbPort = configProps.getProperty( PROPERTY_NAME__DB_PORT );
+		}
+		if ( limelightDbName == null ) {
+			limelightDbName = configProps.getProperty( PROPERTY_NAME__LIMELIGHT_DB_NAME );
+		}
 
 		if ( StringUtils.isEmpty( username ) ) {
 
-			String msg = "For Database connection parameters file: parameter '" + PROPERTY_NAME__USERNAME + "' is not provided or is empty string.";
+			String msg = "NO Value (not provided or is empty string): Environment Variable '" + ENVIRONMENT_VARIABLE__USERNAME 
+					+ "', Database connection parameters file: parameter '" + PROPERTY_NAME__USERNAME + "'.";
 			System.err.println( msg );
 			throw new DBConnectionParametersProviderPropertiesFileContentsErrorException(msg);
 		}
 
 		if ( StringUtils.isEmpty( password ) ) {
-			String msg = "For Database connection parameters file: parameter '" + PROPERTY_NAME__PASSWORD + "' is not provided or is empty string.";
+			String msg = "NO Value (not provided or is empty string): Environment Variable '" + ENVIRONMENT_VARIABLE__PASSWORD 
+					+ "', Database connection parameters file: parameter '" + PROPERTY_NAME__PASSWORD + "'.";
 			System.err.println( msg );
 			throw new DBConnectionParametersProviderPropertiesFileContentsErrorException(msg);
 		}
 
 		if ( StringUtils.isEmpty( dbHost ) ) {
-			String msg = "For Database connection parameters file: parameter '" + PROPERTY_NAME__DB_HOST + "' is not provided or is empty string.";
+			String msg = "NO Value (not provided or is empty string): Environment Variable '" + ENVIRONMENT_VARIABLE__DB_HOST 
+					+ "', Database connection parameters file: parameter '" + PROPERTY_NAME__DB_HOST + "'.";
 			System.err.println( msg );
 			throw new DBConnectionParametersProviderPropertiesFileContentsErrorException(msg);
 		}
 
 
-		if ( log.isInfoEnabled() ) {
+//		if ( log.isInfoEnabled() ) {
 
 			System.out.println( "Database connection parameters:");
 			if ( StringUtils.isNotEmpty( username ) ) {
-
-				System.out.println( PROPERTY_NAME__USERNAME + " has a value" );
+				System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE__DB_HOST 
+						+ "' OR Database connection parameters file: parameter '" + PROPERTY_NAME__USERNAME + "' has a value" );
 			}
 			if ( StringUtils.isNotEmpty( password ) ) {
-
-				System.out.println( PROPERTY_NAME__PASSWORD + " has a value" );
+				System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE__PASSWORD 
+						+ "' OR Database connection parameters file: parameter '" + PROPERTY_NAME__PASSWORD + "' has a value" );
 			}
-			System.out.println( PROPERTY_NAME__DB_HOST + ": " + dbHost );
-			System.out.println( PROPERTY_NAME__DB_PORT + ": " + dbPort );
+			System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE__DB_HOST 
+					+ "' OR Database connection parameters file: parameter '" + PROPERTY_NAME__DB_HOST + "': " + dbHost );
+
+			System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE__DB_PORT 
+					+ "' OR Database connection parameters file: parameter '" + PROPERTY_NAME__DB_PORT + "': " + dbPort );
 
 			if ( StringUtils.isNotEmpty( limelightDbName ) ) {
+				System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE__LIMELIGHT_DB_NAME 
+						+ "' OR Database connection parameters file: parameter '" + PROPERTY_NAME__LIMELIGHT_DB_NAME + "': " + limelightDbName );
 
 				System.out.println( PROPERTY_NAME__LIMELIGHT_DB_NAME + ": " + limelightDbName );
 			}
-		}
+//		}
 
 		configured = true;
 	}
