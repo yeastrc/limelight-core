@@ -29,7 +29,7 @@ services:
       - spectr_upload:/data/upload
       - spectr_storage:/data/storage
   importer:
-    image: mriffle/limelight-importer:755296c
+    image: mriffle/limelight-importer:17c8348
     container_name: limelight-importer
     restart: always
     depends_on:
