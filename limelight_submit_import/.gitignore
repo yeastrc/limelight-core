@@ -1,4 +1,8 @@
 /.gradle/
+
+#  Gradle Dir when build using build in Docker container
+/?/
+
 /build/
 /bin/
 /.settings/
