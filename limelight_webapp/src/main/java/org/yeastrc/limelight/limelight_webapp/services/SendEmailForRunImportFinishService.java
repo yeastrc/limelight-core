@@ -217,7 +217,10 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 		}
 		catch (Exception e) {
 			log.error( "Send import finish email: Exception: import tracking id: " + fileImportTrackingDTO.getId(), e );
-			throw e;
+			
+			// eat exception so any error sending email doesn't stop run importer from continuing on to next import to process
+			
+			// throw e;
 		}
 	}
 	/**
