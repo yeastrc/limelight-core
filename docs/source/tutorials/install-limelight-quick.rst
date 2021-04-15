@@ -131,18 +131,18 @@ To stop Limelight:
 
        sudo docker-compose down
 
-    .. note::
-       The first time you start Limelight, all of the components will download and the database will
-       initialize. This may take a few minutes, depending on your download speed. Subsequent startups
-       of Limelight will not require these steps and will be faster.
+.. note::
+   The first time you start Limelight, all of the components will download and the database will
+   initialize. This may take a few minutes, depending on your download speed. Subsequent startups
+   of Limelight will not require these steps and will be faster.
 
-    .. note::
-       These commands must be typed while you are in the project code directory. If you followed these
-       instructions, you can ensure you are in this directory by typing:
+.. note::
+   These commands must be typed while you are in the project code directory. If you followed these
+   instructions, you can ensure you are in this directory by typing:
 
-        .. code-block:: bash
+   .. code-block:: bash
 
-           cd ~/limelight/limelight-core
+       cd ~/limelight/limelight-core
 
 
 6. Connect to Your Limelight Installation
