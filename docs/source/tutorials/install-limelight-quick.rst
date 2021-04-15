@@ -8,6 +8,10 @@ include running Limelight with default settings and require only minimal cofigur
 This tutorial assumes you have Docker installed on your system. Please see our :ref:`Docker Installation Tutorial <Installing Docker>`
 to get Docker installed.
 
+.. important::
+    System Requirements: Limelight will consume a large amount of RAM, particularly when uploading data.
+    You should have at least 6 gigabytes of RAM available on your system.
+
 1. Open a Terminal
 ===========================
 On Linux and MacOS, open a normal terminal. On Windows, if you followed our instructions for installing Docker,
