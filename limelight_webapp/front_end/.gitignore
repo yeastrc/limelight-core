@@ -1,7 +1,15 @@
 /node_modules/
 /handlebars_templates_precompiled/
 /webpack_build_output/
+
 /.gradle/
+
+#  Gradle Dir when build using build in Docker container
+/?/
+
+#  npm Dirs  when build using build in Docker container
+/.config/
+/.npm/
 
 #  In Case Typscript is somehow run to output .js and .js.map files, they are output to here and ignored
 /typescript_compile_output/

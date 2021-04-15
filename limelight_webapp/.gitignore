@@ -3,10 +3,6 @@
 #  Gradle Dir when build using build in Docker container
 /?/
 
-#  npm Dirs  when build using build in Docker container
-/.config/
-/.npm/
-
 /bin/
 /build/
 /node_modules/
