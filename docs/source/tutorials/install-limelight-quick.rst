@@ -143,7 +143,7 @@ To stop Limelight:
 
 6. Connect to Your Limelight Installation
 ===========================================
-Point your web browser to http://localhost:8080/ to access Limelight running on your own computer!
+Point your web browser to http://localhost:8080/limelight/ to access Limelight running on your own computer!
 
 Login with Default User
 ------------------------
