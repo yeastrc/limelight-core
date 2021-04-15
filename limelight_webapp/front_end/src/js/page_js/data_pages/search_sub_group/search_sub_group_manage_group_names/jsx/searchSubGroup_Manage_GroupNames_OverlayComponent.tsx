@@ -52,9 +52,9 @@ export class SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object {
     }
 
     equal( other : SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object ) {
-        if ( other.id === this.id,
-            other.displayName === this.displayName,
-            other.importedName === this.importedName ) {
+        if ( other.id === this.id
+            && other.displayName === this.displayName
+            && other.importedName === this.importedName ) {
 
             return true;
         }
