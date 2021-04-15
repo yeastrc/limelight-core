@@ -179,8 +179,9 @@ That's it, you are ready to use Limelight!
 
 Sending Emails
 ---------------
-Some components of Limelight require Limelight to send emails--such as its forgotten password functionality. This
-will not work by default after using this Quick Start Guide! For this to work, you must configure Limelight to
+Some components of Limelight require Limelight to send emails--such as inviting other researchers to
+a project and the forgotten password functionality. These features
+will not work by default after using this Quick Start Guide! For these to work, you must configure Limelight to
 use a SMTP relay service. See our **Advanced Setup Guide** for more information.
 
 Data Location
