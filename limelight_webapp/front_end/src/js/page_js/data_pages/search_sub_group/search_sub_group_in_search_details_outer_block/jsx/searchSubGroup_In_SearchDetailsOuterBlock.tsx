@@ -227,10 +227,13 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
                             Sub Groups:
                         </div>
                         { ( this.props.searchSubGroup_ManageGroupNames_Clicked_Callback ) ?
-                            <div className=" fake-link " style={ { fontSize: 12, whiteSpace : "nowrap" } }
-                                onClick={ this._manage_ClickHandler_BindThis }
-                            >
-                                Manage
+                            <div >
+                                <span
+                                    className=" fake-link " style={ { fontSize: 12, whiteSpace : "nowrap" } }
+                                    onClick={ this._manage_ClickHandler_BindThis }
+                                >
+                                    Manage
+                                </span>
                             </div>
                         : null }
                     </td>
