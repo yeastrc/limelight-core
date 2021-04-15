@@ -1,9 +1,12 @@
 
 
---  create_empty_database_add_tables.sql
+--  002_create_empty_database_add_tables.sql
 
 
---  ONLY USE after file create_empty_database.sql
+--  ONLY USE after file 001_create_empty_database.sql
+
+USE limelight ;
+
 
 -- -----------------------------------------------------
 -- Table user_mgmt_user

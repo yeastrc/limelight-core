@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:5.7
+    container_name: limelight-mysql
+    command: ${MYSQL_OPTIONS}
+    restart: always
+    volumes:
+      - /data/limelight-web-app/mysql:/var/lib/mysql
+      - ./database_scripts/install:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3370:3306
+  spectr:
+    image: mriffle/spectr:755296c
+    container_name: limelight-spectr
+    restart: always
+    volumes:
+      - /data/spectr/upload:/data/upload
+      - /data/spectr/storage:/data/storage
