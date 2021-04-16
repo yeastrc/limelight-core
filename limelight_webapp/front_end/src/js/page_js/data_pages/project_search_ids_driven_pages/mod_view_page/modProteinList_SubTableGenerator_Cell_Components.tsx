@@ -101,12 +101,12 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
     render() {
 
         return (
-            <div
+            <span
                 className=" fake-link "
                 onClick={this._onClick_BindThis}
             >
                 {this.props.proteinName}
-            </div>
+            </span>
         );
     }
 }

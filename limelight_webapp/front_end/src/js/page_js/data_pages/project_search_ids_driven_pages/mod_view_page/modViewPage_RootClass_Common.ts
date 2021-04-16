@@ -282,6 +282,8 @@ export class ModViewPage_RootClass_Common {
 
 		if ( ! singleProtein_InitializeResult.directlyShowing_SingleProteinOverlay ) {
 
+			this._called__populateModDataBlock = true;
+
 			this._modViewPage_DisplayDataOnPage.populateModDataBlock();
 		}
 	}
