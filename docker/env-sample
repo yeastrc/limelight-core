@@ -13,3 +13,9 @@ WEBAPP_JAVA_OPTIONS=-Xms2024m -Xmx2024m
 
 # This manages optimization settings for MySQL
 MYSQL_OPTIONS=--max-connections=500
+
+# Settings for setting up sending of emails by Limelight
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=smtp_username
+SMTP_PASSWORD=smtp_password
