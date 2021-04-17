@@ -1,5 +1,5 @@
 ===================================
-Installing Limelight (Quick Start)
+Installing Limelight
 ===================================
 
 Follow these steps to set up your own installation of Limelight on your own computer. These instructions
@@ -174,17 +174,17 @@ Start Using Limelight
 ----------------------
 That's it, you are ready to use Limelight!
 
-7. Extra - Notes and Limitations
+7. Optional - Set up SMTP For Emails
 ===========================================
+Some functions of Limelight require sending email to users. Examples of this include
+resetting forgotten passwords and notifications that data uploads have been completed. Although it's not
+required that you set up SMTP, the above features will not be enabled unless you do. If you
+would like to enable these features, please see our :doc:`install-limelight-smtp`.
 
-Sending Emails
----------------
-Some components of Limelight require Limelight to send emails--such as inviting other researchers to
-a project and the forgotten password functionality. These features
-will not work by default after using this Quick Start Guide! For these to work, you must configure Limelight to
-use a SMTP relay service. See our **Advanced Setup Guide** for more information.
 
-Data Location
---------------
-This Quick Start Guide allows Docker to manage where data are stored. To customize data storage locations for
-various aspects of Limelight, see our **Advanced Setup Guide** for more information.
+8. Optional - Customize Data Locations
+===============================================
+By default, this guide lets Docker manage where data are stored on you hard drive. This includes things
+like where MySQL stores its databases, where spectra are stored, work directories for uploading
+data, and so on. If you would like to customize these, please see our
+**tutorial for customizing data storage locations**.

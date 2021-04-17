@@ -9,5 +9,5 @@ Here are some tutorials related to using limelight:
    tutorials/install-docker
    tutorials/magnum-pipeline
    tutorials/limelight-find-significant-modifications
-   tutorials/install-limelight-quick
+   tutorials/install-limelight
 
