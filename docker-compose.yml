@@ -56,3 +56,12 @@ services:
       LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - 8080:8080
+  smtp:
+    image: bytemark/smtp
+    container_name: limelight-smtp
+    restart: always
+    environment:
+      RELAY_HOST: ${SMTP_HOST}
+      RELAY_PORT: ${SMTP_PORT}
+      RELAY_USERNAME: ${SMTP_USERNAME}
+      RELAY_PASSWORD: ${SMTP_PASSWORD}
