@@ -312,7 +312,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 	        $data_viz_container.append($divContainer);
     	}
     	{
-    		const html = "<span class=\"clickable\">[View Replicate ZScore Report (Experimental)]</span>"
+    		const html = "<span class=\"clickable\">[View Replicate ZScore Report]</span>"
 			const $html = $(html)
 
 			$html.click(function() {
