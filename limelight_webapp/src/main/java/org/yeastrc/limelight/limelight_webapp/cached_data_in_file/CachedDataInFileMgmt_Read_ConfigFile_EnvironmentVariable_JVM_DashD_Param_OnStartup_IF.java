@@ -17,13 +17,13 @@
 */
 package org.yeastrc.limelight.limelight_webapp.cached_data_in_file;
 
-import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Read_ConfigFile_OnStartup.CachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
 
 /**
  * @author danj
  *
  */
-public interface CachedDataInFileMgmt_Read_ConfigFile_OnStartup_IF {
+public interface CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF {
 
 	/**
 	 * Load Config file for:
@@ -31,7 +31,7 @@ public interface CachedDataInFileMgmt_Read_ConfigFile_OnStartup_IF {
 	 *      flag to indicate use the build GIT hash for creating the sub dir to use.
 	 * @return
 	 */
-	CachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response cachedDataInFileMgmt_Read_ConfigFile_OnStartup() throws Exception;
+	CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response cachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup() throws Exception;
 	//  Load Config file for:
 	//		directory to use for storing cached data
 	//      flag to indicate use the build GIT hash for creating the sub dir to use.

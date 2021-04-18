@@ -34,7 +34,7 @@ import org.yeastrc.limelight.limelight_webapp.constants_config_filenames.Limelig
 @Component
 public class CachedDataInFileMgmt_WriteFile_GetGitCommitHash implements CachedDataInFileMgmt_WriteFile_GetGitCommitHash_IF {
 
-	private static final Logger log = LoggerFactory.getLogger( CachedDataInFileMgmt_Read_ConfigFile_OnStartup.class );
+	private static final Logger log = LoggerFactory.getLogger( CachedDataInFileMgmt_WriteFile_GetGitCommitHash.class );
 
 	/**
 	 * File created by build.gradle when web app is built using Gradle

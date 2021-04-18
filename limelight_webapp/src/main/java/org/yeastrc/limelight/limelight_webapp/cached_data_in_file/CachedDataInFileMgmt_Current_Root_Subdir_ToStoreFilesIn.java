@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Read_ConfigFile_OnStartup.CachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 
 /**
@@ -43,7 +43,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private static final Logger log = LoggerFactory.getLogger( CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn.class );
 	
 	@Autowired
-	private CachedDataInFileMgmt_Read_ConfigFile_OnStartup_IF cachedDataInFileMgmt_Read_ConfigFile_OnStartup;
+	private CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF cachedDataInFileMgmt_Read_ConfigFile_OnStartup;
 
 	@Autowired
 	private CachedDataInFileMgmt_WriteFile_GetGitCommitHash_IF cachedDataInFileMgmt_WriteFile_GetGitCommitHash;
@@ -95,8 +95,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		//		directory to use for storing cached data
 		//      flag to indicate use the build GIT hash for creating the sub dir to use.
 
-		CachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response cachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response  =
-				cachedDataInFileMgmt_Read_ConfigFile_OnStartup.cachedDataInFileMgmt_Read_ConfigFile_OnStartup();
+		CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response cachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response  =
+				cachedDataInFileMgmt_Read_ConfigFile_OnStartup.cachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
 
 		if ( cachedDataInFileMgmt_Read_ConfigFile_OnStartup_Response == null ) {
 			
