@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: limelight-mysql
+    restart: always
+    command: ${MYSQL_OPTIONS}
+    volumes:
+      - ${MYSQL_DATA_DIRECTORY}:/var/lib/mysql
+      - ./database_scripts/install:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: limelight
+  spectr:
+    image: mriffle/spectr:4a09402
+    container_name: limelight-spectr
+    restart: always
+    volumes:
+      - ${SPECTR_UPLOAD_DIRECTORY}:/data/upload
+      - ${SPECTR_STORAGE_DIRECTORY}:/data/storage
+  importer:
+    image: mriffle/limelight-importer:0.0.7
+    container_name: limelight-importer
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ${LIMELIGHT_UPLOAD_DIRECTORY}:/data/limelight_upload
+    environment:
+      LIMELIGHT_DB_USER: ${MYSQL_USER}
+      LIMELIGHT_DB_PASSWORD: ${MYSQL_PASSWORD}
+      LIMELIGHT_DB_HOST_ADDRESS: db
+      LIMELIGHT_DB_HOST_PORT: 3306
+      LIMELIGHT_DB_NAME: limelight
+      LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
+  limelight:
+    image: mriffle/limelight-webapp:0.0.7
+    container_name: limelight-webapp
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - limelight_upload:/data/limelight_upload
+    environment:
+      LIMELIGHT_MYSQL_USER: ${MYSQL_USER}
+      LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 8080:8080
+  smtp:
+    image: bytemark/smtp
+    container_name: limelight-smtp
+    restart: always
+    environment:
+      RELAY_HOST: ${SMTP_HOST}
+      RELAY_PORT: ${SMTP_PORT}
+      RELAY_USERNAME: ${SMTP_USERNAME}
+      RELAY_PASSWORD: ${SMTP_PASSWORD}
