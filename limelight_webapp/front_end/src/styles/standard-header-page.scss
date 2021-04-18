@@ -114,6 +114,12 @@
             @include opacity(0.9);
         }
 
+       div.header-admin-container {
+         padding-left:  3px;
+         padding-top:   4px;
+         margin-right: 10px;
+       }
+
         div.header-right-icons-container {
             margin-top:2px;
             margin-right:4px;

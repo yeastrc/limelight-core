@@ -29,7 +29,7 @@
 	
 	<%--  Grid:  Logo, Project Title, User Name(username), Logout or Login Icon  --%>
     <div class=" header-middle-container " 
-    	style="display: grid; grid-template-columns: 120px auto <c:if test="${ not empty headerUserInfo }"> min-content </c:if> min-content;">
+    	style="display: grid; grid-template-columns: 120px auto <c:if test="${ not empty headerUserInfo }"> min-content </c:if>  <c:if test="${ headerUserIsAdmin }"> min-content </c:if> min-content;">
 	<%-- Left Side contents --%>
 	
 	<div class="header-logo">
@@ -179,6 +179,18 @@
 	  			(<span id="header-user-user-name"><c:out value="${ headerUserInfo.username }"></c:out></span>) 
   			</span></a>
   	   </div>
+  	   
+  	   <c:if test="${ headerUserIsAdmin }"> 
+  	   
+  	   	<div  class="header-admin-container" style="white-space: nowrap;"
+  	   	><a href="admin"
+  	   		 class=" overide-text-color-to-base-color selector_tool_tip_attached "
+  	   		 title="Click to administer Limelight Instance"
+  	   		 data-tooltip='<div style="white-space: nowrap;">Click to administer Limelight Instance</div>'
+  	   		>ADMIN</a
+ 			></div>
+  	   
+  	   </c:if>
   	   
   	 	<%--  icons will be to the right of username --%>
   	   <div class=" header-right-icons-container " style="position: relative;">
