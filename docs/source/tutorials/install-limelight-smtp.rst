@@ -131,14 +131,38 @@ Type ``Control-o``, ``<ENTER>``, and ``Control-x`` to save and exit ``nano``.
 
 3. Update Email Address for Sender in Limelight
 ================================================
-asdf
+    1. Log into Limelight and click the ``ADMIN`` link in the top right. You must be logged in as an administrator user, such as the initial user created when you followed the :doc:`install-limelight` tutorial.
+
+    2. Click the ``Manage Configuration`` link.
+
+    3. Edit the field for ``From Address for emails sent``. This is the email address from which emails sent by Limelight will appear to come. You may be restricted by what email address you can use here by the SMTP server you are using. For example, if you set up SMTP relay service with SendGrid, this email must match the verified sender you set up.
+
+    4. Click the ``Save`` button to save the changes.
+
 
 4. Restart Limelight
 =====================
-asdf
+Limelight must be restarted to use the new configuration settings in the ``.env`` file. Type the following into your terminal to restart Limelight:
+
+    .. code-block:: bash
+
+       # ensure you are in correct directory. if you followed tutorial type:
+       cd ~/limelight/limelight-core
+
+       # shutdown Limelight
+       sudo docker-compose down
+
+       # startup Limelight
+       sudo docker-compose up --detatched
 
 5. Investigating Problems
 ==========================
-asdf
+If after following this guide, emails are not being sent, you can view the logs of the SMTP server by typing
+the following into a terminal:
 
+    .. code-block:: bash
 
+       sudo docker logs limelight-smtp
+
+Carefully read this log and look for error messages, such as an authentication failure or other reasons
+the message may have been rejected.
