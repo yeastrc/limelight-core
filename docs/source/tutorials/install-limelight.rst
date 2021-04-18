@@ -3,7 +3,8 @@ Installing Limelight
 ===================================
 
 Follow these steps to set up your own installation of Limelight on your own computer. These instructions
-include running Limelight with default settings and require only minimal cofiguration by the user.
+include running Limelight with default settings and require only minimal cofiguration by the user. If you already
+have access to Limelight, you do not need to do this to use Limelight.
 
 This tutorial assumes you have Docker installed on your system. Please see our :ref:`Docker Installation Tutorial <Installing Docker>`
 to get Docker installed.
