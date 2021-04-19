@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="top-level-label">
-	  Explore Data
+	  Explore Search Results
 	</div>
 	
 	<div class="top-level-label-bottom-border" ></div>
