@@ -1,6 +1,6 @@
 <%--   projectView_SavedViews.jsp
 
-	Page Section:   Saved Views
+	Page Section:   Highlighted Results: Previously Known as: Saved Views
 --%>
 
 <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
@@ -8,7 +8,7 @@
 	
 <c:if test="${ showSavedViewsBlock }">
 
-	<%--  If <script > is NOT present, then there is no saved views block and JS will skip processing --%>
+	<%--  If <script > is NOT present, then there is no 'Highlighted Results' (AKA saved views) block and JS will skip processing --%>
 	<script type="text/text" id="saved_views_block_shown">Y</script>
 
 <div class="top-level-container selector_collapsable_container" >
@@ -20,8 +20,8 @@
 			class=" icon-large fake-link-image top-level-collapsable-link selector_collapsable_expand_link" style="display: none;">
 	</div>
 
-	<div class="top-level-label">
-	  Saved Views
+	<div class="top-level-label"> <%--  (AKA saved views) --%>
+	  Highlighted Results
 	</div>
 	
 	<div class="top-level-label-bottom-border" ></div>
@@ -41,7 +41,7 @@
 		</div>
 		
 		<div id="saved_views_no_entries" style="display: none;">
-			No Saved Views
+			No Highlighted Results
 		</div>	  
 	  </div>
 

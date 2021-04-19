@@ -1,18 +1,12 @@
 /**
  * saveView_Component_React.tsx
- * 
+ *
+ * 'Save to Highlighted Results'  Button as React Component
+ *
+ * WAS:
  * Save View Button as React Component
  * 
- * 
- * 
  */
-
-
-//  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-// When user adds or removes in the experiment builder, the data in 'conditionGroupsDataContainer' is removed.  
-
-//  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 import React from 'react'
@@ -119,7 +113,7 @@ export class SaveView_Component extends React.Component< SaveView_Component_Prop
 
         return (
             <div className=" save-view-container ">
-                <input type="button" value="Save View" 
+                <input type="button" value="Save to Highlighted Results"
                     onClick={ this._saveViewButton_ClickHandler_BindThis }
                 />
             </div>

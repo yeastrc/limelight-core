@@ -64,7 +64,7 @@
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_UploadData.jsp" %>
 
-	<%--  Saved Views --%>
+	<%-- Highlighted Results: Previously Known as: Saved Views --%>
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SavedViews.jsp" %>
 

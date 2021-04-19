@@ -12,7 +12,7 @@ import React from 'react'
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 
 
-const _Overlay_Title = "Save View"
+const _Overlay_Title = "Save Highlighted Result"
 
 const _Overlay_Width_Min = 800;
 const _Overlay_Width_Max = 800;
@@ -129,15 +129,22 @@ class SaveView_Overlay_Component extends React.Component< SaveView_Overlay_Compo
                 <div className=" change-searches-overlay-outer-block top-level single-entry-variable-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
                 >
                     <div style={ { marginBottom: 10 } }>
-                        <span>Label for view:</span>
-                        <input type="text" style={ { width: 600, marginLeft: 10 } } value={ this.state.label } onChange={ this._labelInput_Changed_BindThis } ref={ this._entry_Ref } />
+
+                        <span>Label for link on project page:</span>
+
+                        <input type="text"
+                               style={ { width: 500, marginLeft: 10 } }
+                               value={ this.state.label }
+                               autoFocus={ true }
+                               onChange={ this._labelInput_Changed_BindThis }
+                               ref={ this._entry_Ref }
+                        />
                     </div>
                     <div style={ { position: "relative" } }>
                         <div>
                             <input
                                 type="button"
-                                value="Save This View"
-                                autoFocus={ true }
+                                value="Save Highlighted Result"
                                 disabled={ this.state.label === "" }
                                 onClick={ this._saveButton_OnClick_BindThis }
                             />
