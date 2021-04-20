@@ -161,15 +161,15 @@ Point your web browser to http://localhost:8080/limelight/ to access Limelight r
 
 Login with Default User
 ------------------------
-By default, you can log in using ``initial_user`` as the username and ``FJS483792nzmv,xc4#&@(!VMKSDL`` as the password.
+By default, you can log in using ``admin`` as the username and ``changeme`` as the password.
 
 Change Default User Information
 ---------------------------------
-To change the default log in information click on ``INITIAL USER (initial_user)`` in the top right of the page:
+To change the default log in information click on ``Admin User (admin)`` in the top right of the page:
 
     .. image:: /_static/tutorials/initial-user-link.png
 
-Change values in the form to your liking.
+Change the name, username, and password in the form to your liking.
 
 Start Using Limelight
 ----------------------
