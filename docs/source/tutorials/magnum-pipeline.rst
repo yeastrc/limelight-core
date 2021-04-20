@@ -6,7 +6,8 @@ This tutorial covers how to run the pipeline for protein adduct discovery and vi
 using **Magnum**, **Percolator**, and uploading to **Limelight** as discussed in:
 
   .. epigraph::
-   Riffle M, Hoopmann M, et al (2021)...
+   Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Riffle M,
+   Hoopmann MR, Jaschob D, Zhong G, Mortiz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. 2021. *Submitted*
 
 This tutorial assumes you have Docker installed on your system. Please see our :ref:`Docker Installation Tutorial <Installing Docker>`
 to get Docker installed. Because Docker is being used, you **do not need to install Magnum, Percolator, or

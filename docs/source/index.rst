@@ -6,10 +6,11 @@ Welcome to Limelight
 
 Citing
 ===============
-If you use limelight in your work, please cite:
+If you use Limelight in your work, please cite:
 
-.. epigraph::
-   Riffle M, Hoopmann M, et al...
+  .. epigraph::
+   Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Riffle M,
+   Hoopmann MR, Jaschob D, Zhong G, Mortiz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. 2021. *Submitted*
 
 
 Introduction
@@ -34,4 +35,5 @@ mods of interest in Limelight. Please see our :ref:`Tutorials Page <Tutorials>`
 
    self
    tutorials
+   administration
 
