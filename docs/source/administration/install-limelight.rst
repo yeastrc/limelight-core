@@ -124,7 +124,7 @@ To start Limelight:
 
     .. code-block:: bash
 
-       sudo docker-compose up --detatched
+       sudo docker-compose up --detatch
 
 To stop Limelight:
 

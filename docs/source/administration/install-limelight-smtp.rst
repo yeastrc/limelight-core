@@ -153,7 +153,7 @@ Limelight must be restarted to use the new configuration settings in the ``.env`
        sudo docker-compose down
 
        # startup Limelight
-       sudo docker-compose up --detatched
+       sudo docker-compose up --detatch
 
 5. Investigating Problems
 ==========================
