@@ -15,7 +15,7 @@ Please see our [administration guides](https://limelight-ms.readthedocs.io/en/la
 to install Limelight on your own computer or server. 
 
 ## General Information
-Please see our information site for a broad overview of Limelight's features.
+Please see our [administration site](https://limelight-ms.org/)  for a broad overview of Limelight's features.
 
 ## Getting Help, Providing Feedback, or Reporting Problems
 If you have questions about Limelight, ideas for new features, or want to report any problems, please contact us!
