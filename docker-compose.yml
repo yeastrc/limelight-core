@@ -5,7 +5,6 @@ volumes:
   spectr_upload:
   spectr_storage:
   limelight_upload:
-  webservice_cache:
 
 services:
   db:

@@ -115,6 +115,11 @@ that is ``nano``. To edit the file, type:
 
 Change the passwords and type ``Control-o``, ``<ENTER>``, and ``Control-x`` to save and exit.
 
+.. important::
+    By default, Docker manages where data are stored on your disk. If you would like to customize where Limelight
+    stores data, please follow our :doc:`install-limelight-custom-data-location` tutorial. This should be done before
+    continuing on to Step 5 below. Once that is complete, proceed to Step 5.
+
 
 5. Starting and Stopping Limelight
 ===================================
@@ -124,7 +129,7 @@ To start Limelight:
 
     .. code-block:: bash
 
-       sudo docker-compose up --detatch
+       sudo docker-compose up --detach
 
 To stop Limelight:
 
@@ -157,7 +162,11 @@ To stop Limelight:
 
 6. Connect to Your Limelight Installation
 ===========================================
-Point your web browser to http://localhost:8080/limelight/ to access Limelight running on your own computer!
+Point your web browser to |limelight_link| to access Limelight running on your own computer!
+
+.. |limelight_link| raw:: html
+
+   <a href="http://localhost:8080/limelight/" target="_blank" class="reference external">http://localhost:8080/limelight/</a>
 
 Login with Default User
 ------------------------
@@ -181,11 +190,3 @@ Some functions of Limelight require sending email to users. Examples of this inc
 resetting forgotten passwords and notifications that data uploads have been completed. Although it's not
 required that you set up SMTP, the above features will not be enabled unless you do. If you
 would like to enable these features, please see our :doc:`install-limelight-smtp`.
-
-
-8. Optional - Customize Data Locations
-===============================================
-By default, this guide lets Docker manage where data are stored on you hard drive. This includes things
-like where MySQL stores its databases, where spectra are stored, work directories for uploading
-data, and so on. If you would like to customize these, please see our
-**tutorial for customizing data storage locations**.

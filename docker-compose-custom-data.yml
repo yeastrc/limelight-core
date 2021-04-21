@@ -43,7 +43,7 @@ services:
     depends_on:
       - db
     volumes:
-      - limelight_upload:/data/limelight_upload
+      - ${LIMELIGHT_UPLOAD_DIRECTORY}:/data/limelight_upload
     environment:
       LIMELIGHT_MYSQL_USER: ${MYSQL_USER}
       LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
