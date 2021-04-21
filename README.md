@@ -19,5 +19,5 @@ Please see our [administration site](https://limelight-ms.org/)  for a broad ove
 
 ## Getting Help, Providing Feedback, or Reporting Problems
 If you have questions about Limelight, ideas for new features, or want to report any problems, please contact us!
-The best choice for contacting us is to use the [Limelight Issue Page](https://limelight-ms.readthedocs.io/en/latest/administration.html), right
+The best choice for contacting us is to use the [Limelight Issue Page](https://github.com/yeastrc/limelight-core/issues), right
 here on GitHub. Alternatively, you can contact us at limelight-ms@uw.edu.
