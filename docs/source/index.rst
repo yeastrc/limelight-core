@@ -34,6 +34,7 @@ mods of interest in Limelight. Please see our :ref:`Tutorials Page <Tutorials>`
    :maxdepth: 2
 
    self
+   using-limelight
    tutorials
    administration
 
