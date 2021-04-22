@@ -13,6 +13,15 @@ If you use Limelight in your work, please cite:
    Hoopmann MR, Jaschob D, Zhong G, Mortiz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. 2021. *Submitted*
 
 
+Getting Help, Providing Feedback, or Reporting Problems
+=======================================================
+If after reading this documentation you have questions about Limelight, ideas for new features, or want to report any problems, please contact us!
+
+* Try using the `Limelight Issue Page at GitHub <https://github.com/yeastrc/limelight-core/issues>`_.
+* You can `join our Slack <https://join.slack.com/t/limelight-ms/shared_invite/zt-pdkll4k3-YR5km0ppSrtdlZCJBvgVyQ>`_ and chat with us.
+* You can email us at limelightms@uw.edu
+
+
 Introduction
 =============
 
