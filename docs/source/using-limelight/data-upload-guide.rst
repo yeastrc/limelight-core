@@ -29,8 +29,7 @@ follow these steps:
 
     6. Click on the ``+Add Limelight XML File`` link and select your Limelight XML file on your computer.
 
-    7. (Optional) Click on the ``+Add Scan File`` link and select the corresponding mzXML (or mzXML) file on your
-    computer. This is required if you would like to view spectra associated with peptide identifications.
+    7. (Optional) Click on the ``+Add Scan File`` link and select the corresponding mzXML (or mzXML) file on your computer. This is required if you would like to view spectra associated with peptide identifications.
 
     8. Click the ``Submit Upload`` button to submit your data to Limelight.
 
