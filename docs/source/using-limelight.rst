@@ -7,5 +7,5 @@ Here are guides and tutorials related to using Limelight.
    :maxdepth: 1
    :titlesonly:
 
-   using-limelight/conversion-guide
    using-limelight/data-upload-guide
+   using-limelight/conversion-guide
