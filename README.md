@@ -22,4 +22,4 @@ If you have questions about Limelight, ideas for new features, or want to report
 
 * Try using the [Limelight Issue Page](https://github.com/yeastrc/limelight-core/issues), right here on GitHub.
 * You can [join our Slack](https://join.slack.com/t/limelight-ms/shared_invite/zt-pdkll4k3-YR5km0ppSrtdlZCJBvgVyQ) and chat with us.
-* You can email us at limelight-ms@uw.edu
+* You can email us at limelightms@uw.edu
