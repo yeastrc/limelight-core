@@ -77,19 +77,28 @@ Follow these directions to run the command line submission program.
 1. Ensure Java is installed on the system where you will be running the submission program. If it is not installed,
    see the `official download site for Java <https://www.java.com/en/download/>`_.
 
-2. Following the first 4 steps above, note the following highlighted information in the ``Command Line Import Information``
-   window:
+2. Following the first 4 steps above to open the ``Command Line Import Information`` window. If you have not
+   created a user submit import key, click the ``Make Key`` button as depicted below. This submit import
+   key is unique to your account and should not be shared. Anyone with this key can upload data to your projects.
 
-    .. image:: /_static/command-line-import-info.png
+    .. image:: /_static/submit-import-key1.png
+
+3. Reveal your submit import key by clicking on the ``Show Key`` button:
+
+    .. image:: /_static/submit-import-key2.png
+
+4. Note the following highlighted information that appears:
+
+    .. image:: /_static/submit-import-key3.png
 
    This information is needed to upload data to this project. The first line is the URL of this Limelight
    installation URL, the second line is the project id number for this project, and the third line is an
-   unguessable key that provides access to upload data to this project. You can save this information
+   unguessable key that allows data to be uploaded as you. You can save this information
    for future use, without logging into Limelight.
 
    Be ready to copy and paste this information into the command for running the submission program (below).
 
-3. Run the command line submission program. The command to run the importer is the following. You will need to
+5. Run the command line submission program. The command to run the importer is the following. You will need to
 replace the locations of the limelightSubmitImport.jar, your Limelight XML file, and your mzML file(s)
 to your actual locations. You will also need to replace lines 2, 3, and 4 with what you copied from step
 2 above.
@@ -104,7 +113,7 @@ to your actual locations. You will also need to replace lines 2, 3, and 4 with w
                   --limelight-xml-file=/location/to/limelight.xml \
                   --scan-file=/location/to/your.mzML
 
-        # --scan-file can be repeated multiple times if you have multiple mzML files in the search results.
+        # --scan-file can be repeated multiple times if you have multiple mzML or mzXML files in the search results.
 
 If you do not have scan files to upload, the command would be the following:
 
