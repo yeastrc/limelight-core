@@ -29,8 +29,8 @@ const _Overlay_Title = "Command Line Import Information"
 
 const _Overlay_Width_Min = 700;
 const _Overlay_Width_Max = 700;
-const _Overlay_Height_Min = 400;
-const _Overlay_Height_Max = 400;
+const _Overlay_Height_Min = 420;
+const _Overlay_Height_Max = 420;
 
 
 /**
@@ -102,6 +102,8 @@ class SubmitImportProgramInfo_Overlay_Component_Props {
 class SubmitImportProgramInfo_Overlay_Component_State {
 
     submitImportKey?: string
+    show_SubmitKey?: boolean
+
     show_LoadingMessage?: boolean
     show_ErrorMessage?: boolean
     show_UpdatingMessage?: boolean
@@ -118,7 +120,7 @@ class SubmitImportProgramInfo_Overlay_Component extends React.Component< SubmitI
     constructor(props: SubmitImportProgramInfo_Overlay_Component_Props) {
         super(props);
 
-        this.state = { show_LoadingMessage: true }
+        this.state = { show_LoadingMessage: true, show_SubmitKey: false }
     }
 
     /**
@@ -303,29 +305,53 @@ class SubmitImportProgramInfo_Overlay_Component extends React.Component< SubmitI
                     ) : ( this.state.submitImportKey ) ? (
                         <div  style={ { marginTop: 5 } }>
                             <div>
-                                --user-submit-import-key={ this.state.submitImportKey }
+                                <span>
+                                    --user-submit-import-key=
+                                </span>
+                                { ( this.state.show_SubmitKey ) ? (
+
+                                    <span>
+                                        { this.state.submitImportKey }
+                                    </span>
+
+                                ) : (
+                                    <button
+                                        style={ { marginLeft: 5 } }
+                                        onClick={ event => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            this.setState({ show_SubmitKey:true });
+                                        }}
+                                    >
+                                        Show Key
+                                    </button>
+                                )}
+
                             </div>
-                            <div style={ { marginLeft: 20, marginTop: 0 } }>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ event => {
-                                        event.stopPropagation();
-                                        this._changeSubmitImportKey();
-                                    }}
-                                >
-                                    Change Key
-                                </span>
-                                <span> </span>
-                                <span
-                                    style={ { marginLeft: 10 } }
-                                    className=" fake-link "
-                                    onClick={ event => {
-                                        event.stopPropagation();
-                                        this._removeSubmitImportKey();
-                                    }}
-                                >
-                                    Remove Key
-                                </span>
+                            <div style={ { marginLeft: 20, marginTop: 5 } }>
+                                <div >
+                                    <button
+                                        onClick={ event => {
+                                            event.stopPropagation();
+                                            this._changeSubmitImportKey();
+                                        }}
+                                    >
+                                        Change Key
+                                    </button>
+                                    <span> </span>
+                                    <button
+                                        style={ { marginLeft: 10 } }
+                                        onClick={ event => {
+                                            event.stopPropagation();
+                                            this._removeSubmitImportKey();
+                                        }}
+                                    >
+                                        Remove Key
+                                    </button>
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Do not share user-submit-import-key, it is unique to your account.
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -334,16 +360,15 @@ class SubmitImportProgramInfo_Overlay_Component extends React.Component< SubmitI
                                 No value set for: --user-submit-import-key
                             </span>
                             <span> </span>
-                            <span
+                            <button
                                 style={ { marginLeft: 10 } }
-                                className=" fake-link "
                                 onClick={ event => {
                                     event.stopPropagation();
                                     this._addSubmitImportKey();
                                 }}
                             >
                                 Make Key
-                            </span>
+                            </button>
                         </div>
                     )}
 
