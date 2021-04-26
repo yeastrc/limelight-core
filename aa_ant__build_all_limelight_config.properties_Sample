@@ -5,6 +5,8 @@
 
 #  Configuration for ant__build_all_limelight.xml
 
+#     !!!!   If Not Set, npm will default to execution using command 'npm' which will use the npm program on the path
+
 #  Path to npm executable
 
 npm.executable=

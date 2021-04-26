@@ -26,6 +26,9 @@
 
 	<echo>Using Config file ${config_file_with_path}</echo>
 	
+	<!-- 
+		REMOVE since not needed.  npm will be set to default if no properties file
+	
 	<fail message="ERROR: '${config_file}' file not found, check the path. filename with path: ${config_file_with_path}">
 		<condition>
 		    <not>
@@ -33,6 +36,7 @@
 		    </not>
 		</condition>
 	</fail>
+	-->
 	
 	<echo>config_file_with_path: ${config_file_with_path}</echo>
 	
