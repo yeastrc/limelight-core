@@ -1,3 +1,5 @@
+![Current Build Status](https://github.com/yeastrc/limelight-core/actions/workflows/push.yml/badge.svg)
+
 # Limelight - visualize and share proteomics mass spec data
 Limelight is a web application for visualizing, sharing, and analyzing the full-stack of mass spec proteomics
 results processed by any software pipeline.
