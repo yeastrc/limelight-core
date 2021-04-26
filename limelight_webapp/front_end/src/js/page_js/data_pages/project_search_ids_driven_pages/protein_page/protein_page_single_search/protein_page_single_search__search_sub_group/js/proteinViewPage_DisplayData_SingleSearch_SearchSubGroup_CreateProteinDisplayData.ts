@@ -31,6 +31,8 @@ export class ProteinDataDisplay_ProteinListItem_SingleSearch_SearchSubGroup {
         proteinInfo : { proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }> } // Map Value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
         numPsms : number
         numPsms_Map_Key_SearchSubGroupId: Map<number,number>
+        numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId: Map<number,number>
+        numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId: Map<number,number>
         numReportedPeptides : number
         numReportedPeptidesUnique : number
         reportedPeptideIds : Array<number>
@@ -105,6 +107,8 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
             proteinInfo: { proteinLength: number, annotations: Array<{ name: string, description: string, taxonomy: number }> } // Map Value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
             numPsms: number
             numPsms_Map_Key_SearchSubGroupId: Map<number,number>
+            numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId: Map<number,number>
+            numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId: Map<number,number>
             numReportedPeptides: number
             numReportedPeptidesUnique: number
             reportedPeptideIds: Array<number>
@@ -133,7 +137,9 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
         let numReportedPeptides = 0;
         let numReportedPeptidesUnique = 0; // 'Unique' == map to only one protein
         let numPsms = 0;
-        const numPsms_Map_Key_SearchSubGroupId: Map<number,number> = new Map()
+        const numPsms_Map_Key_SearchSubGroupId: Map<number,number> = new Map();
+        const numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId: Map<number,number> = new Map();
+        const numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId: Map<number,number> = new Map();
 
         const numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map = loadedDataPerProjectSearchIdHolder.get_numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map();
         if ( ! numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map ) {
@@ -150,13 +156,21 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
 
             let numberOfPSMsForReportedPeptide = 0;
 
+            const searchSubGroup_Ids__FoundPSMCountsFor = new Set<number>();
+
             for ( const searchSubGroup_Id of searchSubGroup_Ids ) {
 
                 const numPsmsFor_SearchSubGroupId = numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map.get(reportedPeptideId)
                 if ( numPsmsFor_SearchSubGroupId ) {
 
                     const numPsms = numPsmsFor_SearchSubGroupId.get(searchSubGroup_Id);
-                    if ( numPsms !== undefined ) {
+                    if ( numPsms !== undefined && numPsms !== 0 ) {
+
+                        //  Add to Set
+                        searchSubGroup_Ids__FoundPSMCountsFor.add( searchSubGroup_Id );  // Found PSMs for searchSubGroup_Id
+
+                        //  Add numPsms to Per searchSubGroup_Id Map
+
                         let numPsms_Map_Key_SearchSubGroupId_Entry = numPsms_Map_Key_SearchSubGroupId.get( searchSubGroup_Id );
                         if ( ! numPsms_Map_Key_SearchSubGroupId_Entry ) {
                             numPsms_Map_Key_SearchSubGroupId_Entry = 0;  // was undefined since not in map. change to zero so can add to numPsms
@@ -164,7 +178,19 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
                         const numPsms_Map_Key_SearchSubGroupId_Entry_NewValue = numPsms_Map_Key_SearchSubGroupId_Entry + numPsms;
                         numPsms_Map_Key_SearchSubGroupId.set( searchSubGroup_Id, numPsms_Map_Key_SearchSubGroupId_Entry_NewValue );
 
+                        //  Add to total PSM count for reportedPeptideId
+
                         numberOfPSMsForReportedPeptide += numPsms;
+
+                        //  Increment count of Reported Peptide Ids for Single Protein
+                        {
+                            const existingValue = numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId.get( searchSubGroup_Id );
+                            if ( ! existingValue ) {
+                                numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId.set( searchSubGroup_Id, 1 );
+                            } else {
+                                numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId.set( searchSubGroup_Id, existingValue + 1 );
+                            }
+                        }
                     }
                 }
             }
@@ -196,7 +222,18 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
                 throw Error("No proteinSequenceVersionIds for reportedPeptideId: " + reportedPeptideId);
             }
             if (proteinSequenceVersionIds.length === 1) {
-                numReportedPeptidesUnique++
+                numReportedPeptidesUnique++;
+
+                //  Increment counter for each searchSubGroup_Id FoundPSMCountsFor
+                for ( const searchSubGroup_Id of searchSubGroup_Ids__FoundPSMCountsFor ) {
+
+                    const existingValue = numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId.get( searchSubGroup_Id );
+                    if ( ! existingValue ) {
+                        numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId.set( searchSubGroup_Id, 1 );
+                    } else {
+                        numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId.set( searchSubGroup_Id, existingValue + 1 );
+                    }
+                }
             }
         }
 
@@ -215,6 +252,8 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
             proteinInfo,
             numPsms,
             numPsms_Map_Key_SearchSubGroupId,
+            numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId,
+            numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId,
             numReportedPeptides,
             numReportedPeptidesUnique,
             reportedPeptideIds

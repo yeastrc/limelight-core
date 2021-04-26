@@ -38,6 +38,12 @@ import {
     get_proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_Text_DataTable_Component,
     get_proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_Tooltip_DataTable_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/jsx/proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_Text_And_Tooltip_DataTable_Component";
+import {
+    get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Text_DataTable_Component,
+    get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Tooltip_DataTable_Component,
+    get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Text_DataTable_Component,
+    get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Tooltip_DataTable_Component
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search__search_sub_group/jsx/proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Text_And_Tooltip_DataTable_Component";
 
 
 
@@ -190,6 +196,63 @@ export const getProteinDataTableColumns_SingleSearch__SearchSubGroup = function(
 
             const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
             dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+    }
+
+    {
+        for ( const searchSubGroupId of searchSubGroupIds ) {
+
+            const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+            if ( ! searchSubGroup ) {
+                throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                    + ", projectSearchId: " + projectSearchId );
+            }
+
+            {  //  Reported Peptides Count
+
+                const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Text_DataTable_Component({searchSubGroup});
+
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = (): JSX.Element => {
+
+                    return get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Tooltip_DataTable_Component({searchSubGroup});
+                }
+
+                const column = new DataTable_Column({
+                    id: 'peptides_' + searchSubGroupId,
+                    displayName,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+                    width: 80,
+                    sortable: true
+                });
+
+                columns.push(column);
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
+                dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
+            }
+
+            {  //  Reported Peptides Unique Count
+
+                const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Text_DataTable_Component({searchSubGroup});
+
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = (): JSX.Element => {
+
+                    return get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Tooltip_DataTable_Component({searchSubGroup});
+                }
+
+                const column = new DataTable_Column({
+                    id: 'peptidesUnique_' + searchSubGroupId,
+                    displayName,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+                    width: 80,
+                    sortable: true
+                });
+
+                columns.push(column);
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
+                dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
+            }
         }
     }
 
@@ -545,6 +608,60 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
             const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
+    }
+
+
+    {  // Num Reported Peptides and Num Reported Peptides Unique per search sub group
+
+        for (const searchSubGroupId of searchSubGroupIds) {
+
+            {  // Num Reported Peptides for search sub group
+
+                let num = 0;  // default to zero if no entry
+
+                const num_FromMap = proteinListItem.proteinItem.numReportedPeptideIds_SingleProtein_Map_Key_SearchSubGroupId.get(searchSubGroupId)
+                if (num_FromMap) {
+                    num = num_FromMap;
+                }
+
+                const valueDisplay = num.toLocaleString();
+                const searchEntriesForColumn: Array<string> = [valueDisplay]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: num
+                })
+                columnEntries.push(columnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+                dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+            }
+
+            {  // Num Reported Peptides Unique for search sub group
+
+                let num = 0;  // default to zero if no entry
+
+                const num_FromMap = proteinListItem.proteinItem.numReportedPeptideIds_Unique_SingleProtein_Map_Key_SearchSubGroupId.get(searchSubGroupId)
+                if (num_FromMap) {
+                    num = num_FromMap;
+                }
+
+                const valueDisplay = num.toLocaleString();
+                const searchEntriesForColumn: Array<string> = [valueDisplay]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: num
+                })
+                columnEntries.push(columnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+                dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+            }
+        }
+
     }
 
     const tableRowClickHandler_Callback_NoDataPassThrough : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough =
