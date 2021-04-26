@@ -249,6 +249,14 @@ public class UserChangeAccountInfo_RestWebserviceController {
 					}
 					
 					webserviceResult.setStatus(false);
+					
+					if ( userMgmtManageAccountResponse.isDuplicateEmail() ) {
+						webserviceResult.setEmailValueAlreadyExists(true);
+					}
+					if ( userMgmtManageAccountResponse.isDuplicateUsername() ) {
+						webserviceResult.setUsernameValueAlreadyExists(true);
+					}
+					
 					return webserviceResult; // EARLY RETURN
 				}
 

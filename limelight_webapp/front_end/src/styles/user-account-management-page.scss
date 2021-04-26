@@ -17,21 +17,26 @@ body.user-account-management-page {
 		opacity:0.6; filter:alpha(opacity=60);
 	}
 	
-	.account-info-block, .submit-import-key-mgmt-block { margin-left: 40px; }
-	
-	.value-container { clear: both; margin-bottom: 20px; }
-	.value-container-keep-with-next { clear: both; margin-bottom: 5px; }
-	
-	.value-label {  float: left; font-weight: bold; }
-	
-	.current-value-container,  .edit-value-container {  margin-left: 120px; }
-	
-	.edit-value-container { display: none; }
-	
-	.edit-value-input-field { width: 275px;  }
-	
-	
-	
+	.account-info-block {
+		margin-left: 40px;
+
+		.line-margin-bottom {
+			margin-bottom: 20px;
+		}
+
+		.line-keep-with-next-margin-bottom {
+			margin-bottom: 5px;
+		}
+
+		.value-label {
+			font-weight: bold;
+		}
+	}
+
+	.submit-import-key-mgmt-block {
+		margin-left: 40px;
+	}
+
 	div.error-message-container { display: none; width: 100%; text-align: center; position: absolute; z-index: 1; }
 	
 	.error-message-inner-container { font-size: 18px; padding: 10px; color: white; background-color: red; }

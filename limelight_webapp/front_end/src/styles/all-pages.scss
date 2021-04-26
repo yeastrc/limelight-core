@@ -305,7 +305,18 @@ div.footer-outer-container {
 .modal-dialog-overlay-background { display: none; position: fixed; z-index: 99998; cursor: pointer;top: 0;left: 0;height: 100%;width: 100%;background-color: #000 /* #A55353 */;opacity: 0.8;filter:alpha(opacity=80);}
 
 	/* modal dialog overlay container */
-.modal-dialog-overlay-container { display: none; text-align: left; position: absolute; z-index: 999999; background-color: white; padding: 20px; border-color: #A0A0A0; border-width: 2px; border-style: solid;   }
+.modal-dialog-overlay-container { display: none; text-align: left; position: absolute; z-index: 999999; background-color: $site-standard-background-color; padding: 20px; border-color: #A0A0A0; border-width: 2px; border-style: solid;   }
+
+
+//  A Modal Dialog designed to be smaller and positioned near the main page content it was opened from
+.modal-dialog-small-positioned-near-related-content-background {
+  background-color: grey; opacity: 0.8; position: fixed; left: 0px; top: 0px; height: 100vh; width: 100vw;
+}
+.modal-dialog-small-positioned-near-related-content-container {
+  background-color: $site-standard-background-color;
+}
+
+
 
 
 div.error-message-container, div.success-message-container {

@@ -46,6 +46,8 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 
 	public static final String USER_INFO_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/userInfo";
 
+	public static final String USER_INFO_FRESH_READ_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-info-fresh-read";
+
 	public static final String USER_CHANGE_ACCOUNT_INFO_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-change-account-info";
 
 	public static final String USER_LOCAL_USER_DATA_MANAGE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-local-user-data-manage";

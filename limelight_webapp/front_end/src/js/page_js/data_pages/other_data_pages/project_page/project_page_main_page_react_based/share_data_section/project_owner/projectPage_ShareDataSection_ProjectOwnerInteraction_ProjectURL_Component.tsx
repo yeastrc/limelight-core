@@ -439,10 +439,10 @@ class CustomizeProjectURL_Overlay_Component extends React.Component< CustomizePr
         return (
 
             <div >
-                <div style={ { zIndex: 700, backgroundColor: "grey", opacity: .8, position: "fixed", left: 0, top: 0, height: "100vh", width: "100vw" } }>
+                <div style={ { zIndex: 700 } } className=" modal-dialog-small-positioned-near-related-content-background ">
 
                 </div>
-                <div style={ { zIndex: 710, backgroundColor: "white", position: "fixed", top: this.props.position_top, left: this.props.position_left }}>
+                <div style={ { zIndex: 710, position: "fixed", top: this.props.position_top, left: this.props.position_left }} className=" modal-dialog-small-positioned-near-related-content-container ">
 
                     <div style={ { padding: 20, position: "relative" } }>
                         <div>
