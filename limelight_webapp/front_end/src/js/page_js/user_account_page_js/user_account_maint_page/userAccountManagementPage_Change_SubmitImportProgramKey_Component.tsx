@@ -30,6 +30,7 @@ interface UserAccountManagementPage_Change_SubmitImportProgramKey_Component_Stat
     displaySubmitImportKeyMgmtBlock?: boolean
 
     submitImportKey? : string
+    show_SubmitKey?: boolean
 
     show_LoadingMessage?: boolean
     showError_ReadingData?: boolean
@@ -259,6 +260,7 @@ export class UserAccountManagementPage_Change_SubmitImportProgramKey_Component e
                                 Create Key
                             </button>
                         </div>
+
                     ) : (
 
                         //  YES Key for user
@@ -269,9 +271,25 @@ export class UserAccountManagementPage_Change_SubmitImportProgramKey_Component e
                                     Current Key:
                                 </span>
                                 <span > </span>
-                                <span>
-                                    { this.state.submitImportKey }
-                                </span>
+
+                                { ( this.state.show_SubmitKey ) ? (
+
+                                    <span>
+                                        { this.state.submitImportKey }
+                                    </span>
+
+                                ) : (
+                                    <button
+                                        style={ { marginLeft: 5 } }
+                                        onClick={ event => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            this.setState({ show_SubmitKey:true });
+                                        }}
+                                    >
+                                        Show Key
+                                    </button>
+                                )}
 
                             </div>
                             <div >
