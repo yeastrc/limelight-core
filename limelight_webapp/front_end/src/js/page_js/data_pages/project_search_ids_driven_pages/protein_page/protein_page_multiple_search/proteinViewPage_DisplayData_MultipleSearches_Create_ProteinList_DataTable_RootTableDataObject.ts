@@ -170,6 +170,48 @@ export const getProteinDataTableColumns = function( { projectSearchIds, dataPage
         }
     }
 
+    {
+        for ( const projectSearchId of projectSearchIds ) {
+
+            const searchNameObject = searchNamesMap_KeyProjectSearchId.get(projectSearchId);
+            if (!searchNameObject) {
+                throw Error("No searchNameObject for projectSearchId: " + projectSearchId);
+            }
+
+            {  //  Reported Peptides count
+
+                const displayName = 'Peptides (' + searchNameObject.searchId + ")";
+
+                const column = new DataTable_Column({
+                    id: 'peptides_' + projectSearchId,
+                    displayName,
+                    width: 80,
+                    sortable: true
+                });
+
+                columns.push(column);
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
+                dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
+            }
+            {  //  Reported Peptides Unique count
+
+                const displayName = 'Peptides Unique (' + searchNameObject.searchId + ")";
+
+                const column = new DataTable_Column({
+                    id: 'peptidesUnique_' + projectSearchId,
+                    displayName,
+                    width: 80,
+                    sortable: true
+                });
+
+                columns.push(column);
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
+                dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
+            }
+        }
+    }
     const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: columns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
 
     return dataTable_RootTableDataObject_Both_ColumnArrays;
@@ -485,6 +527,57 @@ const _createProteinItem_DataTableEntry = function({ greyOutRow, proteinListItem
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
     }
+    {  // Num Reported Peptides and Reported Peptides Unique per search
+
+        for ( const projectSearchId of projectSearchIds ) {
+
+            { // Num Reported Peptides Unique for search
+
+                let num = 0;  // default to zero if no entry
+
+                const proteinItemRecord = proteinListItem.proteinItemRecordsMap_Key_projectSearchId.get(projectSearchId);
+                if (proteinItemRecord) {
+                    num = proteinItemRecord.numReportedPeptides;
+                }
+
+                const valueDisplay = num.toLocaleString();
+                const searchEntriesForColumn: Array<string> = [valueDisplay]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: num
+                })
+                columnEntries.push(columnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+                dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+            }
+            { // Reported Peptides Unique for search
+
+                let num = 0;  // default to zero if no entry
+
+                const proteinItemRecord = proteinListItem.proteinItemRecordsMap_Key_projectSearchId.get(projectSearchId);
+                if (proteinItemRecord) {
+                    num = proteinItemRecord.numReportedPeptidesUnique;
+                }
+
+                const valueDisplay = num.toLocaleString();
+                const searchEntriesForColumn: Array<string> = [valueDisplay]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: num
+                })
+                columnEntries.push(columnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+                dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+            }
+        }
+    }
+
 
     //  Create callback function
 
