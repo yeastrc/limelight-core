@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Run box version	    
+    - name: Run build in Docker container	    
       uses: docker://mriffle/build-limelight:latest
       with:
         entrypoint: ant
