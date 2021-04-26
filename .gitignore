@@ -8,3 +8,11 @@
 
 /how_to_build.txt
 /limelight_webapp
+/limelight_importer
+/limelight_importer_run_importer_shared
+/limelight_run_importer
+/limelight_shared_code
+/limelight_submit_import
+/limelight_submit_import_client_connector
+
+/.env
