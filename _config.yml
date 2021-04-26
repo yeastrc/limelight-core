@@ -23,9 +23,6 @@ permalink: pretty
 # ----------------------- #
 
 social:
-  - icon: external-link
-    text: Try Demo
-    url: https://limelight.yeastrc.org/limelight/
   - icon: question-circle
     text: Documentation
     url: https://limelight-ms.readthedocs.org/
