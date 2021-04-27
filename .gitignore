@@ -17,3 +17,5 @@
 
 /.env
 /aa_ant__build_all_limelight_config.properties
+
+/limelight-core.iml
