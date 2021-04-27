@@ -127,3 +127,14 @@ If you do not have scan files to upload, the command would be the following:
                   --limelight-xml-file=/location/to/limelight.xml \
                   --no-scan-files
 
+.. note::
+ If you are using a Windows command line, the lines should end with ``^`` instead of ``\``. For example:
+
+ .. code-block:: none
+
+         java -jar c:\path\to\limelightSubmitImport.jar ^
+                   --limelight-web-app-url=https://limelight.yeastrc.org/limelight ^
+                   --project-id=7 ^
+                   --user-submit-import-key=12dee46123ceb09c61af8d34a9151c512657cf7f39 ^
+                   --limelight-xml-file=c:\path\to\limelight.xml ^
+                   --no-scan-files
