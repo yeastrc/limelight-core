@@ -17,7 +17,7 @@
 	<script id="controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER %></script>
 	
 	<script id="initial_url_project_search_id" type="text/text"><c:out value="${ projectSearchId }" ></c:out></script>
-	<script id="initial_url_psm_id" type="text/text"><c:out value="${ psmId }" ></c:out></script>
+	<script id="initial_url_psm_id" type="text/text"><c:out value="${ psmIdNumber }" ></c:out></script>
 	
 	<script id="project_id" type="text/text"><c:out value="${ projectId }" ></c:out></script>
 	

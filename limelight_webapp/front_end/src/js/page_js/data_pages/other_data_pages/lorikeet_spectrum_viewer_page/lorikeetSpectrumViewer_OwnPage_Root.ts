@@ -63,6 +63,8 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 		}
 		const psmIdString = initial_url_psm_idDOMElement.innerText;
 
+		console.log("Value in  DOM element with id 'initial_url_psm_id': " + psmIdString );
+
 		const projectSearchId = Number.parseInt( projectSearchIdString );
 		if ( Number.isNaN( projectSearchId ) ) {
 			throw Error("DOM element with id 'initial_url_project_search_id' does not contain a number.  contains: " + projectSearchIdString );
