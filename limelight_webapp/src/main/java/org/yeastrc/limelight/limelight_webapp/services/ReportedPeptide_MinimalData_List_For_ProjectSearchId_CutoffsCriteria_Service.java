@@ -17,11 +17,11 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
+import java.lang.ref.SoftReference;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,6 +31,7 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.Cache_InMemory_CurrentSizeMaxSizeResult;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CentralRegistry_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CommonIF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.Cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.searcher_utils.DefaultCutoffsExactlyMatchAnnTypeDataToSearchDataIF;
 import org.yeastrc.limelight.limelight_webapp.searcher_utils.DefaultCutoffsExactlyMatchAnnTypeDataToSearchData.DefaultCutoffsExactlyMatchAnnTypeDataToSearchDataResult;
@@ -64,24 +65,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	private static final Logger log = LoggerFactory.getLogger( ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.class );
 
-	private static final int CACHE_MAX_SIZE_FULL_SIZE = 200;
 
-//	private static final int CACHE_MAX_SIZE_FULL_SIZE = 8000;
-	private static final int CACHE_MAX_SIZE_SMALL_FEW = 500;
+	private static final int CACHE_TIMEOUT = 20; // in days
 
-	private static final int CACHE_TIMEOUT_FULL_SIZE = 20; // in days
-	private static final int CACHE_TIMEOUT_SMALL = 20; // in days
-
-
-	private static final AtomicLong cacheGetCount = new AtomicLong();
-	private static final AtomicLong cacheDBRetrievalCount = new AtomicLong();
-	
-	private static volatile int prevDayOfYear = -1;
-
-	private static boolean debugLogLevelEnabled = false;
-	
 	@Autowired
 	private CachedData_InMemory_CentralRegistry_IF cachedData_InMemory_CentralRegistry;
+	
+	@Autowired Cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup_IF cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup;
 	
 	@Autowired
 	private DefaultCutoffsExactlyMatchAnnTypeDataToSearchDataIF defaultCutoffsExactlyMatchAnnTypeDataToSearchData;
@@ -94,7 +84,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	/////
 	
-	private volatile LoadingCache<LocalCacheKey, LocalCacheValue> dbRecordsDataCache = null;
+	private volatile SoftReference<LoadingCache<LocalCacheKey, LocalCacheValue>> dbRecordsDataCache_SoftReference = null;
 	
 	private volatile int cacheMaxSize;
 	
@@ -109,14 +99,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 * Spring LifeCycle Method
 	 * @throws Exception
 	 */
+	@Override
 	public void afterPropertiesSet() throws Exception {
 		
 		try {
 	
 			create_Cache();
 	
-			if ( dbRecordsDataCache == null ) {
-				String msg = "In afterPropertiesSet: after call to create_Cache(): dbRecordsDataCache == null ";
+			if ( dbRecordsDataCache_SoftReference == null ) {
+				String msg = "In afterPropertiesSet: after call to create_Cache(): dbRecordsDataCache_SoftReference == null ";
 				log.error(msg);
 				throw new LimelightInternalErrorException(msg);
 			}
@@ -153,6 +144,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		localCacheKey.searchId = searchId;
 		localCacheKey.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
 		localCacheKey.minimumNumberOfPSMsPerReportedPeptide = minimumNumberOfPSMsPerReportedPeptide;
+		
+		LoadingCache<LocalCacheKey, LocalCacheValue> dbRecordsDataCache = create_Cache_IfNotExist();
 		
 		if ( dbRecordsDataCache == null ) {
 			String msg = "In getPeptideDataList: dbRecordsDataCache == null ";
@@ -208,13 +201,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		//  Create new Cache
 		create_Cache();
 		
-//		if ( dbRecordsDataCache == null ) {
-//			String msg = "In clearCacheData: dbRecordsDataCache == null ";
-//			log.error(msg);
-//			throw new LimelightInternalErrorException(msg);
-//		}
-//		
-//		dbRecordsDataCache.invalidateAll();
 	}
 
 	/* (non-Javadoc)
@@ -222,6 +208,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 */
 	@Override
 	public Cache_InMemory_CurrentSizeMaxSizeResult getCurrentCacheSizeAndMax() throws Exception {
+		
+		LoadingCache<LocalCacheKey, LocalCacheValue> dbRecordsDataCache = create_Cache_IfNotExist();
 
 		Cache_InMemory_CurrentSizeMaxSizeResult result = new Cache_InMemory_CurrentSizeMaxSizeResult();
 		if ( dbRecordsDataCache != null ) {
@@ -284,26 +272,66 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 */
 	private static class LocalCacheValue {
 		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  results;
+		
+		int getBytes() {
+			
+			return 
+					results.size() * ( 
+							ReportedPeptide_MinimalData_List_FromSearcher_Entry.SIZE_OF_OBJECT_ON_HEAP 
+							+ 8  // LIST bytes per reference 
+							)
+					+ 20; // List object other bytes
+		}
 	}
 
-
 	/**
+	 * @throws Exception 
 	 * 
 	 */
-	private void create_Cache() {
-		int cacheTimeout = CACHE_TIMEOUT_FULL_SIZE;
-		cacheMaxSize = CACHE_MAX_SIZE_FULL_SIZE;
-		//			if ( cachedDataSizeOptions == CachedDataSizeOptions.HALF ) {
-		//				cacheMaxSize = cacheMaxSize / 2;
-		//			} else if ( cachedDataSizeOptions == CachedDataSizeOptions.SMALL
-		//					|| cachedDataSizeOptions == CachedDataSizeOptions.FEW ) {
-		//				cacheMaxSize = GetAnnotationTypeData.CACHE_MAX_SIZE_SMALL_FEW;
-		//				cacheTimeout = CACHE_TIMEOUT_SMALL;
-		//			}
+	private LoadingCache<LocalCacheKey, LocalCacheValue> create_Cache_IfNotExist() throws Exception {
+		
+		if ( dbRecordsDataCache_SoftReference == null ) {
+			
+			//  NO Cache
+			
+			return create_Cache();
+		}
+		
+		LoadingCache<LocalCacheKey, LocalCacheValue> dataCache = dbRecordsDataCache_SoftReference.get();
 
-		dbRecordsDataCache = CacheBuilder.newBuilder()
+		if ( dataCache != null ) {
+			
+			return dataCache;
+		}
+
+		//  NO Cache
+		
+		return create_Cache();
+	}
+
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private LoadingCache<LocalCacheKey, LocalCacheValue>  create_Cache() throws Exception {
+
+		int cacheTimeout = CACHE_TIMEOUT;
+		
+		long maximumWeight_InKB = 
+				cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup
+				.cachedData_InMemory_Size_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup()
+				.getResponseSizeKB_ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service();
+		
+		LoadingCache<LocalCacheKey, LocalCacheValue> dbRecordsDataCache = CacheBuilder.newBuilder()
 				.expireAfterAccess( cacheTimeout, TimeUnit.DAYS )
-				.maximumSize( cacheMaxSize )
+				.maximumWeight( maximumWeight_InKB )
+				.weigher( ( LocalCacheKey localCacheKey, LocalCacheValue localCacheValue ) -> {
+					//  Return approximate size in KB, rounded up
+					return (int) Math.ceil( 
+							150 // guess size of localCacheKey
+							+ localCacheValue.getBytes()
+							/ 1024.0 );
+				})
 				.build(
 						new CacheLoader<LocalCacheKey, LocalCacheValue>() {
 							@Override
@@ -318,7 +346,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 								int minimumNumberOfPSMsPerReportedPeptide = localCacheKey.minimumNumberOfPSMsPerReportedPeptide;
 
 								//  value is NOT in cache so get it and return it
-								List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  results = getPeptideDataList_FromDB_CalledByCache( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
+								List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  resultsFromDB = getPeptideDataList_FromDB_CalledByCache( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
+								
+								//  Create new ArrayList sized to the results
+								List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  results = new ArrayList<>( resultsFromDB.size() + 1 );
+								results.addAll( resultsFromDB );
 								
 								LocalCacheValue localCacheValue = new LocalCacheValue();
 								localCacheValue.results = results;
@@ -329,9 +361,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		//			    .build(); // no CacheLoader
 		//			cacheDataInitialized = true;
 		
+		dbRecordsDataCache_SoftReference = new SoftReference<>( dbRecordsDataCache );
+
+		return dbRecordsDataCache;
+
 	}
 
-
-	
 
 }

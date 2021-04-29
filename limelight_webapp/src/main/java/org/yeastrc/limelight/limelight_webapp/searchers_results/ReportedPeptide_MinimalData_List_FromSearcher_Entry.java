@@ -17,11 +17,25 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers_results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+
 /**
  * Entry in list returned from 
  *
  */
 public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
+	
+	private static final Logger log = LoggerFactory.getLogger( ReportedPeptide_MinimalData_List_FromSearcher_Entry.class );
+	
+	public static final int SIZE_OF_OBJECT_ON_HEAP = 
+			( Integer.BYTES * 2 ) 
+			+ 4 //  4 boolean
+			+ 4;  // object overhead
+	
+	private static final int INTEGER_VALUE_NOT_SET = Integer.MIN_VALUE;
+	
 
 	private int reportedPeptideId;
 
@@ -30,20 +44,37 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 	private boolean anyPsmHas_OpenModifications;
 	private boolean anyPsmHas_ReporterIons;
 	
-	//  These are null if not computed
-	private Integer numPsms_IfComputedOrInDB;
+	private int numPsms_IfComputedOrInDB = INTEGER_VALUE_NOT_SET;
+	
+
+	/**
+	 * @return null if not set (was not computed)
+	 */
+	public Integer getNumPsms_IfComputedOrInDB() {
+		if ( numPsms_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			return null;
+		}
+		return numPsms_IfComputedOrInDB;
+	}
+	/**
+	 * Throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 * @param numPsms_IfComputedOrInDB
+	 * @throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 */
+	public void setNumPsms_IfComputedOrInDB(int numPsms_IfComputedOrInDB) {
+		if ( numPsms_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			String msg = "setNumPsms_IfComputedOrInDB(...) called with value for numPsms_IfComputedOrInDB that is used for 'NOT SET' of: " + INTEGER_VALUE_NOT_SET;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		this.numPsms_IfComputedOrInDB = numPsms_IfComputedOrInDB;
+	}
 	
 	public int getReportedPeptideId() {
 		return reportedPeptideId;
 	}
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
-	}
-	public Integer getNumPsms_IfComputedOrInDB() {
-		return numPsms_IfComputedOrInDB;
-	}
-	public void setNumPsms_IfComputedOrInDB(Integer numPsms_IfComputedOrInDB) {
-		this.numPsms_IfComputedOrInDB = numPsms_IfComputedOrInDB;
 	}
 	public boolean isAnyPsmHas_ReporterIons() {
 		return anyPsmHas_ReporterIons;

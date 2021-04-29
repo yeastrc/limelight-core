@@ -19,6 +19,7 @@ import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFi
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.Cache_InMemory_CurrentSizeMaxSizeResult;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CentralRegistry_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.CachedData_InMemory_CommonIF;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_memory_mgmt.Cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GUNzip_ByteArray_To_ByteArray_IF;
 
@@ -42,19 +43,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 {
 	private static final Logger log = LoggerFactory.getLogger( Cached_WebserviceResponse_Management.class );
 
-	private static final int CACHE_MAX_SIZE_FULL_SIZE = 4000;
-
-//	private static final int CACHE_MAX_SIZE_FULL_SIZE = 8000;
-	private static final int CACHE_MAX_SIZE_SMALL_FEW = 500;
-
-	private static final int CACHE_TIMEOUT_FULL_SIZE = 20; // in days
-	private static final int CACHE_TIMEOUT_SMALL = 20; // in days
+	private static final int CACHE_TIMEOUT = 20; // in days
 
 	@Autowired
 	private GUNzip_ByteArray_To_ByteArray_IF gUNzip_ByteArray_To_ByteArray;
 	
 	@Autowired
 	private CachedData_InMemory_CentralRegistry_IF cachedData_InMemory_CentralRegistry;
+
+	@Autowired Cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup_IF cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup;
 	
 	@Autowired
 	private CachedDataInFileMgmt_ReadFile_IF cachedDataInFileMgmt_ReadFile;
@@ -78,16 +75,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		try {
-			create_Cache();	
+			create_Cache_IfNotExist();	
 	
 			if ( dataCache_SoftReference == null ) {
-				String msg = "In afterPropertiesSet: after call to create_Cache(): dbRecordsDataCache == null ";
-				log.error(msg);
-				throw new LimelightInternalErrorException(msg);
-			}
-
-			if ( dataCache_SoftReference.get() == null ) {
-				String msg = "In afterPropertiesSet: after call to create_Cache(): dbRecordsDataCache.get() == null ";
+				String msg = "In afterPropertiesSet: after call to create_Cache(): dataCache_SoftReference == null ";
 				log.error(msg);
 				throw new LimelightInternalErrorException(msg);
 			}
@@ -163,6 +154,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * @return
 	 */
+	@Override
 	public Set<String> get_registered_ControllerPaths_Copy() {
 		
 		Set<String> registered_ControllerPaths = new HashSet<>( registered_ControllerPathForCachedResponse_Map.keySet() );
@@ -192,29 +184,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			}
 		}
 
-		if ( dataCache_SoftReference == null ) {
-			
-			//  NO Cache
-			
-			create_Cache();
-		}
-		
-		Cache<LocalCacheKey, LocalCacheValue> dataCache = dataCache_SoftReference.get();
+		Cache<LocalCacheKey, LocalCacheValue> dataCache = create_Cache_IfNotExist();
 
-		if ( dataCache == null ) {
-			
-			//  NO Cache behind soft reference
-			
-			create_Cache();
-			
-			 dataCache = dataCache_SoftReference.get();
-
-			 if ( dataCache == null ) {
-				 
-				 return null;
-			 }
-		}
-		
 		{
 			
 			//  First Try Retrieve from In Memory Cache with accept_GZIP value
@@ -262,7 +233,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			LocalCacheValue localCacheValueToStore = new LocalCacheValue();
 			localCacheValueToStore.responseBodyBytes = fromCacheOnFile;
 
-//			Cache<LocalCacheKey, LocalCacheValue>
 			dataCache.put( localCacheKey, localCacheValueToStore );
 			
 			if ( accept_GZIP ) {
@@ -308,29 +278,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			}
 		}
 
-		if ( dataCache_SoftReference == null ) {
-			
-			//  NO Cache
-			
-			create_Cache();
-		}
-		
-		Cache<LocalCacheKey, LocalCacheValue> dataCache = dataCache_SoftReference.get();
+		Cache<LocalCacheKey, LocalCacheValue> dataCache = create_Cache_IfNotExist();
 
-		if ( dataCache == null ) {
-			
-			//  NO Cache behind soft reference
-			
-			create_Cache();
-			
-			 dataCache = dataCache_SoftReference.get();
-
-			 if ( dataCache == null ) {
-				 
-				 return;
-			 }
-		}
-		
 		//  Store Cached Data to In Memory Cache
 		
 		LocalCacheKey localCacheKey = new LocalCacheKey();
@@ -360,7 +309,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	public void clearCacheData() throws Exception {
 		
 		//  Create new Cache
-		create_Cache();
+		create_Cache_IfNotExist();
 		
 //		if ( dbRecordsDataCache == null ) {
 //			String msg = "In clearCacheData: dbRecordsDataCache == null ";
@@ -435,27 +384,61 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	}
 
 	/**
+	 * @throws Exception 
 	 * 
 	 */
-	private void create_Cache() {
+	private Cache<LocalCacheKey, LocalCacheValue> create_Cache_IfNotExist() throws Exception {
 		
-		int cacheTimeout = CACHE_TIMEOUT_FULL_SIZE;
-		cacheMaxSize = CACHE_MAX_SIZE_FULL_SIZE;
+		if ( dataCache_SoftReference == null ) {
+			
+			//  NO Cache
+			
+			return create_Cache();
+		}
 		
-		//			if ( cachedDataSizeOptions == CachedDataSizeOptions.HALF ) {
-		//				cacheMaxSize = cacheMaxSize / 2;
-		//			} else if ( cachedDataSizeOptions == CachedDataSizeOptions.SMALL
-		//					|| cachedDataSizeOptions == CachedDataSizeOptions.FEW ) {
-		//				cacheMaxSize = GetAnnotationTypeData.CACHE_MAX_SIZE_SMALL_FEW;
-		//				cacheTimeout = CACHE_TIMEOUT_SMALL;
-		//			}
+		Cache<LocalCacheKey, LocalCacheValue> dataCache = dataCache_SoftReference.get();
+
+		if ( dataCache != null ) {
+			
+			return dataCache;
+		}
+
+		//  NO Cache
+		
+		return create_Cache();
+	}
+
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private Cache<LocalCacheKey, LocalCacheValue> create_Cache() throws Exception {
+				
+		int cacheTimeout = CACHE_TIMEOUT;
+		
+		long maximumWeight_InKB = 
+				cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param__OnStartup
+				.cachedData_InMemory_Size_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup()
+				.getResponseSizeKB_Cached_WebserviceResponse_Management();
 
 		Cache<LocalCacheKey, LocalCacheValue> dataCache = CacheBuilder.newBuilder()
 				.expireAfterAccess( cacheTimeout, TimeUnit.DAYS )
-				.maximumSize( cacheMaxSize )
+				.maximumWeight( maximumWeight_InKB )
+				.weigher( ( LocalCacheKey localCacheKey, LocalCacheValue localCacheValue ) -> {
+					//  Return approximate size in KB, rounded up
+					return 
+							(int) Math.ceil( 
+									( (localCacheKey.controllerPathForCachedResponse.length() * 2 ) // times 2 since 16 bit characters
+											+ localCacheKey.requestBodyBytes.length
+											+ localCacheValue.responseBodyBytes.length
+											+ 60 )  //  objects overhead
+									/ 1024.0 );
+				})
 				.build(); // no CacheLoader
 		
 		dataCache_SoftReference = new SoftReference<>( dataCache );
+		
+		return dataCache;
 	}
 
 }
