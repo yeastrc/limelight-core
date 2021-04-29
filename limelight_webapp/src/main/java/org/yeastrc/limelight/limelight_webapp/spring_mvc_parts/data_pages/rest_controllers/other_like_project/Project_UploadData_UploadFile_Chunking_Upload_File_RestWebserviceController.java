@@ -50,11 +50,13 @@ import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUploadFileSystemException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadMaxFileSizeConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.minimal_validate__get_searchname_from_uploaded_file.LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
@@ -108,6 +110,9 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 
 	@Autowired
 	private Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF limelight_XML_Importer_Work_Directory_And_SubDirs_Web;
+	
+	@Autowired
+	private LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF limelightXMLFile_Minimal_Validate__GetSearchNameIfInFile;
 
 	@Autowired
 	private UnmarshalJSON_ToObject unmarshalJSON_ToObject;
@@ -728,6 +733,45 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 			
 		}
 
+		{
+			int fileTypeInt = webserviceRequestHeaderContents.getFileType();
+			try {
+				webserviceMethod_Internal_Params.fileType = FileImportFileType.fromValue( fileTypeInt );
+			} catch (Exception e ) {
+				log.warn( "'fileType' header JSON is not a valid value: " + fileTypeInt );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
+
+				//  If first chunk of Limelight XML file or whole file is less than chunk size, minimal validate contents 
+
+				long fileSize = uploadedFileOnDisk.length();
+
+				if ( ( fileSize >= FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE 
+						&& fileSize < ( FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE * 2 ) )
+						|| fileSize >= webserviceRequestHeaderContents.getUploadFileSize() ) {
+
+					try {
+						limelightXMLFile_Minimal_Validate__GetSearchNameIfInFile.limelightXMLFile_Minimal_Validate__GetSearchNameIfInFile(uploadedFileOnDisk);
+					} catch ( LimelightWebappDataException e) {
+
+						//  File validation failed
+
+						//  Return Error -  Status Code 400
+						webserviceResult.setStatusSuccess(false);
+						webserviceResult.setLimelightXMLFilerootXMLNodeIncorrect(true);
+
+						methodResults.returnBadRequestStatusCode = true;
+
+						//  EARLY RETURN
+						return methodResults;
+					}
+				}
+
+			}
+		}
+		
 		{
 			///   Create matching "data" file for uploaded file with data about the file.
 			LimelightUploadTempDataFileContents limelightUploadTempDataFileContents = new LimelightUploadTempDataFileContents();
