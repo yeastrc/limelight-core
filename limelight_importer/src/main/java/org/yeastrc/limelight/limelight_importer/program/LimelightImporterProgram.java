@@ -577,9 +577,9 @@ public class LimelightImporterProgram {
 
 		} catch ( LimelightImporterLimelightXMLDeserializeFailException e ) {
 			String exceptionMessage = e.getMessage();
-			String errorMessage = "The Limelight XML File has XML structure problems and failed to parse."
-					+ "  Please update the program that generated the Limelight XML File"
-					+ " or ensure that the correct version is being used."
+			String errorMessage = 
+					"This is not a valid Limelight XML file.  The Limelight XML File has XML structure problems and failed to parse or an error was found during XSD validation."
+					+ "  Please update the program that generated the Limelight XML File or ensure that the correct version is being used."
 					+ "  Parse error message: " 
 					+ exceptionMessage;
 			//  TODO

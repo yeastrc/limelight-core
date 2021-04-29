@@ -1218,14 +1218,14 @@ export class ProjectPage_UploadData_NewUploadMain {
 											filename : filename,
 											$containingBlock : $containingBlock } );
 								} else if ( resp.limelightXMLFileFailsInitialParse ) {
-									let errorMessage = "The server failed to parse the Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
+									let errorMessage = "This does not appear to be a Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
 									objectThis.failedFileUpload(
 										{ isLimelightXMLFile : isLimelightXMLFile,
 											errorMessage :  errorMessage,
 											filename : filename,
 											$containingBlock : $containingBlock } );
 								} else if ( resp.limelightXMLFilerootXMLNodeIncorrect ) {
-									let errorMessage = "The server failed to parse the Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
+									let errorMessage = "This does not appear to be a Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
 									objectThis.failedFileUpload(
 										{ isLimelightXMLFile : isLimelightXMLFile,
 											errorMessage :  errorMessage,
