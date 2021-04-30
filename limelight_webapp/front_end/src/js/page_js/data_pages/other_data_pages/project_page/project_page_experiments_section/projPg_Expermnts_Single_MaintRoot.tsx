@@ -1475,8 +1475,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const newState : ProjectPage_Experiments_SingleExperimentMaintRoot_State = {
             conditionGroupsContainer : conditionGroupsContainerNew,
             conditionGroupsDataContainer : conditionGroupsDataContainerNew,
-            experimentConditions_GraphicRepresentation_PropsData,
-            numberTimePoints : undefined
+            experimentConditions_GraphicRepresentation_PropsData
         };
 
         if ( isTimePoints ) {
@@ -1656,8 +1655,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         const newState : ProjectPage_Experiments_SingleExperimentMaintRoot_State = {
             conditionGroupsContainer : conditionGroupsContainerNew,
             conditionGroupsDataContainer : conditionGroupsDataContainerNew,
-            experimentConditions_GraphicRepresentation_PropsData,
-            numberTimePoints : undefined
+            experimentConditions_GraphicRepresentation_PropsData
         };
 
         if ( isTimePoints ) {
