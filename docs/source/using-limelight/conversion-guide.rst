@@ -49,6 +49,8 @@ to the GitHub repository for the individual converter for information on how to 
      - https://github.com/yeastrc/limelight-import-magnum-tpp
    * - Open pFind
      - https://github.com/yeastrc/limelight-import-open-pfind
+   * - ProLuCID (processed with DTASelect, using IP2)
+     - https://github.com/yeastrc/limelight-import-prolucid-dtaselect
    * - Tag Graph
      - https://github.com/yeastrc/limelight-import-taggraph
 
