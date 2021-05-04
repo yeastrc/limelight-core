@@ -299,6 +299,12 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             if ( proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null ) {
                 //  Have proteinSequenceVersionId_FromURL so going to display Single Protein Overlay
 
+                _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+                    searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
+                    projectSearchId: this._projectSearchId,
+                    singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+                })
+
                 //  Hide Main Div inside of header/footer
                 const data_page_overall_enclosing_block_divDOM = document.getElementById( "data_page_overall_enclosing_block_div" );
                 if ( ! data_page_overall_enclosing_block_divDOM ) {
@@ -783,6 +789,12 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
 
             this._singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({proteinSequenceVersionId});
 
+            _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+                searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
+                projectSearchId : this._projectSearchId,
+                singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
+            })
+
             this._singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId});
         }
     }
@@ -799,6 +811,12 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             initialProteinSequenceVersionId: proteinSequenceVersionId,
             centralPageStateManager: undefined
         });
+
+        _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
+            projectSearchId : this._projectSearchId,
+            singleProtein_CentralStateManagerObject : singleProtein_CentralStateManagerObjectClass_ForNewWindow
+        })
 
         const newWindowURL = this._centralPageStateManager.getURL_ForCurrentState({componentOverridesAdditions: [singleProtein_CentralStateManagerObjectClass_ForNewWindow]})
 
@@ -932,7 +950,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             loadedDataCommonHolder : this._loadedDataCommonHolder,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
-            searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
             singleProteinCloseCallback : singleProteinCloseCallback
@@ -954,46 +971,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
         data_page_overall_enclosing_block_divDOM.style.display = "";
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
-
-        let subGroupSelection_Changed = false; // True if subGroupSelection Changed
-
-        if ( this._subGroupSelection_WhenOpened_SingleProteinOverlay ) {
-
-            const projectSearchId = this._projectSearchId;
-
-            const searchSubGroups_ForProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
-            if ( ! searchSubGroups_ForProjectSearchId ) {
-                const msg = "returned nothing: this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
-                console.warn( msg )
-                throw Error( msg )
-            }
-
-            const searchSubGroup_Ids_Selected_Current = searchSubGroup_Get_Selected_SearchSubGroupIds({
-                searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
-            })
-
-            if ( this._subGroupSelection_WhenOpened_SingleProteinOverlay.size !== searchSubGroup_Ids_Selected_Current.size ) {
-
-                subGroupSelection_Changed = true;
-            } else {
-
-                for ( const searchSubGroup_Id of this._subGroupSelection_WhenOpened_SingleProteinOverlay ) {
-                    if ( ! searchSubGroup_Ids_Selected_Current.has( searchSubGroup_Id ) ) {
-                        subGroupSelection_Changed = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        this._subGroupSelection_WhenOpened_SingleProteinOverlay = undefined;
-
-        if ( subGroupSelection_Changed ) {
-
-            this._search_SubGroup_SelectionValues_Changed_Callback();
-
-            return; // EARLY RETURN
-        }
 
         if (currentWindowScrollY) {
 
@@ -1405,4 +1382,69 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
         return searchSubGroup_Ids_Selected;
     }
 
+}
+
+
+////////////////////////
+////////////////////////
+////////////////////////
+
+//  NON Class Functions
+
+/**
+ *
+ * @param searchSubGroup_CentralStateManagerObjectClass
+ * @param projectSearchIds
+ * @param singleProtein_CentralStateManagerObject
+ */
+const _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated = function (
+    {
+        searchSubGroup_CentralStateManagerObjectClass,  //  Page Level
+        projectSearchId,
+        singleProtein_CentralStateManagerObject
+    } : {
+        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+        projectSearchId : number
+        singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
+
+    }) : void {
+
+    {
+        const searchSubGroupSelection_EncodedStateData = singleProtein_CentralStateManagerObject.getSearchSubGroupSelection_EncodedStateData();
+        if ( searchSubGroupSelection_EncodedStateData ) {
+
+            //  Already populated so exit
+
+            return; // EARLY RETURN
+        }
+    }
+
+    const projectSearchIds = [ projectSearchId ];
+
+    //  Create new searchSubGroup_CentralStateManagerObjectClass_SingleProtein with copy of Search Sub Group Selections for main page
+    const searchSubGroup_CentralStateManagerObjectClass_SingleProtein : SearchSubGroup_CentralStateManagerObjectClass = SearchSubGroup_CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+    searchSubGroup_CentralStateManagerObjectClass_SingleProtein.initialize_SingleProteinInstance({
+        current_ProjectSearchIds: projectSearchIds, encodedStateData: undefined
+    });
+
+    if ( searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+
+        searchSubGroup_CentralStateManagerObjectClass_SingleProtein.set_no_selectedSearchSubGroupIds({ no_selectedSearchSubGroupIds: true });
+
+    } else {
+        let selectedSearchSubGroupIds: Set<number> = undefined;
+
+        {
+            const selectedSearchSubGroupIds_MainPage = searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds();
+            if (selectedSearchSubGroupIds_MainPage) {
+                selectedSearchSubGroupIds = new Set(selectedSearchSubGroupIds_MainPage);
+            }
+        }
+        searchSubGroup_CentralStateManagerObjectClass_SingleProtein.set_selectedSearchSubGroupIds({selectedSearchSubGroupIds});
+    }
+
+    const searchSubGroupSelection_EncodedStateData = searchSubGroup_CentralStateManagerObjectClass_SingleProtein.getDataForEncoding();
+
+    singleProtein_CentralStateManagerObject.setSearchSubGroupSelection_EncodedStateData({ searchSubGroupSelection_EncodedStateData });
 }

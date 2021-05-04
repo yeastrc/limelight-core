@@ -848,7 +848,6 @@ export class ProteinViewPage_Display_SingleSearch {
 			loadedDataCommonHolder : this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
-			searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
 			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
 			singleProteinCloseCallback : singleProteinCloseCallback

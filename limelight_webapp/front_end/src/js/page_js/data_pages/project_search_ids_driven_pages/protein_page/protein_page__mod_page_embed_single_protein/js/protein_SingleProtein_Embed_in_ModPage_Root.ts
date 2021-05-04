@@ -265,7 +265,6 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
             dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory,
 
-            searchSubGroup_CentralStateManagerObjectClass: null,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         });
 

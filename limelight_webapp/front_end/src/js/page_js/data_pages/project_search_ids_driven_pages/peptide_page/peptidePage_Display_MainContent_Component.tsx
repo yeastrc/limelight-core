@@ -300,8 +300,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
 
-    private _subGroupSelection_WhenOpened_SingleProteinOverlay : Set<number>;
-
     private _Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay : boolean;
 
     /**
@@ -410,6 +408,12 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             if (proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null) {
                 //  Have proteinSequenceVersionId_FromURL so going to display Single Protein Overlay
+
+                _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+                    searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+                    projectSearchIds : this.props.propsValue.projectSearchIds,
+                    singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
+                })
 
                 //  Hide Main Div inside of header/footer
                 const data_page_overall_enclosing_block_divDOM = document.getElementById("data_page_overall_enclosing_block_div");
@@ -817,6 +821,12 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         this.props.propsValue.singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({proteinSequenceVersionId});
 
+        _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+            projectSearchIds : this.props.propsValue.projectSearchIds,
+            singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
+        })
+
         this._singleProteinRowShowSingleProteinOverlay({
             proteinSequenceVersionId,
             loadedDataCommonHolder: this.state.loadedDataCommonHolder,
@@ -836,6 +846,12 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             initialProteinSequenceVersionId: proteinSequenceVersionId,
             centralPageStateManager: undefined
         });
+
+        _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+            projectSearchIds : this.props.propsValue.projectSearchIds,
+            singleProtein_CentralStateManagerObject : singleProtein_CentralStateManagerObjectClass_ForNewWindow
+        })
 
         const newWindowURL = this.props.propsValue.centralPageStateManager.getURL_ForCurrentState({componentOverridesAdditions: [singleProtein_CentralStateManagerObjectClass_ForNewWindow]})
 
@@ -874,6 +890,12 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         this.props.propsValue.singleProtein_CentralStateManagerObject.setProteinSequenceVersionId({ proteinSequenceVersionId });
 
+        _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
+            projectSearchIds : this.props.propsValue.projectSearchIds,
+            singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
+        })
+
         //  Current Window Scroll position
         const currentWindowScrollY = window.scrollY;
 
@@ -893,27 +915,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay = false;
             }
         }
-        {  //  save off selected Sub Groups before open Single Protein
-
-            const projectSearchIds = this.props.propsValue.projectSearchIds;
-            const searchSubGroups_Root = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root()
-
-            if ( projectSearchIds.length === 1 && searchSubGroups_Root ) {
-
-                // Have Single projectSearchId and searchSubGroups_Root
-
-                const projectSearchId = projectSearchIds[0];
-                const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId(projectSearchId);
-                if (searchSubGroups_ForProjectSearchId) {
-
-                    this._subGroupSelection_WhenOpened_SingleProteinOverlay = searchSubGroup_Get_Selected_SearchSubGroupIds({
-                        searchSubGroup_CentralStateManagerObjectClass: this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
-                        searchSubGroups_ForProjectSearchId
-                    });
-                }
-            }
-        }
-
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
             proteinSequenceVersionId,
@@ -955,7 +956,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             singleProtein_CentralStateManagerObject: this.props.propsValue.singleProtein_CentralStateManagerObject,
             dataPages_LoggedInUser_CommonObjectsFactory: this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory,
 
-            searchSubGroup_CentralStateManagerObjectClass: this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         });
     }
@@ -976,47 +976,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
 
-        let subGroupSelection_Changed = false; // True if subGroupSelection Changed
-
-        if ( this._subGroupSelection_WhenOpened_SingleProteinOverlay ) {
-
-            {  //  save off selected Sub Groups before open Single Protein
-
-                const projectSearchIds = this.props.propsValue.projectSearchIds;
-                const searchSubGroups_Root = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root()
-
-                if ( projectSearchIds.length === 1 && searchSubGroups_Root ) {
-
-                    // Have Single projectSearchId and searchSubGroups_Root
-
-                    const projectSearchId = projectSearchIds[0];
-                    const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId(projectSearchId);
-                    if (searchSubGroups_ForProjectSearchId) {
-
-                        const searchSubGroup_Ids_Selected_Current = searchSubGroup_Get_Selected_SearchSubGroupIds({
-                            searchSubGroup_CentralStateManagerObjectClass: this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
-                            searchSubGroups_ForProjectSearchId
-                        })
-
-                        if (this._subGroupSelection_WhenOpened_SingleProteinOverlay.size !== searchSubGroup_Ids_Selected_Current.size) {
-
-                            subGroupSelection_Changed = true;
-                        } else {
-
-                            for (const searchSubGroup_Id of this._subGroupSelection_WhenOpened_SingleProteinOverlay) {
-                                if (!searchSubGroup_Ids_Selected_Current.has(searchSubGroup_Id)) {
-                                    subGroupSelection_Changed = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        this._subGroupSelection_WhenOpened_SingleProteinOverlay = undefined;
-
         let Treat_Mass_0_As_Unmod_Selection_Changed = false;
 
         if (
@@ -1028,7 +987,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             Treat_Mass_0_As_Unmod_Selection_Changed = true;
         }
 
-        if ( subGroupSelection_Changed || Treat_Mass_0_As_Unmod_Selection_Changed  ) {
+        if ( Treat_Mass_0_As_Unmod_Selection_Changed  ) {
 
             //  Show Updating Overlay with Spinner then run rest in setTimeout
 
@@ -1051,8 +1010,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         }  else {
 
-
-            if (currentWindowScrollY && (!subGroupSelection_Changed) && (!Treat_Mass_0_As_Unmod_Selection_Changed)) {
+            if (currentWindowScrollY && (!Treat_Mass_0_As_Unmod_Selection_Changed)) {
 
                 //  Scroll window down to original position when protein was clicked to open Single Protein view
 
@@ -3020,4 +2978,66 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         )
     }
 
+}
+
+////////////////////////
+////////////////////////
+////////////////////////
+
+//  NON Class Functions
+
+/**
+ *
+ * @param searchSubGroup_CentralStateManagerObjectClass
+ * @param projectSearchIds
+ * @param singleProtein_CentralStateManagerObject
+ */
+const _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated = function (
+    {
+        searchSubGroup_CentralStateManagerObjectClass,  //  Page Level
+        projectSearchIds,
+        singleProtein_CentralStateManagerObject
+    } : {
+        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
+        projectSearchIds : Array<number>
+        singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
+
+    }) : void {
+
+    {
+        const searchSubGroupSelection_EncodedStateData = singleProtein_CentralStateManagerObject.getSearchSubGroupSelection_EncodedStateData();
+        if ( searchSubGroupSelection_EncodedStateData ) {
+
+            //  Already populated so exit
+
+            return; // EARLY RETURN
+        }
+    }
+
+    //  Create new searchSubGroup_CentralStateManagerObjectClass_SingleProtein with copy of Search Sub Group Selections for main page
+    const searchSubGroup_CentralStateManagerObjectClass_SingleProtein : SearchSubGroup_CentralStateManagerObjectClass = SearchSubGroup_CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+    searchSubGroup_CentralStateManagerObjectClass_SingleProtein.initialize_SingleProteinInstance({
+        current_ProjectSearchIds: projectSearchIds, encodedStateData: undefined
+    });
+
+    if ( searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+
+        searchSubGroup_CentralStateManagerObjectClass_SingleProtein.set_no_selectedSearchSubGroupIds({ no_selectedSearchSubGroupIds: true });
+
+    } else {
+        let selectedSearchSubGroupIds: Set<number> = undefined;
+
+        {
+            const selectedSearchSubGroupIds_MainPage = searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds();
+            if (selectedSearchSubGroupIds_MainPage) {
+                selectedSearchSubGroupIds = new Set(selectedSearchSubGroupIds_MainPage);
+            }
+        }
+        searchSubGroup_CentralStateManagerObjectClass_SingleProtein.set_selectedSearchSubGroupIds({selectedSearchSubGroupIds});
+    }
+
+    const searchSubGroupSelection_EncodedStateData = searchSubGroup_CentralStateManagerObjectClass_SingleProtein.getDataForEncoding();
+
+    singleProtein_CentralStateManagerObject.setSearchSubGroupSelection_EncodedStateData({ searchSubGroupSelection_EncodedStateData });
 }

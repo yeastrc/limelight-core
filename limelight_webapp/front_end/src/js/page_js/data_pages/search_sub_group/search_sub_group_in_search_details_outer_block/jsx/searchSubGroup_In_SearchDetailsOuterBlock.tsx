@@ -204,8 +204,6 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
 
         for ( const searchSubGroupEntry of this.props.displayData.searchSubGroupEntryArray ) {
 
-            //  For now, re-use CSS classes from Single Protein Filter
-            // body.data-page .filter-common-block-selection-outer-block .filter-common-single-entry-outer-div
             {
                 const jsxEntry = (
                     <SearchSubGroup_Entry
@@ -213,7 +211,7 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
                         searchSubGroupEntry={ searchSubGroupEntry }
                         updateSelected_SearchSubGroupIds_Add={ this._updateSelected_SearchSubGroupIds_Add_BindThis }
                         updateSelected_SearchSubGroupIds_Remove={ this._updateSelected_SearchSubGroupIds_Remove_BindThis }
-            />
+                    />
                 )
                 searchSubGroupsJSX.push( jsxEntry )
             }
@@ -461,7 +459,7 @@ interface SearchSubGroup_Entry_State {
 
     private _checkboxChangeEvent( event : React.ChangeEvent<HTMLInputElement> ) {
 
-        // event.preventDefault() Must NOT have this statement
+        // event.preventDefault() -- Must NOT have this statement
 
         if ( this.props.searchSubGroupEntry.selectedEntry ) {
             this.props.updateSelected_SearchSubGroupIds_Remove( this.props.searchSubGroupEntry.searchSubGroup_Id )
@@ -477,10 +475,6 @@ interface SearchSubGroup_Entry_State {
                     <input type="checkbox" checked={ this.props.searchSubGroupEntry.selectedEntry } onChange={ this._checkboxChangeEvent_BindThis } />
                     { this.props.searchSubGroupEntry.subgroupName_Display }
                 </label>
-                {/*<img src="static/images/icon-edit.png"*/}
-                {/*    onClick={ () => { window.alert("Change subgroup label not implemented yet" ) } }*/}
-                {/*     className="fake-link-image icon-small" style={ { marginTop: 2, marginLeft: 2, marginRight: 2 } }*/}
-                {/*/>*/}
             </div>
         )
     }

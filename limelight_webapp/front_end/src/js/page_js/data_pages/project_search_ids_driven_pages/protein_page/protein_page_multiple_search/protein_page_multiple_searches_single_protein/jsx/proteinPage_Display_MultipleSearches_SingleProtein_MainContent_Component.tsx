@@ -577,24 +577,35 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      * The Page State object has already been updated
      */
 	private _searchSubGroup_SelectionsChanged_Callback() : void {
-	    try {
-	        this._searchSubGroup_CentralStateManagerObjectClass_Changed_UpdateState();
+        try {
+            this._selectedSearchSubGroup_CentralStateManagerObjectClassChange_UpdateURL();  //  Update URL
 
             window.setTimeout( () => {
                 try {
-                    //  Now update dependent page parts
-                    this._updateRestOfPage_ForUserInteraction();
+                    this._searchSubGroup_CentralStateManagerObjectClass_Changed_UpdateState();
 
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    window.setTimeout(() => {
+                        try {
+                            //  Now update dependent page parts
+                            this._updateRestOfPage_ForUserInteraction();
+
+                        } catch (e) {
+                            reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                            throw e;
+                        }
+                    }, 10);
+
+                } catch (e) {
+                    console.warn("Exception caught in _searchSubGroup_SelectionsChanged_Callback(): First setTimeout: ", e );
+                    reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                     throw e;
                 }
-            }, 0 );
+            }, 10 );
 
         } catch( e ) {
             console.warn("Exception caught in _searchSubGroup_SelectionsChanged_Callback()");
-            console.warn( e );
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            console.warn(e);
+            reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
             throw e;
         }
     }
@@ -1763,12 +1774,12 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
                         }
-                    }, 0 );
+                    }, 10 );
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
-            }, 0 );
+            }, 10 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -1955,6 +1966,15 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     }
 
 	//  Handling Specific Changes by updating the URL
+
+    /**
+     * Update State to URL for SearchSubGroup_CentralStateManagerObjectClass selection change
+     */
+    _selectedSearchSubGroup_CentralStateManagerObjectClassChange_UpdateURL() {
+
+        const searchSubGroupSelection_EncodedStateData = this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass.getDataForEncoding();
+        this.props.propsValue.singleProtein_CentralStateManagerObject.setSearchSubGroupSelection_EncodedStateData({ searchSubGroupSelection_EncodedStateData })
+    }
 
 	/**
 	 * Update State to URL for Modification selection change (Variable or Static Modifications)

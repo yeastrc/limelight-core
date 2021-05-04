@@ -1,9 +1,13 @@
 /**
  * searchSubGroup_CentralStateManagerObjectClass.ts
  * 
- * Holds the state of the Search Sub Group Selection.  Registers with CentralPageStateManager
- * 
- * For use with:  centralPageStateManager.js
+ * Holds the state of the Search Sub Group Selection.
+ *
+ * !!!   Used in 2 Ways:
+ *
+ * 1) On Main Page, Registers with CentralPageStateManager,  For use with:  centralPageStateManager.js
+ *
+ * 2)  On Single Protein Overlay, is sub-part of Single Protein Overlay State object
  * 
  */
 
@@ -51,13 +55,39 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 	private _centralPageStateManager : CentralPageStateManager;
 
 	/**
+	 * Create Instance for Main Page
+	 */
+	static getNewInstance_MainPage( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) : SearchSubGroup_CentralStateManagerObjectClass {
+
+		if ( ! centralPageStateManager ) {
+			const msg = "getNewInstance_MainPage: centralPageStateManager is required."
+			console.warn( msg );
+			throw Error(msg);
+		}
+
+		const instance = new SearchSubGroup_CentralStateManagerObjectClass({ centralPageStateManager });
+
+		return instance;
+	}
+
+	/**
+	 * Create Instance for Single Protein
+	 */
+	static getNewInstance_SingleProtein() : SearchSubGroup_CentralStateManagerObjectClass {
+
+		const instance = new SearchSubGroup_CentralStateManagerObjectClass({ centralPageStateManager: undefined });
+
+		return instance;
+	}
+
+	/**
 	 * 
 	 */
-	constructor( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) {
+	private constructor( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) {
 
 		this._value = {};
 
-		//  No centralPageStateManager value if used for an override
+		//  No centralPageStateManager value if used for an override or for Single Protein
 
 		if ( centralPageStateManager ) {
 			this._centralPageStateManager = centralPageStateManager;
@@ -66,9 +96,46 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 		}
 	}
 
-	initialize({ current_ProjectSearchIds } : { current_ProjectSearchIds : Array<number> }) : void {
+	/**
+	 *
+	 */
+	initialize_MainPageInstance({ current_ProjectSearchIds } : { current_ProjectSearchIds : Array<number> }) : void {
 
 		let encodedStateData = this._centralPageStateManager.getEncodedData( { component : this } );
+		this.initialize_From_current_ProjectSearchIds({ current_ProjectSearchIds, encodedStateData });
+	}
+
+	/**
+	 *
+	 */
+	initialize_SingleProteinInstance(
+		{
+			current_ProjectSearchIds,
+			encodedStateData
+		} : {
+			current_ProjectSearchIds : Array<number>
+			encodedStateData: any
+		}) : void {
+
+		if (encodedStateData) {
+
+			this.initialize_From_current_ProjectSearchIds({ current_ProjectSearchIds, encodedStateData });
+		}
+
+	}
+
+
+
+	private initialize_From_current_ProjectSearchIds(
+		{
+			current_ProjectSearchIds,
+			encodedStateData
+		} : {
+			current_ProjectSearchIds : Array<number>
+			encodedStateData: any
+
+		}) : void {
+
 		if ( encodedStateData ) {
 
 			if ( current_ProjectSearchIds.length !== 1 ) {
@@ -114,10 +181,12 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 	set_projectSearchId( { projectSearchId } : { projectSearchId : number } ) {
 		this._value.projectSearchId = projectSearchId;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 	get_projectSearchId() : number {
 		return this._value.projectSearchId;
@@ -126,10 +195,12 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 	set_selectedSearchSubGroupIds( { selectedSearchSubGroupIds } : { selectedSearchSubGroupIds : Set<number> } ) {
 		this._value.selectedSearchSubGroupIds = selectedSearchSubGroupIds;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 	get_selectedSearchSubGroupIds() : Set<number> {
 		return this._value.selectedSearchSubGroupIds;
@@ -138,10 +209,12 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 	set_no_selectedSearchSubGroupIds( { no_selectedSearchSubGroupIds } : { no_selectedSearchSubGroupIds : boolean } ) {
 		this._value.no_selectedSearchSubGroupIds = no_selectedSearchSubGroupIds;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 	get_no_selectedSearchSubGroupIds() : boolean {
 		return this._value.no_selectedSearchSubGroupIds;
@@ -157,7 +230,7 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 	}
 	
     /**
-     * Called by Central State Manager and maybe other code
+     * Called by Central State Manager and Single Protein Display code
 	 */
 	getDataForEncoding() {
 

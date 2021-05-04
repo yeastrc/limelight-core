@@ -137,7 +137,7 @@ export class PeptideViewPage_RootClass_Common {
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
 			new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager });
 
-		this._searchSubGroup_CentralStateManagerObjectClass = new SearchSubGroup_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager });
+		this._searchSubGroup_CentralStateManagerObjectClass = SearchSubGroup_CentralStateManagerObjectClass.getNewInstance_MainPage({ centralPageStateManager : this._centralPageStateManager });
 
 		//  Instances of class DataPageStateManager
 		
@@ -202,7 +202,7 @@ export class PeptideViewPage_RootClass_Common {
 		const projectSearchIds : Array<number> = searchDataLookupParametersFromPage.projectSearchIds;
 
 		this._singleProtein_CentralStateManagerObject.initialize();
-		this._searchSubGroup_CentralStateManagerObjectClass.initialize({ current_ProjectSearchIds : projectSearchIds });
+		this._searchSubGroup_CentralStateManagerObjectClass.initialize_MainPageInstance({ current_ProjectSearchIds : projectSearchIds });
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize();
 
 		this._searchDetailsBlockDataMgmtProcessing.storeSearchDetails_Filters_AnnTypeDisplay_Root( {
