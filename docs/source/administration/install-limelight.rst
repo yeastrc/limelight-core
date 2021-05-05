@@ -118,7 +118,7 @@ Change the passwords and type ``Control-o``, ``<ENTER>``, and ``Control-x`` to s
 .. important::
     By default, Docker manages where data are stored on your disk. If you would like to customize where Limelight
     stores data, please follow our :doc:`install-limelight-custom-data-location` tutorial. This should be done before
-    continuing on to Step 5 below. Once that is complete, proceed to Step 5.
+    continuing on to Step 6 below. Once that is complete, proceed to Step 6.
 
 
 5. Starting and Stopping Limelight
