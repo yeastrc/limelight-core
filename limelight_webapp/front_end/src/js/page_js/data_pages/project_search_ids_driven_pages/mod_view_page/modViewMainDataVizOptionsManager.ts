@@ -30,7 +30,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
         // defaults for the viz
         const defaults : ModView_VizOptionsData_SubPart_data = {
-            psmQuant: 'ratios',
+            psmQuant: 'counts',
         };
 
         // clear the div
