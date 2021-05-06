@@ -27,8 +27,8 @@ export const modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalMo
 
     return (
         <div >
-            [<a onClick={ (event) => { event.stopPropagation() } } href={unimodLink} target="_blank" rel="noopener noreferrer" >UniMod</a>]
-            [<a onClick={ (event) => { event.stopPropagation() } } href={pirLink} target="_blank" rel="noopener noreferrer">PIR</a>]
+            [<a onClick={ (event) => { event.stopPropagation() } } href={unimodLink} target="_blank" rel="noopener noreferrer" title="View in UniMod">UniMod</a>]
+            [<a onClick={ (event) => { event.stopPropagation() } } href={pirLink} target="_blank" rel="noopener noreferrer" title="View in Protein Information Resource (PIR)">PIR</a>]
         </div>
     );
 }
