@@ -315,18 +315,24 @@ export class ModViewDataVizRenderer_MultiSearch {
     		const html = "<span class=\"clickable\">[View Replicate ZScore Report]</span>"
 			const $html = $(html)
 
-			$html.click(function() {
+            if(vizOptionsData.data.projectSearchIds.length % 2 === 0) {
+                $html.click(function() {
 
-				// calculate and show stats
-				ModStatsUtils.viewSignificantMods_CombineReps({
-					vizOptionsData,
-					sortedModMasses,
-					projectSearchIds: vizOptionsData.data.projectSearchIds,
-					modViewDataManager,
-					dataPageStateManager_DataFrom_Server
-				});
+                    // calculate and show stats
+                    ModStatsUtils.viewSignificantMods_CombineReps({
+                        vizOptionsData,
+                        sortedModMasses,
+                        projectSearchIds: vizOptionsData.data.projectSearchIds,
+                        modViewDataManager,
+                        dataPageStateManager_DataFrom_Server
+                    });
 
-			});
+                });
+			} else {
+			                $html.click(function() {
+                                alert("This feature is only available for an even number of searches.");
+                            });
+			}
 
     		const divContainerHTML = "<div></div>";
     		const $divContainer = $(divContainerHTML);
