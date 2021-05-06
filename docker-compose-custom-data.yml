@@ -22,7 +22,7 @@ services:
       - ${SPECTR_UPLOAD_DIRECTORY}:/data/upload
       - ${SPECTR_STORAGE_DIRECTORY}:/data/storage
   importer:
-    image: mriffle/limelight-importer:0.0.7
+    image: mriffle/limelight-importer:0.0.8
     container_name: limelight-importer
     restart: always
     depends_on:
@@ -37,7 +37,7 @@ services:
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
   limelight:
-    image: mriffle/limelight-webapp:0.0.7
+    image: mriffle/limelight-webapp:0.0.8
     container_name: limelight-webapp
     restart: always
     depends_on:
