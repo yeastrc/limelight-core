@@ -9,5 +9,6 @@ Here are guides and tutorials related to running your own Limelight installation
    administration/install-limelight
    administration/install-limelight-smtp
    administration/install-limelight-custom-data-location
+   administration/manage-users
    administration/back-up-limelight
 
