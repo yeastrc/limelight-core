@@ -18,7 +18,6 @@ import {
     ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
-import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass";
@@ -59,8 +58,6 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
 
     private _protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass: Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass
     private _protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass: Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
-
-    private _generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay : GeneratedPeptideContents_UserSelections_StateObject
 
     private _loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
@@ -126,6 +123,15 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_MainPage({centralPageStateManager});
         this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_MainPageInstance();
 
+        this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass = new Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass({centralPageStateManager});
+        this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass.initialize();
+
+        this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass = new Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass({centralPageStateManager});
+        this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass.initialize();
+
+        //  Finished with ALL 'initialize'.  Now can transfer state values to locations for current code
+
+
         if ( referrerFromURL_Set ) {
 
             //  If referrer from another page (peptide, ...) clear TreatOpenModMassZeroAsUnmodified_Selection.
@@ -173,28 +179,22 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
                 this._singleProtein_CentralStateManagerObject.setModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData });
                 this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
             }
-
         }
-
-        this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass = new Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass({centralPageStateManager});
-        this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass.initialize();
-
-        this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass = new Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass({centralPageStateManager});
-        this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass.initialize();
-
-        const valueChangedCallback = () : void => {
-
-            const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay.getEncodedStateData();
-            this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
-        }
-        this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay = new GeneratedPeptideContents_UserSelections_StateObject({valueChangedCallback });
         {
+            //  Transfer GeneratedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay to singleProtein_CentralStateManagerObject
+
             const encodedStateData = this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
-            if ( encodedStateData ) {
-                this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay.set_encodedStateData({ encodedStateData })
+            if (encodedStateData) {
+                this._singleProtein_CentralStateManagerObject.setGeneratedPeptideContents_UserSelections__EncodedStateData({generatedPeptideContents_UserSelections__EncodedStateData: encodedStateData});
+                //  clear value after transfer
+                this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData({generatedPeptideContentsSelectedEncodedStateData: undefined});
             }
         }
 
+        //  Transfers complete
+
+
+        
         this._loadedDataCommonHolder = new ProteinView_LoadedDataCommonHolder()
         this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = new Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>();
 
@@ -380,7 +380,6 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             proteinNameDescription: undefined,
             proteinSequenceVersionId,
             modMass_Rounded_From_ModPage_ForInitialSelection,
-            generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay,
             protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass: this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
         });
     }

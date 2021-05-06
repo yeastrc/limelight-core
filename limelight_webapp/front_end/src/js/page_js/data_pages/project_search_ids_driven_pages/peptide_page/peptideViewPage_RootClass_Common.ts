@@ -88,7 +88,6 @@ export class PeptideViewPage_RootClass_Common {
 
 	//  Specific to pass in to Single Protein Overlay
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
-	private _generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay : GeneratedPeptideContents_UserSelections_StateObject;
 
 	private _searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass;
 
@@ -124,14 +123,6 @@ export class PeptideViewPage_RootClass_Common {
 				this._peptidePageRoot_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData({generatedPeptideContentsSelectedEncodedStateData: encodedStateData});
 			}
 			this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({valueChangedCallback: generatedPeptideContents_UserSelections_StateObject_valueChangedCallback});
-		}
-		{
-			const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = (): void => {
-
-				const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay.getEncodedStateData();
-				this._peptidePageRoot_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay({generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay: encodedStateData});
-			}
-			this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay = new GeneratedPeptideContents_UserSelections_StateObject({valueChangedCallback: generatedPeptideContents_UserSelections_StateObject_valueChangedCallback});
 		}
 
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
@@ -250,13 +241,6 @@ export class PeptideViewPage_RootClass_Common {
 				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
-		{
-			const encodedStateData = this._peptidePageRoot_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay();
-			if ( encodedStateData ) {
-				this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay.set_encodedStateData({ encodedStateData })
-			}
-		}
-
 
 		let isSingleSearch = false
 		let isMultipleSearches = false
@@ -330,7 +314,6 @@ export class PeptideViewPage_RootClass_Common {
 			generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject,
 
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
-			generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay: this._generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay,
 
 			dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory
 		}

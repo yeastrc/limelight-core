@@ -28,7 +28,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 //   From data_pages_common
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
-import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
+import { _REFERRER_PATH_STRING } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
 import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing';
 
@@ -53,19 +53,17 @@ import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/
 
 //  From local dir
 import { ProteinViewPage_DisplayDataOnPage }  from './proteinViewPage_DisplayDataOnPage';
-import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {getSharePage_MainPage_Component} from "page_js/data_pages/sharePage_React/sharePage_Component_React";
 import {
 	Get_SetDefaultView_Component_React_Type,
 	SetDefaultView_Component_React_Params
 } from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
-import {
-	SaveView_Create_Component_React_Result,
-	SaveView_Create_Component_React_Type, SaveView_Get_Component_React_Type
-} from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
+import { SaveView_Get_Component_React_Type } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
+
+
 
 /**
  * 
@@ -84,7 +82,6 @@ export class ProteinViewPage_RootClass_Common {
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
-	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
@@ -115,14 +112,6 @@ export class ProteinViewPage_RootClass_Common {
 		this._proteinList_CentralStateManagerObjectClass = new ProteinList_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 		this._proteinGrouping_CentralStateManagerObjectClass = new ProteinGrouping_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager, proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass });
 
-		const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = () : void => {
-
-			const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
-			this._proteinList_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData( { generatedPeptideContentsSelectedEncodedStateData : encodedStateData } );
-		}
-		this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : generatedPeptideContents_UserSelections_StateObject_valueChangedCallback });
-
-
 		//  Instances of class DataPageStateManager
 		
 		/**
@@ -152,7 +141,6 @@ export class ProteinViewPage_RootClass_Common {
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
 			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
@@ -180,10 +168,17 @@ export class ProteinViewPage_RootClass_Common {
 		this._singleProtein_CentralStateManagerObject.initialize();
 		this._proteinList_CentralStateManagerObjectClass.initialize();
 		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
+
+		//  "Root" Page State objects all initialized
+
+
 		{
+			//  Transfer GeneratedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay to singleProtein_CentralStateManagerObject
 			const encodedStateData = this._proteinList_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
 			if ( encodedStateData ) {
-				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+				this._singleProtein_CentralStateManagerObject.setGeneratedPeptideContents_UserSelections__EncodedStateData({ generatedPeptideContents_UserSelections__EncodedStateData: encodedStateData });
+				//  clear value after transfer
+				this._proteinList_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData({ generatedPeptideContentsSelectedEncodedStateData: undefined });
 			}
 		}
 

@@ -116,8 +116,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	
 	private _proteinSequenceWidget_StateObject = new ProteinSequenceWidget_StateObject();
 
-	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
-
 
 	///////////////////
 
@@ -212,7 +210,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			proteinSequenceVersionId,
 			modMass_Rounded_From_ModPage_ForInitialSelection, // Optional.  ONLY populated when called from Mod Page. Used for Initial Population of selected Variable and Open Modifications.
 			proteinNameDescription,
-			generatedPeptideContents_UserSelections_StateObject,
 
 			//  Optional.  Will replace values in instance properties
 
@@ -230,7 +227,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			modMass_Rounded_From_ModPage_ForInitialSelection?: number
 
 			proteinNameDescription : {name: string, description: string}
-			generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
 			loadedDataCommonHolder? : ProteinView_LoadedDataCommonHolder;
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds? : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
@@ -240,8 +236,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 		} ) : void {
 
         this._proteinSequenceVersionId = proteinSequenceVersionId;
-
-		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
 		if ( loadedDataCommonHolder ) {
 			this._loadedDataCommonHolder = loadedDataCommonHolder;
@@ -323,6 +317,15 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
             }
         }
 
+
+        //  Create for Initial Load
+		const generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : undefined });
+
+		{
+			const encodedStateData = this._singleProtein_CentralStateManagerObject.getGeneratedPeptideContents_UserSelections__EncodedStateData();
+			generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({encodedStateData});
+		}
+
 		const promise_loadDataForInitialOverlayShow = loadDataForInitialOverlayShow_MultipleSearch_SingleProtein({
 			forPeptidePage: this._forPeptidePage,
 			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
@@ -335,7 +338,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			searchDataLookupParamsRoot : this._searchDataLookupParamsRoot,
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject,
 			open_Modifications_Subpart_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject.get_OpenModificationSelections(),
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
+			generatedPeptideContents_UserSelections_StateObject : generatedPeptideContents_UserSelections_StateObject
 		});
 
 		if ( promise_loadDataForInitialOverlayShow ) {
@@ -603,7 +606,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			peptideUnique_UserSelection_StateObject : this._peptideUnique_UserSelection_StateObject ,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject ,
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory
 		};
 

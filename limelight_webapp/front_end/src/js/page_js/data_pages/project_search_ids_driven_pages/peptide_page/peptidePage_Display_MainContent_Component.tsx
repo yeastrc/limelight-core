@@ -128,7 +128,6 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
 import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
-import {getpeptidePage_Display_MainContent_Component__UpdatingOverlay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/peptidePage_Display_MainContent_Component__Loading_UpdatingOverlays";
 import {
     ModificationMass_ReporterIon__UserSelections__Coordinator_Class,
     ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
@@ -173,8 +172,7 @@ export class PeptidePage_Display_MainContent_Component_Props_Prop {
     generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
     singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
-    generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay : GeneratedPeptideContents_UserSelections_StateObject
-    
+
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
 }
 
@@ -416,7 +414,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 _copy_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass__to__modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                     singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
-                })
+                });
 
                 //  Hide Main Div inside of header/footer
                 const data_page_overall_enclosing_block_divDOM = document.getElementById("data_page_overall_enclosing_block_div");
@@ -920,7 +918,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
             proteinSequenceVersionId,
-            generatedPeptideContents_UserSelections_StateObject: this.props.propsValue.generatedPeptideContents_UserSelections_StateObject__FOR__SingleProteinOverlay,
             proteinNameDescription: null, // Let Single Protein compute it
 
             //  Pass Here since for sure populated by here

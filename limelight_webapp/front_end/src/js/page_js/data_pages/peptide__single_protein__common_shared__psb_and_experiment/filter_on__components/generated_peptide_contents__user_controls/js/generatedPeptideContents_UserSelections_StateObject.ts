@@ -56,10 +56,6 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
             valueChangedCallback: () => void
         }) {
 
-        if ( ! valueChangedCallback ) {
-            throw Error("constructor::( ! valueChangedCallback )")
-        }
-
         this._valueChangedCallback = valueChangedCallback;
     }
 
@@ -79,6 +75,10 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     setStaticModifications_Selected( selected : boolean ) : void {
 
         this._staticModifications_Selected = selected;
+
+        if ( ! this._valueChangedCallback ) {
+            throw Error("setStaticModifications_Selected::( ! this._valueChangedCallback )")
+        }
 
         this._valueChangedCallback();
     }
@@ -100,6 +100,10 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
 
         this._variableModifications_Selected = selected;
 
+        if ( ! this._valueChangedCallback ) {
+            throw Error("setStaticModifications_Selected::( ! this._valueChangedCallback )")
+        }
+
         this._valueChangedCallback();
     }
 
@@ -120,6 +124,10 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
 
         this._openModifications_Selected = selected;
 
+        if ( ! this._valueChangedCallback ) {
+            throw Error("setStaticModifications_Selected::( ! this._valueChangedCallback )")
+        }
+
         this._valueChangedCallback();
     }
 
@@ -139,6 +147,10 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     setOpenModifications_WithLocalization_Selected( selected : boolean ) : void {
 
         this._openModifications_WithLocalization_Selected = selected;
+
+        if ( ! this._valueChangedCallback ) {
+            throw Error("setStaticModifications_Selected::( ! this._valueChangedCallback )")
+        }
 
         this._valueChangedCallback();
     }
@@ -197,9 +209,12 @@ export class GeneratedPeptideContents_UserSelections_StateObject {
     set_encodedStateData({ encodedStateData }: { encodedStateData: any }) : void {
 
         if ( ! ( encodedStateData ) ) {
-            const msg = "set_encodedStateData(...): No value in encodedStateData";
-            console.warn( msg );
-            throw Error( msg );
+
+            return; // EARLY RETURN
+
+            // const msg = "set_encodedStateData(...): No value in encodedStateData";
+            // console.warn( msg );
+            // throw Error( msg );
         }
 
         const version = encodedStateData[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ];

@@ -66,7 +66,6 @@ import {
     ProteinPage_Display_MultipleSearches_SingleProtein,
     ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
-import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 import {
@@ -123,7 +122,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     private _searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass;
     private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     private _proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass;
-    private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
     private _search_SubGroup_SelectionValues_Changed_Callback : () => void;
 
@@ -176,7 +174,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             searchSubGroup_CentralStateManagerObjectClass,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             proteinGrouping_CentralStateManagerObjectClass,
-            generatedPeptideContents_UserSelections_StateObject,
 
             search_SubGroup_SelectionValues_Changed_Callback
         }: {
@@ -190,7 +187,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
             proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
-            generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
             search_SubGroup_SelectionValues_Changed_Callback : () => void
         }) {
@@ -224,7 +220,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
         this._searchSubGroup_CentralStateManagerObjectClass = searchSubGroup_CentralStateManagerObjectClass;
         this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
         this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
-        this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
         this._search_SubGroup_SelectionValues_Changed_Callback = search_SubGroup_SelectionValues_Changed_Callback;
 
@@ -909,8 +904,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
             proteinSequenceVersionId,
-            proteinNameDescription : proteinNameDescriptionParam,
-            generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
+            proteinNameDescription : proteinNameDescriptionParam
         });
     }
 

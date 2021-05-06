@@ -66,7 +66,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
-	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
 	private _proteinViewPage_Display_SingleSearch : ProteinViewPage_Display_SingleSearch;
 	private _proteinViewPage_DisplayData_SingleSearch__SearchSubGroup : ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup
@@ -85,8 +84,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 		modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 		singleProtein_CentralStateManagerObject,
 		proteinList_CentralStateManagerObjectClass,
-		proteinGrouping_CentralStateManagerObjectClass,
-		generatedPeptideContents_UserSelections_StateObject
+		proteinGrouping_CentralStateManagerObjectClass
 	 } : { 
 		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory, 
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
@@ -98,7 +96,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 		singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass,
 		proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
 		proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-		generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 	 }) {
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
@@ -115,7 +112,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
-		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
 		this._proteinViewPage_Display_SingleSearch = new ProteinViewPage_Display_SingleSearch( {
 
@@ -128,8 +124,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
-			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass
 		});
 
 		this._proteinViewPage_DisplayData_SingleSearch__SearchSubGroup = new ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup( {
@@ -144,7 +139,6 @@ export class ProteinViewPage_DisplayDataOnPage {
 			searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
 			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
 
 			search_SubGroup_SelectionValues_Changed_Callback : this._search_SubGroup_SelectionValues_Changed_Callback_BindThis
 	});
@@ -159,8 +153,7 @@ export class ProteinViewPage_DisplayDataOnPage {
 			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass : this._proteinList_CentralStateManagerObjectClass,
-			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
+			proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass
 		});
 	}
 

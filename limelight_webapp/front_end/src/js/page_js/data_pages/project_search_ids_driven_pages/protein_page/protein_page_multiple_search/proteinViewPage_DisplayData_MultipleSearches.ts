@@ -62,7 +62,6 @@ import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
-import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ProteinPageSearchesSummarySectionCreator_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySectionCreator_MultipleSearches";
 import {
 	ProteinPageSearchesSummarySectionData_PerSearchEntry,
@@ -160,7 +159,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 	private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass;
 	private _proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass;
 	private _proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass;
-	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
 	private _annotationTypeData_ReturnSpecifiedTypes: AnnotationTypeData_ReturnSpecifiedTypes;
 
@@ -210,8 +208,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			singleProtein_CentralStateManagerObject,
 			proteinList_CentralStateManagerObjectClass,
-			proteinGrouping_CentralStateManagerObjectClass,
-			generatedPeptideContents_UserSelections_StateObject
+			proteinGrouping_CentralStateManagerObjectClass
 		}: {
 			dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager,
@@ -222,7 +219,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass,
 			proteinList_CentralStateManagerObjectClass: ProteinList_CentralStateManagerObjectClass
 			proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
-			generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 		}) {
 
 		//  TODO  Maybe this._loadedDataCommonHolder should be owned at a more root level since it contains data across Project Search Ids
@@ -252,7 +248,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
 		this._proteinList_CentralStateManagerObjectClass = proteinList_CentralStateManagerObjectClass;
 		this._proteinGrouping_CentralStateManagerObjectClass = proteinGrouping_CentralStateManagerObjectClass;
-		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject;
 
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes({
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
@@ -1525,8 +1520,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._proteinViewPage_Display_MultipleSearches_SingleProtein.
 		openOverlay({
 			proteinSequenceVersionId,
-			proteinNameDescription: proteinNameDescriptionParam,
-			generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject
+			proteinNameDescription: proteinNameDescriptionParam
 		});
 	}
 
