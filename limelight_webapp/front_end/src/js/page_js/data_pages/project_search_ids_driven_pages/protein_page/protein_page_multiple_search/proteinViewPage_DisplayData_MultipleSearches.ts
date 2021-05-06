@@ -1575,7 +1575,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			loadedDataCommonHolder: this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
-			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
 			singleProteinCloseCallback
 		});

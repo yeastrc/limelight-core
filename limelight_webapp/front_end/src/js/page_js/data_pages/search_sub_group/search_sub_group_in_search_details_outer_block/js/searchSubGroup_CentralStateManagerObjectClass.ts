@@ -121,11 +121,11 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 
 			this.initialize_From_current_ProjectSearchIds({ current_ProjectSearchIds, encodedStateData });
 		}
-
 	}
 
-
-
+	/**
+	 *
+	 */
 	private initialize_From_current_ProjectSearchIds(
 		{
 			current_ProjectSearchIds,

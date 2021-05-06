@@ -126,7 +126,7 @@ export class ProteinExperimentPage_RootClass_Common {
 			centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined
 		});
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
-			new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager: this._centralPageStateManager });
+			ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_MainPage({ centralPageStateManager: this._centralPageStateManager });
 
 
 		const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = () : void => {
@@ -182,7 +182,7 @@ export class ProteinExperimentPage_RootClass_Common {
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
 		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass.initialize();
-		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize();
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_MainPageInstance();
 
 		{
 			const encodedStateData = this._proteinList_ExpPage_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
@@ -190,25 +190,77 @@ export class ProteinExperimentPage_RootClass_Common {
 				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
-		
-		let referrerFromURL = initialStateFromURL.referrer;
-		
-		if ( referrerFromURL === _REFERRER_PATH_STRING ) {
-			
-			//  TODO  do any needed processing of the URL since it is a referrer from another page
-			
-			//  Could do default URL processing here.  
-			//		IE: Replace the current URL with the default URL and then call again:
-			//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+
+		let referrerFromURL_Set = false;
+
+		{
+			let referrerFromURL = initialStateFromURL.referrer;
+
+			if (referrerFromURL === _REFERRER_PATH_STRING) {
+
+				//  TODO  do any needed processing of the URL since it is a referrer from another page
+
+				referrerFromURL_Set = true;
+
+				//  Could do default URL processing here.
+				//		IE: Replace the current URL with the default URL and then call again:
+				//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+			}
 		}
-		
+
 		// //  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
-		
-		// let testPageComponent = new TestPageComponent( { centralPageStateManager : this._centralPageStateManager } );
-		// testPageComponent.initialize();
-		
-		// testPageComponent.setValue( { key : 'b', value : 'rtw' } );
+
+
+		if ( referrerFromURL_Set ) {
+
+			//  If referrer from another page (peptide, ...) clear TreatOpenModMassZeroAsUnmodified_Selection.
+
+			//    TreatOpenModMassZeroAsUnmodified_Selection is only here to pick up for old Protein page URLs.  All new values are set only on Single Protein, never set on Protein main page.
+
+			this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+
+		} else {
+
+			//  NOT referrer from another page (peptide, ...).  Copy TreatOpenModMassZeroAsUnmodified_Selection to Single Protein and then clear
+
+			//    TreatOpenModMassZeroAsUnmodified_Selection is only here to pick up for old Protein page URLs.  All new values are set only on Single Protein, never set on Protein main page.
+
+			let transfer_OpenModMassZeroNotOpenMod_UserSelection_To_SingleProteinStateObject = false;
+			{
+				const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData_SingleProtein = this._singleProtein_ExpPage_CentralStateManagerObjectClass.getModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData();
+				if ( ! modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData_SingleProtein ) {
+
+					//  NOT Already populated
+
+					transfer_OpenModMassZeroNotOpenMod_UserSelection_To_SingleProteinStateObject = true;
+				}
+			}
+			if ( transfer_OpenModMassZeroNotOpenMod_UserSelection_To_SingleProteinStateObject ) {
+
+				//  Create new modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein with copy of Selection for main page
+				const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+				modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.initialize_SingleProteinInstance({
+					encodedStateData: undefined
+				});
+
+				if ( this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.setTreatOpenModMassZeroAsUnmodified_Selection( true );
+				} else {
+					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+				}
+
+				//  Clear the Page level selection since NOT used at page level.  ONLY on Protein Page.
+				this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+
+				const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.getDataForEncoding();
+
+				this._singleProtein_ExpPage_CentralStateManagerObjectClass.setModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData });
+				this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+			}
+
+		}
 
 
 		{
@@ -288,7 +340,6 @@ export class ProteinExperimentPage_RootClass_Common {
 
 					proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
 					singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass,
-					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 				});
 				
 				this._proteinExperimentPage_Display.initialize();

@@ -166,8 +166,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 
-    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
+
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
@@ -1533,27 +1534,27 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
      */
     _updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback() : void {
         try {
-            // window.setTimeout( () => {
-            //     try {
-            //         this._AAAAAA_Change_UpdateURL();  //  Update URL
-
             window.setTimeout( () => {
                 try {
-                    this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
+                    this._selected_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Change_UpdateURL();  //  Update URL
 
-                    //  Now update dependent page parts
-                    this._updateRestOfPage_ForUserInteraction();
+                    window.setTimeout( () => {
+                        try {
+                            this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
 
+                            //  Now update dependent page parts
+                            this._updateRestOfPage_ForUserInteraction();
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 10 );
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
-            }, 0 );
-            //     } catch( e ) {
-            //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            //         throw e;
-            //     }
-            // }, 0 );
+            }, 10 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -1974,6 +1975,15 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
         const searchSubGroupSelection_EncodedStateData = this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass.getDataForEncoding();
         this.props.propsValue.singleProtein_CentralStateManagerObject.setSearchSubGroupSelection_EncodedStateData({ searchSubGroupSelection_EncodedStateData })
+    }
+
+    /**
+     * Update State to URL for ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass selection change
+     */
+    _selected_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Change_UpdateURL() {
+
+        const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData = this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getDataForEncoding();
+        this.props.propsValue.singleProtein_CentralStateManagerObject.setModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData });
     }
 
 	/**

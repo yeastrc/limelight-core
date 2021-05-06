@@ -135,17 +135,24 @@ export class ModViewPage_RootClass_Common {
 		this._page_UserDefault_processing.page_UserDefault_processing();
 
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
-		let referrerFromURL = initialStateFromURL.referrer;
-		
-		if ( referrerFromURL === _REFERRER_PATH_STRING ) {
-			
-			//  TODO  do any needed processing of the URL since it is a referrer from another page
-			
-			//  Could do default URL processing here.  
-			//		IE: Replace the current URL with the default URL and then call again:
-			//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+
+		let referrerFromURL_Set = false;
+
+		{
+			let referrerFromURL = initialStateFromURL.referrer;
+
+			if (referrerFromURL === _REFERRER_PATH_STRING) {
+
+				//  TODO  do any needed processing of the URL since it is a referrer from another page
+
+				referrerFromURL_Set = true;
+
+				//  Could do default URL processing here.
+				//		IE: Replace the current URL with the default URL and then call again:
+				//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+			}
 		}
-		
+
 		//  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
 		
@@ -198,7 +205,7 @@ export class ModViewPage_RootClass_Common {
 				function( value ) {
 					try {
 						//  Continue processing
-						objectThis._createFilterData_In_dataPageStateManager_ForInitialLoad ({});
+						objectThis._createFilterData_In_dataPageStateManager_ForInitialLoad ({ referrerFromURL_Set });
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 						throw e;
@@ -216,7 +223,7 @@ export class ModViewPage_RootClass_Common {
 	 *   
 	 * This is handling when the page is initially loaded and the data needs to be loaded from the URL
 	 */
-	_createFilterData_In_dataPageStateManager_ForInitialLoad( params ) {
+	_createFilterData_In_dataPageStateManager_ForInitialLoad({ referrerFromURL_Set } : { referrerFromURL_Set: boolean }) : void {
 
 		//  pageState excludes project search id (or other similar things) filters and ann type display 
 		
@@ -256,6 +263,8 @@ export class ModViewPage_RootClass_Common {
 
 		const singleProtein_InitializeResult =
 			get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().initialize({
+
+				referrerFromURL_Set,
 
 				singleProteinCloseCallback,
 

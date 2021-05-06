@@ -92,7 +92,10 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	private _proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass;
 	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 
-	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+	/**
+	 * For Single Protein.  Data from this._singleProtein_CentralStateManagerObject
+	 */
+	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_SingleProtein();
 
 	private _singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass;
 
@@ -157,7 +160,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			generatedPeptideContents_UserSelections_StateObject,
 
 			singleProtein_ExpPage_CentralStateManagerObjectClass,
-			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory,
 			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
 		} : {
@@ -179,7 +181,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData,
 			proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass;
 			singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass,
-			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 			generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
 			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
@@ -211,7 +212,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		this._generatedPeptideContents_UserSelections_StateObject = generatedPeptideContents_UserSelections_StateObject
 
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass = singleProtein_ExpPage_CentralStateManagerObjectClass;
-		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
 
 		this._experiment_DataPages_LoggedInUser_CommonObjectsFactory = experiment_DataPages_LoggedInUser_CommonObjectsFactory;
 
@@ -226,6 +226,14 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 		this._renderOverlayOutline();
 
+		{
+			const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.getModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData();
+			if ( encodedStateData ) {
+				this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_SingleProteinInstance({ encodedStateData });
+			} else {
+				this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_SingleProteinInstance({ encodedStateData: undefined });
+			}
+		}
         {
             const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.getModsSelectedEncodedStateData();
             if ( encodedStateData ) {

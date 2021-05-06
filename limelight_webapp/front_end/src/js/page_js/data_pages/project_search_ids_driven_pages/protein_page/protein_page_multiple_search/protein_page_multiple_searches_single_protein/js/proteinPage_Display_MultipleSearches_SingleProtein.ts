@@ -90,8 +90,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 
 	private _searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 
-	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
 
 	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
@@ -100,6 +98,11 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 	 * For Single Protein.  Data from this._singleProtein_CentralStateManagerObject
 	 */
 	private _searchSubGroup_CentralStateManagerObjectClass = SearchSubGroup_CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+	/**
+	 * For Single Protein.  Data from this._singleProtein_CentralStateManagerObject
+	 */
+	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_SingleProtein();
 
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
@@ -149,9 +152,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			projectSearchIds,
 			searchDataLookupParamsRoot,
 			singleProtein_CentralStateManagerObject,
-			dataPages_LoggedInUser_CommonObjectsFactory,
-
-			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+			dataPages_LoggedInUser_CommonObjectsFactory
 		} : {
 
 			forPeptidePage? : boolean
@@ -170,7 +171,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass,
 			dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
 
-			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 		}) {
 
 		this._forPeptidePage = forPeptidePage;
@@ -191,8 +191,6 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 		this._searchDataLookupParamsRoot = searchDataLookupParamsRoot;
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
-
-		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
 
 		this._singleProtein_CentralStateManagerObject = singleProtein_CentralStateManagerObject;
     }
@@ -280,6 +278,14 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein {
 			const encodedStateData = this._singleProtein_CentralStateManagerObject.getSearchSubGroupSelection_EncodedStateData();
 			if ( encodedStateData ) {
 				this._searchSubGroup_CentralStateManagerObjectClass.initialize_SingleProteinInstance({ encodedStateData, current_ProjectSearchIds: this._projectSearchIds })
+			}
+		}
+		{
+			const encodedStateData = this._singleProtein_CentralStateManagerObject.getModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData();
+			if ( encodedStateData ) {
+				this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_SingleProteinInstance({ encodedStateData });
+			} else {
+				this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_SingleProteinInstance({ encodedStateData: undefined });
 			}
 		}
         {

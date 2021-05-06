@@ -300,8 +300,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
 
-    private _Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay : boolean;
-
     /**
      * 
      */    
@@ -412,6 +410,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_CentralStateManagerObject_searchSubGroup_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
                     searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
                     projectSearchIds : this.props.propsValue.projectSearchIds,
+                    singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
+                });
+
+                _copy_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass__to__modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                     singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
                 })
 
@@ -825,7 +828,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
             projectSearchIds : this.props.propsValue.projectSearchIds,
             singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
-        })
+        });
+        _copy_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass__to__modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
+        });
 
         this._singleProteinRowShowSingleProteinOverlay({
             proteinSequenceVersionId,
@@ -894,7 +901,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass,
             projectSearchIds : this.props.propsValue.projectSearchIds,
             singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
-        })
+        });
+        _copy_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass__to__modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject
+        });
 
         //  Current Window Scroll position
         const currentWindowScrollY = window.scrollY;
@@ -905,15 +916,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         if (!this._proteinViewPage_Display_MultipleSearches_SingleProtein) {
             this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY});
-        }
-
-        {  //  save off selected "Treat Mass 0 As Unmodified:" before open Single Protein
-
-            if ( this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
-                this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay = true;
-            } else {
-                this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay = false;
-            }
         }
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
@@ -954,9 +956,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             projectSearchIds: this.props.propsValue.projectSearchIds,
             searchDataLookupParamsRoot: this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_searchDetailsCriteriaData(),
             singleProtein_CentralStateManagerObject: this.props.propsValue.singleProtein_CentralStateManagerObject,
-            dataPages_LoggedInUser_CommonObjectsFactory: this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory,
-
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+            dataPages_LoggedInUser_CommonObjectsFactory: this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory
         });
     }
 
@@ -976,46 +976,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         this._proteinViewPage_Display_MultipleSearches_SingleProtein = undefined;
 
-        let Treat_Mass_0_As_Unmod_Selection_Changed = false;
+        if (currentWindowScrollY ) {
 
-        if (
-            ( ( this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() )
-            && ( ! this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay ) )
-            ||  ( ( ! this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() )
-            && ( this._Treat_Mass_0_As_Unmod_Selection_WhenOpened_SingleProteinOverlay ) ) ) {
+            //  Scroll window down to original position when protein was clicked to open Single Protein view
 
-            Treat_Mass_0_As_Unmod_Selection_Changed = true;
-        }
-
-        if ( Treat_Mass_0_As_Unmod_Selection_Changed  ) {
-
-            //  Show Updating Overlay with Spinner then run rest in setTimeout
-
-            const overlayComponent = getpeptidePage_Display_MainContent_Component__UpdatingOverlay();
-
-            const overlayComponent_Overlay =
-                limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
-
-            window.setTimeout( () => {
-
-                overlayComponent_Overlay.removeContents_AndContainer_FromDOM();
-
-                this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
-                    initialPageLoad: false,
-                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                    loadedDataCommonHolder: this.state.loadedDataCommonHolder,
-                    proteinPositionFilter_UserSelections_StateObject_Wrapper: this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
-                });
-            }, 10 )
-
-        }  else {
-
-            if (currentWindowScrollY && (!Treat_Mass_0_As_Unmod_Selection_Changed)) {
-
-                //  Scroll window down to original position when protein was clicked to open Single Protein view
-
-                window.scrollTo({top: currentWindowScrollY});
-            }
+            window.scrollTo({top: currentWindowScrollY});
         }
     }
 
@@ -3041,3 +3006,49 @@ const _copy_searchSubGroup_CentralStateManagerObjectClass__to__singleProtein_Cen
 
     singleProtein_CentralStateManagerObject.setSearchSubGroupSelection_EncodedStateData({ searchSubGroupSelection_EncodedStateData });
 }
+
+
+/**
+ *
+ * @param searchSubGroup_CentralStateManagerObjectClass
+ * @param projectSearchIds
+ * @param singleProtein_CentralStateManagerObject
+ */
+const _copy_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass__to__modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated = function (
+    {
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,  //  Page Level
+        singleProtein_CentralStateManagerObject
+    } : {
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
+
+    }) : void {
+
+    {
+        const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData = singleProtein_CentralStateManagerObject.getModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData();
+        if ( modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData ) {
+
+            //  Already populated so exit
+
+            return; // EARLY RETURN
+        }
+    }
+
+    //  Create new modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein with copy of Selection for main page
+    const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.initialize_SingleProteinInstance({
+        encodedStateData: undefined
+    });
+
+    if ( modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.setTreatOpenModMassZeroAsUnmodified_Selection( true );
+    } else {
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+    }
+
+    const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.getDataForEncoding();
+
+    singleProtein_CentralStateManagerObject.setModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData });
+}
+

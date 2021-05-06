@@ -1544,27 +1544,27 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
      */
     _updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback() : void {
         try {
-            // window.setTimeout( () => {
-            //     try {
-            //         this._AAAAAA_Change_UpdateURL();  //  Update URL
-
             window.setTimeout( () => {
                 try {
-                    this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
+                    this._selected_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Change_UpdateURL();  //  Update URL
 
-                    //  Now update dependent page parts
-                    this._updateRestOfPage_ForUserInteraction();
+                    window.setTimeout( () => {
+                        try {
+                            this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
 
+                            //  Now update dependent page parts
+                            this._updateRestOfPage_ForUserInteraction();
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 0 );
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
             }, 0 );
-            //     } catch( e ) {
-            //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            //         throw e;
-            //     }
-            // }, 0 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -1982,6 +1982,15 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     }
 
 	//  Handling Specific Changes by updating the URL
+
+    /**
+     * Update State to URL for ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass selection change
+     */
+    _selected_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Change_UpdateURL() {
+
+        const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData = this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getDataForEncoding();
+        this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.setModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData });
+    }
 
 	/**
 	 * Update State to URL for Modification selection change (Variable or Static Modifications)

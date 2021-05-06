@@ -303,7 +303,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
                     searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
                     projectSearchId: this._projectSearchId,
                     singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
-                })
+                });
 
                 //  Hide Main Div inside of header/footer
                 const data_page_overall_enclosing_block_divDOM = document.getElementById( "data_page_overall_enclosing_block_div" );
@@ -793,7 +793,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
                 searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
                 projectSearchId : this._projectSearchId,
                 singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject
-            })
+            });
 
             this._singleProteinRowShowSingleProteinOverlay({proteinSequenceVersionId});
         }
@@ -816,7 +816,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             searchSubGroup_CentralStateManagerObjectClass : this._searchSubGroup_CentralStateManagerObjectClass,
             projectSearchId : this._projectSearchId,
             singleProtein_CentralStateManagerObject : singleProtein_CentralStateManagerObjectClass_ForNewWindow
-        })
+        });
 
         const newWindowURL = this._centralPageStateManager.getURL_ForCurrentState({componentOverridesAdditions: [singleProtein_CentralStateManagerObjectClass_ForNewWindow]})
 
@@ -950,7 +950,6 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             loadedDataCommonHolder : this._loadedDataCommonHolder,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             singleProtein_CentralStateManagerObject : this._singleProtein_CentralStateManagerObject,
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
             singleProteinCloseCallback : singleProteinCloseCallback
         } );

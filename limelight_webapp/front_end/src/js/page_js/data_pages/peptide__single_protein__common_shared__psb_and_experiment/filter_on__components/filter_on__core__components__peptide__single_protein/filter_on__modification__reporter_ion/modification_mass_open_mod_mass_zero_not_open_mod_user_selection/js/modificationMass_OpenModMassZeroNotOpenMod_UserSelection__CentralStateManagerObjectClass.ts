@@ -36,16 +36,46 @@ const _ENCODED_DATA__PEPTIDE_UNIQUE_ENCODING_PROPERTY_NAME = 'b';
  */
 export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass {
 
-    // private _initializeCalled : boolean = false;
+    private _initializeCalled : boolean = false;
+
+    private _for_SingleProtein : boolean = false;
 
     private _optionSelected : boolean = undefined; //  Set to undefined if no selection or false
 
     private _centralPageStateManager : CentralPageStateManager;
 
     /**
+     * Create Instance for Main Page
+     */
+    static getNewInstance_MainPage( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass {
+
+        if ( ! centralPageStateManager ) {
+            const msg = "getNewInstance_MainPage: centralPageStateManager is required."
+            console.warn( msg );
+            throw Error(msg);
+        }
+
+        const instance = new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager });
+
+        return instance;
+    }
+
+    /**
+     * Create Instance for Single Protein
+     */
+    static getNewInstance_SingleProtein() : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass {
+
+        const instance = new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({ centralPageStateManager: undefined });
+
+        instance._for_SingleProtein = true;
+
+        return instance;
+    }
+
+    /**
      *
      */
-    constructor( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) {
+    private constructor( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) {
 
         //  No centralPageStateManager value if used for an override
 
@@ -56,14 +86,44 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
         }
     }
 
+    /**
+     *
+     */
+    initialize_MainPageInstance() : void {
+
+        let encodedStateData = this._centralPageStateManager.getEncodedData( { component : this } );
+        this._initialize_Internal({ encodedStateData });
+
+        this._initializeCalled = true;
+    }
+
+    /**
+     *
+     */
+    initialize_SingleProteinInstance(
+        {
+            encodedStateData
+        } : {
+            encodedStateData: any
+        }) : void {
+
+        this._initialize_Internal({ encodedStateData });
+
+        this._initializeCalled = true;
+    }
+
 
     /**
      * Update the state of this object with the value from the URL
      *
      */
-    initialize() : void {
+    private _initialize_Internal(
+        {
+            encodedStateData
+        } : {
+            encodedStateData: any
+        }) : void {
 
-        let encodedStateData = this._centralPageStateManager.getEncodedData( { component : this } );
         if ( encodedStateData ) {
 
             const version = encodedStateData[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ];
@@ -84,6 +144,12 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
      */
     getTreatOpenModMassZeroAsUnmodified_Selection() : boolean {
 
+        if ( ! this._initializeCalled ) {
+            const msg = "Not Initialized and getTreatOpenModMassZeroAsUnmodified_Selection called"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
         if ( ! this._optionSelected ) {
             return false;
         }
@@ -97,16 +163,24 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
      */
     setTreatOpenModMassZeroAsUnmodified_Selection( treatOpenModMassZeroAsUnmodified_Selection : boolean ) : void {
 
+        if ( ! this._initializeCalled ) {
+            const msg = "Not Initialized and setTreatOpenModMassZeroAsUnmodified_Selection called"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
         if ( ! treatOpenModMassZeroAsUnmodified_Selection ) {
             this._optionSelected = undefined;
         } else {
             this._optionSelected = treatOpenModMassZeroAsUnmodified_Selection;
         }
 
-        if ( ! this._centralPageStateManager ) {
-            throw Error( "this._centralPageStateManager not set" );
+        // if ( ! this._centralPageStateManager ) {
+        //     throw Error( "this._centralPageStateManager not set" );
+        // }
+        if ( this._centralPageStateManager ) {
+            this._centralPageStateManager.setState({component: this});
         }
-        this._centralPageStateManager.setState( { component : this } );
     }
 
     /**
@@ -114,6 +188,12 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
      *
      */
     clearTreatOpenModMassZeroAsUnmodified_Selection() {
+
+        if ( ! this._initializeCalled ) {
+            const msg = "Not Initialized and clearTreatOpenModMassZeroAsUnmodified_Selection called"
+            console.warn(msg)
+            throw Error(msg)
+        }
 
         this._optionSelected = undefined;
 
@@ -137,6 +217,15 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
      * Called by Central State Manager and maybe other code
      */
     getDataForEncoding() {
+
+        // MUST  return something if not selected if for Single Protein.  Processing for Single Protein requires it.
+
+        if ( ( ! this._optionSelected ) && ( ! this._for_SingleProtein ) ) {
+
+            //  NO need to return anything if not selected and not for Single Protein
+
+            return undefined; // EARLY RETURN
+        }
 
         const dataForEncoding = {}
 

@@ -52,6 +52,9 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
     private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass
     private _dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
 
+
+    //  !!  When copy for Experiment, don't need this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass since only for pick up old values from URL
+
     private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
     private _protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass: Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass
@@ -70,6 +73,8 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
      */
     initialize(
         {
+            referrerFromURL_Set,
+
             singleProteinCloseCallback,
 
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
@@ -82,6 +87,8 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             centralPageStateManager
 
         }: {
+            referrerFromURL_Set: boolean //  was /r on the URL when page loaded
+
             singleProteinCloseCallback: ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
 
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager,
@@ -114,8 +121,60 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         })
         this._singleProtein_CentralStateManagerObject.initialize();
 
-        this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = new ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass({centralPageStateManager});
-        this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize();
+        //  !!  When copy for Experiment, don't need this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass since only for pick up old values from URL
+
+        this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_MainPage({centralPageStateManager});
+        this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_MainPageInstance();
+
+        if ( referrerFromURL_Set ) {
+
+            //  If referrer from another page (peptide, ...) clear TreatOpenModMassZeroAsUnmodified_Selection.
+
+            //    TreatOpenModMassZeroAsUnmodified_Selection is only here to pick up for old Protein page URLs.  All new values are set only on Single Protein, never set on Protein main page.
+
+            this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+
+        } else {
+
+            //  NOT referrer from another page (peptide, ...).  Copy TreatOpenModMassZeroAsUnmodified_Selection to Single Protein and then clear
+
+            //    TreatOpenModMassZeroAsUnmodified_Selection is only here to pick up for old Protein page URLs.  All new values are set only on Single Protein, never set on Protein main page.
+
+            let transfer_OpenModMassZeroNotOpenMod_UserSelection_To_SingleProteinStateObject = false;
+            {
+                const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData_SingleProtein = this._singleProtein_CentralStateManagerObject.getModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData();
+                if ( ! modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData_SingleProtein ) {
+
+                    //  NOT Already populated
+
+                    transfer_OpenModMassZeroNotOpenMod_UserSelection_To_SingleProteinStateObject = true;
+                }
+            }
+            if ( transfer_OpenModMassZeroNotOpenMod_UserSelection_To_SingleProteinStateObject ) {
+
+                //  Create new modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein with copy of Selection for main page
+                const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.initialize_SingleProteinInstance({
+                    encodedStateData: undefined
+                });
+
+                if ( this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.setTreatOpenModMassZeroAsUnmodified_Selection( true );
+                } else {
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+                }
+
+                //  Clear the Page level selection since NOT used at page level.  ONLY on Protein Page.
+                this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+
+                const modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein.getDataForEncoding();
+
+                this._singleProtein_CentralStateManagerObject.setModificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData });
+                this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection( false );
+            }
+
+        }
 
         this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass = new Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass({centralPageStateManager});
         this._protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass.initialize();
@@ -263,9 +322,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             projectSearchIds: this._projectSearchIds,
             searchDataLookupParamsRoot: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_searchDetailsCriteriaData(),
             singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
-            dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory,
-
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+            dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory
         });
 
         //  Push current state on to Browser History before update for Single Protein
