@@ -187,6 +187,10 @@ That's it, you are ready to use Limelight!
 7. Optional - Set up SMTP For Emails
 ===========================================
 Some functions of Limelight require sending email to users. Examples of this include
-resetting forgotten passwords and notifications that data uploads have been completed. Although it's not
-required that you set up SMTP, the above features will not be enabled unless you do. If you
-would like to enable these features, please see our :doc:`install-limelight-smtp`.
+inviting new users to projects, resetting forgotten passwords, and notifications that
+data uploads have been completed. Although it's not required that you set up SMTP,
+the above features will not be enabled unless you do. If you would like to enable these
+features, please see our :doc:`install-limelight-smtp`.
+
+If you do not set up SMTP, you must use the administrative interface to add new users
+to Limelight. See our :ref:`guide for managing users <Manage Users (Add, Disable, Permissions)>`.
