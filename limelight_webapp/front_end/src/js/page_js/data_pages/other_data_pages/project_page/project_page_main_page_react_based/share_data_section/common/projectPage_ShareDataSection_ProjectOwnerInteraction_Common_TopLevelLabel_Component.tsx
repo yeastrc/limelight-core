@@ -134,44 +134,47 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLeve
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                      {/*   2 column grid   */}
+                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
 
-                    <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
+                        {/*   2 column grid   */}
 
-                        {/*  Top Level Label  */}
-                        <span>
-                            Share Data
-                        </span>
+                        <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
 
-                        {/*  Tags to right of Label
-
-                            only show Public if both are true
-                         */}
-
-                        { (this.props.show_Public_Tag ) ? (
-                            <span className=" share-data-tag-container ">
-                                <span className=" share-data-tag share-data-tag-common ">
-                                    Public
-                                </span>
+                            {/*  Top Level Label  */}
+                            <span>
+                                Share Data
                             </span>
-                        ) : (this.props.show_ReviewerMode_Tag ) ? (
-                            <span className=" share-data-tag-container ">
-                                <span className=" share-data-tag share-data-tag-common ">
-                                    Reviewer Mode
+
+                            {/*  Tags to right of Label
+
+                                only show Public if both are true
+                             */}
+
+                            { (this.props.show_Public_Tag ) ? (
+                                <span className=" share-data-tag-container ">
+                                    <span className=" share-data-tag share-data-tag-common ">
+                                        Public
+                                    </span>
                                 </span>
-                            </span>
-                        ) : null }
+                            ) : (this.props.show_ReviewerMode_Tag ) ? (
+                                <span className=" share-data-tag-container ">
+                                    <span className=" share-data-tag share-data-tag-common ">
+                                        Reviewer Mode
+                                    </span>
+                                </span>
+                            ) : null }
+                        </div>
+
+                        <div className=" top-level-label-help-tip-symbol">   {/*  column 2  */}
+
+                            <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
+                                Enable or disable reviewer mode and public sharing for this project.
+                            </p>
+                        </div>
+
                     </div>
-
-                    <div className=" top-level-label-help-tip-symbol">   {/*  column 2  */}
-
-                        <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
-                            Enable or disable reviewer mode and public sharing for this project.
-                        </p>
-                    </div>
-
                 </div>
-
+                
                 <div className="top-level-label-bottom-border"></div>
 
             </React.Fragment>
