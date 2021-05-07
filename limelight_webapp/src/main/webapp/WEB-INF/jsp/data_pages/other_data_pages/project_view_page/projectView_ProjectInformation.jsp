@@ -13,34 +13,49 @@
 	</div>
 
 	<div class="top-level-label">
-	  <div >
-	  	Project Information 
-	  	
-	  	<c:choose>
-		  	<c:when test="${ webSessionAuthAccessLevel.projectOwnerAllowed and ( not project.projectLocked ) }">
-			
-					<%--  Project Owner and Project NOT Locked.  Display in JS when add tooltip. --%>
-					<img id="project_unlocked_icon" src="static/images/icon-unlocked.png" 
-						class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
-						data-tooltip="Project is unlocked, click to lock. <br>While locked, no data may be changed, added to, or deleted from the project.">
-		  	</c:when>
-	
-		  	<c:when test="${ webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed and ( project.projectLocked ) }">
+
+		<div style=" display: grid; grid-template-columns: min-content min-content; ">
+		
+			<%--  2 column grid --%>
+
+		  <div style=" white-space: nowrap ">  <%--  column 1 --%>
+		  
+		  	Project Information 
 		  	
-					<%--  Project Owner and Project Locked.  Display in JS when add tooltip. --%>
-					<img  id="project_locked_icon" src="static/images/icon-locked.png" 
-						class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
-						data-tooltip="Project is locked, click to unlock. <br>While locked, no data may be changed, added to, or deleted from the project." >
-		  	</c:when>	  	
-	
-		  	<c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed and ( project.projectLocked ) }">
-		  	
-					<%--  Researcher and Project Locked.  Display only of Lock symbol --%>
-					<img  src="static/images/icon-locked.png" class="icon-large ">
-		  	</c:when>	 
-	  	</c:choose>
-	  	 	  	
-	  </div>
+		  	<c:choose>
+			  	<c:when test="${ webSessionAuthAccessLevel.projectOwnerAllowed and ( not project.projectLocked ) }">
+				
+						<%--  Project Owner and Project NOT Locked.  Display in JS when add tooltip. --%>
+						<img id="project_unlocked_icon" src="static/images/icon-unlocked.png" 
+							class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
+							data-tooltip="Project is unlocked, click to lock. <br>While locked, no data may be changed, added to, or deleted from the project.">
+			  	</c:when>
+		
+			  	<c:when test="${ webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed and ( project.projectLocked ) }">
+			  	
+						<%--  Project Owner and Project Locked.  Display in JS when add tooltip. --%>
+						<img  id="project_locked_icon" src="static/images/icon-locked.png" 
+							class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
+							data-tooltip="Project is locked, click to unlock. <br>While locked, no data may be changed, added to, or deleted from the project." >
+			  	</c:when>	  	
+		
+			  	<c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed and ( project.projectLocked ) }">
+			  	
+						<%--  Researcher and Project Locked.  Display only of Lock symbol --%>
+						<img  src="static/images/icon-locked.png" class="icon-large ">
+			  	</c:when>	 
+		  	</c:choose>
+		  </div>
+		  
+  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+		  		
+		  		<p class="top-level-label-help-tip-actual "> <%--  Displayed on hover of ? --%>
+		  			General information about this project.
+		  		</p>
+		  </div>
+		  
+   	  	</div>
+		  
 	  	<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed or webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed }">
 		  <div id="project_just_locked_message" style="display: none; color: green;" >
 				Project Locked.  Reloading page to reflect changes

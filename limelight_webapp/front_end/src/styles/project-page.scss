@@ -16,6 +16,112 @@ body.project-page {
 
         div.top-level-label {
             margin-left: 30px;
+
+			.top-level-label-help-tip-symbol {
+				position: relative;
+				margin-left: 10px;
+				text-align: center;
+
+				//  Make a circle around the '?':  width and height have to be same value
+
+				font-size: 12px;
+				line-height: 16px;
+				width: 14px;
+				height: 14px;
+				cursor: default;
+
+				//  Make a circle around the '?':  border-radius: 50%;
+
+				border-radius: 50%;
+				border-color: $site-color-dark;
+				border-style: solid;
+				border-width: 2px;
+
+				&:before{  //  Add '?'
+					content:'?';
+					font-weight: bold;
+					color:$site-color-dark;
+				}
+
+				&:hover p.top-level-label-help-tip-actual {
+					display:block;
+					transform-origin: 100% 0%;
+
+					-webkit-animation: fadeIn 0.3s ease-in-out;
+					animation: fadeIn 0.3s ease-in-out;
+				}
+
+				$top-level-label-help-tip-actual--main-left-right: -4px;
+				$top-level-label-help-tip-actual--before-left-right: 3px;
+
+				p.top-level-label-help-tip-actual { //  Displayed tooltip
+					display: none;
+					z-index: 10000;
+					font-weight: normal; //  Clear from bold of parent
+					text-align: left;
+					background-color: $site-standard-background-color;
+					padding: 10px;
+					width: 300px;
+					position: absolute;
+					border-radius: 3px;
+					//box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+					border-color: $site-color-dark;
+					border-style: solid;
+					border-width: 1px;
+					top: 5px;
+					left: $top-level-label-help-tip-actual--main-left-right;
+					font-size: 13px;
+					line-height: 1.4;
+
+					&:before {
+						position: absolute;
+						content: '';
+						width: 0;
+						height: 0;
+						border: 6px solid transparent;
+						border-bottom-color: $site-color-dark;
+						left: $top-level-label-help-tip-actual--before-left-right;
+						top: -12px;
+					}
+
+					&:after {
+						width: 100%;
+						height: 40px;
+						content: '';
+						position: absolute;
+						top: -40px;
+						left: 0;
+					}
+
+					&.align-right-edge {  //  align right edge of tooltip (expands to left of ? symbol)
+
+						right: $top-level-label-help-tip-actual--main-left-right;
+						left: auto;  // clear value set in parent
+
+						&:before {
+							right: $top-level-label-help-tip-actual--before-left-right;
+							left: auto;  // clear value set in parent
+						}
+					}
+
+					@-webkit-keyframes fadeIn {
+						0% {
+							opacity:0;
+							transform: scale(0.6);
+						}
+
+						100% {
+							opacity:100%;
+							transform: scale(1);
+						}
+					}
+
+					@keyframes fadeIn {
+						0% { opacity:0; }
+						100% { opacity:100%; }
+					}
+				}
+			}
         }
         
         div.top-level-label-bottom-border {

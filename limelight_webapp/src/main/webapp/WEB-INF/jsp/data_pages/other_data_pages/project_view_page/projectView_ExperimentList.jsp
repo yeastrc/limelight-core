@@ -23,7 +23,25 @@
 	</div>
 
 	<div class="top-level-label">
-	  Experiments
+	
+		<div style=" display: grid; grid-template-columns: min-content min-content; ">
+		
+			<%--  2 column grid --%>
+
+		  <div style=" white-space: nowrap ">  <%--  column 1 --%>
+		  
+			  Experiments
+		  </div>
+		  
+  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+		  		
+		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
+		  			Experiments allow you to define a structure for your searches, 
+		  			including conditions, timepoints, and replicates; 
+		  			and provides appropriate default views of the data.
+		  		</p>
+		  </div>
+		</div>
 	</div>
 	
 	<div class="top-level-label-bottom-border" ></div>

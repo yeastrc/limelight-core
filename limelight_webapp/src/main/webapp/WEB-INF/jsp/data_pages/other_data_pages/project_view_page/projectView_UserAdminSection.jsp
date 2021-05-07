@@ -23,7 +23,27 @@
 			 class=" icon-large fake-link-image top-level-collapsable-link collapsable_expand_link_jq" >
 	</div>
 
-	<div class="top-level-label">Researchers</div>
+	<div class="top-level-label">
+	
+	
+		<div style=" display: grid; grid-template-columns: min-content min-content; ">
+		
+			<%--  2 column grid --%>
+
+		  <div style=" white-space: nowrap ">  <%--  column 1 --%>
+		  
+			Researchers
+		  </div>
+		  
+  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+		  		
+		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
+		  			Invite, remove, and view users that have access to this project and its data.
+		  		</p>
+		  </div>
+		</div>
+			
+	</div>
 
 	<div class="top-level-label-bottom-border" ></div>
 						

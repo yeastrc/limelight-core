@@ -24,9 +24,26 @@
 	</div>
 					
 	<div class="top-level-label">
-		Upload Data
-		<span id="upload_data_pending_block" style="display: none;">
-		 (Pending <span id="upload_data_pending_number"></span>)</span>
+	
+		<div style=" display: grid; grid-template-columns: min-content min-content; ">
+		
+			<%--  2 column grid --%>
+
+		  <div style=" white-space: nowrap ">  <%--  column 1 --%>
+		  
+			Upload Data
+			<span id="upload_data_pending_block" style="display: none;">
+			 (Pending <span id="upload_data_pending_number"></span>)</span>
+		  </div>
+		  
+  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+		  		
+		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
+		  			Upload search results to this project and view upload history.
+		  		</p>
+		  </div>
+		</div>
+			
 	</div>
 
 	<div class="top-level-label-bottom-border" ></div>

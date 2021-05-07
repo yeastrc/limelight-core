@@ -21,7 +21,24 @@
 	</div>
 
 	<div class="top-level-label"> <%--  (AKA saved views) --%>
-	  Highlighted Results
+	
+		<div style=" display: grid; grid-template-columns: min-content min-content; ">
+		
+			<%--  2 column grid --%>
+
+		  <div style=" white-space: nowrap ">  <%--  column 1 --%>
+		  
+	  		Highlighted Results
+  		 </div>
+		  
+  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+		  		
+		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
+		  			Links to views of data in Limelight that the project owner wishes to highlight.
+		  		</p>
+		  </div>
+		</div>
+			
 	</div>
 	
 	<div class="top-level-label-bottom-border" ></div>
