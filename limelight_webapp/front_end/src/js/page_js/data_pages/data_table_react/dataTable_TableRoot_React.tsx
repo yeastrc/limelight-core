@@ -1112,10 +1112,16 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                     { header }
                     { ( ! dataRows ) ? (
-                        <div style={ { marginLeft: 10, marginTop: 10, marginBottom: 20, fontWeight: "bold" } }>
-                            No rows contain '{ this.state.searchInputValue_CurrentValue }'
-                        </div>
+                        ( this.state.searchInputValue_CurrentValue ) ? (
+                            <div style={ { marginLeft: 10, marginTop: 10, marginBottom: 20, fontWeight: "bold" } }>
+                                No rows contain '{ this.state.searchInputValue_CurrentValue }'
+                            </div>
                         ) : (
+                            <div style={ { marginLeft: 10, marginTop: 10, marginBottom: 20, fontWeight: "bold" } }>
+                                No data
+                            </div>
+                        )
+                    ) : (
                         dataRows
                     )}
 
