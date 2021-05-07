@@ -175,7 +175,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     projectSearchIds : Array<number>;
 
     experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData;
-    experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+
     // selectedConditionIdsUpdated_Callback
 
     proteinSequenceVersionId : number;
@@ -337,6 +337,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
 
+    private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+
     private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
@@ -353,6 +355,13 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
+        {
+            this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass =
+                Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getNewInstance_SingleProtein();
+
+            const encodedStateData = props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.getExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData();
+            this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_SingleProteinInstance({encodedStateData});
+        }
         {
             this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({
                 valueChangedCallback: this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis
@@ -371,7 +380,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                 //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells
                 // Will be Updated for changes in Selected Conditions
-                experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
                 conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
                 selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis //  NEEDS: this._selectedConditionsChanged_Callback_BindThis
             })
@@ -644,6 +653,12 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
      */
     private _selectedConditionsChanged_Callback( params : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_CallbackParams ) {
         try {
+
+            // Update URL
+            {
+                const experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData = this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getDataForEncoding();
+                this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.setExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData({ experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData });
+            }
 
             //  Update object used by Experiment_SingleExperiment_ConditionsGraphicRepresentation
 

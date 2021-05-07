@@ -33,7 +33,6 @@ import {DataTable_DataGroupRowEntry, DataTable_DataRowEntry, DataTable_RootTable
 import { DataTable_TableRoot } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React';
 import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
-import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 import {SearchDetailsAndOtherFiltersOuterBlock_Layout} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
 import {
     ProteinPage_ProteinGroupingFilterSelection_Component_Root,
@@ -45,7 +44,7 @@ import { SaveView_Component_Props_Prop} from "page_js/data_pages/saveView_React/
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
-
+import {Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass";
 
 /**
  * Used Externally
@@ -112,16 +111,19 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
     //        (missing or mis-typed parameters will error.  extra properties in a object in the parameters will not error)
 
     private _proteinGroup_SelectionValues_Changed_Callback_BindThis = this._proteinGroup_SelectionValues_Changed_Callback.bind(this);
-    private _CAST_TEST_ONLY_proteinGroup_SelectionValues_Changed_Callback : ( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) => void = this._proteinGroup_SelectionValues_Changed_Callback;
 
     private _selectedConditionsChanged_Callback_BindThis : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition = this._selectedConditionsChanged_Callback.bind(this);
-    private _CAST_TEST_ONLY_selectedConditionsChanged_Callback : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition = this._selectedConditionsChanged_Callback;
 
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
-    private _CAST_TEST_ONLY_mainCell_getHoverContents : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = this._mainCell_getHoverContents;
 
     private _downloadProteinList_Clicked_BindThis = this._downloadProteinList_Clicked.bind(this)
     private _downloadPSMList_Clicked_BindThis = this._downloadPSMList_Clicked.bind(this)
+
+    private _DO_NOT_CALL__CastTestingOnly() {
+        const proteinGroup_SelectionValues_Changed_Callback : ( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) => void = this._proteinGroup_SelectionValues_Changed_Callback;
+        const selectedConditionsChanged_Callback : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_Callback_Definition = this._selectedConditionsChanged_Callback;
+        const mainCell_getHoverContents : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = this._mainCell_getHoverContents;
+    }
 
     /**
      * 
@@ -888,6 +890,7 @@ const _createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries
 ///////////////
 ///////////////
 
+//  NON Class Functions
 
 /**
  *

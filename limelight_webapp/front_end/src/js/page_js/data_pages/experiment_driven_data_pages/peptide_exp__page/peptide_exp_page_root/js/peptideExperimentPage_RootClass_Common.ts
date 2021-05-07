@@ -121,13 +121,13 @@ export class PeptideExperimentPage_RootClass_Common {
 
 		this._centralPageStateManager = new CentralPageStateManager();
 
-		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = new Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({
+		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getNewInstance_MainPage({
 			centralPageStateManager : this._centralPageStateManager
-		})
+		});
 
 		this._peptideExperimentPageRoot_CentralStateManagerObjectClass = new PeptideExperimentPageRoot_CentralStateManagerObjectClass({
 			centralPageStateManager : this._centralPageStateManager
-		})
+		});
 
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
 			ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_MainPage({ centralPageStateManager : this._centralPageStateManager });
@@ -175,7 +175,7 @@ export class PeptideExperimentPage_RootClass_Common {
 
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_MainPageInstance();
 
-		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
+		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_MainPageInstance();
 
 		this._peptideExperimentPageRoot_CentralStateManagerObjectClass.initialize();
 		{

@@ -99,10 +99,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
 
-	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
-
-
-
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
 	private _reporterIonMass_UserSelections_StateObject = new ReporterIonMass_UserSelections_StateObject();
@@ -157,8 +153,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			proteinList_ExpPage_CentralStateManagerObjectClass,
 
 			singleProtein_ExpPage_CentralStateManagerObjectClass,
-			experiment_DataPages_LoggedInUser_CommonObjectsFactory,
-			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+			experiment_DataPages_LoggedInUser_CommonObjectsFactory
 		} : {
 			proteinSequenceVersionId : number,
 			proteinListItem : {name: string, description: string};
@@ -179,7 +174,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass;
 			singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass,
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
-			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
 		}) {
 
         this._proteinSequenceVersionId = proteinSequenceVersionId;
@@ -209,8 +203,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass = singleProtein_ExpPage_CentralStateManagerObjectClass;
 
 		this._experiment_DataPages_LoggedInUser_CommonObjectsFactory = experiment_DataPages_LoggedInUser_CommonObjectsFactory;
-
-		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
     }
 	
 
@@ -424,8 +416,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
 
-			experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,
-			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+			experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory
 		};
 
 		this._renderedReactComponent_ProteinExperimentPage_Root_Component.add_ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop({

@@ -72,17 +72,49 @@ class InternalStateObject {
  */
 export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass {
 
+	private _initializeCalled : boolean = false;
+
+	private _for_SingleProtein : boolean = false;
+
 	private _value : InternalStateObject = {};
 
 	private _centralPageStateManager : CentralPageStateManager;
 
 	/**
+	 * Create Instance for Main Page
+	 */
+	static getNewInstance_MainPage( { centralPageStateManager } : { centralPageStateManager : CentralPageStateManager } ) : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass {
+
+		if ( ! centralPageStateManager ) {
+			const msg = "getNewInstance_MainPage: centralPageStateManager is required."
+			console.warn( msg );
+			throw Error(msg);
+		}
+
+		const instance = new Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ centralPageStateManager });
+
+		return instance;
+	}
+
+	/**
+	 * Create Instance for Single Protein
+	 */
+	static getNewInstance_SingleProtein() : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass {
+
+		const instance = new Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ centralPageStateManager: undefined });
+
+		instance._for_SingleProtein = true;
+
+		return instance;
+	}
+
+	/**
 	 * IMPORTANT:
 	 * 
 	 */
-	constructor( { centralPageStateManager } :  { centralPageStateManager : CentralPageStateManager } ) {
+	private constructor( { centralPageStateManager } :  { centralPageStateManager : CentralPageStateManager } ) {
 
-		//  No centralPageStateManager value if used for an override
+		//  No centralPageStateManager value if used for an override or for Single Protein
 
 		if ( centralPageStateManager ) {
 			this._centralPageStateManager = centralPageStateManager;
@@ -90,9 +122,44 @@ export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCl
 			this._centralPageStateManager.register( { component : this } );
 		}
 	}
-	
-	initialize() {
+
+	/**
+	 *
+	 */
+	initialize_MainPageInstance() : void {
+
 		let encodedStateData = this._centralPageStateManager.getEncodedData( { component : this } );
+		this._initialize_Internal({ encodedStateData });
+
+		this._initializeCalled = true;
+	}
+
+	/**
+	 *
+	 */
+	initialize_SingleProteinInstance(
+		{
+			encodedStateData
+		} : {
+			encodedStateData: any
+		}) : void {
+
+		this._initialize_Internal({ encodedStateData });
+
+		this._initializeCalled = true;
+	}
+
+	/**
+	 * Update the state of this object with the value from the URL
+	 *
+	 */
+	private _initialize_Internal(
+		{
+			encodedStateData
+		} : {
+			encodedStateData: any
+		}) : void {
+
 		if ( encodedStateData ) {
 
 			let selectedConditionIds : Set<number> = undefined
@@ -181,10 +248,12 @@ export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCl
 		}
 		this._value.selectedConditionIds_First_ConditionGroup = selectedConditionIds;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	/**
@@ -204,10 +273,12 @@ export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCl
 		}
 		this._value.selectedConditionIdPaths_OtherThan_First_ConditionGroup = selectedConditionIdPaths;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	/**

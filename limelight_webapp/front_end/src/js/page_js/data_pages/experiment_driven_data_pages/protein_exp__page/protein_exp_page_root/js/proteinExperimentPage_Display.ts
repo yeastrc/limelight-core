@@ -576,6 +576,12 @@ export class ProteinExperimentPage_Display {
 
                 console.log( "Have proteinSequenceVersionId_FromURL value" );
 
+                //  Copy Selected SelectedConditionIdsAndPaths if not set for Single Protein
+                _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass__to__singleProtein_ExpPage_CentralStateManagerObjectClass_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+                    experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                    singleProtein_ExpPage_CentralStateManagerObjectClass: this._singleProtein_ExpPage_CentralStateManagerObjectClass
+                });
+
 				//  Have proteinSequenceVersionId_FromURL so display Single Protein Overlay
 
                 const tableRowData_For_proteinSequenceVersionId_FromURL = tableRowData_AllRows.get_ProteinRowData_For_ProteinSequenceVersionId({ proteinSequenceVersionId : proteinSequenceVersionId_FromURL });
@@ -635,6 +641,12 @@ export class ProteinExperimentPage_Display {
             window.history.pushState( {}, "" );
 
             this._singleProtein_ExpPage_CentralStateManagerObjectClass.setProteinSequenceVersionId( { proteinSequenceVersionId } );
+
+            //  Copy Selected SelectedConditionIdsAndPaths if not set for Single Protein
+            _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass__to__singleProtein_ExpPage_CentralStateManagerObjectClass_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+                experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                singleProtein_ExpPage_CentralStateManagerObjectClass: this._singleProtein_ExpPage_CentralStateManagerObjectClass
+            });
 
             this._singleProteinRowShowSingleProteinOverlay({ tableRowData : params.tableRowData });
 
@@ -743,8 +755,7 @@ export class ProteinExperimentPage_Display {
             proteinList_ExpPage_CentralStateManagerObjectClass : this._proteinList_ExpPage_CentralStateManagerObjectClass,
 
             singleProtein_ExpPage_CentralStateManagerObjectClass : this._singleProtein_ExpPage_CentralStateManagerObjectClass,
-            experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory,
-            experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+            experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory
         });
 
         this._proteinExperimentPage_Display_SingleProtein.initialize();
@@ -921,4 +932,43 @@ const _loadDataFor_ComputedReportedPeptides_AllProteins = function( { projectSea
     }
 
     return promises__get_Array;
+}
+
+
+
+
+///////////////
+///////////////
+
+//  NON Class Functions
+
+/**
+ *
+ * @param experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+ * @param projectSearchIds
+ * @param singleProtein_ExpPage_CentralStateManagerObjectClass
+ */
+const _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass__to__singleProtein_ExpPage_CentralStateManagerObjectClass_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated = function (
+    {
+        experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,  //  Page Level
+        singleProtein_ExpPage_CentralStateManagerObjectClass
+    } : {
+        experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+        singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
+
+    }) : void {
+
+    {
+        const encodedStateData = singleProtein_ExpPage_CentralStateManagerObjectClass.getExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData()
+        if ( encodedStateData ) {
+
+            //  Already populated so exit
+
+            return; // EARLY RETURN
+        }
+    }
+
+    const experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData = experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getDataForEncoding();
+
+    singleProtein_ExpPage_CentralStateManagerObjectClass.setExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData({ experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData });
 }

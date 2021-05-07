@@ -41,6 +41,7 @@ const _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME =
 const _PEPTIDE_UNIQUE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'g';
 const _MODIFICATION_MASS_OPEN_MOD_MASS_ZERO_NOT_OPEN_MOD__USER_SELECTION = 'h';
 const _GENERATED_PEPTIDE_CONTENTS__USER_SELECTIONS = 'i';
+const _EXPERIMENT__SELECTED_CONDITION_IDS_AND_PATHS__SINGLE_PROTEIN = 'j'
 
 /**
  * for class property _value
@@ -55,6 +56,7 @@ class InternalStateObject {
 	peptideSequenceFilterSelectedEncodedStateData?: any
 	modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData?: any
 	generatedPeptideContents_UserSelections__EncodedStateData?: any
+	experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData?: any // For Single Protein Overlay
 }
 
 
@@ -101,7 +103,8 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 				peptideSequenceFilterSelectedEncodedStateData : encodedStateData[ _PEPTIDE_SEQUENCE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				peptideUniqueFilterSelectedEncodedStateData : encodedStateData[ _PEPTIDE_UNIQUE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				modificationMass_OpenModMassZeroNotOpenMod_UserSelection__EncodedStateData: encodedStateData[ _MODIFICATION_MASS_OPEN_MOD_MASS_ZERO_NOT_OPEN_MOD__USER_SELECTION ],
-				generatedPeptideContents_UserSelections__EncodedStateData: encodedStateData[ _GENERATED_PEPTIDE_CONTENTS__USER_SELECTIONS ]
+				generatedPeptideContents_UserSelections__EncodedStateData: encodedStateData[ _GENERATED_PEPTIDE_CONTENTS__USER_SELECTIONS ],
+				experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData: encodedStateData[ _EXPERIMENT__SELECTED_CONDITION_IDS_AND_PATHS__SINGLE_PROTEIN ]
             };
 		}
 	}
@@ -220,6 +223,20 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 		return this._value.generatedPeptideContents_UserSelections__EncodedStateData;
 	}
 
+	setExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData( { experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData }: { experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData: any } ) {
+		this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData = experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData;
+
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
+		}
+	}
+	getExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData() {
+		return this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData;
+	}
+
     /**
      * Called by Central State Manager and maybe other code
 	 */
@@ -231,9 +248,8 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
      * Called by Central State Manager and maybe other code
 	 */
 	getDataForEncoding() {
+
 		const dataForEncoding = {}
-		// @ts-ignore
-		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
 		if ( this._value.proteinSequenceVersionId !== undefined ) {
 			// @ts-ignore
@@ -267,7 +283,20 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 			// @ts-ignore
 			dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS__USER_SELECTIONS ] = this._value.generatedPeptideContents_UserSelections__EncodedStateData;
 		}
+		if ( this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData !== undefined ) {
+			// @ts-ignore
+			dataForEncoding[ _EXPERIMENT__SELECTED_CONDITION_IDS_AND_PATHS__SINGLE_PROTEIN ] = this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData;
+		}
 
+		if ( Object.keys( dataForEncoding ).length === 0 ) {
+
+			// NO properties on object to return so return undefined
+
+			return undefined;  //  EARLY RETURN
+		}
+
+		// @ts-ignore
+		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
 		return dataForEncoding;
 	}

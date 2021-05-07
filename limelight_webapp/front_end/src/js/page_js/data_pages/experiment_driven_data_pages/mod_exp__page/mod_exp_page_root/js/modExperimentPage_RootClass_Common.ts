@@ -96,9 +96,9 @@ export class ModExperimentPage_RootClass_Common {
 
 		this._centralPageStateManager = new CentralPageStateManager();
 
-		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = new Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({
+		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getNewInstance_MainPage({
 			centralPageStateManager : this._centralPageStateManager
-		})
+		});
 
 		//  Instances of class DataPageStateManager
 		
@@ -133,7 +133,7 @@ export class ModExperimentPage_RootClass_Common {
 		
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
-		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize();
+		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_MainPageInstance();
 
 		let referrerFromURL = initialStateFromURL.referrer;
 		
