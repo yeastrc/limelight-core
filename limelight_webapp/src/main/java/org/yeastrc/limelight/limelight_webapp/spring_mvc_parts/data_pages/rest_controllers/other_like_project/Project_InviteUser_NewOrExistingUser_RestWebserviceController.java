@@ -41,11 +41,13 @@ import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebS
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectUserDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserInviteTrackingDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.AddNewUserUsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.InviteRecord_Save_UpdatePrevInvites_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectUserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserInviteTrackingDTO;
@@ -58,6 +60,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailIF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
@@ -102,6 +105,9 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 	
 	@Autowired
 	private UserDAO_IF userDAO;
+
+	@Autowired
+	private ProjectDAO_IF projectDAO;
 	
 	@Autowired
 	private ProjectUserDAO_IF projectUserDAO;
@@ -263,7 +269,8 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			if ( invitedPersonUserId != null ) {
 				//  process the user id
 
-				addExistingUserToProjectUsingProjectId( invitedPersonUserId, invitedPersonAccessLevel, projectId, webserviceResult );
+				addExistingUserToProjectUsingProjectId( 
+						invitedPersonUserId, invitedPersonAccessLevel, projectId, userSession, httpServletRequest, webserviceResult );
 
 			} else {
 				//  Process the email
@@ -300,7 +307,9 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 					Integer userMgmtUserIdEntry = userMgmtUserIdList.get( 0 );
 					int invitedPersonUserMgmtUserIdFromEmail = userMgmtUserIdEntry;
 					
-					addExistingUser_In_UserMgmt_ToProjectUsingProjectId( invitedPersonUserMgmtUserIdFromEmail, invitedPersonAccessLevel, projectId, webserviceResult );
+					addExistingUser_In_UserMgmt_ToProjectUsingProjectId( 
+							invitedPersonUserMgmtUserIdFromEmail, invitedPersonAccessLevel, projectId, userSession, httpServletRequest, webserviceResult );
+					
 				} else {
 					//  no account with this email exists
 					inviteNewUserUsingEmail( invitedPersonEmail, httpServletRequest, 
@@ -339,6 +348,8 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			int invitedPerson_UserMgmtUserId_FromEmail, 
 			int invitedPersonAccessLevel,
 			int projectId,
+			UserSession userSession,
+			HttpServletRequest httpServletRequest,
 			WebserviceResult webserviceResult ) throws Exception {
 		
 		//  Get full user data from User Mgmt
@@ -370,7 +381,8 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 					//  Already user id 
 				UserDTO userDTO = userDAO.getForId( userIdFromUserMgmtUserId );
 				
-				existingUser_Insert_ProjectUserDTO(userIdFromUserMgmtUserId, invitedPersonAccessLevel, projectId, webserviceResult, userDTO);
+				existingUser_Insert_ProjectUserDTO(
+						userIdFromUserMgmtUserId, invitedPersonAccessLevel, projectId, webserviceResult, userDTO, userMgmtGetUserDataResponse, userSession, httpServletRequest );
 	
 				webserviceResult.addedExistingUser = true;
 				
@@ -438,6 +450,8 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			int invitedPersonUserId, 
 			int invitedPersonAccessLevel,
 			int projectId,
+			UserSession userSession,
+			HttpServletRequest httpServletRequest,
 			WebserviceResult webserviceResult ) throws Exception {
 
 		//  Get User Mgmt User Id for authUserId
@@ -471,7 +485,7 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 		
 		UserDTO userDTO = userDAO.getForId( invitedPersonUserId );
 		
-		existingUser_Insert_ProjectUserDTO(invitedPersonUserId, invitedPersonAccessLevel, projectId, webserviceResult, userDTO);
+		existingUser_Insert_ProjectUserDTO(invitedPersonUserId, invitedPersonAccessLevel, projectId, webserviceResult, userDTO, userMgmtGetUserDataResponse, userSession, httpServletRequest );
 	}
 
 	/**
@@ -485,11 +499,16 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	private void existingUser_Insert_ProjectUserDTO(int invitedPersonUserId, 
+	private void existingUser_Insert_ProjectUserDTO(
+			
+			int invitedPersonUserId, 
 			int invitedPersonAccessLevel, 
 			int projectId,
 			WebserviceResult webserviceResult, 
-			UserDTO userDTO ) throws SQLException, Exception {
+			UserDTO userDTO,
+			UserMgmtGetUserDataResponse userMgmtGetUserDataResponse,
+			UserSession userSession,
+			HttpServletRequest httpServletRequest ) throws SQLException, Exception {
 		
 		Integer userAccessLevel = userDTO.getUserAccessLevel();
 		
@@ -513,6 +532,49 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			
 			projectUserDAO.save( projectUserDTO );
 
+			//  Generate email to existing user to inform them they are added to this project
+			// Generate and send the email to the user.
+			try {
+				//  All Exceptions and Throwable will be eaten and not re-thrown
+				
+				ProjectDTO projectDTO_Title = projectDAO.get_Title_ProjectLocked_ForId(projectId);
+				
+				if ( projectDTO_Title == null ) {
+					String msg = "projectDAO.get_Title_ProjectLocked_ForId(projectId); return null for projectId: " + projectId;
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				String projectTitle = projectDTO_Title.getTitle();
+				
+				SendEmailItem sendEmailItem = createAddExistingAcctToProjectMailMessageToSend( projectId, projectTitle, userMgmtGetUserDataResponse, userSession, httpServletRequest );
+				
+				if ( log.isInfoEnabled() ) {
+					log.info( "after call createAddExistingAcctToProjectMailMessageToSend: About to call sendEmail.sendEmail() sendEmailItem: " + sendEmailItem );
+				}
+				
+				sendEmail.sendEmail( sendEmailItem );
+				
+				if ( log.isInfoEnabled() ) {
+					log.info( "Afer call createAddExistingAcctToProjectMailMessageToSend: After call sendEmail.sendEmail() sendEmailItem: " + sendEmailItem );
+				}
+				
+				webserviceResult.setStatus(true);
+				webserviceResult.setEmailSent(true);
+				
+			} catch (LimelightWebappConfigException e) {
+
+				log.warn( "Add existing user to a project: existingUser_Insert_ProjectUserDTO: No email sent since not configured to send email" );
+
+				//  EAT/Swallow any Exception
+				
+			} catch (Throwable e) {
+				
+				log.error( "Add existing user to a project: existingUser_Insert_ProjectUserDTO: Exception: userEmail: " + userMgmtGetUserDataResponse.getEmail(), e );
+				
+				//  EAT/Swallow any Exception or Throwable
+			}
+			
 			webserviceResult.setStatus(true);
 			webserviceResult.setAddedExistingUser(true);
 			
@@ -541,7 +603,98 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			}
 		}
 	}
+
+
+	/**
+	 * @param userInviteTrackingDTO
+	 * @param userDatabaseRecord
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	private SendEmailItem createAddExistingAcctToProjectMailMessageToSend(
+			int projectId,
+			String projectTitle,
+			UserMgmtGetUserDataResponse userMgmtGetUserDataResponse,
+			UserSession userSession, 
+			HttpServletRequest httpServletRequest )
+	throws Exception {
+		
+		//  Create the URl (to the Page controller for processing the invite) to add to the email sent for the invite.
+		
+		//  Get base path to Page controller for processing the invite.
+		String requestURL = httpServletRequest.getRequestURL().toString();
+		
+		int controllerStartInURL_Index = requestURL.indexOf( PATH_OF_MAIN_PROCESS_INVITE_REQUEST_CONTROLLER );
+
+		if ( controllerStartInURL_Index == -1 ) {
+
+			//  Main controller path not found, search for secondary path
+			
+			controllerStartInURL_Index = requestURL.indexOf( PATH_OF_SECONDARY_RESEND_INVITE_EMAIL_CONTROLLER );
+			
+			if ( controllerStartInURL_Index == -1 ) {
+				String msg = "Failed to find path of current controller in request URL.  request URL: " + requestURL
+						+ ", path of current page controller: " + PATH_OF_MAIN_PROCESS_INVITE_REQUEST_CONTROLLER;
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+		}
+		
+		String baseURL = requestURL.substring( 0, controllerStartInURL_Index );
+
+		//  Create URL to Page controller for project.
+		String projectURL = baseURL + AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER
+				+ "/" + projectId;
+		
+		String atOrgText = "";
+		
+		if ( StringUtils.isNotEmpty( userSession.getOrganization() ) ) {
+			atOrgText = " at "
+					+ userSession.getOrganization();
+		}
+		
+		// set the email message body
+		String text = 
+				"You have been added to the project '" 
+						+ projectTitle 
+						+ "' in the limelight web application  by "
+						+ userSession.getFirstName()
+						+ " "
+						+ userSession.getLastName()
+						+ atOrgText
+						+ ".\n\n"
+						+ "To view the project, follow this link: " + projectURL 
+						+ "\n\n"
+						+ "Thank you\n\nlimelight";
+		
+		String fromEmailAddress = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY );
+
+		if ( StringUtils.isEmpty( fromEmailAddress ) ) {
+			
+			String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY
+					+ "'.";
+			log.error(msg);
+			throw new LimelightWebappConfigException( msg );
+		}
+		
+		String toEmailAddress = userMgmtGetUserDataResponse.getEmail();
+		String emailSubject = "Added to project in limelight webapp"; 
+		String emailBody = text;
+		
+		SendEmailItem sendEmailItem = new SendEmailItem();
+		sendEmailItem.setFromEmailAddress( fromEmailAddress );
+		sendEmailItem.setToEmailAddress( toEmailAddress );
+		sendEmailItem.setEmailSubject( emailSubject );
+		sendEmailItem.setEmailBody( emailBody );
+		
+		return sendEmailItem;
+	}
 	
+	
+	
+	//////////
+	//////////
 	
 	/**
 	 * @param invitedPersonEmail
