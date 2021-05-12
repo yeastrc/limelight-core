@@ -37,25 +37,8 @@ by typing ``docker-compose``.  If the command is not found, please install Docke
 If you run into any trouble installing Docker Compose, `please see Docker's official Docker Compose installation instructions <https://docs.docker.com/compose/install/>`_.
 
 
-3. Download Limelight
-===========================
-The simplest way to download Limelight is by using ``git`` to download the code from GitHub.
-
-Ensure Git is Installed
--------------------------
-Chances are you already have Git installed on your system. If you type ``git`` and the command is not
-found, `follow these instructions for installing Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_.
-
-    .. note::
-       If you are on **Windows** and followed our Docker instructions, follow the directions for installing
-       Git on Ubuntu. Which are:
-
-        .. code-block:: bash
-
-           sudo apt install -y git
-
-Download Limelight from GitHub
---------------------------------
+3. Download Limelight Install Files
+===========================================
 First set up a Limelight project directory:
 
     .. code-block:: bash
@@ -63,16 +46,19 @@ First set up a Limelight project directory:
        mkdir ~/limelight
        cd ~/limelight
 
-Now, download the Limelight project:
+Now, download the Limelight Docker Compose files:
 
     .. code-block:: bash
 
-       # Download Limelight
-       git clone https://github.com/yeastrc/limelight-core.git
+       # Download Limelight Docker Compose files
+       sudo curl -L "https://github.com/yeastrc/limelight-core/releases/latest/download/docker-compose-files.tgz" -o docker-compose-files.tgz
 
-       # Enter code directory
-       cd limelight-core
+       # Expand the archive
+       tar -xvzf docker-compose-files.tgz
 
+.. note::
+    If you prefer to download a ZIP file or if you prefer to download the file another way, the latest
+    release can be found on GitHub at https://github.com/yeastrc/limelight-core/releases/latest
 
 4. Configure Limelight
 ===========================
