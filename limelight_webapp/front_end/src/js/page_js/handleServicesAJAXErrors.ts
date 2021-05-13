@@ -36,12 +36,38 @@ var AJAX_RESPONSE_INVALID_PARAMETER_TEXT = "invalid_parameter";
 var AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE = 400;
 
 
+let beforeUnloadEvent_Triggered = false;
+
+{
+
+	const beforeUnload_EventHandler = (event: any) => {
+
+		//  set so it doesn't report errors during page unload
+
+		beforeUnloadEvent_Triggered = true;
+
+		// // Cancel the event
+		// event.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+		// // Chrome requires returnValue to be set
+		// event.returnValue = '';
+	};
+
+	window.addEventListener("beforeunload", beforeUnload_EventHandler );
+
+}
 
 /////////////////////
 
 //Handle when AJAX call gets failure
 
 function handleAJAXFailure( errMsg ) {
+
+	if ( beforeUnloadEvent_Triggered ) {
+
+		//  Before Unload Event Triggered so skip
+
+		return;  // EARLY RETURN
+	}
 
 	showAjaxErrorMsgFromMsg( { errorMsg : "Connecting to server failed: " + errMsg } );
 }
@@ -52,6 +78,13 @@ function handleAJAXFailure( errMsg ) {
 //  Handle when AJAX call gets error, non-jQuery Direct use of var xhr = new XMLHttpRequest();
 
 function handleRawAJAXError( xhr ) {
+
+	if ( beforeUnloadEvent_Triggered ) {
+
+		//  Before Unload Event Triggered so skip
+
+		return;  // EARLY RETURN
+	}
 
 	var jqXHR_statusCode = xhr.status;
 	var jqXHR_responseText_String = xhr.response;
@@ -97,6 +130,13 @@ function handleRawAJAXError( xhr ) {
 //  Handle when AJAX call gets error
 
 function handleAJAXError( jqXHR, textStatus, errorThrown ) {
+
+	if ( beforeUnloadEvent_Triggered ) {
+
+		//  Before Unload Event Triggered so skip
+
+		return;  // EARLY RETURN
+	}
 
 	var jqXHR_responseText = "Unknown Error";
 	
@@ -223,7 +263,14 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 
 
 function showAjaxErrorMsg( params ) {
-	
+
+	if ( beforeUnloadEvent_Triggered ) {
+
+		//  Before Unload Event Triggered so skip
+
+		return;  // EARLY RETURN
+	}
+
 	var errorPageElementId = params.errorPageElementId;
 	var errorMsg = params.errorMsg;
 	
@@ -256,7 +303,14 @@ function showAjaxErrorMsg( params ) {
 	
 
 function showAjaxErrorMsgFromMsg( params ) {
-	
+
+	if ( beforeUnloadEvent_Triggered ) {
+
+		//  Before Unload Event Triggered so skip
+
+		return;  // EARLY RETURN
+	}
+
 	try {
 
 		var errorMsg = params.errorMsg;
