@@ -146,7 +146,10 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
 
                     newState.folderIds_ExpandedFolders_InProgress = folderIds_ExpandedFolders_InProgress;
+
                 } else {
+                    props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: new Set() });
+
                     newState.folderIds_ExpandedFolders_InProgress = new Set();
                 }
             }
