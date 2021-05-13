@@ -1295,7 +1295,12 @@ export class ModViewDataVizRenderer_MultiSearch {
                 }
 
                 if(psmCount !== undefined) {
-                    txt += labelText + " " + psmCount.toExponential(2) + "</p>";
+                    if( (vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') && !showRatiosBoolean ) {
+
+                        txt += labelText + " " + ModViewDataVizRenderer_MultiSearch.numberWithCommas(psmCount) + "</p>";
+                    } else {
+                        txt += labelText + " " + psmCount.toExponential(2) + "</p>";
+                    }
                 }
 
                 return txt;
@@ -2083,5 +2088,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         return aminoAcidModStats[projectSearchId][reportedPeptideId]['psmCount'];
     }
+
+    static numberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
 
 }
