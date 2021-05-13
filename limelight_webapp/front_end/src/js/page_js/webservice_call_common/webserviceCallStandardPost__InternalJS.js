@@ -33,6 +33,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors';
 
 import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallStandardPost_RejectObject_Class';
+import {WebserviceCallStandardPost_ApiObject_Holder_Class} from "page_js/webservice_call_common/webserviceCallStandardPost_ApiObject_Class";
 
 /**
  * !!!!!   INTERNAL ONLY
@@ -40,23 +41,26 @@ import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallS
  * ONLY CALL FROM webserviceCallStandardPost.ts
  * 
  */
-const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doNotHandleErrorResponse = false, api, webserviceCallStandardPost_ApiObject_Holder_Class }) {
+const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, request_Holder, requestComplete_Callback }) {
 
-    const webserviceCallFunction = function( resolve, reject ) {
+    const dataToSend = requestParams.dataToSend;
+    const url = requestParams.url;
+    const doNotHandleErrorResponse = requestParams.doNotHandleErrorResponse;
+    const webserviceCallStandardPost_ApiObject_Holder_Class = requestParams.webserviceCallStandardPost_ApiObject_Holder_Class
 
-        if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
-            webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = api;
-        }
+    if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+        webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = api;
+    }
 
-        try {
-            const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
-            const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
+    try {
+        const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
+        const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
 
-            const _URL = url;
+        const _URL = url;
 
-            const requestData = JSON.stringify( dataToSend );
+        const requestData = JSON.stringify( dataToSend );
 
-            const request =
+        const request =
             $.ajax({
                 type : "POST",
                 url : _URL,
@@ -70,6 +74,12 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
                 },
                 success : function( responseDataJSON ) {
 
+                    try {
+                        requestComplete_Callback()
+                    } catch (e) {
+                        // eat/swallow exception
+                    }
+
                     api._clear_request();
                     if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
                         webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
@@ -81,7 +91,7 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
                         try {
                             responseData = JSON.parse( responseDataJSON );
                         } catch( e_JSON_parse ) {
-                            
+
                             try {
                                 //  Create error to send to server
                                 throw Error("Response from server cannot be parsed as JSON. Server response contents: " + responseDataJSON );
@@ -90,14 +100,14 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
                                 if ( ! doNotHandleErrorResponse ) {
                                     handleAJAXFailure( "Response from server cannot be parsed as JSON." );  //  Sometimes throws exception so rest of processing won't always happen
                                 }
-        
+
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
                             }
                         }
-                            
-                        resolve({ responseData });
-                        
+
+                        request_Holder.resolvePromise({ responseData });
+
                     } catch( e ) {
 
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -106,12 +116,18 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
 
                         //  Need to set properties on object rejectReasonObject
 
-                        reject({ rejectReasonObject });
+                        request_Holder.rejectPromise({ rejectReasonObject });
 
                         throw e;
                     }
                 },
                 failure: function(errMsg) {
+
+                    try {
+                        requestComplete_Callback()
+                    } catch (e) {
+                        // eat/swallow exception
+                    }
 
                     api._clear_request();
                     if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
@@ -127,7 +143,8 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
 
                         //  Need to set properties on object rejectReasonObject
 
-                        reject({ rejectReasonObject });
+                        request_Holder.rejectPromise({ rejectReasonObject });
+
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                         throw e;
@@ -135,6 +152,12 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
 
                 },
                 error : function(jqXHR, textStatus, errorThrown) {
+
+                    try {
+                        requestComplete_Callback()
+                    } catch (e) {
+                        // eat/swallow exception
+                    }
 
                     api._clear_request();
                     if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
@@ -152,34 +175,30 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ dataToSend, url, doN
 
                             //  Need to set properties on object rejectReasonObject
 
-                            reject({ rejectReasonObject });
+                            request_Holder.rejectPromise({ rejectReasonObject });
 
                             // alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
                             // textStatus: " + textStatus );
+
                         } catch( e ) {
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
                         }
                     }
                 }
-                
+
             });
 
-            api._set_request( request );
+        api._set_request( request );
 
-        } catch( e ) {
-            if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
-                webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
-            }
-            
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
+    } catch( e ) {
+        if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+            webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
         }
+
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
     }
-
-    const promise = new Promise( webserviceCallFunction );
-
-    return promise;
 };
 
 export { webserviceCallStandardPost_INTERNALONLY }
