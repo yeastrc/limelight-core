@@ -27,6 +27,7 @@ import { ProjectPage_SearchesAdmin_CopyMove_Searches } from "./projectPage_Searc
 import { ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders } from "./projectPage_SearchesAdmin_OrganizeSearchesAndFolders";
 import {ProjectPage_SearchesSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction";
 import {Set_ProjectWide_DefaultFilter_Cutoffs_Overrides} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides";
+import {projectPage_DeleteSearch_Overlay_Component__openOverlay} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
 
 /**
  * 
@@ -125,46 +126,57 @@ export class ProjectPage_SearchesAdmin {
 	}
 
 	/**
-	 * Delete this Project Search Id
+	 * Initiate Delete this Project Search Id
+	 *
+	 * Opens an overlay for user to get info and confirm deletion
 	 */
 	deleteSearch(
 		{
-			projectSearchId, searchId, deleteComplete_Callback
+			projectSearchId, searchId, searchName, projectIdentifier, deleteComplete_Callback
 		} : {
 			projectSearchId: number
 			searchId: number
+			searchName: string
+			projectIdentifier : string
 			deleteComplete_Callback: () => void
 		}) {
 
-		if ( ! window.confirm("Delete Search Id: " + searchId ) ) {
-			return;
-		}
+		projectPage_DeleteSearch_Overlay_Component__openOverlay({ projectSearchId, searchId, searchName, projectIdentifier, deleteComplete_Callback });
 
-		let requestObj = {
-			projectSearchId : projectSearchId
-		};
 
-		const url = "d/rws/for-page/delete-project-search";
+		return;
 
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
 
-		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-		promise_webserviceCallStandardPost.catch( () => { }  );
-
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
-			try {
-				deleteComplete_Callback();
-
-				// this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
-
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-		});
+		//
+		// if ( ! window.confirm("Delete Search Id: " + searchId ) ) {
+		// 	return;
+		// }
+		//
+		// let requestObj = {
+		// 	projectSearchId : projectSearchId
+		// };
+		//
+		// const url = "d/rws/for-page/delete-project-search";
+		//
+		// const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		//
+		// const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+		//
+		// promise_webserviceCallStandardPost.catch( () => { }  );
+		//
+		// promise_webserviceCallStandardPost.then( ({ responseData }) => {
+		// 	try {
+		// 		deleteComplete_Callback();
+		//
+		// 		// this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
+		//
+		// 	} catch (e) {
+		// 		reportWebErrorToServer.reportErrorObjectToServer({
+		// 			errorException : e
+		// 		});
+		// 		throw e;
+		// 	}
+		// });
 	}
 
 	//  FOLDER

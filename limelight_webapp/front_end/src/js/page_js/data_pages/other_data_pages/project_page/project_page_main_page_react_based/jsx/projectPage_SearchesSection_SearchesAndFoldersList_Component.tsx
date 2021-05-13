@@ -232,6 +232,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     const searchDisplayListEntry = (
                         <FolderEntry
                             key={"folder:" + folderEntry.id}
+                            projectIdentifier={ this.props.projectIdentifier }
                             searchDisplayListItem={folderEntry}
                             expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
                             folderIds_ExpandedFolders_InProgress={ this.state.folderIds_ExpandedFolders_InProgress }
@@ -260,6 +261,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                         <SearchEntry
                             key={searchEntry.projectSearchId}
                             expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
+                            projectIdentifier={ this.props.projectIdentifier }
                             searchDisplayListItem={searchEntry}
                             selected={selected}
                             showSeparatorBelow={true}
@@ -302,6 +304,7 @@ type DeleteSearch_Callback_Type = ( params: DeleteSearch_Callback_Params ) => vo
  *
  */
 interface SearchEntry_Props {
+    projectIdentifier : string
     searchDisplayListItem : ProjectPage_SearchesSection_Searches_Folders_SingleSearch
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
     selected : boolean
@@ -530,6 +533,8 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
         this.props.projectPage_SearchesAdmin.deleteSearch({
             projectSearchId: this.props.searchDisplayListItem.projectSearchId,
             searchId: this.props.searchDisplayListItem.searchId,
+            searchName: this.props.searchDisplayListItem.name,
+            projectIdentifier : this.props.projectIdentifier,
             deleteComplete_Callback
         })
     }
@@ -781,6 +786,7 @@ type FolderEntry_Expanded_Collapsed_Callback_Type =
  *
  */
 interface FolderEntry_Props {
+    projectIdentifier : string
     searchDisplayListItem : ProjectPage_SearchesSection_Searches_Folders_SingleFolder
 
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
@@ -929,6 +935,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
                         const searchDisplayListEntry = (
                             <SearchEntry key={searchEntry.projectSearchId}
+                                         projectIdentifier={ this.props.projectIdentifier }
                                          searchDisplayListItem={searchEntry}
                                          expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
                                          selected={selected}

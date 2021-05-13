@@ -19,7 +19,9 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,10 +37,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.DeleteProjectSearchId_UsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -61,6 +66,12 @@ public class Delete_ProjectSearch_RestWebserviceController {
 	
 	@Autowired
 	private DeleteProjectSearchId_UsingDBTransactionServiceIF deleteProjectSearchId_UsingDBTransactionService;
+	
+	@Autowired
+	private Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_IF experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher;
+
+	@Autowired
+	private ExperimentDAO_IF experimentDAO;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -124,7 +135,8 @@ public class Delete_ProjectSearch_RestWebserviceController {
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		Integer projectSearchId = webserviceRequest.getProjectSearchId();
+    		Integer projectSearchId = webserviceRequest.projectSearchId;
+        	Set<Integer> experimentIds_Containing_ProjectSearchId = webserviceRequest.experimentIds_Containing_ProjectSearchId; // Optional
 
     		if ( projectSearchId == null ) {
     			log.warn( "No Project Search Ids" );
@@ -144,11 +156,76 @@ public class Delete_ProjectSearch_RestWebserviceController {
 //    		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validateProjectOwnerAllowed( projectSearchIdsForValidate, httpServletRequest );
 
-    		
-    		deleteProjectSearchId_UsingDBTransactionService.deleteProjectSearchId( projectSearchId );    		
+    		//  Auth Complete
     		
     		DeleteProjectSearchResult webserviceResult = new DeleteProjectSearchResult();
-    		webserviceResult.statusSuccess = true;
+    		
+
+    		// First validate all Experiment IDs containing Project Search Id are included in request
+    		{
+    			Set<Integer> projectSearchIds_GetExperiments = new HashSet<>();
+    			projectSearchIds_GetExperiments.add( projectSearchId );
+
+    			List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
+    					experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIds_GetExperiments);
+    			
+    			if ( dbResultList.isEmpty() && ( experimentIds_Containing_ProjectSearchId != null && ( ! experimentIds_Containing_ProjectSearchId.isEmpty() ) ) ) {
+    				
+    				webserviceResult.experimentIdsNotMatch = true;
+    			}
+    			if ( ( ! dbResultList.isEmpty() ) && ( experimentIds_Containing_ProjectSearchId == null || experimentIds_Containing_ProjectSearchId.isEmpty() ) ) {
+
+    				webserviceResult.experimentIdsNotMatch = true;
+    			}
+    			if ( experimentIds_Containing_ProjectSearchId != null ) {
+    			
+    				Set<Integer> experimentIds_Containing_ProjectSearchId_CopyForRemovals = new HashSet<>( experimentIds_Containing_ProjectSearchId );
+    				
+    				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
+    					if ( ! experimentIds_Containing_ProjectSearchId_CopyForRemovals.remove( dbResult.getExperimentId() ) ) {
+    						webserviceResult.experimentIdsNotMatch = true;
+    						break;
+    					}
+    				}
+    				if ( ! webserviceResult.experimentIdsNotMatch ) {
+    					if ( ! experimentIds_Containing_ProjectSearchId_CopyForRemovals.isEmpty() ) {
+    						webserviceResult.experimentIdsNotMatch = true;
+    					}
+    				}
+    			}
+    		}
+    		
+    		if ( ! webserviceResult.experimentIdsNotMatch ) {
+    		
+    			deleteProjectSearchId_UsingDBTransactionService.deleteProjectSearchId( projectSearchId, experimentIds_Containing_ProjectSearchId );
+
+    			webserviceResult.statusSuccess = true;
+
+
+				{ // Next Delete all Experiment IDs containing Project Search Id That were NOT deleted in call to .deleteProjectSearchId(...)
+
+					Set<Integer> projectSearchIds_GetExperiments = new HashSet<>();
+					projectSearchIds_GetExperiments.add( projectSearchId );
+
+					List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
+							experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIds_GetExperiments);
+
+					if ( ! dbResultList.isEmpty() ) {
+
+						try {
+
+		    				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
+
+		    					experimentDAO.delete( dbResult.getExperimentId() );
+		    				}
+						} catch( Exception e ) {
+							log.error( "Failed to delete Experiment Ids for ProjectSearchId that remained after main deletion", e );
+							
+							//  Eat/Swallow Exception
+						}
+					}
+				}
+    		}
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -170,24 +247,26 @@ public class Delete_ProjectSearch_RestWebserviceController {
     public static class DeleteProjectSearchRequest {
     	
     	private Integer projectSearchId;
+    	private Set<Integer> experimentIds_Containing_ProjectSearchId; // Optional
 
-		public Integer getProjectSearchId() {
-			return projectSearchId;
-		}
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
+		}
+		public void setExperimentIds_Containing_ProjectSearchId(Set<Integer> experimentIds_Containing_ProjectSearchId) {
+			this.experimentIds_Containing_ProjectSearchId = experimentIds_Containing_ProjectSearchId;
 		}
     }
     
     public static class DeleteProjectSearchResult {
     	
     	boolean statusSuccess;
+    	boolean experimentIdsNotMatch;
 
 		public boolean isStatusSuccess() {
 			return statusSuccess;
 		}
-		public void setStatusSuccess(boolean statusSuccess) {
-			this.statusSuccess = statusSuccess;
+		public boolean isExperimentIdsNotMatch() {
+			return experimentIdsNotMatch;
 		}
     }
     

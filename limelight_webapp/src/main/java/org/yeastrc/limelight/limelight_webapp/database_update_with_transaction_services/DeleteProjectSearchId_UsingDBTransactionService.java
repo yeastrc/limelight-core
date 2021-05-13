@@ -18,12 +18,16 @@
 package org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services;
 
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchDAO_IF;
 
 /**
@@ -42,8 +46,10 @@ public class DeleteProjectSearchId_UsingDBTransactionService implements DeletePr
 
 	@Autowired
 	private DataPageSavedViewDAO_IF dataPageSavedViewDAO;
-
 	
+	@Autowired
+	private ExperimentDAO_IF experimentDAO;
+
 	/**
 	 * @param projectSearchId
 	 */
@@ -51,13 +57,23 @@ public class DeleteProjectSearchId_UsingDBTransactionService implements DeletePr
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED)  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring DB Transactions
 	
-	public void deleteProjectSearchId( int projectSearchId ) { //  No 'Throws' allowed due to 
+	public void deleteProjectSearchId( int projectSearchId, Set<Integer> experimentIds_Containing_ProjectSearchId ) { //  No 'Throws' allowed due to 
 		
 		try {
 			projectSearchDAO.delete( projectSearchId );
 			
 			//  Remove any Shared Views with this project search id
 			dataPageSavedViewDAO.deleteForProjectSearchId( projectSearchId ); 
+			
+			if ( experimentIds_Containing_ProjectSearchId != null && ( ! experimentIds_Containing_ProjectSearchId.isEmpty() ) ) {
+
+				//  Have Experiment Ids to delete so delete them (Contain ProjectSearchId)
+				
+				for ( Integer experimentId : experimentIds_Containing_ProjectSearchId ) {
+					experimentDAO.delete(experimentId);
+				}
+    		}
+			
 			
 		} catch ( RuntimeException e ) {
 			String msg = "fail deleteProjectSearchId(...)";

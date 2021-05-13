@@ -217,7 +217,12 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PROJECT_ORGANIZE_SEARCHES_FOLDER_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-folder-delete";
 
-	
+
+	//   Project Search Ids, Which Experiments contain them
+
+	public static final String LIST_EXPERIMENTS_CONTAINING_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/list-experiments-containing-project-search-ids";
+
 	
 	//   Project Search Id, Copy/Move to New Project
 
