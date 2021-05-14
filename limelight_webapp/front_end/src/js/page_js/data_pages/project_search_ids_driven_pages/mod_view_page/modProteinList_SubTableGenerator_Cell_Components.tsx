@@ -137,9 +137,14 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
             return;
         }
 
+        const tooltipContents = _getTooltipText( null );
+        const loadingMessage_Tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element: this._proteinNameSpan_Ref.current, tooltipContents });
+
         const promise = this.props.modViewDataManager.getProteinNamesAndDescriptions({ proteinId: this.props.proteinId, projectSearchIds: this.props.projectSearchIds });
 
         promise.then( result => {
+
+            loadingMessage_Tooltip_Limelight_Created_Tooltip.removeTooltip();
 
             if ( this._unmounted ) {
                 return;
@@ -198,19 +203,31 @@ const _getTooltipText = function( data: Array<{ name: string, description: strin
                 <span className='is-tooltip-label'>Name(s) and description(s) uploaded to Limelight:</span>
             </div>
 
-            { data.map( (value, index) => {
+            { ( ! data ) ? (
 
-                return (
-                    <div key={ index }
-                         style={ { marginBottom : 15 ,marginLeft : 10 } } className="isTooltip"
-                    >
-                        <span>{ value.name }</span>
-                        <span> </span>
-                        <span>{ value.description }</span>
-                    </div>
+                <div
+                    style={ { marginBottom : 15 ,marginLeft : 10 } } className="isTooltip"
+                >
+                    LOADING DATA
+                </div>
+
+            ) : (
+
+                data.map( (value, index) => {
+
+                        return (
+                            <div key={ index }
+                                 style={ { marginBottom : 15 ,marginLeft : 10 } } className="isTooltip"
+                            >
+                                <span>{ value.name }</span>
+                                <span> </span>
+                                <span>{ value.description }</span>
+                            </div>
+                        )
+                    }
                 )
-
-            })}
+            )
+            }
 
         </div>
 
