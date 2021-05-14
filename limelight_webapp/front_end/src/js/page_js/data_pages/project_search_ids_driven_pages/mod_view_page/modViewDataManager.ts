@@ -346,6 +346,43 @@ export class ModViewDataManager {
         return names;
     }
 
+    async getProteinNamesAndDescriptions(
+        {
+            proteinId,
+            projectSearchIds
+        } : {
+            proteinId:number,
+            projectSearchIds:Array<number>
+        }
+        ) : Promise<Array<{ name: string, description: string }>> {
+
+        const proteinNamesAndDescriptions = new Array<{ name: string, description: string }>();
+
+        const protein:Protein = await this.getDataForProteinMultipleSearches({proteinId, projectSearchIds});
+        for(const [name, descriptions] of protein.annotations) {
+
+            if(descriptions === undefined || descriptions === null || descriptions.size < 1) {
+                proteinNamesAndDescriptions.push(
+                    {
+                        name: name,
+                        description: 'No description found.'
+                    }
+                );
+            } else {
+                for (const description of descriptions) {
+                    proteinNamesAndDescriptions.push(
+                        {
+                            name: name,
+                            description: description
+                        }
+                    );
+                }
+            }
+        }
+
+        return proteinNamesAndDescriptions;
+    }
+
     /**
      * Get all data we have for a protein in a given search. Returns a Protein object with
      * id, annotations (name/description), and length for that protein
@@ -471,5 +508,4 @@ export class ModViewDataManager {
 
         return this._scanModData.get(projectSearchId);
     }
-
 }

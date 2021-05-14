@@ -173,9 +173,9 @@ export class ModProteinList_SubTableGenerator {
             modMass,
             dataPageStateManager_DataFrom_Server
         } : {
-            modViewDataManager:ModViewDataManager,
+            modViewDataManager:ModViewDataManager
             vizOptionsData : ModView_VizOptionsData
-            modMass:number,
+            modMass:number
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
     ) : Promise<Array<DataTable_DataRowEntry>> {
@@ -219,6 +219,8 @@ export class ModProteinList_SubTableGenerator {
                             proteinName: proteinData.proteinName,
                             proteinId: proteinData.proteinId,
                             modMass,
+                            projectSearchIds: vizOptionsData.data.projectSearchIds,
+                            modViewDataManager,
                             clickCallback
                         });
                     }
