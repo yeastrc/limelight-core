@@ -9,13 +9,6 @@
  * 
  */
 
-//  !! Next 2 imports import AMD format code so use import ... = require('...');
-
-import Handlebars = require('handlebars/runtime');
-
-import _protein_table_template_bundle = require("../../../../../../../handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js" );
-
-
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
@@ -57,7 +50,6 @@ import {
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 import { create_dataTable_Root_React } from 'page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM';
 import { renderToPageProteinList_MultipleSearches_Create_DataTable_RootTableDataObject } from './proteinViewPage_DisplayData_MultipleSearches_Create_ProteinList_DataTable_RootTableDataObject';
-import { _CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES } from './proteinViewPage_DisplayData_MultipleSearches_Constants';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
 import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
@@ -113,7 +105,7 @@ class ProteinDataDisplay_MultipleSearch_Summary_PerSearch {
 	psmCount_TotalForSearch : number;
 }
 
-class ProteinNameDescriptionCacheEntry_MultipleSearches {
+export class ProteinNameDescriptionCacheEntry_MultipleSearches {
 	name : string
 	description: string
 }
@@ -162,10 +154,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 
 	private _annotationTypeData_ReturnSpecifiedTypes: AnnotationTypeData_ReturnSpecifiedTypes;
 
-	//  From Protein Template:
-	private _protein_page_protein_tooltip_Template = _protein_table_template_bundle.protein_page_protein_tooltip;
-
-
 	//   projectSearchIds being processed.  Reset All data if receive different projectSearchId
 	private _projectSearchIds: Array<number> = undefined;
 
@@ -189,8 +177,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 	// private currentProteinListDisplayTableData = undefined
 
 	private _proteinList_IsInDOM: boolean;
-
-	private _addTooltipForProteinName_ADDED = false;  // So don't add more than once
 
 	private _proteinList_currentTableObject: DataTable_RootTableObject;
 
@@ -252,12 +238,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		this._annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes({
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
 		});
-
-		//  From Protein Template:
-
-		if (!_protein_table_template_bundle.protein_page_protein_tooltip) {
-			throw Error("Nothing in _protein_table_template_bundle.protein_page_protein_tooltip");
-		}
 	}
 
 	/////////////////////////////////////////////////
@@ -265,11 +245,11 @@ export class ProteinViewPage_Display_MultipleSearches {
 	/**
 	 * Create New loadedDataPerProjectSearchIdHolder
 	 */
-	private _create_loadedDataPerProjectSearchIdHolder() {
-
-		const loadedDataPerProjectSearchIdHolder = new ProteinViewPage_LoadedDataPerProjectSearchIdHolder();
-		return loadedDataPerProjectSearchIdHolder;
-	}
+	// private _create_loadedDataPerProjectSearchIdHolder() {
+	//
+	// 	const loadedDataPerProjectSearchIdHolder = new ProteinViewPage_LoadedDataPerProjectSearchIdHolder();
+	// 	return loadedDataPerProjectSearchIdHolder;
+	// }
 
 	////  Called from proteinViewPage_DisplayData_MultipleSearches_SingleProtein.ts
 
@@ -279,15 +259,15 @@ export class ProteinViewPage_Display_MultipleSearches {
 	 * Get loadedDataPerProjectSearchIdHolder from this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId
 	 * Add to this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds if not exist
 	 */
-	public _get_loadedDataPerProjectSearchIdHolder_for_projectSearchId(projectSearchId: number) {
-
-		let loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-		if (!loadedDataPerProjectSearchIdHolder) {
-			loadedDataPerProjectSearchIdHolder = this._create_loadedDataPerProjectSearchIdHolder();
-			this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set(projectSearchId, loadedDataPerProjectSearchIdHolder);
-		}
-		return loadedDataPerProjectSearchIdHolder;
-	}
+	// public _get_loadedDataPerProjectSearchIdHolder_for_projectSearchId(projectSearchId: number) {
+	//
+	// 	let loadedDataPerProjectSearchIdHolder = this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
+	// 	if (!loadedDataPerProjectSearchIdHolder) {
+	// 		loadedDataPerProjectSearchIdHolder = this._create_loadedDataPerProjectSearchIdHolder();
+	// 		this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.set(projectSearchId, loadedDataPerProjectSearchIdHolder);
+	// 	}
+	// 	return loadedDataPerProjectSearchIdHolder;
+	// }
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
@@ -1357,6 +1337,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			proteinGroups_ArrayOf_ProteinGroup: proteinDisplayData.proteinGroups_ArrayOf_ProteinGroup,
 			proteinGrouping_CentralStateManagerObjectClass: this._proteinGrouping_CentralStateManagerObjectClass,
 			projectSearchIds,
+			proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId: this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
 		});
 
@@ -1432,9 +1413,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			});
 
 			this._proteinList_IsInDOM = true;
-
-			//  Add tooltips to  $protein_list_container instead since that is what is already in the DOM
-			this._addTooltipForProteinName({$selector_table_rows_container: $protein_list_container})
 
 			// this._populated_DOM_id_protein_list_container__With_React = true;
 			console.log("Rendering Protein List END, Now: " + new Date());
@@ -1573,171 +1551,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 			singleProteinCloseCallback
 		});
 	}
-
-	/**
-	 *
-	 */
-	private _addTooltipForProteinName({$selector_table_rows_container}:{$selector_table_rows_container: JQuery<HTMLElement>}) {
-
-		if (this._addTooltipForProteinName_ADDED) {
-			//  Already done so exit
-			return;
-		}
-
-		//  qtip tooltip on whole block
-
-		// const selector_table_rows_container_Element = $selector_table_rows_container[ 0 ];
-
-		// @ts-ignore
-		$selector_table_rows_container.qtip({
-
-			content: {
-				text: "&nbsp;" // Replaced as mouse over each sequence letter
-			},
-			position: {
-				effect: false,
-				target: 'mouse'
-				,
-				adjust: {x: 5, y: 5} // Offset it slightly from under the mouse
-			},
-			show: {
-				delay: 1,
-			},
-			hide: {
-				delay: 0,
-				effect: false,
-			}
-		});
-
-		// Grab the first element in the tooltips array and access its qTip API
-		// @ts-ignore
-		const qtipAPI = $selector_table_rows_container.qtip('api');
-
-
-		const proteinSequenceVersionIdNotAvailable: any = undefined;
-
-		const lastProteinSequenceVersionIdObjInContainingFunction = {lastProteinSequenceVersionId: -2};
-
-		const updateTooltipOnMouseMove_BindThis = this._updateTooltipOnMouseMove.bind(this);
-
-		//  Add a mouse move event handler to the protein bar overlay rectangle to update the contents of the qtip tool tip 
-		$selector_table_rows_container.mousemove(function (eventObject) {
-			updateTooltipOnMouseMove_BindThis(eventObject, qtipAPI, lastProteinSequenceVersionIdObjInContainingFunction, proteinSequenceVersionIdNotAvailable);
-		});
-
-		const updateTooltipOnScroll_BindThis = this._updateTooltipOnScroll.bind(this);
-
-		//  Add a scroll event handler to hide the tooltip on scroll
-		$(window).scroll(function (eventObject) {
-			updateTooltipOnScroll_BindThis(eventObject, qtipAPI, lastProteinSequenceVersionIdObjInContainingFunction, proteinSequenceVersionIdNotAvailable);
-		});
-
-	}
-
-	/**
-	 *
-	 */
-	private _updateTooltipOnScroll(eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any) {
-
-		if (lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId === proteinSequenceVersionIdNotAvailable) {
-			//  Already not showing tooltip so exit
-			return;
-		}
-		lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId = proteinSequenceVersionIdNotAvailable;
-
-		// User has scrolled.  Hide tooltip and clear tooltip contents.
-
-		//  Update tool tip contents
-		qtipAPI.set('content.text', '&nbsp;'); // Clear contents.  This should never be displayed but tooltip will be an empty box if displayed
-
-		qtipAPI.toggle(false);  // ensure qtip not shown
-		qtipAPI.disable(true);  // disable - must pass true to disable it
-	}
-
-	/**
-	 *
-	 */
-	private _updateTooltipOnMouseMove(eventObject: any, qtipAPI: any, lastProteinSequenceVersionIdObj: any, proteinSequenceVersionIdNotAvailable: any) {
-
-		const $target = $(eventObject.target);
-
-		const $targetParent = $target.parent();
-
-		const target_HasProteinNameCSS_Selector = $target.hasClass(_CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES)
-		const targetParent_HasProteinNameCSS_Selector = $targetParent.hasClass(_CSS_CLASS_SELECTOR_PROTEIN_NAME_PROTEIN_PAGE_MULTIPLE_SEARCHES)
-
-		if ((!target_HasProteinNameCSS_Selector) && (!targetParent_HasProteinNameCSS_Selector)) {
-
-			if (lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId === proteinSequenceVersionIdNotAvailable) {
-				//  Already not showing tooltip so exit
-				return;
-			}
-			lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId = proteinSequenceVersionIdNotAvailable;
-
-			// Mouse is Not over a Protein Name.  Hide tooltip and clear tooltip contents.
-
-			//  Update tool tip contents
-			qtipAPI.set('content.text', '&nbsp;'); // Clear contents.  This should never be displayed but tooltip will be an empty box if displayed
-
-			qtipAPI.toggle(false);  // ensure qtip not shown
-			qtipAPI.disable(true);  // disable - must pass true to disable it
-
-			return;
-		}
-
-		let $tableCell = $target;
-		if (!target_HasProteinNameCSS_Selector) {
-			$tableCell = $targetParent;
-		}
-
-		const proteinSequenceVersionIdString = $tableCell.attr("data-protein-id");
-		if (proteinSequenceVersionIdString === undefined) {
-			throw Error("value in attr 'data-protein-id' is undefined or not set");
-		}
-		const proteinSequenceVersionIdInt = Number.parseInt(proteinSequenceVersionIdString, 10);
-		if (Number.isNaN(proteinSequenceVersionIdInt)) {
-			throw Error("value in attr 'data-protein-id' is not integer.  value: " + proteinSequenceVersionIdString);
-		}
-
-		if (proteinSequenceVersionIdInt === lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId) {
-
-			// proteinSequenceVersionIdInt (or undefined for non protein name elements) 
-			// is same as prev call to mouse move so no changes required so just exit.
-			return;
-		}
-
-		lastProteinSequenceVersionIdObj.lastProteinSequenceVersionId = proteinSequenceVersionIdInt;
-
-		// Mouse is over a protein sequence name.
-
-		const tooltipContentsHTML = this._getTooltipText({proteinSequenceVersionIdInt});
-
-		//  Update tool tip contents
-		qtipAPI.set('content.text', tooltipContentsHTML);
-
-		qtipAPI.disable(false);	// enable qtip - pass false to enable
-		qtipAPI.toggle(true);	    // ensure qtip visible
-	}
-
-	/**
-	 *
-	 */
-	private _getTooltipText({proteinSequenceVersionIdInt}: {proteinSequenceVersionIdInt: number}) {
-
-		//  Only displaying the name and description uploaded with the search
-
-		const proteinNamesAndDescriptionsArray = this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId.get(proteinSequenceVersionIdInt);
-		if (proteinNamesAndDescriptionsArray === undefined) {
-			return "Name and Description Not Found";
-		}
-
-		const tooltipContext = {proteinNamesAndDescriptions: proteinNamesAndDescriptionsArray};
-
-		const tooltipHTML = this._protein_page_protein_tooltip_Template(tooltipContext);
-
-		return tooltipHTML;
-	}
-
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
