@@ -191,30 +191,6 @@ task createHandlebarsOutputDirs {
 	}
 }
 
-//  Handlebars Precompile for input handlebars_templates/protein_page_single_search
-
-task handlebarsPrecompile_protein_page(type: NodeTask) {
-  
-  def precompile_Input_Directory = "handlebars_templates/protein_page_single_search"
-  def precompile_Output_File = "handlebars_templates_precompiled/protein_page/protein_page_single_search_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
 //  Handlebars Precompile for input handlebars_templates/mod_view_page
 
 task handlebarsPrecompile_mod_view_page(type: NodeTask) {
@@ -812,7 +788,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
      
      'createHandlebarsOutputDirs', 
      
-     'handlebarsPrecompile_protein_page',
      'handlebarsPrecompile_mod_view_page',
      'handlebarsPrecompile_common',
      'handlebarsPrecompile_save_view',
