@@ -152,7 +152,6 @@ class SingleSearch_ProteinList_ProteinName_ExternalReactComponent extends React.
         return (
             <div
                 ref={ this._containingDOMElement_Ref }
-                style={ { whiteSpace : "nowrap", overflowX:"auto" } }
                 onMouseEnter={ this._onMouseEnter_BindThis }
                 onMouseLeave={ this._onMouseLeave_BindThis }
             >
@@ -252,7 +251,6 @@ class SingleSearch_ProteinList_ProteinDescription_ExternalReactComponent extends
         return (
             <div
                 ref={ this._containingDOMElement_Ref }
-                style={ { whiteSpace : "nowrap", overflowX:"auto" } }
                 onMouseEnter={ this._onMouseEnter_BindThis }
                 onMouseLeave={ this._onMouseLeave_BindThis }
             >

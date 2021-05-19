@@ -152,8 +152,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
             id : "Sequence", // Used for tracking sort order. Keep short
             displayName,
             width : 500,
-            sortable : true,
-            style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
 
@@ -173,7 +172,6 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
             displayName,
             width : 55,
             sortable : true,
-            style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
         });
         dataTable_Columns.push( dataTable_Column );
@@ -194,8 +192,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                 displayName,
                 width : 40,
                 sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
-                columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the n-terminus of this peptide in the protein sequence.'
+                columnHeader_Tooltip_HTML_TitleAttribute: 'Residue immediately to the n-terminus of this peptide in the protein sequence.'
             });
             dataTable_Columns.push( dataTableColumn );
 
@@ -211,7 +208,6 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                 displayName,
                 width : 40,
                 sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
                 columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the c-terminus of this peptide in the protein sequence.'
 
             });

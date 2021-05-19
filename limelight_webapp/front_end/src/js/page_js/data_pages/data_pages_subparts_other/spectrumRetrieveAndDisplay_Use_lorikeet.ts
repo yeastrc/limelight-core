@@ -359,7 +359,6 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 // //				displayName :  'Scan Number',
 // //				dataProperty : 'scanNumber',
 // //                sort : 'number',
-// //                style_override : 'font-size:12px;',
 // //			};
 // //
 // //			columns.push( column );
@@ -372,7 +371,6 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 // 				displayName :  'Sequence',
 // 				dataProperty : 'reportedPeptideString',
 //                 sort : 'string',
-//                 style_override : 'white-space:nowrap;overflow-x:auto;font-size:12px;',   //prevent line breaks and scroll if too long
 // 			};
 
 // 			columns.push( column );
@@ -385,7 +383,6 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 // 					displayName :  'Obs. m/z',
 // 					dataProperty : 'precursor_M_Over_Z_Display',
 // 					sort : 'number',
-// 					style_override : 'font-size:12px;',
 // 			};
 
 // 			columns.push( column );
@@ -398,7 +395,6 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 // 					displayName :  'Charge',
 // 					dataProperty : 'charge',
 // 					sort : 'number',
-// 					style_override : 'font-size:12px;',
 // 			};
 
 // 			columns.push( column );

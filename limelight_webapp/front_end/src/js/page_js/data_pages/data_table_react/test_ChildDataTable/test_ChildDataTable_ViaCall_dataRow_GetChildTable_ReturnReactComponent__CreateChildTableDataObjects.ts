@@ -49,8 +49,7 @@ export const fake_Create_ChildTableData = () : DataTable_RootTableObject => {
             id : "repPeptStng", // Used for tracking sort order. Keep short
             displayName,
             width : 400,
-            sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
 
@@ -65,12 +64,7 @@ export const fake_Create_ChildTableData = () : DataTable_RootTableObject => {
             id : "repPeptStng2", // Used for tracking sort order. Keep short
             displayName,
             width : 410,
-            sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
-            // style_override_header_React : {},  // Optional
-            // style_override_React : {},  // Optional
-            // cssClassNameAdditions_HeaderRowCell : ""  // Optional, css classes to add to Header Row Cell entry HTML
-            // cssClassNameAdditions_DataRowCell : ""   // Optional, css classes to add to Data Row Cell entry HTML
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
 

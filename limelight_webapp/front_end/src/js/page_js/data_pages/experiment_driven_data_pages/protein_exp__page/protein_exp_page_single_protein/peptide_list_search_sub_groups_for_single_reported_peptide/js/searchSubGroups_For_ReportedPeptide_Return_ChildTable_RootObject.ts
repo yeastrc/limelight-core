@@ -197,8 +197,7 @@ const _create_dataTable_RootTableObject = function(
                 id : "srchSubGrpIds", // Used for tracking sort order. Keep short
                 displayName,
                 width : 400,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+                sortable : true
             });
             dataTable_Columns.push( dataTable_Column );
 
@@ -212,8 +211,7 @@ const _create_dataTable_RootTableObject = function(
         //         id : "unique", // Used for tracking sort order. Keep short
         //         displayName,
         //         width : 55,
-        //         sortable : true,
-        //         style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+        //         sortable : true
         //     });
         //     dataTable_Columns.push( dataTable_Column );
         //
@@ -227,8 +225,7 @@ const _create_dataTable_RootTableObject = function(
                 id : "psmCount", // Used for tracking sort order. Keep short
                 displayName,
                 width : 75,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+                sortable : true
             });
             dataTable_Columns.push( dataTable_Column );
 

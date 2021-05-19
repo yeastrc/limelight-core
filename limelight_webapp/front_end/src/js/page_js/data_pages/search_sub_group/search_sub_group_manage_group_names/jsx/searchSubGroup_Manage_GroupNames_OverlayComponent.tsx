@@ -450,7 +450,6 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                                     <div style={ { marginBottom: 0 } }>
                                         <div style={ {
                                             width : subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth, maxWidth: subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth,
-                                            whiteSpace: "nowrap", overflowX: "auto",
                                             paddingTop : 3
                                         } }
                                             title={ subGroup_Display_Object.importedName }
@@ -490,7 +489,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
         //                     />
         //                 </div>
         //                 <div style={ { marginBottom: 3 } }>
-        //                     <div style={ { whiteSpace: "nowrap", width : _IMPORT_NAME_WIDTH, maxWidth: _IMPORT_NAME_WIDTH, overflowX: "auto" } }
+        //                     <div style={ { width : _IMPORT_NAME_WIDTH, maxWidth: _IMPORT_NAME_WIDTH } }
         //                         title={ "Extra_Lines_" + counter + "_MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" }
         //                     >
         //                         { "Extra_Lines_" + counter + "_MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" }

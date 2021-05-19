@@ -382,7 +382,6 @@ class DraggableSearchEntry extends React.Component< SearchEntry_Props, SearchEnt
                                      // onMouseEnter={ this._onMouseEnter_searchNameText_Div_BindThis }
                                      // onMouseLeave={ this._onMouseLeave_searchNameText_Div_BindThis }
                                     // title={ this.state.searchNameDisplay }
-                                    // style={ { whiteSpace : "nowrap", overflowX : "hidden", textOverflow : "ellipsis" } }
                                     style={ { wordBreak: "break-word" } }
                                 >
 

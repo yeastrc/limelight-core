@@ -76,8 +76,7 @@ const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChild
             id : "repPeptStng", // Used for tracking sort order. Keep short
             displayName,
             width : 400,
-            sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
 
@@ -92,8 +91,7 @@ const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChild
             id : "repPeptStng2", // Used for tracking sort order. Keep short
             displayName,
             width : 410,
-            sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto", fontSize: 12 },
+            sortable : true
         });
         dataTable_Columns.push( dataTable_Column );
 
