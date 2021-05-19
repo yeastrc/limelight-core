@@ -42,6 +42,9 @@ export class ModViewPage_DisplayDataOnPage {
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager : CentralPageStateManager;
 
+	private _modViewDataManager : ModViewDataManager;
+	private _vizOptionsData : ModView_VizOptionsData;
+
 	/**
 	 * 
 	 */
@@ -64,6 +67,59 @@ export class ModViewPage_DisplayDataOnPage {
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 		this._centralPageStateManager = centralPageStateManager;
+	}
+
+	/**
+	 *  !!!!   ONLY initialize Page State Variables in this method.
+	 *
+	 *  !!!!   DO NOT update (make changes that will be saved to the URL) Page State Variables in this method.  Do that in the method "initialUpdatesToPageState
+	 */
+	initialize() {
+
+		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
+			this._searchDetailsBlockDataMgmtProcessing.
+			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+
+		this._modViewDataManager = new ModViewDataManager(searchDataLookupParamsRoot);
+
+		this._vizOptionsData = { data: { } };
+		this._vizOptionsData.data.selectedStateObject = { data: { } };
+		const stateManagementObject = new ModMultiSearch_DataVizPageStateManager( { centralPageStateManager : this._centralPageStateManager, vizOptionsData: this._vizOptionsData } );
+		this._vizOptionsData.stateManagementObject = stateManagementObject;
+
+		stateManagementObject.initialize();	// load in values from the URL
+	}
+
+	/**
+	 * !!!  ONLY do initial update Page State variables here
+	 */
+	initialUpdates_To_PageStateVariables() {
+
+		let projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+
+		if(this._vizOptionsData.data.projectSearchIds === undefined) {
+			this._vizOptionsData.data.projectSearchIds = [...projectSearchIds];	// ordered list of project ids to show is considered a viz option
+		} else {
+			//  remove entries in vizOptionsData.data.projectSearchIds that are not in projectSearchIds.  also remove from vizOptionsData.data.selectedStateObject.data
+			const new_vizOptionsData_projectSearchIds_Entries = [];
+			for ( const vizOptionsData_projectSearchId of this._vizOptionsData.data.projectSearchIds ) {
+				if ( projectSearchIds.includes( vizOptionsData_projectSearchId ) ) {
+					new_vizOptionsData_projectSearchIds_Entries.push( vizOptionsData_projectSearchId );
+				} else {
+					if ( this._vizOptionsData.data.selectedStateObject ) {
+						delete this._vizOptionsData.data.selectedStateObject.data[ vizOptionsData_projectSearchId ];
+					}
+				}
+			}
+			//  add entries in projectSearchIds that are not in vizOptionsData.data.projectSearchIds to the end of vizOptionsData.data.projectSearchIds
+			for ( const projectSearchId of projectSearchIds ) {
+				if ( ! new_vizOptionsData_projectSearchIds_Entries.includes( projectSearchId ) ) {
+					new_vizOptionsData_projectSearchIds_Entries.push( projectSearchId );
+				}
+			}
+			this._vizOptionsData.data.projectSearchIds = new_vizOptionsData_projectSearchIds_Entries;
+		}
+
 	}
 	
 	/**
@@ -127,86 +183,35 @@ export class ModViewPage_DisplayDataOnPage {
 	 */
 	populateModDataBlock() {
 
-		let projectSearchIds = // array
-			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
-
-		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
-			this._searchDetailsBlockDataMgmtProcessing.
-			getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
-
-		let searchDetailsBlockDataMgmtProcessing = this._searchDetailsBlockDataMgmtProcessing;
-
-		const modViewDataManager = new ModViewDataManager(searchDataLookupParamsRoot);
-		this.renderModDataPage( { projectSearchIds, modViewDataManager } );
+		this.renderModDataPage();
 	}
 
 	/**
 	 * Render the page.
-	 * 
-	 * @param {*} param0 
+	 *
 	 */
-	renderModDataPage( { 
-		projectSearchIds,
-		modViewDataManager
-	} : { 
-		projectSearchIds : Array<number>
-		modViewDataManager : ModViewDataManager
-	} ) {
+	renderModDataPage() {
 
-		this.renderModDataPageMultiSearch({ projectSearchIds, modViewDataManager } );
-	}
+		//  !!!  DO NOT  initialize any Page State variables here or later in the code.
 
-	renderModDataPageMultiSearch({ 
-		projectSearchIds,
-		modViewDataManager
-	} : { 
-		projectSearchIds : Array<number>
-		modViewDataManager : ModViewDataManager
-	} ) {
+		//  !!!   ALL Page state variables MUST be initialized in the 'initialize' method of this class or sooner
 
-		let vizOptionsData : ModView_VizOptionsData = { data: { } };
-		vizOptionsData.data.selectedStateObject = { data: { } };
-		const stateManagementObject = new ModMultiSearch_DataVizPageStateManager( { centralPageStateManager : this._centralPageStateManager, vizOptionsData } );
-		vizOptionsData.stateManagementObject = stateManagementObject;
-
-		stateManagementObject.initialize();	// load in values from the URL
-
-		if(vizOptionsData.data.projectSearchIds === undefined) {
-			vizOptionsData.data.projectSearchIds = [...projectSearchIds];	// ordered list of project ids to show is considered a viz option
-        } else {
-            //  remove entries in vizOptionsData.data.projectSearchIds that are not in projectSearchIds.  also remove from vizOptionsData.data.selectedStateObject.data
-            const new_vizOptionsData_projectSearchIds_Entries = [];
-            for ( const vizOptionsData_projectSearchId of vizOptionsData.data.projectSearchIds ) {
-                if ( projectSearchIds.includes( vizOptionsData_projectSearchId ) ) {
-                    new_vizOptionsData_projectSearchIds_Entries.push( vizOptionsData_projectSearchId );
-                } else {
-                	if ( vizOptionsData.data.selectedStateObject ) {
-						delete vizOptionsData.data.selectedStateObject.data[ vizOptionsData_projectSearchId ];
-					}
-				}
-            }
-            //  add entries in projectSearchIds that are not in vizOptionsData.data.projectSearchIds to the end of vizOptionsData.data.projectSearchIds
-            for ( const projectSearchId of projectSearchIds ) {
-                if ( ! new_vizOptionsData_projectSearchIds_Entries.includes( projectSearchId ) ) {
-                    new_vizOptionsData_projectSearchIds_Entries.push( projectSearchId );
-                }
-            }
-            vizOptionsData.data.projectSearchIds = new_vizOptionsData_projectSearchIds_Entries;
-        }
+		let projectSearchIds = // array
+			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		// add the options section to the page using these viz options  -  IDE warning message: Promise returned from showOptionsOnPage is ignored
 		ModViewDataVizRendererOptionsHandler.showOptionsOnPage({
-			vizOptionsData,
+			vizOptionsData : this._vizOptionsData,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
-			modViewDataManager,
-			allProjectSearchIds:projectSearchIds
+			modViewDataManager: this._modViewDataManager,
+			allProjectSearchIds: projectSearchIds
 		});
 
 		// add the viz to the page using these viz options
 		ModViewDataVizRenderer_MultiSearch.renderDataViz({
-			vizOptionsData,
+			vizOptionsData : this._vizOptionsData,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
-			modViewDataManager
+			modViewDataManager: this._modViewDataManager
 		});
 	}
 
