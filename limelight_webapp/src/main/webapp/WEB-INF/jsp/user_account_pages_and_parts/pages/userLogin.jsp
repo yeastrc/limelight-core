@@ -49,14 +49,18 @@
 	</div>
   		
   </div>
-  
+
+     <div id="get_help_tab" class="bottom-tab"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+         <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank">Get Help</a>
+     </div>
+
   		<%-- Not Shown initially --%>
-  <div id="reset_password_tab" class="bottom-tab" style="display: none;"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+  <div id="reset_password_tab" class="bottom-tab" style="display: none;border-right-width: 0px;"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
 		<span id="reset_password_fake_link" class=" fake-link " >Reset Password</span>
   </div>
 
 		<%-- Not Shown initially --%>
-  <div id="signin_tab" class="bottom-tab" style="display: none;" > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+  <div id="signin_tab" class="bottom-tab" style="display: none;border-right-width: 0px;" > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
 		<span id="signin_fake_link" class=" fake-link " >Sign In</span>		
   </div>
     

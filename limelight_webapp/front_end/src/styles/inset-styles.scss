@@ -74,14 +74,7 @@
       border-color: $site-color-gray;
       border-style: solid;
       background-color: $color-white;
-  
-      a {
-        color: $font-color-dark;
-        background-color: $site-color-light;
-        opacity:0.5;
-        filter:alpha(opacity=50);
-        text-decoration: none;
-      }
+
     }
   
   } // end inset page styles
