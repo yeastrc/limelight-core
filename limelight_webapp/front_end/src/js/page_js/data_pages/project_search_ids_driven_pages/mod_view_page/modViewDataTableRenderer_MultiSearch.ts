@@ -284,8 +284,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 				id : "modMass", // Used for tracking sort order. Keep short
 				displayName,
 				width : 75,
-				sortable : true,
-				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+				sortable : true
 			});
 			dataTableColumns.push( dataTableColumn );
 
@@ -301,8 +300,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 				displayName,
 				width : 85,
 				sortable : false,
-				columnHeader_Tooltip_HTML_TitleAttribute : "Links to annotations for this modification mass in external sites.",
-				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+				columnHeader_Tooltip_HTML_TitleAttribute : "Links to annotations for this modification mass in external sites."
 			});
 			dataTableColumns.push( dataTableColumn );
 
@@ -317,8 +315,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 				id : projectSearchId + "_val", // Used for tracking sort order. Keep short
 				displayName,
 				width : 100,
-				sortable : true,
-				style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+				sortable : true
 			});
 			dataTableColumns.push( dataTableColumn );
 

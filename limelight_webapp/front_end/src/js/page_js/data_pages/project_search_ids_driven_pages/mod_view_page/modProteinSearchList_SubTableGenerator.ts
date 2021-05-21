@@ -86,8 +86,7 @@ export class ModProteinSearchList_SubTableGenerator {
                 id : "searchProteinSearchName", // Used for tracking sort order. Keep short
                 displayName,
                 width : 500,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+                sortable : true
             });
             dataTableColumns.push( dataTableColumn );
 

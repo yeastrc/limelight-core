@@ -199,8 +199,9 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
       }
   
       const className = classNameCommon + " " + classNameSortable;
-  
-      const styleDisplayNameDiv = { whiteSpace: "normal", fontSize: "12px", overflowX: "hidden", textOverflow: "ellipsis" } as React.CSSProperties;
+
+      //  Contained <span> has overflow-wrap: break-word; so ' overflowX: "hidden", textOverflow: "ellipsis" ' doesn't appear to have any effect
+      const styleDisplayNameDiv : React.CSSProperties = { whiteSpace: "normal", overflowX: "hidden", textOverflow: "ellipsis" };
 
       // const style_override_React = column.style_override_React;
   

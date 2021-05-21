@@ -87,8 +87,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 id : "modListGeneratedPeptide", // Used for tracking sort order. Keep short
                 displayName,
                 width : 500,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+                sortable : true
             });
             dataTableColumns.push( dataTableColumn );
 
@@ -104,7 +103,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 displayName,
                 width : 40,
                 sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
                 columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the n-terminus of this peptide in the protein sequence.'
             });
             dataTableColumns.push( dataTableColumn );
@@ -121,9 +119,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 displayName,
                 width : 40,
                 sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
                 columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the c-terminus of this peptide in the protein sequence.'
-
             });
             dataTableColumns.push( dataTableColumn );
 

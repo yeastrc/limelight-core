@@ -288,13 +288,12 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
             {
                 const displayName = "PSMs";
 
-                const style_override_DataRowCell_React : React.CSSProperties = { paddingTop: 3 }
                 const dataTable_Column = new DataTable_Column({
                     id: "psmCount", // Used for tracking sort order. Keep short
                     displayName,
                     width: 75,
                     sortable: true,
-                    style_override_DataRowCell_React
+                    style_override_DataRowCell_React: { paddingTop: 3 }
                 });
                 dataTable_Columns.push(dataTable_Column);
 

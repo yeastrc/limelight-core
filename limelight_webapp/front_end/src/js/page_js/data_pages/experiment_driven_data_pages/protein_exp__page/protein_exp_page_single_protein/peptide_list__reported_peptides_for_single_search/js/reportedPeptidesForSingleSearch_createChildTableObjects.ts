@@ -305,8 +305,7 @@ const _create_dataTable_RootTableObject = function(
                 id : "repPeptIds", // Used for tracking sort order. Keep short
                 displayName,
                 width : 400,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+                sortable : true
             });
             dataTable_Columns.push( dataTable_Column );
 
@@ -325,7 +324,6 @@ const _create_dataTable_RootTableObject = function(
                 displayName,
                 width : 55,
                 sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
                 columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
             });
             dataTable_Columns.push( dataTable_Column );
@@ -345,8 +343,7 @@ const _create_dataTable_RootTableObject = function(
                 id : "psmCount", // Used for tracking sort order. Keep short
                 displayName,
                 width : 75,
-                sortable : true,
-                style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" },
+                sortable : true
             });
             dataTable_Columns.push( dataTable_Column );
 

@@ -358,6 +358,9 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 		} else if ( domElementToInsertInto ) {
 
 			const $domElementToInsertInto = $( domElementToInsertInto );
+
+			$domElementToInsertInto.empty();
+
 			$selector_search_details_container = $("<div></div>")
 			$domElementToInsertInto.append( $selector_search_details_container );
 

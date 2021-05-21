@@ -230,7 +230,6 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
             displayName,
             width : 500,
             sortable : true,
-            style_override_DataRowCell_React : { display: "inline-block", whiteSpace: "nowrap", overflowX: "auto" },
         });
         dataTable_Columns.push( dataTable_Column );
 

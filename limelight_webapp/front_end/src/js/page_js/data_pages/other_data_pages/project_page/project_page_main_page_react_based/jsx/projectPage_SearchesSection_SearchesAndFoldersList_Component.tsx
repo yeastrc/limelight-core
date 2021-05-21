@@ -757,6 +757,11 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
                         {/* Search Detail Container */}
                         <div ref={ this._searchDetailsContainer_div_Ref } style={ searchDetailsContainer_div_Style }>
+                            <span
+                                style={ { color: "green", fontSize: 18 } }
+                            >
+                                LOADING
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -100,6 +100,10 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
 
         }) : Protein_SingleProtein_Embed_in_ModPage_Root_Class_InitializeResult {
 
+
+        ///   !!!!!   WARNING:
+
+
         this._singleProteinCloseCallback = singleProteinCloseCallback
 
         this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay

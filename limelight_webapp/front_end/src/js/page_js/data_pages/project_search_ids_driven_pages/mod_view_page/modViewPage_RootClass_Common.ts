@@ -249,6 +249,18 @@ export class ModViewPage_RootClass_Common {
 //			this._userSelection_q_OnURL_Update.replaceUserSelectionFromURL( pageState );
 //		}
 
+		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
+
+			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+			centralPageStateManager : this._centralPageStateManager
+		});
+
+		this._modViewPage_DisplayDataOnPage.initialize();
+
+
 		//  Have all data in page variables to render the page
 
 		const singleProteinCloseCallback = () : void =>  {
@@ -278,14 +290,9 @@ export class ModViewPage_RootClass_Common {
 				searchDataLookupParamsRoot : this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
 			});
 
-		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
 
-			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			centralPageStateManager : this._centralPageStateManager
-		});
+
+		this._modViewPage_DisplayDataOnPage.initialUpdates_To_PageStateVariables();
 
 		this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFiltersBlock();
 

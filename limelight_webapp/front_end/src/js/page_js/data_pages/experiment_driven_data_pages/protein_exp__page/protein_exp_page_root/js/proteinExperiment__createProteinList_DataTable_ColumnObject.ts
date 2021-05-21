@@ -46,9 +46,6 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 displayName,
                 sortable: true, // Will sort using Javascript < > on the 'value' property
                 width: 350, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
-                // heightInitial :        500, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
-                //  scroll if too wide
-                style_override_DataRowCell_React: {whiteSpace: "nowrap", overflowX: "auto"}, // React format Style overrides
             });
             columns.push(column);
 
@@ -64,13 +61,6 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 displayName,
                 sortable: true, // Will sort using Javascript < > on the 'value' property
                 width: 200, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
-                // heightInitial :        500, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
-                //  elippsis if too wide
-                style_override_DataRowCell_React: {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis"
-                }, // React format Style overrides
             });
             columns.push(column);
 
@@ -88,8 +78,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 id: 'condition_' + condition.id, //  Short string that is unique for each column
                 displayName,
                 sortable: true, // Will sort using Javascript < > on the 'value' property
-                width: 80, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
-                // heightInitial :        500, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
+                width: 80 // pixels, must be a number.  style 'width' and 'maxWidth' properties.
             });
             columns.push(column);
 
@@ -107,14 +96,7 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
                 // sortable: true, // Will sort using Javascript < > on the 'value' property
 
                 width: googleChart_Width, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
-                heightInitial: googleChart_heightInitial, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
-
-                //  prevent line breaks and elippsis if too long
-                style_override_DataRowCell_React: {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis"
-                }
+                heightInitial: googleChart_heightInitial // pixels, must be a number.  style 'height' property, not 'maxHeight' property
             });
             columns.push(column);
 
@@ -129,10 +111,6 @@ export class ProteinExperiment__CreateProteinDataTableColumns_Class {
 
         //         width :             _SVG_WIDTH_ProteinExperimentPage_PSMs_Per_Condition_Component, // pixels, must be a number.  style 'width' and 'maxWidth' properties.
         //         heightInitial :     _SVG_HEIGHT_ProteinExperimentPage_PSMs_Per_Condition_Component, // pixels, must be a number.  style 'height' property, not 'maxHeight' property
-
-        //         //  prevent line breaks and elippsis if too long
-        //         style_override_React : { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "12px" }, // React format Style overrides
-        //         style_override_header_React : { fontSize:"12px" }, //  React format Style Overrides for Header Row Cells
         //         // css_class : ' clickable ' // + _CSS_CLASS_SELECTOR_PROTEIN_NAME + ' '
 
         //     });

@@ -299,8 +299,7 @@ const _getDataTableColumns = function(
 			id : "sequence", // Used for tracking sort order. Keep short
 			displayName,
 			width : 500,
-			sortable : true,
-			style_override_DataRowCell_React : { whiteSpace: "nowrap", overflowX: "auto" }
+			sortable : true
 		});
 		dataTable_Columns.push( dataTable_Column );
 
