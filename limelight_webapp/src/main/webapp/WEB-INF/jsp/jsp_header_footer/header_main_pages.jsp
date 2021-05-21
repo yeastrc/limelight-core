@@ -194,13 +194,17 @@
   	   
   	 	<%--  icons will be to the right of username --%>
   	   <div class=" header-right-icons-container " style="position: relative;">
+		   <a href="https://limelight-ms.readthedocs.io/en/latest/" id="documentation_header_link" target="_blank"
+			  class=" selector_tool_tip_attached "
+			  title="Read Documentation"
+		   ><img src="static/images/icon-help.png" class="header-documentation-image"
+		   ></a>
 
 	  		<a href="user/logout" id="sign_out_header_link" 
 	  			class=" selector_tool_tip_attached "
 	  			title="Sign Out"
-	  			><img src="static/images/icon-logout.png" class="header-logout-image" 
+	  			><img src="static/images/icon-logout.png" class="header-logout-image"
 	  		></a>
-	  		
   	   </div>
   	     	  
   		

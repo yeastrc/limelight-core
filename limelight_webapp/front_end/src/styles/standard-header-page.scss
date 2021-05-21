@@ -123,6 +123,11 @@
         div.header-right-icons-container {
             margin-top:2px;
             margin-right:4px;
+            white-space: nowrap;
+
+          img {
+            max-height:22px;
+          }
         }
 
     }
