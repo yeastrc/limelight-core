@@ -680,7 +680,7 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
                         {/* 2 Column Grid */}
                         <div style={ { display: "grid", gridTemplateColumns: "  auto min-content " } }>
-                            <div >
+                            <div style={ { maxWidth: "calc( 100vw - 390px )" }}>
                                 { ( ! this.state.changeSearchName_Active ) ? (
                                     <React.Fragment>
                                         <span
