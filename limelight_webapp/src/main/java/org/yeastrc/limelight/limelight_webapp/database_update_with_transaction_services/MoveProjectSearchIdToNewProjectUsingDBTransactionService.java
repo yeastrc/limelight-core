@@ -20,6 +20,7 @@ package org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.FolderProjectSearchDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchIdAssocSearchIdInProjectIdSearcherIF;
 
@@ -41,7 +44,7 @@ public class MoveProjectSearchIdToNewProjectUsingDBTransactionService implements
 
 	private static final Logger log = LoggerFactory.getLogger( MoveProjectSearchIdToNewProjectUsingDBTransactionService.class );
 
-	// private static final int DISPLAY_ORDER_NO_ORDER = 0;
+	private static final int DISPLAY_ORDER_NO_ORDER = 0;
 	
 	@Autowired
 	private ProjectSearchIdAssocSearchIdInProjectIdSearcherIF projectSearchIdAssocSearchIdInProjectIdSearcher;
@@ -50,8 +53,14 @@ public class MoveProjectSearchIdToNewProjectUsingDBTransactionService implements
 	private ProjectSearchDAO_IF projectSearchDAO;
 	
 	@Autowired
-	private DataPageSavedViewDAO_IF dataPageSavedViewDAO;
+	private FolderProjectSearchDAO_IF folderProjectSearchDAO;
 	
+	@Autowired
+	private DataPageSavedViewDAO_IF dataPageSavedViewDAO;
+
+	@Autowired
+	private ExperimentDAO_IF experimentDAO;
+
 	/**
 	 * @param item
 	 * @param projectUserDTO
@@ -61,7 +70,7 @@ public class MoveProjectSearchIdToNewProjectUsingDBTransactionService implements
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED)  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring DB Transactions
 	
-	public void moveProjectSearchIdsToNewProjectId( List<Integer> projectSearchIdList, int newProjectId ) { //  No 'Throws' allowed due to 
+	public void moveProjectSearchIdsToNewProjectId( List<Integer> projectSearchIdList, int newProjectId, Set<Integer> experimentIds_Containing_ProjectSearchId ) { //  No 'Throws' allowed due to 
 		
 		try {
 			for ( int projectSearchId : projectSearchIdList ) {
@@ -77,13 +86,25 @@ public class MoveProjectSearchIdToNewProjectUsingDBTransactionService implements
 					projectSearchDAO.updateProjectIdForProjectSearch( projectSearchId, newProjectId );
 					
 					// Clear display order so moved searches (project_search records) appear at the top or according to project_search.id order
-					// projectSearchDAO.updateDisplayOrderForProjectSearch( projectSearchId, DISPLAY_ORDER_NO_ORDER );
+					 projectSearchDAO.updateDisplayOrderForProjectSearch( projectSearchId, DISPLAY_ORDER_NO_ORDER );
 					
 					//  Remove folder mapping record related to old project, if it exists
-					// FolderProjectSearchDAO.getInstance().delete( projectSearchId );
+					 folderProjectSearchDAO.delete( projectSearchId );
 					
 					//  Remove any Shared Views with this project search id
 					dataPageSavedViewDAO.deleteForProjectSearchId( projectSearchId ); 
+					
+
+					if ( experimentIds_Containing_ProjectSearchId != null && ( ! experimentIds_Containing_ProjectSearchId.isEmpty() ) ) {
+
+						//  Have Experiment Ids to delete so delete them (Contain ProjectSearchId)
+						
+						for ( Integer experimentId : experimentIds_Containing_ProjectSearchId ) {
+							experimentDAO.delete(experimentId);
+						}
+		    		}
+					
+					
 				}
 			}
 		} catch ( RuntimeException e ) {

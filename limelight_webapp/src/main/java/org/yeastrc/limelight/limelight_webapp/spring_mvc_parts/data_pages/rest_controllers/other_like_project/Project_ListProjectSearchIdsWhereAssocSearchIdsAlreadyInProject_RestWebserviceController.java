@@ -135,8 +135,8 @@ public class Project_ListProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_Res
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
     		
-    		Integer projectId = webserviceRequest.getProjectId();
-    		List<Integer> projectSearchIds = webserviceRequest.getProjectSearchids();
+    		Integer projectId = webserviceRequest.projectId;
+    		List<Integer> projectSearchIds = webserviceRequest.projectSearchIds;
     		
     		if ( projectId == null ) {
     			log.warn( "projectId is empty or not assigned" );
@@ -163,7 +163,6 @@ public class Project_ListProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_Res
 						.isSearchIdAssocWithProjectSearchIdInProjectId(
 								projectSearchid, projectId ) ) {
 					projectSearchidsFoundInProject.add( projectSearchid );
-					break;
 				}
 			}
 			
@@ -216,20 +215,15 @@ public class Project_ListProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_Res
     public static class WebserviceRequest {
     	
 		private Integer projectId;
-		private List<Integer> projectSearchids;
+		private List<Integer> projectSearchIds;
 		
-		public Integer getProjectId() {
-			return projectId;
-		}
 		public void setProjectId(Integer projectId) {
 			this.projectId = projectId;
 		}
-		public List<Integer> getProjectSearchids() {
-			return projectSearchids;
+		public void setProjectSearchIds(List<Integer> projectSearchIds) {
+			this.projectSearchIds = projectSearchIds;
 		}
-		public void setProjectSearchids(List<Integer> projectSearchids) {
-			this.projectSearchids = projectSearchids;
-		}
+		
 		
     }
     
@@ -259,24 +253,15 @@ public class Project_ListProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_Res
 		private int projectSearchId;
 		private int searchId;
 		private String searchName;
-
+		
 		public int getProjectSearchId() {
 			return projectSearchId;
-		}
-		public void setProjectSearchId(int projectSearchId) {
-			this.projectSearchId = projectSearchId;
 		}
 		public int getSearchId() {
 			return searchId;
 		}
-		public void setSearchId(int searchId) {
-			this.searchId = searchId;
-		}
 		public String getSearchName() {
 			return searchName;
-		}
-		public void setSearchName(String searchName) {
-			this.searchName = searchName;
 		}
 	}    
 

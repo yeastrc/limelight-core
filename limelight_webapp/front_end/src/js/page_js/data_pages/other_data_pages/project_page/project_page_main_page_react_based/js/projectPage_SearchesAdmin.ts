@@ -20,14 +20,12 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-//  Local imports
-
-import { ProjectPage_SearchesAdmin_CopyMove_Searches } from "./projectPage_SearchesAdmin_CopyMove_Searches";
 
 import { ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders } from "./projectPage_SearchesAdmin_OrganizeSearchesAndFolders";
 import {ProjectPage_SearchesSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction";
 import {Set_ProjectWide_DefaultFilter_Cutoffs_Overrides} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides";
 import {projectPage_DeleteSearch_Overlay_Component__openOverlay} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
+import {openOverlay_ForCopyMoveSearches} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component";
 
 /**
  * 
@@ -37,8 +35,6 @@ export class ProjectPage_SearchesAdmin {
 	private _initializeCalled = false;
 
 	private _projectIdentifierFromURL;
-
-	projectPage_SearchesAdmin_CopyMove_Searches: ProjectPage_SearchesAdmin_CopyMove_Searches;
 
 	projectPage_SearchesAdmin_OrganizeSearchesAndFolders: ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders;
 
@@ -55,8 +51,6 @@ export class ProjectPage_SearchesAdmin {
 
         this._projectIdentifierFromURL = projectIdentifierFromURL;
 
-		this.projectPage_SearchesAdmin_CopyMove_Searches = new ProjectPage_SearchesAdmin_CopyMove_Searches({ projectIdentifierFromURL });
-		
 		this.projectPage_SearchesAdmin_OrganizeSearchesAndFolders = new ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders({
 			projectIdentifierFromURL
 		});
@@ -78,8 +72,6 @@ export class ProjectPage_SearchesAdmin {
 	) {
 		this._projectPage_SearchesSection_AllUsersInteraction = projectPage_SearchesSection_AllUsersInteraction;
 
-		this.projectPage_SearchesAdmin_CopyMove_Searches.initialize( { projectPage_SearchesSection_AllUsersInteraction });
-		
 		this.projectPage_SearchesAdmin_OrganizeSearchesAndFolders.initialize( { projectPage_SearchesSection_AllUsersInteraction });
 
 		this.set_ProjectWide_DefaultFilter_Cutoffs_Overrides.initialize();
@@ -145,38 +137,6 @@ export class ProjectPage_SearchesAdmin {
 
 
 		return;
-
-
-		//
-		// if ( ! window.confirm("Delete Search Id: " + searchId ) ) {
-		// 	return;
-		// }
-		//
-		// let requestObj = {
-		// 	projectSearchId : projectSearchId
-		// };
-		//
-		// const url = "d/rws/for-page/delete-project-search";
-		//
-		// const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-		//
-		// const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-		//
-		// promise_webserviceCallStandardPost.catch( () => { }  );
-		//
-		// promise_webserviceCallStandardPost.then( ({ responseData }) => {
-		// 	try {
-		// 		deleteComplete_Callback();
-		//
-		// 		// this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
-		//
-		// 	} catch (e) {
-		// 		reportWebErrorToServer.reportErrorObjectToServer({
-		// 			errorException : e
-		// 		});
-		// 		throw e;
-		// 	}
-		// });
 	}
 
 	//  FOLDER
@@ -220,5 +180,39 @@ export class ProjectPage_SearchesAdmin {
 		});
 	}
 
+	//  Copy/Move Searches to a different Project
+
+	/**
+	 *
+	 * @param doCopy
+	 * @param doMove
+	 * @param projectSearchIdsSelected
+	 */
+	openOverlay_ForCopyMoveSearches(
+		{
+			doCopy, doMove, projectSearchIdsSelected, projectIdentifier
+		} : {
+
+			doCopy: boolean
+			doMove: boolean
+			projectSearchIdsSelected: Set<number>
+			projectIdentifier : string
+
+		} ) : void {
+
+		if ( projectSearchIdsSelected.size === 0 ) {
+
+			// No project search ids found to process
+
+			return; // EARLY RETURN
+		}
+
+		const copyMoveSearchesReturnToProject_Callback = () => {
+
+			this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
+		}
+
+		openOverlay_ForCopyMoveSearches({ doCopy, doMove, projectSearchIdsSelected, projectIdentifier, copyMoveSearchesReturnToProject_Callback });
+	}
 
 }

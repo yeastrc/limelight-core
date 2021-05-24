@@ -257,8 +257,9 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
      */
     private _copySearches_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
-        this.props.projectPage_SearchesAdmin.projectPage_SearchesAdmin_CopyMove_Searches.openOverlay_ForCopyMoveSearches({
+        this.props.projectPage_SearchesAdmin.openOverlay_ForCopyMoveSearches({
             projectSearchIdsSelected: this.state.projectSearchIds_Selected_InProgress,
+            projectIdentifier: this.props.projectIdentifier,
             doCopy: true,
             doMove: false
         })
@@ -269,8 +270,9 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
      */
     private _moveSearches_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
-        this.props.projectPage_SearchesAdmin.projectPage_SearchesAdmin_CopyMove_Searches.openOverlay_ForCopyMoveSearches({
+        this.props.projectPage_SearchesAdmin.openOverlay_ForCopyMoveSearches({
             projectSearchIdsSelected: this.state.projectSearchIds_Selected_InProgress,
+            projectIdentifier: this.props.projectIdentifier,
             doCopy: false,
             doMove: true
         })

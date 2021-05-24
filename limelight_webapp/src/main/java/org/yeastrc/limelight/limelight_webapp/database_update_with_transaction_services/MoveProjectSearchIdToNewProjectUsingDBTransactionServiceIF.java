@@ -1,9 +1,7 @@
 package org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services;
 
 import java.util.List;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.Set;
 
 public interface MoveProjectSearchIdToNewProjectUsingDBTransactionServiceIF {
 
@@ -12,6 +10,6 @@ public interface MoveProjectSearchIdToNewProjectUsingDBTransactionServiceIF {
 	 * @param projectUserDTO
 	 */
 
-	void moveProjectSearchIdsToNewProjectId(List<Integer> projectSearchIdList, int newProjectId);
+	void moveProjectSearchIdsToNewProjectId(List<Integer> projectSearchIdList, int newProjectId, Set<Integer> experimentIds_Containing_ProjectSearchId);
 
 }

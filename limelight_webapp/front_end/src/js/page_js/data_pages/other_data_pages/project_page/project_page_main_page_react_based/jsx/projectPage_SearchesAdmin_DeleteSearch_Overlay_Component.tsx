@@ -144,11 +144,12 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
 
         });
         promise.then( (result) => {
+
             if ( this._unmountCalled ) {
                 //  unmounted so exit
                 return;  // EARLY RETURN
             }
-            console.warn("result: ", result );
+
             this.setState({ experiments: result.experiments, show_LoadingMessage: false });
         })
     }
@@ -317,7 +318,7 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
 
                         { ( this.state.experiments && this.state.experiments.length > 0 ) ? (
 
-                            <div className=" change-searches-overlay-outer-block top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
+                            <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
                                  style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
                                 // style={ { padding : 6 } }
                             >

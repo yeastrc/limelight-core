@@ -19,7 +19,9 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.CopyProjectSearchIdToNewProjectUsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.MoveProjectSearchIdToNewProjectUsingDBTransactionServiceIF;
@@ -45,6 +48,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectSearchIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -81,6 +86,12 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 	
 	@Autowired
 	private MoveProjectSearchIdToNewProjectUsingDBTransactionServiceIF moveProjectSearchIdToNewProjectUsingDBTransactionService;
+
+	@Autowired
+	private Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_IF experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher;
+
+	@Autowired
+	private ExperimentDAO_IF experimentDAO;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -149,6 +160,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     		String projectIdentifier = webserviceRequest.getProjectIdentifier();
         	Integer copyOrMoveToProjectId = webserviceRequest.getCopyOrMoveToProjectId();
     		List<Integer> projectSearchIdsSelected = webserviceRequest.getProjectSearchIdsSelected();
+        	Set<Integer> experimentIds_Containing_ProjectSearchIds = webserviceRequest.experimentIds_Containing_ProjectSearchIds; // Optional
         	Boolean copyToOtherProject = webserviceRequest.getCopyToOtherProject();
         	Boolean moveToOtherProject = webserviceRequest.getMoveToOtherProject();
         	
@@ -271,6 +283,9 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 				log.warn( "copyToProjectId is not in database: " + copyOrMoveToProjectId );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+			
+			boolean experimentsWhereDeleted = false;
+			
 			if ( projectDTOcopyOrMoveToProjectId.isMarkedForDeletion() ) {
 				webserviceResult.setCopyToProjectMarkedForDeletion(true);
 				webserviceResult.setStatus(false);
@@ -285,7 +300,41 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 				} else if ( doCopyOrDoMove == DoCopyOrDoMove.MOVE ) {
 					//  Move Project Search and associated records to new Project
 					moveProjectSearchIdToNewProjectUsingDBTransactionService
-					.moveProjectSearchIdsToNewProjectId( projectSearchIdsSelected, copyOrMoveToProjectId );
+					.moveProjectSearchIdsToNewProjectId( projectSearchIdsSelected, copyOrMoveToProjectId, experimentIds_Containing_ProjectSearchIds );
+					
+					if ( experimentIds_Containing_ProjectSearchIds != null && ( ! experimentIds_Containing_ProjectSearchIds.isEmpty() ) ) {
+						experimentsWhereDeleted = true;
+					}
+
+					if ( projectSearchIdsSelected != null && ( ! projectSearchIdsSelected.isEmpty() ) ) {
+						
+						// Next Delete all Experiment IDs containing Project Search Ids That were NOT deleted in call to .moveProjectSearchIdsToNewProjectId(...)
+						
+						Set<Integer> projectSearchIdsSelected_Set = new HashSet<>( projectSearchIdsSelected );
+
+						List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
+								experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIdsSelected_Set);
+
+						if ( dbResultList != null && ( ! dbResultList.isEmpty() ) ) {
+							experimentsWhereDeleted = true;
+						}
+
+						if ( ! dbResultList.isEmpty() ) {
+
+							try {
+
+			    				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
+
+			    					experimentDAO.delete( dbResult.getExperimentId() );
+			    				}
+							} catch( Exception e ) {
+								log.error( "Failed to delete Experiment Ids for ProjectSearchId that remained after main deletion", e );
+								
+								//  Eat/Swallow Exception
+							}
+						}
+					}
+					
 				} else {
 					//  Only way to get here is a coding error above
 					String msg = "Unknown Value for doCopyOrDoMove: " + doCopyOrDoMove;
@@ -293,6 +342,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 					throw new LimelightInternalErrorException(msg);
 				}
 				webserviceResult.setStatus(true);
+				webserviceResult.experimentsWhereDeleted = experimentsWhereDeleted;
 			}
 			
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -317,6 +367,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     	private String projectIdentifier;
     	private Integer copyOrMoveToProjectId;
     	private List<Integer> projectSearchIdsSelected;
+    	private Set<Integer> experimentIds_Containing_ProjectSearchIds; // Optional
     	private Boolean copyToOtherProject;
     	private Boolean moveToOtherProject;
     	
@@ -350,11 +401,15 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 		public void setMoveToOtherProject(Boolean moveToOtherProject) {
 			this.moveToOtherProject = moveToOtherProject;
 		}
+		public void setExperimentIds_Containing_ProjectSearchIds(Set<Integer> experimentIds_Containing_ProjectSearchIds) {
+			this.experimentIds_Containing_ProjectSearchIds = experimentIds_Containing_ProjectSearchIds;
+		}
     }
     
     public static class WebserviceResult {
 
 		private boolean status;
+		private boolean experimentsWhereDeleted;
 		private boolean copyToProjectMarkedForDeletion;
 		private boolean copyToProjectDisabled;
 
@@ -375,6 +430,9 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 		}
 		public void setCopyToProjectDisabled(boolean copyToProjectDisabled) {
 			this.copyToProjectDisabled = copyToProjectDisabled;
+		}
+		public boolean isExperimentsWhereDeleted() {
+			return experimentsWhereDeleted;
 		}
     }
 
