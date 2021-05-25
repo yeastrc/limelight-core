@@ -1258,25 +1258,29 @@ const _filterOnSearchInput_IfApplicable = function (
 
         //  Filter the groups
 
-        //  filter sort the contents of each group.  This will also update what the group returns for sorting the groups
+        //  Show Groups where any row has the search string
 
         const dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing :  DataTable_INTERNAL_DataGroupRowEntry[] = []
 
         for ( const dataTable_DataGroupRowEntry_INTERNAL_InitialUnfiltered_ALL of tableDataObject_INTERNAL_New.dataTable_DataGroupRowEntries__INTERNAL_All ) {
 
-            const dataTable_DataGroupRowEntry_INTERNAL_New = dataTable_DataGroupRowEntry_INTERNAL_InitialUnfiltered_ALL.shallowClone();
 
-            //  Assign new filtered dataTable_DataRowEntries Array to new Group Internal object
-            dataTable_DataGroupRowEntry_INTERNAL_New.dataTable_DataRowEntries__INTERNAL =
-                _filterOnSearchInput_IfApplicable_dataTable_DataRowEntries__INTERNAL({ searchInputValue_ForSearching, dataTable_INTERNAL_DataRowEntries : dataTable_DataGroupRowEntry_INTERNAL_InitialUnfiltered_ALL.dataTable_DataRowEntries__INTERNAL })
+            let found = false;
 
-            if ( dataTable_DataGroupRowEntry_INTERNAL_New.dataTable_DataRowEntries__INTERNAL.length > 0 ) {
+            for ( const dataTable_INTERNAL_DataRowEntry of dataTable_DataGroupRowEntry_INTERNAL_InitialUnfiltered_ALL.dataTable_DataRowEntries__INTERNAL ) {
+                for ( const searchCharacterString_ToSearch_Entry of dataTable_INTERNAL_DataRowEntry.searchCharacterString_ToSearch_Entries ) {
+                    if ( searchCharacterString_ToSearch_Entry.includes( searchInputValue_ForSearching )) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( found ) {
+                    break;
+                }
+            }
+            if ( found ) {
 
-                //  Update columnEntries to first row in group
-
-                dataTable_DataGroupRowEntry_INTERNAL_New.columnEntries = dataTable_DataGroupRowEntry_INTERNAL_New.dataTable_DataRowEntries__INTERNAL[0].columnEntries;
-
-                dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing.push( dataTable_DataGroupRowEntry_INTERNAL_New )
+                dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing.push( dataTable_DataGroupRowEntry_INTERNAL_InitialUnfiltered_ALL );
             }
         }
 
