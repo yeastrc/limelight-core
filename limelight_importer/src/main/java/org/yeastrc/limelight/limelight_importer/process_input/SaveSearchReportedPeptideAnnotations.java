@@ -119,10 +119,10 @@ public class SaveSearchReportedPeptideAnnotations {
 							+ "  ReportedPeptideString: " + reportedPeptide.getReportedPeptideString();
 					log.error( msg );
 					throw new LimelightImporterDataException( msg );
-				} else {
-					String msg = "No Filterable Reported Peptide annotations."
-							+ "  ReportedPeptideString: " + reportedPeptide.getReportedPeptideString();
-					log.warn( msg );
+//				} else {
+//					String msg = "No Filterable Reported Peptide annotations."
+//							+ "  ReportedPeptideString: " + reportedPeptide.getReportedPeptideString();
+//					log.warn( msg );
 				}
 			} else {
 				List<FilterableReportedPeptideAnnotation> filterableReportedPeptideAnnotationList =
@@ -134,10 +134,10 @@ public class SaveSearchReportedPeptideAnnotations {
 								+ "  ReportedPeptideString: " + reportedPeptide.getReportedPeptideString();
 						log.error( msg );
 						throw new LimelightImporterDataException( msg );
-					} else {
-						String msg = "No Filterable Reported Peptide annotations."
-								+ "  ReportedPeptideString: " + reportedPeptide.getReportedPeptideString();
-						log.warn( msg );
+//					} else {
+//						String msg = "No Filterable Reported Peptide annotations."
+//								+ "  ReportedPeptideString: " + reportedPeptide.getReportedPeptideString();
+//						log.warn( msg );
 					}
 				} else {
 					//  Process list of filterable annotations on input list
