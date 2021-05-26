@@ -50,7 +50,7 @@ export class ProteinInferenceUtils {
      * @param proteinPeptideMap
      */
     public static getParsimoniousProteinGroupsFromProteinPeptideMap({proteinPeptideMap}:{proteinPeptideMap:Map<number, Set<number|string>>}):Array<ProteinGroup> {
-        return ProteinInferenceUtils.getNonSubsetProteinGroupsFromProteinGroupMap({
+        return ProteinInferenceUtils.getParsimoniousGroupsFromProteinGroupMap({
             proteinGroups: ProteinInferenceUtils.getProteinGroups({ proteinPeptideMap})
         });
     }
@@ -80,7 +80,10 @@ export class ProteinInferenceUtils {
      * @param proteinGroups
      */
     private static getNonSubsetProteinGroupsFromProteinGroupMap({ proteinGroups }:{proteinGroups:Array<ProteinGroup>}):Array<ProteinGroup> {
+        console.log('Calling getNonSubsetProteinGroupsFromProteinGroupMap()');
+
         let noSubsetProteinGroups = new Array<ProteinGroup>();
+        let noSubsetCount = 0;
 
         for (let proteinGroup of proteinGroups) {
 
@@ -89,8 +92,12 @@ export class ProteinInferenceUtils {
             newProteinGroup.peptides =  proteinGroup.peptides;
             newProteinGroup.passesFilter = !ProteinInferenceUtils.proteinGroupIsSubset({proteinGroup, proteinGroups});
 
+            if(newProteinGroup.passesFilter) { noSubsetCount++; }
+
             noSubsetProteinGroups.push(newProteinGroup)
         }
+
+        console.log("Got " + noSubsetCount + " groups that passed filter.");
 
         return noSubsetProteinGroups;
     }
@@ -115,6 +122,97 @@ export class ProteinInferenceUtils {
         }
 
         return false;
+    }
+
+    private static getParsimoniousGroupsFromProteinGroupMap({ proteinGroups }:{proteinGroups:Array<ProteinGroup>}) {
+
+        console.log('Calling getParsimoniousGroupsFromProteinGroupMap()');
+
+        const explainedPeptides = new Set<number|string>();
+        const nonParsimoniousGroupIndices = new Set<number>();
+
+        // initialize unexplainedGroupIndices
+        for(let i = 0; i < proteinGroups.length; i++) {
+            nonParsimoniousGroupIndices.add(i);
+        }
+
+        // do the analysis
+        let currentGroupIndices = ProteinInferenceUtils.getProteinIndicesExplainingMostPeptides({ proteinGroups, explainedPeptides, unexplainedGroupIndices: nonParsimoniousGroupIndices });
+        while(currentGroupIndices.size > 0) {
+
+            for(const proteinGroupIndex of currentGroupIndices) {
+                const proteinGroup = proteinGroups[proteinGroupIndex];
+
+                nonParsimoniousGroupIndices.delete(proteinGroupIndex);
+
+                for(const peptide of proteinGroup.peptides) {
+                    explainedPeptides.add(peptide);
+                }
+            }
+
+            currentGroupIndices = ProteinInferenceUtils.getProteinIndicesExplainingMostPeptides({ proteinGroups, explainedPeptides, unexplainedGroupIndices: nonParsimoniousGroupIndices });
+        }
+
+        // go through and mark each protein group as to whether it is in the desired (parsimonious) set or not
+        for(const nonParsimoniousIndex of nonParsimoniousGroupIndices) {
+            proteinGroups[nonParsimoniousIndex].passesFilter = false;
+        }
+
+        console.log("Got " + (proteinGroups.length - nonParsimoniousGroupIndices.size) + " groups that passed filter.");
+
+        return proteinGroups;
+    }
+
+    /**
+     * Get the indices of the protein group(s) that explains the most number of
+     * unexplained peptides and that explain at least 1 unexplained peptide
+     *
+     * If no protein groups can be found that explain at least one unexplained
+     * peptide, an empty set will be returned
+     *
+     * @param proteinGroups
+     * @param explainedPeptides
+     * @param unexplainedGroupIndices
+     * @private
+     */
+    private static getProteinIndicesExplainingMostPeptides(
+        {
+            proteinGroups,
+            explainedPeptides,
+            unexplainedGroupIndices
+        } : {
+            proteinGroups:Array<ProteinGroup>
+            explainedPeptides:Set<number|string>
+            unexplainedGroupIndices:Set<number>
+        }
+    ) : Set<number> {
+
+        let maxPeptideCount:number = 0;
+        let currentProteinGroupIndices = new Set<number>();
+
+        for(const i of unexplainedGroupIndices) {
+            let peptideCount = 0;
+
+            for(const peptide of proteinGroups[i].peptides) {
+                if(!(explainedPeptides.has(peptide))) {
+                    peptideCount++;
+                }
+            }
+
+            if(peptideCount != 0) {
+                if(peptideCount > maxPeptideCount) {
+                    maxPeptideCount = peptideCount;
+                    currentProteinGroupIndices = new Set<number>();
+                    currentProteinGroupIndices.add(i);
+                } else if(peptideCount === maxPeptideCount) {
+                    currentProteinGroupIndices.add(i);
+                }
+            }
+        }
+
+        console.log('Found ' + currentProteinGroupIndices.size + ' protein groups with ' + maxPeptideCount + ' peptides.');
+
+        return currentProteinGroupIndices;
     }
 
     private static populateUniquePeptideSet({ nonSubsetProteinGroups } : { nonSubsetProteinGroups:Array<ProteinGroup> }) {

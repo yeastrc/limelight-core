@@ -76,7 +76,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
     private _proteinGroupNone_RadioButton_OnChange_Handler_BindThis = this._proteinGroupNone_RadioButton_OnChange_Handler.bind(this)
     private _proteinGroup_GroupProteins_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_RadioButton_OnChange_Handler.bind(this)
     private _proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler.bind(this)
-    // private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler.bind(this)
+    private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler.bind(this)
 
     /**
      *
@@ -138,20 +138,19 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
             throw e;
         }
     }
-    // Comment out since not currently supported
-    // private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
-    //     try {
-    //             this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_Parsimonious_Groups();  // Update state in URL
-    //
-    //             if (  this.props.propValue.filterValuesChanged_Callback ) {
-    //                 const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
-    //                 this.props.propValue.filterValuesChanged_Callback( param );
-    //             }
-    //     } catch( e ) {
-    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    //         throw e;
-    //     }
-    // }
+    private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+        try {
+                this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_Parsimonious_Groups();  // Update state in URL
+
+                if (  this.props.propValue.filterValuesChanged_Callback ) {
+                    const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
+                    this.props.propValue.filterValuesChanged_Callback( param );
+                }
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
 
     ////////////////////////////////////
 
@@ -166,7 +165,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
         let proteinGroupNone = false;
         let proteinGroup_GroupProteins = false;
         let proteinGroup_GroupProteins_NonSubset = false;
-        // let proteinGroup_GroupProteins_Parsimonious = false;
+        let proteinGroup_GroupProteins_Parsimonious = false;
 
         if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
 
@@ -180,9 +179,8 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
             proteinGroup_GroupProteins_NonSubset = true;
 
-        // } else if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_Parsimonious_Groups() ) {
-        //
-        //     proteinGroup_GroupProteins_Parsimonious = true;
+        } else if ( this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_Parsimonious_Groups() ) {
+             proteinGroup_GroupProteins_Parsimonious = true;
 
         } else {
 
@@ -225,14 +223,12 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                         </label>
                     </span>
 
-                        {/* Comment out since not currently supported
-
-                                private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler.bind(this)
-
-                            <span style="white-space: nowrap;">
-                            <label><input type="radio" name="filter_show_protein_groups" className=" selector_filter_show_protein_groups_do_protein_groups_parsimonious " style="margin-left: 0px;"
-                        {{#if proteinGroup_GroupProteins_Parsimonious }} checked {{/if}}/> Parsimonious Groups</label></span>
-                            */}
+                    <label>
+                        <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
+                               checked={ proteinGroup_GroupProteins_Parsimonious } onChange={ this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis }
+                        />
+                        Parsimonious
+                    </label>
                 </td>
             </tr>
         )
