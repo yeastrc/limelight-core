@@ -231,6 +231,9 @@ type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => JSX.El
  */
 class DataTable_Column {
 
+    //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
+    onlyShow_ValueDisplay_FirstRowOfGroup?: boolean;
+
     //  Dimensions of cells for this column, excluding padding around cell contents:
     width: number;      //  width (set as width and max-width on DOM element style property) of column
     heightInitial?: number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
@@ -290,6 +293,9 @@ class DataTable_Column {
             columnHeader_Tooltip_HTML_TitleAttribute, //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,  // Function that takes no params and returns JSX.Element
 
+            //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
+            onlyShow_ValueDisplay_FirstRowOfGroup,
+
             sortable, sortFunction, hideColumnHeader, style_override_HeaderRowCell_React
         }: {
             id: DataTable_ColumnId,
@@ -318,6 +324,9 @@ class DataTable_Column {
             columnHeader_Tooltip_HTML_TitleAttribute?: string //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
 
+            //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
+            onlyShow_ValueDisplay_FirstRowOfGroup?: boolean;
+
             sortable?: boolean  // Assumed false if missing
             sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell valueSort_FOR_DataTable_Column_sortFunction for custom sorting
 
@@ -345,6 +354,7 @@ class DataTable_Column {
         this.style_override_DataRowCell_React = style_override_DataRowCell_React;
         this.columnHeader_Tooltip_HTML_TitleAttribute = columnHeader_Tooltip_HTML_TitleAttribute;
         this.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element;
+        this.onlyShow_ValueDisplay_FirstRowOfGroup = onlyShow_ValueDisplay_FirstRowOfGroup;
         this.sortable = sortable;
         this.sortFunction = sortFunction;
         this.hideColumnHeader = hideColumnHeader

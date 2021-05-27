@@ -73,17 +73,19 @@
             //       Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line 
 
             position: relative;
-            padding-left: $table-group-border-or-filler;
-            padding-right: $table-group-border-or-filler;
-            padding-top: $table-group-border-or-filler;
-            padding-bottom: $table-group-border-or-filler;
+            //padding-left: $table-group-border-or-filler;
+            //padding-right: $table-group-border-or-filler;
+            //padding-top: $table-group-border-or-filler;
+            //padding-bottom: $table-group-border-or-filler;
             margin-bottom: $table-group-item-margin-top-bottom;
 
             &:first-child {
                 margin-top: $table-group-item-margin-top-bottom;    
             }
 
-            &:hover { 
+            //  Change to Always show the Border instead of only on Hover
+
+            //&:hover {
                 border-style: solid;
                 border-width: 2px;
                 border-color: $site-color-gray;
@@ -91,7 +93,7 @@
                 padding-right: 0px;
                 padding-top: 0px;
                 padding-bottom: 0px;
-            }
+            //}
 
             // div.table-row-group-inner-container { // Table Group Inner Container for a group of Data Rows
                 

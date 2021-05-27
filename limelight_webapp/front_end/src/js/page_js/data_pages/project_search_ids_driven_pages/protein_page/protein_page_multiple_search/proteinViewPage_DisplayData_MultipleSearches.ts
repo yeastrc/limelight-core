@@ -61,6 +61,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinPageSearchesSummarySection";
 import {downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {dataTable_React_convert_DataTableObjects_TableContents_To_Tab_Delim_String_ForDownload} from "page_js/data_pages/data_table_react/dataTable_React_convert_DataTableObjects_TableContents_To_Tab_Delim_String_ForDownload";
 
 /**
  * Entry in proteinList
@@ -1337,6 +1338,7 @@ export class ProteinViewPage_Display_MultipleSearches {
 			proteinGroups_ArrayOf_ProteinGroup: proteinDisplayData.proteinGroups_ArrayOf_ProteinGroup,
 			proteinGrouping_CentralStateManagerObjectClass: this._proteinGrouping_CentralStateManagerObjectClass,
 			projectSearchIds,
+			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId: this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server
 		});
@@ -1599,13 +1601,17 @@ export class ProteinViewPage_Display_MultipleSearches {
 	 */
 	_downloadProteinList() {
 
-		const proteinDisplayDataAsString = this._createProteinDisplayDownloadDataAsString();
-
-		if (!proteinDisplayDataAsString) {
+		if (!this._proteinList_currentTableObject) {
 
 			window.alert("No data to download")
 			return // EARLY RETURN
 		}
+
+		const proteinDisplayDataAsString =
+			dataTable_React_convert_DataTableObjects_TableContents_To_Tab_Delim_String_ForDownload({
+				tableDataRootObject: this._proteinList_currentTableObject.tableDataObject
+			});
+
 
 		const searchIds : Array<number> = []
 
@@ -1636,116 +1642,6 @@ export class ProteinViewPage_Display_MultipleSearches {
 		const filename = 'proteins-search-' + searchIds.join("-") + '.txt';
 
 		StringDownloadUtils.downloadStringAsFile({stringToDownload: proteinDisplayDataAsString, filename: filename});
-	}
-
-	/**
-	 *
-	 */
-	private _createProteinDisplayDownloadDataAsString() {
-
-		if (!this._proteinList_currentTableObject) {
-
-			window.alert("No data to download")
-			return // EARLY RETURN
-		}
-
-		const tableDataObject = this._proteinList_currentTableObject.tableDataObject
-
-		//  Array of Arrays of reportLineParts
-		const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
-
-		//  reportLineParts will be joined with separator '\t'
-
-		//  Header Line
-		{
-			const reportLineParts = [];
-
-			for (const column of tableDataObject.columns) {
-
-				reportLineParts.push(column.displayName);
-			}
-
-			reportLineParts_AllLines.push(reportLineParts);
-		}
-
-		if ( tableDataObject.dataTable_DataRowEntries ) {
-			this._createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries({ dataTable_DataRowEntries : tableDataObject.dataTable_DataRowEntries, reportLineParts_AllLines })
-
-		} else if ( tableDataObject.dataTable_DataGroupRowEntries ) {
-
-			this._createProteinDisplayDownloadDataAsString_Process_dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries : tableDataObject.dataTable_DataGroupRowEntries, reportLineParts_AllLines })
-
-		} else {
-
-			window.alert("Error in processing")
-			throw Error("tableDataObject.dataTable_DataRowEntries NOR tableDataObject.dataTable_DataRowEntries is populated")
-		}
-
-		//  Join all line parts into strings, delimit on '\t'
-
-		const reportLine_AllLines = [];
-
-		let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
-		const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
-
-		for (const reportLineParts of reportLineParts_AllLines) {
-
-			reportLineParts_AllLinesIndex++;
-
-			let reportLine = reportLineParts.join("\t");
-			if (reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last) {
-				reportLine += '\n'; // Add '\n' to last line
-			}
-			reportLine_AllLines.push(reportLine);
-		}
-
-		//  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
-
-		const reportLinesSingleString = reportLine_AllLines.join('\n');
-
-		return reportLinesSingleString;
-	}
-
-	/**
-	 *
-	 */
-	_createProteinDisplayDownloadDataAsString_Process_dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries, reportLineParts_AllLines } : {
-
-		dataTable_DataGroupRowEntries: DataTable_DataGroupRowEntry[]
-		reportLineParts_AllLines : Array<Array<string>>
-	}) {
-
-		for ( const dataTable_DataGroupRowEntry of dataTable_DataGroupRowEntries ) {
-
-			this._createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries({ dataTable_DataRowEntries : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, reportLineParts_AllLines })
-		}
-	}
-
-	/**
-	 *
-	 */
-	_createProteinDisplayDownloadDataAsString_Process_dataTable_DataRowEntries({ dataTable_DataRowEntries, reportLineParts_AllLines } : {
-
-		dataTable_DataRowEntries : DataTable_DataRowEntry[]
-		reportLineParts_AllLines : Array<Array<string>>
-	}) {
-
-		//  Data Lines
-		for (const dataTable_DataRowEntry of dataTable_DataRowEntries) {
-
-			const reportLineParts = [];
-
-			for (const columnEntry of dataTable_DataRowEntry.columnEntries) {
-
-				let dataForColumn = columnEntry.valueDisplay;
-				if ( columnEntry.valueSort !== undefined && columnEntry.valueSort !== null ) {
-					dataForColumn = columnEntry.valueSort.toString();
-				}
-				reportLineParts.push(dataForColumn)
-			}
-
-			reportLineParts_AllLines.push(reportLineParts);
-		}
 	}
 
 }

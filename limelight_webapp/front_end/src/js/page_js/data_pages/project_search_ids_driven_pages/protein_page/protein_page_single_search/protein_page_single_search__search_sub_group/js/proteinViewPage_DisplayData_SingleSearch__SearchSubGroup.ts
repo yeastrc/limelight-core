@@ -28,8 +28,7 @@ import { SearchDetailsBlockDataMgmtProcessing } from 'page_js/data_pages/search_
 import {
     DataTable_RootTableObject,
     DataTable_TableOptions,
-    DataTable_RootTableDataObject,
-    DataTable_DataRowEntry, DataTable_DataGroupRowEntry
+    DataTable_RootTableDataObject
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import {
@@ -73,6 +72,7 @@ import {
     ProteinNameDescriptionCacheEntry_SingleSearch_SearchSubGroup
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/protein_page_single_search__search_sub_group/js/proteinViewPage_DisplayData_SingleSearch_SearchSubGroup_CreateProteinDisplayData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {dataTable_React_convert_DataTableObjects_TableContents_To_Tab_Delim_String_ForDownload} from "page_js/data_pages/data_table_react/dataTable_React_convert_DataTableObjects_TableContents_To_Tab_Delim_String_ForDownload";
 
 
 
@@ -138,13 +138,10 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
     private _subGroupSelection_WhenOpened_SingleProteinOverlay : Set<number>;
 
     private _proteinList_IsInDOM: boolean;
-    // private _addTooltipForProteinName_Called: boolean;
 
     private _mainData_LoadedFor_displayProteinListOnPage = false; // Set to true once "Main Data" Loaded for current project search id.
 
-    private _addTooltipForProteinName_ADDED = false;  // So don't add more than once
-
-    private _proteinList_currentTableObject: DataTable_RootTableObject;
+    private _tableObject_CurrentlyRendered_ProteinList: DataTable_RootTableObject;
 
     /**
      *
@@ -635,6 +632,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
             proteinGrouping_CentralStateManagerObjectClass: this._proteinGrouping_CentralStateManagerObjectClass,
             searchSubGroupIds : searchSubGroup_Ids_Selected_Array,
             projectSearchId : this._projectSearchId,
+            loadedDataPerProjectSearchIdHolder: this._loadedDataPerProjectSearchIdHolder,
             dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
             proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId: this._proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
             proteinRow_tableRowClickHandler_Callback_Function : this._singleProteinRowClickHandler_BindThis
@@ -646,7 +644,7 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
 
         const tableObject = new DataTable_RootTableObject({tableDataObject, tableOptions, dataTableId: "Single Search Search Sub Groups Protein List"});
 
-        this._proteinList_currentTableObject = tableObject;
+        this._tableObject_CurrentlyRendered_ProteinList = tableObject;
 
         if ( ! this._proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
             //  Update Protein Group Count
@@ -1034,68 +1032,16 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
      */
     _downloadProteinList() {
 
-        if ( ! this._proteinList_currentTableObject ) {
+        if ( ! this._tableObject_CurrentlyRendered_ProteinList ) {
             const msg = "_downloadProteinList:  No value in this._proteinList_currentTableObject";
             console.warn( msg );
             throw Error( msg );
         }
 
-        const tableDataObject = this._proteinList_currentTableObject.tableDataObject;
-
-        //  Array of Arrays of reportLineParts
-        const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
-
-        //  reportLineParts will be joined with separator '\t'
-
-        //  Header Line
-        {
-            const reportLineParts = [];
-
-            for ( const column of tableDataObject.columns ) {
-
-                reportLineParts.push( column.displayName );
-            }
-
-            reportLineParts_AllLines.push( reportLineParts );
-        }
-
-        if ( tableDataObject.dataTable_DataGroupRowEntries ) {
-
-            this._downloadProteinList_Process__dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries : tableDataObject.dataTable_DataGroupRowEntries, reportLineParts_AllLines });
-
-        } else if ( tableDataObject.dataTable_DataRowEntries ) {
-
-            this._downloadProteinList_Process__dataTable_DataRowEntries({ dataTable_DataRowEntries : tableDataObject.dataTable_DataRowEntries, reportLineParts_AllLines });
-
-        } else {
-            const msg = "_downloadProteinList:  No value in tableDataObject.dataTable_DataGroupRowEntries or tableDataObject.dataTable_DataRowEntries";
-            console.warn( msg );
-            throw Error( msg );
-        }
-
-
-        //  Join all line parts into strings, delimit on '\t'
-
-        const reportLine_AllLines = [];
-
-        let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
-        const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
-
-        for ( const reportLineParts of reportLineParts_AllLines ) {
-
-            reportLineParts_AllLinesIndex++;
-
-            let reportLine = reportLineParts.join( "\t" );
-            if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
-                reportLine += '\n'; // Add '\n' to last line
-            }
-            reportLine_AllLines.push( reportLine );
-        }
-
-        //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
-
-        const reportLinesSingleString = reportLine_AllLines.join( '\n' );
-
+        const proteinDisplayDataAsString =
+            dataTable_React_convert_DataTableObjects_TableContents_To_Tab_Delim_String_ForDownload({
+                tableDataRootObject: this._tableObject_CurrentlyRendered_ProteinList.tableDataObject
+            });
 
         //  For getting search info for projectSearchIds
         const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
@@ -1107,48 +1053,8 @@ export class ProteinViewPage_DisplayData_SingleSearch__SearchSubGroup {
 
         const filename = 'proteins-search-' + searchNameObject.searchId + '.txt';
 
-        StringDownloadUtils.downloadStringAsFile( { stringToDownload : reportLinesSingleString, filename: filename } );
+        StringDownloadUtils.downloadStringAsFile( { stringToDownload : proteinDisplayDataAsString, filename: filename } );
     }
-
-    /**
-     * Download Protein List, process dataTable_DataRowEntries
-     */
-    private _downloadProteinList_Process__dataTable_DataGroupRowEntries({ dataTable_DataGroupRowEntries, reportLineParts_AllLines } : {
-
-        dataTable_DataGroupRowEntries: DataTable_DataGroupRowEntry[]
-        reportLineParts_AllLines : Array<Array<string>>
-    }) {
-        for ( const dataTable_DataGroupRowEntry of dataTable_DataGroupRowEntries ) {
-
-            this._downloadProteinList_Process__dataTable_DataRowEntries({ dataTable_DataRowEntries : dataTable_DataGroupRowEntry.dataTable_DataRowEntries, reportLineParts_AllLines });
-        }
-    }
-
-    /**
-     * Download Protein List, process dataTable_DataRowEntries
-     */
-    private _downloadProteinList_Process__dataTable_DataRowEntries({ dataTable_DataRowEntries, reportLineParts_AllLines } : {
-
-        dataTable_DataRowEntries: DataTable_DataRowEntry[];
-        reportLineParts_AllLines : Array<Array<string>>
-    }) {
-        for ( const dataTable_DataRowEntry of dataTable_DataRowEntries ) {
-
-            const reportLineParts = [];
-
-            for ( const columnEntry of dataTable_DataRowEntry.columnEntries ) {
-
-                let dataForColumn = columnEntry.valueDisplay;
-                if ( columnEntry.valueSort !== undefined && columnEntry.valueSort !== null ) {
-                    dataForColumn = columnEntry.valueSort.toString();
-                }
-                reportLineParts.push( dataForColumn )
-            }
-
-            reportLineParts_AllLines.push( reportLineParts );
-        }
-    }
-
 
     /**
      * Create searchSubGroup_Ids_Selected

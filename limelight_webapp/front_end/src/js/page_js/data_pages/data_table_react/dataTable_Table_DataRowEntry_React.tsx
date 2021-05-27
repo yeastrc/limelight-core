@@ -24,8 +24,10 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
  */
 export interface DataTable_Table_DataRowEntry_Props {
 
-  dataObject_columnEntry : DataTable_DataRow_ColumnEntry
-  column : DataTable_Column
+    dataObject_columnEntry : DataTable_DataRow_ColumnEntry
+    column : DataTable_Column
+    isInGroup: boolean
+    isFirstRowInGroup: boolean
 }
 
 class DataTable_Table_DataRowEntry_State {
@@ -202,6 +204,27 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
         }
       }
 
+      if ( column.onlyShow_ValueDisplay_FirstRowOfGroup && this.props.isInGroup && ( ! this.props.isFirstRowInGroup ) ) {
+
+          //  Early Return of empty cell
+
+          return ( //  EARLY RETURN
+              <td
+                  ref={ this._displayNameValue_TD_Ref }
+                  style={ styleContainerDiv }
+                  className={ className_Container_TD }
+
+              > </td>   // Empty Cell for Placeholder in table
+          )
+      }
+
+      //   !!!!  REST Only Executed When prev "return" not executed
+
+      //////////////
+      //////////////
+      //////////////
+
+
       let horizontalGraph = undefined;
       let horizontalGraph_SpaceAfter = undefined;
 
@@ -297,6 +320,8 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           cellContentsDiv_onMouseEnterCallback = this._cellContentsDiv_onMouseEnterCallback_BindThis;
           cellContentsDiv_onMouseLeaveCallback = this._cellContentsDiv_onMouseLeaveCallback_BindThis;
       }
+
+      //   "return" earlier for certain conditions
 
       return (
           <td

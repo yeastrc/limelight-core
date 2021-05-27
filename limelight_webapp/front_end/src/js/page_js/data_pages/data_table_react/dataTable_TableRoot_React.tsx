@@ -993,7 +993,8 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 tableOptions={ this.state.tableOptions }
                                 dataTable_RootTableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
                                 dataTableId={ this.props.tableObject.dataTableId }
-                                isLastRow={ isLastRow }
+                                isInGroup={ false }
+                                isFirstRowInGroup={ false }
                                 key={ dataTable_INTERNAL_DataRowEntry.dataTable_DataRowEntry.uniqueId }
                             />
                         );

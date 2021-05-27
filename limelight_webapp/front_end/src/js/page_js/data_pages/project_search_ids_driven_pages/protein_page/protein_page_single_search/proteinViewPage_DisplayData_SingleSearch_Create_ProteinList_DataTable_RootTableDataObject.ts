@@ -34,11 +34,17 @@ import {
     get_SingleSearch_ProteinList_ProteinDescription_ExternalReactComponent,
     get_SingleSearch_ProteinList_ProteinName_ExternalReactComponent
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_ProteinName_ProteinDescription_DataTable_Component";
+import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
+
+
+const _FALSE__DOWNLOAD_STRING = "false";
+const _TRUE__DOWNLOAD_STRING = "true";
 
 
 class GroupedProtein_Entry {
     proteinList_Grouped : Array<ProteinDataDisplay_ProteinListItem_SingleSearch>
     proteinGroup : ProteinGroup
+    isSubsetGroup: boolean
 }
 
 //  Also export functions getProteinDataTableColumns_SingleSearch, createProteinList_ForDataTable below
@@ -59,24 +65,24 @@ export type ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHan
  */
 export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableDataObject = function(
     {
-        proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass, projectSearchId, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+        proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass, projectSearchId,
+        loadedDataPerProjectSearchIdHolder,
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
 } : {
     proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_SingleSearch
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     projectSearchId : number
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_SingleSearch>>
     proteinRow_tableRowClickHandler_Callback_Function: ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function
 
 }) : DataTable_RootTableDataObject {
 
     const proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch> = proteinDisplayData.proteinList
-    const annotationTypeRecords_DisplayOrder = proteinDisplayData.annotationTypeRecords_DisplayOrder
 
     // the columns for the data being shown on the page
-    const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = getProteinDataTableColumns_SingleSearch( {
-        
-        psmAnnotationTypes : annotationTypeRecords_DisplayOrder.psmAnnotationTypesForProteinListEntries,
-        reportedPeptideAnnotationTypes : annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForProteinListEntries 
+    const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = _getProteinDataTableColumns_SingleSearch( {
+        proteinGrouping_CentralStateManagerObjectClass
     } );
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
@@ -84,16 +90,21 @@ export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableData
 
     if ( ! proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
 
+        //  YES Proteins ARE Grouped
+
         dataTable_DataGroupRowEntries = _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups({
-            proteinGrouping_CentralStateManagerObjectClass, proteinList, projectSearchId, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+            proteinGrouping_CentralStateManagerObjectClass, proteinList, projectSearchId, loadedDataPerProjectSearchIdHolder,
+            proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
         });
 
     } else {
 
+        //  Proteins are NOT Grouped
+
         const greyOutRow = false;  //  Not pass for not grouped
 
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
-            greyOutRow, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+            groupNumber: undefined, greyOutRow, isSubsetGroup: undefined, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
         });
     }
 
@@ -113,12 +124,11 @@ export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableData
  * 
  * Called from internal to this file and also called from proteinViewPage_DisplayData_SingleSearch.ts for downloads
  */
-export const getProteinDataTableColumns_SingleSearch = function(
+const _getProteinDataTableColumns_SingleSearch = function(
     {
-        psmAnnotationTypes, reportedPeptideAnnotationTypes
+        proteinGrouping_CentralStateManagerObjectClass
     }: {
-        psmAnnotationTypes : AnnotationTypeItem[]
-        reportedPeptideAnnotationTypes: AnnotationTypeItem[]
+        proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
 
     } ) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
@@ -184,7 +194,8 @@ export const getProteinDataTableColumns_SingleSearch = function(
             id :           'num_reported_peptides',
             displayName,
             width :        70,
-            sortable : true
+            sortable : true,
+            onlyShow_ValueDisplay_FirstRowOfGroup: true
         });
 
         columns.push( column );
@@ -199,7 +210,8 @@ export const getProteinDataTableColumns_SingleSearch = function(
             id :           'num_reported_peptides_unique',
             displayName,
             width :        70,
-            sortable : true
+            sortable : true,
+            onlyShow_ValueDisplay_FirstRowOfGroup: true
         });
 
         columns.push( column );
@@ -214,10 +226,39 @@ export const getProteinDataTableColumns_SingleSearch = function(
             id :           'psms',
             displayName,
             width :        70,
-            sortable : true
+            sortable : true,
+            onlyShow_ValueDisplay_FirstRowOfGroup: true
         });
 
         columns.push( column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
+
+    ///  !!!!!
+
+    //  Next are ONLY for Download
+
+    if ( ! proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
+
+        //  IS Grouping so add Protein Group Number
+
+        const displayName = 'Protein Group Number';
+
+        //   ONLY for Download
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
+
+    if ( proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_NonSubset_Groups() ) {
+
+        //  non subset groups so add Is Subset
+
+        const displayName = 'Is Subset';
+
+        //   ONLY for Download
 
         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
@@ -238,11 +279,14 @@ export const getProteinDataTableColumns_SingleSearch = function(
  */
 const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = function(
     {
-        proteinGrouping_CentralStateManagerObjectClass, proteinList, projectSearchId, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+        proteinGrouping_CentralStateManagerObjectClass, proteinList, projectSearchId,
+        loadedDataPerProjectSearchIdHolder,
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
     } : {
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch>
     projectSearchId : number
+    loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
     proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_SingleSearch>>
     proteinRow_tableRowClickHandler_Callback_Function: ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function
 
@@ -252,21 +296,31 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
 
     const dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = [];
 
-    const groupedProteins : Array<GroupedProtein_Entry> = _renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries({ proteinGrouping_CentralStateManagerObjectClass, proteinList: proteinList_Local, projectSearchId });
+    const groupedProteins : Array<GroupedProtein_Entry> = _renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries({
+        proteinGrouping_CentralStateManagerObjectClass, proteinList: proteinList_Local, projectSearchId
+    });
+
+    //  The Unique Peptide Counts need to be computed using the groups
+    _renderToPageProteinList_dataGroupObjects_Group_proteinList__Update_UniquePeptideCounts({ groupedProteins, loadedDataPerProjectSearchIdHolder });
 
     let proteinList_Grouped_MaxLength = 0;
 
+    let groupNumber = 0;
+
     //  Populate dataGroupObjects
     for ( const groupedProteinItem of groupedProteins ) {
+
+        groupNumber++;
 
         if ( proteinList_Grouped_MaxLength < groupedProteinItem.proteinList_Grouped.length ) {
             proteinList_Grouped_MaxLength = groupedProteinItem.proteinList_Grouped.length;
         }
 
         const greyOutRow = ! groupedProteinItem.proteinGroup.passesFilter;
+        const isSubsetGroup = groupedProteinItem.isSubsetGroup;
 
         const dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({ 
-            greyOutRow, proteinList : groupedProteinItem.proteinList_Grouped, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+            groupNumber, greyOutRow, isSubsetGroup, proteinList : groupedProteinItem.proteinList_Grouped, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
         });
 
         const first_dataTable_DataRowEntry = dataTable_DataRowEntries[ 0 ];
@@ -342,9 +396,17 @@ const _renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries
 
             //  Add new entry to groupedProteins_map_Key_ProteinGroup
 
+            //  Only Set isSubsetGroup when Selected NonSubset_Groups
+
+            let isSubsetGroup: boolean = undefined;
+            if ( proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_NonSubset_Groups() ) {
+                isSubsetGroup = ! proteinGroup_For_proteinListItem.passesFilter
+            }
+
             const groupedProtein_NewEntry : GroupedProtein_Entry = {
                 proteinList_Grouped : [ proteinListItem ],
-                proteinGroup : proteinGroup_For_proteinListItem
+                proteinGroup : proteinGroup_For_proteinListItem,
+                isSubsetGroup
             };
 
             groupedProteins_map_Key_ProteinGroup.set( proteinGroup_For_proteinListItem, { groupedProtein_Entry : groupedProtein_NewEntry, proteinList_Index } );
@@ -432,6 +494,60 @@ const _group_proteinList_Entries_Get_PerProteinIdMap = function({ proteinGroupin
     return proteinGroup;
 }
 
+/**
+ *
+ * @param groupedProteins
+ * @param loadedDataPerProjectSearchIdHolder
+ */
+const _renderToPageProteinList_dataGroupObjects_Group_proteinList__Update_UniquePeptideCounts = function(
+    {
+        groupedProteins, loadedDataPerProjectSearchIdHolder
+    } : {
+        groupedProteins : Array<GroupedProtein_Entry>
+        loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
+    }) : void {
+
+    const proteinSequenceVersionIdsKeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId();
+    if ( ! proteinSequenceVersionIdsKeyReportedPeptideId ) {
+        const msg = "_renderToPageProteinList_dataGroupObjects_Group_proteinList__Update_UniquePeptideCounts(...): loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsKeyReportedPeptideId() returned nothing";
+        console.warn(msg);
+        throw Error(msg);
+    }
+
+    //  Populate dataGroupObjects
+    for ( const groupedProteinItem of groupedProteins ) {
+
+        const proteinSequenceVersionIds_InGroup = groupedProteinItem.proteinGroup.proteins
+
+        for ( const proteinItem of groupedProteinItem.proteinList_Grouped ) {
+
+            let numReportedPeptidesUnique = 0;
+
+            for ( const reportedPeptideId of proteinItem.reportedPeptideIds ) {
+
+                const proteinSequenceVersionIds_For_ReportedPeptideId = proteinSequenceVersionIdsKeyReportedPeptideId.get( reportedPeptideId );
+                if ( ! proteinSequenceVersionIds_For_ReportedPeptideId ) {
+                    const msg = "_renderToPageProteinList_dataGroupObjects_Group_proteinList__Update_UniquePeptideCounts(...): proteinSequenceVersionIdsKeyReportedPeptideId.get( reportedPeptideId ); returned nothing. reportedPeptideId: " + reportedPeptideId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                let reportedPeptide_Unique = true;
+                for ( const proteinSequenceVersionId of proteinSequenceVersionIds_For_ReportedPeptideId ) {
+                    if ( ! proteinSequenceVersionIds_InGroup.has( proteinSequenceVersionId ) ) {
+                        reportedPeptide_Unique = false;
+                        break;
+                    }
+                }
+                if ( reportedPeptide_Unique ) {
+                    numReportedPeptidesUnique++;
+                }
+            }
+            proteinItem.numReportedPeptidesUnique = numReportedPeptidesUnique;
+        }
+
+    }
+}
+
 
 //////////////////////
 
@@ -443,31 +559,36 @@ const _group_proteinList_Entries_Get_PerProteinIdMap = function({ proteinGroupin
  */
 const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
     {
-        greyOutRow, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
     } : {
-    
+
+    groupNumber: number
     greyOutRow : boolean  //  Set greyOutRow on all rows
+    isSubsetGroup: boolean  //  On Download, Set isSubsetGroup flag
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch>
     proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_SingleSearch>>
     proteinRow_tableRowClickHandler_Callback_Function: ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function
 
 }) : Array<DataTable_DataRowEntry> {
 
-    const dataTable_DataRowEntries = createProteinList_ForDataTable_SingleSearch( {
-        greyOutRow, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+    const dataTable_DataRowEntries = _createProteinList_ForDataTable_SingleSearch( {
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
     } );
     
     return dataTable_DataRowEntries;
 }
 
 /**
- *  Called from internal to this file and also called from proteinViewPage_DisplayData_SingleSearch.ts for downloads
+ *
  */
-export const createProteinList_ForDataTable_SingleSearch = function(
+const _createProteinList_ForDataTable_SingleSearch = function(
     {
-        greyOutRow, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinRow_tableRowClickHandler_Callback_Function
     } : {
-    greyOutRow : boolean
+
+    groupNumber: number
+    greyOutRow : boolean  //  Set greyOutRow on all rows
+    isSubsetGroup: boolean  //  On Download, Set isSubsetGroup flag
     proteinList : Array<ProteinDataDisplay_ProteinListItem_SingleSearch>
     proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_SingleSearch>>
     proteinRow_tableRowClickHandler_Callback_Function: ProteinViewPage_DisplayData_SingleSearch_ProteinRow_tableRowClickHandler_Callback_Function // May be Null
@@ -490,7 +611,7 @@ export const createProteinList_ForDataTable_SingleSearch = function(
         
         proteinList_ForDataTable.push(
             _createProteinItem_DataTableEntry( {
-                greyOutRow, proteinListItem, arrayIndex : index, proteinNameDescriptionForToolip, proteinRow_tableRowClickHandler_Callback_Function
+                groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex : index, proteinNameDescriptionForToolip, proteinRow_tableRowClickHandler_Callback_Function
             } )
         );
         index++;
@@ -505,9 +626,12 @@ export const createProteinList_ForDataTable_SingleSearch = function(
  */
 const _createProteinItem_DataTableEntry = function(
     {
-        greyOutRow, proteinListItem, arrayIndex, proteinNameDescriptionForToolip, proteinRow_tableRowClickHandler_Callback_Function
+        groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex, proteinNameDescriptionForToolip, proteinRow_tableRowClickHandler_Callback_Function
     } : {
-    greyOutRow : boolean
+
+    groupNumber: number
+    greyOutRow : boolean  //  Set greyOutRow on all rows
+    isSubsetGroup: boolean  //  On Download, Set isSubsetGroup flag
     proteinListItem : ProteinDataDisplay_ProteinListItem_SingleSearch
     arrayIndex : number
     proteinNameDescriptionForToolip : Array<ProteinNameDescriptionCacheEntry_SingleSearch>
@@ -629,6 +753,33 @@ const _createProteinItem_DataTableEntry = function(
         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
+
+    ///////
+
+    //  For Downloads Only
+
+    {  //  groupNumber
+        if ( groupNumber !== undefined && groupNumber !== null ) {
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: groupNumber.toString() })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+    }
+
+    {  //  isSubsetGroup
+        if ( isSubsetGroup !== undefined && isSubsetGroup !== null ) {
+
+            let cell_ColumnData_String = _FALSE__DOWNLOAD_STRING;
+            if ( isSubsetGroup ) {
+                cell_ColumnData_String = _TRUE__DOWNLOAD_STRING;
+            }
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+    }
+
+
+    //////
 
     let tableRowClickHandler_Callback_NoDataPassThrough : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough = undefined;
 

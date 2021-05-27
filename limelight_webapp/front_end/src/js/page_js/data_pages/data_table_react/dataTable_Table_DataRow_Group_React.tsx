@@ -58,7 +58,7 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
       let counter = 0;
       for ( const dataTable_DataRowEntry_INTERNAL of this.props.dataTable_INTERNAL_DataGroupRowEntry.dataTable_DataRowEntries__INTERNAL ) {
         counter++;
-        const isLastRow = dataTable_DataRowEntries_Length === counter;
+        const isFirstRowInGroup = 1 === counter;
         const reactRowElement = (
             <DataTable_Table_DataRow 
               columns={ this.props.columns }
@@ -66,7 +66,8 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
               tableOptions={ this.props.tableOptions }
               dataTable_RootTableDataObject_INTERNAL={ this.props.dataTable_RootTableDataObject_INTERNAL }
               dataTableId={ this.props.dataTableId }
-              isLastRow={ isLastRow }
+              isInGroup={ true }
+              isFirstRowInGroup={ isFirstRowInGroup }
               key={ dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.uniqueId } />
         );
 

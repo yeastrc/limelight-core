@@ -42,7 +42,8 @@ export interface DataTable_Table_DataRow_Props {
     columns : Array<DataTable_Column>
     dataTable_RootTableDataObject_INTERNAL :  DataTable_INTERNAL_RootTableDataObject
     dataTableId : string
-    isLastRow : boolean   //  NOT Currently used since it changes after the user sorts the table.  Was only used for minor formatting.
+    isInGroup: boolean
+    isFirstRowInGroup: boolean
 }
 
 /**
@@ -632,9 +633,9 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                 return (
                     <DataTable_Table_DataRowEntry
                         column={column}
-                        // dataObject={ this.props.dataObject }
                         dataObject_columnEntry={dataObject_columnEntry}
-                        // index={ index }
+                        isInGroup={ this.props.isInGroup }
+                        isFirstRowInGroup={ this.props.isFirstRowInGroup }
                         key={index}
                     />
                 );
