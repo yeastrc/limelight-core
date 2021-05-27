@@ -2525,20 +2525,33 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             if ( ! loadedDataPerProjectSearchIdHolder ) {
                 throw new Error("No value in this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
             }
-            if ( loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId()
-                && loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId().get( this.props.propsValue.proteinSequenceVersionId )
-            ) {
-                searchContains_VariableModifications = true;
+
+            {
+                const dynamicModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnProtein_KeyProteinSequenceVersionId();
+                if ( dynamicModificationsOnProtein_KeyProteinSequenceVersionId ) {
+                    const entryFor_proteinSequenceVersionId = dynamicModificationsOnProtein_KeyProteinSequenceVersionId.get( this.props.propsValue.proteinSequenceVersionId );
+                    if ( entryFor_proteinSequenceVersionId && entryFor_proteinSequenceVersionId.length > 0 ) {
+                        searchContains_VariableModifications = true;
+                    }
+                }
             }
-            if ( loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId()
-                && loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId().get( this.props.propsValue.proteinSequenceVersionId )
-            ) {
-                searchContains_OpenModifications = true;
+            {
+                const openModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnProtein_KeyProteinSequenceVersionId();
+                if ( openModificationsOnProtein_KeyProteinSequenceVersionId ) {
+                    const entryFor_proteinSequenceVersionId = openModificationsOnProtein_KeyProteinSequenceVersionId.get( this.props.propsValue.proteinSequenceVersionId );
+                    if ( entryFor_proteinSequenceVersionId && entryFor_proteinSequenceVersionId.length > 0 ) {
+                        searchContains_OpenModifications = true;
+                    }
+                }
             }
-            if ( loadedDataPerProjectSearchIdHolder.get_staticModificationsOnProtein_KeyProteinSequenceVersionId()
-                && loadedDataPerProjectSearchIdHolder.get_staticModificationsOnProtein_KeyProteinSequenceVersionId().get( this.props.propsValue.proteinSequenceVersionId )
-            ) {
-                searchContains_StaticModifications = true;
+            {
+                const staticModificationsOnProtein_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_staticModificationsOnProtein_KeyProteinSequenceVersionId();
+                if ( staticModificationsOnProtein_KeyProteinSequenceVersionId ) {
+                    const entryFor_proteinSequenceVersionId = staticModificationsOnProtein_KeyProteinSequenceVersionId.get( this.props.propsValue.proteinSequenceVersionId );
+                    if ( entryFor_proteinSequenceVersionId && entryFor_proteinSequenceVersionId.size > 0 ) {
+                        searchContains_StaticModifications = true;
+                    }
+                }
             }
         }
 
