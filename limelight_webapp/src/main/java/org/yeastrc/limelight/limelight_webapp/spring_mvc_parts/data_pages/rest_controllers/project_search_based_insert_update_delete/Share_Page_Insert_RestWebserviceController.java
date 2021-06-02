@@ -397,10 +397,13 @@ public class Share_Page_Insert_RestWebserviceController {
 						|| ( entry >= 'A' && entry <= 'Z' )
 						|| ( entry >= '1' && entry <= '9' ) ) {
 					//  Only take a-z, A-Z, 1-9.
-					randomStringSB.append( entry );
-					insertedCharacterCount++;
-					if ( insertedCharacterCount >= RETURN_LENGTH ) {
-						break;
+					if ( entry != 'l' && entry != 'I' ) {
+						//  Not take lower case l and upper case I since in many fonts they look too similar
+						randomStringSB.append( entry );
+						insertedCharacterCount++;
+						if ( insertedCharacterCount >= RETURN_LENGTH ) {
+							break;
+						}
 					}
 				}
 			}
