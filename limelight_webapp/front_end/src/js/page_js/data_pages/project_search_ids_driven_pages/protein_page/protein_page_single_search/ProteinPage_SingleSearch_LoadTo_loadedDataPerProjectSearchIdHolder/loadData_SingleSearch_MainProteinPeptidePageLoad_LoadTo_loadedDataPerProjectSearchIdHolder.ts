@@ -3,7 +3,7 @@
  *
  * Javascript for proteinView.jsp page - Get data from Server and Process/Reformat it before storing it
  *
- * Companion file to proteinViewPage_DisplayData_SingleSearch.ts
+ * Used on Protein and Peptide pages, and Experiment Protein and Peptide pages
  *
  * !!!  Also used for Peptide page with parameter forPeptidePage set  !!!
  *

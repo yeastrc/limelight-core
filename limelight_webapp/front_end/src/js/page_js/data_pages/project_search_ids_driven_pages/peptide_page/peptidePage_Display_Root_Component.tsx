@@ -1,7 +1,7 @@
 /**
  * peptidePage_Display_Root_Component.tsx
  * 
- * Root of Peptide Page - inserted into <div> with id '???' in
+ * Root of Peptide Page - inserted into <div> with id 'main_peptide_view_outer_block_react_root_container' in
  * 
  */
 

@@ -34,7 +34,15 @@ export const ProteinViewPage_StatsSection_LoadingMessage : FC = function () : JS
 export interface ProteinViewPage_StatsSection_Props {
 
     searchContainsSubGroups : boolean
-    data: any
+    data: {
+        psmCount: number
+        reportedPeptideCount: number
+        proteinCount: number
+        ms2ScanCount?: any
+        psmsNoVariableModsCount? : number
+        psmsYesVariableModsCount? : number
+
+    }
 }
 
 /**

@@ -37,92 +37,27 @@
    
    <%--  Outermost div inside <div id="data_page_overall_enclosing_block_div"> from header --%>
    
-   <div id="protein_page_outermost_block" style="display: none;"> <%--  Hidden until Javascript has loaded and displays it --%>
+   <div id="protein_page_outermost_block" >
    
 	<h3>
 		Proteins View
 	</h3>
 	
-	<!--  Navigation Links -->
+	<!--  Navigation Links --> <%--  Contents inserted by Javascript --%>
 	<div id="data_pages_nav_links_page_container" ></div>
 	
-	<!--  Search Details and Filters (PSM, Peptide, and Protein) -->
-	<div id="search_details_and_other_filters_outer_block_react_root_container"></div>
-	
-	<!-- Outer Container for Save View Button and other buttons  -->
-	<div >
-		<!--  Save As Default Button -->
-		<div id="set_default_view_root_container" class=" set-default-view-container " style="dislay: none;" ></div>
-		<!--  Save View Button -->
-		<div id="save_view_root_container" class=" save-view-root-container " ></div>
-		<!--  Share Page Button -->
-		<div id="share_page_root_container" class="  share-page-root-container " ></div>
+	<%--  Loading message displayed until Javascript is loaded and initial search data is loaded. --%>
+	<div 
+		id="main_protein_view_loading_data_root_container" 
+		style="font-size: 18px; margin-top: 20px; margin-bottom: 20px;"
+	>
+		LOADING DATA
 	</div>
-
-	<h3> Protein List:</h3>
-<%-- 	
-	<div style="margin-top: 10px; margin-bottom: 10px">
-	
-		<input type="checkbox" checked="checked"> Show Data by Search Sub Groups
-		<span style="color: red">Checkbox NOT read yet.</span>
-	</div>
---%>
-	
-	<div id="protein_counts_download_assoc_psms_block" style=" margin-bottom: 10px; display: none;">
-	
-		<span id="protein_group_list_size_section_display" style="padding-right: 10px; white-space: nowrap; display: none;">Protein Group Count: 
-			<span id="protein_group_list_size"></span>
-		</span>
 		
-		<span style=" white-space: nowrap; ">Protein Count: <span id="protein_list_size"></span></span>
-		
-		<span  id="reported_peptide_count_label" style="padding-left: 10px; white-space: nowrap; display: none;">Peptide Count: 
-			</span><span id="reported_peptide_count_display"></span>
-		<span id="psm_count_label" style="padding-left: 10px; white-space: nowrap; display: none;">PSM Count: 
-			</span><span id="psm_count_display"></span>
+	<!--  Main Protein View Container -->
+	<div id="main_protein_view_outer_block_react_root_container"></div>
 	
-		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_proteins" class=" fake-link " >Download Proteins</span>
 	
-		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="protein_download_assoc_psms" class=" fake-link " >Download PSMs</span>
-		
-		<%-- Single Search Only --%>
-		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="show_status_link" class=" fake-link " >Show Stats</span>
-
-		<%-- Combined/Merged Searches Only --%>
-		<span style="padding-left: 10px; white-space: nowrap; display: none;" id="combined_searches_show_summary_data_per_search_link" class=" fake-link " >
-			Show Summary Data Per Search
-		</span>
-	</div>
-	
-	<div id="stats_data_container" style=" display: none;">
-
-	</div>
-
-	<%-- Container for PSM Counts Per Search Only displayed for Combined/Merged Searches  --%>
-	<div id="combined_searches_psm_counts_per_search_container">
-
-	</div>
-	
-	<%--  Proteins Loading Text --%>
-	<div id="protein_table_loading_text_display">Loading Data</div>
-	
-	<%--  Proteins are displayed here --%>
-	
-	<div id="protein_list_outer_container" style="position: relative; display: inline-block;"> <%--  display: inline-block; so overlay doesn't extend right past the table right edge --%>
-	  	
-	  	<div id="protein_list_container" style="display: inline-block;">
-		</div>
-
-		<%--  Cover over protein list when updating --%>
-		<div id="protein_list_updating_message"
-			style="display: none; " class=" block-updating-overlay-container ">
-			<div style=" margin-top: 4px; text-align: center;">
-				Updating Protein List
-			</div>
-		</div>
-		
-	</div>   <%-- Close:   everything main after <h3> Protein List:</h3> --%>
-     
    </div> <%--  close <div id="protein_page_outermost_block"  --%>
    
   

@@ -121,8 +121,6 @@ export const renderToPageProteinList_SingleSearch_Create_DataTable_RootTableData
 
 /**
  * Create Table Columns 
- * 
- * Called from internal to this file and also called from proteinViewPage_DisplayData_SingleSearch.ts for downloads
  */
 const _getProteinDataTableColumns_SingleSearch = function(
     {

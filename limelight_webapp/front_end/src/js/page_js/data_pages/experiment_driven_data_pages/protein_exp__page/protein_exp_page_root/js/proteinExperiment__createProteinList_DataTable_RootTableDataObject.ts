@@ -31,19 +31,17 @@ import {ProteinExperiment__CreateProteinDataTableColumns_Class} from "page_js/da
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 import {ProteinExperiment_CreateProteinDisplayData_Result_ProteinListEntry} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment___createProteinDisplayData";
 import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
-import {
-    ProteinDataDisplay_ProteinListItem_MultipleSearch
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {get_ProteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component";
 import {ProteinExperiment__CreateProteinDataTable_ChartColumn_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ChartColumn";
+import {ProteinDataDisplay_ProteinListItem_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/js/proteinViewPage_DisplayData_MultipleSearches_CreateProteinDisplayData";
 
 const googleChart_Width = 400; // pixels, must be a number.  style 'width' and 'maxWidth' properties.
 const googleChart_heightInitial = 100; // pixels, must be a number.  style 'height' property, not 'maxHeight' property
 
 
 class GroupedProtein_Entry {
-    proteinList_Grouped : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+    proteinList_Grouped : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
     proteinGroup : ProteinGroup
 }
 
@@ -134,7 +132,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_singleProteinRow_ClickHandler
 
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
         proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup>
         conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
 
@@ -198,7 +196,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries
 } : {
 
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-    proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+    proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
     proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup>
     conditions_for_condition_group_with_their_project_search_ids  : Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
 }) : Array<GroupedProtein_Entry> {

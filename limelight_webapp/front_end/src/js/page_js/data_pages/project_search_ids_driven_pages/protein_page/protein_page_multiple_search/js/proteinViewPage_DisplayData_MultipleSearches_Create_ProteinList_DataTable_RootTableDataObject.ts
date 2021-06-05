@@ -24,29 +24,36 @@ import {
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { ProteinGroup } from 'page_js/data_pages/protein_inference/ProteinGroup';
-import { ProteinGrouping_CentralStateManagerObjectClass } from '../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
-import {
-    ProteinDataDisplay_ProteinListItem_MultipleSearch, ProteinNameDescriptionCacheEntry_MultipleSearches,
-    ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler,
-    ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params
-} from './proteinViewPage_DisplayData_MultipleSearches';
+import { ProteinGrouping_CentralStateManagerObjectClass } from '../../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
 import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {
     get_MultipleSearches_ProteinList_ProteinDescription_ExternalReactComponent,
     get_MultipleSearches_ProteinList_ProteinName_ExternalReactComponent
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches_ProteinName_ProteinDescription_DataTable_Component";
-import {ProteinNameDescriptionCacheEntry_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/proteinViewPage_DisplayData_SingleSearch_CreateProteinDisplayData";
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/jsx/proteinViewPage_DisplayData_MultipleSearches_ProteinName_ProteinDescription_DataTable_Component";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
+import {
+    ProteinDataDisplay_ProteinListItem_MultipleSearches,
+    ProteinNameDescriptionCacheEntry_MultipleSearches
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/js/proteinViewPage_DisplayData_MultipleSearches_CreateProteinDisplayData";
 
 
 const _FALSE__DOWNLOAD_STRING = "false";
 const _TRUE__DOWNLOAD_STRING = "true";
 
 class GroupedProtein_Entry {
-    proteinList_Grouped : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+    proteinList_Grouped : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
     proteinGroup : ProteinGroup
     isSubsetGroup: boolean
 }
+
+///   Callback when row in protein list table is clicked
+
+export class ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params {
+    proteinSequenceVersionId: number
+    dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params: DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params
+}
+
+export type ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler = ( params : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params ) => void
 
 /**
  * Create tableObject object  for DataTable
@@ -59,7 +66,7 @@ export const renderToPageProteinList_MultipleSearches_Create_DataTable_RootTable
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, dataPageStateManager_DataFrom_Server
     } : {
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler
-        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
         proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup> //  Populated when grouping
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
         projectSearchIds : Array<number>
@@ -286,7 +293,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
     } : {
     
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-    proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+    proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
     proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup>
     projectSearchIds  : Array<number>
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
@@ -355,7 +362,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_Group_proteinList_Entries
 } : { 
     
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-    proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch> 
+    proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
     proteinGroups_ArrayOf_ProteinGroup : Array<ProteinGroup>
     projectSearchIds  : Array<number>
 }) : Array<GroupedProtein_Entry> {
@@ -552,7 +559,7 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
         groupNumber: number
         greyOutRow : boolean  //  Set greyOutRow on all rows
         isSubsetGroup: boolean  //  On Download, Set isSubsetGroup flag
-        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
         projectSearchIds : Array<number>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_MultipleSearches>>
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler
@@ -576,7 +583,7 @@ const _createProteinList_ForDataTable = function(
         groupNumber: number
         greyOutRow : boolean  //  Set greyOutRow on all rows
         isSubsetGroup: boolean  //  On Download, Set isSubsetGroup flag
-        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearch>
+        proteinList : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>
         projectSearchIds : Array<number>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_MultipleSearches>>
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler
@@ -619,7 +626,7 @@ const _createProteinItem_DataTableEntry = function(
     groupNumber: number
     greyOutRow : boolean  //  Set greyOutRow on all rows
     isSubsetGroup: boolean  //  On Download, Set isSubsetGroup flag
-    proteinListItem : ProteinDataDisplay_ProteinListItem_MultipleSearch
+    proteinListItem : ProteinDataDisplay_ProteinListItem_MultipleSearches
     arrayIndex : number
     projectSearchIds : Array<number>
     proteinNameDescriptionForToolip : Array<ProteinNameDescriptionCacheEntry_MultipleSearches>
@@ -793,7 +800,7 @@ const _createProteinItem_DataTableEntry = function(
 
     const tableRowClickHandler_Callback_NoDataPassThrough : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough = ( params :  DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params ) : void => {
         const singleProteinRowClickHandler_Params : ProteinViewPage_Display_MultipleSearches_singleProteinRow_ClickHandler_Params = {
-            dataTable_RowClickCallback_Params : params,
+            dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params : params,
             proteinSequenceVersionId : proteinListItem.proteinSequenceVersionId
         }
         singleProteinRowClickHandler_Callback( singleProteinRowClickHandler_Params );

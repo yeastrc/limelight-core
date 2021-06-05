@@ -22,7 +22,7 @@ import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {ProteinNameDescriptionCacheEntry_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/proteinViewPage_DisplayData_MultipleSearches";
+import {ProteinNameDescriptionCacheEntry_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/js/proteinViewPage_DisplayData_MultipleSearches_CreateProteinDisplayData";
 
 /**
  *

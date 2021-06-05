@@ -8,7 +8,6 @@
 --%>
 
 <%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
-<%@page import="org.yeastrc.limelight.limelight_import.api.xml_dto.FilterDirectionType"%>
 
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
 

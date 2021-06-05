@@ -144,7 +144,7 @@ export const createProteinDisplayData_SingleSearch_SearchSubGroup = function(
         const numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map = loadedDataPerProjectSearchIdHolder.get_numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map();
         if ( ! numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map ) {
 
-            const msg = "proteinViewPage_DisplayData_SingleSearch__SearchSubGroup.ts: _createProteinDisplayData(...) ( ! loadedDataPerProjectSearchIdHolder.get_numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map() ). projectSearchId: " + projectSearchId;
+            const msg = "createProteinDisplayData_SingleSearch_SearchSubGroup(...) ( ! loadedDataPerProjectSearchIdHolder.get_numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map() ). projectSearchId: " + projectSearchId;
             console.warn( msg );
             throw Error( msg );
         }

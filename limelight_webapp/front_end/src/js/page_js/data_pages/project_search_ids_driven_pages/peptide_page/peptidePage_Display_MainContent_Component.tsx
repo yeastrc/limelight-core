@@ -145,13 +145,6 @@ import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData
 /**
  * 
  */
-export interface PeptidePage_Display_MainContent_Component_closeOverlayClickHandler {
-    () : void
-}
-
-/**
- * 
- */
 export class PeptidePage_Display_MainContent_Component_Props_Prop {
 
     projectSearchIds : Array<number>;
@@ -566,6 +559,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
         }
     ) : void {
+
         const proteinSequenceVersionId_FromURL = this.props.propsValue.singleProtein_CentralStateManagerObject.getProteinSequenceVersionId();
 
         if (proteinSequenceVersionId_FromURL !== undefined && proteinSequenceVersionId_FromURL !== null) {

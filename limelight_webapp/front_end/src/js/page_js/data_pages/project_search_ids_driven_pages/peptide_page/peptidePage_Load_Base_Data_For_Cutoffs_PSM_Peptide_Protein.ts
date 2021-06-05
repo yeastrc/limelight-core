@@ -35,7 +35,7 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     }
-) : Promise<any> {
+) : Promise<void> {
 
     // const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = (
     //     searchDetailsBlockDataMgmtProcessing.
