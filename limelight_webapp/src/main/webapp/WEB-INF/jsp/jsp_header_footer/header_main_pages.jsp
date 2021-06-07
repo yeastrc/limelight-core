@@ -158,8 +158,15 @@
   	  <c:when test="${ empty headerUserInfo }">   <%--  Also used in generalError.jsp --%>
   	  
   	   <div class="header-right-icons-container" style="position: relative;">
-		
-	  		<img src="static/images/icon-login.png" class=" icon-small fake-link-image selector_tool_tip_attached"
+
+      		<a href="https://limelight-ms.readthedocs.io/en/latest/" id="documentation_header_link" target="_blank"
+			  class=" selector_tool_tip_attached "
+			  title="Read Documentation"
+		    ><img src="static/images/icon-help.png" class="header-documentation-image"
+		    ></a>
+		   		
+	  		<img src="static/images/icon-login.png" class=" fake-link-image selector_tool_tip_attached"
+	  			style=" margin-left: 5px; "
 		  			id="signin_header_link" 
 		  			title="Signin"
 	  		>
