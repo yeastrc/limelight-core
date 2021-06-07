@@ -165,7 +165,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLeve
                             ) : null }
                         </div>
 
-                        <div className=" top-level-label-help-tip-symbol">   {/*  column 2  */}
+                        <div className=" project-page--top-level-label-help-tip-symbol">   {/*  column 2  */}
 
                             <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
                                 Enable or disable reviewer mode and public sharing for this project.

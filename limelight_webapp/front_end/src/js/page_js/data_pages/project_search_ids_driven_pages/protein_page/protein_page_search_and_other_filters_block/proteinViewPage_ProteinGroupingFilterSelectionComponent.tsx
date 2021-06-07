@@ -200,36 +200,84 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
             <tr >
                 <td style={ { verticalAlign: "top", paddingBottom: 4, paddingRight: 6, whiteSpace: "nowrap" } }>Protein Grouping:</td>
                 <td colSpan={ 5 } style={ { verticalAlign: "top", paddingBottom: 4 } }>
-                    <span style={ { paddingRight: 3, whiteSpace: "nowrap" } }>
+                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
                         <label>
                             <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
                                checked={ proteinGroupNone } onChange={ this._proteinGroupNone_RadioButton_OnChange_Handler_BindThis }
                             />
                             No Groups
+
+                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                <div className=" inner-absolute-pos ">
+                                    <div className=" main-div ">
+                                        <p className="help-tip-actual">
+                                            Each row contains the name(s), description(s), and statistics for a single protein sequence. Proteins are not grouped.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                         </label>
                     </span>
-                    <span style={ { paddingRight: 3, whiteSpace: "nowrap" } }>
+                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
                         <label>
                             <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
                                checked={ proteinGroup_GroupProteins } onChange={ this._proteinGroup_GroupProteins_RadioButton_OnChange_Handler_BindThis }
                             />
                             Simple
+
+                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                <div className=" inner-absolute-pos ">
+                                    <div className=" main-div ">
+                                        <p className="help-tip-actual">
+                                            Proteins are grouped by indistinguishable protein groups. That is, all proteins in the same protein group have the same list of identified peptides.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                         </label>
                     </span>
-                    <span style={ { paddingRight: 3, whiteSpace: "nowrap" } }>
+                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
                         <label>
                             <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
                                checked={ proteinGroup_GroupProteins_NonSubset } onChange={ this._proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler_BindThis }
                             />
                             No Subgroups
+
+                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                <div className=" inner-absolute-pos ">
+                                    <div className=" main-div ">
+                                        <p className="help-tip-actual">
+                                            Proteins are grouped by indistinguishable protein groups.
+                                            That is, all proteins in the same protein group have the same list of identified peptides.
+                                            All protein groups whose peptide list is a subset of another group’s peptide list will be greyed out.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                         </label>
                     </span>
-                    <span style={ { paddingRight: 3, whiteSpace: "nowrap" } }>
+                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
                         <label>
                             <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
                                    checked={ proteinGroup_GroupProteins_Parsimonious } onChange={ this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis }
                             />
                             Parsimonious
+
+                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                <div className=" inner-absolute-pos ">
+                                    <div className=" main-div ">
+                                        <p className="help-tip-actual">
+                                            Parsimonious Protein Groups
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                         </label>
                     </span>
                 </td>
