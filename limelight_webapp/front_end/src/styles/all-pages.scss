@@ -398,11 +398,11 @@ button {
 //   Help Icon with On Hover display Help overlay
 
 
-//    For Main Text Font Size: font-size: 24px;
+//    For "top-level-label" Text Font Size: font-size: 24px;
 
 //      This one currently for project page under <div> with class 'top-level-label'
 
-.project-page--project-page--top-level-label-help-tip-symbol {
+.project-page--top-level-label-help-tip-symbol {
   position: relative;
   margin-left: 10px;
   text-align: center;
@@ -471,11 +471,11 @@ button {
     }
 
     &:after {
-      width: 100%;
-      height: 40px;
-      content: '';
+      width: 40px;
+      height: 24px;
+      content: "";
       position: absolute;
-      top: -40px;
+      top: -24px;
       left: 0;
     }
 

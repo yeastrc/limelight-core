@@ -25,7 +25,7 @@
 			  Explore Search Results
 		  </div>
 		  
-  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+  		  <div class="project-page--top-level-label-help-tip-symbol">  <%--  column 2  --%>
 		  		
 		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
 		  			View the results and associated metadata for each search uploaded to the project.

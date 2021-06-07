@@ -31,7 +31,7 @@
 	  		Highlighted Results
   		 </div>
 		  
-  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+  		  <div class="project-page--top-level-label-help-tip-symbol">  <%--  column 2  --%>
 		  		
 		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
 		  			Links to views of data in Limelight that the project owner wishes to highlight.

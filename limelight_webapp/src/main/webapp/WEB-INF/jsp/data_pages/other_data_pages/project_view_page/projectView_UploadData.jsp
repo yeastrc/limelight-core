@@ -36,7 +36,7 @@
 			 (Pending <span id="upload_data_pending_number"></span>)</span>
 		  </div>
 		  
-  		  <div class="top-level-label-help-tip-symbol">  <%--  column 2  --%>
+  		  <div class="project-page--top-level-label-help-tip-symbol">  <%--  column 2  --%>
 		  		
 		  		<p class="top-level-label-help-tip-actual"> <%--  Displayed on hover of ? --%>
 		  			Upload search results to this project and view upload history.
