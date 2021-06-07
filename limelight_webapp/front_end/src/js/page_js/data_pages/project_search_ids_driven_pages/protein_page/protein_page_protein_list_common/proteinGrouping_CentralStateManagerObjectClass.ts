@@ -122,7 +122,7 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 		}
 
 		if ( ! this._value.groupProteins ) {
-			this._value.groupProteins = _PROTEIN_GROUP_SELECTION_NO;  // Default to NO
+			this._value.groupProteins = _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_PARSIMONIOUS;  // Default to NO
 		}
 
 		this._initializeCalled = true;
