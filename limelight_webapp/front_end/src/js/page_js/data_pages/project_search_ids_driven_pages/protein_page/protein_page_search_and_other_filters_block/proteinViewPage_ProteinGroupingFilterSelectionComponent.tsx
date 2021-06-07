@@ -272,7 +272,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                 <div className=" inner-absolute-pos ">
                                     <div className=" main-div ">
                                         <p className="help-tip-actual">
-                                            Parsimonious Protein Groups
+                                            The fewest number of protein groups necessary to explain the found peptides are displayed.
                                         </p>
                                     </div>
                                 </div>
