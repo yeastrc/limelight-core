@@ -214,7 +214,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                         <p className="help-tip-actual">
                                             Proteins are grouped by indistinguishable protein groups.
                                             That is, all proteins in the same protein group have the same list of identified peptides.
-                                            Then a greedy set cover algorithm is used to estimate fewest number of protein groups necessary to explain the found peptides are displayed. Non-parsimonious groups are greyed out.
+                                            Then a greedy set cover algorithm is used to estimate fewest number of protein groups necessary to explain the found peptides. Non-parsimonious groups are greyed out.
                                         </p>
                                     </div>
                                 </div>
