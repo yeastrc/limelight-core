@@ -40,7 +40,7 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
 
     private _for_SingleProtein : boolean = false;
 
-    private _optionSelected : boolean = undefined; //  Set to undefined if no selection or false
+    private _optionSelected : boolean = true; //  Default true
 
     private _centralPageStateManager : CentralPageStateManager;
 
@@ -169,11 +169,7 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
             throw Error(msg)
         }
 
-        if ( ! treatOpenModMassZeroAsUnmodified_Selection ) {
-            this._optionSelected = undefined;
-        } else {
-            this._optionSelected = treatOpenModMassZeroAsUnmodified_Selection;
-        }
+        this._optionSelected = treatOpenModMassZeroAsUnmodified_Selection;
 
         // if ( ! this._centralPageStateManager ) {
         //     throw Error( "this._centralPageStateManager not set" );
@@ -195,7 +191,7 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
             throw Error(msg)
         }
 
-        this._optionSelected = undefined;
+        this._optionSelected = true;
 
         if ( ! this._centralPageStateManager ) {
             throw Error( "this._centralPageStateManager not set" );
@@ -217,15 +213,6 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
      * Called by Central State Manager and maybe other code
      */
     getDataForEncoding() {
-
-        // MUST  return something if not selected if for Single Protein.  Processing for Single Protein requires it.
-
-        if ( ( ! this._optionSelected ) && ( ! this._for_SingleProtein ) ) {
-
-            //  NO need to return anything if not selected and not for Single Protein
-
-            return undefined; // EARLY RETURN
-        }
 
         const dataForEncoding = {}
 
