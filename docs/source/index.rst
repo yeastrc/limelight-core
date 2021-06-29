@@ -9,8 +9,7 @@ Citing
 If you use Limelight in your work, please cite:
 
   .. epigraph::
-   Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Riffle M,
-   Hoopmann MR, Jaschob D, Zhong G, Mortiz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. 2021. *Submitted*
+   `Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Michael Riffle, Michael R. Hoopmann, Daniel Jaschob, Guo Zhong, Robert L. Moritz, Michael J. MacCoss, Trisha N. Davis, Nina Isoherranen, Alex Zelter bioRxiv 2021.06.24.449838; doi: https://doi.org/10.1101/2021.06.24.449838 <https://www.biorxiv.org/content/10.1101/2021.06.24.449838v1>`_
 
 
 Getting Help, Providing Feedback, or Reporting Problems
