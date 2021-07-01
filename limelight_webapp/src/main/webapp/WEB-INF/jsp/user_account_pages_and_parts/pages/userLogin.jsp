@@ -36,35 +36,36 @@
 	    <input type="hidden" id="defaultURL" value="XXXXX"/>
 --%>
 
-<div class="page-content-outer-container" >	
- <div class="page-content-container" >	
-  <div class="page-content" >	
-	
+<div class="page-content-outer-container" >
+    <div class="page-content-container" >
+        <div class="page-content" >
 
-	<div class="logo-large-container" >
-		<img src="static/images/login-page-logo.png" />
-	</div>
-	
-	<div id="main_container_below_logo">
-	</div>
-  		
-  </div>
 
-     <div id="get_help_tab" class="bottom-tab"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
-         <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank">Get Help</a>
-     </div>
+            <div class="logo-large-container" >
+                <img src="static/images/login-page-logo.png" />
+            </div>
 
-  		<%-- Not Shown initially --%>
-  <div id="reset_password_tab" class="bottom-tab" style="display: none;border-right-width: 0px;"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
-		<span id="reset_password_fake_link" class=" fake-link " >Reset Password</span>
-  </div>
+            <div id="main_container_below_logo">
+            </div>
 
-		<%-- Not Shown initially --%>
-  <div id="signin_tab" class="bottom-tab" style="display: none;border-right-width: 0px;" > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
-		<span id="signin_fake_link" class=" fake-link " >Sign In</span>		
-  </div>
-    
- </div>
+        </div>
+
+        <div id="get_help_tab" class="bottom-tab"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+            <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank">Get Help</a>
+        </div>
+
+        <%-- Not Shown initially --%>
+        <div id="reset_password_tab" class="bottom-tab" style="display: none;border-right-width: 0px;"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+            <span id="reset_password_fake_link" class=" fake-link " >Reset Password</span>
+        </div>
+
+        <%-- Not Shown initially --%>
+        <div id="signin_tab" class="bottom-tab" style="display: none;border-right-width: 0px;" > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
+            <span id="signin_fake_link" class=" fake-link " >Sign In</span>
+        </div>
+
+    </div>
+    <div style="display:block;margin-top:20px;">Using Limelight in your work? Remember to <a target="_blank" href="https://limelight-ms.readthedocs.io/en/latest/#citing"><span style="font-weight:bold;">Cite Limelight</span></a>!</div>
 </div>
 
 <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>	
