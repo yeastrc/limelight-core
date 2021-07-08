@@ -40,7 +40,7 @@ import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable
 import {
     ProteinPage_Display_MultipleSearches_SingleProtein,
     ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
 import {
     ProteinPage_ProteinGroupingFilterSelection_Component_Root,
     ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
