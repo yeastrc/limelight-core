@@ -2608,7 +2608,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                         <div style={ { marginBottom: 10 } }  >
 
-                            <div className=" filter-common-block-selection-container-block ">
+                            <div className=" filter-common-block-selection-container-block no-section-labels ">
 
                                 <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
                                     displayData={ this.state.searchSubGroup_PropValue }

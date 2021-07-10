@@ -8,7 +8,11 @@
 import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {modificationMass_CommonRounding_ReturnNumber} from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
-import {create_reportedPeptide_CommonValue_EncodedString} from "page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptide_CommonValue_AcrossSearches";
+import {
+    create_reportedPeptide_CommonValue_EncodedString,
+    reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX,
+    reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX
+} from "page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptide_CommonValue_AcrossSearches";
 import {ProteinInferenceUtils} from "page_js/data_pages/protein_inference/ProteinInferenceUtils";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 
@@ -342,7 +346,13 @@ export const proteinExperiment_CreateProteinDisplayData = function ( {
                                 for (const dynamicModificationOnReportedPeptide of dynamicModificationsOnReportedPeptideArray) {
 
                                     const mass = dynamicModificationOnReportedPeptide.mass;
-                                    const positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+                                    let positionOnReportedPeptide = dynamicModificationOnReportedPeptide.position;
+                                    if ( dynamicModificationOnReportedPeptide.is_N_Terminal ) {
+                                        positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+                                    }
+                                    if ( dynamicModificationOnReportedPeptide.is_C_Terminal ) {
+                                        positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
+                                    }
 
                                     let modsRoundedSet = modsRoundedSet_KeyPosition.get(positionOnReportedPeptide);
                                     if (!modsRoundedSet) {
@@ -390,7 +400,10 @@ export const proteinExperiment_CreateProteinDisplayData = function ( {
 
                         reportedPeptide_CommonValue_EncodedString = create_reportedPeptide_CommonValue_EncodedString({
 
-                            peptideId, variableModifications_Map_KeyPosition : variableMmodificationsRoundedArray_Map_KeyPosition, staticModifications_Map_KeyPosition : undefined
+                            peptideId,
+                            variableModifications_Map_KeyPosition : variableMmodificationsRoundedArray_Map_KeyPosition,
+                            staticModifications_Map_KeyPosition : undefined,
+                            open_Modification_Rounded: undefined, open_Modification_Rounded_Position: undefined, open_Modification_Rounded_NoPosition: undefined
                         });
 
                         //  Cached reportedPeptide_CommonValue_EncodedString : Map<reportedPeptideId, reportedPeptide_CommonValue_EncodedString>

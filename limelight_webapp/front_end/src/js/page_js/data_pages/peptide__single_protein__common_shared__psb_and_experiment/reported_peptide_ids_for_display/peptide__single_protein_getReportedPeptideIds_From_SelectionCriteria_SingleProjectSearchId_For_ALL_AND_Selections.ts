@@ -71,20 +71,29 @@ export const peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
     }): void {
 
 
-    const is_Any_StaticModification_Selected__SelectionType__ALL =
-        modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected__For_SelectionType({singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
-    const is_Any_VariableModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection =
-        modificationMass_UserSelections_StateObject.get_VariableModificationSelections().
-        is_Any__For_SelectionType__Modification_Selected_Excludes_UnmodifiedSelection({singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
-    const is_Any_OpenModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection =
-        modificationMass_UserSelections_StateObject.get_OpenModificationSelections().
-        is_Any__For_SelectionType__Modification_Selected_Excludes_UnmodifiedSelection({ singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
-    const is_Any_ReporterIons_Selected__SelectionType__ALL =
-        reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected__For_SelectionType({singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
+    let is_Any_StaticModification_Selected__SelectionType__ALL = false;
+    let is_Any_VariableModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection = false;
+    let is_Any_OpenModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection = false;
+    let is_Any_ReporterIons_Selected__SelectionType__ALL = false;
+
+    if ( modificationMass_UserSelections_StateObject ) {
+        is_Any_StaticModification_Selected__SelectionType__ALL =
+            modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected__For_SelectionType({singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
+        is_Any_VariableModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection =
+            modificationMass_UserSelections_StateObject.get_VariableModificationSelections().
+            is_Any__For_SelectionType__Modification_Selected_Excludes_UnmodifiedSelection({singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
+        is_Any_OpenModification__ALL__Modification_Selected_Excludes_UnmodifiedSelection =
+            modificationMass_UserSelections_StateObject.get_OpenModificationSelections().
+            is_Any__For_SelectionType__Modification_Selected_Excludes_UnmodifiedSelection({ singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
+    }
+    if ( reporterIonMass_UserSelections_StateObject ) {
+        is_Any_ReporterIons_Selected__SelectionType__ALL =
+            reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected__For_SelectionType({singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ALL});
+    }
 
     let is_VariableModification_Unmodified___SelectionType__ALL__Selected = false
     let is_OpenModification_Unmodified___SelectionType__ALL__Selected = false
-    {
+    if ( modificationMass_UserSelections_StateObject ) {
         {
             const unmodifiedSelection = modificationMass_UserSelections_StateObject.get_VariableModificationSelections().get_NO_Modification_AKA_Unmodified_Selected()
             if (unmodifiedSelection && unmodifiedSelection.selectionType === SingleProtein_Filter_SelectionType.ALL) {
@@ -106,7 +115,7 @@ export const peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
     }
 
     let is_UserSearchString = false;
-    if (peptideSequence_UserSelections_StateObject.isPeptideSearchString_AtLeastOneNotEmptyString()) {
+    if ( peptideSequence_UserSelections_StateObject && peptideSequence_UserSelections_StateObject.isPeptideSearchString_AtLeastOneNotEmptyString()) {
         is_UserSearchString = true;
     }
 

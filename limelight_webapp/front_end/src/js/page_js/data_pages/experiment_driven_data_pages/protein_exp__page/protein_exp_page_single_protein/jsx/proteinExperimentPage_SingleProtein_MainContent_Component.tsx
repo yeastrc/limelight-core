@@ -2612,7 +2612,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                         <div style={ { marginBottom: 10 } } >
 
-                            <div className=" filter-common-block-selection-container-block ">
+                            <div className=" filter-common-block-selection-container-block no-section-labels ">
 
                                 <ModificationMass_UserSelections_Root
                                     modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }

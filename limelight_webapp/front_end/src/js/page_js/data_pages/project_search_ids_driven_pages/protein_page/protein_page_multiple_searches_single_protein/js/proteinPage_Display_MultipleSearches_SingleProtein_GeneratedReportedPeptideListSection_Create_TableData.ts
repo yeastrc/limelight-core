@@ -57,13 +57,21 @@ import {
     proteinPage_SingleProtein_searchesForSinglePeptide_createChildTableObjects,
     ProteinPage_SingleProtein_searchesForSinglePeptide_createChildTableObjects_Parameter
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/protein_page_multiple_searches_single_protein_searches_for_generated_reported_peptide/js/proteinPage_SingleProtein_searchesForGeneratedSinglePeptide_createChildTableObjects";
-import {ProteinNameDescriptionCacheEntry_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/js/proteinViewPage_DisplayData_MultipleSearches_CreateProteinDisplayData";
 
 
 //////////////////
 
 const dataTableId_ThisTable = "Single Protein Peptide List Root Table";
 
+
+
+/**
+ * 
+ */
+class ProteinNameDescriptionCacheEntry {
+    name : string
+    description: string
+}
 
 
 
@@ -423,7 +431,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                 const proteinNames_Data: Map<string,Set<number>> = new Map();
 
-                const proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_MultipleSearches>> = new Map();
+                const proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>> = new Map();
 
                 for (const projectSearchId of projectSearchIds) {
 

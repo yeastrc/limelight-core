@@ -7,36 +7,27 @@
  * 
  *      Peptide Id
  *      Variable Mods
+ *      Open Modification Mass - assumes only 1
  *      Static Mods (When Provided for Single Protein section when user selects Static Mods to filter on)
  */
 
+
+
+export const reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX = -999;
+export const reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX = 99999999;  // higher number than any possible peptide length
+
+
 const  _PRIMARY_SEPARATOR = "!";  // <peptide id>!<variable mods>!<static mods>
 
-const _PEPTIDE_ID_IDENTIER = "PID";  //  Starts <peptide id> section
+const _PEPTIDE_ID_IDENTIFIER = "PID";  //  Starts <peptide id> section
 const _VARIABLE_MODS_IDENTIFIER = "V";  // Starts <variable mods> section
 const _OPEN_MODS_IDENTIFIER = "O";  // Starts <open mods> section
 const _STATIC_MODS_IDENTIFIER = "S";    // Starts <static mods> section
 const _MODS_ENTRY_SEPARATOR = "@";     //  <position>$<mass>$<mass>...@<position>$<mass>$<mass>...
 const _MODS_ENTRY_SUB_SEPARATOR = "$"  //  
 
+//  const strings also used in function 'valueCheckForDelimiters' below in this file
 
-const valueCheckForDelimiters = function( value : string ) : void {
-
-    if ( value.includes( _PRIMARY_SEPARATOR ) 
-    || value.includes( _PEPTIDE_ID_IDENTIER )
-    || value.includes( _VARIABLE_MODS_IDENTIFIER )
-    || value.includes( _OPEN_MODS_IDENTIFIER )
-    || value.includes( _STATIC_MODS_IDENTIFIER )
-    || value.includes( _STATIC_MODS_IDENTIFIER )
-    || value.includes( _MODS_ENTRY_SEPARATOR )
-    || value.includes( _MODS_ENTRY_SUB_SEPARATOR )
-    ) {
-
-        const msg = "create_reportedPeptide_CommonValue_EncodedString: One of the strings to encode contains one of the internal delimiters to encode.  string to encode: " + value;
-        console.warn( msg )
-        throw Error( msg );
-    }
-}
 
 /**
  * reportedPeptide_CommonValue_AcrossSearches.ts
@@ -53,19 +44,33 @@ const valueCheckForDelimiters = function( value : string ) : void {
  * 
  * The same Modification Masses in a different order will result in a different encoded string
  */
-export const create_reportedPeptide_CommonValue_EncodedString = function({ peptideId, variableModifications_Map_KeyPosition, staticModifications_Map_KeyPosition } : {
-    peptideId : number
-    variableModifications_Map_KeyPosition : Map<number,Array<string>>
-    staticModifications_Map_KeyPosition : Map<number,string>
-}) : string {
+export const create_reportedPeptide_CommonValue_EncodedString = function(
+    {
+        peptideId,
+        variableModifications_Map_KeyPosition,
+        open_Modification_Rounded,
+        open_Modification_Rounded_Position,
+        open_Modification_Rounded_NoPosition,
+        staticModifications_Map_KeyPosition
+    } : {
+        peptideId : number
+        variableModifications_Map_KeyPosition : Map<number,Array<string>>
+                //  Open Mod params optional, at least for now
+        open_Modification_Rounded : string
+        open_Modification_Rounded_Position : number //  N and C Terminus positions see const above
+        open_Modification_Rounded_NoPosition : string
+
+        staticModifications_Map_KeyPosition : Map<number,string>
+
+    }) : string {
 
     const resultString_Array : Array<string> = [];
 
     const peptideIdString = peptideId.toString();
 
-    valueCheckForDelimiters( peptideIdString );
+    _valueCheckForDelimiters( peptideIdString );
 
-    resultString_Array.push( _PEPTIDE_ID_IDENTIER );
+    resultString_Array.push( _PEPTIDE_ID_IDENTIFIER );
     resultString_Array.push( peptideIdString );
 
     resultString_Array.push( _PRIMARY_SEPARATOR );
@@ -74,7 +79,15 @@ export const create_reportedPeptide_CommonValue_EncodedString = function({ pepti
 
     resultString_Array.push( _VARIABLE_MODS_IDENTIFIER );
 
-    encodeVariableModPositionAndMasses({ modifications_Map_KeyPosition : variableModifications_Map_KeyPosition, resultString_Array })
+    _encodeVariableModPositionAndMasses({ modifications_Map_KeyPosition : variableModifications_Map_KeyPosition, resultString_Array })
+
+    resultString_Array.push( _PRIMARY_SEPARATOR );
+
+    //  Open Mods
+
+    resultString_Array.push( _OPEN_MODS_IDENTIFIER );
+
+    _encodeOpenModPositionAndMasses({ open_Modification_Rounded, open_Modification_Rounded_Position, open_Modification_Rounded_NoPosition, resultString_Array })
 
     resultString_Array.push( _PRIMARY_SEPARATOR );
 
@@ -82,7 +95,7 @@ export const create_reportedPeptide_CommonValue_EncodedString = function({ pepti
 
     resultString_Array.push( _STATIC_MODS_IDENTIFIER );
 
-    encodeStaticModPositionAndMasses({ modifications_Map_KeyPosition : staticModifications_Map_KeyPosition, resultString_Array })
+    _encodeStaticModPositionAndMasses({ modifications_Map_KeyPosition : staticModifications_Map_KeyPosition, resultString_Array })
 
     const resultString = resultString_Array.join( "" );
 
@@ -93,9 +106,9 @@ export const create_reportedPeptide_CommonValue_EncodedString = function({ pepti
  * Encode Variable mod masses
  * 
  */
-const encodeVariableModPositionAndMasses = function({ modifications_Map_KeyPosition , resultString_Array } : {
+const _encodeVariableModPositionAndMasses = function({ modifications_Map_KeyPosition , resultString_Array } : {
     modifications_Map_KeyPosition : Map<number,Array<string>>, resultString_Array : Array<string>
-}) {
+}) : void {
 
     if ( ( ! modifications_Map_KeyPosition ) || ( modifications_Map_KeyPosition.size === 0 ) ) {
         // No values so return
@@ -127,7 +140,7 @@ const encodeVariableModPositionAndMasses = function({ modifications_Map_KeyPosit
 
         const positionString = position.toString();
 
-        valueCheckForDelimiters( positionString );
+        _valueCheckForDelimiters( positionString );
 
         resultString_Array.push( positionString );
 
@@ -152,10 +165,57 @@ const encodeVariableModPositionAndMasses = function({ modifications_Map_KeyPosit
 
 
 /**
+ * Encode Open Mod mass
+ *
+ */
+const _encodeOpenModPositionAndMasses = function(
+    {
+        open_Modification_Rounded,
+        open_Modification_Rounded_Position,
+        open_Modification_Rounded_NoPosition,
+        resultString_Array
+    } : {
+        open_Modification_Rounded : string
+        open_Modification_Rounded_Position : number //  N and C Terminus positions see const above
+        open_Modification_Rounded_NoPosition : string
+        resultString_Array : Array<string>
+    }) : void {
+
+    if ( open_Modification_Rounded !== undefined && open_Modification_Rounded !== null ) {
+
+        if ( open_Modification_Rounded_Position === undefined || open_Modification_Rounded_Position === null ) {
+            const msg = "( open_Modification_Rounded !== undefined && open_Modification_Rounded !== null )  AND  ( open_Modification_Rounded_Position === undefined || open_Modification_Rounded_Position === null )";
+            console.warn( msg );
+            throw Error(msg);
+        }
+        if ( open_Modification_Rounded_NoPosition !== undefined && open_Modification_Rounded_NoPosition !== null ) {
+            const msg = "( open_Modification_Rounded !== undefined && open_Modification_Rounded !== null )  AND  ( open_Modification_Rounded_NoPosition !== undefined && open_Modification_Rounded_NoPosition !== null )";
+            console.warn( msg );
+            throw Error(msg);
+        }
+        const positionString = open_Modification_Rounded_Position.toString();
+
+        _valueCheckForDelimiters( positionString );
+
+        resultString_Array.push( positionString );
+
+        resultString_Array.push( _MODS_ENTRY_SEPARATOR );
+
+        resultString_Array.push( open_Modification_Rounded );
+    }
+
+    if ( open_Modification_Rounded_NoPosition !== undefined && open_Modification_Rounded_NoPosition !== null ) {
+
+        resultString_Array.push( open_Modification_Rounded_NoPosition );
+    }
+}
+
+
+/**
  * Encode Static mod masses
  * 
  */
-const encodeStaticModPositionAndMasses = function({ modifications_Map_KeyPosition , resultString_Array } : {
+const _encodeStaticModPositionAndMasses = function({ modifications_Map_KeyPosition , resultString_Array } : {
     modifications_Map_KeyPosition : Map<number,string>, resultString_Array : Array<string>
 }) {
 
@@ -195,4 +255,24 @@ const encodeStaticModPositionAndMasses = function({ modifications_Map_KeyPositio
         resultString_Array.push( mass );
     }
 
+}
+
+
+
+const _valueCheckForDelimiters = function( value : string ) : void {
+
+    if ( value.includes( _PRIMARY_SEPARATOR )
+        || value.includes( _PEPTIDE_ID_IDENTIFIER )
+        || value.includes( _VARIABLE_MODS_IDENTIFIER )
+        || value.includes( _OPEN_MODS_IDENTIFIER )
+        || value.includes( _STATIC_MODS_IDENTIFIER )
+        || value.includes( _STATIC_MODS_IDENTIFIER )
+        || value.includes( _MODS_ENTRY_SEPARATOR )
+        || value.includes( _MODS_ENTRY_SUB_SEPARATOR )
+    ) {
+
+        const msg = "create_reportedPeptide_CommonValue_EncodedString: One of the strings to encode contains one of the internal delimiters to encode.  string to encode: " + value;
+        console.warn( msg )
+        throw Error( msg );
+    }
 }

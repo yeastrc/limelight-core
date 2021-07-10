@@ -34,11 +34,29 @@ import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {get_ProteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component";
 import {ProteinExperiment__CreateProteinDataTable_ChartColumn_Class} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment__createProteinList_DataTable_ChartColumn";
-import {ProteinDataDisplay_ProteinListItem_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_search/js/proteinViewPage_DisplayData_MultipleSearches_CreateProteinDisplayData";
 
 const googleChart_Width = 400; // pixels, must be a number.  style 'width' and 'maxWidth' properties.
 const googleChart_heightInitial = 100; // pixels, must be a number.  style 'height' property, not 'maxHeight' property
 
+
+/**
+ * Entry in proteinList
+ */
+class ProteinDataDisplay_ProteinListItem_MultipleSearches {
+
+    proteinSequenceVersionId : number
+    numPsms : number //  numPsms to be consistent with single search code
+    proteinNames : string
+    proteinDescriptions : string
+    proteinItemRecordsMap_Key_projectSearchId : Map<number, {
+        proteinSequenceVersionId : number
+        proteinInfo : { proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }> } // Map Value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
+        numPsms : number
+        numReportedPeptides : number
+        numReportedPeptidesUnique : number
+        reportedPeptideIds : Array<number>
+    }>
+}
 
 class GroupedProtein_Entry {
     proteinList_Grouped : Array<ProteinDataDisplay_ProteinListItem_MultipleSearches>

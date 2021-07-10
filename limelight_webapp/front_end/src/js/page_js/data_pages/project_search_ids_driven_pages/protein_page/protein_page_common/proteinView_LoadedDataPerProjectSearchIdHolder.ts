@@ -181,6 +181,13 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinCoverage_KeyReportedPeptideId = proteinCoverage_KeyReportedPeptideId;
 	}
 
+	get_proteinSequenceVersionIds_KeyReportedPeptideId() {
+		return this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinSequenceVersionIds_KeyReportedPeptideId;
+	}
+	set_proteinSequenceVersionIds_KeyReportedPeptideId(proteinSequenceVersionIds_KeyReportedPeptideId) : void {
+		this._data__NOT__AtCurrentCutoffs_Or_DisplayData._proteinSequenceVersionIds_KeyReportedPeptideId = proteinSequenceVersionIds_KeyReportedPeptideId;
+	}
+
 	/////////////
 
 		//  For Current Cutoffs or Displayed Data
@@ -416,7 +423,10 @@ class Data__NOT__AtCurrentCutoffs_Or_DisplayData {
 
 		//  	Protein Coverage Data Per Reported Peptide Id
 		// 					- Map <integer,[Object]> <Reported Peptide Id, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-		_proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number }>>; 
+		_proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number }>>;
+
+		//    proteinSequenceVersionIds  Per Reported Peptide Id
+		_proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
 
 		//  	Protein Info per Protein Sequence Version Id
 		//  	Per proteinSequenceVersionId

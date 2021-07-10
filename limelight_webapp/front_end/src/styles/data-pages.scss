@@ -1133,12 +1133,33 @@
      display: grid;
      grid-template-columns: min-content auto;
 
-       //  Common Filter Block layout.  Overridden for specific Filter Blocks Next
+     //  Common Filter Block layout.  Overridden for specific Filter Blocks Next
 
-       //.filter-common-block-selection-outer-block {
+     //.filter-common-block-selection-outer-block {
 
-         .filter-common-filter-label { // The "Filter On ..."
-           font-size: 18px;
+         &.no-section-labels {  //  No does NOT have Section labels between the values
+
+           .filter-common-filter-label { // The "Filter On ...", etc
+             font-size: 18px;
+           }
+         }
+
+         &.yes-section-labels {  //  Yes has Section labels between the values
+
+           .section-label {
+             font-size: 18px;
+             font-weight: bold;
+             white-space: nowrap;
+             margin-top: 10px;
+             margin-bottom: 5px;
+           }
+
+           .filter-common-filter-label { // The "Filter On ...", etc
+             margin-left: 10px;
+           }
+         }
+
+         .filter-common-filter-label { // The "Filter On ...", etc
            font-weight: bold;
            white-space: nowrap;
            padding-right: 15px;

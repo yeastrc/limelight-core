@@ -196,99 +196,103 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
         return (
 
              // <input margin-left: 0px;> so radio button left aligns with other content above and below it.  Browser default has > 0px for margin-left.
+            <React.Fragment>
 
-            <tr >
-                <td style={ { verticalAlign: "top", paddingBottom: 4, paddingRight: 6, whiteSpace: "nowrap" } }>Protein Grouping:</td>
-                <td colSpan={ 5 } style={ { verticalAlign: "top", paddingBottom: 4 } }>
+                {/* Parent is CSS Grid with 2 Columns */}
 
-                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
-                        <label>
-                            <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
-                                   checked={ proteinGroup_GroupProteins_Parsimonious } onChange={ this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis }
-                            />
-                            Parsimonious
+                <div className=" filter-common-filter-label " style={ { paddingBottom: 4 } }>Protein Grouping:</div>
+                <div className=" filter-common-selection-block " style={ { paddingBottom: 4 } }>
+                    <div className=" filter-common-selection-inner-block ">
+                        <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                            <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
+                                <label>
+                                    <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
+                                           checked={ proteinGroup_GroupProteins_Parsimonious } onChange={ this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis }
+                                    />
+                                    Parsimonious
 
-                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            Proteins are grouped by indistinguishable protein groups.
-                                            That is, all proteins in the same protein group have the same list of identified peptides.
-                                            Then a greedy set cover algorithm is used to estimate fewest number of protein groups necessary to explain the found peptides. Non-parsimonious groups are greyed out.
-                                        </p>
+                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                        <div className=" inner-absolute-pos ">
+                                            <div className=" main-div ">
+                                                <p className="help-tip-actual">
+                                                    Proteins are grouped by indistinguishable protein groups.
+                                                    That is, all proteins in the same protein group have the same list of identified peptides.
+                                                    Then a greedy set cover algorithm is used to estimate fewest number of protein groups necessary to explain the found peptides. Non-parsimonious groups are greyed out.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                        </label>
-                    </span>
+                                </label>
+                            </span>
 
-                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
-                        <label>
-                            <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
-                                   checked={ proteinGroup_GroupProteins_NonSubset } onChange={ this._proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler_BindThis }
-                            />
-                            No Subgroups
+                            <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
+                                <label>
+                                    <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
+                                           checked={ proteinGroup_GroupProteins_NonSubset } onChange={ this._proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler_BindThis }
+                                    />
+                                    No Subgroups
 
-                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            Proteins are grouped by indistinguishable protein groups.
-                                            That is, all proteins in the same protein group have the same list of identified peptides.
-                                            All protein groups whose peptide list is a subset of another group’s peptide list will be greyed out.
-                                        </p>
+                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                        <div className=" inner-absolute-pos ">
+                                            <div className=" main-div ">
+                                                <p className="help-tip-actual">
+                                                    Proteins are grouped by indistinguishable protein groups.
+                                                    That is, all proteins in the same protein group have the same list of identified peptides.
+                                                    All protein groups whose peptide list is a subset of another group’s peptide list will be greyed out.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
 
 
-                        </label>
-                    </span>
+                                </label>
+                            </span>
 
-                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
-                        <label>
-                            <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
-                               checked={ proteinGroup_GroupProteins } onChange={ this._proteinGroup_GroupProteins_RadioButton_OnChange_Handler_BindThis }
-                            />
-                            Simple
+                            <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
+                                <label>
+                                    <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
+                                       checked={ proteinGroup_GroupProteins } onChange={ this._proteinGroup_GroupProteins_RadioButton_OnChange_Handler_BindThis }
+                                    />
+                                    Simple
 
-                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            Proteins are grouped by indistinguishable protein groups. That is, all proteins in the same protein group have the same list of identified peptides.
-                                        </p>
+                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                        <div className=" inner-absolute-pos ">
+                                            <div className=" main-div ">
+                                                <p className="help-tip-actual">
+                                                    Proteins are grouped by indistinguishable protein groups. That is, all proteins in the same protein group have the same list of identified peptides.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                        </label>
-                    </span>
+                                </label>
+                            </span>
 
-                    <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
-                        <label>
-                            <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
-                                   checked={ proteinGroupNone } onChange={ this._proteinGroupNone_RadioButton_OnChange_Handler_BindThis }
-                            />
-                            No Groups
+                            <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
+                                <label>
+                                    <input type="radio" name="filter_show_protein_groups" style={ eachRadioButtonStyle }
+                                           checked={ proteinGroupNone } onChange={ this._proteinGroupNone_RadioButton_OnChange_Handler_BindThis }
+                                    />
+                                    No Groups
 
-                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            Each row contains the name(s), description(s), and statistics for a single protein sequence. Proteins are not grouped.
-                                        </p>
+                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                        <div className=" inner-absolute-pos ">
+                                            <div className=" main-div ">
+                                                <p className="help-tip-actual">
+                                                    Each row contains the name(s), description(s), and statistics for a single protein sequence. Proteins are not grouped.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                        </label>
-                    </span>
-
-                </td>
-            </tr>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
         )
     }
 }

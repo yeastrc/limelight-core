@@ -6,13 +6,13 @@
  */
 
 
-import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {get_OpenModificationsForReportedPeptideIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinViewPage_DisplayData_SingleProtein_Get_Open_ModificationsForReportedPeptides";
-import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_search/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadPeptideIdsIfNeeded_ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {loadData_PeptideSequences_LoadTo_loadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/loadPeptideSequencesForReportedPeptideIds_SingleSearch_LoadTo_loadedDataCommonHolder";
 import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 
@@ -37,14 +37,14 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
     }
 ) : Promise<void> {
 
-    // const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = (
-    //     searchDetailsBlockDataMgmtProcessing.
-    //     getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({ dataPageStateManager : undefined })
-    // );
-
     return new Promise<void>( (resolve, reject) => {
         try {
             const getDataFromServer_AllPromises = [];
+
+            let load_searchSubGroupsData = false;
+            if ( projectSearchIds.length === 1 && dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() ) {
+                load_searchSubGroupsData = true;
+            }
 
             for (const projectSearchId of projectSearchIds) {
 
@@ -59,10 +59,6 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
                     throw Error( msg );
                 }
 
-                let load_searchSubGroupsData = false;
-                if ( dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() ) {
-                    load_searchSubGroupsData = true;
-                }
                 const promise_Single_ProjectSearchId = new Promise<void>( (resolve, reject) => {
                     try {
                         const promise_getDataFromServer = (
@@ -76,6 +72,7 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
                         );
 
                         promise_getDataFromServer.catch((reason) => {
+                            console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...) inner .catch code: reason: ", reason );
                             throw Error( "promise_getDataFromServer.catch reason: " + reason )
                         });
 
@@ -131,18 +128,21 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
                                             resolve();
 
                                         } catch( e ) {
+                                            console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...) inner .then code: Exception caught: ", e )
                                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                             throw e;
                                         }
                                     });
                                 }
                             } catch( e ) {
+                                console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...) inner .then code: Exception caught: ", e )
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
                             }
                         });
 
                     } catch( e ) {
+                        console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...) inner .then code: Exception caught: ", e )
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                         throw e;
                     }
@@ -154,6 +154,7 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
             const promise_getDataFromServer_AllPromises = Promise.all(getDataFromServer_AllPromises);
 
             promise_getDataFromServer_AllPromises.catch((reason) => {
+                console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...) inner .catch code: reason: ", reason )
                 throw Error( "promise_getDataFromServer_AllPromises.catch reason: " + reason )
             });
 
@@ -163,12 +164,14 @@ export const peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = functi
                     resolve()
 
                 } catch (e) {
+                    console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...) inner .then code: Exception caught: ", e );
                     reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                     throw e;
                 }
             })
 
         } catch( e ) {
+            console.warn("peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein(...): Exception caught: ", e );
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }

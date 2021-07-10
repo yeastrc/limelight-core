@@ -517,14 +517,6 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
                 </div>
 
                 <div style={ { marginTop: 10 } }>
-                    <SearchDetailsAndOtherFiltersOuterBlock_Layout >
-                        <ProteinPage_ProteinGroupingFilterSelection_Component_Root
-                            propValue={ this.state.proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue }
-                        />
-                    </SearchDetailsAndOtherFiltersOuterBlock_Layout>
-                </div>
-
-                <div style={ { marginTop: 10 } }>
 
                     { saveView_Component }
 
@@ -533,6 +525,18 @@ export class ProteinExperimentPage_Root_Component extends React.Component< Prote
                         projectSearchIds={ this.props.projectSearchIds }
                     />
 
+                </div>
+
+                <div style={ { marginTop: 10 } }>
+
+                    <div className="  filter-common-block-selection-container-block  " >
+
+                        {/*  2 Column CSS Grid  */}
+
+                        <ProteinPage_ProteinGroupingFilterSelection_Component_Root
+                            propValue={ this.state.proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue }
+                        />
+                    </div>
                 </div>
 
                 <h3>

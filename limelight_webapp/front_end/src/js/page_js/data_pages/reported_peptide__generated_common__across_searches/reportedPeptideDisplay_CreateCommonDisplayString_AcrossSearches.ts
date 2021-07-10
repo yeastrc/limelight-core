@@ -7,7 +7,7 @@
  *
  *      Peptide Sequence
  *      Variable Modification Masses
- *      Open Modification Masses
+ *      Open Modification Mass - assumes only 1
  *      Static Modification Masses (When Provided for Single Protein section when user selects Static Modification Masses to filter on)
  *
  *   **  The Variable, Open, and Static Modification Masses are inserted into the Display String in the order listed in the Array
@@ -15,7 +15,7 @@
  */
 
 export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX = -21;
-export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX = -22;
+export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX = 99999999;  // higher number than any possible peptide length
 
 /**
  * @param peptideSequence

@@ -851,6 +851,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             projectSearchIds : this.props.propsValue.projectSearchIds,
             singleProtein_CentralStateManagerObject : singleProtein_CentralStateManagerObjectClass_ForNewWindow
         })
+        _copy_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass__to__modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            singleProtein_CentralStateManagerObject : singleProtein_CentralStateManagerObjectClass_ForNewWindow
+        });
 
         const newWindowURL = this.props.propsValue.centralPageStateManager.getURL_ForCurrentState({componentOverridesAdditions: [singleProtein_CentralStateManagerObjectClass_ForNewWindow]})
 
@@ -2853,9 +2857,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 
-        if ( this.props.propsValue.projectSearchIds.length === 1 ) {
-            modificationMass_CommonRounding_ReturnNumber_Param = undefined;  //  NO Rounding for Single Project Search Id
-        }
+        // if ( this.props.propsValue.projectSearchIds.length === 1 ) {
+        //     modificationMass_CommonRounding_ReturnNumber_Param = undefined;  //  NO Rounding for Single Project Search Id
+        // }
 
         return (
 
@@ -2863,7 +2867,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                 <div style={ { } } > {/*marginBottom: 10*/}
 
-                    <div className=" filter-common-block-selection-container-block ">
+                    <div className=" filter-common-block-selection-container-block no-section-labels ">
 
                         <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
                             displayData={ this.state.searchSubGroup_PropValue }

@@ -146,6 +146,12 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
 
         const staticModificationsData = this.props.staticModificationsData;
 
+        if ( ! staticModificationsData ) {
+
+            //  Nothing to Render
+            return null;  // EARLY RETURN
+        }
+
         const showNoStaticModificationsMsg = staticModificationsData.showNoStaticModificationsMsg;
         const staticModificationEntries = staticModificationsData.staticModificationEntries;
 
