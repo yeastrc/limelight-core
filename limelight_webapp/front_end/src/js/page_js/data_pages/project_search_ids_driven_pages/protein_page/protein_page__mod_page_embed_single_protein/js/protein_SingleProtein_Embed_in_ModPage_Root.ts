@@ -14,9 +14,9 @@ import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/p
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {
-    ProteinPage_Display_MultipleSearches_SingleProtein,
-    ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
+    ProteinPage_Display__SingleProtein_Root,
+    ProteinPage_Display__SingleProtein_singleProteinCloseCallback
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Root";
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
 import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
@@ -37,7 +37,7 @@ export class Protein_SingleProtein_Embed_in_ModPage_Root_Class_InitializeResult 
 class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
 
 
-    private _singleProteinCloseCallback: ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
+    private _singleProteinCloseCallback: ProteinPage_Display__SingleProtein_singleProteinCloseCallback
 
     private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager
     private _dataPageStateManager_DataFrom_Server: DataPageStateManager
@@ -86,7 +86,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         }: {
             referrerFromURL_Set: boolean //  was /r on the URL when page loaded
 
-            singleProteinCloseCallback: ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
+            singleProteinCloseCallback: ProteinPage_Display__SingleProtein_singleProteinCloseCallback
 
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager,
             dataPageStateManager_DataFrom_Server: DataPageStateManager,
@@ -313,7 +313,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             }
         }
 
-        const proteinViewPage_Display_MultipleSearches_SingleProtein = new ProteinPage_Display_MultipleSearches_SingleProtein({
+        const proteinPage_Display__SingleProtein_Root = new ProteinPage_Display__SingleProtein_Root({
 
             singleProteinCloseCallback,
 
@@ -338,12 +338,12 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         if ( this._dataLoaded_For_SingleProtein ) {
             //  Data already loaded for Single Protein so open overlay
 
-            this._openOverlayActual({ proteinSequenceVersionId, modMass_Rounded_From_ModPage_ForInitialSelection, proteinViewPage_Display_MultipleSearches_SingleProtein });
+            this._openOverlayActual({ proteinSequenceVersionId, modMass_Rounded_From_ModPage_ForInitialSelection, proteinPage_Display__SingleProtein_Root });
 
         } else {
             //  Data NOT already loaded for Single Protein so open overlay loading msg and then load data then open overlay
 
-            proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay_OnlyLoadingMessage()
+            proteinPage_Display__SingleProtein_Root.openOverlay_OnlyLoadingMessage()
 
             const promise_getDataFromServer_AllPromises = this._getDataFromServer_For_SingleProtein();
 
@@ -354,7 +354,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
                 try {
                     this._dataLoaded_For_SingleProtein = true;
 
-                    this._openOverlayActual({ proteinSequenceVersionId, modMass_Rounded_From_ModPage_ForInitialSelection, proteinViewPage_Display_MultipleSearches_SingleProtein });
+                    this._openOverlayActual({ proteinSequenceVersionId, modMass_Rounded_From_ModPage_ForInitialSelection, proteinPage_Display__SingleProtein_Root });
 
                 } catch (e) {
                     reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
@@ -371,16 +371,16 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         {
             proteinSequenceVersionId,
             modMass_Rounded_From_ModPage_ForInitialSelection,     //  modMass_Rounded_From_ModPage  Parent Table Row Mod Mass (Variable and/or Open Mod Mass which has been rounded with Math.round)
-            proteinViewPage_Display_MultipleSearches_SingleProtein
+            proteinPage_Display__SingleProtein_Root
         }: {
             proteinSequenceVersionId: number
             modMass_Rounded_From_ModPage_ForInitialSelection: number
-            proteinViewPage_Display_MultipleSearches_SingleProtein : ProteinPage_Display_MultipleSearches_SingleProtein
+            proteinPage_Display__SingleProtein_Root : ProteinPage_Display__SingleProtein_Root
 
         }): void {
 
 
-        proteinViewPage_Display_MultipleSearches_SingleProtein.openOverlay({
+        proteinPage_Display__SingleProtein_Root.openOverlay({
             proteinNameDescription: undefined,
             proteinSequenceVersionId,
             modMass_Rounded_From_ModPage_ForInitialSelection,

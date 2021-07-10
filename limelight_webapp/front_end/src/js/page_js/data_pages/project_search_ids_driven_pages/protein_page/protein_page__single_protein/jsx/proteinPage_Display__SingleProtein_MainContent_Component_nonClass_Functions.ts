@@ -1,7 +1,7 @@
 /**
- * proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_nonClass_Functions.ts
+ * proteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions.ts
  * 
- * Functions for proteinPage_Display_MultipleSearches__SingleProtein_MainContent_Component.tsx
+ * Functions for proteinPage_Display__SingleProtein_MainContent_Component.tsx
  * 
  */
 
@@ -58,13 +58,13 @@ import {SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData} from "pa
 import {searchSubGroup_Get_Selected_SearchSubGroupIds} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
 import {searchSubGroup_Create__SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_Create__SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData";
 import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
-import {ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/jsx/proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component";
 import {searchSubGroup_Are_All_SearchSubGroupIds_Selected__Fcn} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Are_All_SearchSubGroupIds_Selected";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
 import {SearchSubGroups_Root__DataPageStateManagerEntry} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_MainContent_Component";
 
 
 
@@ -97,7 +97,7 @@ const initialPopulate = function({
     peptideSequence_UserSelections_StateObject,
     proteinSequenceWidget_StateObject
 } : {
-    propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+    propsValue : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     proteinSequenceVersionId : number,
     proteinSequenceString : string,
     projectSearchIds : Array<number>,
@@ -263,7 +263,7 @@ const compute_searchSubGroup_Ids_Selected = function (
     {
         propsValue
     } : {
-        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+        propsValue : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     }) :  Set<number>
 {
     if ( ! propsValue.searchSubGroup_CentralStateManagerObjectClass ) {
@@ -301,7 +301,7 @@ const compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected = function (
     {
         propsValue
     } : {
-        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+        propsValue : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     }) :  boolean
 {
     let searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean = true; // Default to true for when Merged Search or No Search SUb Groups
@@ -334,7 +334,7 @@ const compute_searchSubGroup_PropValue = function (
     {
         propsValue
     } : {
-        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+        propsValue : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
 
     }) : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData {
 
@@ -373,7 +373,7 @@ const compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = functi
     {
         propsValue
     } : {
-        propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+        propsValue : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
 
     }) : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 {

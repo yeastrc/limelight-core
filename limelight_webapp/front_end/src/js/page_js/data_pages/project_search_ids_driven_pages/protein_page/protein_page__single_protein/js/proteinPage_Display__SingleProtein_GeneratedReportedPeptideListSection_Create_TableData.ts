@@ -1,5 +1,5 @@
 /**
- * proteinPage_Display_MultipleSearches__SingleProteinGeneratedReportedPeptideListSection_Create_TableData.ts
+ * proteinPage_Display__SingleProteinGeneratedReportedPeptideListSection_Create_TableData.ts
  * 
  * Get Data Table from Peptide List  --   PSB:  Single Protein AND Peptide Page
  * 
@@ -32,7 +32,7 @@ import {
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry } from './proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
+import { Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry } from './proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData';
 
 
 //  Child Data Searches for Single Peptide show/hide
@@ -46,9 +46,9 @@ import {
 import {
     ProteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinName_Clicked_Callback_Function,
     ProteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinName_Clicked_Callback_Function_Params,
-    proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content,
-    proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/jsx/proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components_Other";
+    proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content,
+    proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components_Other";
 import {
     reportedPeptidesForSingleSearch_createChildTableObjects,
     ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter
@@ -56,7 +56,7 @@ import {
 import {
     proteinPage_SingleProtein_searchesForSinglePeptide_createChildTableObjects,
     ProteinPage_SingleProtein_searchesForSinglePeptide_createChildTableObjects_Parameter
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/protein_page_multiple_searches_single_protein_searches_for_generated_reported_peptide/js/proteinPage_SingleProtein_searchesForGeneratedSinglePeptide_createChildTableObjects";
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/protein_page__single_protein_searches_for_generated_reported_peptide/js/proteinPage_SingleProtein_searchesForGeneratedSinglePeptide_createChildTableObjects";
 
 
 //////////////////
@@ -135,7 +135,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_MultipleSearch_SingleProtein_Result();
 
-    const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
+    const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
 
     if ( peptideList.length === 0 ) {
         //  No data found so return
@@ -172,7 +172,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
     }
     {
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
-            return proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create();
+            return proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create();
         }
 
         const displayName = "Unique";
@@ -568,7 +568,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                 const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
                     ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-                        return proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content({
+                        return proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content({
                             proteinNames_Array, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinName_Clicked_Callback
                         });
                     };
@@ -687,11 +687,11 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
             if (projectSearchIds.length > 1) {
 
-                const createReportedPeptideDisplayData_Result_Entry_ForThisRow: CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = (
+                const createReportedPeptideDisplayData_Result_Entry_ForThisRow: CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry = (
                     create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay.get(peptideEntry.peptideSequenceDisplay)
                 );
                 if (!createReportedPeptideDisplayData_Result_Entry_ForThisRow) {
-                    throw Error("proteinPage_Display_MultipleSearches__SingleProteinReportedPeptideListSection_CreateListData.ts: No value for peptideEntry.peptideSequenceDisplay: " + peptideEntry.peptideSequenceDisplay);
+                    throw Error("proteinPage_Display__SingleProteinReportedPeptideListSection_CreateListData.ts: No value for peptideEntry.peptideSequenceDisplay: " + peptideEntry.peptideSequenceDisplay);
                 }
 
                 const params_createChildTableObjects = (
@@ -839,7 +839,7 @@ const _compute_show_Protein_Pre_Post_Residues = function (
     {
         peptideList
     } : {
-        peptideList: Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry>
+        peptideList: Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry>
     }
 ) : boolean {
 

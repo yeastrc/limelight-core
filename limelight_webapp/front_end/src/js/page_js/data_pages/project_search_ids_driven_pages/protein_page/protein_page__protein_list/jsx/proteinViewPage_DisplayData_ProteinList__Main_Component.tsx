@@ -101,10 +101,6 @@ import {
 import {
     proteinViewPage_GetStatsSectionData_SingleSearch
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/protein_page__protein_list__single_search_code/react_components/search_stats/proteinViewPage_GetStatsSectionData_SingleSearch";
-import {
-    ProteinPage_Display_MultipleSearches_SingleProtein,
-    ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein";
 import {ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/filter_on__components/filter_on_counts__psm_peptide_unique_peptide/proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject";
 import {ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/filter_on__components/filter_on_counts__psm_peptide_unique_peptide/proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide";
@@ -120,6 +116,10 @@ import {modificationMass_CommonRounding_ReturnNumber} from "page_js/data_pages/m
 import {ModificationMass_UserSelections_DisplayMassSelectionOverlay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_DisplayMassSelectionOverlay";
 import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {modificationMass_UserSelections_BuildData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_BuildData_ForReactComponent";
+import {
+    ProteinPage_Display__SingleProtein_Root,
+    ProteinPage_Display__SingleProtein_singleProteinCloseCallback
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Root";
 
 /**
  *
@@ -269,7 +269,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
     private _proteinDisplayData_Final_ForDisplayTable: ProteinDisplayData_From_createProteinDisplayData_ProteinList
 
-    private _proteinViewPage_Display_SingleProtein: ProteinPage_Display_MultipleSearches_SingleProtein;
+    private _proteinViewPage_Display_SingleProtein: ProteinPage_Display__SingleProtein_Root;
 
     private _load_PsmOpenModificationMasses_InProgress = false;  //  Flag that Loading PSM Open Modification Masses is In Progress
 
@@ -385,7 +385,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 data_page_overall_enclosing_block_divDOM.style.display = "none";
 
                 if (!this._proteinViewPage_Display_SingleProtein) {
-                    this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({currentWindowScrollY: undefined});
+                    this._instantiateObject_Class__ProteinPage_Display__SingleProtein({currentWindowScrollY: undefined});
                 }
                 this._proteinViewPage_Display_SingleProtein.openOverlay_OnlyLoadingMessage();
             }
@@ -1757,7 +1757,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
         if ( ! this._proteinViewPage_Display_SingleProtein ) {
 
-            this._instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY });
+            this._instantiateObject_Class__ProteinPage_Display__SingleProtein({ currentWindowScrollY });
         }
 
         this._proteinViewPage_Display_SingleProtein.openOverlay({
@@ -1773,11 +1773,11 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
     /**
      * Call right before calling openOverlay or openOverlay_OnlyLoadingMessage
      */
-    _instantiateObject_Class__ProteinPage_Display_MultipleSearches_SingleProtein({ currentWindowScrollY }: { currentWindowScrollY: number }) {
+    _instantiateObject_Class__ProteinPage_Display__SingleProtein({ currentWindowScrollY }: { currentWindowScrollY: number }) {
 
         //  Create callback function to call on single protein close
 
-        const singleProteinCloseCallback : ProteinPage_Display_MultipleSearches_SingleProtein_singleProteinCloseCallback = () => {
+        const singleProteinCloseCallback : ProteinPage_Display__SingleProtein_singleProteinCloseCallback = () => {
 
             this._proteinViewPage_Display_SingleProtein = undefined;
 
@@ -1803,7 +1803,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds()
         );
 
-        this._proteinViewPage_Display_SingleProtein = new ProteinPage_Display_MultipleSearches_SingleProtein( {
+        this._proteinViewPage_Display_SingleProtein = new ProteinPage_Display__SingleProtein_Root( {
 
             projectSearchIds : this.props.propsValue.projectSearchIds,
             searchDataLookupParamsRoot,

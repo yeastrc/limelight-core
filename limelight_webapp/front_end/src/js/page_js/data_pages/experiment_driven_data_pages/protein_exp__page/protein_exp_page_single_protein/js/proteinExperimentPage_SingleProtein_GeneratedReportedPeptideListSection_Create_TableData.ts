@@ -58,8 +58,8 @@ import {
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_CreateListData";
 import {
     Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
-    CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_multiple_searches_single_protein/js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData";
+    CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 
 
 //////////////////
@@ -120,7 +120,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
     const getDataTableDataObjects_Result = new GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result();
 
-    const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
+    const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList;
 
     if ( peptideList.length === 0 ) {
         //  No data found so return
@@ -461,7 +461,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
             // Data for Child Tables for this row of this table
 
-            const createReportedPeptideDisplayData_Result_Entry_ForThisRow : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = (
+            const createReportedPeptideDisplayData_Result_Entry_ForThisRow : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry = (
                 create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay.get( peptideEntry.peptideSequenceDisplay )
             );
             if ( ! createReportedPeptideDisplayData_Result_Entry_ForThisRow ) {
@@ -616,7 +616,7 @@ const _compute_show_Protein_Pre_Post_Residues = function (
     {
         peptideList
     } : {
-        peptideList: Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry>
+        peptideList: Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry>
     }
 ) : boolean {
 

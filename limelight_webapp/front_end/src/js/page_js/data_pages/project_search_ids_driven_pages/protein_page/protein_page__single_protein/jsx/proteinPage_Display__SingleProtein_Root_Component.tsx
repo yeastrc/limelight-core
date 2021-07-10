@@ -1,5 +1,5 @@
 /**
- * proteinPage_Display_MultipleSearches__SingleProtein_Root_Component.tsx
+ * proteinPage_Display__SingleProtein_Root_Component.tsx
  * 
  * Root of Protein Page - Multiple Searches - Single Protein - inserted into <div> with id '???' in 
  * 
@@ -10,7 +10,7 @@
 import React from 'react'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component, ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop } from './proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component'
+import { ProteinPage_Display__SingleProtein_MainContent_Component, ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop } from './proteinPage_Display__SingleProtein_MainContent_Component'
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {ProteinPage_Display_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_Display_SingleProtein_ProteinNameDescription_Component";
 
@@ -29,16 +29,16 @@ const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120;
 /**
  * 
  */
-export interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_closeOverlayClickHandler {
+export interface ProteinPage_Display__SingleProtein_Root_Component_closeOverlayClickHandler {
     () : void
 }
 
 /**
  * 
  */
-export interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props {
+export interface ProteinPage_Display__SingleProtein_Root_Component_Props {
 
-    closeOverlayClickHandler : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_closeOverlayClickHandler;
+    closeOverlayClickHandler : ProteinPage_Display__SingleProtein_Root_Component_closeOverlayClickHandler;
 
     standard_Page_Header_Height: number
 
@@ -50,9 +50,9 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Compone
 /**
  * 
  */
-interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_State {
+interface ProteinPage_Display__SingleProtein_Root_Component_State {
 
-    proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop? : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+    proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop? : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
 
     component_SubTree_Has_Error? : boolean
 }
@@ -60,7 +60,7 @@ interface ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Stat
 /**
  * 
  */
-export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component extends React.Component< ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props, ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_State > {
+export class ProteinPage_Display__SingleProtein_Root_Component extends React.Component< ProteinPage_Display__SingleProtein_Root_Component_Props, ProteinPage_Display__SingleProtein_Root_Component_State > {
 
     //  bind to 'this' for passing as parameters
 
@@ -86,7 +86,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
     /**
      * 
      */    
-    constructor(props : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props) {
+    constructor(props : ProteinPage_Display__SingleProtein_Root_Component_Props) {
         super(props);
 
         this._view_single_protein_inner_overlay_div_Ref = React.createRef<HTMLDivElement>();
@@ -94,30 +94,30 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
         this._view_single_protein_overlay_body_Ref = React.createRef<HTMLDivElement>();
 
         this.state = { 
-            proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop : null
+            proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop : null
         };
     }
 
     /**
      * 
      */ 
-    add_ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop({  
+    add_ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop({  
 
-        proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+        proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     } : {
-        proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+        proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     }) {
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_Root_Component_State, props: ProteinPage_Display__SingleProtein_Root_Component_Props ) : ProteinPage_Display__SingleProtein_Root_Component_State => {
 
-            return { proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop }
+            return { proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop }
         });
     }
     
     /**
      * 
      */ 
-    static getDerivedStateFromError( error : any ) : ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component_State {
+    static getDerivedStateFromError( error : any ) : ProteinPage_Display__SingleProtein_Root_Component_State {
         // Update state so the next render will show the fallback UI.
         return { component_SubTree_Has_Error: true };
     }
@@ -128,7 +128,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
     componentDidCatch( error : any, errorInfo : any ) {
         // You can also log the error to an error reporting service
 
-        console.warn("react Component 'ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component'. componentDidCatch: ", error, errorInfo );
+        console.warn("react Component 'ProteinPage_Display__SingleProtein_Root_Component'. componentDidCatch: ", error, errorInfo );
         // logErrorToMyService(error, errorInfo);
     }
 
@@ -304,11 +304,11 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
                 <div >An Error has Occurred.  Please reload the page and try again.</div>
             );
 
-        } else if ( this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop ) {
+        } else if ( this.state.proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop ) {
 
             mainContent = (
-                <ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component
-                    propsValue={ this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop }
+                <ProteinPage_Display__SingleProtein_MainContent_Component
+                    propsValue={ this.state.proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop }
                     view_single_protein_inner_overlay_div_Width_Initial={ this._view_single_protein_inner_overlay_div_Width_Initial }
                     setWidth__view_single_protein_inner_overlay_div={ this._setWidth__view_single_protein_inner_overlay_div_BindThis }
                     view_single_protein_overlay_body_PaddingLeft={ this._view_single_protein_overlay_body_PaddingLeft }
@@ -345,9 +345,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component e
         if ( this.props.proteinNames ) {
             proteinName_Display_Header = this.props.proteinNames;
         } else {
-            if (this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop) {
-                if ( this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop.proteinNames) {
-                    proteinName_Display_Header = this.state.proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop.proteinNames;
+            if (this.state.proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop) {
+                if ( this.state.proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop.proteinNames) {
+                    proteinName_Display_Header = this.state.proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop.proteinNames;
                 }
             }
         }

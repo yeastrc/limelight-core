@@ -1,5 +1,5 @@
 /**
- * proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass.ts
+ * proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass.ts
  *
  * Display Javascript for protein.jsp page  - Displaying Data for Single Protein
  *
@@ -20,7 +20,7 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 /**
  *
  */
-export const proteinPage_Display_MultipleSearches__SingleProtein_Populate_ModSelections_From_ModPage_ModMass = function (
+export const proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass = function (
     {
         modMass_Rounded_From_ModPage_ForInitialSelection,
         modificationMass_UserSelections_StateObject,

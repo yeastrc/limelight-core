@@ -1,5 +1,5 @@
 /**
- * proteinPage_Display_MultipleSearches__SingleProtein_nonClass_Functions.ts
+ * proteinPage_Display__SingleProtein_nonClass_Functions.ts
  * 
  * Display Javascript for protein.jsp page  - Displaying Data for Single Protein
  * 

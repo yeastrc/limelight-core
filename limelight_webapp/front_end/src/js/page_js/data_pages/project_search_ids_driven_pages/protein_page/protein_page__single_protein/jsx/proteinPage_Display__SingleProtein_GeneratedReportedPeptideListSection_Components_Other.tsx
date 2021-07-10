@@ -1,5 +1,5 @@
 /**
- * proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components_Other.tsx
+ * proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components_Other.tsx
  *
  *  "Other" React Components for use when creating GeneratedReportedPeptideListSection
  *
@@ -36,7 +36,7 @@ export type ProteinPage_Display_MultipleSearches__SingleProtein_GeneratedReporte
 /**
  *
  */
-export const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create = function () : JSX.Element {
+export const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create = function () : JSX.Element {
 
     return (
 
@@ -49,7 +49,7 @@ export const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReport
 /**
  *
  */
-export const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content = function (
+export const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content = function (
     {
         proteinNames_Array,
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
@@ -75,7 +75,7 @@ export const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReport
 
             const proteinNameDescriptionForToolip = proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId );
             if ( ! proteinNameDescriptionForToolip ) {
-                const msg = "proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content: ( ! proteinNameDescriptionForToolip ): proteinSequenceVersionId: " + proteinSequenceVersionId;
+                const msg = "proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content: ( ! proteinNameDescriptionForToolip ): proteinSequenceVersionId: " + proteinSequenceVersionId;
                 console.warn( msg );
                 throw Error(msg);
             }

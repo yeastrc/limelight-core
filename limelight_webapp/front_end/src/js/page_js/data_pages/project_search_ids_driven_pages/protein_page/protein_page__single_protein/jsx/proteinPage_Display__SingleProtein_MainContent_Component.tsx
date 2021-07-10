@@ -1,9 +1,9 @@
 /**
- * proteinPage_Display_MultipleSearches__SingleProtein_MainContent_Component.tsx
+ * proteinPage_Display__SingleProtein_MainContent_Component.tsx
  * 
  * Single Protein Main Content:
  * 
- * Main Content of Protein Page - Multiple Searches - Single Protein - Contained inside Component <ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component>
+ * Main Content of Protein Page - Multiple Searches - Single Protein - Contained inside Component <ProteinPage_Display__SingleProtein_MainContent_Component>
  * 
  */
 
@@ -81,11 +81,11 @@ import {
     compute_searchSubGroup_PropValue,
     compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected,
     compute_searchSubGroup_Ids_Selected
-} from './proteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_nonClass_Functions';
+} from './proteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions';
 
-import { ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component } from './proteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component';
+import { ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component } from './proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component';
 
-import { create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein, Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry } from '../js/proteinPage_Display_MultipleSearches_SingleProtein_Create_GeneratedReportedPeptideListData';
+import { create_GeneratedReportedPeptideListData__SingleProtein, Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry } from '../js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData';
 import {
     SearchDetailsAndFilterBlock_MainPage_Root,
     SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
@@ -143,14 +143,14 @@ const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
 /**
  * 
  */
-export interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_closeOverlayClickHandler {
+export interface ProteinPage_Display__SingleProtein_MainContent_Component_closeOverlayClickHandler {
     () : void
 }
 
 /**
  * 
  */
-export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop {
+export class ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop {
 
     projectSearchIds : Array<number>;
     proteinSequenceVersionId : number;
@@ -182,9 +182,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 /**
  * 
  */
-export interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props {
+export interface ProteinPage_Display__SingleProtein_MainContent_Component_Props {
 
-    propsValue : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props_Prop
+    propsValue : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
 
     // view_single_protein_inner_overlay_div
     view_single_protein_inner_overlay_div_Width_Initial : number;
@@ -198,7 +198,7 @@ export interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_
 /**
  * 
  */
-interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State {
+interface ProteinPage_Display__SingleProtein_MainContent_Component_State {
 
     widthOf_proteinSequenceWidgetDisplay_Component? : number; // Width of <ProteinSequenceWidgetDisplay_Root_Component_React> (assumed to not change after this component mounts)
 
@@ -245,7 +245,7 @@ interface ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Compone
 /**
  * 
  */
-export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component extends React.Component< ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props, ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State > {
+export class ProteinPage_Display__SingleProtein_MainContent_Component extends React.Component< ProteinPage_Display__SingleProtein_MainContent_Component_Props, ProteinPage_Display__SingleProtein_MainContent_Component_State > {
 
     //  bind to 'this' for passing as parameters
 
@@ -297,7 +297,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
     private _proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
 
-    private _proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component>
+    private _proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
 
     private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
 
@@ -313,7 +313,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     /**
      * 
      */    
-    constructor(props : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props) {
+    constructor(props : ProteinPage_Display__SingleProtein_MainContent_Component_Props) {
         super(props);
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
@@ -321,7 +321,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
         this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
-        this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
+        this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         {
             this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({
@@ -422,7 +422,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
         const psmCountForUnfilteredDisplay = psmCountForUnfiltered.toLocaleString();
         
-        const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
+        const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData__SingleProtein({
 
             forPeptidePage: false,
             searchSubGroup_Ids_Selected,
@@ -491,7 +491,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             const containerRect_Width = Math.ceil( containerRect.width );
             // const containerRect_Height = containerRect.height;
 
-            this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+            this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                 if ( state.widthOf_proteinSequenceWidgetDisplay_Component >= containerRect_Width ) {
                     //  Already >= containerRect_Width so no change
@@ -632,7 +632,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         const searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean =
             compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected({ propsValue : this.props.propsValue });
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { searchSubGroup_PropValue, searchSubGroup_Are_All_SearchSubGroupIds_Selected };
         });
@@ -694,7 +694,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
 
 
-            const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
+            const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData__SingleProtein({
 
                 forPeptidePage: false,
                 searchSubGroup_Ids_Selected,
@@ -709,7 +709,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                 loadedDataCommonHolder : this.props.propsValue.loadedDataCommonHolder,
             } );
 
-            const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
+            const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
 
             const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
                 peptideList
@@ -730,7 +730,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = this.state.create_GeneratedReportedPeptideListData_Result;
         
-        const peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
+        const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
 
         const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
             peptideList
@@ -748,7 +748,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         peptideList
     
     } : {
-        peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry>
+        peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry>
     
     }) : string {
 
@@ -1079,7 +1079,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     searchStrings : this.props.propsValue.peptideSequence_UserSelections_StateObject.getPeptideSearchStrings()
                                 });
 
-                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                     return { userSearchString_LocationsOn_ProteinSequence_Root };
                                 });
@@ -1157,7 +1157,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             if ( promise ) {
                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                 });
@@ -1179,7 +1179,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                         //  Remove Loading Message
                         modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
-                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                         });
@@ -1196,7 +1196,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                         //  Remove Loading Message
                         modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
-                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                         });
@@ -1333,7 +1333,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             if ( promise ) {
                                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                                 });
@@ -1345,7 +1345,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                                         });
@@ -1359,7 +1359,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                                         });
@@ -1449,7 +1449,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             if ( promise ) {
                                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                                 });
@@ -1461,7 +1461,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                                         });
@@ -1475,7 +1475,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                                         });
@@ -1533,7 +1533,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
         })
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { modificationMass_UserSelections_ComponentData };
         });
@@ -1583,7 +1583,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
             });
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData };
         });
@@ -1624,7 +1624,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                         this._load_ReporterIonMasses_InProgress = true;
 
                         // console.log("_updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback(): Loading Reporter Ion Masses so display Loading Data Message");
-                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                             return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true };
                         });
@@ -1636,7 +1636,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             try {
                                 this._load_ReporterIonMasses_InProgress = false;
 
-                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                     return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false };
                                 });
@@ -1650,7 +1650,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             try {
                                 this._load_ReporterIonMasses_InProgress = false;
 
-                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                     return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false };
                                 });
@@ -1705,7 +1705,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
         });
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { reporterIons_UserSelections_ComponentData };
         });
@@ -1752,7 +1752,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject
         });
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { peptideUnique_UserSelection_ComponentData };
         });
@@ -1773,7 +1773,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                     window.setTimeout( () => {
                         try {
-                            this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                            this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                 return { userSearchString_LocationsOn_ProteinSequence_Root };
                             });
@@ -1806,7 +1806,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject
         });
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { peptideSequence_UserSelections_ComponentData };
         });
@@ -1850,7 +1850,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             if ( promise ) {
                                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                                this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                                 });
@@ -1862,7 +1862,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                                         });
@@ -1876,7 +1876,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
                                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
                                         });
@@ -1979,7 +1979,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
     
         proteinSequenceWidgetDisplay_Component_Data.selectedProteinSequencePositions = this.props.propsValue.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { proteinSequenceWidgetDisplay_Component_Data };
         });
@@ -2096,7 +2096,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
                             
 
-                            const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein({
+                            const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData__SingleProtein({
 
                                 forPeptidePage: false,
                                 searchSubGroup_Ids_Selected,
@@ -2141,7 +2141,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             
                             window.setTimeout( () => {
                                 try {
-                                    this.setState( (state : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                    this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
                                         return { proteinSequenceWidgetDisplay_Component_Data }
                                     });
                                 } catch( e ) {
@@ -2155,13 +2155,13 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                     if ( create_GeneratedReportedPeptideListData_Result.peptideList_Length > 300 ) { //  The cutoff number is an arbitrary guess
                                         //  Since going to take a while to put new peptide list in DOM, show updating message first, then update peptide list
             
-                                        this.setState( (state : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
                                             return { updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true }
                                         });
             
                                         window.setTimeout( () => {
                                             try {
-                                                this.setState( (state : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                                this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
                                                     return { 
                                                         updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
                                                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
@@ -2175,7 +2175,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
                                         }, 0 );
                                     } else {
                                         //  Should not take long to update DOM for new peptide list so do directly
-                                        this.setState( (state : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+                                        this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
                                             return { 
                                                 updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
                                                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
@@ -2226,7 +2226,7 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
             searchSubGroup_PropValue : this.state.searchSubGroup_PropValue
         };
 
-        this.setState( (state: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State, props: ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_Props ) : ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Component_State => {
+        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
             return { peptideFiltersDisplay_ComponentData };
         });
@@ -2322,10 +2322,10 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
         this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
 
 
-        const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
 		// Start observing the target node for configured mutations
-		this._domMutationObserver_reported_peptides_outer_container.observe( proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
+		this._domMutationObserver_reported_peptides_outer_container.observe( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
 
 		// stop observing
 		// this._domMutationObserver_reported_peptides_outer_container.disconnect();
@@ -2340,9 +2340,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
 		//  Adjust overlay width to fit reported peptide list
 
-        const proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
-        const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
+        const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
 
 		const reported_peptides_data_table_container_Width = containerRect_GeneratedReportedPeptideListSection.width;
 
@@ -2837,9 +2837,9 @@ export class ProteinPage_Display_MultipleSearches_SingleProtein_MainContent_Comp
 
                                     
                 <div style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
-                    ref={ this._proteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
+                    ref={ this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
 
-                    <ProteinPage_Display_MultipleSearches_SingleProtein_GeneratedReportedPeptideListSection_Component  
+                    <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component
 
                         showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                         showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }

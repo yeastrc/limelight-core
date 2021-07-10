@@ -133,7 +133,7 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
     componentDidCatch( error : any, errorInfo : any ) {
         // You can also log the error to an error reporting service
 
-        console.warn("react Component 'ProteinPage_Display_MultipleSearches_SingleProtein_Root_Component'. componentDidCatch: ", error, errorInfo );
+        console.warn("react Component 'ProteinPage_Display__SingleProtein_Root_Component'. componentDidCatch: ", error, errorInfo );
         // logErrorToMyService(error, errorInfo);
     }
 

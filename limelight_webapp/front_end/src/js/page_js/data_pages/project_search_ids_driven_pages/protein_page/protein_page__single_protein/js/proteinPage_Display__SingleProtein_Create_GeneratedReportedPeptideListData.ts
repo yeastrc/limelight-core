@@ -1,6 +1,6 @@
 
 /**
- * proteinPage_Display_MultipleSearches__SingleProtein_Create_GeneratedReportedPeptideListData.ts
+ * proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts
  * 
  * Get Generated Reported Peptide List
  * 
@@ -33,8 +33,8 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateMa
  * Result from create_GeneratedReportedPeptideListData call
  */
 export class Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result {
-    peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry>;
-    entries_Key_peptideSequenceDisplay : Map<string , CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry>; // AKA peptideItems_Map_Key_peptideSequenceDisplayString : Map<any , CreateReportedPeptideDisplayData_Result_Entry>
+    peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry>;
+    entries_Key_peptideSequenceDisplay : Map<string , CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry>; // AKA peptideItems_Map_Key_peptideSequenceDisplayString : Map<any , CreateReportedPeptideDisplayData_Result_Entry>
     peptideList_Length : number;
     numberOfUniquePeptides : number;
     numberOfPsmIds_NonRedundant_AcrossAllPeptides : number;
@@ -43,7 +43,7 @@ export class Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
 /**
  * Result from createReportedPeptideDisplayData call
  */
-export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry {
+export class CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry {
 
     peptideSequenceDisplay : string
 
@@ -56,13 +56,13 @@ export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Resul
     numPsmsTotal : number = 0;  //  Can NOT be summed across all Peptide List entries to get numberOfPsmIds_NonRedundant_AcrossAllPeptides
     psmCountsMap_KeyProjectSearchId : Map<number, number>
     psmCountsMap_Key_SubSearchGroup_Id : Map<number, number>
-    dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId : Map<number, Map<number, CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>>
+    dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId : Map<number, Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>>
 }
 
 /**
  * Result from createReportedPeptideDisplayData call
  */
-export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry {
+export class CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry {
 
     reportedPeptideId : Readonly<number>
 
@@ -77,7 +77,7 @@ export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Resul
         psmIdsSet : Set<number>
     }) {
         if ( no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId && psmIdsSet ) {
-            const msg = "( allPsmIds_For_ReportedPeptideId_within_ProjectSearchId && psmIdsSet ): CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry. "
+            const msg = "( allPsmIds_For_ReportedPeptideId_within_ProjectSearchId && psmIdsSet ): CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry. "
             console.warn( msg )
             throw Error( msg )
         }
@@ -94,7 +94,7 @@ export class CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Resul
  * Number of Reported Peptides
  * Number of PSMs total
  */
-export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein = function(
+export const create_GeneratedReportedPeptideListData__SingleProtein = function(
     {
         forPeptidePage,
 
@@ -122,7 +122,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
 
     const create_GeneratedReportedPeptideListData_Result = new Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result();
 
-    const peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = new Map();
+    const peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = new Map();
 
     let numberOfPsmsForReportedPeptides = 0; // PSM Count Total
     
@@ -270,7 +270,7 @@ export const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtei
         }
     }
 
-    const peptideListResult : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> = [];
+    const peptideListResult : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = [];
     let numberOfUniquePeptides = 0;
 
     //  Copy to array
@@ -375,7 +375,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
-        peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> //  UPDATED
+        peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> //  UPDATED
     }) {
 
     const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs =
@@ -653,7 +653,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
 
-        peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> //  UPDATED
+        peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> //  UPDATED
     }) {
 
     if ( searchSubGroup_Ids_Selected && psmCount_after_Include_Map_Key_SearchSubGroupId === undefined ) {
@@ -757,10 +757,10 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         staticModificationsRounded_KeyPosition : undefined
     });
 
-    let peptideItem : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
+    let peptideItem : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry = peptideItems_Map_Key_peptideSequenceDisplayString.get( peptideSequenceDisplay );
     if ( ! peptideItem ) {
 
-        peptideItem = new CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry();
+        peptideItem = new CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry();
         peptideItem.peptideSequenceDisplay = peptideSequenceDisplay;
         peptideItem.peptideUnique = peptideUnique;
         peptideItem.psmCountsMap_KeyProjectSearchId = new Map();
@@ -845,7 +845,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
 
     let dataPerReportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId.get( reportedPeptideId );
     if ( ! dataPerReportedPeptideId ) {
-        dataPerReportedPeptideId = new CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry({
+        dataPerReportedPeptideId = new CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry({
             reportedPeptideId,
             no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId,
             psmIdsSet
@@ -880,7 +880,7 @@ const _update_peptideItem_Pre_Post_Residues = function (
         loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
 
-        peptideItem : CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry
+        peptideItem : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
     }
 ) : void {
 
@@ -943,7 +943,7 @@ const _update_peptideItem_Pre_Post_Residues = function (
 /**
  * Sort Peptides Array on PSM Count then Reported Peptide Id
  */
-const _sortPeptideListOnSortOrder = function( { peptideList } : { peptideList : Array<CreateReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_PeptideList_Entry> } ) {
+const _sortPeptideListOnSortOrder = function( { peptideList } : { peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> } ) {
 
     peptideList.sort( function( a, b ) {
 

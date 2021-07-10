@@ -166,7 +166,7 @@ export class ProteinExperimentPage_Display {
 
     // !!!!!!!!!  TODO  Parts of this._loadedDataCommonHolder need to be cleared if the cutoffs or other filters change
     
-    //   this._loadedDataCommonHolder is shared with this._proteinViewPage_Display_MultipleSearches_SingleProtein
+    //   this._loadedDataCommonHolder is shared with this._proteinPage_Display__SingleProtein_Root
     
     private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder;
 
