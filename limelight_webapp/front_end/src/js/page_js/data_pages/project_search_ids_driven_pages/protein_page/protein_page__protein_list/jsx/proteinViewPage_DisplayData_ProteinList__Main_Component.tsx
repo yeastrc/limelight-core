@@ -1008,22 +1008,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             try {
                 this.setState({ loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds });
 
-
-                {
-                    const modificationMass_UserSelections_ComponentData = modificationMass_UserSelections_BuildData_ForReactComponent({
-                        modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
-                        proteinSequenceVersionId : undefined,
-                        projectSearchIds : projectSearchIds,
-                        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                        modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber
-                    });
-
-                    //  NO support for filter on Static Mods
-                    modificationMass_UserSelections_ComponentData.staticModificationsData = undefined;
-
-                    this.setState( { modificationMass_UserSelections_ComponentData });
-                }
-
                 {
                     const modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData =
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent({
@@ -1034,8 +1018,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                     this.setState( { modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData });
                 }
-
-                this.setState({ mainDisplayData_Loaded : true } );
 
                 //  Delay To allow SetState to run
                 window.setTimeout(() => {
@@ -1107,6 +1089,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                         this._re_renderPage_Actually();
 
+                        this.setState({ mainDisplayData_Loaded : true } );
+
                     } else {
 
                         //  WAS: Grouping Proteins selected so Load data needed for Computed Reported Peptides, All Proteins
@@ -1139,6 +1123,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                                     this._re_renderPage_Actually();
 
+                                    this.setState({ mainDisplayData_Loaded : true } );
+
                                 } catch (e) {
                                     reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                                     throw e;
@@ -1148,14 +1134,16 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                             // NO data To Load for Computed Reported Peptides so immediately execute this._displayProteinListOnPage_ActualRender( { projectSearchIds } );
 
+                            this.setState({ mainDisplayData_Loaded : true } );
+
                             this._re_renderPage_Actually();
                         }
                     }
-                } else {
-
-                    // Grouping Proteins NOT selected so immediately execute this._re_renderPage_Actually( );
-
-                    this._re_renderPage_Actually();
+                // } else {
+                //
+                //     // Grouping Proteins NOT selected so immediately execute this._re_renderPage_Actually( );
+                //
+                //     this._re_renderPage_Actually();
                 }
 
             } catch( e ) {
