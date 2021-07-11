@@ -46,7 +46,7 @@ to the GitHub repository for the individual converter for information on how to 
    * - MSFragger
      - https://github.com/yeastrc/limelight-import-msfragger-tsv
    * - MSFragger + Trans Proteomic Pipeline
-     - https://github.com/yeastrc/limelight-import-magnum-tpp
+     - https://github.com/yeastrc/limelight-import-msfragger-tpp
    * - Open pFind
      - https://github.com/yeastrc/limelight-import-open-pfind
    * - ProLuCID (processed with DTASelect, using IP2)
