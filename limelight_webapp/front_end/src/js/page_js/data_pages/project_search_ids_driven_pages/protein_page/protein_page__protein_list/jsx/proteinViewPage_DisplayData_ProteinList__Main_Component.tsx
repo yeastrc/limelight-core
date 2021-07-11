@@ -2020,7 +2020,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                     {/*  Outer Container for "Updating List" overlay  */}
                     <div style={ { position: "relative", display: "inline-block" } }> {/*    display: inline-block; so overlay doesn't extend right past the table right edge */}
 
-                        <div style={ { position: "relative", display: "inline-block" } }>
+                        <div style={ { position: "relative" } }>
 
                             { ( this.state.proteinList_DataCounts ) ? (
 
@@ -2120,7 +2120,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                         {/*  Protein List is displayed here */}
 
-                        <div style={ { display: "inline-block" } }>
+                        <div>
 
                             { ( this.state.tableObject_CurrentlyRendered_ProteinList ) ? (
                                 <DataTable_TableRoot
