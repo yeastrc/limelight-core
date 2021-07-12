@@ -193,6 +193,8 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
         const eachRadioButtonStyle : React.CSSProperties = { marginLeft: 0 }
 
+        const paddngTop_BothTopLevelDiv = 5;
+
         return (
 
              // <input margin-left: 0px;> so radio button left aligns with other content above and below it.  Browser default has > 0px for margin-left.
@@ -200,8 +202,10 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
                 {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-filter-label " style={ { paddingBottom: 4 } }>Protein Grouping:</div>
-                <div className=" filter-common-selection-block " style={ { paddingBottom: 4 } }>
+                <div className=" filter-common-filter-label " style={ { paddingBottom: 4, paddingTop: paddngTop_BothTopLevelDiv } }>
+                    Protein Grouping:
+                </div>
+                <div className=" filter-common-selection-block " style={ { paddingBottom: 4, paddingTop: paddngTop_BothTopLevelDiv } }>
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                             <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>

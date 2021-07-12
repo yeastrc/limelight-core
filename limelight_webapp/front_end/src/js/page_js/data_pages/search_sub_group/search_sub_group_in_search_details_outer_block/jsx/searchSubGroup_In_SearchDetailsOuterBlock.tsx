@@ -350,7 +350,9 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
         return (
             <React.Fragment>
 
-                <div className=" filter-common-filter-label ">Filter On Sub Groups:</div>
+                <div className=" filter-common-filter-label ">
+                    Filter On Sub Groups:
+                </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block " >
                     <div className=" filter-common-selection-inner-block ">
                         { searchSubGroupsJSX }

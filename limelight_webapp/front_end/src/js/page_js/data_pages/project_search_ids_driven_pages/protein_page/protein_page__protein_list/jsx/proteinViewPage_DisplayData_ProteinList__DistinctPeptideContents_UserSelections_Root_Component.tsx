@@ -113,11 +113,6 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
             variableModsSelection = (
 
                 <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
-                    <span> </span>
-                    <span>
-                        +
-                    </span>
-                    <span> </span>
                     <label>
                         <input
                             type="checkbox"
@@ -134,11 +129,6 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
             openModsSelection = (
 
                 <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
-                    <span> </span>
-                    <span>
-                        +
-                    </span>
-                    <span> </span>
                     <label>
                         <input
                             type="checkbox"
@@ -151,6 +141,11 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
             );
         }
 
+        if ( ! variableModsSelection && ! openModsSelection ) {
+            //  No Selection boxes so do not show the line
+            return null; // EARLY RETURN
+        }
+
         return (
             <React.Fragment>
 
@@ -158,15 +153,11 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
 
                 <div >
                     <span className="  filter-common-filter-label  ">
-                        Distinct peptide is:
+                        Distinct peptide includes:
                     </span>
                 </div>
 
-                <div className="  left-margin-same-as-checkbox  ">
-                    <span>
-                         sequence
-                    </span>
-                    <span> </span>
+                <div>
                     { variableModsSelection }
                     { openModsSelection }
                 </div>

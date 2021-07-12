@@ -1905,6 +1905,13 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         propValue={ this.state.proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue }
                     />
 
+                    <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
+                        displayData={ this.state.searchSubGroup_PropValue }
+                        searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
+                        searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
+                        searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
+                    />
+
                     {/******************/}
 
                     {/*  Section Header: Spans all columns */}
@@ -1914,13 +1921,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                     >
                         Peptide Filters
                     </div>
-
-                    <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
-                        displayData={ this.state.searchSubGroup_PropValue }
-                        searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
-                        searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
-                        searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
-                    />
 
                     <ModificationMass_UserSelections_Root
                         modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
