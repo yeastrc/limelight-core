@@ -205,6 +205,8 @@ export class ProteinExperimentPage_RootClass_Common {
 			}
 		}
 
+		this._singleProtein_ExpPage_CentralStateManagerObjectClass.initialize();
+
 		this._proteinGrouping_CentralStateManagerObjectClass.initialize();
 
 
