@@ -352,8 +352,21 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
         return (
             <React.Fragment>
 
+                {/* Parent is CSS Grid with 2 Columns */}
+
                 <div className=" filter-common-filter-label " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                     Filter On Sub Groups:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    Only peptides from the selected sub groups will be used to build the protein list.
+                                    A sub group is typically a set of search results for a single run if multiple runs were combined for post processing.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                     <div className=" filter-common-selection-inner-block ">

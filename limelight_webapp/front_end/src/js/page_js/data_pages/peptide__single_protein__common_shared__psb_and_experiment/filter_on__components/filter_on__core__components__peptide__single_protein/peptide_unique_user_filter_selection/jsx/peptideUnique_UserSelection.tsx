@@ -158,10 +158,18 @@ export class PeptideUnique_UserSelection extends React.Component< PeptideUnique_
 
                 {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }
-                     title="Check to only show peptides only found in this protein."
-                >
+                <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }>
                     Show only Unique Peptides:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    Only peptides that map to a single protein will be shown.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">

@@ -1766,6 +1766,16 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         className=" section-label "
                     >
                         Options
+
+                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        General options for the protein list below.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ProteinPage_ProteinGroupingFilterSelection_Component_Root
@@ -1789,6 +1799,16 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         className=" section-label "
                     >
                         Peptide Filters
+
+                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        These options will filter the peptides used to build the protein list.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ModificationMass_UserSelections_Root
@@ -1818,6 +1838,18 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         className=" section-label "
                     >
                         Protein Filters
+
+                        <div style={ { display: "inline-block" } }>
+                            <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                                <div className=" inner-absolute-pos ">
+                                    <div className=" main-div ">
+                                        <p className="help-tip-actual">
+                                            Filter the list of proteins below.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component
@@ -1855,7 +1887,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         {/* Main Content above Reported Peptides  */}
 
                         <div >
-                            <h3>List Peptides</h3>
+                            <h3>List Proteins</h3>
 
                             <h3>
                                 Experiment: <span id="experiment_name">{ this.props.propsValue.experimentName }</span>

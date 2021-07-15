@@ -111,7 +111,20 @@ export class ProteinPositionFilter_UserSelections extends React.Component< Prote
 
                 {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-filter-label " style={ { paddingTop: paddingTopSize } }>Filter On Protein Position:</div>
+                <div className=" filter-common-filter-label " style={ { paddingTop: paddingTopSize } }>
+                    Filter On Protein Position:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    Only peptides that map to selected proteins and, optionally, map to selected positions in those proteins will be shown.
+                                    Click "Add Protein Position Filter" to add a protein and position range.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div className=" filter-common-selection-block "  style={ { paddingTop: paddingTopSize } }>
                     <div className=" filter-common-selection-inner-block ">

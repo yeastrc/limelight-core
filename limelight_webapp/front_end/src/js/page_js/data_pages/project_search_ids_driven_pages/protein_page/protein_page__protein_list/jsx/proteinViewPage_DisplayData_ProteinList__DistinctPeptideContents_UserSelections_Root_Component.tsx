@@ -156,6 +156,17 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
                 <div >
                     <span className="  filter-common-filter-label  " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                         Distinct Peptide Includes:
+
+                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        A distinct peptide will be defined as the combination of amino acid sequence and the selected options.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                     </span>
                 </div>
 

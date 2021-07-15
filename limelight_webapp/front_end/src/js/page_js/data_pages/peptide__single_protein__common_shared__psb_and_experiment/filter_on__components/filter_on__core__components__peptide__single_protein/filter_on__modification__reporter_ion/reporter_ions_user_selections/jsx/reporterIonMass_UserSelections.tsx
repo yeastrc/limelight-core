@@ -105,7 +105,22 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
 
                 {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-filter-label ">Filter On Reporter Ions:</div>
+                <div className=" filter-common-filter-label ">
+                    Filter On Reporter Ions:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    Filter peptides based on reporter ions.
+                                    All peptides will contain all reporter ions selected with the “AND” option.
+                                    All peptides will contain at least one of the reporter ions selected with the “OR” option.
+                                    And no peptides will contain any reporter ion selected with the “EXCLUDE” option.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="filter-common-selection-block" >
                     <div className=" filter-common-selection-inner-block ">

@@ -361,10 +361,12 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
             )
         }
 
-        let variable_Open_Label = "Variable"
+        let variable_Open_Label__CapitalFirstLetter = "Variable"
+        let variable_Open_Label__AllLowerCase = "variable"
 
         if ( this.props.open_Modifications_DISPLAY ) {
-            variable_Open_Label = "Open"
+            variable_Open_Label__CapitalFirstLetter = "Open"
+            variable_Open_Label__AllLowerCase = "open"
         }
 
         return (
@@ -373,7 +375,21 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
 
                 {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-filter-label ">Filter On { variable_Open_Label } Modifications:</div>
+                <div className=" filter-common-filter-label ">
+                    Filter On { variable_Open_Label__CapitalFirstLetter } Modifications:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    Filter peptides based on { variable_Open_Label__AllLowerCase } modifications. All peptides will contain all modifications selected with the “AND” option.
+                                    All peptides will contain at least one of the modifications selected with the “OR” option.
+                                    And no peptides will contain any modification selected with the “EXCLUDE” option.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="filter-common-selection-block" >
                     <div >  {/*  className=" filter-common-selection-inner-block " no longer needed since adding border around mass entries: */}
@@ -382,7 +398,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
                                     <div className=" filter-common-selection-inner-block ">
 
                                         <div style={ { paddingTop: 2 }} className=" left-margin-same-as-checkbox "> {/*   left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
-                                            No { variable_Open_Label } Modifications
+                                            No { variable_Open_Label__CapitalFirstLetter } Modifications Found
                                         </div>
                                     </div>
                                 </div>

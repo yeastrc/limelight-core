@@ -214,20 +214,39 @@ export class GeneratedPeptideContents_UserSelections_Root_Component extends Reac
         }
 
         return (
-            <div >
+            <React.Fragment>
 
-                <div style={ { float: "left" } }>
-                    <span style={ { fontSize: 18, fontWeight : "bold", paddingRight: 10 } }>
+                {/* Parent is CSS Grid with 2 Columns */}
+
+                <div className=" filter-common-filter-label ">
+                    <div style={ { marginTop: 10, marginBottom: 10 } }>
                         Show in Peptides:
-                    </span>
+
+                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        The shown peptide will be the combination of amino acid sequence and the selected options.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div >
-                    { variableModsSelection }
-                    { openModsSelection }
-                    { staticModsSelection }
+                <div className=" filter-common-selection-block " >
+                    <div className=" filter-common-selection-inner-block ">
+                        <div style={ { marginTop: 10, marginBottom: 10 } }>
+
+                            { variableModsSelection }
+                            { openModsSelection }
+                            { staticModsSelection }
+
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+            </React.Fragment>
         );
     }
 }

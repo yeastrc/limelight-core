@@ -2820,7 +2820,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                         
                     </div>
 
-                    <div style={{ marginTop:10, marginBottom: 10 }}>
+                    <div className=" filter-common-block-selection-container-block no-section-labels ">
 
                         <GeneratedPeptideContents_UserSelections_Root_Component
                             generatedPeptideContents_UserSelections_StateObject={ this._generatedPeptideContents_UserSelections_StateObject }

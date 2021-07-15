@@ -204,6 +204,18 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
                 <div className=" filter-common-filter-label " style={ { paddingBottom: 4, paddingTop: paddingTop_BothTopLevelDiv } }>
                     Protein Grouping:
+
+                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    Proteins will be grouped into indistinguishable protein groups—groups of peptides identified by the same set of peptides.
+                                    The grouping option will optionally grey out groups that do not conform to the selected option.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div className=" filter-common-selection-block " style={ { paddingBottom: 4, paddingTop: paddingTop_BothTopLevelDiv } }>
                     <div className=" filter-common-selection-inner-block ">

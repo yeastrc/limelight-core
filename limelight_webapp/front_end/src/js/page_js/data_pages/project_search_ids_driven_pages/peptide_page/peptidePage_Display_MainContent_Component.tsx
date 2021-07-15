@@ -2662,54 +2662,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         //  Only create these once main display data is loaded
 
-        let filterOnSection : JSX.Element = null;
-        let generatedPeptideContents_UserSelections_Root_Component : JSX.Element = null;
+        let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : JSX.Element = null;
 
         if ( this.state.mainDisplayData_Loaded ) {
 
-            filterOnSection = this._render_FilterOn({  })
-
-            let searchContains_VariableModifications = false;
-            let searchContains_OpenModifications = false;
-            let searchContains_StaticModifications = false;
-
-            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-                const loadedDataPerProjectSearchIdHolder = this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
-                if ( ! loadedDataPerProjectSearchIdHolder ) {
-                    throw new Error("No value in this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
-                }
-                if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_HasDynamicModifications()
-                    && loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_HasDynamicModifications().size > 0
-                ) {
-                    searchContains_VariableModifications = true;
-                }
-                if ( loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId()
-                    && loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId().size > 0
-                ) {
-                    searchContains_OpenModifications = true;
-                }
-                if ( loadedDataPerProjectSearchIdHolder.get_staticMods()
-                    && loadedDataPerProjectSearchIdHolder.get_staticMods().length > 0
-                ) {
-                    searchContains_StaticModifications = true;
-                }
-            }
-
-
-            generatedPeptideContents_UserSelections_Root_Component = (
-
-                <div style={{ marginTop:10, marginBottom: 10 }}>
-
-                    <GeneratedPeptideContents_UserSelections_Root_Component
-                        generatedPeptideContents_UserSelections_StateObject={ this.props.propsValue.generatedPeptideContents_UserSelections_StateObject }
-                        searchContains_VariableModifications={ searchContains_VariableModifications }
-                        searchContains_OpenModifications={ searchContains_OpenModifications }
-                        searchContains_StaticModifications={ searchContains_StaticModifications }
-                        updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis  }
-                    />
-                </div>
-            );
+            filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section = this._render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section({  })
         }
 
         let searchSubGroup_Ids_Selected : Set<number> = undefined;
@@ -2775,12 +2732,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             />
                         </div>
 
-                        { filterOnSection }
+                        { filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section }
 
                     </div>  {/* END: Main Content above Reported Peptides  */}
-
-                    { generatedPeptideContents_UserSelections_Root_Component }
-
 
                 </div>  {/* Close display of data above Reported Peptides */}
 
@@ -2847,7 +2801,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     /**
      *
      */
-    private _render_FilterOn(
+    private _render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section(
         {
 
         } : {
@@ -2860,6 +2814,33 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         // if ( this.props.propsValue.projectSearchIds.length === 1 ) {
         //     modificationMass_CommonRounding_ReturnNumber_Param = undefined;  //  NO Rounding for Single Project Search Id
         // }
+
+        let searchContains_VariableModifications = false;
+        let searchContains_OpenModifications = false;
+        let searchContains_StaticModifications = false;
+
+        for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+
+            const loadedDataPerProjectSearchIdHolder = this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+            if ( ! loadedDataPerProjectSearchIdHolder ) {
+                throw new Error("No value in this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId );
+            }
+            if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_HasDynamicModifications()
+                && loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_HasDynamicModifications().size > 0
+            ) {
+                searchContains_VariableModifications = true;
+            }
+            if ( loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId()
+                && loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId().size > 0
+            ) {
+                searchContains_OpenModifications = true;
+            }
+            if ( loadedDataPerProjectSearchIdHolder.get_staticMods()
+                && loadedDataPerProjectSearchIdHolder.get_staticMods().length > 0
+            ) {
+                searchContains_StaticModifications = true;
+            }
+        }
 
         return (
 
@@ -2922,6 +2903,15 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             proteinPositionFilter_UserSelections_StateObject_Wrapper={ this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper }
                             updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback_BindThis }
                         />
+
+                        <GeneratedPeptideContents_UserSelections_Root_Component
+                            generatedPeptideContents_UserSelections_StateObject={ this.props.propsValue.generatedPeptideContents_UserSelections_StateObject }
+                            searchContains_VariableModifications={ searchContains_VariableModifications }
+                            searchContains_OpenModifications={ searchContains_OpenModifications }
+                            searchContains_StaticModifications={ searchContains_StaticModifications }
+                            updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis  }
+                        />
+
                     </div>
 
                 </div>

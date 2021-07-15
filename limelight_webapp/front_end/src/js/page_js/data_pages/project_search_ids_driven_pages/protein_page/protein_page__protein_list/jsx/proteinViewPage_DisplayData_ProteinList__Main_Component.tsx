@@ -1895,6 +1895,18 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         className=" section-label "
                     >
                         Options
+
+                        <div style={ { display: "inline-block" } }>
+                            <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                                <div className=" inner-absolute-pos ">
+                                    <div className=" main-div ">
+                                        <p className="help-tip-actual">
+                                            General options for the protein list below.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ProteinPage_ProteinGroupingFilterSelection_Component_Root
@@ -1925,6 +1937,16 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         className=" section-label "
                     >
                         Peptide Filters
+
+                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        These options will filter the peptides used to build the protein list.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ModificationMass_UserSelections_Root
@@ -1954,6 +1976,16 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         className=" section-label "
                     >
                         Protein Filters
+
+                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        Filter the list of proteins below.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component

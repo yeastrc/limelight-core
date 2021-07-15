@@ -281,6 +281,16 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
 
                 <div className=" filter-common-filter-label ">
                     Minimum PSM Count:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    All proteins will have at least this many PSMs, summed across all searches and conditions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className=" filter-common-selection-block " >
@@ -298,6 +308,19 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
 
                 <div className=" filter-common-filter-label ">
                     Minimum Distinct Peptide Count:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    All proteins will have at least many distinct peptides, summed across all searches and conditions.
+                                    <br/>
+                                    A distinct peptide is the unique combination of amino acid sequence and, optionally, variable and open modifications.
+                                    See the option under "Options."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className=" filter-common-selection-block " >
@@ -315,6 +338,17 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
 
                 <div className=" filter-common-filter-label ">
                     Minimum Unique Peptide Count:
+
+                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                        <div className=" inner-absolute-pos ">
+                            <div className=" main-div ">
+                                <p className="help-tip-actual">
+                                    All proteins will have at least this many unique peptides, summed across all searches and conditions.
+                                    A unique peptide is a distinct peptide only found for a single protein or protein group.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className=" filter-common-selection-block " >
