@@ -15,9 +15,9 @@
 //  Imports
 
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';
+import {ProteinExperimentPage_RootClass_Common} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootClass_Common";
 
 //  From local dir
-import { ProteinExperimentPage_RootClass_Common }  from './proteinExperimentPage_RootClass_Common';
 
 /**
  * 

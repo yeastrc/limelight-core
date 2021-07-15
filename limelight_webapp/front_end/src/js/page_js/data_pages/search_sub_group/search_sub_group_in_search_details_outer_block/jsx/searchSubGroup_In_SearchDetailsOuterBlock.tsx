@@ -347,13 +347,15 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
             }
         }
 
+        const paddingTop_BothTopLevelDiv = 2;
+
         return (
             <React.Fragment>
 
-                <div className=" filter-common-filter-label ">
+                <div className=" filter-common-filter-label " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                     Filter On Sub Groups:
                 </div>
-                <div className=" filter-common-selection-block peptide-sequence-selection-block " >
+                <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                     <div className=" filter-common-selection-inner-block ">
                         { searchSubGroupsJSX }
                     </div>

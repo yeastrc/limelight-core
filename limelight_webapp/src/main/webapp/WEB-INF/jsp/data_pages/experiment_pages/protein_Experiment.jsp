@@ -37,7 +37,7 @@
    
    	<%--  <div> to contain main display --%>
    
-   	<div id="protein_experiment_data_page_overall_enclosing_block_div" style="display: none;"> <%--  Hidden until Javascript has loaded and displays it --%>
+   	<div id="protein_experiment_data_page_overall_enclosing_block_div">
    	</div>
    	
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>

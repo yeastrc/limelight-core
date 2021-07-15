@@ -21,7 +21,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Heade
 
 }  ) : string {
 
-    return 'Peptides (' + searchSubGroup.subgroupName_Display + ")"
+    return 'Distinct Peptides (' + searchSubGroup.subgroupName_Display + ")"
 }
 
 /**
@@ -36,7 +36,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Heade
     return (
         <div >
             <div >
-                Peptide Count:
+                Distinct Peptide Count:
             </div>
             <div >
                 { searchSubGroup.subgroupName_Display }

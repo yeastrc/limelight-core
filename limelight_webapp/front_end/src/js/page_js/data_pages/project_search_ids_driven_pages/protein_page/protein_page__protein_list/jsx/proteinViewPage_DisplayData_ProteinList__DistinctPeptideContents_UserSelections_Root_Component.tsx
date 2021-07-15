@@ -146,18 +146,20 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
             return null; // EARLY RETURN
         }
 
+        const paddingTop_BothTopLevelDiv = 2;
+
         return (
             <React.Fragment>
 
                 {/*  Add to 2 column CSS Grid for "Filter On" Section  */}
 
                 <div >
-                    <span className="  filter-common-filter-label  ">
-                        Distinct peptide includes:
+                    <span className="  filter-common-filter-label  " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
+                        Distinct Peptide Includes:
                     </span>
                 </div>
 
-                <div>
+                <div style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                     { variableModsSelection }
                     { openModsSelection }
                 </div>

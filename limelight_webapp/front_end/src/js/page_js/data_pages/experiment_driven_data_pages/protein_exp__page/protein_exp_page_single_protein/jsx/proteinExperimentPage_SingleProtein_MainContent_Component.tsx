@@ -190,8 +190,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
-    proteinList_ExpPage_CentralStateManagerObjectClass : ProteinList_ExpPage_CentralStateManagerObjectClass
-
     singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass

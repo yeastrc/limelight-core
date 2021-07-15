@@ -87,10 +87,44 @@ export class ProteinDataDisplay_ProteinList_Item {
     protein_SubItem_Records_Map_Key_projectSearchId : Map<number, ProteinDataDisplay_ProteinList_Sub_Item> = new Map();
 
     protein_SubItem_Records_Map_Key_SubGroup_Id : Map<number, ProteinDataDisplay_ProteinList_Sub_Item> = new Map();
+
+    //  ONLY populate for Experiment
+    experiment_SubData: ProteinDataDisplay_ProteinList_Experiment_SubData
 }
 
 /**
  * Entry in ProteinList_Item
+ */
+export class ProteinDataDisplay_ProteinList_Experiment_SubData {
+
+    experiment_SubData_PerCondition_Map_Key_ConditionId : Map<number, ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition> = new Map()
+
+    private _DoNotCall_JustForceUseConstructor() {}
+}
+
+/**
+ * Entry in ProteinList_Item
+ */
+export class ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition {
+
+    numPsms: number = 0;
+    reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string>
+
+    //  in a given experiment condition, unique peptides would be the number of peptides unique to that protein (or protein group) in that condition
+    uniquePeptideCount: number
+
+    get peptideCount() {
+        if ( ! this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set ) {
+            return 0;
+        }
+        return this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set.size;
+    }
+
+    private _DoNotCall_JustForceUseConstructor() {}
+}
+
+/**
+ * Entry in ProteinList_Item map protein_SubItem_Records_Map_Key_projectSearchId or map protein_SubItem_Records_Map_Key_SubGroup_Id
  */
 export class ProteinDataDisplay_ProteinList_Sub_Item {
 
