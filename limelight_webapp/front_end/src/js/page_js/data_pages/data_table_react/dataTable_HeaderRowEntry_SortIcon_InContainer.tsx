@@ -1,10 +1,15 @@
 /**
  * dataTable_HeaderRowEntry_SortIcon_InContainer.tsx
- * 
+ *
  * Sort Icon for Table Entry in Header Row
  */
 import React from 'react'
 import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from './dataTable_constants';
+import {
+  tooltip_Limelight_Create_Tooltip,
+  Tooltip_Limelight_Created_Tooltip
+} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 
 const sortIconWidth  = 12;  // in px
@@ -46,10 +51,10 @@ const polygonLower = ( <polygon points={ lowerTrianglePoints } style={ { fillOpa
 
 //  Draw triangles pointing up and down - This column is not currently used in sorting
 const sortIcon_NotCurrentLyForSorting = (
-  <svg width={ sortIconWidth + "px" } height={ sortIconHeight + "px" } >
-    { polygonUpper }
-    { polygonLower }
-  </svg>
+    <svg width={ sortIconWidth + "px" } height={ sortIconHeight + "px" } >
+      { polygonUpper }
+      { polygonLower }
+    </svg>
 );
 
 export interface DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props {
@@ -60,93 +65,171 @@ export interface DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props {
 }
 
 /**
- * 
+ *
  */
 export class DataTable_Table_HeaderRowEntry_SortIcon_InContainer extends React.Component< DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props, {} > {
 
-    // //  Add state so can update tooltip when tooltip in props changes
-    // constructor(props : DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props) {
-    //     super(props);
-    //     // this._headerColumnClicked = this._headerColumnClicked.bind(this);
-    //     this.state = {
-    //         tableObject: props.tableObject,
-    //         tableOptions : props.tableOptions,
-    //         sortColumnsInfo : undefined
-    //     };
-    // }
+  private _sortIconDOMElement_onMouseEnter_BindThis = this._sortIconDOMElement_onMouseEnter.bind(this);
+  private _sortIconDOMElement_onMouseLeave_BindThis = this._sortIconDOMElement_onMouseLeave.bind(this);
 
-    /**
-     * 
-     */
-    render () {
-  
-      const column_sortDirection = this.props.column_sortDirection; // may be undefined
-      const column_sortPosition = this.props.column_sortPosition;
+  private readonly _sortIconDiv_Ref :  React.RefObject<HTMLDivElement>
 
-      let sortIcon = undefined;
+  private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
-      if ( column_sortDirection ) {
-        
-        if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+  //  Add state so can update tooltip when tooltip in props changes
+  constructor(props : DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props) {
+      super(props);
 
-          let sortPosition_TextElement = undefined;
 
-          if ( column_sortPosition ) {
-            
-            sortPosition_TextElement = (
+    this._sortIconDiv_Ref = React.createRef();
+
+      // this.state = {};
+  }
+
+  /**
+   *
+   */
+  componentWillUnmount() {
+    try {
+      this._removeTooltip();
+
+    } catch( e ) {
+      console.warn( "Error in DataTable_Table_HeaderRowEntry.componentWillUnmount: ", e )
+      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+      throw e;
+    }
+  }
+
+  /**
+   *
+   */
+  private _sortIconDOMElement_onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    try {
+      const tooltipContents = (
+          <div>
+            <div >
+              Click to sort on column. Click again to toggle sort direction.
+            </div>
+            <div>
+              Sorting may be done on multiple columns.
+            </div>
+            <div>
+              Use Control-click (Command-click) to add or remove a column for sorting.
+            </div>
+          </div>
+      );
+
+      this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._sortIconDiv_Ref.current })
+
+    } catch( e ) {
+      console.warn( "Error in DataTable_Table_HeaderRowEntry._sortIconDOMElement_onMouseEnter: ", e )
+      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+      throw e;
+    }
+  }
+
+  /**
+   *
+   */
+  private _sortIconDOMElement_onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    try {
+      this._removeTooltip();
+
+    } catch( e ) {
+      console.warn( "Error in DataTable_Table_HeaderRowEntry._sortIconDOMElement_onMouseLeave: ", e )
+      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+      throw e;
+    }
+  }
+
+  /**
+   *
+   */
+  private _removeTooltip() {
+
+    if ( this._tooltip_Limelight_Created_Tooltip ) {
+      this._tooltip_Limelight_Created_Tooltip.removeTooltip()
+    }
+    this._tooltip_Limelight_Created_Tooltip = undefined
+  }
+
+  /**
+   *
+   */
+  render () {
+
+    const column_sortDirection = this.props.column_sortDirection; // may be undefined
+    const column_sortPosition = this.props.column_sortPosition;
+
+    let sortIcon = undefined;
+
+    if ( column_sortDirection ) {
+
+      if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+
+        let sortPosition_TextElement = undefined;
+
+        if ( column_sortPosition ) {
+
+          sortPosition_TextElement = (
               <text x={ sortIconWidth / 2 } y="20" style={ { fontWeight: "normal", fontSize: "11px", textAnchor: "middle" } }
-                >{ column_sortPosition }</text>
-            );
-          }
-
-          sortIcon = (
-            <svg width={ sortIconWidth + "px" } height={ sortIconHeight + "px" } >
-                { polygonUpper }
-                { sortPosition_TextElement }
-            </svg>
+              >{ column_sortPosition }</text>
           );
+        }
 
-        } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+        sortIcon = (
+            <svg width={ sortIconWidth + "px" } height={ sortIconHeight + "px" } >
+              { polygonUpper }
+              { sortPosition_TextElement }
+            </svg>
+        );
 
-          let sortPosition_TextElement = undefined;
+      } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
 
-          if ( column_sortPosition ) {
-            
-            sortPosition_TextElement = (
+        let sortPosition_TextElement = undefined;
+
+        if ( column_sortPosition ) {
+
+          sortPosition_TextElement = (
               <text x={ sortIconWidth / 2 } y="10" style={ { fontWeight: "normal", fontSize: "11px", textAnchor: "middle" } }
-                >{ column_sortPosition }</text>
-            );
-          }
+              >{ column_sortPosition }</text>
+          );
+        }
 
-          sortIcon = (
+        sortIcon = (
             <svg width={ sortIconWidth + "px" } height={ sortIconHeight + "px" } >
               { sortPosition_TextElement }
               { polygonLower }
             </svg>
-          );
+        );
 
-        } else {
-          throw Error("column_sortDirection is not SORT_DIRECTION_ASCENDING or SORT_DIRECTION_DECENDING, is: " + column_sortDirection );
-        }
       } else {
-        //  Draw triangles pointing up and down - This column is not currently used in sorting
-        sortIcon = sortIcon_NotCurrentLyForSorting;
+        throw Error("column_sortDirection is not SORT_DIRECTION_ASCENDING or SORT_DIRECTION_DECENDING, is: " + column_sortDirection );
       }
+    } else {
+      //  Draw triangles pointing up and down - This column is not currently used in sorting
+      sortIcon = sortIcon_NotCurrentLyForSorting;
+    }
 
-      const sortIconStyle : React.CSSProperties = { display: "flex", alignItems: "flex-end", paddingLeft: "1px" };
-      if ( this.props.lastColumn ) {
-        sortIconStyle.paddingRight = "3px";
-      }
+    const sortIconStyle : React.CSSProperties = { display: "flex", alignItems: "flex-end", paddingLeft: "1px" };
+    if ( this.props.lastColumn ) {
+      sortIconStyle.paddingRight = "3px";
+    }
 
-      const sortIconContainer =  ( 
-        <div style={ sortIconStyle }>       
+    const sortIconContainer =  (
+        <div
+            style={ sortIconStyle }
+            onMouseEnter={ this._sortIconDOMElement_onMouseEnter_BindThis }
+            onMouseLeave={ this._sortIconDOMElement_onMouseLeave_BindThis }
+            ref={ this._sortIconDiv_Ref }
+        >
           { sortIcon }
         </div>
-      );
+    );
 
-      return sortIconContainer;
+    return sortIconContainer;
 
-    }
+  }
 
 }
 

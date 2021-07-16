@@ -169,23 +169,19 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component 
 
         const marginBottomSize = 4;
 
-        const tooltipHelpString = "Any open modification mass that rounds to zero (>= -0.5 Da and < 0.5 Da) will not be treated as a modified peptide for purposes of defining distinct peptides, building modified peptide sequence strings, or any other purpose."
-
         return (
             <React.Fragment>
 
                 {/* Parent is CSS Grid with 2 Columns */}
 
-                <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }
-                     title="Do not treat open modification masses that round to 0 (0.5 <= mass < 0.5) as open modifications."
-                >
+                <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }>
                     Treat Mass 0 As Unmodified:
 
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    { tooltipHelpString }
+                                    { "Any open modification mass that rounds to zero (>= -0.5 Da and < 0.5 Da) will not be treated as a modified peptide for purposes of defining distinct peptides, building modified peptide sequence strings, or any other purpose." }
                                 </p>
                             </div>
                         </div>

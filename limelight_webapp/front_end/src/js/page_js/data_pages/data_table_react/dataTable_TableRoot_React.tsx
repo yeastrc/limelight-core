@@ -23,7 +23,8 @@ import {
 
 import {
     DataTable_Table_HeaderRowEntry,
-    DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback
+    DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback,
+    DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params
 } from './dataTable_Table_HeaderRowEntry_React';
 import { DataTable_Table_DataRow } from './dataTable_Table_DataRow_React';
 import { DataTable_Table_DataRow_Group } from './dataTable_Table_DataRow_Group_React';
@@ -266,7 +267,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     /**
      * 
      */
-    private _headerColumnClicked({ shiftKeyDown, columnId } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId }) : void {
+    private _headerColumnClicked(params: DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params) : void {
 
         let displayUpdatingMsg = false;
 
@@ -346,7 +347,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                     // Important: read `existingState` instead of `this.state` when updating.
 
-                    return this._headerColumnClicked_CreateNewState({ existingState, shiftKeyDown, columnId });
+                    return this._headerColumnClicked_CreateNewState({ existingState, header_clickCallback_params: params });
                 });
             }, 10 );
 
@@ -358,7 +359,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                 // Important: read `existingState` instead of `this.state` when updating.
 
-                return this._headerColumnClicked_CreateNewState({ existingState, shiftKeyDown, columnId });
+                return this._headerColumnClicked_CreateNewState({ existingState, header_clickCallback_params: params });
             });
         }
     }
@@ -366,15 +367,19 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     /**
      * 
      */
-    _headerColumnClicked_CreateNewState({ 
-        
-        existingState, shiftKeyDown, columnId 
-    } : { existingState : DataTable_TableRoot_State, shiftKeyDown : boolean, columnId : DataTable_ColumnId  }) : DataTable_TableRoot_State {
+    _headerColumnClicked_CreateNewState(
+        {
+            existingState,  header_clickCallback_params
+        } : {
+            existingState : DataTable_TableRoot_State
+            header_clickCallback_params: DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params
+
+        }) : DataTable_TableRoot_State {
 
         const tableDataObject_INTERNAL = existingState.tableDataObject_INTERNAL;
         let sortColumnsInfo_Existing = existingState.sortColumnsInfo;
 
-        const sortColumnsInfo = this._update_sortColumnsInfo({ shiftKeyDown, columnId, sortColumnsInfo_Existing });
+        const sortColumnsInfo = this._update_sortColumnsInfo({ header_clickCallback_params, sortColumnsInfo_Existing });
 
         const tableDataObject_INTERNAL_New = _sort_tableObject_on_sortColumnsInfo({ tableDataObject_INTERNAL, sortColumnsInfo });
 
@@ -391,42 +396,72 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
     /**
      * 
      */
-    _update_sortColumnsInfo({ 
-        
-        shiftKeyDown, columnId, sortColumnsInfo_Existing 
-    } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId, sortColumnsInfo_Existing : Array<DataTable_INTERNAL_SortColumnsInfoEntry>
-    }) : Array<DataTable_INTERNAL_SortColumnsInfoEntry> {
+    _update_sortColumnsInfo(
+        {
+            header_clickCallback_params, sortColumnsInfo_Existing
+        } : {
+            header_clickCallback_params: DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params
+            sortColumnsInfo_Existing : Array<DataTable_INTERNAL_SortColumnsInfoEntry>
+
+        }) : Array<DataTable_INTERNAL_SortColumnsInfoEntry> {
+
+        const columnId = header_clickCallback_params.columnId;
+        const ctrl_OR_meta_KeyDown = header_clickCallback_params.ctrl_OR_meta_KeyDown
+
 
         let sortColumnsInfo = sortColumnsInfo_Existing;
 
         if ( ! sortColumnsInfo ) {
             //  No previous entries
+
             sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: 1 } ];
-        } else if ( ! shiftKeyDown ) {
-            //  Shift Key not down
-            if ( sortColumnsInfo.length === 1 && sortColumnsInfo[ 0 ].columnId === columnId ) {
-                //  Only 1 Current Sort columnId and same headerColumnId so reverse direction
-                if ( sortColumnsInfo[ 0 ].sortDirection === SORT_DIRECTION_ASCENDING ) {
-                    sortColumnsInfo[ 0 ].sortDirection = SORT_DIRECTION_DECENDING;
-                } else {
-                    sortColumnsInfo[ 0 ].sortDirection = SORT_DIRECTION_ASCENDING;
-                }
-            } else {
-                //  Replace sortColumnsInfo with new value
-                sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: 1 } ];
-            }
-        } else {
-            // Shift Key down when column header clicked
+
+        } else if ( ! ctrl_OR_meta_KeyDown ) {
+
+            //  Ctrl Or Meta Key NOT down
+
             const sortColumnsInfoEntry_For_Clicked_columnId = sortColumnsInfo.find( ( element ) => { return element.columnId === columnId } );
             if ( sortColumnsInfoEntry_For_Clicked_columnId ) {
-                // Already selected column so reverse direction
+
+                //  Click existing sort column so reverse direction
+
                 if ( sortColumnsInfoEntry_For_Clicked_columnId.sortDirection === SORT_DIRECTION_ASCENDING ) {
                     sortColumnsInfoEntry_For_Clicked_columnId.sortDirection = SORT_DIRECTION_DECENDING;
                 } else {
                     sortColumnsInfoEntry_For_Clicked_columnId.sortDirection = SORT_DIRECTION_ASCENDING;
                 }
             } else {
-                //  Not selected column so add to end
+
+                //  Click Table column NOT in sort columns so Replace sort columns with ONLY this column
+
+                sortColumnsInfo = [ { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: 1 } ];
+            }
+
+        } else {
+            // Ctrl Or Meta Key IS down when column header clicked
+
+            const sortColumnsInfoEntry_For_Clicked_columnId = sortColumnsInfo.find( ( element ) => { return element.columnId === columnId } );
+            if ( sortColumnsInfoEntry_For_Clicked_columnId ) {
+
+                // Click Already selected column so remove columnId
+
+                sortColumnsInfo = sortColumnsInfo.filter( (value, index) => {
+                    return value.columnId !== columnId
+                });
+
+                //  Update 'sortPosition' property in all entries
+                {
+                    let position = 1;
+                    for ( const entry of sortColumnsInfo ) {
+                        entry.sortPosition = position;
+                        position++;
+                    }
+                }
+
+            } else {
+
+                //  Click Not selected column so add to end
+
                 const sortColumnsInfo_Length = sortColumnsInfo.length;
                 sortColumnsInfo.push( { columnId, sortDirection : SORT_DIRECTION_ASCENDING, sortPosition: sortColumnsInfo_Length + 1 } );
             }

@@ -16,7 +16,12 @@ import {
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 
 
-export type DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback = ({ shiftKeyDown, columnId } : { shiftKeyDown : boolean, columnId : DataTable_ColumnId }) => void
+export interface DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params {
+  ctrl_OR_meta_KeyDown : boolean
+  columnId : DataTable_ColumnId
+}
+
+export type DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback = (params: DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params) => void
 
 /**
  * 
@@ -102,11 +107,11 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
       // (eventTarget as any).blur();
 
 
-      const shiftKeyDown = event.shiftKey;
+      const ctrl_OR_meta_KeyDown = event.ctrlKey || event.metaKey;
 
       const columnId = this.props.column.id;
 
-      this.props.headerColumnClicked_Callback({ shiftKeyDown, columnId });
+      this.props.headerColumnClicked_Callback({ ctrl_OR_meta_KeyDown, columnId });
 
     } catch( e ) {
       console.warn( "Error in DataTable_Table_HeaderRowEntry._headerColumnClicked: ", e )
