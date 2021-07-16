@@ -38,6 +38,7 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {PeptideFiltersDisplay_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData";
 import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 import {Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
+import {CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
 
 /**
  * 
@@ -48,6 +49,9 @@ export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideLis
     clearAllSelections_Callback : () => void
 
     showProteins? : boolean
+
+    //  Required when showProteins is true.  For Peptide Page
+    proteinName_Clicked_Callback_Function? : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function
 
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result;  //  For displaying the peptide list in sub component
 
@@ -207,6 +211,7 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
                         dataPageStateManager={ this.props.dataPageStateManager }
                         showUpdatingMessage={ this.props.showUpdatingMessage }
                         showProteins={ this.props.showProteins }
+                        proteinName_Clicked_Callback_Function={ this.props.proteinName_Clicked_Callback_Function }
                     />
                 </div>
                 { updatingMessage }
@@ -241,7 +246,11 @@ export interface ReportedPeptideList_Component_Props {
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
     showUpdatingMessage : boolean
+
     showProteins? : boolean  // For Peptide Page
+    //  Required when showProteins is true.  For Peptide Page
+    proteinName_Clicked_Callback_Function? : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function
+
 }
 
 /**
@@ -301,6 +310,15 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
      */    
     render() {
 
+        //  Validate props
+        if ( this.props.showProteins  // For Peptide Page
+            && ( ! this.props.proteinName_Clicked_Callback_Function ) ) {  //  Required when showProteins is true.  For Peptide Page
+
+            const msg = "( this.props.showProteins && ( ! this.props.proteinName_Clicked_Callback_Function ) )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
         const getDataTableDataObjects_Result : GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result = createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection({ //  External Function
 
             create_GeneratedReportedPeptideListData_Result : this.props.create_GeneratedReportedPeptideListData_Result, 
@@ -315,7 +333,8 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder : this.props.loadedDataCommonHolder,
             dataPageStateManager : this.props.dataPageStateManager,
-            showProteins : this.props.showProteins
+            showProteins : this.props.showProteins,
+            proteinName_Clicked_Callback_Function : this.props.proteinName_Clicked_Callback_Function
         });
 
         const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;

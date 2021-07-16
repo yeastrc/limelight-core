@@ -39,18 +39,12 @@ import {
 
 import { SingleProtein_ExpPage_CentralStateManagerObjectClass }	from 'page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass';
 
-
-import { 
-	_loadDataForInitialOverlayShow, 
-	_resize_OverlayHeight_BasedOnViewportHeight, 
-	_update_Overlay_OnWindowResize 
-} from './proteinExperimentPage_Display_SingleProtein_nonClass_Functions';
-import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass } from '../../../../experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass';
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
-import {ProteinList_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinList_ExpPage_CentralStateManagerObjectClass";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass";
+import {loadDataForInitialOverlayShow_MultipleSearch_SingleProtein} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_nonClass_Functions";
+import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 
 
 /**
@@ -65,6 +59,7 @@ export interface ProteinExperimentPage_Display_SingleProtein_singleProteinCloseC
  */
 export class ProteinExperimentPage_Display_SingleProtein {
 
+	private _forPeptidePage : boolean
 
 	private _proteinSequenceVersionId : number;
 	private _proteinListItem : {name: string, description: string};
@@ -133,6 +128,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	 */
 	constructor(
 		{
+			forPeptidePage,
+
 			singleProteinCloseCallback,
 
 			loadedDataCommonHolder,
@@ -150,6 +147,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			singleProtein_ExpPage_CentralStateManagerObjectClass,
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory
 		} : {
+			forPeptidePage? : boolean
+
 			singleProteinCloseCallback: any,
 
 			loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
@@ -166,6 +165,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass,
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
 		}) {
+
+		this._forPeptidePage = forPeptidePage;
 
 		this._singleProteinCloseCallback = singleProteinCloseCallback;
 		
@@ -243,6 +244,18 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
 		}
 
+		if ( ! this._loadedDataCommonHolder ) {
+			const msg = "( ! this._loadedDataCommonHolder ) in openOverlay() after possibly updated from method param";
+			console.warn(msg);
+			throw Error(msg);
+		}
+		if ( ! this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+			const msg = "( ! this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) in openOverlay() after possibly updated from method param";
+			console.warn(msg);
+			throw Error(msg);
+		}
+
+
 		if ( proteinNameDescription ) {
 			this._proteinListItem = proteinNameDescription; // proteinListItem;
 		} else {
@@ -304,18 +317,42 @@ export class ProteinExperimentPage_Display_SingleProtein {
             }
         }
 
-		const projectSearchIds = this._projectSearchIds;
 
-		const promise_loadDataForInitialOverlayShow = _loadDataForInitialOverlayShow({ 
-			proteinSequenceVersionId, 
-			projectSearchIds,
+		//  Create for Initial Load
+		const generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : undefined });
+
+		{
+			const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.getGeneratedPeptideContents_UserSelections__EncodedStateData();
+			generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({encodedStateData});
+		}
+
+		const promise_loadDataForInitialOverlayShow = loadDataForInitialOverlayShow_MultipleSearch_SingleProtein({
+			forPeptidePage: this._forPeptidePage,
+			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
+			searchSubGroups_Root: undefined,
+			proteinSequenceVersionId,
+			projectSearchIds : this._projectSearchIds,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			loadedDataCommonHolder : this._loadedDataCommonHolder,
 			loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
 			searchDataLookupParamsRoot : this._searchDataLookupParamsRoot,
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject,
-			open_Modifications_Subpart_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
+			open_Modifications_Subpart_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject.get_OpenModificationSelections(),
+			generatedPeptideContents_UserSelections_StateObject : generatedPeptideContents_UserSelections_StateObject
 		});
+
+		// const projectSearchIds = this._projectSearchIds;
+		//
+		// const promise_loadDataForInitialOverlayShow = _loadDataForInitialOverlayShow({
+		// 	proteinSequenceVersionId,
+		// 	projectSearchIds,
+		// 	dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+		// 	loadedDataCommonHolder : this._loadedDataCommonHolder,
+		// 	loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+		// 	searchDataLookupParamsRoot : this._searchDataLookupParamsRoot,
+		// 	reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject,
+		// 	open_Modifications_Subpart_UserSelections_StateObject : this._modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
+		// });
 
 		if ( promise_loadDataForInitialOverlayShow ) {
 			promise_loadDataForInitialOverlayShow.then( () => {
@@ -648,3 +685,106 @@ export class ProteinExperimentPage_Display_SingleProtein {
 }
 
 
+
+
+const _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH = 1270; // Min width for upper section of protein sequence and boxes to right
+
+
+
+/**
+ *
+ */
+const _resize_OverlayHeight_BasedOnViewportHeight = function({ singleProteinContainer_addedDivElementDOM }: { singleProteinContainer_addedDivElementDOM: HTMLDivElement }) {
+
+	if ( ! singleProteinContainer_addedDivElementDOM ) {
+		// Exit if no overlay
+		return;
+	}
+
+	const $window = $(window);
+
+	const windowHeight = $window.height();
+
+	//  Subtract header and footer heights
+
+	const $header_outer_container_div = $("#header_outer_container_div");
+	if ( $header_outer_container_div.length === 0 ) {
+		throw Error("No DOM element found with id 'header_outer_container_div'");
+	}
+	const headerOuterHeight = $header_outer_container_div.outerHeight( true /* [includeMargin ] */ );
+
+	// const $footer_outer_container_div = $("#footer_outer_container_div");
+	// if ( $footer_outer_container_div.length === 0 ) {
+	// 	throw Error("No DOM element found with id 'footer_outer_container_div'");
+	// }
+	// const footerOuterHeight = $footer_outer_container_div.outerHeight( true /* [includeMargin ] */ );
+
+	const footerOuterHeight = 31;  // Hard code footer height since measuring doesn't work right
+
+	const overlayHeight = windowHeight - headerOuterHeight - footerOuterHeight;
+
+	const $singleProteinContainer_addedDivElementDOM = $( singleProteinContainer_addedDivElementDOM );
+
+
+	const $view_single_protein_inner_overlay_div = $singleProteinContainer_addedDivElementDOM.find("#view_single_protein_inner_overlay_div");
+
+	// console.warn("!!!!!!!!!!!!!!!   Skipping resizing DOM id 'view_single_protein_inner_overlay_div' since cannot find DOM element with that id.  $view_single_protein_inner_overlay_div.length: " + $view_single_protein_inner_overlay_div.length );
+
+	if ( $view_single_protein_inner_overlay_div.length === 0 ) {
+		throw Error("No DOM element found with id 'view_single_protein_inner_overlay_div'");
+	}
+
+	$view_single_protein_inner_overlay_div.css('min-height', overlayHeight + 'px');
+}
+
+/**
+ *
+ */
+const _update_Overlay_OnWindowResize = function( params: any ) {
+
+	let singleProteinContainer_addedDivElementDOM = undefined;
+	let $view_single_protein_overlay_div = undefined;
+	let overlayWidth = undefined;
+
+	if ( params ) {
+		singleProteinContainer_addedDivElementDOM = params.singleProteinContainer_addedDivElementDOM;
+		$view_single_protein_overlay_div = params.$view_single_protein_overlay_div;
+		overlayWidth = params.overlayWidth;
+	}
+
+	if ( ! singleProteinContainer_addedDivElementDOM ) {
+		// Exit if no overlay
+		return;
+	}
+
+	if ( $view_single_protein_overlay_div === undefined ) {
+		$view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
+		if ( $view_single_protein_overlay_div.length === 0 ) {
+			throw Error("No DOM element found with id 'view_single_protein_overlay_div'");
+		}
+	}
+	if ( overlayWidth === undefined ) {
+		overlayWidth = $view_single_protein_overlay_div.outerWidth();
+	}
+
+	//  Adjust width of block above reported peptide list to keep the boxes to the right within the viewport, if necessary.
+
+	const $window = $(window);
+	const windowWidth = $window.width();
+
+	const $selector_section_above_reported_peptides_list_block = $view_single_protein_overlay_div.find(".selector_section_above_reported_peptides_list_block");
+
+	if ( overlayWidth <= windowWidth ) {
+
+		$selector_section_above_reported_peptides_list_block.css('width', ''); // clear setting
+
+	} else {
+
+		let sectionAboveReportedPeptidesList_Width = windowWidth - 50; // - 50 to adjust in from right edge
+		if (sectionAboveReportedPeptidesList_Width < _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH) {
+			sectionAboveReportedPeptidesList_Width = _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH; // Min width
+		}
+		$selector_section_above_reported_peptides_list_block.css('width', sectionAboveReportedPeptidesList_Width + 'px');
+	}
+
+}

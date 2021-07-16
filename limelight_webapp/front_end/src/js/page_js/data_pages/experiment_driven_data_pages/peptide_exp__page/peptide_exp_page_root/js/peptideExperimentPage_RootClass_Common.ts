@@ -75,6 +75,7 @@ import {PeptideExperimentPageRoot_CentralStateManagerObjectClass} from "page_js/
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
+import {SingleProtein_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass";
 
 /**
  * 
@@ -86,6 +87,7 @@ export class PeptideExperimentPage_RootClass_Common {
 	private _page_UserDefault_processing : Page_UserDefault_processing;
 	private _centralPageStateManager : CentralPageStateManager;
 	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
+	private _singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass;
 
 	private _peptideExperimentPageRoot_CentralStateManagerObjectClass : PeptideExperimentPageRoot_CentralStateManagerObjectClass;
 	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
@@ -123,6 +125,10 @@ export class PeptideExperimentPage_RootClass_Common {
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getNewInstance_MainPage({
 			centralPageStateManager : this._centralPageStateManager
+		});
+
+		this._singleProtein_ExpPage_CentralStateManagerObjectClass = new SingleProtein_ExpPage_CentralStateManagerObjectClass({
+			centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined
 		});
 
 		this._peptideExperimentPageRoot_CentralStateManagerObjectClass = new PeptideExperimentPageRoot_CentralStateManagerObjectClass({
@@ -174,6 +180,8 @@ export class PeptideExperimentPage_RootClass_Common {
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
 		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_MainPageInstance();
+
+		this._singleProtein_ExpPage_CentralStateManagerObjectClass.initialize();
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_MainPageInstance();
 
@@ -324,10 +332,12 @@ export class PeptideExperimentPage_RootClass_Common {
 					conditionGroupsDataContainer,
 					searchNamesMap_KeyProjectSearchId,
 					experimentConditions_GraphicRepresentation_PropsData,
+					centralPageStateManager: this._centralPageStateManager,
 					experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
 					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
 					peptideExperimentPageRoot_CentralStateManagerObjectClass: this._peptideExperimentPageRoot_CentralStateManagerObjectClass,
+					singleProtein_ExpPage_CentralStateManagerObjectClass: this._singleProtein_ExpPage_CentralStateManagerObjectClass,
 					modificationMass_UserSelections_StateObject: this._modificationMass_UserSelections_StateObject,
 					reporterIonMass_UserSelections_StateObject: this._reporterIonMass_UserSelections_StateObject,
 					peptideUnique_UserSelection_StateObject: this._peptideUnique_UserSelection_StateObject,

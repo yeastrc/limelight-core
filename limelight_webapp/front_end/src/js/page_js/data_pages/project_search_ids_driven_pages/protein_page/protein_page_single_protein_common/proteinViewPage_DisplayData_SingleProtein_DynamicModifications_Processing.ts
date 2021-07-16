@@ -128,6 +128,17 @@ const _combine_DynamicModificationsForRepPeptIds_AndStoreForProtSeqVId = functio
 
     const proteinCoverage_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
     const dynamicModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId();
+
+    if ( ! proteinCoverage_KeyProteinSequenceVersionId ) {
+        const msg = "loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId() returned nothing;";
+        console.warn(msg);
+        throw Error(msg);
+    }
+    if ( ! dynamicModificationsOnReportedPeptide_KeyReportedPeptideId ) {
+        const msg = "loadedDataPerProjectSearchIdHolder.get_dynamicModificationsOnReportedPeptide_KeyReportedPeptideId() returned nothing;";
+        console.warn(msg);
+        throw Error(msg);
+    }
     
     //  Add dynamicModificationsOnProtein_KeyProteinSequenceVersionId to holder if not exist
     let dynamicModificationsOnProtein_KeyProteinSequenceVersionId : Map<number, Array<{ mass : number, position : number, reportedPeptideId : number }>> = (
