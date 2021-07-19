@@ -105,20 +105,38 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
         }
 
         //  Width and Height:
-        //          Starting size Computation: Smaller of  (80% of viewport) OR (100% viewport - 100 px)  --  100px to provide 50 px margin on each side
+        //          Starting size Computation: Smaller of  ( {percentageOfViewPort_...}% of viewport) OR (100% viewport - 100 px)  --  100px to provide 50 px margin on each side
         //          Restricted by provided __Minimum and __Maximum values
 
         //  Left and Top compute to center in the viewport
 
         //  When viewport too small to fit __Minimum values, the __Minimum are used and the browser main scrollbars provide access all parts of the overlay.
 
-        const width = "min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px )";
+        const percentageOfViewPort_Width = "93vw";
+        const percentageOfViewPort_Height = "93vh";
 
-        const left = "calc( " + leftAddition + "px + max( calc( calc( calc( 100vw - 6px ) / 2) - calc( min( max( min( 80vw, calc( 100vw - 100px ) ), " + this.props.widthMinimum + "px), " + this.props.widthMaximum + "px ) / 2 ) ), 10px) )";
+        const minimumPaddingFromViewPort_WidthComputation = "50px";
+        const minimumPaddingFromViewPort_HeightComputation = "50px";
 
-        const height = "min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px )";
+        //  'left' has 'final' min value of 10px.  'top' has 'final' min value of 10px.   These are so overlay cannot positioned off left or top of screen where it would be impossible to scroll to.
 
-        const top = "calc( " + topAddition + "px + max( calc( calc( calc( 100vh - 6px ) / 2) - calc( min( max( min( 80vh, calc( 100vh - 100px ) ), " + this.props.heightMinimum + "px), " + this.props.heightMaximum + "px ) / 2 ) ), 10px) )";
+        //   '6px' is space for scrollbar when present since 100vx 100vh don't take that space taken into account
+
+        const width = "min( max( min( " + percentageOfViewPort_Width + ", calc( 100vw - " + minimumPaddingFromViewPort_WidthComputation + " ) ), " +
+            this.props.widthMinimum + "px), " + this.props.widthMaximum + "px )";
+
+        const left =
+            "calc( " + leftAddition + "px + max( calc( calc( calc( 100vw - 6px ) / 2) " +
+            " - calc( min( max( min( " + percentageOfViewPort_Width + ", calc( 100vw - " + minimumPaddingFromViewPort_WidthComputation + " ) ), " +
+            this.props.widthMinimum + "px), " + this.props.widthMaximum + "px ) / 2 ) ), 10px) )";
+
+        const height = "min( max( min( " + percentageOfViewPort_Height + ", calc( 100vh - " + minimumPaddingFromViewPort_HeightComputation + " ) ), " +
+            this.props.heightMinimum + "px), " + this.props.heightMaximum + "px )";
+
+        const top =
+            "calc( " + topAddition + "px + max( calc( calc( calc( 100vh - 6px ) / 2) " +
+            " - calc( min( max( min( " + percentageOfViewPort_Height + ", calc( 100vh - " + minimumPaddingFromViewPort_HeightComputation+ " ) ), " +
+            this.props.heightMinimum + "px), " + this.props.heightMaximum + "px ) / 2 ) ), 10px) )";
 
         const modal_overlay_container_css : React.CSSProperties = {
             width: width,
