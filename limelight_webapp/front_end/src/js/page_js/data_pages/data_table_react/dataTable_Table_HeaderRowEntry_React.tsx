@@ -80,11 +80,6 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
       event.preventDefault();   //  Prevent Default Action of event
       event.stopPropagation();  // Stop bubbling of event
 
-      //  Comment out since breaks the Shift Key to sort on additional columns.
-      //     Shift Click is causing a text selection from the previous click to the current click
-
-      //  Using selectionObj.removeAllRanges();  sometimes works but not well enough to not be frustrating to the user
-
       try { // In try/catch block in case not supported in browser
         const selectionObj = window.getSelection();
         const selection = selectionObj.toString()
@@ -93,19 +88,10 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
           return; //  EARLY RETURN
         }
 
-        // selectionObj.removeAllRanges();
-
-        var znothing = 0;
-
       } catch (e) {
         //  Eat exception
         const znothing = 0;
       }
-
-      //  Does NOT fix problem with Selection check breaking Shift Click to select more than one column to sort on
-      // const eventTarget : EventTarget = event.target;
-      // (eventTarget as any).blur();
-
 
       const ctrl_OR_meta_KeyDown = event.ctrlKey || event.metaKey;
 
