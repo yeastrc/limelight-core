@@ -85,22 +85,22 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
       //  Using selectionObj.removeAllRanges();  sometimes works but not well enough to not be frustrating to the user
 
-      // try { // In try/catch block in case not supported in browser
-      //   const selectionObj = window.getSelection();
-      //   const selection = selectionObj.toString()
-      //   if ( selection ) {
-      //      //  Found a Selection so exit with no further action
-      //     return; //  EARLY RETURN
-      //   }
+      try { // In try/catch block in case not supported in browser
+        const selectionObj = window.getSelection();
+        const selection = selectionObj.toString()
+        if ( selection ) {
+           //  Found a Selection so exit with no further action
+          return; //  EARLY RETURN
+        }
 
-      //   selectionObj.removeAllRanges();
+        // selectionObj.removeAllRanges();
 
-      //   var znothing = 0;
+        var znothing = 0;
 
-      // } catch (e) {
-      //   //  Eat exception
-      //   const znothing = 0;
-      // }
+      } catch (e) {
+        //  Eat exception
+        const znothing = 0;
+      }
 
       //  Does NOT fix problem with Selection check breaking Shift Click to select more than one column to sort on
       // const eventTarget : EventTarget = event.target;
