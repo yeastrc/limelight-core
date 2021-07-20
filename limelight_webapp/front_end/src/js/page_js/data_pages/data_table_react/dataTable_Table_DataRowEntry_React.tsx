@@ -123,7 +123,9 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           }
           const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough(params);
 
-          this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValue_TD_Ref.current })
+          if ( tooltipContents ) {
+              this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValue_TD_Ref.current })
+          }
 
       } catch( e ) {
           console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsDiv_onMouseEnterCallback: ", e )
