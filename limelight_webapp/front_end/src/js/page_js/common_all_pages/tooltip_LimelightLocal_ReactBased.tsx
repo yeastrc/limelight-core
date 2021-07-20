@@ -32,6 +32,17 @@ export const tooltip_Limelight_Create_Tooltip = function({
 
     if ( ! tooltip_target_DOM_Element ) {
 
+        //  NO Target DOM Element
+
+        const tooltip_Limelight_Created_Tooltip = new Tooltip_Limelight_Created_Tooltip({ tooltip_addedDivElementDOM: null });
+
+        return tooltip_Limelight_Created_Tooltip; // EARLY RETURN
+    }
+
+    if ( ! tooltipContents ) {
+
+        //  NO Tooltip Contents
+
         const tooltip_Limelight_Created_Tooltip = new Tooltip_Limelight_Created_Tooltip({ tooltip_addedDivElementDOM: null });
 
         return tooltip_Limelight_Created_Tooltip; // EARLY RETURN
