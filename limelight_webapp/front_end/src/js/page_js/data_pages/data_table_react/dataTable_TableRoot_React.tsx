@@ -491,7 +491,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             if ( props.resortTableOnUpdate && existingState.sortColumnsInfo ) {
 
                 const tableDataObject_INTERNAL_New_Sorted = _sort_tableObject_on_sortColumnsInfo({
-                    tableDataObject_INTERNAL : existingState.tableDataObject_INTERNAL, sortColumnsInfo: existingState.sortColumnsInfo
+                    tableDataObject_INTERNAL : tableDataObject_INTERNAL_New_Filtered, sortColumnsInfo: existingState.sortColumnsInfo
                 });
                 //  update tableDataObject
                 tableDataObject_INTERNAL_New_Final = tableDataObject_INTERNAL_New_Sorted;
