@@ -483,7 +483,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined,  // Peptide Page Only
+            proteinPositionFilter_UserSelections_StateObject : undefined,  // Peptide Page Only
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : undefined,  // Peptide Page Only
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject
@@ -782,7 +782,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             peptideUnique_UserSelection_StateObject : undefined,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
+            proteinPositionFilter_UserSelections_StateObject : undefined
         });
 
         const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -961,7 +961,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 peptideUnique_UserSelection_StateObject : undefined,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
+                proteinPositionFilter_UserSelections_StateObject : undefined
             });
 
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -1041,7 +1041,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 peptideUnique_UserSelection_StateObject : undefined,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
+                proteinPositionFilter_UserSelections_StateObject : undefined
             });
 
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -2104,7 +2104,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                                 userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                                proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
+                                proteinPositionFilter_UserSelections_StateObject : undefined
                             });
             
                             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -2243,7 +2243,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined,  // Peptide Page Only
+            proteinPositionFilter_UserSelections_StateObject : undefined,  // Peptide Page Only
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : undefined,  // Peptide Page Only
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject

@@ -25,7 +25,7 @@ import {
 } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/userSearchString_LocationsOn_ProteinSequence/userSearchString_LocationsOn_ProteinSequence_ComponentData';
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {PeptideSequence_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject";
-import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
+import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For_ALL_Selections__INTERSECTION_Together} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_ALL_AND_Selections";
 import {peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For_ANY_Selections__UNION_Together} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_ANY_OR_Selections";
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
@@ -168,7 +168,7 @@ export const peptide__single_protein_getReportedPeptideIdsForDisplay_SingleProje
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         proteinSequenceWidget_StateObject,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper,
+        proteinPositionFilter_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root
     }: {
         not_filtered_position_modification_selections: boolean
@@ -183,7 +183,7 @@ export const peptide__single_protein_getReportedPeptideIdsForDisplay_SingleProje
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
         proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
-        proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
         userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
     }): {
     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
@@ -342,7 +342,7 @@ export const peptide__single_protein_getReportedPeptideIdsForDisplay_SingleProje
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         proteinSequenceWidget_StateObject,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper,
+        proteinPositionFilter_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root
     });
 

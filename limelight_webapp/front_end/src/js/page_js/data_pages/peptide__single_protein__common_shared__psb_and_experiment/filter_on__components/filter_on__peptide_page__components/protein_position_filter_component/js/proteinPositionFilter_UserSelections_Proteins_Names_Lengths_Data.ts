@@ -2,21 +2,12 @@
  * proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.ts
  *
  * For User Input
- * 
+ *
  * Protein Names and Lengths Data for:  proteinPositionFilter_UserSelections_....tsx
  */
-
-export class ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry {
-
-    proteinSequenceVersionId : number
-    proteinName : string
-    proteinName_Truncated : string
-    proteinDescription : string
-    proteinLength : number
-}
+import {ProteinPositionFilter_UserInput__Component__ProteinData_Root} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
 
 export class ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data {
 
-    proteins_Names_Lengths_Array : Array<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry>
-    proteins_Names_Lengths_Map_Key_proteinSequenceVersionId : Map<number, ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry>
+    proteinPositionFilter_UserInput__Component__ProteinData_Root : ProteinPositionFilter_UserInput__Component__ProteinData_Root
 }

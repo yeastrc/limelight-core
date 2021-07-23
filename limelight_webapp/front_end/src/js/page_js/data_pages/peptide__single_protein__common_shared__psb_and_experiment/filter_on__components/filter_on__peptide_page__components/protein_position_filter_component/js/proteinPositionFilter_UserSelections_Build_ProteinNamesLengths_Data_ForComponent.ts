@@ -7,13 +7,15 @@
  */
 
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
-import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {
-    ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-    ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry
+    ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
 } from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
+import {
+    ProteinPositionFilter_UserInput__Component__ProteinData_Root,
+    ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein,
+    ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein__SingleProteinNameDescription
+} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
 
-const _PROTEIN_NAME_TRUNCATION = 20;
 
 /**
  * 
@@ -33,6 +35,8 @@ export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
     const proteinLengths_Map_Key_ProteinSequenceVersionId : Map<number, number> = new Map();
     const proteinNames_Set_Map_Key_ProteinSequenceVersionId : Map<number, Set<string>> = new Map();
     const proteinDescriptions_Set_Map_Key_ProteinSequenceVersionId : Map<number, Set<string>> = new Map();
+
+    const proteinNameDescriptionForTooltip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein__SingleProteinNameDescription>> = new Map();
 
     for ( const projectSearchId of projectSearchIds ) {
 
@@ -80,11 +84,47 @@ export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
                     proteinDescriptions_Set.add( annotation.description )
                 }
             }
+            {
+                const annotations = proteinInfo.annotations;
+                if (annotations) {
+
+                    let proteinNameDescriptionForTooltip_Array = proteinNameDescriptionForTooltip_Key_ProteinSequenceVersionId.get(proteinSequenceVersionId);
+                    if (!proteinNameDescriptionForTooltip_Array) {
+                        proteinNameDescriptionForTooltip_Array = new Array();
+                        proteinNameDescriptionForTooltip_Key_ProteinSequenceVersionId.set(proteinSequenceVersionId, proteinNameDescriptionForTooltip_Array);
+                    }
+
+                    for (const annotation of annotations) {
+
+                        const annotation_name = annotation.name;
+                        const annotation_description = annotation.description;
+
+                        const proteinNameDescriptionForTooltip: ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein__SingleProteinNameDescription = {
+                            name: annotation_name,
+                            description: annotation_description
+                        };
+                        //  Only add to proteinNamesAndDescriptionsArray if combination of name and description is not already in array
+                        let nameDescriptionComboFoundInArray = false;
+                        for (const entry of proteinNameDescriptionForTooltip_Array) {
+                            if (entry.name === proteinNameDescriptionForTooltip.name && entry.description === proteinNameDescriptionForTooltip.description) {
+                                nameDescriptionComboFoundInArray = true;
+                                break;
+                            }
+                        }
+                        if (!nameDescriptionComboFoundInArray) {
+                            proteinNameDescriptionForTooltip_Array.push(proteinNameDescriptionForTooltip);
+                        }
+                    }
+                }
+            }
         }
     }
 
-    const proteins_Names_Lengths_Array : Array<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry> = []
-    const proteins_Names_Lengths_Map_Key_proteinSequenceVersionId : Map<number, ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry> = new Map()
+    //////
+
+    //  Convert internal Map contents to results
+
+    const result_proteins: Array<ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein> = [];
 
     for ( const mapEntry of proteinNames_Set_Map_Key_ProteinSequenceVersionId.entries() ) {
 
@@ -97,8 +137,6 @@ export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
         proteinNames_Array.sort();
         const proteinName = proteinNames_Array.join(", ");
 
-        const proteinName_Truncated = proteinName.substring( 0, _PROTEIN_NAME_TRUNCATION );
-
         let proteinDescription = "";
         const proteinDescriptions_Set = proteinDescriptions_Set_Map_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId );
         if ( proteinDescriptions_Set ) {
@@ -107,19 +145,41 @@ export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
             proteinDescription = proteinDescriptions_Array.join(", ");
         }
 
-        const proteins_Names_Lengths_Entry : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data_Entry = {
+        const proteinNameDescriptionForTooltip_Entries: Array<ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein__SingleProteinNameDescription> =
+            proteinNameDescriptionForTooltip_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId );
+        if ( ! proteinNameDescriptionForTooltip_Entries ) {
+            const msg = "ERROR: proteinNameDescriptionForTooltip_Key_ProteinSequenceVersionId.get( proteinSequenceVersionId ); returned Nothing for final assembly. proteinSequenceVersionId: " + proteinSequenceVersionId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+        proteinNameDescriptionForTooltip_Entries.sort( ( a,b ) : number => {
+            if ( a.name < b.name ) {
+                return -1;
+            }
+            if ( a.name > b.name ) {
+                return 1;
+            }
+            if ( a.description < b.description ) {
+                return -1;
+            }
+            if ( a.description > b.description ) {
+                return 1;
+            }
+            return 0;
+        });
+
+        const proteinData_SingleProtein : ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein = {
             proteinSequenceVersionId,
             proteinLength,
             proteinName,
-            proteinName_Truncated,
-            proteinDescription
+            proteinDescription,
+            proteinNameDescriptionForTooltip_Entries
         }
 
-        proteins_Names_Lengths_Array.push( proteins_Names_Lengths_Entry );
-        proteins_Names_Lengths_Map_Key_proteinSequenceVersionId.set( proteinSequenceVersionId, proteins_Names_Lengths_Entry );
+        result_proteins.push( proteinData_SingleProtein );
     }
 
-    proteins_Names_Lengths_Array.sort( (a,b) => {
+    result_proteins.sort( (a,b) => {
         if ( a.proteinName < b.proteinName ) {
             return -1;
         }
@@ -139,11 +199,14 @@ export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
             return 1;
         }
         return 0;
-    })
+    });
+
+    const proteinPositionFilter_UserInput__Component__ProteinData_Root: ProteinPositionFilter_UserInput__Component__ProteinData_Root = {
+        proteins: result_proteins
+    }
 
     const proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = {
-        proteins_Names_Lengths_Array,
-        proteins_Names_Lengths_Map_Key_proteinSequenceVersionId
+        proteinPositionFilter_UserInput__Component__ProteinData_Root
     }
 
     return proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;

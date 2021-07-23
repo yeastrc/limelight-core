@@ -1265,7 +1265,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             peptideUnique_UserSelection_StateObject : undefined, // this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : undefined, // this.props.propsValue.peptideSequence_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root : undefined, // null,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined, // this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
+            proteinPositionFilter_UserSelections_StateObject : undefined, // this.state.proteinPositionFilter_UserSelections_StateObject
         });
 
         const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result =

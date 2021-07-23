@@ -56,6 +56,14 @@ export const load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearch
                 return; // EARLY RETURN
             }
 
+            if ( loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyReportedPeptideId( ) ) {
+                //  Have loaded Protein Coverage
+
+                resolve();
+
+                return; // EARLY RETURN
+            }
+
             _getProteinCoverageData_From_ReportedPeptideIds( { projectSearchId, reportedPeptideIds } )
                 .then(function( proteinCoverageList ) {
                     try {

@@ -185,7 +185,7 @@ const initialPopulate = function({
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper : undefined
+        proteinPositionFilter_UserSelections_StateObject : undefined
     });
 
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;

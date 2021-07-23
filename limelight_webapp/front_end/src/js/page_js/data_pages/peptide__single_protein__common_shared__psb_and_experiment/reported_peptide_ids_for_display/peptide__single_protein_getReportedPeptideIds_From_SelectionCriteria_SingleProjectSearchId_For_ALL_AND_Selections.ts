@@ -17,7 +17,7 @@ import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/pe
 import {ReporterIonMass_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {PeptideSequence_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject";
-import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
+import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {ProteinSequenceWidget_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidget_StateObject";
 import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {modificationMass_CommonRounding_ReturnNumber} from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
@@ -52,7 +52,7 @@ export const peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         proteinSequenceWidget_StateObject,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper,
+        proteinPositionFilter_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root
     }: {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
@@ -66,7 +66,7 @@ export const peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
         proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
-        proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
         userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
     }): void {
 
@@ -120,8 +120,8 @@ export const peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
     }
 
     let is_proteinPositionFilter_PeptidePage = false;
-    if (proteinPositionFilter_UserSelections_StateObject_Wrapper
-        && proteinPositionFilter_UserSelections_StateObject_Wrapper.isAnySelections()) {
+    if (proteinPositionFilter_UserSelections_StateObject
+        && proteinPositionFilter_UserSelections_StateObject.isAnySelections()) {
         is_proteinPositionFilter_PeptidePage = true;
     }
 
@@ -221,7 +221,7 @@ export const peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
         _updateFor_is_proteinPositionFilter_PeptidePage({
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
             loadedDataPerProjectSearchIdHolder,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper
+            proteinPositionFilter_UserSelections_StateObject
         })
     }
 
@@ -1384,22 +1384,22 @@ const _updateFor_is_proteinPositionFilter_PeptidePage = function (
     {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         loadedDataPerProjectSearchIdHolder,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper
+        proteinPositionFilter_UserSelections_StateObject
     }: {
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
         loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-        proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
     }): void
 {
 
-    if (!proteinPositionFilter_UserSelections_StateObject_Wrapper.getSelections_Ranges()) {
-        const msg = "_updateFor_is_proteinPositionFilter_PeptidePage(...): proteinPositionFilter_UserSelections_StateObject_Wrapper.getSelections_Ranges(); returned nothing";
+    if (!proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()) {
+        const msg = "_updateFor_is_proteinPositionFilter_PeptidePage(...): proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges(); returned nothing";
         console.warn(msg)
         throw Error(msg)
     }
-    const proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject_Wrapper.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId;
+    const proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId;
     if (!proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId) {
-        const msg = "_updateFor_is_proteinPositionFilter_PeptidePage(...): proteinPositionFilter_UserSelections_StateObject_Wrapper.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId; returned nothing";
+        const msg = "_updateFor_is_proteinPositionFilter_PeptidePage(...): proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId; returned nothing";
         console.warn(msg)
         throw Error(msg)
     }

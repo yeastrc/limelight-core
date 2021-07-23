@@ -92,11 +92,9 @@ import {
 } from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
 import {peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
-import {ProteinPositionFilter_UserSelections_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_ComponentData";
 import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {ProteinPositionFilter_UserSelections} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/jsx/proteinPositionFilter_UserSelections_Component";
 import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
-import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
 import {
     createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein,
     CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function,
@@ -182,8 +180,6 @@ export interface PeptidePage_Display_MainContent_Component_Props {
  */
 interface PeptidePage_Display_MainContent_Component_State {
 
-    proteinPositionFilter_UserSelections_StateObject_Wrapper? : ProteinPositionFilter_UserSelections_StateObject_Wrapper;
-
     searchDataLookupParamsRoot? : SearchDataLookupParameters_Root;
 
     mainDisplayData_Loaded? : boolean;
@@ -205,7 +201,7 @@ interface PeptidePage_Display_MainContent_Component_State {
     peptideUnique_UserSelection_ComponentData? : PeptideUnique_UserSelection_ComponentData;
     peptideSequence_UserSelections_ComponentData? : PeptideSequence_UserSelections_ComponentData;
     proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data? : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
-    proteinPositionFilter_UserSelections_ComponentData? : ProteinPositionFilter_UserSelections_ComponentData;
+    proteinPositionFilter_UserSelections_Component_Force_ReRender_Object? : object;
 
     peptideFiltersDisplay_ComponentData? : PeptideFiltersDisplay_ComponentData;
 
@@ -273,7 +269,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     private _updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback.bind(this);
 
     private _updateMadeTo_peptideSequence_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideSequence_UserSelections_StateObject.bind(this);
-    private _updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback_BindThis = this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback.bind(this);
+    private _updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis = this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback.bind(this);
 
 
     private _updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback.bind(this);
@@ -342,7 +338,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
             saveView_Component_React,
             saveView_Component_Props_Prop,
-            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
+            proteinPositionFilter_UserSelections_Component_Force_ReRender_Object: {}
         };
     }
 
@@ -436,8 +433,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = new Map();
         const loadedDataCommonHolder = new ProteinView_LoadedDataCommonHolder();
 
-        let proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper = null;
-
         const promise_peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein({
             projectSearchIds : this.props.propsValue.projectSearchIds,
             dataPageStateManager_DataFrom_Server : this.props.propsValue.dataPageStateManager,
@@ -453,12 +448,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
         promise_peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein.then( (promiseResult) => {
             try {
-                proteinPositionFilter_UserSelections_StateObject_Wrapper = new ProteinPositionFilter_UserSelections_StateObject_Wrapper({
-                    proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
-                    projectSearchIds : this.props.propsValue.projectSearchIds,
-                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
-                });
-
                 const promises_Load_ = [];
                 const modificationMass_UserSelections_StateObject = this.props.propsValue.modificationMass_UserSelections_StateObject;
                 const generatedPeptideContents_UserSelections_StateObject = this.props.propsValue.generatedPeptideContents_UserSelections_StateObject;
@@ -505,7 +494,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 if ( promises_Load_.length === 0 ) {
                     this._recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain({
                         initialPageLoad,
-                        proteinPositionFilter_UserSelections_StateObject_Wrapper,
                         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                         loadedDataCommonHolder
                     });
@@ -518,7 +506,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                         try {
                             this._recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain({
                                 initialPageLoad,
-                                proteinPositionFilter_UserSelections_StateObject_Wrapper,
                                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                                 loadedDataCommonHolder
                             });
@@ -540,21 +527,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     /**
      *
-     * @param initialPageLoad
-     * @param proteinPositionFilter_UserSelections_StateObject_Wrapper
-     * @param loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
-     * @param loadedDataCommonHolder
-     * @private
      */
     private _recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain(
         {
             initialPageLoad,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder
         } : {
             initialPageLoad : boolean
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
         }
@@ -575,7 +555,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                 this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
                     initialPageLoad,
-                    proteinPositionFilter_UserSelections_StateObject_Wrapper,
                     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                     loadedDataCommonHolder
                 });
@@ -587,7 +566,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
                 initialPageLoad,
-                proteinPositionFilter_UserSelections_StateObject_Wrapper,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                 loadedDataCommonHolder
             });
@@ -597,7 +575,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     /**
      *
      * @param initialPageLoad
-     * @param proteinPositionFilter_UserSelections_StateObject_Wrapper
+     * @param proteinPositionFilter_UserSelections_StateObject
      * @param loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
      * @param loadedDataCommonHolder
      * @private
@@ -605,12 +583,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     private _recompute_FullPage_Except_SearchDetails__SubPart_Main(
         {
             initialPageLoad,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder
         } : {
             initialPageLoad : boolean
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
             loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
         }
@@ -625,7 +601,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
-                proteinPositionFilter_UserSelections_StateObject_Wrapper
+                proteinPositionFilter_UserSelections_StateObject: this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
             });
         }
 
@@ -640,7 +616,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             peptideUnique_UserSelection_ComponentData,
             peptideSequence_UserSelections_ComponentData,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-            proteinPositionFilter_UserSelections_ComponentData,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 
         } :  {
@@ -654,7 +629,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData;
             peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
-            proteinPositionFilter_UserSelections_ComponentData? : ProteinPositionFilter_UserSelections_ComponentData;
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
 
         }  = PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_FullPage_Except_SearchDetails({
@@ -668,7 +642,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : proteinPositionFilter_UserSelections_StateObject_Wrapper
+            proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
         });
 
         const peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData = {
@@ -677,7 +651,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : proteinPositionFilter_UserSelections_StateObject_Wrapper,
+            proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
             proteinSequenceWidget_StateObject : undefined,  //  NOT USED on Peptide Page
             searchSubGroup_Are_All_SearchSubGroupIds_Selected,
@@ -709,7 +683,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             return {
                 mainDisplayData_Loaded : true,
 
-                proteinPositionFilter_UserSelections_StateObject_Wrapper,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                 loadedDataCommonHolder,
 
@@ -724,7 +697,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 peptideUnique_UserSelection_ComponentData,
                 peptideSequence_UserSelections_ComponentData,
                 proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-                proteinPositionFilter_UserSelections_ComponentData,
                 peptideFiltersDisplay_ComponentData,
 
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
@@ -1031,7 +1003,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     //             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
     //             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
     //             userSearchString_LocationsOn_ProteinSequence_Root : null,
-    //             proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
+    //             proteinPositionFilter_UserSelections_StateObject : this.state.proteinPositionFilter_UserSelections_StateObject
     //         });
     //
     //         const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -1292,7 +1264,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     //             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
     //             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
     //             userSearchString_LocationsOn_ProteinSequence_Root : null,
-    //             proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
+    //             proteinPositionFilter_UserSelections_StateObject : this.state.proteinPositionFilter_UserSelections_StateObject
     //         });
     //
     //         const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -1363,7 +1335,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 userSearchString_LocationsOn_ProteinSequence_Root : null,
-                proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
+                proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
             });
 
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -1473,7 +1445,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         
             this.props.propsValue.peptideSequence_UserSelections_StateObject.clearPeptideSearchStrings();
 
-            this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper.clearSelections();
+            this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.clearSelections();
 
             //  Update URL and Page
 
@@ -1503,7 +1475,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             
                             this._peptideSequence_Update_peptideSequence_UserSelections_ComponentData();
 
-                            this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_ComponentData();
+                            this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object();
 
                             window.setTimeout( () => {
                                 try {
@@ -2211,15 +2183,15 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     }
 
     /**
-     * Change to Protein Position Filter Selections, this.props.propsValue.updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback
+     * Change to Protein Position Filter Selections, this.props.propsValue.updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback
      */
-    _updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback() : void {
+    _updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback() : void {
         try {
             window.setTimeout( () => {
                 try {
                     this._selectedProteinPositionFilterChange_UpdateURL();  //  Update URL
 
-                    this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_ComponentData();
+                    this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object();
 
                     if ( this._load_ProteinCoverage_InProgress ) {
 
@@ -2314,20 +2286,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     /**
      * create new this.state.proteinPositionFilter_UserSelections_ComponentData
      */
-    _proteinPositionFilter_Update_proteinPositionFilter_UserSelections_ComponentData() {
+    _proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object() {
 
-        const proteinPositionFilter_UserSelections_ComponentData : ProteinPositionFilter_UserSelections_ComponentData =
-            PeptidePage_Display_MainContent_Component_nonClass_Functions.create_ProteinPositionFilter_UserSelections_ComponentData({
-                proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-                loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                loadedDataCommonHolder : this.state.loadedDataCommonHolder
-        });
-
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { proteinPositionFilter_UserSelections_ComponentData };
-        });
+        this.setState( { proteinPositionFilter_UserSelections_Component_Force_ReRender_Object: {} } );
     }
 
     /////
@@ -2482,7 +2443,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _selectedProteinPositionFilterChange_UpdateURL() {
 
-        const encodedStateData = this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper.getEncodedStateData();
+        const encodedStateData = this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.getEncodedStateData();
         this.props.propsValue.peptidePageRoot_CentralStateManagerObjectClass.set_proteinPositionFilter_UserSelections_EncodedStateData({ proteinPositionFilter_UserSelections_EncodedStateData : encodedStateData });
     }
 
@@ -2517,7 +2478,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                                 userSearchString_LocationsOn_ProteinSequence_Root : null,
-                                proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper
+                                proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
                             });
             
                             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -2605,7 +2566,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject_Wrapper : this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper,
+            proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
             proteinSequenceWidget_StateObject : undefined,
             searchSubGroup_Are_All_SearchSubGroupIds_Selected : this.state.searchSubGroup_Are_All_SearchSubGroupIds_Selected,
@@ -2899,9 +2860,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                         <ProteinPositionFilter_UserSelections
                             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data }
-                            proteinPositionFilter_UserSelections_ComponentData={ this.state.proteinPositionFilter_UserSelections_ComponentData }
-                            proteinPositionFilter_UserSelections_StateObject_Wrapper={ this.state.proteinPositionFilter_UserSelections_StateObject_Wrapper }
-                            updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Wrapper_Callback_BindThis }
+                            proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
+                            proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
+                            updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
                         />
 
                         <GeneratedPeptideContents_UserSelections_Root_Component

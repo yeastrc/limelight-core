@@ -97,7 +97,18 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 	 */
 	setSelections_Ranges( newValue : ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root) : void {
 
-		this._selections_Ranges = newValue
+		if ( newValue && newValue.entriesMap_Key_proteinSequenceVersionId && newValue.entriesMap_Key_proteinSequenceVersionId.size > 0 ) {
+			this._selections_Ranges = newValue
+		} else {
+			this._selections_Ranges = null;
+		}
+	}
+
+	remove_Selected_ProteinSequenceVersionId({ proteinSequenceVersionId } : { proteinSequenceVersionId: number }) : void {
+
+		if ( this._selections_Ranges && this._selections_Ranges.entriesMap_Key_proteinSequenceVersionId ) {
+			this._selections_Ranges.entriesMap_Key_proteinSequenceVersionId.delete(proteinSequenceVersionId);
+		}
 	}
 
 	/**

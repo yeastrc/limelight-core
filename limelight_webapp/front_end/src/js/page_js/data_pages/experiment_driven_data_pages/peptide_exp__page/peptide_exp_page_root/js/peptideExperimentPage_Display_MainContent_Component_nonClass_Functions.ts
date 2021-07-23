@@ -41,9 +41,7 @@ import {loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_Per_R
 import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
 import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_BuildData_ForReactComponent";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
-import {ProteinPositionFilter_UserSelections_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_ComponentData";
-import {ProteinPositionFilter_UserSelections_StateObject_Wrapper} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject_Wrapper";
-import {proteinPositionFilter_UserSelections_BuildData_ForComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_BuildData_ForComponent";
+import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
 import {proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
 import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
@@ -68,7 +66,7 @@ const compute_FullPage_Except_ExperimentGraphic = function(
         reporterIonMass_UserSelections_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper
+        proteinPositionFilter_UserSelections_StateObject
     } : {
         propsValue : PeptideExperimentPage_Display_MainContent_Component_Props_Prop
         projectSearchIds_All : Array<number>,
@@ -80,7 +78,7 @@ const compute_FullPage_Except_ExperimentGraphic = function(
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper;
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
     }  ) :
 
 {
@@ -91,7 +89,6 @@ const compute_FullPage_Except_ExperimentGraphic = function(
     peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData;
     peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
     proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
-    proteinPositionFilter_UserSelections_ComponentData : ProteinPositionFilter_UserSelections_ComponentData;
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
 }
 {
@@ -128,13 +125,6 @@ const compute_FullPage_Except_ExperimentGraphic = function(
         projectSearchIds_All, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, loadedDataCommonHolder
     })
 
-    const proteinPositionFilter_UserSelections_ComponentData : ProteinPositionFilter_UserSelections_ComponentData = create_ProteinPositionFilter_UserSelections_ComponentData({
-
-        proteinPositionFilter_UserSelections_StateObject_Wrapper, proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, loadedDataCommonHolder
-    })
-
-
-
     //  Create initial instance.  Updated instance will be created in peptideSequence_UserSelections.tsx when user changes the input field value
 
     const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({
@@ -151,7 +141,7 @@ const compute_FullPage_Except_ExperimentGraphic = function(
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root : null,
-        proteinPositionFilter_UserSelections_StateObject_Wrapper
+        proteinPositionFilter_UserSelections_StateObject
     });
 
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =
@@ -167,7 +157,6 @@ const compute_FullPage_Except_ExperimentGraphic = function(
         peptideUnique_UserSelection_ComponentData,
         peptideSequence_UserSelections_ComponentData,
         proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-        proteinPositionFilter_UserSelections_ComponentData,
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     }
 }        
@@ -337,31 +326,6 @@ const create_ProteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
 
     return proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
 }
-
-/**
- *
- */
-const create_ProteinPositionFilter_UserSelections_ComponentData = function(
-    {
-        proteinPositionFilter_UserSelections_StateObject_Wrapper,
-        proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-        loadedDataCommonHolder
-    } : {
-        proteinPositionFilter_UserSelections_StateObject_Wrapper : ProteinPositionFilter_UserSelections_StateObject_Wrapper,
-        proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
-    }) : ProteinPositionFilter_UserSelections_ComponentData {
-
-    const proteinPositionFilter_UserSelections_ComponentData : ProteinPositionFilter_UserSelections_ComponentData = proteinPositionFilter_UserSelections_BuildData_ForComponent({
-
-        proteinPositionFilter_UserSelections_StateObject_Wrapper, proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, loadedDataCommonHolder
-    })
-
-    return proteinPositionFilter_UserSelections_ComponentData;
-}
-
 
 ////////////////////////////////////////////////////////
 
@@ -655,7 +619,6 @@ const peptideExperimentPage_Display_MainContent_Component_nonClass_Functions = {
     create_ModificationMass_UserSelections_ComponentData,
     create_ReporterIons_UserSelections_ComponentData, 
     create_PeptideSequence_UserSelections_ComponentData,
-    create_ProteinPositionFilter_UserSelections_ComponentData,
     load_ReporterIonMasses_IfNeeded,
     load_OpenModificationMasses_IfNeeded,
     load_ProteinCoverage_IfNeeded
