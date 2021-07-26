@@ -1126,7 +1126,7 @@ class FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Compone
                             )
                         }
                     </td>
-                    <td style={ { lineHeight: "1.3em" } } colSpan={ 2 }>
+                    <td colSpan={ 2 }>
 
                         { ( cutoffEntryComponents ) ? (
                             cutoffEntryComponents

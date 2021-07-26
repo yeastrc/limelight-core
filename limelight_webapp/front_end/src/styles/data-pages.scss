@@ -364,11 +364,13 @@
     // style for display blocks showing filter values
     .filter-single-value-display-block {
     	// cursor: pointer;  // switch to add clickable class
+        display: inline-block;  // Fix formatting issue in Firefox when wrap to next line
         padding-top: 1px;
         padding-bottom: 1px;
         padding-left: 3px;
         padding-right: 3px;
         margin-right: 3px;
+        margin-bottom: 3px;
         white-space: nowrap;
         background-color: $site-color-medium;
         border-style: solid;
