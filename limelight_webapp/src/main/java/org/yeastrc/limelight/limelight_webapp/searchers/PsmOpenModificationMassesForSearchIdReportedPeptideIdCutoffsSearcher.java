@@ -81,7 +81,7 @@ public class PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearche
 		StringBuilder sqlSB = new StringBuilder( 10000 );
 		
 		if ( psmCutoffValuesList_Reversed.isEmpty() ) {
-			sqlSB.append( "SELECT psm_tbl.id AS psm_id, psm_open_modification_tbl.mass, psm_open_modification_tbl.id " );
+			sqlSB.append( "SELECT psm_tbl.id AS psm_id, psm_open_modification_tbl.mass, psm_open_modification_tbl.id, " );
 			sqlSB.append( " psm_open_modification_tbl.id AS psm_open_modification_id " );
 			sqlSB.append( " FROM psm_tbl " );
 			sqlSB.append( " INNER JOIN psm_open_modification_tbl ON psm_tbl.id = psm_open_modification_tbl.psm_id " );
