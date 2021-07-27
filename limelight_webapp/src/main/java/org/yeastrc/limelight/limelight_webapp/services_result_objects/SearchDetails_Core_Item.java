@@ -10,6 +10,16 @@ public class SearchDetails_Core_Item {
 	private String path;
 	private String fastaFilename;
 	private String formattedLoadTime;
+
+	//  Converter Program Info
+	
+	private String converterProgram_Name;
+	private String converterProgram_Version;
+	
+	private String converterProgram_Pgm_URI;
+	private String converterProgram_Pgm_Arguments;
+	private String formatted_converterProgram_ConversionDate;
+	
 	private List<SearchProgramsPerSearchDTO> searchProgramsPerSearchList;
 	
 	public String getPath() {
@@ -41,5 +51,35 @@ public class SearchDetails_Core_Item {
 	}
 	public void setFormattedLoadTime(String formattedLoadTime) {
 		this.formattedLoadTime = formattedLoadTime;
+	}
+	public String getConverterProgram_Name() {
+		return converterProgram_Name;
+	}
+	public void setConverterProgram_Name(String converterProgram_Name) {
+		this.converterProgram_Name = converterProgram_Name;
+	}
+	public String getConverterProgram_Version() {
+		return converterProgram_Version;
+	}
+	public void setConverterProgram_Version(String converterProgram_Version) {
+		this.converterProgram_Version = converterProgram_Version;
+	}
+	public String getConverterProgram_Pgm_URI() {
+		return converterProgram_Pgm_URI;
+	}
+	public void setConverterProgram_Pgm_URI(String converterProgram_Pgm_URI) {
+		this.converterProgram_Pgm_URI = converterProgram_Pgm_URI;
+	}
+	public String getConverterProgram_Pgm_Arguments() {
+		return converterProgram_Pgm_Arguments;
+	}
+	public void setConverterProgram_Pgm_Arguments(String converterProgram_Pgm_Arguments) {
+		this.converterProgram_Pgm_Arguments = converterProgram_Pgm_Arguments;
+	}
+	public String getFormatted_converterProgram_ConversionDate() {
+		return formatted_converterProgram_ConversionDate;
+	}
+	public void setFormatted_converterProgram_ConversionDate(String formatted_converterProgram_ConversionDate) {
+		this.formatted_converterProgram_ConversionDate = formatted_converterProgram_ConversionDate;
 	}
 }

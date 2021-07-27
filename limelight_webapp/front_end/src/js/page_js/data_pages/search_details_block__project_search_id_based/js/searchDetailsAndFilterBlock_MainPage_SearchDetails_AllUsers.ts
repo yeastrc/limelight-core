@@ -695,6 +695,23 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 			}
         });
 
+		const $selector_show_command_line_arguments = $selector_search_details_container.find(".selector_show_command_line_arguments");
+		$selector_show_command_line_arguments.click(function(eventObject) {
+			try {
+				eventObject.preventDefault();
+				const $this = $( this );
+				$this.hide();
+				const $parent = $this.parent();
+				const $selector_command_line_arguments_contents = $parent.children(".selector_command_line_arguments_contents");
+				$selector_command_line_arguments_contents.show();
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
+			}
+		});
+
         if ( this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers ) {
 
             this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container });

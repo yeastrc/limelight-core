@@ -34,11 +34,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.services.Get_SearchDetails_Core_For_ProjectSearchIds_ServiceIF;
-import org.yeastrc.limelight.limelight_webapp.services.Get_SearchDetails_Core_For_ProjectSearchIds_Service.PopulatePath;
+import org.yeastrc.limelight.limelight_webapp.services.Get_SearchDetails_Core_For_ProjectSearchIds_Service.Get_SearchDetails_Core_For_ProjectSearchIds_Service__PopulatePath;
+import org.yeastrc.limelight.limelight_webapp.services.Get_SearchDetails_Core_For_ProjectSearchIds_Service.Get_SearchDetails_Core_For_ProjectSearchIds_Service__Populate_ConverterProgram_CLI_Parameters;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.SearchDetails_Core_Item;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -135,19 +137,32 @@ public class Get_SearchDetailsCore_RestWebservice {
 
     		////////////////
 
+			WebSessionAuthAccessLevel webSessionAuthAccessLevel = 
+					validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getWebSessionAuthAccessLevel();
+			
     		UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getUserSession();
 
     		
-    		PopulatePath populatePath = PopulatePath.NO;
+    		Get_SearchDetails_Core_For_ProjectSearchIds_Service__PopulatePath populatePath = Get_SearchDetails_Core_For_ProjectSearchIds_Service__PopulatePath.NO;
 
     		if ( userSession != null && userSession.isActualUser() ) {
     			//  Display Path when have logged in user
-    			populatePath = PopulatePath.YES;
+    			populatePath = Get_SearchDetails_Core_For_ProjectSearchIds_Service__PopulatePath.YES;
     		}
+    		
+    		Get_SearchDetails_Core_For_ProjectSearchIds_Service__Populate_ConverterProgram_CLI_Parameters populate_ConverterProgram_CLI_Parameters = 
+    				Get_SearchDetails_Core_For_ProjectSearchIds_Service__Populate_ConverterProgram_CLI_Parameters.NO;
+
+			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+				
+				populate_ConverterProgram_CLI_Parameters = Get_SearchDetails_Core_For_ProjectSearchIds_Service__Populate_ConverterProgram_CLI_Parameters.YES;
+			}
+
+    		
 
     		List<SearchDetails_Core_Item> results = 
     				get_SearchDetails_Core_For_ProjectSearchIds_Service
-    				.get_SearchDetails_Core_For_ProjectSearchIds( webserviceRequest.getProjectSearchIds(), populatePath );
+    				.get_SearchDetails_Core_For_ProjectSearchIds( webserviceRequest.getProjectSearchIds(), populatePath, populate_ConverterProgram_CLI_Parameters );
     		
     		WebserviceResult webserviceResult = new WebserviceResult();
     	    		
