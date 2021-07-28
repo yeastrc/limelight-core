@@ -51,7 +51,7 @@ Now, download the Limelight Docker Compose files:
     .. code-block:: bash
 
        # Download Limelight Docker Compose files
-       sudo curl -L "https://github.com/yeastrc/limelight-core/releases/latest/download/docker-compose-files.tgz" -o docker-compose-files.tgz
+       curl -L "https://github.com/yeastrc/limelight-core/releases/latest/download/docker-compose-files.tgz" -o docker-compose-files.tgz
 
        # Expand the archive
        tar -xvzf docker-compose-files.tgz
