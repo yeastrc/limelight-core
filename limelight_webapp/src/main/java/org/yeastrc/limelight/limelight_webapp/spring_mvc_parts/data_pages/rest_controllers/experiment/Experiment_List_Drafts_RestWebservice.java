@@ -150,10 +150,12 @@ public class Experiment_List_Drafts_RestWebservice {
     		//  AUTH - validate access
     		
     		//  throws an exception if access is not valid that is turned into a webservice response by Spring
-    		
+
+    		// WAS  .validateAssistantProjectOwnerAllowed
+
     		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
     				validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-    				.validateAssistantProjectOwnerAllowed( projectIds, httpServletRequest ); // ( webserviceRequest.getProjectSearchIds_CreateDefault(), httpServletRequest );
+    				.validateLoggedInUserReadOnlyAllowed( projectIds, httpServletRequest ); // ( webserviceRequest.getProjectSearchIds_CreateDefault(), httpServletRequest );
 
     		////////////////
    		

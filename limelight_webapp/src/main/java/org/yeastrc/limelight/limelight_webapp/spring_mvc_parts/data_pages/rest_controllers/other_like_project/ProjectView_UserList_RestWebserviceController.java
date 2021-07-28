@@ -145,10 +145,12 @@ public class ProjectView_UserList_RestWebserviceController {
 			List<Integer> projectIds = new ArrayList<>( 1 );
 			projectIds.add( projectId );
 			
+			//  WAS  .validateAssistantProjectOwnerIfProjectNotLockedAllowed
+			
 			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
 					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-					.validateAssistantProjectOwnerIfProjectNotLockedAllowed( projectIds, httpServletRequest );
-
+					.validateLoggedInUserReadOnlyIfProjectNotLockedAllowed( projectIds, httpServletRequest );
+			
 			UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession();
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getWebSessionAuthAccessLevel();
 

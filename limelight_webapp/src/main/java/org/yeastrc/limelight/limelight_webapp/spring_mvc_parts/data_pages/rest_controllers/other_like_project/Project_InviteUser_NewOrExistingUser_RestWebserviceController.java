@@ -224,7 +224,8 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
     		}
 
 			if ( invitedPersonAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER 
-					&& invitedPersonAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
+					&& invitedPersonAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER 
+					&& invitedPersonAccessLevel != AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY ) {
 				log.warn( "UserInviteService: invitedPersonAccessLevel is invalid value: " + invitedPersonAccessLevel );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}

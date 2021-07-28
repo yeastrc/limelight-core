@@ -95,6 +95,8 @@ public class UserListForProject_Service implements UserListForProject_ServiceIF 
 			
 			if ( userListForProjectIdSearcherItem.getUserProjectAccessLevelId() <= AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER ) {
 				resultItem.setProjectOwner( true );
+			} else if ( userListForProjectIdSearcherItem.getUserProjectAccessLevelId() == AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
+				resultItem.setResearcher( true );
 			}
 			
 			if ( userSession != null && userSession.getUserId() != null && userSession.getUserId() != userListForProjectIdSearcherItem.getUserId() ) {
@@ -110,10 +112,10 @@ public class UserListForProject_Service implements UserListForProject_ServiceIF 
 				}
 				if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 					//  User Session is Project Owner.  Can Promote or demote entry
-					if ( userListForProjectIdSearcherItem.getUserProjectAccessLevelId() == AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER ) {
+					if ( userListForProjectIdSearcherItem.getUserProjectAccessLevelId() <= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
 						resultItem.setCanDemoteEntry(true);
 					}
-					if ( userListForProjectIdSearcherItem.getUserProjectAccessLevelId() == AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
+					if ( userListForProjectIdSearcherItem.getUserProjectAccessLevelId() >= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
 						resultItem.setCanPromoteEntry(true);
 					}
 				}

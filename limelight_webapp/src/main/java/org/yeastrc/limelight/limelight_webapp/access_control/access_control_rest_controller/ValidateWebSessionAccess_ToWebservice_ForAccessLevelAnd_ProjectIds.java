@@ -194,6 +194,40 @@ public class ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds 
 	public ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateAssistantProjectOwnerIfProjectNotLockedAllowed( List<Integer> projectIds, HttpServletRequest httpServletRequest ) throws SQLException {
 
 		return validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds(
+				AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER,
+				CheckWhichAuthAccessLevel.IF_PROJECT_NOT_LOCKED,
+				projectIds,
+				httpServletRequest );
+	}
+
+	/**
+	 * Validate authAccessLevel <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY
+	 * @param projectIds
+	 * @param httpServletRequest
+	 * @throws SQLException
+	 */
+	
+	@Override
+	public ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateLoggedInUserReadOnlyAllowed( List<Integer> projectIds, HttpServletRequest httpServletRequest ) throws SQLException {
+
+		return validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds(
+				AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY,
+				CheckWhichAuthAccessLevel.MAIN,
+				projectIds,
+				httpServletRequest );
+	}
+	
+	/**
+	 * Validate authAccessLevelIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY
+	 * @param projectIds
+	 * @param httpServletRequest
+	 * @throws SQLException
+	 */
+	
+	@Override
+	public ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateLoggedInUserReadOnlyIfProjectNotLockedAllowed( List<Integer> projectIds, HttpServletRequest httpServletRequest ) throws SQLException {
+
+		return validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds(
 				AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY,
 				CheckWhichAuthAccessLevel.IF_PROJECT_NOT_LOCKED,
 				projectIds,

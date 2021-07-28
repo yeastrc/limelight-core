@@ -114,7 +114,16 @@ class ProjectViewPage_Root_ResearcherUser {
 
 		this._projectPage_ProjectSection_LoggedInUsersInteraction = new ProjectPage_ProjectSection_LoggedInUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked });
 
-		this._projectPage_ExperimentsSection_LoggedInUsersInteraction = new ProjectPage_ExperimentsSection_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
+		{
+			const isResearcherUser = document.getElementById("project_page_user_level_researcher_found__just_above_bundle");
+
+			if ( isResearcherUser ) {
+
+				//  Researcher Level user so populate (NOT Viewer Level user AKA Read Only user)
+
+				this._projectPage_ExperimentsSection_LoggedInUsersInteraction = new ProjectPage_ExperimentsSection_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
+			}
+		}
 
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction = new ProjectPage_SavedViews_Section_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
 
@@ -145,7 +154,9 @@ class ProjectViewPage_Root_ResearcherUser {
 		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction =
 				new ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction();
 
-		this._projectPage_ExperimentsSection_LoggedInUsersInteraction.initialize({ projectPage_ExperimentsSection_AllUsersInteraction : this._projectPage_ExperimentsSection_AllUsersInteraction });
+		if ( this._projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
+			this._projectPage_ExperimentsSection_LoggedInUsersInteraction.initialize({projectPage_ExperimentsSection_AllUsersInteraction: this._projectPage_ExperimentsSection_AllUsersInteraction});
+		}
 
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize({ projectPage_SavedViews_Section_AllUsersInteraction : this._projectPage_SavedViews_Section_AllUsersInteraction });
 

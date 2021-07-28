@@ -6,8 +6,12 @@
  <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
 
 
-<c:if test="${ webSessionAuthAccessLevel.assistantProjectOwnerAllowed or webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed }" >
+<c:if test="${ webSessionAuthAccessLevel.viewerReadOnlyAllowed or webSessionAuthAccessLevel.viewerReadOnlyIfProjectNotLockedAllowed }" >
 
+<%--  WAS
+<c:if test="${ webSessionAuthAccessLevel.assistantProjectOwnerAllowed or webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed }" >
+ --%>
+		
 									
   <div >
 

@@ -50,11 +50,13 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
- * Contains 2 webservices
+ * Contains 3 webservices
  * 
  * 1)  Change user to Project Owner
  * 
  * 2)  Change user to Assistant Project Owner AKA Researcher
+ * 
+ * 3)  Change user to Viewer AKA Read Only
  *
  */
 @RestController
@@ -156,6 +158,43 @@ public class Project_ChangeUserAccess_RestWebserviceController {
     	
     	return changeUserAccessToProject(
     			AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER,
+    			postBody, httpServletRequest, httpServletResponse );
+    }
+
+	/////////////////////////////////////////////////////
+	
+	//  Convert result object graph to JSON in byte[] in the controller body so can cache it
+
+	//  These 2 annotations work the same
+	
+
+	//  Mapping the value in {} in the path to parameters in the method:
+	//
+	//    The value in {} has to match the value in the "value = " in the @PathVariable
+	//    If they don't match, a 500 error is thrown and nothing is logged and the method is not called.
+	//    If there is no "value = " in the @PathVariable, the method parameter name is used.
+	
+	@PostMapping( 
+			path = {
+					AA_RestWSControllerPaths_Constants.PATH_START_ALL
+					+ AA_RestWSControllerPaths_Constants.PROJECT_CHANGE_USER_ACCESS_TO_VIEWER_READ_ONLY_REST_WEBSERVICE_CONTROLLER
+			},
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+
+//	@RequestMapping( 
+//			path = AA_RestWSControllerPaths_Constants.,
+//			method = RequestMethod.POST,
+//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_ChangeToViewer_ReadOnly(
+    		
+    		@RequestBody byte[] postBody,
+    		HttpServletRequest httpServletRequest,
+    		HttpServletResponse httpServletResponse
+    		) throws Exception {
+    	
+    	return changeUserAccessToProject(
+    			AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY,
     			postBody, httpServletRequest, httpServletResponse );
     }
     

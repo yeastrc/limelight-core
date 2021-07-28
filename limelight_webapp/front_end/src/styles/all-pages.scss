@@ -404,15 +404,15 @@ button {
 
 .project-page--top-level-label-help-tip-symbol {
   position: relative;
-  margin-left: 10px;
+  margin-left: 10px;   // .8em;
   text-align: center;
 
   //  Make a circle around the '?':  width and height have to be same value
 
-  font-size: 12px;
-  line-height: 16px;
-  width: 14px;
-  height: 14px;
+  font-size: 12px;    // .5em;
+  line-height: 16px;  // 1.4em;
+  width: 14px;        // 1.2em;
+  height: 14px;       // 1.2em;
   cursor: default;
 
   //  Make a circle around the '?':  border-radius: 50%;

@@ -148,9 +148,11 @@ public class ProjectView_UserInviteList_RestWebserviceController {
 			List<Integer> projectIds = new ArrayList<>( 1 );
 			projectIds.add( projectId );
 			
+			//  WAS  validateAssistantProjectOwnerIfProjectNotLockedAllowed
+			
 			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
 					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-					.validateAssistantProjectOwnerIfProjectNotLockedAllowed( projectIds, httpServletRequest );
+					.validateLoggedInUserReadOnlyIfProjectNotLockedAllowed( projectIds, httpServletRequest );
 
 //			UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession();
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getWebSessionAuthAccessLevel();
@@ -174,6 +176,8 @@ public class ProjectView_UserInviteList_RestWebserviceController {
 
 				if ( userInviteTrackingDTO.getInvitedUserAccessLevel() == AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER ) {
 					invitedPersonDisplay.setAccessLevelProjectOwner(true);
+				} else if ( userInviteTrackingDTO.getInvitedUserAccessLevel() == AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
+					invitedPersonDisplay.setAccessLevelResearcher(true);
 				}
 				
 				if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
@@ -182,10 +186,10 @@ public class ProjectView_UserInviteList_RestWebserviceController {
 				}
 				if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 					//  User Session is Project Owner.  Can Promote or demote entry
-					if ( userInviteTrackingDTO.getInvitedUserAccessLevel() == AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER ) {
+					if ( userInviteTrackingDTO.getInvitedUserAccessLevel() <= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
 						invitedPersonDisplay.setCanDemoteEntry(true);
 					}
-					if ( userInviteTrackingDTO.getInvitedUserAccessLevel() == AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
+					if ( userInviteTrackingDTO.getInvitedUserAccessLevel() >= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
 						invitedPersonDisplay.setCanPromoteEntry(true);
 					}
 				}
@@ -256,6 +260,7 @@ public class ProjectView_UserInviteList_RestWebserviceController {
     	private String inviteDate;
     	
     	private boolean accessLevelProjectOwner;
+    	private boolean accessLevelResearcher;
 
     	private boolean canRemoveEntry;
     	private boolean canDemoteEntry;
@@ -318,6 +323,12 @@ public class ProjectView_UserInviteList_RestWebserviceController {
 		}
 		public void setCanResendInviteEmail(boolean canResendInviteEmail) {
 			this.canResendInviteEmail = canResendInviteEmail;
+		}
+		public boolean isAccessLevelResearcher() {
+			return accessLevelResearcher;
+		}
+		public void setAccessLevelResearcher(boolean accessLevelResearcher) {
+			this.accessLevelResearcher = accessLevelResearcher;
 		}
 
     }

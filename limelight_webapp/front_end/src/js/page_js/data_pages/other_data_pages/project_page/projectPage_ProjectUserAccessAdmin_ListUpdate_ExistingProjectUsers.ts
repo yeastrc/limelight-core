@@ -166,6 +166,22 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 					}
 				});
 				
+				//  Click handler for changing a user to viewer (Read Only)
+				let $change_to_viewer_control_jq = $search_entry.find(".change_to_viewer_control_jq");
+				$change_to_viewer_control_jq.click(function(eventObject) {
+					try {
+						eventObject.preventDefault();
+						let clickedThis = this;
+						let userId = userItem.userId;
+						objectThis._changeUserTo_Viewer_ReadOnly( { clickedThis, userId } );
+					} catch (e) {
+						reportWebErrorToServer.reportErrorObjectToServer({
+							errorException : e
+						});
+						throw e;
+					}
+				});
+
 				//  Click handler for changing a user to researcher (assistant project owner)
 				let $change_to_assistant_owner_control_jq = $search_entry.find(".change_to_assistant_owner_control_jq");
 				$change_to_assistant_owner_control_jq.click(function(eventObject) {
@@ -181,7 +197,7 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 						throw e;
 					}
 				});
-				
+
 
 				//  Click handler for changing a user to project owner
 				let $change_to_owner_control_jq = $search_entry.find(".change_to_owner_control_jq");
@@ -295,6 +311,41 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_ExistingProjectUsers 
 
 		//  refresh display
 		this.displayExistingUsersForProject();
+	}
+
+	/**
+	 *
+	 */
+	_changeUserTo_Viewer_ReadOnly( { clickedThis, userId } : { clickedThis: any, userId: any } ) {
+
+		let objectThis = this;
+
+		let requestObj = {
+			projectIdentifier : this._projectIdentifierFromURL,
+			userId : userId
+		};
+
+		const url = "d/rws/for-page/project-change-user-access-to-viewer-read-only";
+
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+		promise_webserviceCallStandardPost.catch( () => {  throw Error("Failed call to webservice " + url ) }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
+			try {
+				objectThis._changeUserToAssistantProjectOwner_ProcessAJAXResponse({
+					responseData
+				});
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
+			}
+		});
+
 	}
 
 	/**

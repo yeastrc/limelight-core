@@ -124,11 +124,32 @@ public class WebSessionAuthAccessLevel {
 	
 
 	/**
-	 * @return true if authAccessLevelIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER
+	 * @return true if authAccessLevelIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER
 	 */
 	public boolean isAssistantProjectOwnerIfProjectNotLockedAllowed() {
 		
 		if ( authAccessLevelForProjectIdsIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if authAccessLevel <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY
+	 */
+	public boolean isViewerReadOnlyAllowed() {
+		
+		if ( authAccessLevel <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY ) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * @return true if authAccessLevelIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY
+	 */
+	public boolean isViewerReadOnlyIfProjectNotLockedAllowed() {
+		
+		if ( authAccessLevelForProjectIdsIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY ) {
 			return true;
 		}
 		return false;

@@ -102,12 +102,32 @@
   </c:when>
   <c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerAllowed }">
   	<%--  Researcher (NOT Project Owner) and Project is NOT locked --%>
+  	
+  	<%--  Flag to Javascript that this is researcher user instead of viewer user --%>
+ 	<script type="text/text" id="project_page_user_level_researcher_found__just_above_bundle" >true</script>
+  	
 	<script type="text/javascript" src="static/js_generated_bundles/data_pages/projectViewPage_Researcher_W_User-bundle.js?x=${ cacheBustValue }"></script>
   </c:when>
   <c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed }">
   	<%--  Researcher (NOT Project Owner) and Project IS locked --%>
+  	
+  	<%--  Flag to Javascript that this is researcher user instead of viewer user --%>
+  	<script type="text/text" id="project_page_user_level_researcher_found__just_above_bundle" >true</script>
+  	
 	<script type="text/javascript" src="static/js_generated_bundles/data_pages/projectViewPage_ProjectLocked_Researcher_W_User-bundle.js?x=${ cacheBustValue }"></script>
   </c:when>
+  
+  <c:when test="${ webSessionAuthAccessLevel.viewerReadOnlyAllowed }">
+  	<%--  Viewer Read Only (NOT Project Owner) and Project is NOT locked --%>
+  	
+	<script type="text/javascript" src="static/js_generated_bundles/data_pages/projectViewPage_Researcher_W_User-bundle.js?x=${ cacheBustValue }"></script>
+  </c:when>
+  <c:when test="${ webSessionAuthAccessLevel.viewerReadOnlyIfProjectNotLockedAllowed }">
+  	<%--  Viewer Read Only (NOT Project Owner) and Project IS locked --%>
+  	
+	<script type="text/javascript" src="static/js_generated_bundles/data_pages/projectViewPage_ProjectLocked_Researcher_W_User-bundle.js?x=${ cacheBustValue }"></script>
+  </c:when>
+  
   <c:otherwise>
   	<%--  Project is public and not signed in user --%>
 	<script type="text/javascript" src="static/js_generated_bundles/data_pages/projectViewPage_PublicUser-bundle.js?x=${ cacheBustValue }"></script>

@@ -97,7 +97,10 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	public static final String PROJECT_CHANGE_USER_ACCESS_TO_PROJECT_OWNER_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/project-change-user-access-to-project-owner";
-	
+
+	public static final String PROJECT_CHANGE_USER_ACCESS_TO_VIEWER_READ_ONLY_REST_WEBSERVICE_CONTROLLER = // Viewer (Read Only)
+			"d/rws/for-page/project-change-user-access-to-viewer-read-only";
+
 	public static final String PROJECT_CHANGE_USER_ACCESS_TO_ASSIST_PROJECT_OWNER_REST_WEBSERVICE_CONTROLLER = // Researcher
 			"d/rws/for-page/project-change-user-access-to-assist-project-owner";
 
@@ -114,6 +117,9 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	public static final String PROJECT_INVITE_CHANGE_ACCESS_TO_PROJECT_OWNER_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/project-invite-change-user-access-to-project-owner";
+
+	public static final String PROJECT_INVITE_CHANGE_ACCESS_TO_VIEWER_READ_ONLY_REST_WEBSERVICE_CONTROLLER = // Viewer (Read Only)
+			"d/rws/for-page/project-invite-change-user-access-to-viewer-read-only";
 
 	public static final String PROJECT_INVITE_CHANGE_ACCESS_TO_ASSIST_PROJECT_OWNER_REST_WEBSERVICE_CONTROLLER = // Researcher
 			"d/rws/for-page/project-invite-change-user-access-to-assist-project-owner";

@@ -167,7 +167,23 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 						throw e;
 					}
 				});
-				
+
+				//  Click handler for an invite to Viewer (Read Only)
+				let $change_to_viewer_control_jq = $search_entry.find(".change_to_viewer_control_jq");
+				$change_to_viewer_control_jq.click(function(eventObject) {
+					try {
+						eventObject.preventDefault();
+						let clickedThis = this;
+						let inviteTrackingId = userInviteItem.inviteId;
+						objectThis._changeUserInviteToViewer( { clickedThis, inviteTrackingId } );
+					} catch (e) {
+						reportWebErrorToServer.reportErrorObjectToServer({
+							errorException : e
+						});
+						throw e;
+					}
+				});
+
 				//  Click handler for an invite to Researcher (Assistant Project Owner)
 				let $change_to_assistant_owner_control_jq = $search_entry.find(".change_to_assistant_owner_control_jq");
 				$change_to_assistant_owner_control_jq.click(function(eventObject) {
@@ -357,6 +373,37 @@ export class ProjectPage_ProjectUserAccessAdmin_ListUpdate_InvitedPeople {
 
 		//  refresh display
 		this.displayInvitedPeopleForProject();
+	}
+
+	/**
+	 *
+	 */
+	_changeUserInviteToViewer( { clickedThis, inviteTrackingId } : { clickedThis: any, inviteTrackingId: any } ) {
+
+		let objectThis = this;
+
+		let requestObj = {
+			inviteTrackingId : inviteTrackingId
+		};
+
+		const url = "d/rws/for-page/project-invite-change-user-access-to-viewer-read-only";
+
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+
+		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+		promise_webserviceCallStandardPost.catch( () => { }  );
+
+		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
+			try {
+				objectThis._changeUserInviteToAssistantProjectOwner_ProcessAJAXResponse({ responseData });
+			} catch (e) {
+				reportWebErrorToServer.reportErrorObjectToServer({
+					errorException : e
+				});
+				throw e;
+			}
+		});
 	}
 
 	/**

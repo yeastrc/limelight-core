@@ -102,6 +102,26 @@ public interface ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_Project
 			List<Integer> projectIds, HttpServletRequest httpServletRequest) throws SQLException;
 
 	/**
+	 * Validate authAccessLevel <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY
+	 * @param projectIds
+	 * @param httpServletRequest
+	 * @throws SQLException
+	 */
+	
+	ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateLoggedInUserReadOnlyAllowed( List<Integer> projectIds, HttpServletRequest httpServletRequest ) throws SQLException;
+
+	/**
+	 * Validate authAccessLevelIfNotLocked <= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY
+	 * @param projectIds
+	 * @param httpServletRequest
+	 * @throws SQLException
+	 */
+	
+	ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateLoggedInUserReadOnlyIfProjectNotLockedAllowed( List<Integer> projectIds, HttpServletRequest httpServletRequest ) throws SQLException;
+
+	
+
+	/**
 	 * Validate authAccessLevel <= AuthAccessLevelConstants.ACCESS_LEVEL_SEARCH_DELETE
 	 * @param projectIds
 	 * @param httpServletRequest

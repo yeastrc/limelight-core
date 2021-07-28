@@ -6,7 +6,7 @@
 	<td nowrap  style="padding-right: 5px;">
 	  {{#if userItem.canRemoveEntry }}
 	 	<input type="image" src="static/images/icon-circle-delete.png" 
-	 		class="selector_tool_tip_attached remove_from_project_control_jq  icon-small "  
+	 		class="selector_tool_tip_attached___ remove_from_project_control_jq  icon-small "
 	 		title="Remove from project" />
 	  {{/if}}
 	</td>
@@ -21,14 +21,26 @@
   {{#if canPromoteDemoteAnyOfEntries }}	 
 	<td nowrap style="padding-left: 5px; padding-right: 5px;">
 	  {{#if userItem.canDemoteEntry }}
-		<input type="image" src="static/images/icon-down-arrow.png" 
-			class="selector_tool_tip_attached change_to_assistant_owner_control_jq  icon-small " 
-			title="Demote to researcher" />
+          {{#if userItem.researcher  }}
+            <input type="image" src="static/images/icon-down-arrow.png"
+                class="selector_tool_tip_attached___ change_to_viewer_control_jq  icon-small "
+                title="Demote to viewer" />
+          {{else}}
+              <input type="image" src="static/images/icon-down-arrow.png"
+                     class="selector_tool_tip_attached___ change_to_assistant_owner_control_jq  icon-small "
+                     title="Demote to researcher" />
+          {{/if}}
 	  {{/if}}  
 	  {{#if userItem.canPromoteEntry }}
-		<input type="image" src="static/images/icon-up-arrow.png" 
-			class="selector_tool_tip_attached change_to_owner_control_jq  icon-small "
-			title="Promote to owner" />
+          {{#if userItem.researcher  }}
+            <input type="image" src="static/images/icon-up-arrow.png"
+                class="selector_tool_tip_attached___ change_to_owner_control_jq  icon-small "
+                title="Promote to owner" />
+          {{else}}
+              <input type="image" src="static/images/icon-up-arrow.png"
+                     class="selector_tool_tip_attached___ change_to_assistant_owner_control_jq  icon-small "
+                     title="Promote to researcher" />
+          {{/if}}
 	  {{/if}}  
 	</td>
   {{else}}
@@ -39,8 +51,12 @@
 	  {{#if userItem.projectOwner }}
 		<span >Owner</span>		
 	  {{else}}
-		<span >Researcher</span>
-	  {{/if}}  
+          {{#if userItem.researcher }}
+		    <span >Researcher</span>
+          {{else}}
+            <span >Viewer</span>
+          {{/if}}
+      {{/if}}
 	</td>
 
 	<td></td>  {{!-- Invite has button in this <td> for Resend Email --}}

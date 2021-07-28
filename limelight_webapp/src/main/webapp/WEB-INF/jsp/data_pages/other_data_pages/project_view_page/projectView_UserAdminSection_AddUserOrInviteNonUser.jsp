@@ -177,9 +177,9 @@
 		    </table>
 
 			<span id="invite_user_auto_complete_display" style="display: none;">
-		  	  <a href="javascript:" title="Clear chosen Last Name or Email Address" id="close_invite_user_auto_complete_display">
-				<img src="static/images/icon-circle-delete.png">
-			  </a>
+		  	  <img src="static/images/icon-circle-delete.png" class=" icon-small clickable "
+		  	   		title="Clear chosen Last Name or Email Address" id="close_invite_user_auto_complete_display"
+		  	  >
 			  <span id="invite_user_auto_complete_value"></span>
 			</span>
 		    
@@ -192,6 +192,7 @@
 										<option value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_SEARCH_DELETE %>" >Update and Delete Searches</option>
 --%>									
 						<option value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER %>" >Researcher</option>
+						<option value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY %>" >Viewer</option>
 						
 						<c:if  test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">									
 							<option value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_PROJECT_OWNER %>" >Owner</option>

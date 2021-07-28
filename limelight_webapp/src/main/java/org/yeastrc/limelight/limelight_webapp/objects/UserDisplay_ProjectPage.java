@@ -29,6 +29,7 @@ public class UserDisplay_ProjectPage {
 	private String lastName;
 
 	private boolean projectOwner;
+	private boolean researcher;
 
 	private boolean canRemoveEntry;
 	private boolean canDemoteEntry;
@@ -75,6 +76,12 @@ public class UserDisplay_ProjectPage {
 	}
 	public void setProjectOwner(boolean projectOwner) {
 		this.projectOwner = projectOwner;
+	}
+	public boolean isResearcher() {
+		return researcher;
+	}
+	public void setResearcher(boolean researcher) {
+		this.researcher = researcher;
 	}
 
 }

@@ -3,6 +3,8 @@
 	
 	Share Data block - For Assistant Project Owner - AKA Researcher
 	
+	SHOW ONLY, NO UPDATES
+	
 	Project URL
 	Public Access
 
@@ -20,9 +22,9 @@
 
 </c:when>
 
-<c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerAllowed or webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed }" >
+<c:when test="${ webSessionAuthAccessLevel.viewerReadOnlyAllowed or webSessionAuthAccessLevel.viewerReadOnlyIfProjectNotLockedAllowed }" >
 
-	<%--  Assistant Project Owner - AKA Researcher  --%>
+	<%--  Assistant Project Owner - AKA Researcher -- OR  --  Viewer Read Only --%>
 
   <div class="top-level-container selector_collapsable_container" >
   

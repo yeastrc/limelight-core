@@ -49,7 +49,7 @@ public class ProjectListForUserIdSearcher extends Limelight_JDBC_Base implements
 			+ " WHERE "
 			+ " project_tbl.enabled = 1 AND project_tbl.marked_for_deletion = 0 "
 			+ " AND project_user_tbl.user_id = ? "
-			+ " AND project_user_tbl.access_level <= " + AuthAccessLevelConstants.ACCESS_LEVEL_ASSISTANT_PROJECT_OWNER_AKA_RESEARCHER;
+			+ " AND project_user_tbl.access_level <= " + AuthAccessLevelConstants.ACCESS_LEVEL_LOGGED_IN_USER_READ_ONLY;
 			
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.ProjectListForUserIdSearcherIF#getProjectListForUserId(int)
