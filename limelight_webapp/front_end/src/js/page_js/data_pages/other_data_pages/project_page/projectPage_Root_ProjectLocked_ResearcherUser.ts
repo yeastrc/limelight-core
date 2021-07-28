@@ -118,7 +118,8 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
-		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction.initialize();
+		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction =
+			new ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction();
 
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 

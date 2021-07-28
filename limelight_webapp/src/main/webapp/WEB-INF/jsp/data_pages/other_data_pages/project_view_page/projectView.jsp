@@ -111,9 +111,6 @@
   <c:when test="${ webSessionAuthAccessLevel.assistantProjectOwnerIfProjectNotLockedAllowed }">
   	<%--  Researcher (NOT Project Owner) and Project IS locked --%>
   	
-  	<%--  Flag to Javascript that this is researcher user instead of viewer user --%>
-  	<script type="text/text" id="project_page_user_level_researcher_found__just_above_bundle" >true</script>
-  	
 	<script type="text/javascript" src="static/js_generated_bundles/data_pages/projectViewPage_ProjectLocked_Researcher_W_User-bundle.js?x=${ cacheBustValue }"></script>
   </c:when>
   
