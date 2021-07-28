@@ -49,6 +49,8 @@ to the GitHub repository for the individual converter for information on how to 
      - https://github.com/yeastrc/limelight-import-msfragger-tpp
    * - Open pFind
      - https://github.com/yeastrc/limelight-import-open-pfind
+   * - Philosopher (MSFragger or Comet)
+     - https://github.com/yeastrc/limelight-import-philosopher-tsv
    * - ProLuCID (processed with DTASelect, using IP2)
      - https://github.com/yeastrc/limelight-import-prolucid-dtaselect
    * - Tag Graph
