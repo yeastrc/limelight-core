@@ -7,6 +7,7 @@ Here are guides and tutorials related to running your own Limelight installation
    :titlesonly:
 
    administration/install-limelight
+   administration/update-limelight
    administration/install-limelight-smtp
    administration/install-limelight-custom-data-location
    administration/manage-users
