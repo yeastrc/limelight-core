@@ -286,7 +286,8 @@ const _create_dataTable_RootTableObject = function(
         dataPerReportedPeptideId_Map_Key_reportedPeptideId,
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         proteinSequenceVersionId : undefined/* Only for error reporting */, 
-        projectSearchId, 
+        projectSearchId,
+        searchDataLookupParamsRoot,
         loadedDataPerProjectSearchIdHolder,
         loadedDataCommonHolder,
         dataPageStateManager
@@ -355,7 +356,7 @@ const _create_dataTable_RootTableObject = function(
         // annotationTypeRecords_DisplayOrder { psmAnnotationTypesForPeptideListEntries, reportedPeptideAnnotationTypesForPeptideListEntries
 
         {  //  Reported Peptide Scores
-            const reportedPeptideAnnotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
+            const reportedPeptideAnnotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForAnnotationTypeIds;
             for ( const reportedPeptideAnnotationType of reportedPeptideAnnotationTypesForPeptideListEntries ) {
 
                 const displayName = reportedPeptideAnnotationType.name;
@@ -453,7 +454,7 @@ const _create_dataTable_RootTableObject = function(
                 const annotationTypeRecords_DisplayOrder = createReportedPeptideDisplayData_result.annotationTypeRecords_DisplayOrder;
 
                 {  //  Reported Peptide Scores
-                    const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForPeptideListEntries;
+                    const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForAnnotationTypeIds;
                     for ( const annotationType of annotationTypesForPeptideListEntries ) {
                         if ( peptideEntry.peptideAnnotationMap_KeyAnnType === undefined || peptideEntry.peptideAnnotationMap_KeyAnnType === null ) {
                             const msg = "( peptideEntry.peptideAnnotationMap === undefined || peptideEntry.peptideAnnotationMap === null )"

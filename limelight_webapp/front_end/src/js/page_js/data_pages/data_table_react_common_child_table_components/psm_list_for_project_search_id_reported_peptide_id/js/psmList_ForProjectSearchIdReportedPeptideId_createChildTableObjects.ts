@@ -29,9 +29,11 @@ import {
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import { psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer } from './psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer';
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
-import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {
+    SearchDataLookupParameters_Root,
+    SearchDataLookupParams_For_Single_ProjectSearchId
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {get_PsmList_ViewSpectrumCell_ExternalReactComponent} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_spectrum_cell_ExternalComponent";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
@@ -142,6 +144,7 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
                         ajaxResponse, 
                         dataPageStateManager, 
                         projectSearchId,
+                        searchDataLookupParamsRoot,
                         openModPositionOverride
                     });
 
@@ -172,6 +175,7 @@ const _create_DataTable_RootTableObject = function({
     ajaxResponse, 
     dataPageStateManager, 
     projectSearchId,
+    searchDataLookupParamsRoot,
     openModPositionOverride
 
 } : {
@@ -179,6 +183,7 @@ const _create_DataTable_RootTableObject = function({
     ajaxResponse: any,
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number,
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     openModPositionOverride : OpenModPosition_DataType
 
 }) : DataTable_RootTableObject {
@@ -194,7 +199,8 @@ const _create_DataTable_RootTableObject = function({
     let searchHasScanData = ajaxResponse.searchHasScanData;
 
     //  Get AnnotationType records for Displaying Annotation data in display order in psmList
-    let annotationTypeRecords_DisplayOrder : { psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> } = _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, psmList, dataPageStateManager } );
+    const annotationTypeRecords_DisplayOrder : { psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> } =
+        _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, searchDataLookupParamsRoot, dataPageStateManager } );
     let psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem> = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPsmListEntries;
 
     const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, ajaxResponse, openModPositionOverride });
@@ -903,108 +909,68 @@ const _get_Psm_AnnotationTypeRecords_WhereSortOrderPopulated = function({
 
 
 /**
- * 
+ *
  */
-const _getAnnotationTypeRecords_DisplayOrder = function({ 
-    
-    psmList, 
-    projectSearchId,
-    dataPageStateManager
-} : { 
-    psmList : Array<any>, 
-    projectSearchId : number,
-    dataPageStateManager : DataPageStateManager
-} ) : { psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> } {
+const _getAnnotationTypeRecords_DisplayOrder = function(
+    {
+        projectSearchId,
+        searchDataLookupParamsRoot,
+        dataPageStateManager
+    } : {
+        projectSearchId : number,
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+        dataPageStateManager : DataPageStateManager
+    } ) : { psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> } {
 
-    //   Get all annotation type ids returned in all entries and produce a list of them to put in columns
-    
-    let annotationTypeData : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
+    //   Get annotation type ids in display order
 
-    let annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+    let searchDataLookupParams_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId = undefined;
+    for ( const searchDataLookupParamsListEntry of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+        if ( searchDataLookupParamsListEntry.projectSearchId === projectSearchId ) {
+            searchDataLookupParams_Single_ProjectSearchId = searchDataLookupParamsListEntry;
+            break;
+        }
+    }
+    if ( ( ! searchDataLookupParams_Single_ProjectSearchId ) ) {
+        throw Error("No searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList entry for projectSearchId: " + projectSearchId );
+    }
+    if ( ( ! searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay ) || searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay.length === 0 ) {
+        //  NOTHING to display so return empty array
+        return { psmAnnotationTypesForPsmListEntries : [] }; // EARLY RETURN
+    }
+
+    const annotationTypeData : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
+
+    const annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
     if ( ( ! annotationTypeDataForProjectSearchId ) ) {
         throw Error("No annotation type data for projectSearchId: " + projectSearchId );
     }
-    
-    const allPSMAnnotationTypeIds_InPsmList_Set : Set<number> = new Set();
 
-    psmList.forEach( function( psmListItem, index, array ) {
-        let psmAnnotationMap = psmListItem.psmAnnotationMap;
-        if ( psmAnnotationMap ) {
-            Object.keys ( psmAnnotationMap ).forEach( function( psmAnnotationMapKeyItem, index, array ) {
-                const psmAnnotationDTOItem = psmAnnotationMap[ psmAnnotationMapKeyItem ];
-                if ( ! variable_is_type_number_Check( psmAnnotationDTOItem.annotationTypeId ) ) {
-                    const msg = "Entry in psmAnnotationMap: psmAnnotationDTOItem.annotationTypeId is not a number. psmAnnotationDTOItem.annotationTypeId: " + psmAnnotationDTOItem.annotationTypeId;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-                allPSMAnnotationTypeIds_InPsmList_Set.add( psmAnnotationDTOItem.annotationTypeId );
-            }, this );
-        }
-    }, this );
-    
     //  Pull AnnotationType records for found AnnotationTypeIds to Get AnnotationType Names
-    
-    let psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> = [];
-    
-    //  PSM
-    
-    if ( allPSMAnnotationTypeIds_InPsmList_Set.size > 0 ) {
-        //  Have PSM AnnotationType entries in Peptide list so must have PSM AnnotationType records
 
-        let psmFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes
-        let psmDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmDescriptiveAnnotationTypes
-        if ( ( ! psmFilterableAnnotationTypes ) && ( ! psmDescriptiveAnnotationTypes ) ) {
-            throw Error("No psmFilterableAnnotationTypes or psmDescriptiveAnnotationTypes but have allPSMAnnotationTypeIds_InPsmList entries");
-        }
-        //  Get AnnotationTypeRecords for AnnotationTypeIds
-        for ( const allPSMAnnotationTypeIds_InPsmListKeyItem of allPSMAnnotationTypeIds_InPsmList_Set ) {
-            let annotationTypeEntryForKey = psmFilterableAnnotationTypes.get( allPSMAnnotationTypeIds_InPsmListKeyItem );
+    const psmAnnotationTypesForAnnotationTypeIds : Array<AnnotationTypeItem> = [];
+
+    //  PSM
+
+    const psmFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes
+    const psmDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.psmDescriptiveAnnotationTypes
+    if ( ( ! psmFilterableAnnotationTypes ) && ( ! psmDescriptiveAnnotationTypes ) ) {
+        throw Error("No psmFilterableAnnotationTypes or psmDescriptiveAnnotationTypes but have allPSMAnnotationTypeIds_InPsmList entries");
+    }
+    //  Get AnnotationTypeRecords for AnnotationTypeIds
+    for ( const allPSMAnnotationTypeIds_InPsmListKeyItem of searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay ) {
+        let annotationTypeEntryForKey = psmFilterableAnnotationTypes.get( allPSMAnnotationTypeIds_InPsmListKeyItem );
+        if ( ! annotationTypeEntryForKey ) {
+            annotationTypeEntryForKey = psmDescriptiveAnnotationTypes.get( allPSMAnnotationTypeIds_InPsmListKeyItem );
             if ( ! annotationTypeEntryForKey ) {
-                annotationTypeEntryForKey = psmDescriptiveAnnotationTypes.get( allPSMAnnotationTypeIds_InPsmListKeyItem );
-                if ( ! annotationTypeEntryForKey ) {
-                    throw Error( "No psmFilterableAnnotationTypes or psmDescriptiveAnnotationTypes entry for key: " + allPSMAnnotationTypeIds_InPsmListKeyItem );
-                }
+                throw Error( "No psmFilterableAnnotationTypes or psmDescriptiveAnnotationTypes entry for key: " + allPSMAnnotationTypeIds_InPsmListKeyItem );
             }
-            psmAnnotationTypesForPsmListEntries.push( annotationTypeEntryForKey );
         }
+        psmAnnotationTypesForAnnotationTypeIds.push( annotationTypeEntryForKey );
     }
 
-    //  Sort this result array, on display order, then by ann type name
-    
-    _sort_AnnotationTypes_OnDisplayOrderAnnTypeName( psmAnnotationTypesForPsmListEntries );
-    
     return {
-        psmAnnotationTypesForPsmListEntries : psmAnnotationTypesForPsmListEntries
+        psmAnnotationTypesForPsmListEntries : psmAnnotationTypesForAnnotationTypeIds
     };
 }
 
-
-/**
- * 
- */
-const _sort_AnnotationTypes_OnDisplayOrderAnnTypeName = function( annTypesArray : Array<AnnotationTypeItem> ) {
-
-    annTypesArray.sort( function( a, b ) {
-        if ( a.displayOrder && b.displayOrder ) {
-            //  both a and b have display order so order them
-            if ( a.displayOrder < b.displayOrder ) {
-                return -1;
-            }
-            if ( a.displayOrder > b.displayOrder ) {
-                return 1;
-            }
-            return 0;
-        }
-        if ( a.displayOrder ) {
-            //  Only a has display order so order it first
-            return -1;
-        }
-        if ( b.displayOrder ) {
-            //  Only b has display order so order it first
-            return 1;
-        }
-        //  Order on ann type name
-        let nameCompare = a.name.localeCompare( b.name );
-        return nameCompare;
-    });
-}

@@ -7,7 +7,11 @@
  */
 
 //   From data_pages_common
-import { AnnotationTypeItem, DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import {
+    AnnotationTypeData_Root,
+    AnnotationTypeItem, AnnotationTypeItems_PerProjectSearchId,
+    DataPageStateManager
+} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
 import { AnnotationTypeData_ReturnSpecifiedTypes } from 'page_js/data_pages/data_pages_common/annotationTypeData_ReturnSpecifiedTypes';
 
@@ -19,6 +23,10 @@ import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 } from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
+import {
+    SearchDataLookupParameters_Root,
+    SearchDataLookupParams_For_Single_ProjectSearchId
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 export class CreateReportedPeptideDisplayData_PeptideItem {
     reportedPeptideId : number
@@ -51,6 +59,7 @@ export const createReportedPeptideDisplayData = function(
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
         proteinSequenceVersionId, //  Only for error reporting
         projectSearchId,
+        searchDataLookupParamsRoot,
         loadedDataPerProjectSearchIdHolder,
         loadedDataCommonHolder,
         dataPageStateManager
@@ -60,6 +69,7 @@ export const createReportedPeptideDisplayData = function(
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
         proteinSequenceVersionId : number // Only for error reporting
         projectSearchId : number
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder,
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
         dataPageStateManager : DataPageStateManager
@@ -214,7 +224,7 @@ export const createReportedPeptideDisplayData = function(
     }
 
     const annotationTypeData_ReturnSpecifiedTypes = new AnnotationTypeData_ReturnSpecifiedTypes( {
-        dataPageStateManager_DataFrom_Server : dataPageStateManager 
+        dataPageStateManager_DataFrom_Server : dataPageStateManager
     } );
 
     /**
@@ -226,7 +236,7 @@ export const createReportedPeptideDisplayData = function(
 
     //  Get AnnotationType records for Displaying Annotation data in display order in peptideList
     let annotationTypeRecords_DisplayOrder : AnnotationTypeRecords_DisplayOrder =
-        _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, peptideList : peptideListResult, annotationTypeData_ReturnSpecifiedTypes } );
+        _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, searchDataLookupParamsRoot, dataPageStateManager } );
 
     // Sort Peptides Array on Reported Peptide Ann Types Sort Order then Best PSM order then Reported Peptide Id
     _sortPeptideListOnSortOrder( { peptideList : peptideListResult, reportedPeptide_AnnotationTypeRecords_WhereSortOrderPopulated } );
@@ -313,43 +323,63 @@ const _sortPeptideListOnSortOrder = function( { peptideList, reportedPeptide_Ann
 /**
  * Return Both Reported Peptide and PSM Annotation Type Records in Display Order
  */
-const _getAnnotationTypeRecords_DisplayOrder = function( { projectSearchId, peptideList, annotationTypeData_ReturnSpecifiedTypes } : {
+const _getAnnotationTypeRecords_DisplayOrder = function( { projectSearchId, searchDataLookupParamsRoot, dataPageStateManager } : {
 
     projectSearchId : number
-    peptideList : Array<CreateReportedPeptideDisplayData_PeptideItem>
-    annotationTypeData_ReturnSpecifiedTypes : AnnotationTypeData_ReturnSpecifiedTypes
-} ) {
+    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+    dataPageStateManager : DataPageStateManager
 
-    //   Get all annotation type ids returned in all entries and produce a list of them to put in columns
+} ) : AnnotationTypeRecords_DisplayOrder {
 
-    //  First get all Unique Reported Peptide and PSM Annotation Type Ids in the Peptide List
-    
-    let uniquePSMAnnotationTypeIds_InPeptideList = new Set();
-    let uniqueReportedPeptideAnnotationTypeIds_InPeptideList = new Set();
-//		let uniqueMatchedProteinAnnotationTypeIds_InPeptideList = new Set; // Not populated yet
+    //   Get annotation types in display order
 
-    for( const peptideListItem of peptideList ) {
-        {
-            let peptideAnnotationMap_KeyAnnType = peptideListItem.peptideAnnotationMap_KeyAnnType;
-            if ( peptideAnnotationMap_KeyAnnType ) {
-                for ( const mapEntry of peptideAnnotationMap_KeyAnnType.entries() ) {
-                    const mapEntryValue = mapEntry[ 1 ];
-                    const annotationTypeId = mapEntryValue.annotationTypeId;
-                    uniqueReportedPeptideAnnotationTypeIds_InPeptideList.add( annotationTypeId );
-                }
-            }
+    let searchDataLookupParams_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId = undefined;
+    for ( const searchDataLookupParamsListEntry of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+        if ( searchDataLookupParamsListEntry.projectSearchId === projectSearchId ) {
+            searchDataLookupParams_Single_ProjectSearchId = searchDataLookupParamsListEntry;
+            break;
         }
     }
-    
-    //  Get AnnotationType records for found AnnotationTypeIds to Get AnnotationType Names
+    if ( ! searchDataLookupParams_Single_ProjectSearchId ) {
+        throw Error("searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList not contain projectSearchId: " + projectSearchId )
+    }
+    if ( ( ! searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay ) || searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay.length === 0 ) {
+        //  NOTHING to display so return empty array
+        return { reportedPeptideAnnotationTypesForAnnotationTypeIds : [] }; // EARLY RETURN
+    }
 
-    let reportedPeptideAnnotationTypesForPeptideListEntries = 
-        annotationTypeData_ReturnSpecifiedTypes.get_ReportedPeptide_AnnotationTypeRecords_InDisplayOrder( { 
-            projectSearchId, uniqueAnnotationTypeIds : uniqueReportedPeptideAnnotationTypeIds_InPeptideList } );
+    const annotationTypeData : AnnotationTypeData_Root = dataPageStateManager.get_annotationTypeData_Root();
+
+    const annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = annotationTypeData.annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId );
+    if ( ( ! annotationTypeDataForProjectSearchId ) ) {
+        throw Error("No annotation type data for projectSearchId: " + projectSearchId );
+    }
+
+    //  Pull AnnotationType records for found AnnotationTypeIds to Get AnnotationType Names
+
+    const reportedPeptideAnnotationTypesForAnnotationTypeIds : Array<AnnotationTypeItem> = [];
+
+    //  PSM
+
+    const reportedPeptideFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes
+    const reportedPeptideDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeDataForProjectSearchId.reportedPeptideDescriptiveAnnotationTypes
+    if ( ( ! reportedPeptideFilterableAnnotationTypes ) && ( ! reportedPeptideDescriptiveAnnotationTypes ) ) {
+        throw Error("No reportedPeptideFilterableAnnotationTypes or reportedPeptideDescriptiveAnnotationTypes but have allPSMAnnotationTypeIds_InPsmList entries");
+    }
+    //  Get AnnotationTypeRecords for AnnotationTypeIds
+    for ( const allPSMAnnotationTypeIds_InPsmListKeyItem of searchDataLookupParams_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay ) {
+        let annotationTypeEntryForKey = reportedPeptideFilterableAnnotationTypes.get( allPSMAnnotationTypeIds_InPsmListKeyItem );
+        if ( ! annotationTypeEntryForKey ) {
+            annotationTypeEntryForKey = reportedPeptideDescriptiveAnnotationTypes.get( allPSMAnnotationTypeIds_InPsmListKeyItem );
+            if ( ! annotationTypeEntryForKey ) {
+                throw Error( "No reportedPeptideFilterableAnnotationTypes or reportedPeptideDescriptiveAnnotationTypes entry for key: " + allPSMAnnotationTypeIds_InPsmListKeyItem );
+            }
+        }
+        reportedPeptideAnnotationTypesForAnnotationTypeIds.push( annotationTypeEntryForKey );
+    }
 
     const result : AnnotationTypeRecords_DisplayOrder = {
-        reportedPeptideAnnotationTypesForPeptideListEntries,
-        psmAnnotationTypesForPeptideListEntries : undefined  //  No longer needed so set to undefined
+        reportedPeptideAnnotationTypesForAnnotationTypeIds
     };
 
     return result;
@@ -362,6 +392,5 @@ const _getAnnotationTypeRecords_DisplayOrder = function( { projectSearchId, pept
  */
 class AnnotationTypeRecords_DisplayOrder {
 
-    psmAnnotationTypesForPeptideListEntries : AnnotationTypeItem[]
-    reportedPeptideAnnotationTypesForPeptideListEntries : AnnotationTypeItem[]
+    reportedPeptideAnnotationTypesForAnnotationTypeIds : AnnotationTypeItem[]
 }
