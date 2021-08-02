@@ -164,6 +164,19 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   border-color: $site-color-gray
 }
 
+//  On hover
+
+.on-over-standard-border-color-dark-1px-wide {
+  border-color: rgba(0,0,0,0);  // transparent border color
+  border-style: solid;
+  border-width: 1px;
+
+  &:hover {
+    border-color: $site-color-dark;
+  }
+}
+
+//  Background Color
 
 .standard-background-color-very-dark {
   background-color: $site-color-very-dark;
@@ -173,8 +186,17 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   background-color: $site-color-dark;
   color: white;
 }
+.standard-background-color-medium {
+  background-color: $site-color-medium;
+}
 
-.peptide-filter--not-border-color {
+//  On hover
+
+.on-hover-standard-background-color-medium:hover {
+  background-color:$site-color-medium;
+}
+
+.peptide-filter--not-border-color {  //  Border color for Peptide Filter selection of type 'NOT'
   border-color: $peptide-filter--not-border-color
 }
 

@@ -36,6 +36,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
 import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 import {PeptideFiltersDisplay_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData";
+import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component} from "page_js/data_pages/common_components__react/annotation_types_to_display__selection_update_component/annotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component";
 
 
 export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback = () => void;
@@ -429,6 +430,14 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             <span style={ { fontWeight: "bold" } }>Peptides:</span>
                             <span >(Click row to expand.)</span>
                         </span>
+                    </div>
+
+                    <div >
+                        <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
+                            projectSearchIds={ this.props.projectSearchIds }
+                            searchDataLookupParameters_Root={ this.props.searchDataLookupParamsRoot }
+                            dataPageStateManager_DataFrom_Server={ this.props.dataPageStateManager }
+                        />
                     </div>
 
                     <div >

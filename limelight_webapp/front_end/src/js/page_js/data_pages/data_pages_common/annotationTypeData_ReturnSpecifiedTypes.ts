@@ -8,6 +8,7 @@
  */
 
 import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+import {annotationTypes_SortOn_DisplayOrderAnnTypeName} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/annotationTypes_SortOn_DisplayOrderAnnTypeName";
 
 /**
  * 
@@ -245,38 +246,9 @@ export class AnnotationTypeData_ReturnSpecifiedTypes {
 		
 		//  Sort the result array, on display order, then by ann type name
 		
-		this._sort_AnnotationTypes_OnDisplayOrderAnnTypeName( annotationTypesForPeptideListEntries );
+		annotationTypes_SortOn_DisplayOrderAnnTypeName( annotationTypesForPeptideListEntries );
 		
 		return annotationTypesForPeptideListEntries;
 	}
-	
-	/**
-	 * 
-	 */
-	private _sort_AnnotationTypes_OnDisplayOrderAnnTypeName( annTypesArray : Array<AnnotationTypeItem> ) {
 
-		annTypesArray.sort( function( a, b ) {
-			if ( a.displayOrder && b.displayOrder ) {
-				//  both a and b have display order so order them
-				if ( a.displayOrder < b.displayOrder ) {
-					return -1;
-				}
-				if ( a.displayOrder > b.displayOrder ) {
-					return 1;
-				}
-				return 0;
-			}
-			if ( a.displayOrder ) {
-				//  Only a has display order so order it first
-				return -1;
-			}
-			if ( b.displayOrder ) {
-				//  Only b has display order so order it first
-				return 1;
-			}
-			//  Order on ann type name
-			let nameCompare = a.name.localeCompare( b.name );
-			return nameCompare;
-		});
-	}
 }

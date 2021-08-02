@@ -120,6 +120,7 @@ import {
     ProteinPage_Display__SingleProtein_Root,
     ProteinPage_Display__SingleProtein_singleProteinCloseCallback
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Root";
+import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component} from "page_js/data_pages/common_components__react/annotation_types_to_display__selection_update_component/annotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component";
 
 /**
  *
@@ -2044,6 +2045,16 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                     {/* ***   Display of Protein List   *** */}
 
                     <h3> Protein List:</h3>
+
+                    { ( this.state.searchDataLookupParamsRoot ) ? (
+                        <div >
+                            <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
+                                projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                searchDataLookupParameters_Root={ this.state.searchDataLookupParamsRoot }
+                                dataPageStateManager_DataFrom_Server={ this.props.propsValue.dataPageStateManager }
+                            />
+                        </div>
+                    ) : null }
 
                     { ( this.state.show_InitialLoadingData_Message ) ? (
 

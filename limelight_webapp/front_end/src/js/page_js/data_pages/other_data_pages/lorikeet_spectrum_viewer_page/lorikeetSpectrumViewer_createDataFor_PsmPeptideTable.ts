@@ -19,6 +19,7 @@ import {AnnotationTypeData_Root, AnnotationTypeItem, AnnotationTypeItems_PerProj
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded";
+import {annotationTypes_SortOn_DisplayOrderAnnTypeName} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/annotationTypes_SortOn_DisplayOrderAnnTypeName";
 
 
 //   !!!  Constants visible in this file/module
@@ -795,40 +796,10 @@ const _getAnnotationTypeRecords_DisplayOrder = function(
 
 	//  Sort this result array, on display order, then by ann type name
 
-	_sort_AnnotationTypes_OnDisplayOrderAnnTypeName( psmAnnotationTypesForPsmListEntries_DisplayOrder );
+	annotationTypes_SortOn_DisplayOrderAnnTypeName( psmAnnotationTypesForPsmListEntries_DisplayOrder );
 
 	return {
 		psmAnnotationTypesForPsmListEntries_DisplayOrder : psmAnnotationTypesForPsmListEntries_DisplayOrder
 	};
 }
 
-
-/**
- *
- */
-const _sort_AnnotationTypes_OnDisplayOrderAnnTypeName = function( annTypesArray : Array<AnnotationTypeItem> ) {
-
-	annTypesArray.sort( function( a, b ) {
-		if ( a.displayOrder && b.displayOrder ) {
-			//  both a and b have display order so order them
-			if ( a.displayOrder < b.displayOrder ) {
-				return -1;
-			}
-			if ( a.displayOrder > b.displayOrder ) {
-				return 1;
-			}
-			return 0;
-		}
-		if ( a.displayOrder ) {
-			//  Only a has display order so order it first
-			return -1;
-		}
-		if ( b.displayOrder ) {
-			//  Only b has display order so order it first
-			return 1;
-		}
-		//  Order on ann type name
-		let nameCompare = a.name.localeCompare( b.name );
-		return nameCompare;
-	});
-}
