@@ -17,6 +17,12 @@ body {
   font-weight:500;
 }
 
+//  Placed here from 'data-pages.scss' since used on Acct Management page by using main page header
+div.outermost-div {
+  min-height: 100%;
+  position: relative;
+}
+
 .default-font-size {
   font-size: $default-font-size;  //  Currently 14px
 }

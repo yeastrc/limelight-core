@@ -7,7 +7,7 @@
     background-color:$site-color-medium;
 
     /*  lock the footer to the bottom of the page */
-    inset-body-class-main-outermost-div {
+    .inset-body-class-main-outermost-div {
       min-height:100%;
       position:relative;
     }

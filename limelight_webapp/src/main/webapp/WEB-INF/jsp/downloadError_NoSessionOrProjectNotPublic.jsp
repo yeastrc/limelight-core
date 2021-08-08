@@ -23,6 +23,9 @@
   <body class="
 	<%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_inset_pages.jsp" %>
 				">
+				
+   <div class=" inset-body-class-main-outermost-div ">
+   
 	<div class="page-content-outer-container" >	
 	 <div class="page-content-container" >	
 	  <div class="page-content" >	
@@ -57,6 +60,8 @@
 	</div>
 	
 	<%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>	
+	
+   </div>
 		
 	<%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_right_before_closing_body_tag.jsp" %>
 		
