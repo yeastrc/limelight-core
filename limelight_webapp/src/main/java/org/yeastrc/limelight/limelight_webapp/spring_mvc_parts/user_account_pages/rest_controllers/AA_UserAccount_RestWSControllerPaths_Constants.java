@@ -55,7 +55,9 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 	public static final String USER_SUBMIT_IMPORT_KEY_GET_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-submit-import-key-get";
 	public static final String USER_SUBMIT_IMPORT_KEY_MANAGE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/user-submit-import-key-manage";
 
-	
+
+	public static final String USER_CREATE_ACCOUNT_NO_INVITE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/create-account-no-invite";
+
 	public static final String USER_CREATE_ACCOUNT_FROM_INVITE_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/create-account-from-invite";
 
 	public static final String USER_CREATE_ACCOUNT_PERFROMED_BY_ADMIN_USER_REST_WEBSERVICE_CONTROLLER = 

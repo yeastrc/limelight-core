@@ -7,6 +7,7 @@
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 --%>
 
+<%@page import="org.yeastrc.limelight.limelight_webapp.constants.UserSignupConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants"%>
@@ -33,12 +34,47 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
-   	<h1>Manage Configuration</h1>
-   	
-   	<div >
+   	<div style="margin-top: 20px; margin-bottom: 10px;">
 	   	<a href="admin">Webapp Administration Main Page</a>
    	</div>
+   	
+   	<h1>Manage Configuration</h1>
+   	
    		
+	<div style="margin-bottom: 10px;">
+	  <div style="margin-bottom: 3px;">
+		Allow Account Registration WITHOUT Invite: 
+		<input type="checkbox" class=" config_checkbox_inputs_jq " id="input_user_signup_allow_without_invite" 
+			data-config-key="<%= ConfigSystemsKeysConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY %>"
+			data-value-checked="<%= UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__TRUE %>" 
+			data-value-not-checked="<%= UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__FALSE %>" > 
+	  </div> 
+	</div>
+	
+	
+	<div style="margin-bottom: 10px;">
+	  <div style="margin-bottom: 3px;">
+	  	<div>
+			Google Recaptcha (Not used if either not configured):
+		</div>
+		<div style="margin-left: 20px;">
+		
+			<div style="margin-bottom: 3px;">
+				Site key: 
+				<input type="text" class=" config_text_inputs_jq " style="width: 450px;"
+					data-config-key="<%= ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SITE_KEY_KEY %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+			<div>
+				Secret key: 
+				<input type="text" class=" config_text_inputs_jq " style="width: 450px;"
+					data-config-key="<%= ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SECRET_KEY_KEY %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+		</div>
+	  </div> 
+	</div>
+	
 	<div style="margin-bottom: 10px;">
 	  <div style="margin-bottom: 3px;">
 		HTML to put at center of bottom of web page: 
@@ -193,10 +229,6 @@
 	 	</div>	  
 	  </div>
 	</div>
-   	<div >
-   	
-   	
-   	</div>
    
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	

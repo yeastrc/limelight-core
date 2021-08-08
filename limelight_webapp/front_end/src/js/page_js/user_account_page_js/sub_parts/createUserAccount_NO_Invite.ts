@@ -1,7 +1,7 @@
 /**
- * createUserAccount_With_Invite.ts
+ * createUserAccount_NO_Invite.ts
  * 
- * Javascript for creating a user account from an Invite  
+ * Javascript for creating a user account WITHOUT an Invite
  * 
  */
 
@@ -16,11 +16,6 @@
 import _user_account_create_account_template_bundle =
 	require("../../../../../handlebars_templates_precompiled/user_account_create_account/user_account_create_account_template-bundle.js" );
 
-//  Invite Validation Error from user_invite_processing
-
-import _user_invite_processing_bundle =
-	require("../../../../../handlebars_templates_precompiled/user_invite_processing/user_invite_processing_template-bundle.js" );
-
 ///////////////////////////////////////////
 
 /**
@@ -31,19 +26,21 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {loadGoogleRecaptcha} from "page_js/data_pages/data_pages_common/googleRecaptchaLoaderForThisWebapp";
 
 
 /**
  * 
  */
-export class UserCreateAccount_With_Invite_Subpart {
+export class UserCreateAccount_NO_Invite_Subpart {
 
 	private _initialized = false;
 	private _user_invite_create_account_main_display_template = _user_account_create_account_template_bundle.user_invite_create_account_main_display_template;
-	private _user_invite__invite_validation_error_template = _user_invite_processing_bundle.user_invite__invite_validation_error_template;
 
-	private inviteTrackingCode;
+	// private google_RecaptchaSiteKey;
 	private containerHTMLElement;
+
+	private _google_Recaptcha;  //  Google Recaptcha object
 
 	/**
 	 * 
@@ -53,25 +50,89 @@ export class UserCreateAccount_With_Invite_Subpart {
 		if ( ! _user_account_create_account_template_bundle.user_invite_create_account_main_display_template ) {
 			throw Error("Nothing in _user_account_create_account_template_bundle.user_invite_create_account_main_display_template");
 		}
-		if ( ! _user_invite_processing_bundle.user_invite__invite_validation_error_template ) {
-			throw Error("Nothing in _user_invite_processing_bundle.user_invite__invite_validation_error_template");
-		}
 
 		this._initialized = true;
 	}
 
 	/**
-	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
+	 * show the create account part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
-	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
-		
+	showOnPage( { containerHTMLElement } ) {
+
+		const response = loadGoogleRecaptcha();
+
+		if ( response.isLoaded ) {
+
+			this._google_Recaptcha = response.grecaptcha
+			this.showOnPage_Internal( { containerHTMLElement } );
+
+		} else {
+
+			response.loadingPromise.then( value => {
+
+				const  {grecaptcha} = value;
+				this._google_Recaptcha = grecaptcha
+
+				this.showOnPage_Internal( { containerHTMLElement } );
+			})
+		}
+
+	}
+
+	/**
+	 *
+	 */
+	private _get_Google_RecaptchaSiteKey() {
+
+		const create_account_page_google_recaptcha_site_keyDOM = document.getElementById("create_account_page_google_recaptcha_site_key");
+		if ( ! create_account_page_google_recaptcha_site_keyDOM ) {
+			// Not found so exit
+			return null; // EARLY EXIT
+		}
+
+		let create_account_page_google_recaptcha_site_key_Inside_HTML_BODY_Tags : string = null;
+
+		{
+			const innerText = create_account_page_google_recaptcha_site_keyDOM.innerText
+
+			const domparser = new DOMParser()
+
+			try {
+				const doc = domparser.parseFromString(innerText, "text/html")
+
+				const body = doc.body;
+
+				create_account_page_google_recaptcha_site_key_Inside_HTML_BODY_Tags = body.innerText;
+
+			} catch (e) {
+				// Not parsable Value so exit
+				return null; // EARLY EXIT
+			}
+		}
+		try {
+			create_account_page_google_recaptcha_site_keyDOM.remove();
+		} catch (e) {
+			// swallow any exception
+		}
+
+		return create_account_page_google_recaptcha_site_key_Inside_HTML_BODY_Tags;
+	}
+
+	/**
+	 * @param containerHTMLElement
+	 */
+	private showOnPage_Internal( { containerHTMLElement } ) {
+
 		let objectThis = this;
 		try {
+			const google_RecaptchaSiteKey = this._get_Google_RecaptchaSiteKey();
+
+
 			let $containerHTMLElement = $( containerHTMLElement );
 
 			$containerHTMLElement.empty();
 
-			let formTemplateContext = { showInvitedMessage: true };
+			let formTemplateContext = { showInvitedMessage: false, google_RecaptchaSiteKey };
 
 			let user_invite_create_account_main_display_html = this._user_invite_create_account_main_display_template( formTemplateContext );
 
@@ -121,7 +182,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 //			});
 			
 
-			this.inviteTrackingCode = inviteTrackingCode;
+			// this.inviteTrackingCode = inviteTrackingCode;
 			this.containerHTMLElement = containerHTMLElement;
 			
 		} catch( e ) {
@@ -221,10 +282,24 @@ export class UserCreateAccount_With_Invite_Subpart {
 			var $element = $("#error_message_password_confirm_password_not_match");
 			showErrorMsg( $element );
 			return null;  //  !!!  EARLY EXIT
-		} 
+		}
 
-		var formPageData = {
+		let recaptchaValue = "";
+		const $limelight_google_recaptcha_container_div = $("#limelight_google_recaptcha_container_div");
+
+		if ( $limelight_google_recaptcha_container_div.length > 0 ) {
+			//  Google Recaptcha included so get the user's response
+			recaptchaValue = this._google_Recaptcha.getResponse();
+			if ( recaptchaValue === "" || recaptchaValue === null || recaptchaValue === undefined ) {
+				const $element = $("#error_message_recaptcha_required");
+				showErrorMsg( $element );
+				return null;  //  !!!  EARLY EXIT
+			}
+		}
+
+		const formPageData = {
 //				tos_key : tosAcceptedKey,
+				recaptchaValue : recaptchaValue,
 				firstName : firstName,
 				lastName :  lastName,
 				organization :  organization,
@@ -250,11 +325,11 @@ export class UserCreateAccount_With_Invite_Subpart {
 			return;  //  EARLY EXIT
 		}
 
-		if ( this.inviteTrackingCode ) {
-			requestObj.inviteTrackingCode = this.inviteTrackingCode;
-		}
+		// if ( this.inviteTrackingCode ) {
+		// 	requestObj.inviteTrackingCode = this.inviteTrackingCode;
+		// }
 		
-		const url = "user/rws/for-page/create-account-from-invite";
+		const url = "user/rws/for-page/create-account-no-invite";
 
 		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
 
@@ -303,9 +378,6 @@ export class UserCreateAccount_With_Invite_Subpart {
 				$("#error_message_from_server_text").text( responseData.errorMessage );
 				var $element = $("#error_message_from_server");
 				showErrorMsg( $element );
-			} else if ( responseData.inviteTrackingCodeNotValidReason !== undefined &&
-					responseData.inviteTrackingCodeNotValidReason !== null ) {
-				this._displayInviteTrackingNotValidMsg( { inviteTrackingCodeNotValidReason : responseData.inviteTrackingCodeNotValidReason} );
 			} else {
 				var $element = $("#error_message_system_error");
 				showErrorMsg( $element );
@@ -318,25 +390,5 @@ export class UserCreateAccount_With_Invite_Subpart {
 		
 //		$("#list_projects_form").submit();
 	};
-	
-	/**
-	 * 
-	 */
-	_displayInviteTrackingNotValidMsg( { inviteTrackingCodeNotValidReason } ) {
-		
-		let $containerHTMLElement = $( this.containerHTMLElement );
-
-		$containerHTMLElement.empty();
-
-		let templateContext = inviteTrackingCodeNotValidReason;
-
-		let user_invite__invite_validation_error_main_display_html = this._user_invite__invite_validation_error_template( templateContext );
-
-		let $user_invite__invite_validation_error_main_display_html = $( user_invite__invite_validation_error_main_display_html );
-
-		$user_invite__invite_validation_error_main_display_html.appendTo( $containerHTMLElement );
-
-	
-	}
 
 };

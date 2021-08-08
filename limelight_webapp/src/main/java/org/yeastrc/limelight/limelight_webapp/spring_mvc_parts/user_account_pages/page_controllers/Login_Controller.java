@@ -21,9 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
+import org.yeastrc.limelight.limelight_webapp.constants.UserSignupConstants;
+import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 
 @Controller
 //@RequestMapping("/")
@@ -33,7 +37,13 @@ public class Login_Controller {
 
 	private static final String PRIMARY_CONTROLLER_PATH = 
 			AA_UserAccount_PageControllerPaths_Constants.LOGIN_PAGE_CONTROLLER;
-			
+
+	@Autowired
+	private ConfigSystemDAO_IF configSystemDAO;
+
+	@Autowired
+	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
+	
     /**
 	 * 
 	 */
@@ -56,9 +66,26 @@ public class Login_Controller {
     		HttpServletRequest httpServletRequest ) {
 		
 //		log.warn( "controllerMethod(...) called" );
-		
-        return "user_account_pages_and_parts/pages/userLogin.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
-        
+		try {
+			String userSignupAllowWithoutInviteConfigValue =
+					configSystemDAO.getConfigValueForConfigKey(
+							ConfigSystemsKeysConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY );
+
+			if ( UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__TRUE.equals( userSignupAllowWithoutInviteConfigValue ) ) {
+
+				httpServletRequest.setAttribute( "userSignupAllowWithoutInvite", true );
+			}
+
+			return "user_account_pages_and_parts/pages/userLogin.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
+
+		} catch ( Throwable t ) {
+
+			log.error( "Exceptioin: ", t );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+
+			throw new RuntimeException( t ); //  TODO forward to error page
+		}
     }
 
 }

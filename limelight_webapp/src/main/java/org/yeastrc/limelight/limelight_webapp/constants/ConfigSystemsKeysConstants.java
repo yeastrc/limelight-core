@@ -35,14 +35,14 @@ public class ConfigSystemsKeysConstants {
 	
 	////  User sign up procedure key  -  Specific Values allowed
 
-//	public static final String USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY = "user_signup_allow_without_invite";
+	public static final String USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY = "user_signup_allow_without_invite";
 
 
 	////  Google Recaptcha keys
 
-//	public static final String GOOGLE_RECAPTCHA_SITE_KEY_KEY = "google_recaptcha_site_key";
-//
-//	public static final String GOOGLE_RECAPTCHA_SECRET_KEY_KEY = "google_recaptcha_secret_key";
+	public static final String GOOGLE_RECAPTCHA_SITE_KEY_KEY = "google_recaptcha_site_key";
+
+	public static final String GOOGLE_RECAPTCHA_SECRET_KEY_KEY = "google_recaptcha_secret_key";
 	
 	
 	
@@ -88,11 +88,11 @@ public class ConfigSystemsKeysConstants {
 	
 	static {
 		
-//		textConfigKeys.add( USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY );
-//		
-//		textConfigKeys.add( GOOGLE_RECAPTCHA_SITE_KEY_KEY );
-//		textConfigKeys.add( GOOGLE_RECAPTCHA_SECRET_KEY_KEY );
-//		
+		textConfigKeys.add( USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY );
+		
+		textConfigKeys.add( GOOGLE_RECAPTCHA_SITE_KEY_KEY );
+		textConfigKeys.add( GOOGLE_RECAPTCHA_SECRET_KEY_KEY );
+		
 //		textConfigKeys.add( PROTEIN_ANNOTATION_WEBSERVICE_URL_KEY );
 //		textConfigKeys.add( PROTEIN_LISTING_FROM_SEQUENCE_TAXONOMY_WEBSERVICE_URL_KEY );
 		

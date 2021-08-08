@@ -161,6 +161,15 @@ dependencies {
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	
+	//   Apache HTPP Client
+
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8' // Was using 4.1.2
+
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+	compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.11' // Was using 4.1.2
+ 	
+	
 	
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api

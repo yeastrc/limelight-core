@@ -23,6 +23,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { createSpinner, destroySpinner } from 'page_js/common_all_pages/spinner';
+import {loadGoogleRecaptcha} from "page_js/data_pages/data_pages_common/googleRecaptchaLoaderForThisWebapp";
 
 		
 /**
@@ -54,6 +55,33 @@ export class UserLogin_Subpart {
 	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
 	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
+
+		// this.showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } );
+
+		const response = loadGoogleRecaptcha();
+
+		if ( response.isLoaded ) {
+
+			this.showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } );
+
+		} else {
+
+			response.loadingPromise.then( value => {
+
+				const  {grecaptcha} = value;
+
+				this.showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } );
+			})
+		}
+
+	}
+
+
+	/**
+	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
+	 */
+	showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } ) {
+
 
 		var objectThis = this;
 		

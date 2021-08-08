@@ -106,6 +106,7 @@ const mainConfig = {
 		//  User Pages
 		
 		'user_pages/userLoginPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userLoginPage_Root.ts',
+		'user_pages/userCreateAccount_Root' : './src/js/page_js/user_account_page_js/root_parts/userCreateAccountPage_Root.ts',
 		'user_pages/userInvitePage_Root' : './src/js/page_js/user_account_page_js/root_parts/userInvitePage_Root.ts',
 		'user_pages/userResetPasswordPage_Root' : './src/js/page_js/user_account_page_js/root_parts/userResetPasswordPage_Root.ts',
 		'user_pages/userAccountManagementPage_Root' : './src/js/page_js/user_account_page_js/user_account_maint_page/userAccountManagementPage_Root.ts',

@@ -46,6 +46,15 @@ public class AA_UserAccount_PageControllerPaths_Constants {
 	
 	public static final String FORWARD_TO_LOGIN_PAGE_CONTROLLER = "forward:" + PATH_START_ALL + LOGIN_PAGE_CONTROLLER;
 	
+	
+	//  Create User Account without invite
+
+	/**
+	 * Create Account Page
+	 */
+	public static final String CREATE_ACCOUNT_PAGE_CONTROLLER = "create-account";
+	
+	
 	////  Invite Processing
 
 	/**

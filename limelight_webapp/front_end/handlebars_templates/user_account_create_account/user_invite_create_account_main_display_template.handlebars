@@ -1,7 +1,15 @@
+{{!--  user_invite_create_account_main_display_template.handlebars
 
-
+    Placed on a page to provide an option to save a view - 'Save to Highlighted Results'
+--}}
 
   	<div  style="position: relative;" class="page-label">
+        <div class="error-message-container error_message_container_jq" id="error_message_recaptcha_required">
+            <div class="error-message-inner-container" >
+	  			<span class="error-message-text" >Recaptcha must be completed
+		  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+            </div>
+        </div>
   		<div class="error-message-container error_message_container_jq" id="error_message_all_fields_required">
   			<div class="error-message-inner-container" >
 	  			<span class="error-message-text" >All fields are required
@@ -57,13 +65,15 @@
 	  		  
   		Create new user
   	</div>
-  	
-  	<div class="page-text">
-		You have been invited to <span class="Limelight-DB-text" >limelight DB</span>.  Fill out the form below to create an account.
-	</div>
-  	
-  	
-	<form action="" id="create_account_form" >
+
+    {{#if showInvitedMessage }}
+        <div class="page-text">
+            You have been invited to <span class="Limelight-DB-text" >limelight DB</span>.  Fill out the form below to create an account.
+        </div>
+    {{else}}
+    {{/if}}
+
+    <form action="" id="create_account_form" >
 	
 		<input type="text" id="firstName" placeholder="First name" title="First name" class="input-field input_field_jq" maxlength="40"/><br>
 		<input type="text" id="lastName" placeholder="Last name" title="Last name" class="input-field input_field_jq" maxlength="60" /><br>
@@ -74,6 +84,15 @@
 
 		<input type="password" id="password" placeholder="Password" title="Password" class="input-field input_field_jq" maxlength="40" /><br>
 		<input type="password" id="passwordConfirm" placeholder="Confirm Password" title="Confirm Password" class="input-field input_field_jq" maxlength="40" /><br>
-		
-	 	<INPUT TYPE="submit" class="submit-button" VALUE="Create Account" id="create_account_button">
+
+        {{#if google_RecaptchaSiteKey }}
+            <div style="text-align: center;" id="limelight_google_recaptcha_container_div">
+                <div class="page-text">
+                    <div class="g-recaptcha"
+                         data-sitekey="{{ google_RecaptchaSiteKey }}"></div>
+                </div>
+            </div>
+        {{/if}}
+
+        <INPUT TYPE="submit" class="submit-button" VALUE="Create Account" id="create_account_button">
 	</form>

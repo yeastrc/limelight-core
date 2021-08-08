@@ -104,6 +104,19 @@ export class UserLoginPage_Root {
 			this._showLoginForm();
 		}
 
+		const $signup_fake_link = $("#signup_fake_link");  //  May NOT be on the page
+		$signup_fake_link.click( function(eventObject) {
+			try {
+				eventObject.preventDefault();
+
+				window.location.href="create-account";
+
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+
 		this._initializeCalled = true;
 	};
 	

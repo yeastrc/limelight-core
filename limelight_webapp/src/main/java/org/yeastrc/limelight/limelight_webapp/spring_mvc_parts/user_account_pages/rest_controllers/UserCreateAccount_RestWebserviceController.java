@@ -33,18 +33,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
+import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
+import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.AddNewUserUsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectUserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserInviteTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ZzUserDataMirrorDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappConfigException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
+import org.yeastrc.limelight.limelight_webapp.services.CaptchaGoogleValidateUserResponseToken_Service_IF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCodeIF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult_NotValidReason;
@@ -89,6 +93,12 @@ public class UserCreateAccount_RestWebserviceController {
 	private ValidateUserInviteTrackingCodeIF validateUserInviteTrackingCode;
 
 	@Autowired
+	private ConfigSystemDAO_IF configSystemDAO;
+	
+	@Autowired
+	private CaptchaGoogleValidateUserResponseToken_Service_IF captchaGoogleValidateUserResponseToken_Service;
+
+	@Autowired
 	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 	
 	@Autowired
@@ -105,6 +115,94 @@ public class UserCreateAccount_RestWebserviceController {
 		//		log.warn( "constructor no params called" );
 	}
 
+
+	/**
+	 * Create Account - NO Invite
+	 * 
+	 * 
+	 * 
+	 * @param postBody
+	 * @param httpServletRequest
+	 * @param httpServletResponse
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping( 
+			path = { 
+					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
+					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_NO_INVITE_REST_WEBSERVICE_CONTROLLER
+			},
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+
+	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_NO_Invite(
+
+			@RequestBody byte[] postBody,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse
+			) throws Exception {
+
+		try {
+			final String remoteIP = httpServletRequest.getRemoteAddr();
+
+			CreateAccountRequest createAccountRequest = unmarshalJSON_ToObject.getObjectFromJSONByteArray( postBody, CreateAccountRequest.class ); 
+
+			CreateAccountResult createAccountResult = createAccount_NO_Invite_Internal( createAccountRequest, remoteIP, httpServletRequest );
+			
+			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( createAccountResult );
+
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
+
+		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
+			throw e;
+
+		} catch ( Exception e ) {
+			String msg = "Failed in controller: ";
+			log.error( msg, e );
+
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
+			
+			throw e;
+		}
+	}
+
+	/**
+	 * @param createAccountRequest
+	 * @param remoteIP
+	 * @param httpServletRequest
+	 * @return
+	 * @throws Exception
+	 */
+	private CreateAccountResult createAccount_NO_Invite_Internal( 
+			CreateAccountRequest createAccountRequest, String remoteIP, HttpServletRequest httpServletRequest ) throws Exception {
+
+
+		String google_RecaptchaSiteKey =
+				configSystemDAO.getConfigValueForConfigKey(
+						ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SITE_KEY_KEY );
+
+		String google_RecaptchaSecretKey =
+				configSystemDAO.getConfigValueForConfigKey(
+						ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SECRET_KEY_KEY );
+
+		if ( StringUtils.isNotBlank(google_RecaptchaSiteKey) && StringUtils.isNotBlank(google_RecaptchaSecretKey)) {
+			
+			if ( StringUtils.isEmpty( createAccountRequest.recaptchaValue ) ) {
+				String msg = "Create Account NOT from Invite or Admin User:  recaptcha IS configured AND recaptchaValue empty";
+				log.error( msg );
+
+				throw new LimelightWebappConfigException( msg );
+			}
+
+		}
+		return createAccountCommonInternal( 
+				createAccountRequest, 
+				null /* accessLevel */, 
+				CreateAccountUsingAdminUserAccount.NO,
+				httpServletRequest );
+	}
+	
+	
+	//////////////////////////
 
 	/**
 	 * Create Account - WITH Invite
@@ -181,7 +279,6 @@ public class UserCreateAccount_RestWebserviceController {
 		return createAccountCommonInternal( 
 				createAccountRequest, 
 				null /* accessLevel */, 
-				null /* recaptchaValue */, 
 				CreateAccountUsingAdminUserAccount.NO,
 				httpServletRequest );
 	}
@@ -260,7 +357,6 @@ public class UserCreateAccount_RestWebserviceController {
 					createAccountCommonInternal( 
 							createAccountRequest, 
 							accessLevel, 
-							null /* recaptchaValue */, 
 							CreateAccountUsingAdminUserAccount.YES,
 							httpServletRequest );
 			
@@ -295,7 +391,6 @@ public class UserCreateAccount_RestWebserviceController {
 	private CreateAccountResult createAccountCommonInternal(
 			CreateAccountRequest createAccountRequest,
 			Integer accessLevel,
-			String recaptchaValue,  //  Only for without invite code
 			CreateAccountUsingAdminUserAccount createAccountUsingAdminUserAccount,
 			HttpServletRequest httpServletRequest )
 	{
@@ -350,43 +445,27 @@ public class UserCreateAccount_RestWebserviceController {
 			log.warn( "AccountMaintService:  password too long: " + createAccountRequest.password );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();  //  Early Exit with Data Exception
 		}
-		//  Pre-check for username and email already exist
-		{
-//			AuthUserDAO authUserDAO = AuthUserDAO.getInstance();
-//			AuthUserDTO authUserDTOFromEmail = authUserDAO.getAuthUserDTOForEmail( email );
-//			if ( authUserDTOFromEmail != null ) {
-//				createAccountResult.setStatus(false);
-//				createAccountResult.setDuplicateEmail(true);
-//				return createAccountResult;  //  !!!!!  EARLY EXIT
-//			}
-//			AuthUserDTO authUserDTOFromUsername = authUserDAO.getAuthUserDTOForUsername( username );
-//			if ( authUserDTOFromUsername != null ) {
-//				createAccountResult.setStatus(false);
-//				createAccountResult.setDuplicateUsername(true);
-//				return createAccountResult;  //  !!!!!  EARLY EXIT
-//			}
+
+		// Google Captcha Check
+
+		try {
+			if( StringUtils.isNotEmpty( createAccountRequest.recaptchaValue ) ) {
+				createAccountResult.setUserTestValidated( true );
+				if ( ! captchaGoogleValidateUserResponseToken_Service.isCaptchaUserResponseTokenValid( createAccountRequest.recaptchaValue, httpServletRequest.getRemoteHost() ) ) {
+					String errorMessage = "captcha validation failed";
+					createAccountResult.setStatus(false);
+					createAccountResult.setErrorMessage( errorMessage );
+					return createAccountResult;  //  !!!!!  EARLY EXIT
+				}
+			}
+
+		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
+			throw e;
+		} catch ( Exception e ) {
+			String msg = "createAccountCommonInternal(...) Exception caught: " + e.toString();
+			log.error( msg, e );
+			throw new Limelight_WS_InternalServerError_Exception();
 		}
-
-		// TODO  Google Captcha Check
-
-//		try {
-//			if( StringUtils.isNotEmpty( recaptchaValue ) ) {
-//				createAccountResult.setUserTestValidated( true );
-//				if ( ! CaptchaGoogleValidateUserResponseToken.getInstance().isCaptchaUserResponseTokenValid( recaptchaValue, request.getRemoteHost() ) ) {
-//					String errorMessage = "captcha validation failed";
-//					createAccountResult.setStatus(false);
-//					createAccountResult.setErrorMessage( errorMessage );
-//					return createAccountResult;  //  !!!!!  EARLY EXIT
-//				}
-//			}
-//
-//		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
-//			throw e;
-//		} catch ( Exception e ) {
-//			String msg = "createAccountCommonInternal(...) Exception caught: " + e.toString();
-//			log.error( msg, e );
-//			throw new Limelight_WS_InternalServerError_Exception();
-//		}
 
 		try {
 
@@ -595,6 +674,7 @@ public class UserCreateAccount_RestWebserviceController {
 		private String username;
 		private String password;
 		private String inviteTrackingCode; // Required on request from Invite
+		private String recaptchaValue;  //  Required on request from No Invite Not Admin Acct IF recaptcha is configured.
 		private String accessLevel; // Only Allowed on request performed by Admin Acct
 		
 		public void setFirstName(String firstName) {
@@ -620,6 +700,9 @@ public class UserCreateAccount_RestWebserviceController {
 		}
 		public void setAccessLevel(String accessLevel) {
 			this.accessLevel = accessLevel;
+		}
+		public void setRecaptchaValue(String recaptchaValue) {
+			this.recaptchaValue = recaptchaValue;
 		}
 	}
 
