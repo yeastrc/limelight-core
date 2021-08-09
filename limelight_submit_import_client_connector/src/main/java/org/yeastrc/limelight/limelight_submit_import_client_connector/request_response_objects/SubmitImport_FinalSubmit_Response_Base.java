@@ -27,10 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class SubmitImport_FinalSubmit_Response_Base {
-
-	@XmlAttribute
-	private boolean statusSuccess;
+public abstract class SubmitImport_FinalSubmit_Response_Base extends BaseSubmitImportWebserviceResponse {
 
 	@XmlAttribute
 	private boolean submitProgramVersionNumber_NotAccepted;
@@ -43,12 +40,6 @@ public abstract class SubmitImport_FinalSubmit_Response_Base {
 	@XmlAttribute
 	private boolean submittedScanFileNotAllowed;
 	
-	public boolean isStatusSuccess() {
-		return statusSuccess;
-	}
-	public void setStatusSuccess(boolean statusSuccess) {
-		this.statusSuccess = statusSuccess;
-	}
 	public boolean isProjectLocked() {
 		return projectLocked;
 	}
@@ -73,6 +64,5 @@ public abstract class SubmitImport_FinalSubmit_Response_Base {
 	public void setSubmitProgramVersionNumber_Current_Per_Webapp(Integer submitProgramVersionNumber_Current_Per_Webapp) {
 		this.submitProgramVersionNumber_Current_Per_Webapp = submitProgramVersionNumber_Current_Per_Webapp;
 	}
-	
 
 }

@@ -33,9 +33,6 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	// Properties as XML attributes
 
 	@XmlAttribute
-	private boolean statusSuccess;
-
-	@XmlAttribute
 	private boolean submitProgramVersionNumber_NotAccepted;
 
 	@XmlAttribute
@@ -52,12 +49,6 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	}
 	public void setUploadKey(String uploadKey) {
 		this.uploadKey = uploadKey;
-	}
-	public boolean isStatusSuccess() {
-		return statusSuccess;
-	}
-	public void setStatusSuccess(boolean statusSuccess) {
-		this.statusSuccess = statusSuccess;
 	}
 	public boolean isProjectLocked() {
 		return projectLocked;

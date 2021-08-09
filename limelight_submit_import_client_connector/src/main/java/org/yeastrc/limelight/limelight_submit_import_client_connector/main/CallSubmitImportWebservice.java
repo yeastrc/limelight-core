@@ -368,10 +368,23 @@ public class CallSubmitImportWebservice {
 			XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( inputStreamBufferOfServerResponse ) );
 			webserviceResponseAsObject = unmarshaller.unmarshal( xmlStreamReader );
 		} catch ( JAXBException e ) {
+			
+			String serverResponseString = "Failed to convert server response bytes to string.";
+			try {
+				serverResponseString = new String(serverResponseByteArray, XML_ENCODING_CHARACTER_SET );
+			} catch ( Throwable t ) {
+				//  Eat exception
+			}
+			
 			LimelightSubmitImportWebserviceCallErrorException wcee = 
-					new LimelightSubmitImportWebserviceCallErrorException( "JAXBException unmarshalling XML received from server at URL: " + webserviceURL, e );
+					new LimelightSubmitImportWebserviceCallErrorException( 
+							"JAXBException unmarshalling XML received from server at URL: " + webserviceURL 
+							+ ".  Server Response String: "
+							+ serverResponseString
+							, e );
 			wcee.setFailToDecodeDataReceivedFromServer(true);
 			wcee.setWebserviceURL( webserviceURL );
+			wcee.setServerResponseByteArray( serverResponseByteArray );
 			throw wcee;
 		}
 		return webserviceResponseAsObject; 

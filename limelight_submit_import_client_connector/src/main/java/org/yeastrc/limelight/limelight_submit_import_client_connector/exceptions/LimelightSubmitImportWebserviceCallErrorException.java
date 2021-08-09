@@ -39,6 +39,7 @@ public class LimelightSubmitImportWebserviceCallErrorException extends Exception
 	private Integer httpStatusCode;
 	private String webserviceURL;
 	
+	private byte[] serverResponseByteArray;  // Received from server
 	private byte[] errorStreamContents;
 
 
@@ -155,6 +156,13 @@ public class LimelightSubmitImportWebserviceCallErrorException extends Exception
 
 	public void setCallInterfaceInternalErrorMessage(String callInterfaceInternalErrorMessage) {
 		this.callInterfaceInternalErrorMessage = callInterfaceInternalErrorMessage;
+	}
+	public byte[] getServerResponseByteArray() {
+		return serverResponseByteArray;
+	}
+
+	public void setServerResponseByteArray(byte[] serverResponseByteArray) {
+		this.serverResponseByteArray = serverResponseByteArray;
 	}
 
 

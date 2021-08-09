@@ -17,10 +17,38 @@
 */
 package org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 /**
  * Base class for all Webservice Response Classes 
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class BaseSubmitImportWebserviceResponse {
 
+	// Properties as XML attributes
+
+	@XmlAttribute
+	private boolean statusSuccess;
+
+	@XmlAttribute
+	private String statusFail_ErrorMessage;  //  Displayed by Submit Import program instead of looking at the returned boolean flags
+
+	public boolean isStatusSuccess() {
+		return statusSuccess;
+	}
+
+	public void setStatusSuccess(boolean statusSuccess) {
+		this.statusSuccess = statusSuccess;
+	}
+
+	public String getStatusFail_ErrorMessage() {
+		return statusFail_ErrorMessage;
+	}
+
+	public void setStatusFail_ErrorMessage(String statusFail_ErrorMessage) {
+		this.statusFail_ErrorMessage = statusFail_ErrorMessage;
+	}
 }

@@ -41,6 +41,10 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
  * What is thrown from this class is directly turned into webservice response 
  * 
  *  
+ * WARNING:  The Submit Import Program will show the value of BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage when set
+ * 			 and will NO LONGER check the boolean flags (other than statusSuccess).
+ * 			 So the property BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage will be REQUIRED to be set for all errors.
+ * 
  */
 @Component
 public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId implements Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectIdIF {
@@ -127,6 +131,7 @@ public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessL
 			
 			if ( submitImport_Init_Response_PgmXML != null ) {
 				submitImport_Init_Response_PgmXML.setProjectIdNotFound(true);
+				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( "Unable to upload to this project as it is Not Found." );
 				return result;  // EARLY EXIT
 			}
 			throw new LimelightErrorDataInWebRequestException( "Project Id not found" );
@@ -136,6 +141,7 @@ public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessL
 			
 			if ( submitImport_Init_Response_PgmXML != null ) {
 				submitImport_Init_Response_PgmXML.setProjectNotEnabled(true);
+				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( "Unable to upload to this project as it is Not Enabled." );
 				return result;  // EARLY EXIT
 			}
 			throw new LimelightErrorDataInWebRequestException( "Project Id Not Enabled" );
@@ -145,6 +151,7 @@ public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessL
 
 			if ( submitImport_Init_Response_PgmXML != null ) {
 				submitImport_Init_Response_PgmXML.setProjectMarkedForDeletion(true);
+				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( "Unable to upload to this project as it is Deleted." );
 				return result;  // EARLY EXIT
 			}
 			throw new LimelightErrorDataInWebRequestException( "Project Id Marked for Deletion" );
@@ -156,6 +163,7 @@ public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessL
 		if ( userId == null ) {
 			if ( submitImport_Init_Response_PgmXML != null ) {
 				submitImport_Init_Response_PgmXML.setUserSubmitImportProgramKeyNotFound(true);
+				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( "Value for '--user-submit-import-key' is not found." );
 			} else {
 				log.warn( "user id not found for userSubmitImportPgrogramKey: " + userSubmitImportPgrogramKey );
 			}
@@ -202,6 +210,7 @@ public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessL
 			
 			if ( submitImport_Init_Response_PgmXML != null ) {
 				submitImport_Init_Response_PgmXML.setUserNotAuthorizedForProject(true);
+				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( "User is not Authorized as a Project Owner for this project." );
 				return result;  // EARLY EXIT
 			}
 			throw new Limelight_WS_AuthError_Forbidden_Exception();

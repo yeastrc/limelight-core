@@ -66,6 +66,10 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 
 /**
  * For Upload Data, Intialize a New Upload (called when user opens Upload overlay)
+ * 
+ * WARNING:  The Submit Import Program will show the value of BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage when set
+ * 			 and will NO LONGER check the boolean flags (other than statusSuccess).
+ * 			 So the property BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage will be REQUIRED to be set for all errors. 
  *
  */
 @RestController
@@ -429,6 +433,7 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			log.warn( msg );
 			webserviceResult.setStatusSuccess(false);
 			webserviceResult.setProjectLocked(true);
+			webserviceResult.setStatusFail_ErrorMessage( "Unable to upload to this project as it is Locked." );
 			return methodResults;  //  EARLY EXIT
 		}
 		File importer_Work_Directory = Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();

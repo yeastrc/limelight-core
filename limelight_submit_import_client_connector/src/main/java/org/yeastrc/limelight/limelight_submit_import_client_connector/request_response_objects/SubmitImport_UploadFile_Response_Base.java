@@ -32,8 +32,6 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 
 	// Properties as XML attributes
 
-	@XmlAttribute
-	private boolean statusSuccess;
 	//  These are populated for FileSizeLimitExceededException exception
 	@XmlAttribute
 	private boolean fileSizeLimitExceeded;
@@ -66,12 +64,6 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	@XmlAttribute
 	private boolean projectLocked;
 	
-	public boolean isStatusSuccess() {
-		return statusSuccess;
-	}
-	public void setStatusSuccess(boolean statusSuccess) {
-		this.statusSuccess = statusSuccess;
-	}
 	public boolean isFileSizeLimitExceeded() {
 		return fileSizeLimitExceeded;
 	}
@@ -161,6 +153,6 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	}
 	public void setProjectLocked(boolean projectLocked) {
 		this.projectLocked = projectLocked;
-	} 
+	}
 	
 }

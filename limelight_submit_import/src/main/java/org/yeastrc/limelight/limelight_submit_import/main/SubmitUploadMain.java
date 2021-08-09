@@ -434,41 +434,10 @@ public class SubmitUploadMain {
 					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION;
 					return submitResult;    //  EARLY EXIT
 				}
-				
-				if ( submitImport_Init_Response.isProjectIdNotFound() ) {
-					
-					System.err.println( "Unable to upload to this project as it is Not Found." );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-					return submitResult;    //  EARLY EXIT
-				}
-				if ( submitImport_Init_Response.isProjectLocked() ) {
-					
-					System.err.println( "Unable to upload to this project as it is Locked." );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-					return submitResult;    //  EARLY EXIT
-				}
-				if ( submitImport_Init_Response.isProjectMarkedForDeletion() ) {
-					
-					System.err.println( "Unable to upload to this project as it is Deleted." );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-					return submitResult;    //  EARLY EXIT
-				}
-				if ( submitImport_Init_Response.isProjectNotEnabled() ) {
-					
-					System.err.println( "Unable to upload to this project as it is Not Enabled." );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-					return submitResult;    //  EARLY EXIT
-				}
-				if ( submitImport_Init_Response.isUserSubmitImportProgramKeyNotFound() ) {
-					
-					System.err.println( "Value for '--user-submit-import-key' is not found." );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-					return submitResult;    //  EARLY EXIT
-				}
 
-				if ( submitImport_Init_Response.isUserNotAuthorizedForProject() ) {
-					
-					System.err.println( "User is not Authorized as a Project Owner for this project." );
+				if ( StringUtils.isNotBlank( submitImport_Init_Response.getStatusFail_ErrorMessage() ) ) {
+
+					System.err.println( submitImport_Init_Response.getStatusFail_ErrorMessage() );
 					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
 					return submitResult;    //  EARLY EXIT
 				}
