@@ -15,7 +15,6 @@ import { initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
 
 import { initPage } from './configureLimelightForAdminPage_Main';
 
-
 ///////////////
 
 $(document).ready(function() {

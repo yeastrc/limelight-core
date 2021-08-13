@@ -124,6 +124,9 @@ const mainConfig = {
 		//  Webapp Manage Cached Data Page
 		'webapp_admin/manageCachedDataPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_cached_data_page/js/manageCachedDataForAdminPage_Root.ts',
 
+		//  Webapp Manage Terms of Service Page
+		'webapp_admin/manageTermsOfServicePage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_terms_of_service_page/manageTermsOfServicePage_Root.ts',
+
 		///////////////
 		
 		// SASS files

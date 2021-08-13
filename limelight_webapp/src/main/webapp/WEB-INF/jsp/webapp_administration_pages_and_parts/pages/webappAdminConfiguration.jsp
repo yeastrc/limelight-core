@@ -24,9 +24,11 @@
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_data_pages.jsp" %> 
 
 </head>
+
+		<%--  Include 'data-page' class since using overlay --%>
 <body class=" <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_standard_header_pages.jsp" 
-		  		%><%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_data_pages.jsp" 
-				%> peptide-page ">
+		  		%> <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_data_pages.jsp" 
+				%>  admin-page admin-configuration-page ">
 
  <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_body_tag_start_include_data_pages.jsp" %> 
 
@@ -87,7 +89,7 @@
 	<div style="margin-bottom: 10px;" >
 	  <div style="margin-bottom: 3px;">
 		Admin Email Address: 
-		<input type="text" class=" config_text_inputs_jq " id="input_email_from_address" style="width: 450px;"
+		<input type="text" class=" config_text_inputs_jq " id="admin_email_address" style="width: 450px;"
 			data-config-key="<%= ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY %>">
 	  </div>
 	</div>

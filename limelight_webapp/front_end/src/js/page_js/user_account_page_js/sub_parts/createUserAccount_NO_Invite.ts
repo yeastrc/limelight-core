@@ -42,6 +42,8 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 	private _google_Recaptcha;  //  Google Recaptcha object
 
+	private _termsOfServiceKey: string;
+
 	/**
 	 * 
 	 */
@@ -59,30 +61,61 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	 */
 	showOnPage( { containerHTMLElement } ) {
 
-		const response = loadGoogleRecaptcha();
+		const promiseArray : Array<Promise<any>> = [];
 
-		if ( response.isLoaded ) {
+		this._termsOfServiceKey = this._get_TermsOfServiceKey();
 
-			this._google_Recaptcha = response.grecaptcha
-			this.showOnPage_Internal( { containerHTMLElement } );
+		//  NOT currently needed since place Terms of Service text in overlay in JSP
+		// if ( this._termsOfServiceKey !== undefined && this._termsOfServiceKey !== null && this._termsOfServiceKey !== "" ) {
+		// 	const promise = user_Get_TermsOfService_FromServer_Using_IdString({ idString: this._termsOfServiceKey });
+		// 	promiseArray.push(promise);
+		// }
 
-		} else {
-
-			response.loadingPromise.then( value => {
-
-				const  {grecaptcha} = value;
-				this._google_Recaptcha = grecaptcha
-
-				this.showOnPage_Internal( { containerHTMLElement } );
-			})
+		{
+			const google_RecaptchaSiteKey = this._get_Google_RecaptchaSiteKey();
+			if ( google_RecaptchaSiteKey ) {
+				const response_loadGoogleRecaptcha = loadGoogleRecaptcha();
+				if (response_loadGoogleRecaptcha.isLoaded) {
+					this._google_Recaptcha = response_loadGoogleRecaptcha.grecaptcha
+				} else {
+					promiseArray.push(response_loadGoogleRecaptcha.loadingPromise);
+				}
+			}
 		}
 
+		if ( promiseArray.length > 0 ) {
+
+			const promisesAll = Promise.all( promiseArray );
+
+			promisesAll.catch( reason => {
+
+				console.warn("Error loading data and/or recaptcha. reason: ", reason );
+				throw Error("Error loading data and/or recaptcha. reason: " + reason );
+			});
+
+			promisesAll.then( values => {
+				try {
+					for ( const value of values ) {
+						if ( value.grecaptcha ) {
+							this._google_Recaptcha = value.grecaptcha
+						}
+					}
+					this.showOnPage_Internal( { containerHTMLElement } );
+
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+		} else {
+			this.showOnPage_Internal( { containerHTMLElement } );
+		}
 	}
 
 	/**
 	 *
 	 */
-	private _get_Google_RecaptchaSiteKey() {
+	private _get_Google_RecaptchaSiteKey() : string {
 
 		const create_account_page_google_recaptcha_site_keyDOM = document.getElementById("create_account_page_google_recaptcha_site_key");
 		if ( ! create_account_page_google_recaptcha_site_keyDOM ) {
@@ -119,6 +152,45 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	}
 
 	/**
+	 *
+	 */
+	private _get_TermsOfServiceKey() : string {
+
+		const terms_of_service_id_stringDOM = document.getElementById("terms_of_service_id_string");
+		if ( ! terms_of_service_id_stringDOM ) {
+			// Not found so exit
+			return null; // EARLY EXIT
+		}
+
+		let terms_of_service_id_string_Inside_HTML_BODY_Tags : string = null;
+
+		{
+			const innerText = terms_of_service_id_stringDOM.innerText
+
+			const domparser = new DOMParser()
+
+			try {
+				const doc = domparser.parseFromString(innerText, "text/html")
+
+				const body = doc.body;
+
+				terms_of_service_id_string_Inside_HTML_BODY_Tags = body.innerText;
+
+			} catch (e) {
+				// Not parsable Value so exit
+				return null; // EARLY EXIT
+			}
+		}
+		try {
+			terms_of_service_id_stringDOM.remove();
+		} catch (e) {
+			// swallow any exception
+		}
+
+		return terms_of_service_id_string_Inside_HTML_BODY_Tags;
+	}
+
+	/**
 	 * @param containerHTMLElement
 	 */
 	private showOnPage_Internal( { containerHTMLElement } ) {
@@ -126,7 +198,6 @@ export class UserCreateAccount_NO_Invite_Subpart {
 		let objectThis = this;
 		try {
 			const google_RecaptchaSiteKey = this._get_Google_RecaptchaSiteKey();
-
 
 			let $containerHTMLElement = $( containerHTMLElement );
 
@@ -149,37 +220,36 @@ export class UserCreateAccount_NO_Invite_Subpart {
 			});
 			
 			
-//			$(document).click( function(eventObject) {
-//				try {
-//					eventObject.preventDefault();
-//					hideAllErrorMessages();
-//				} catch( e ) {
-//					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//					throw e;
-//				}
-//			});
+			$(document).click( function(eventObject) {
+				try {
+					hideAllErrorMessages();
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
 			
-//			$("#terms_of_service_acceptance_yes_button").click( function(eventObject) {
-////				var clickThis = this;
-//				try {
-//					eventObject.preventDefault();  // stop click bubble up.
-//					createAccount();
-//				} catch( e ) {
-//					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//					throw e;
-//				}
-//			});
-//			$("#terms_of_service_acceptance_no_button").click( function(eventObject) {
-////				var clickThis = this;
-//				try {
-//					eventObject.preventDefault();  // stop click bubble up.
-//					$("#terms_of_service_modal_dialog_overlay_background").hide();
-//					$("#terms_of_service_overlay_div").hide();
-//				} catch( e ) {
-//					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//					throw e;
-//				}
-//			});
+			$("#terms_of_service_acceptance_yes_button").click( function(eventObject) {
+//				var clickThis = this;
+				try {
+					eventObject.stopPropagation();  // stop click bubble up.
+					objectThis.createAccount();
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+			$("#terms_of_service_acceptance_no_button").click( function(eventObject) {
+//				var clickThis = this;
+				try {
+					eventObject.stopPropagation();  // stop click bubble up.
+					$("#terms_of_service_modal_dialog_overlay_background").hide();
+					$("#terms_of_service_overlay_div").hide();
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
 			
 
 			// this.inviteTrackingCode = inviteTrackingCode;
@@ -196,17 +266,20 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	 */
 	createAccountFormSubmit() {
 		try {
-			
-			var requestData = this.createAccountGetFormDataAndValidate();
+
+			const requestData = this.createAccountGetFormDataAndValidate();
 			
 			if ( requestData === null ) {  //  Error in form data so exit
+
 				return;  //  EARLY EXIT
 			}
-//			if ( requestData.tos_key !== "" ) {  //  Have Terms of service key so user has to accept terms of service
-//				$("#terms_of_service_modal_dialog_overlay_background").show();
-//				$("#terms_of_service_overlay_div").show();
-//				return;  //  EARLY EXIT
-//			}
+
+			if ( this._termsOfServiceKey !== undefined && this._termsOfServiceKey !== null && this._termsOfServiceKey !== "" ) {  //  Have Terms of service key so user has to accept terms of service
+
+				$("#terms_of_service_modal_dialog_overlay_background").show();
+				$("#terms_of_service_overlay_div").show();
+				return;  //  EARLY EXIT
+			}
 
 //			Form data valid and no terms of service so create account
 			this.createAccount();
@@ -223,13 +296,6 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	createAccountGetFormDataAndValidate() {
 
 		hideAllErrorMessages();
-		
-//		Terms of service accepted Key
-//		var tosAcceptedKey = "";
-//		var $terms_of_service_id_string = $("#terms_of_service_id_string");
-//		if ( $terms_of_service_id_string.length > 0 ) {
-//			tosAcceptedKey = $terms_of_service_id_string.val();
-//		}
 
 		var $firstName = $("#firstName");
 		if ($firstName.length === 0) {
@@ -298,15 +364,15 @@ export class UserCreateAccount_NO_Invite_Subpart {
 		}
 
 		const formPageData = {
-//				tos_key : tosAcceptedKey,
-				recaptchaValue : recaptchaValue,
-				firstName : firstName,
-				lastName :  lastName,
-				organization :  organization,
-				email :  email,
-				username :  username,
-				password :  password,
-				inviteTrackingCode : undefined //  Set to undefined as added later
+			tosAcceptedKey: this._termsOfServiceKey,
+			recaptchaValue : recaptchaValue,
+			firstName : firstName,
+			lastName :  lastName,
+			organization :  organization,
+			email :  email,
+			username :  username,
+			password :  password,
+			inviteTrackingCode : undefined //  Set to undefined as added later
 		};
 
 		return formPageData;
@@ -392,3 +458,5 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	};
 
 };
+
+

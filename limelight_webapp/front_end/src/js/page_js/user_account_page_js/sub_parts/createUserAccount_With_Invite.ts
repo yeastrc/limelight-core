@@ -45,6 +45,8 @@ export class UserCreateAccount_With_Invite_Subpart {
 	private inviteTrackingCode;
 	private containerHTMLElement;
 
+	private _termsOfServiceKey: string;
+
 	/**
 	 * 
 	 */
@@ -67,6 +69,15 @@ export class UserCreateAccount_With_Invite_Subpart {
 		
 		let objectThis = this;
 		try {
+
+			this._termsOfServiceKey = this._get_TermsOfServiceKey();
+
+			//  NOT currently needed since place Terms of Service text in overlay in JSP
+			// if ( this._termsOfServiceKey !== undefined && this._termsOfServiceKey !== null && this._termsOfServiceKey !== "" ) {
+			// 	const promise = user_Get_TermsOfService_FromServer_Using_IdString({ idString: this._termsOfServiceKey });
+			// 	promiseArray.push(promise);
+			// }
+
 			let $containerHTMLElement = $( containerHTMLElement );
 
 			$containerHTMLElement.empty();
@@ -86,39 +97,41 @@ export class UserCreateAccount_With_Invite_Subpart {
 			    		    
 			    objectThis.createAccountFormSubmit();
 			});
-			
-			
-//			$(document).click( function(eventObject) {
-//				try {
-//					eventObject.preventDefault();
-//					hideAllErrorMessages();
-//				} catch( e ) {
-//					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//					throw e;
-//				}
-//			});
-			
-//			$("#terms_of_service_acceptance_yes_button").click( function(eventObject) {
-////				var clickThis = this;
-//				try {
-//					eventObject.preventDefault();  // stop click bubble up.
-//					createAccount();
-//				} catch( e ) {
-//					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//					throw e;
-//				}
-//			});
-//			$("#terms_of_service_acceptance_no_button").click( function(eventObject) {
-////				var clickThis = this;
-//				try {
-//					eventObject.preventDefault();  // stop click bubble up.
-//					$("#terms_of_service_modal_dialog_overlay_background").hide();
-//					$("#terms_of_service_overlay_div").hide();
-//				} catch( e ) {
-//					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-//					throw e;
-//				}
-//			});
+
+			$(document).off("click")
+			$(document).click( function(eventObject) {
+				try {
+					hideAllErrorMessages();
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+
+			$("#terms_of_service_acceptance_yes_button").off("click")
+			$("#terms_of_service_acceptance_yes_button").click( function(eventObject) {
+//				var clickThis = this;
+				try {
+					eventObject.preventDefault();  // stop click bubble up.
+					objectThis.createAccount();
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
+
+			$("#terms_of_service_acceptance_no_button").off("click")
+			$("#terms_of_service_acceptance_no_button").click( function(eventObject) {
+//				var clickThis = this;
+				try {
+					eventObject.preventDefault();  // stop click bubble up.
+					$("#terms_of_service_modal_dialog_overlay_background").hide();
+					$("#terms_of_service_overlay_div").hide();
+				} catch( e ) {
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
+				}
+			});
 			
 
 			this.inviteTrackingCode = inviteTrackingCode;
@@ -131,6 +144,46 @@ export class UserCreateAccount_With_Invite_Subpart {
 	}
 
 	/**
+	 *
+	 */
+	private _get_TermsOfServiceKey() : string {
+
+		const terms_of_service_id_stringDOM = document.getElementById("terms_of_service_id_string");
+		if ( ! terms_of_service_id_stringDOM ) {
+			// Not found so exit
+			return null; // EARLY EXIT
+		}
+
+		let terms_of_service_id_string_Inside_HTML_BODY_Tags : string = null;
+
+		{
+			const innerText = terms_of_service_id_stringDOM.innerText
+
+			const domparser = new DOMParser()
+
+			try {
+				const doc = domparser.parseFromString(innerText, "text/html")
+
+				const body = doc.body;
+
+				terms_of_service_id_string_Inside_HTML_BODY_Tags = body.innerText;
+
+			} catch (e) {
+				// Not parsable Value so exit
+				return null; // EARLY EXIT
+			}
+		}
+		try {
+			terms_of_service_id_stringDOM.remove();
+		} catch (e) {
+			// swallow any exception
+		}
+
+		return terms_of_service_id_string_Inside_HTML_BODY_Tags;
+	}
+
+
+	/**
 	 * 
 	 */
 	createAccountFormSubmit() {
@@ -141,11 +194,12 @@ export class UserCreateAccount_With_Invite_Subpart {
 			if ( requestData === null ) {  //  Error in form data so exit
 				return;  //  EARLY EXIT
 			}
-//			if ( requestData.tos_key !== "" ) {  //  Have Terms of service key so user has to accept terms of service
-//				$("#terms_of_service_modal_dialog_overlay_background").show();
-//				$("#terms_of_service_overlay_div").show();
-//				return;  //  EARLY EXIT
-//			}
+
+			if ( this._termsOfServiceKey !== undefined && this._termsOfServiceKey !== null && this._termsOfServiceKey !== "" ) {  //  Have Terms of service key so user has to accept terms of service
+				$("#terms_of_service_modal_dialog_overlay_background").show();
+				$("#terms_of_service_overlay_div").show();
+				return;  //  EARLY EXIT
+			}
 
 //			Form data valid and no terms of service so create account
 			this.createAccount();
@@ -162,13 +216,6 @@ export class UserCreateAccount_With_Invite_Subpart {
 	createAccountGetFormDataAndValidate() {
 
 		hideAllErrorMessages();
-		
-//		Terms of service accepted Key
-//		var tosAcceptedKey = "";
-//		var $terms_of_service_id_string = $("#terms_of_service_id_string");
-//		if ( $terms_of_service_id_string.length > 0 ) {
-//			tosAcceptedKey = $terms_of_service_id_string.val();
-//		}
 
 		var $firstName = $("#firstName");
 		if ($firstName.length === 0) {
@@ -224,7 +271,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 		} 
 
 		var formPageData = {
-//				tos_key : tosAcceptedKey,
+				tosAcceptedKey: this._termsOfServiceKey,
 				firstName : firstName,
 				lastName :  lastName,
 				organization :  organization,

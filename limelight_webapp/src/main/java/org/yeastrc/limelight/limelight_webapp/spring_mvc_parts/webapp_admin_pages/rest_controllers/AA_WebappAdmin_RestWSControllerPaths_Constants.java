@@ -45,6 +45,15 @@ public class AA_WebappAdmin_RestWSControllerPaths_Constants {
 
 	public static final String WEBAPP_ADMIN_CONFIG_SAVE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/config-save";
 	
+	//  Terms of Service Management
+
+	public static final String WEBAPP_ADMIN_TERMS_OF_SERVICE_GET_CURRENT_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/terms-of-service-get-current";
+
+	public static final String WEBAPP_ADMIN_TERMS_OF_SERVICE_ADD_CHANGE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/terms-of-service-add-change";
+
+	public static final String WEBAPP_ADMIN_TERMS_OF_SERVICE_ENABLE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/terms-of-service-enable";
+	public static final String WEBAPP_ADMIN_TERMS_OF_SERVICE_DISABLE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/terms-of-service-disable";
+	
 	//  Admin Manage Users Page
 
 	public static final String WEBAPP_ADMIN_MANAGE_USERS_LIST_INVITED_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-users-list-invited";

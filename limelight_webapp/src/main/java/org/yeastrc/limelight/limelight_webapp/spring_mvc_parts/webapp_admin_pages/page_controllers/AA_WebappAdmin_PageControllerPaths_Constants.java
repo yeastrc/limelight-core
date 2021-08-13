@@ -54,4 +54,11 @@ public class AA_WebappAdmin_PageControllerPaths_Constants {
 	 */
 	public static final String ADMIN_MANAGE_CACHED_DATA_PAGE_CONTROLLER = "admin/pg/manage-cached-data";
 
+	/**
+	 * Admin Manage Caching Page
+	 */
+	public static final String ADMIN_MANAGE_TERMS_OF_SERVICE_PAGE_CONTROLLER = "admin/pg/manage-terms-of-service";
+	
+	
+
 }

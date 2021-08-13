@@ -74,6 +74,10 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  * Accepts a File Chunk (Web App only for now)
  *
+ * WARNING:  The Submit Import Program will show the value of BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage when set
+ * 			 and will NO LONGER check the boolean flags (other than statusSuccess).
+ * 			 So the property BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage will be REQUIRED to be set for all errors. 
+ *
  */
 @RestController
 public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceController {

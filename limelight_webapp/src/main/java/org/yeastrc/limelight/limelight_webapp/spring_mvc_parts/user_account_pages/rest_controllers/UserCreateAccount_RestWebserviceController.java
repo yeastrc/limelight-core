@@ -36,8 +36,11 @@ import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceTextVersionsDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceUserAcceptedVersionHistoryDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.AddNewUserUsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectUserDTO;
+import org.yeastrc.limelight.limelight_webapp.db_dto.TermsOfServiceUserAcceptedVersionHistoryDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserInviteTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ZzUserDataMirrorDTO;
@@ -60,6 +63,7 @@ import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtLo
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionBuilder;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
+import org.yeastrc.limelight.limelight_webapp.web_utils.IsTermsOfServiceEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
 
@@ -94,6 +98,15 @@ public class UserCreateAccount_RestWebserviceController {
 
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
+	
+	@Autowired
+	private TermsOfServiceTextVersionsDAO_IF termsOfServiceTextVersionsDAO;
+	
+	@Autowired
+	private TermsOfServiceUserAcceptedVersionHistoryDAO_IF termsOfServiceUserAcceptedVersionHistoryDAO;
+	
+	@Autowired
+	private IsTermsOfServiceEnabled_IF isTermsOfServiceEnabled;
 	
 	@Autowired
 	private CaptchaGoogleValidateUserResponseToken_Service_IF captchaGoogleValidateUserResponseToken_Service;
@@ -471,16 +484,11 @@ public class UserCreateAccount_RestWebserviceController {
 
 			UserInviteTrackingDTO userInviteTrackingDTO = null;
 
-//			Integer termsOfServiceVersionIdForIdString = null;
+			Integer termsOfServiceVersionIdForIdString = null;
 
 			//  Is terms of service enabled?
-//			String termsOfServiceEnabledString =
-//					ConfigSystemCaching.getInstance()
-//					.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.TERMS_OF_SERVICE_ENABLED );
-//			boolean termsOfServiceEnabled = false;
-//			if ( ConfigSystemsValuesSharedConstants.TRUE.equals(termsOfServiceEnabledString) ) {
-//				termsOfServiceEnabled = true;
-//			}
+			
+			boolean termsOfServiceEnabled = isTermsOfServiceEnabled.isTermsOfServiceEnabled();
 
 			if ( createAccountUsingAdminUserAccount == CreateAccountUsingAdminUserAccount.NO ) {
 
@@ -500,20 +508,17 @@ public class UserCreateAccount_RestWebserviceController {
 					userInviteTrackingDTO = validateUserInviteTrackingCodeResult.getUserInviteTrackingDTO();
 				}
 
-//				if ( termsOfServiceEnabled ) {
-//					// terms of service is enabled
-//					//  Version of TOS user accepted
-//					termsOfServiceVersionIdForIdString =
-//							TermsOfServiceTextVersionsDAO.getInstance().getVersionIdForIdString( tosAcceptedKey );
-//					if ( termsOfServiceVersionIdForIdString == null ) {
-//						String msg = "No record for tosAcceptedKey: " + tosAcceptedKey;
-//						log.warn( msg );
-//						throw new WebApplicationException(
-//								Response.status( WebServiceErrorMessageConstants.INVALID_PARAMETER_STATUS_CODE )  //  Send HTTP code
-//								.entity( WebServiceErrorMessageConstants.INVALID_PARAMETER_TEXT ) // This string will be passed to the client
-//								.build() );  //  Early Exit with Data Exception
-//					}
-//				}
+				if ( termsOfServiceEnabled ) {
+					// terms of service is enabled
+					//  Version of TOS user accepted
+					termsOfServiceVersionIdForIdString =
+							termsOfServiceTextVersionsDAO.getVersionIdForIdString( createAccountRequest.tosAcceptedKey );
+					if ( termsOfServiceVersionIdForIdString == null ) {
+						String msg = "No record for tosAcceptedKey: " + createAccountRequest.tosAcceptedKey;
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+				}
 			}
 
 			//  New User Mgmt
@@ -605,14 +610,14 @@ public class UserCreateAccount_RestWebserviceController {
 
 			if ( createAccountUsingAdminUserAccount == CreateAccountUsingAdminUserAccount.NO ) {
 
-//				if ( termsOfServiceEnabled ) {
-//					// terms of service is enabled, save user acceptance
-//					int authUserId = authUserDTO.getId();
-//					TermsOfServiceUserAcceptedVersionHistoryDTO tosUserAccepted = new TermsOfServiceUserAcceptedVersionHistoryDTO();
-//					tosUserAccepted.setAuthUserId( authUserId );
-//					tosUserAccepted.setTermsOfServiceVersionId( termsOfServiceVersionIdForIdString );
-//					TermsOfServiceUserAcceptedVersionHistoryDAO.getInstance().save( tosUserAccepted );
-//				}
+				if ( termsOfServiceEnabled ) {
+					// terms of service is enabled, save user acceptance
+					int userId = userDTO.getId();
+					TermsOfServiceUserAcceptedVersionHistoryDTO tosUserAccepted = new TermsOfServiceUserAcceptedVersionHistoryDTO();
+					tosUserAccepted.setUserId( userId );
+					tosUserAccepted.setTermsOfServiceVersionId( termsOfServiceVersionIdForIdString );
+					termsOfServiceUserAcceptedVersionHistoryDAO.save( tosUserAccepted );
+				}
 
 				UserMgmtLoginRequest userMgmtLoginRequest = new UserMgmtLoginRequest();
 				userMgmtLoginRequest.setUsername( createAccountRequest.username );
@@ -666,7 +671,7 @@ public class UserCreateAccount_RestWebserviceController {
 
 	public static class CreateAccountRequest {
 		
-//		private String tosAcceptedKey;
+		private String tosAcceptedKey;  //  Required if Terms Of Service Enabled
 		private String firstName;
 		private String lastName;
 		private String organization;
@@ -703,6 +708,9 @@ public class UserCreateAccount_RestWebserviceController {
 		}
 		public void setRecaptchaValue(String recaptchaValue) {
 			this.recaptchaValue = recaptchaValue;
+		}
+		public void setTosAcceptedKey(String tosAcceptedKey) {
+			this.tosAcceptedKey = tosAcceptedKey;
 		}
 	}
 

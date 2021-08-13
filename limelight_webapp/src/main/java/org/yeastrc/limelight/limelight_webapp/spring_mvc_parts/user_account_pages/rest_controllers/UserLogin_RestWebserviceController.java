@@ -32,8 +32,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
+import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceTextVersionsDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceUserAcceptedVersionHistoryDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.TermsOfServiceTextVersionsDTO;
+import org.yeastrc.limelight.limelight_webapp.db_dto.TermsOfServiceUserAcceptedVersionHistoryDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -49,6 +54,7 @@ import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtLo
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionBuilder;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
+import org.yeastrc.limelight.limelight_webapp.web_utils.IsTermsOfServiceEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 
 /**
@@ -63,6 +69,15 @@ public class UserLogin_RestWebserviceController {
 	@Autowired
 	private UserDAO_IF userDAO;
 
+	@Autowired
+	private TermsOfServiceTextVersionsDAO_IF termsOfServiceTextVersionsDAO;
+	
+	@Autowired
+	private TermsOfServiceUserAcceptedVersionHistoryDAO_IF termsOfServiceUserAcceptedVersionHistoryDAO;
+	
+	@Autowired
+	private IsTermsOfServiceEnabled_IF isTermsOfServiceEnabled;
+	
 	@Autowired
 	private UserSessionManager userSessionManager;
 
@@ -213,6 +228,16 @@ public class UserLogin_RestWebserviceController {
 
 			// No account in limelight for this user id.
 			
+			if ( isTermsOfServiceEnabled.isTermsOfServiceEnabled() ) {
+				
+				if ( StringUtils.isEmpty( userLoginRequest.getTos_key() ) ) {
+					
+					populate_TermsOfServiceInResponse( userLoginResult );
+
+					return userLoginResult;  //  Early Exit
+				}
+			}
+			
 			// Create an account if pass all checks
 			
 			userDTO = new UserDTO();
@@ -270,6 +295,61 @@ public class UserLogin_RestWebserviceController {
 				return userLoginResult;  //  Early Exit
 
 			}
+			
+			if ( isTermsOfServiceEnabled.isTermsOfServiceEnabled() ) {
+				
+				if ( StringUtils.isEmpty( userLoginRequest.getTos_key() ) ) {
+
+					Integer termsOfService_VersionId_Latest = termsOfServiceTextVersionsDAO.getLatest_VersionId();
+					if ( termsOfService_VersionId_Latest == null ) {
+						String msg = "true ( isTermsOfServiceEnabled.isTermsOfServiceEnabled() ) but true ( termsOfService_VersionId_Latest == null ) ";
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+					
+					TermsOfServiceUserAcceptedVersionHistoryDTO termsOfServiceUserAcceptedVersionHistoryDTO = 
+							termsOfServiceUserAcceptedVersionHistoryDAO.getForUserIdTermsOfServiceVersionId(thisAppUserId, termsOfService_VersionId_Latest.intValue());
+					
+					if ( termsOfServiceUserAcceptedVersionHistoryDTO == null ) {
+						//  Latest Terms Of Service NOT Accepted so get user to accept by respond with terms
+						
+						populate_TermsOfServiceInResponse( userLoginResult );
+	
+						return userLoginResult;  //  Early Exit
+					}
+					
+				} else {
+					
+					Integer termsOfService_VersionId_Latest = termsOfServiceTextVersionsDAO.getLatest_VersionId();
+					if ( termsOfService_VersionId_Latest == null ) {
+						String msg = "true ( isTermsOfServiceEnabled.isTermsOfServiceEnabled() ) but true ( termsOfService_VersionId_Latest == null ) ";
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+					Integer termsOfService_VersionId_ForRequest = termsOfServiceTextVersionsDAO.getVersionIdForIdString( userLoginRequest.getTos_key() );
+					if ( termsOfService_VersionId_ForRequest == null ) {
+						log.warn( "No DB record for tos_key: " + userLoginRequest.getTos_key() );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					
+					if ( termsOfService_VersionId_Latest.intValue() != termsOfService_VersionId_ForRequest.intValue() ) {
+						//  New Terms of service so present new terms to user
+
+						populate_TermsOfServiceInResponse( userLoginResult );
+
+						return userLoginResult;  //  Early Exit
+					}
+					
+					//  Save acceptance of terms of service to DB
+					
+					TermsOfServiceUserAcceptedVersionHistoryDTO termsOfServiceUserAcceptedVersionHistoryDTO = new TermsOfServiceUserAcceptedVersionHistoryDTO();
+					termsOfServiceUserAcceptedVersionHistoryDTO.setTermsOfServiceVersionId(termsOfService_VersionId_Latest.intValue());
+					termsOfServiceUserAcceptedVersionHistoryDTO.setUserId(thisAppUserId);
+					
+					termsOfServiceUserAcceptedVersionHistoryDAO.save(termsOfServiceUserAcceptedVersionHistoryDTO);
+				}
+			}
+			
 
 			//						UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
 			//						userMgmtGetUserDataRequest.setUserId( userMgmtLoginResponse.getUserId() );
@@ -309,11 +389,31 @@ public class UserLogin_RestWebserviceController {
 
 		return userLoginResult;
 	}
+	
+	/**
+	 * @param userLoginResult
+	 * @throws Exception 
+	 */
+	private void populate_TermsOfServiceInResponse( UserLoginResult userLoginResult ) throws Exception {
+
+		userLoginResult.setTermsOfServiceAcceptanceRequired(true);
+
+		TermsOfServiceTextVersionsDTO termsOfServiceTextVersionsDTO = termsOfServiceTextVersionsDAO.getLatest();
+		if ( termsOfServiceTextVersionsDTO == null ) {
+			String msg = "true ( termsOfServiceTextVersionsDTO == null ) in populate_TermsOfServiceInResponse(...) ";
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		userLoginResult.setTermsOfServiceKey( termsOfServiceTextVersionsDTO.getIdString() );
+		userLoginResult.setTermsOfServiceText( termsOfServiceTextVersionsDTO.getTermsOfServiceText() );
+	}
 
 
 	public static class UserLoginRequest {
 		private String username;
 		private String password;
+		private String tos_key;
 		private String inviteTrackingCode;
 
 		public String getUsername() {
@@ -334,12 +434,19 @@ public class UserLogin_RestWebserviceController {
 		public void setInviteTrackingCode(String inviteTrackingCode) {
 			this.inviteTrackingCode = inviteTrackingCode;
 		}
+		public String getTos_key() {
+			return tos_key;
+		}
+		public void setTos_key(String tos_key) {
+			this.tos_key = tos_key;
+		}
 
 	}
 
 	public static class UserLoginResult {
 
 		private boolean success;
+		
 		private boolean invalidUserOrPassword = false;
 		private boolean disabledUser = false;
 		/**
@@ -348,6 +455,10 @@ public class UserLogin_RestWebserviceController {
 		private boolean noLocalAccount = false;
 		private boolean invalidInviteTrackingCode;
 		
+		private boolean termsOfServiceAcceptanceRequired;
+		private String termsOfServiceKey;
+		private String termsOfServiceText;
+
 		public boolean isSuccess() {
 			return success;
 		}
@@ -386,6 +497,30 @@ public class UserLogin_RestWebserviceController {
 
 		public void setInvalidInviteTrackingCode(boolean invalidInviteTrackingCode) {
 			this.invalidInviteTrackingCode = invalidInviteTrackingCode;
+		}
+
+		public boolean isTermsOfServiceAcceptanceRequired() {
+			return termsOfServiceAcceptanceRequired;
+		}
+
+		public void setTermsOfServiceAcceptanceRequired(boolean termsOfServiceAcceptanceRequired) {
+			this.termsOfServiceAcceptanceRequired = termsOfServiceAcceptanceRequired;
+		}
+
+		public String getTermsOfServiceKey() {
+			return termsOfServiceKey;
+		}
+
+		public void setTermsOfServiceKey(String termsOfServiceKey) {
+			this.termsOfServiceKey = termsOfServiceKey;
+		}
+
+		public String getTermsOfServiceText() {
+			return termsOfServiceText;
+		}
+
+		public void setTermsOfServiceText(String termsOfServiceText) {
+			this.termsOfServiceText = termsOfServiceText;
 		}
 
 	}

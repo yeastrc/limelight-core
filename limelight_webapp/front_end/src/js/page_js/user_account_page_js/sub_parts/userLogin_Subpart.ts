@@ -23,7 +23,6 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { createSpinner, destroySpinner } from 'page_js/common_all_pages/spinner';
-import {loadGoogleRecaptcha} from "page_js/data_pages/data_pages_common/googleRecaptchaLoaderForThisWebapp";
 
 		
 /**
@@ -35,6 +34,7 @@ export class UserLogin_Subpart {
 	private _user_login_form_main_display_template = _user_account_login_forgot_password_template_bundle.user_login_form_main_display_template;
 
 	private inviteTrackingCode
+	private _termsOfServiceKey: string
 
 	/**
 	 * 
@@ -56,35 +56,8 @@ export class UserLogin_Subpart {
 	 */
 	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
 
-		// this.showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } );
-
-		const response = loadGoogleRecaptcha();
-
-		if ( response.isLoaded ) {
-
-			this.showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } );
-
-		} else {
-
-			response.loadingPromise.then( value => {
-
-				const  {grecaptcha} = value;
-
-				this.showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } );
-			})
-		}
-
-	}
-
-
-	/**
-	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
-	 */
-	showOnPage_Internal( { containerHTMLElement, inviteTrackingCode } ) {
-
-
 		var objectThis = this;
-		
+
 		let $containerHTMLElement = $( containerHTMLElement );
 		
 		$containerHTMLElement.empty();
@@ -112,16 +85,66 @@ export class UserLogin_Subpart {
 				throw e;
 			}
 		});
-		
+
+		$(document).off("click")
+		$(document).click( function(eventObject) {
+			try {
+				hideAllErrorMessages();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+
+		$("#terms_of_service_acceptance_yes_button").off("click")
+		$("#terms_of_service_acceptance_yes_button").click( function(eventObject) {
+//				var clickThis = this;
+			try {
+				eventObject.stopPropagation();  // stop click bubble up.
+				objectThis.loginPerson();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+		$("#terms_of_service_acceptance_no_button").off("click")
+		$("#terms_of_service_acceptance_no_button").click( function(eventObject) {
+//				var clickThis = this;
+			try {
+				eventObject.stopPropagation();  // stop click bubble up.
+				$("#terms_of_service_modal_dialog_overlay_background").hide();
+				$("#terms_of_service_overlay_div").hide();
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
+
+
 		this.inviteTrackingCode = inviteTrackingCode;
 
 	};
-	
+
 	/**
 	 * 
 	 */
 	loginPersonFormSubmit() {
-		
+
+		hideAllErrorMessages();
+
+		const usernamePassword_FromPageDOM_Response = this._getLogin_UsernamePassword_FromPageDOM();
+		if ( ! usernamePassword_FromPageDOM_Response ) {
+			//  error message already displayed so exit
+			return; // EARLY RETURN
+		}
+
+		if ( this._termsOfServiceKey ) {
+
+			$("#terms_of_service_modal_dialog_overlay_background").show();
+			$("#terms_of_service_overlay_div").show();
+			return; // EARLY RETURN
+		}
+
 		this.loginPerson();
 	};
 
@@ -133,31 +156,19 @@ export class UserLogin_Subpart {
 		var objectThis = this;
 		
 		hideAllErrorMessages();
-		
-		var $login_username = $("#login_username");
-		if ($login_username.length === 0) {
-			throw Error("Unable to find input field for id 'login_username' ");
-		}
-		var $login_password = $("#login_password");
-		if ($login_password.length === 0) {
-			throw Error("Unable to find input field for id 'login_password' ");
+
+		const usernamePassword_FromPageDOM_Response = this._getLogin_UsernamePassword_FromPageDOM();
+		if ( ! usernamePassword_FromPageDOM_Response ) {
+			//  error message already displayed so exit
+			return; // EARLY RETURN
 		}
 
-		var login_username = $login_username.val();
-		var login_password = $login_password.val();
-		if ( login_username === "" ) {
-			var $element = $("#error_message_login_username_required");
-			showErrorMsg( $element );
-			return;  //  !!!  EARLY EXIT
-		} else if ( login_password === "" ) {
-			var $element = $("#error_message_login_password_required");
-			showErrorMsg( $element );
-			return;  //  !!!  EARLY EXIT
-		}
+		const username = usernamePassword_FromPageDOM_Response.username;
+		const password = usernamePassword_FromPageDOM_Response.password;
 
 		createSpinner(); // external function
 		
-		var requestObj = { username : login_username, password : login_password, inviteTrackingCode : undefined };
+		var requestObj = { username, password, tos_key: this._termsOfServiceKey, inviteTrackingCode : undefined };
 
 		if ( this.inviteTrackingCode ) {
 			requestObj.inviteTrackingCode = this.inviteTrackingCode;
@@ -208,8 +219,15 @@ export class UserLogin_Subpart {
 		destroySpinner(); // external function
 
 		//  Not successful
-		
-		if ( responseData.invalidUserOrPassword ) {
+
+		if ( responseData.termsOfServiceAcceptanceRequired ) {
+
+			$("#terms_of_service_modal_dialog_overlay_background").show();
+			$("#terms_of_service_overlay_div").show();
+			this._termsOfServiceKey = responseData.termsOfServiceKey;
+			$("#terms_of_service_acceptance_required_text").html( responseData.termsOfServiceText );
+
+		} else if ( responseData.invalidUserOrPassword ) {
 			var $element = $("#error_message_login_username_or_login_password_invalid");
 			showErrorMsg( $element );
 		} else if ( responseData.disabledUser ) {
@@ -234,6 +252,35 @@ export class UserLogin_Subpart {
 			showErrorMsg( $element );
 		}
 	};
+
+	/**
+	 * @returns null if invalid input
+	 */
+	private _getLogin_UsernamePassword_FromPageDOM() : { username: string, password: string } {
+
+		var $login_username = $("#login_username");
+		if ($login_username.length === 0) {
+			throw Error("Unable to find input field for id 'login_username' ");
+		}
+		var $login_password = $("#login_password");
+		if ($login_password.length === 0) {
+			throw Error("Unable to find input field for id 'login_password' ");
+		}
+
+		var username = $login_username.val() as string;
+		var password = $login_password.val() as string;
+		if ( username === "" ) {
+			var $element = $("#error_message_login_username_required");
+			showErrorMsg( $element );
+			return null;  //  !!!  EARLY EXIT
+		} else if ( password === "" ) {
+			var $element = $("#error_message_login_password_required");
+			showErrorMsg( $element );
+			return null;  //  !!!  EARLY EXIT
+		}
+
+		return { username, password };
+	}
 
 };
 

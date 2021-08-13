@@ -30,10 +30,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectUserDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceTextVersionsDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserInviteTrackingDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.AddOrUpdateProjectAccessExistingUserUsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectUserDTO;
+import org.yeastrc.limelight.limelight_webapp.db_dto.TermsOfServiceTextVersionsDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserInviteTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
@@ -42,6 +44,7 @@ import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrac
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult_NotValidReason;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
+import org.yeastrc.limelight.limelight_webapp.web_utils.IsTermsOfServiceEnabled_IF;
 
 /**
  * Path for THIS controller:  In static: PRIMARY_CONTROLLER_PATH
@@ -106,6 +109,12 @@ public class Invite_ProcessCode_Controller {
 	@Autowired
 	private UserInviteTrackingDAO_IF userInviteTrackingDAO;
 
+	@Autowired
+	private IsTermsOfServiceEnabled_IF isTermsOfServiceEnabled;
+	
+	@Autowired
+	private TermsOfServiceTextVersionsDAO_IF termsOfServiceTextVersionsDAO;
+	
 	@Autowired
 	private AddOrUpdateProjectAccessExistingUserUsingDBTransactionServiceIF addOrUpdateProjectAccessExistingUserUsingDBTransactionService;
 
@@ -282,6 +291,24 @@ public class Invite_ProcessCode_Controller {
 				
 				httpServletRequest.setAttribute( "inviteProjectId", userInviteTrackingDTO.getInvitedProjectId() );
 				httpServletRequest.setAttribute( "inviteProjectTitle", projectDTO_Title.getTitle() );
+				
+
+				if ( isTermsOfServiceEnabled.isTermsOfServiceEnabled() ) {
+
+					TermsOfServiceTextVersionsDTO termsOfServiceTextVersionsDTO = termsOfServiceTextVersionsDAO.getLatest();
+
+					if ( termsOfServiceTextVersionsDTO != null ) {
+						
+						httpServletRequest.setAttribute( "termsOfServiceTextVersion", termsOfServiceTextVersionsDTO );
+					
+						String termsOfServiceKey = termsOfServiceTextVersionsDTO.getIdString();
+								
+						httpServletRequest.setAttribute( "termsOfServiceKey", termsOfServiceKey );
+					} else {
+						log.error("Terms of Service Enabled but No Terms of Service Latest ");
+					}
+				}
+				
 
 				//  Forward to the Invite Landing Page
 				return new ModelAndView( FORWARD_TO_INVITE_LANDING_PAGE );  // forward to Page Controller

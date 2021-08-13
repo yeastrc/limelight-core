@@ -52,6 +52,8 @@ public class SubmitImport_Init_Response_PgmXML extends SubmitImport_Init_Respons
 	private boolean userSubmitImportProgramKeyNotFound;
 	@XmlAttribute
 	private boolean userNotAuthorizedForProject;
+	@XmlAttribute
+	private boolean userNotAcceptLatestTermsOfService;
 	
 	//  Added for processing submit from same machine
 	@XmlAttribute
@@ -92,6 +94,12 @@ public class SubmitImport_Init_Response_PgmXML extends SubmitImport_Init_Respons
 	}
 	public void setUserNotAuthorizedForProject(boolean userNotAuthorizedForProject) {
 		this.userNotAuthorizedForProject = userNotAuthorizedForProject;
+	}
+	public boolean isUserNotAcceptLatestTermsOfService() {
+		return userNotAcceptLatestTermsOfService;
+	}
+	public void setUserNotAcceptLatestTermsOfService(boolean userNotAcceptLatestTermsOfService) {
+		this.userNotAcceptLatestTermsOfService = userNotAcceptLatestTermsOfService;
 	}
 	
 }

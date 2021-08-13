@@ -32,7 +32,7 @@
    
    	<h1>Webapp Administration Main Page</h1>
    	
-   	<div >
+   	<div style="margin-bottom: 5px;">
 	   	<a href="admin/pg/config">Manage Configuration</a>
 	</div>
    	<div >
@@ -47,6 +47,14 @@
 		<a href="admin/pg/manage-cached-data">Manage Cached Data</a>
 	</div>
    
+	<h2>
+		Terms of Service
+	</h2>
+	
+	<div >
+		<a href="admin/pg/manage-terms-of-service">Manage Terms of Service</a>
+	</div>
+	
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>

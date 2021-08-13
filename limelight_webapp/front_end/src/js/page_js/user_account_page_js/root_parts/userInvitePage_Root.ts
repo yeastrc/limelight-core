@@ -65,41 +65,8 @@ class UserInvitePage {
 		initShowHideErrorMessage();
 		catchAndReportGlobalOnError.init();
 
-		let $invite_landing_invite_code = $("#invite_landing_invite_code");
-		if ( $invite_landing_invite_code.length === 0 ) {
-			throw Error( "No element with id 'invite_landing_invite_code'" );
-		}
-		let invite_landing_invite_code = $invite_landing_invite_code.text();
+		this._populate_ObjectProperties_From_ValuesInDOM_From_Server();
 
-		let $invite_landing_invite_project_id = $("#invite_landing_invite_project_id");
-		if ( $invite_landing_invite_project_id.length === 0 ) {
-			throw Error( "No element with id 'invite_landing_invite_project_id'" );
-		}
-		let invite_landing_invite_project_id_String = $invite_landing_invite_project_id.text();
-		
-		let invite_landing_invite_project_id = undefined;
-		
-		if ( invite_landing_invite_project_id_String === undefined ||
-				invite_landing_invite_project_id_String === null ||
-				invite_landing_invite_project_id_String === "" ) {
-			
-		} else {
-			invite_landing_invite_project_id = Number( invite_landing_invite_project_id_String );
-			if ( isNaN( invite_landing_invite_project_id ) ) {
-				throw Error( "Element with id 'invite_landing_invite_project_id' contains string that is not number.  Contains: " + invite_landing_invite_project_id_String );
-			}
-		}
-
-		let $invite_landing_invite_project_title = $("#invite_landing_invite_project_title");
-		if ( $invite_landing_invite_project_title.length === 0 ) {
-			throw Error( "No element with id 'invite_landing_invite_project_title'" );
-		}
-		let invite_landing_invite_project_title = $invite_landing_invite_project_title.text();
-
-		this.invite_landing_invite_code = invite_landing_invite_code;
-		this.invite_landing_invite_project_id = invite_landing_invite_project_id;
-		this.invite_landing_invite_project_title = invite_landing_invite_project_title;
-		
 		let main_container_below_logo = document.getElementById( "main_container_below_logo" );
 		if ( main_container_below_logo === undefined || main_container_below_logo === null ) {
 			throw Error( "No element with id 'main_container_below_logo'" );
@@ -145,6 +112,124 @@ class UserInvitePage {
 		
 		this._initializeCalled = true;
 	};
+
+	private _populate_ObjectProperties_From_ValuesInDOM_From_Server() {
+
+		const inviteLandingInviteCode = this._get_InviteLandingInviteCode();
+		const invite_landing_invite_project_id = this._get_InviteLandingInviteProjectId();
+		const inviteLandingInviteProjectTitle = this._get_InviteLandingInviteProjectTitle();
+
+		this.invite_landing_invite_code = inviteLandingInviteCode;
+		this.invite_landing_invite_project_id = invite_landing_invite_project_id;
+		this.invite_landing_invite_project_title = inviteLandingInviteProjectTitle;
+	}
+
+
+	/**
+	 *
+	 */
+	private _get_InviteLandingInviteCode() : string {
+
+		const invite_landing_invite_codeDOM = document.getElementById("invite_landing_invite_code");
+		if ( ! invite_landing_invite_codeDOM ) {
+			// Not found so error
+			throw Error( "No element with id 'invite_landing_invite_code'" );
+		}
+
+		let invite_landing_invite_code_Inside_HTML_BODY_Tags : string = null;
+
+		{
+			const innerText = invite_landing_invite_codeDOM.innerText
+
+			const domparser = new DOMParser()
+
+			try {
+				const doc = domparser.parseFromString(innerText, "text/html")
+
+				const body = doc.body;
+
+				invite_landing_invite_code_Inside_HTML_BODY_Tags = body.innerText;
+
+			} catch (e) {
+				// Not parsable Value so exit
+				return null; // EARLY EXIT
+			}
+		}
+		try {
+			invite_landing_invite_codeDOM.remove();
+		} catch (e) {
+			// swallow any exception
+		}
+
+		return invite_landing_invite_code_Inside_HTML_BODY_Tags;
+	}
+
+	/**
+	 *
+	 */
+	private _get_InviteLandingInviteProjectId() : number {
+
+		let $invite_landing_invite_project_id = $("#invite_landing_invite_project_id");
+		if ( $invite_landing_invite_project_id.length === 0 ) {
+			throw Error( "No element with id 'invite_landing_invite_project_id'" );
+		}
+		let invite_landing_invite_project_id_String = $invite_landing_invite_project_id.text();
+
+		let invite_landing_invite_project_id: number = undefined;
+
+		if ( invite_landing_invite_project_id_String === undefined ||
+			invite_landing_invite_project_id_String === null ||
+			invite_landing_invite_project_id_String === "" ) {
+
+		} else {
+			invite_landing_invite_project_id = Number( invite_landing_invite_project_id_String );
+			if ( isNaN( invite_landing_invite_project_id ) ) {
+				throw Error( "Element with id 'invite_landing_invite_project_id' contains string that is not number.  Contains: " + invite_landing_invite_project_id_String );
+			}
+		}
+
+		return invite_landing_invite_project_id;
+	}
+
+	/**
+	 *
+	 */
+	private _get_InviteLandingInviteProjectTitle() : string {
+
+		const invite_landing_invite_project_titleDOM = document.getElementById("invite_landing_invite_project_title");
+		if ( ! invite_landing_invite_project_titleDOM ) {
+			// Not found so error
+			throw Error( "No element with id 'invite_landing_invite_project_title'" );
+		}
+
+		let invite_landing_invite_project_title_Inside_HTML_BODY_Tags : string = null;
+
+		{
+			const innerText = invite_landing_invite_project_titleDOM.innerText
+
+			const domparser = new DOMParser()
+
+			try {
+				const doc = domparser.parseFromString(innerText, "text/html")
+
+				const body = doc.body;
+
+				invite_landing_invite_project_title_Inside_HTML_BODY_Tags = body.innerText;
+
+			} catch (e) {
+				// Not parsable Value so exit
+				return null; // EARLY EXIT
+			}
+		}
+		try {
+			invite_landing_invite_project_titleDOM.remove();
+		} catch (e) {
+			// swallow any exception
+		}
+
+		return invite_landing_invite_project_title_Inside_HTML_BODY_Tags;
+	}
+
 
 	/**
 	 * Show Sign In choice

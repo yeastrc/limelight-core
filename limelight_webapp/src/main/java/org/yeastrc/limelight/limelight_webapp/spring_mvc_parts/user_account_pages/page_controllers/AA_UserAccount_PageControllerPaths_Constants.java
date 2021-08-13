@@ -74,7 +74,7 @@ public class AA_UserAccount_PageControllerPaths_Constants {
 	////  User Account Management
 	
 	/**
-	 * User Login Page
+	 * User Account Management Page
 	 */
 	public static final String USER_ACCOUNT_MANAGEMENT_PAGE_CONTROLLER = "user/account-management";
 

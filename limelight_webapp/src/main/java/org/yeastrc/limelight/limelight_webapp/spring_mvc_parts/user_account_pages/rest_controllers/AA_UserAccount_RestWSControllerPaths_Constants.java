@@ -68,4 +68,7 @@ public class AA_UserAccount_RestWSControllerPaths_Constants {
 
 	public static final String USER_RESET_PASSWORD_CHANGE_PASSWORD_WEBSERVICE_CONTROLLER = "user/rws/for-page/reset-password-change-password";
 
+	
+	public static final String USER_GET_TERMS_OF_SERVICE_TEXT_FROM_ID_STRING_REST_WEBSERVICE_CONTROLLER = "user/rws/for-page/get-terms-of-service-text-from-id-string";
+
 }
