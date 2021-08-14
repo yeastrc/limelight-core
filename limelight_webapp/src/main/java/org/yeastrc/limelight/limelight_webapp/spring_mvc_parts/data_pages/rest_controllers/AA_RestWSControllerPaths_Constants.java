@@ -145,6 +145,9 @@ public class AA_RestWSControllerPaths_Constants {
 			"d/rws/for-page/project-upload-data-remove-success-import";
 	
 	//  Upload Data, New Upload Webservices
+
+	public static final String PROJECT__UPLOAD_DATA_UPLOAD_SUBMIT_PGM_AUTH_TEST_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-upload-submit-pgm-auth-test";
 	
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-initialize";

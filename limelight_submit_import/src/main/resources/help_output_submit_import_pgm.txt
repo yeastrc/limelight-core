@@ -25,6 +25,13 @@ Submit Import Help:
 --send-search-path
 
   ---
+  
+  To Test that user can submit to the project but not submit a file, use:
+  (No files, search description, or send search path is allowed when this property is set)
+  
+--auth-test
+
+  ---
   For Debugging
   
 --list-command-line-params : List the command line parameters passed to the Java program, one per line

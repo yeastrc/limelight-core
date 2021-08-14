@@ -38,6 +38,8 @@ import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.
 import org.yeastrc.limelight.limelight_submit_import_client_connector.enum_classes.LimelightSubmit_FileImportFileType;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.main.CallSubmitImportWebservice;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.main.CallSubmitImportWebserviceInitParameters;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_SingleFileItem;
@@ -118,6 +120,8 @@ public class SubmitUploadMain {
 	 * @throws JsonProcessingException
 	 */
 	public SubmitResult submitUpload(
+			
+			boolean authTestChosen,
 			
 			boolean submitterSameMachine,
 			String baseURL, 
@@ -410,6 +414,67 @@ public class SubmitUploadMain {
 //					searchName = null;
 //				}
 //			}
+			
+
+			if ( authTestChosen ) {
+				
+				//  ONLY Perform Auth Test for User and Project id
+				
+				SubmitImport_AuthTest_Request_PgmXML submitImport_AuthTest_Request = new SubmitImport_AuthTest_Request_PgmXML();
+
+				submitImport_AuthTest_Request.setSubmitProgramVersionNumber( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+				submitImport_AuthTest_Request.setProjectIdentifier( projectIdString );
+				submitImport_AuthTest_Request.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
+				
+				SubmitImport_AuthTest_Response_PgmXML submitImport_AuthTest_Response = 
+						callSubmitImportWebservice.call_SubmitImport_AuthTest_Webservice(submitImport_AuthTest_Request);
+
+				if ( submitImport_AuthTest_Response.isStatusSuccess() ) {
+					
+					System.err.println( "" );
+					System.err.println( "********************************************************" );
+					System.err.println( "" );
+					System.err.println( "Auth Test Successful." );
+					System.err.println( "" );
+
+					System.out.println( "" );
+					System.out.println( "********************************************************" );
+					System.out.println( "" );
+					System.out.println( "Auth Test Successful." );
+					System.out.println( "" );
+
+				} else {
+
+					System.err.println( "" );
+					System.err.println( "********************************************************" );
+					System.err.println( "" );
+					System.err.println( "Auth Test Failed." );
+					System.err.println( "" );
+
+					if ( submitImport_AuthTest_Response.isSubmitProgramVersionNumber_NotAccepted() ) {
+
+						reportSubmitterVersionErrorToUser( submitImport_AuthTest_Response.getSubmitProgramVersionNumber_Current_Per_Webapp() );
+						submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION;
+						return submitResult;    //  EARLY EXIT
+					}
+
+					if ( StringUtils.isNotBlank( submitImport_AuthTest_Response.getStatusFail_ErrorMessage() ) ) {
+
+						System.err.println( submitImport_AuthTest_Response.getStatusFail_ErrorMessage() );
+						submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+						return submitResult;    //  EARLY EXIT
+					}
+
+					System.err.println( "Upload failed at init.  Please try again." );
+
+					System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
+					
+					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+				}
+				
+				return submitResult;  //  EARLY RETURN
+			}
+			
 
 			SubmitImport_Init_Request_PgmXML submitImport_Init_Request = new SubmitImport_Init_Request_PgmXML();
 			

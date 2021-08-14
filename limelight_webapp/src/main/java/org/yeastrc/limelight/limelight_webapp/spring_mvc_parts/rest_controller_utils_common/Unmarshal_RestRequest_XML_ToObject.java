@@ -32,6 +32,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Request;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
@@ -62,6 +63,7 @@ public class Unmarshal_RestRequest_XML_ToObject implements InitializingBean {
 		
 		jaxbContext = 
 				JAXBContext.newInstance( 
+						SubmitImport_AuthTest_Request_PgmXML.class,
 						SubmitImport_Init_Request_PgmXML.class,
 						SubmitImport_UploadFile_Request_Common.class,
 						SubmitImport_FinalSubmit_Request_PgmXML.class,

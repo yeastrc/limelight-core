@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Response;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_PgmXML;
@@ -59,6 +60,7 @@ public class Marshal_RestRequest_Object_ToXML implements InitializingBean {
 		
 		jaxbContext = 
 				JAXBContext.newInstance( 
+						SubmitImport_AuthTest_Response_PgmXML.class,
 						SubmitImport_Init_Response_PgmXML.class,
 						SubmitImport_UploadFile_Response_PgmXML.class,
 						SubmitImport_FinalSubmit_Response_PgmXML.class,

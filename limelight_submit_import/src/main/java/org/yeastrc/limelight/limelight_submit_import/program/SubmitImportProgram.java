@@ -54,7 +54,11 @@ public class SubmitImportProgram {
 	public static final String LIST_COMMAND_LINE_PARAMS_PARAM_STRING = "list-command-line-params";
 	public static final String LIST_COMMAND_LINE_PARAMS_PARAM_STRING_WITH_LEADING_DASHES =
 			"--" + LIST_COMMAND_LINE_PARAMS_PARAM_STRING;
-	
+
+	public static final String AUTH_TEST_PARAM_STRING = "auth-test";
+	public static final String AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES =
+			"--" + AUTH_TEST_PARAM_STRING;
+		
 	/**
 	 * @param args
 	 * @throws Exception
@@ -136,6 +140,8 @@ public class SubmitImportProgram {
 			CmdLineParser.Option noSearchNameCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-search-description" );
 			CmdLineParser.Option sendSearchPathCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "send-search-path" );
 			
+			CmdLineParser.Option authTestCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', AUTH_TEST_PARAM_STRING );
+			
 			//  User Submit Import Program Key - Generated in Web app
 			CmdLineParser.Option userSubmitImportProgramKeyCommandLineOpt = 
 					cmdLineParser.addStringOption( 'Z', USER_SUBMIT_IMPORT_KEY_PARAM_STRING );
@@ -201,6 +207,13 @@ public class SubmitImportProgram {
 				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
 			}
 			
+			boolean authTestCommandLineOptChosen = false;
+			{
+				Boolean authTestCommandLineOptChosenLocal = (Boolean) cmdLineParser.getOptionValue( authTestCommandLineOpt, Boolean.FALSE);
+				if ( authTestCommandLineOptChosenLocal != null && authTestCommandLineOptChosenLocal.booleanValue() ) {
+					authTestCommandLineOptChosen = true;
+				}
+			}
 			
 			userSubmitImportProgramKeyFromCommandLine = (String)cmdLineParser.getOptionValue( userSubmitImportProgramKeyCommandLineOpt );
 			
@@ -250,22 +263,35 @@ public class SubmitImportProgram {
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 			}
-			if ( StringUtils.isEmpty(limelightXMLFileString)) {
-				System.err.println( "Limelight XML file must be specified." );
+			if ( StringUtils.isEmpty(limelightXMLFileString) ) {
+				if ( ! authTestCommandLineOptChosen ) {
+					System.err.println( "Limelight XML file must be specified." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+			} else if ( authTestCommandLineOptChosen ) {
+				System.err.println( "Limelight XML file NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
 				System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 			}
-
-			limelightXMLFile = new File( limelightXMLFileString );
-
-			if( ! limelightXMLFile.exists() ) {
-				System.err.println( "Could not find Limelight XML file: " + limelightXMLFile.getAbsolutePath() );
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+			
+			if ( StringUtils.isNotEmpty(limelightXMLFileString) ) {
+	
+				limelightXMLFile = new File( limelightXMLFileString );
+	
+				if( ! limelightXMLFile.exists() ) {
+					System.err.println( "Could not find Limelight XML file: " + limelightXMLFile.getAbsolutePath() );
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
 			}
 
 			if ( inputScanFileStringVector != null && ( ! inputScanFileStringVector.isEmpty() ) ) {
 
+				if ( authTestCommandLineOptChosen ) {
+					System.err.println( "Scan files NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				
 				scanFiles = new ArrayList<>();
 
 				for ( Object inputScanFileStringObject : inputScanFileStringVector ) {
@@ -312,6 +338,12 @@ public class SubmitImportProgram {
 			String searchName = (String)cmdLineParser.getOptionValue( searchNameFromCommandLineCommandLineOpt );
 			
 			if ( StringUtils.isNotEmpty( searchName ) ) {
+
+				if ( authTestCommandLineOptChosen ) {
+					System.err.println( "Search Name NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				
 				if ( searchName.contains( USER_SUBMIT_IMPORT_KEY_PARAM_STRING ) ) {
 					
 					System.err.println( "" );
@@ -386,6 +418,11 @@ public class SubmitImportProgram {
 			
 			if ( sendSearchPathCommandLineOptChosen ) {
 
+				if ( authTestCommandLineOptChosen ) {
+					System.err.println( "Send Search Path NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				
 				try {
 					searchPath = limelightXMLFile.getCanonicalFile().getParentFile().getCanonicalPath();
 
@@ -406,6 +443,9 @@ public class SubmitImportProgram {
 
 			SubmitResult submitResult = 
 					SubmitUploadMain.getInstance().submitUpload(
+							
+							authTestCommandLineOptChosen,
+							
 							submitterSameMachine, 
 							baseURL,
 							uploadBaseDir, 

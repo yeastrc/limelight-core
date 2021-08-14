@@ -44,6 +44,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.exceptions.LimelightSubmitImportWebserviceCallErrorException;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
@@ -70,6 +72,9 @@ public class CallSubmitImportWebservice {
 	
 	//  Keep in sync with class AA_RestWSControllerPaths_Constants in web app
 	
+	//   WARNING:  add '/' to start of controller string copied from webapp
+
+	public static final String SUBMIT_IMPORT_AUTH_TEST_REST_WEBSERVICE_CONTROLLER = "/d/rws/for-page/project-upload-data-upload-submit-pgm-auth-test";
 	private static final String SUBMIT_IMPORT_INIT_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-initialize-from-submit-pgm";
 	private static final String SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-file-from-submit-pgm";
 	private static final String SUBMIT_IMPORT_FINAL_SUBMIT_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-submit-from-submit-pgm";
@@ -107,6 +112,8 @@ public class CallSubmitImportWebservice {
 
 		jaxbContext = 
 				JAXBContext.newInstance( 
+						SubmitImport_AuthTest_Request_PgmXML.class,
+						SubmitImport_AuthTest_Response_PgmXML.class,
 						SubmitImport_Init_Request_PgmXML.class,
 						SubmitImport_Init_Response_PgmXML.class,
 						SubmitImport_UploadFile_Request_Common.class,
@@ -118,8 +125,45 @@ public class CallSubmitImportWebservice {
 	}
 	
 	/////////////////////////////
-	
 
+	/**
+	 * @param webserviceRequest
+	 * @return
+	 * @throws Exception 
+	 */
+	public SubmitImport_AuthTest_Response_PgmXML call_SubmitImport_AuthTest_Webservice( SubmitImport_AuthTest_Request_PgmXML webserviceRequest ) throws Exception {
+		if ( ! instanceInitialized ) {
+			throw new IllegalStateException( "Not initialized" );
+		}
+		if ( webserviceRequest == null ) {
+			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_SubmitImport_AuthTest_Webservice(...)" );
+		}
+
+		String webserviceURL = webappServerBaseURL
+				+ SUBMIT_IMPORT_AUTH_TEST_REST_WEBSERVICE_CONTROLLER;
+		Object webserviceResponseAsObject = callActualWebserviceOnServerSendObject( webserviceRequest, webserviceURL );
+		if ( ! ( webserviceResponseAsObject instanceof SubmitImport_AuthTest_Response_PgmXML ) ) {
+			String msg = "Response unmarshaled to class other than SubmitImport_AuthTest_Response_PgmXML.  "
+					+ " Unmarshaled Class: " + webserviceResponseAsObject.getClass();
+			LimelightSubmitImportWebserviceCallErrorException exception = new LimelightSubmitImportWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		SubmitImport_AuthTest_Response_PgmXML webserviceResponse = null;
+		try {
+			webserviceResponse = (SubmitImport_AuthTest_Response_PgmXML) webserviceResponseAsObject;
+		} catch ( Exception e ) {
+			String msg = "Error. Fail to cast response as SubmitImport_Init_Response: "
+					+ e.toString();
+			LimelightSubmitImportWebserviceCallErrorException exception = new LimelightSubmitImportWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		return webserviceResponse;
+	}
+
+	/////////////////////////////
+	
 	/**
 	 * @param webserviceRequest
 	 * @return

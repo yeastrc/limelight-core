@@ -307,12 +307,26 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			//  TODO  Return other than 200 code?
 			return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
 		}
-		
+
 		if ( validateResult.getUserId() == null ) {
 			final String msg = "ERROR: validateResult.getUserId() == null";
 			log.error( msg );
 			throw new LimelightInternalErrorException(msg);
 		}
+
+		//  If NOT Limelight XML File Import is Fully Configured, 
+		if ( ! isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured() ) {
+			String msg = "Limelight Installation not configured to allow Import Submissions.  Limelight XML File Import is NOT Fully Configured ";
+			log.warn( msg );
+			
+			webserviceResult.setStatusFail_ErrorMessage( "Limelight Installation not configured to allow Import Submissions" );
+
+			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
+
+			//  TODO  Return other than 200 code?
+			return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
+		}
+		
 		
 		boolean submitterSameMachine = false;
 		
