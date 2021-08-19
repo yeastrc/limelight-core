@@ -417,9 +417,11 @@ const _process_Data_In_ProjectSearchId_Map = function(
             for ( const proteinItem of proteinGroupItem.proteinList_Grouped ) {
                 const protein_SubItem_Record = proteinItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
                 if ( ! protein_SubItem_Record ) {
-                    const msg = "( ! protein_SubItem_Record ): Must be populated at this point. in _process_Data_In_ProjectSearchId_Map: ";
-                    console.warn(msg);
-                    throw Error(msg);
+                    //  No entry for projectSearchId so skip to next entry
+                    continue;  //  EARLY CONTINUE
+                    // const msg = "( ! protein_SubItem_Record ): Must be populated at this point. in _process_Data_In_ProjectSearchId_Map: ";
+                    // console.warn(msg);
+                    // throw Error(msg);
                 }
                 protein_SubItem_Record.uniquePeptideCount = uniquePeptideCount;
             }
