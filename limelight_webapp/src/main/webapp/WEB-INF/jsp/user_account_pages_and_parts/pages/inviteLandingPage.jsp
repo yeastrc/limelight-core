@@ -78,7 +78,7 @@
 				<div id="terms_of_service_acceptance_required_text" class=" standard-border-color-gray "
 					style="margin: 5px; padding: 20px; border-width: 1px; border-style: solid; "
 				>
-					<c:out value="${ termsOfServiceTextVersion.termsOfServiceText }" escapeXml="false"></c:out>
+					<c:out value="${ termsOfServiceText }" escapeXml="false"></c:out>
 					<input type="hidden" value="${ termsOfServiceTextVersion.idString }" id="terms_of_service_id_string">
 				</div>
 				

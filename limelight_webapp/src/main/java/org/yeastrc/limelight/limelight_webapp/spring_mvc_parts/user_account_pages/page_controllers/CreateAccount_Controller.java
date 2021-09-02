@@ -31,6 +31,7 @@ import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceTextVersionsDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.TermsOfServiceTextVersionsDTO;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
+import org.yeastrc.limelight.limelight_webapp.services.TermsOfServiceText_ConvertForDisplay_Service;
 import org.yeastrc.limelight.limelight_webapp.web_utils.IsTermsOfServiceEnabled_IF;
 
 @Controller
@@ -50,6 +51,9 @@ public class CreateAccount_Controller {
 	
 	@Autowired
 	private TermsOfServiceTextVersionsDAO_IF termsOfServiceTextVersionsDAO;
+
+	@Autowired
+	private TermsOfServiceText_ConvertForDisplay_Service termsOfServiceText_ConvertForDisplay_Service;
 	
 	@Autowired
 	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
@@ -106,8 +110,14 @@ public class CreateAccount_Controller {
 				TermsOfServiceTextVersionsDTO termsOfServiceTextVersionsDTO = termsOfServiceTextVersionsDAO.getLatest();
 
 				if ( termsOfServiceTextVersionsDTO != null ) {
-					
+
 					httpServletRequest.setAttribute( "termsOfServiceTextVersion", termsOfServiceTextVersionsDTO );
+				
+					String termsOfServiceText = 
+							termsOfServiceText_ConvertForDisplay_Service
+							.termsOfServiceText_ConvertForDisplay_ExceptConfigurationPage( termsOfServiceTextVersionsDTO.getTermsOfServiceText() );
+					
+					httpServletRequest.setAttribute( "termsOfServiceText", termsOfServiceText );
 				
 					String termsOfServiceKey = termsOfServiceTextVersionsDTO.getIdString();
 							

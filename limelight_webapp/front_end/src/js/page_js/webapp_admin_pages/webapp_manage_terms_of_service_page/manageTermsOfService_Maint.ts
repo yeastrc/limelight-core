@@ -87,9 +87,11 @@ const _initPage_Internal = function( termsOfService_WebServiceResponse : TermsOf
 
 
     termsOfService_Enabled = termsOfService_WebServiceResponse.termsOfServiceEnabled;
-    termsOfService_Text = termsOfService_WebServiceResponse.termsOfServiceText;
+    termsOfService_Text = termsOfService_WebServiceResponse.termsOfServiceText
 
-    $("#tos_current_terms_of_service").html( termsOfService_Text );
+    const termsOfService_Text_ForHTML = _termsOfService_Text_ConvertForAssignAsHTML( termsOfService_Text );
+
+    $("#tos_current_terms_of_service").html( termsOfService_Text_ForHTML );
 
     _showHideButtons();
 
@@ -244,7 +246,9 @@ const _saveUpdated_TermsOfService_Text = function( params: ManageTermsOfService_
 
             termsOfService_Text = params.termsOfServiceText_NewValue;
 
-            $("#tos_current_terms_of_service").html( termsOfService_Text );
+            const termsOfService_Text_ForHTML = _termsOfService_Text_ConvertForAssignAsHTML( termsOfService_Text );
+
+            $("#tos_current_terms_of_service").html( termsOfService_Text_ForHTML );
 
             limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();
 
@@ -300,4 +304,15 @@ const _getTermsOfService = function () : Promise<TermsOfService_WebServiceRespon
 class TermsOfService_WebServiceResponse {
     termsOfServiceEnabled: boolean;
     termsOfServiceText : string;
+}
+
+
+
+/**
+ *
+ */
+const _termsOfService_Text_ConvertForAssignAsHTML = function( termsOfServiceText : string ): string {
+
+    const termsOfService_Text_ForHTML = termsOfServiceText.replace(/\n/g, "<br>");
+    return termsOfService_Text_ForHTML;
 }

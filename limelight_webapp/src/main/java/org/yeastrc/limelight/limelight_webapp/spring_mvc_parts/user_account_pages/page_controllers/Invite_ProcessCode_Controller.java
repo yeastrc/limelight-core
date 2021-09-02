@@ -39,6 +39,7 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.TermsOfServiceTextVersionsD
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserInviteTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
+import org.yeastrc.limelight.limelight_webapp.services.TermsOfServiceText_ConvertForDisplay_Service;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCodeIF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
@@ -114,6 +115,9 @@ public class Invite_ProcessCode_Controller {
 	
 	@Autowired
 	private TermsOfServiceTextVersionsDAO_IF termsOfServiceTextVersionsDAO;
+
+	@Autowired
+	private TermsOfServiceText_ConvertForDisplay_Service termsOfServiceText_ConvertForDisplay_Service;
 	
 	@Autowired
 	private AddOrUpdateProjectAccessExistingUserUsingDBTransactionServiceIF addOrUpdateProjectAccessExistingUserUsingDBTransactionService;
@@ -300,6 +304,12 @@ public class Invite_ProcessCode_Controller {
 					if ( termsOfServiceTextVersionsDTO != null ) {
 						
 						httpServletRequest.setAttribute( "termsOfServiceTextVersion", termsOfServiceTextVersionsDTO );
+
+						String termsOfServiceText = 
+								termsOfServiceText_ConvertForDisplay_Service
+								.termsOfServiceText_ConvertForDisplay_ExceptConfigurationPage( termsOfServiceTextVersionsDTO.getTermsOfServiceText() );
+						
+						httpServletRequest.setAttribute( "termsOfServiceText", termsOfServiceText );
 					
 						String termsOfServiceKey = termsOfServiceTextVersionsDTO.getIdString();
 								

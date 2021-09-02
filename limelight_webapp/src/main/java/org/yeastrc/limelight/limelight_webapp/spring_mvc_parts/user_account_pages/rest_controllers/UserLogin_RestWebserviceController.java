@@ -43,6 +43,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
+import org.yeastrc.limelight.limelight_webapp.services.TermsOfServiceText_ConvertForDisplay_Service;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCodeIF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
@@ -71,6 +72,9 @@ public class UserLogin_RestWebserviceController {
 
 	@Autowired
 	private TermsOfServiceTextVersionsDAO_IF termsOfServiceTextVersionsDAO;
+	
+	@Autowired
+	private TermsOfServiceText_ConvertForDisplay_Service termsOfServiceText_ConvertForDisplay_Service;
 	
 	@Autowired
 	private TermsOfServiceUserAcceptedVersionHistoryDAO_IF termsOfServiceUserAcceptedVersionHistoryDAO;
@@ -405,8 +409,12 @@ public class UserLogin_RestWebserviceController {
 			throw new LimelightInternalErrorException(msg);
 		}
 		
+		String termsOfServiceText = 
+				termsOfServiceText_ConvertForDisplay_Service
+				.termsOfServiceText_ConvertForDisplay_ExceptConfigurationPage( termsOfServiceTextVersionsDTO.getTermsOfServiceText() );
+		
 		userLoginResult.setTermsOfServiceKey( termsOfServiceTextVersionsDTO.getIdString() );
-		userLoginResult.setTermsOfServiceText( termsOfServiceTextVersionsDTO.getTermsOfServiceText() );
+		userLoginResult.setTermsOfServiceText( termsOfServiceText );
 	}
 
 
