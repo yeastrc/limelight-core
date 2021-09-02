@@ -12,6 +12,9 @@
   <c:if test="${ not empty configSystemValues.googleAnalyticsTrackingCode }">
   
   	<script id="google_analytics_tracking_code" type="text/text"><c:out value="${ configSystemValues.googleAnalyticsTrackingCode }" escapeXml="false"></c:out></script>
+  	
+  	<script async src="https://www.googletagmanager.com/gtag/js?id=<c:out value="${ configSystemValues.googleAnalyticsTrackingCode }" escapeXml="false"></c:out>"></script>
+  	
 	<script type="text/javascript" src="static/js/page_js/mainPages_GoogleAnalytics.js"></script>
   </c:if>
   
