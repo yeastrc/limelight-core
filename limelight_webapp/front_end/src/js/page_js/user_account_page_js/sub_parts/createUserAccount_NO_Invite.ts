@@ -37,7 +37,8 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	private _initialized = false;
 	private _user_invite_create_account_main_display_template = _user_account_create_account_template_bundle.user_invite_create_account_main_display_template;
 
-	// private google_RecaptchaSiteKey;
+	private _google_RecaptchaSiteKey;
+
 	private containerHTMLElement;
 
 	private _google_Recaptcha;  //  Google Recaptcha object
@@ -63,7 +64,8 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 		const promiseArray : Array<Promise<any>> = [];
 
-		this._termsOfServiceKey = this._get_TermsOfServiceKey();
+		//  Updates _termsOfServiceKey
+		this._get_TermsOfServiceKey__CALL_ONLY_ONCE();
 
 		//  NOT currently needed since place Terms of Service text in overlay in JSP
 		// if ( this._termsOfServiceKey !== undefined && this._termsOfServiceKey !== null && this._termsOfServiceKey !== "" ) {
@@ -71,9 +73,12 @@ export class UserCreateAccount_NO_Invite_Subpart {
 		// 	promiseArray.push(promise);
 		// }
 
+		// Updates this._google_RecaptchaSiteKey
+		this._get_Google_RecaptchaSiteKey_StoreInObject__CALL_ONLY_ONCE();
+
 		{
-			const google_RecaptchaSiteKey = this._get_Google_RecaptchaSiteKey();
-			if ( google_RecaptchaSiteKey ) {
+
+			if ( this._google_RecaptchaSiteKey ) {
 				const response_loadGoogleRecaptcha = loadGoogleRecaptcha();
 				if (response_loadGoogleRecaptcha.isLoaded) {
 					this._google_Recaptcha = response_loadGoogleRecaptcha.grecaptcha
@@ -115,7 +120,7 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	/**
 	 *
 	 */
-	private _get_Google_RecaptchaSiteKey() : string {
+	private _get_Google_RecaptchaSiteKey_StoreInObject__CALL_ONLY_ONCE() : void {
 
 		const create_account_page_google_recaptcha_site_keyDOM = document.getElementById("create_account_page_google_recaptcha_site_key");
 		if ( ! create_account_page_google_recaptcha_site_keyDOM ) {
@@ -148,13 +153,13 @@ export class UserCreateAccount_NO_Invite_Subpart {
 			// swallow any exception
 		}
 
-		return create_account_page_google_recaptcha_site_key_Inside_HTML_BODY_Tags;
+		this._google_RecaptchaSiteKey = create_account_page_google_recaptcha_site_key_Inside_HTML_BODY_Tags;
 	}
 
 	/**
 	 *
 	 */
-	private _get_TermsOfServiceKey() : string {
+	private _get_TermsOfServiceKey__CALL_ONLY_ONCE() : void {
 
 		const terms_of_service_id_stringDOM = document.getElementById("terms_of_service_id_string");
 		if ( ! terms_of_service_id_stringDOM ) {
@@ -187,7 +192,7 @@ export class UserCreateAccount_NO_Invite_Subpart {
 			// swallow any exception
 		}
 
-		return terms_of_service_id_string_Inside_HTML_BODY_Tags;
+		this._termsOfServiceKey = terms_of_service_id_string_Inside_HTML_BODY_Tags;
 	}
 
 	/**
@@ -197,7 +202,7 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 		let objectThis = this;
 		try {
-			const google_RecaptchaSiteKey = this._get_Google_RecaptchaSiteKey();
+			const google_RecaptchaSiteKey = this._google_RecaptchaSiteKey;
 
 			let $containerHTMLElement = $( containerHTMLElement );
 
