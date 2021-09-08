@@ -37,6 +37,7 @@ head_section_include_every_page.jsp
     		https://www.gstatic.com/  <%-- Google Charts Loader and Google Recaptcha data loaded from here --%>
     		'unsafe-eval'  <%--  Required for Google Charts --%> 
     		https://www.googletagmanager.com/gtag/js  <%-- Google Analytics --%>
+    		https://www.google-analytics.com/analytics.js   <%-- Google Analytics --%>
     		https://www.recaptcha.net/recaptcha/api.js  <%-- Google Recaptcha --%>
     		https://www.google.com/recaptcha/api.js  <%-- Google Recaptcha Original path --%>
     		;
