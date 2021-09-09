@@ -319,7 +319,7 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
                 <div>Loading Searches</div>
             ): ( this.state.showNoSearchesMessage ) ? (
 
-                 <div >
+                 <div style={ { marginBottom: 20 } }>
                      No searches in this project.
                  </div>
 
