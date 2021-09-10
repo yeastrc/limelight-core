@@ -21,6 +21,7 @@ services:
     volumes:
       - ${SPECTR_UPLOAD_DIRECTORY}:/data/upload
       - ${SPECTR_STORAGE_DIRECTORY}:/data/storage
+      - ${LIMELIGHT_UPLOAD_DIRECTORY}:/data/limelight_upload
   importer:
     image: mriffle/limelight-importer:1
     container_name: limelight-importer
