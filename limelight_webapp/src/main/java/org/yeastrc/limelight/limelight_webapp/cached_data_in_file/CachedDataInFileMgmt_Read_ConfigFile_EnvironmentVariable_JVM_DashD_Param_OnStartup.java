@@ -197,6 +197,8 @@ public class CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_
 			}
 
 		}
+
+		response.root_Subdirectory_ToStoreFilesIn = root_Subdirectory_ToStoreFilesIn;
 		
 		return response;
 	}
