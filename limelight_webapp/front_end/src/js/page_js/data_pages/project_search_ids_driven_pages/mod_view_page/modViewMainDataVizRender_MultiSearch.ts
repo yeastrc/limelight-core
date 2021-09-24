@@ -2,6 +2,9 @@
 
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
+import _common_template_bundle =
+    require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
+
 import * as d3 from "d3";
 import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
@@ -1291,7 +1294,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                 }
 
                 if(projectSearchId) {
-                    txt += "<p>Search: " + ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ dataPageStateManager_DataFrom_Server, projectSearchId }) + "</p>";
+                    const searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ dataPageStateManager_DataFrom_Server, projectSearchId });
+                    const searchName_HTMLEncoded = _common_template_bundle.genericSingleValueOnly({ value: searchName });
+                    txt += "<p>Search: " + searchName_HTMLEncoded + "</p>";
                 }
 
                 if(psmCount !== undefined) {
