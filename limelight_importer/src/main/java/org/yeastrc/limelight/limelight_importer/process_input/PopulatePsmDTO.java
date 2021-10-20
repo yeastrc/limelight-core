@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
