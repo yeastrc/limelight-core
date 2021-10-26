@@ -8,7 +8,7 @@ volumes:
 
 services:
   db:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: limelight-mysql
     restart: always
     command: ${MYSQL_OPTIONS}
@@ -29,7 +29,7 @@ services:
       - spectr_storage:/data/storage
       - limelight_upload:/data/limelight_upload
   importer:
-    image: mriffle/limelight-importer:1
+    image: mriffle/limelight-importer:2
     container_name: limelight-importer
     restart: always
     depends_on:
@@ -44,7 +44,7 @@ services:
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
   limelight:
-    image: mriffle/limelight-webapp:1
+    image: mriffle/limelight-webapp:2
     container_name: limelight-webapp
     restart: always
     depends_on:
