@@ -116,7 +116,6 @@ import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/d
 import {
     experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId
 } from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId";
-import {ProteinList_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinList_ExpPage_CentralStateManagerObjectClass";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {GeneratedPeptideContents_UserSelections_Root_Component} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/jsx/generatedPeptideContents_UserSelections_Root_Component";
 import {
@@ -156,14 +155,6 @@ const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
 
 
 //////////////////////////////////
-
-
-/**
- * 
- */
-export interface ProteinExperimentPage_SingleProtein_MainContent_Component_closeOverlayClickHandler {
-    () : void
-}
 
 /**
  * 

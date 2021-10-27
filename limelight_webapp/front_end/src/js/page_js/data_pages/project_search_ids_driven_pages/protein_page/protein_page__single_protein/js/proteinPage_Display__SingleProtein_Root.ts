@@ -641,43 +641,48 @@ export class ProteinPage_Display__SingleProtein_Root {
 	 * Call to close overlay
 	 */
 	private _closeOverlay_Actual({ no_Call_CloseCallback } : { no_Call_CloseCallback : boolean }) : void {
+		try {
+			//  Cover with spinner on background since this may take a while
 
-		//  Cover with spinner on background since this may take a while
+			const closingCover = open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex();
 
-		const closingCover = open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex();
+			window.setTimeout( () => {
+				try {
+					//  Remove Single Protein From page:
 
-		window.setTimeout( () => {
-			try {
-				//  Remove Single Protein From page:
+					if ( this._singleProteinContainer_addedDivElementDOM ) {
+						ReactDOM.unmountComponentAtNode( this._singleProteinContainer_addedDivElementDOM );
 
-				if ( this._singleProteinContainer_addedDivElementDOM ) {
-					ReactDOM.unmountComponentAtNode( this._singleProteinContainer_addedDivElementDOM );
+						this._singleProteinContainer_addedDivElementDOM.remove();
+					}
 
-					this._singleProteinContainer_addedDivElementDOM.remove();
+					this._singleProtein_CentralStateManagerObject.clearAll();
+
+					this._resizeWindow_Handler_Remove();
+
+					const call_CloseCallback = ! no_Call_CloseCallback;
+
+					if ( call_CloseCallback && this._singleProteinCloseCallback ) {
+						this._singleProteinCloseCallback();
+					}
+
+					//  Remove cover
+					closingCover.removeCover();
+
+				} catch( e ) {
+					console.log("Exception caught in _closeOverlay_Actual() window.setTimeout");
+					console.log( e );
+					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+					throw e;
 				}
+			}, 10 );
 
-				this._singleProtein_CentralStateManagerObject.clearAll();
-
-				this._resizeWindow_Handler_Remove();
-
-				const call_CloseCallback = ! no_Call_CloseCallback;
-
-				if ( call_CloseCallback && this._singleProteinCloseCallback ) {
-					this._singleProteinCloseCallback();
-				}
-
-				//  Remove cover
-
-				closingCover.removeCover();
-
-			} catch( e ) {
-				console.log("Exception caught in _resizeWindow_Handler()");
-				console.log( e );
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		}, 10 );
-
+		} catch( e ) {
+			console.log("Exception caught in _closeOverlay_Actual()");
+			console.log( e );
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+			throw e;
+		}
 	}
 
 	//////////////

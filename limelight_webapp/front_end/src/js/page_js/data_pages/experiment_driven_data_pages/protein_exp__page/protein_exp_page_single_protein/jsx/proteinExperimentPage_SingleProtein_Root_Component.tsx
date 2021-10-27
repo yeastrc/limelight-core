@@ -20,6 +20,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { ProteinExperimentPage_SingleProtein_MainContent_Component, ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop } from './proteinExperimentPage_SingleProtein_MainContent_Component'
 import {ProteinExperimentPage_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_SingleProtein_ProteinNameDescription_Component";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import {open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex} from "page_js/common_all_pages/limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex";
 
 
 
@@ -223,12 +224,27 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
      */    
     _closeOverlayClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
         try {
-            // event.preventDefault();
-            // event.stopPropagation();
+            //  Cover with spinner on background since this may take a while
 
-            if ( this.props.closeOverlayClickHandler ) {
-                this.props.closeOverlayClickHandler();
-            }
+            const closingCover = open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex();
+
+            window.setTimeout( () => {
+                try {
+                    //  Remove Single Protein From page:
+
+                    if (this.props.closeOverlayClickHandler) {
+                        this.props.closeOverlayClickHandler();
+                    }
+
+                    //  Remove cover
+                    closingCover.removeCover();
+
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                    throw e;
+                }
+            }, 10);
+
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -238,7 +254,7 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
     /**
      * Called by child component
      */  
-    _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number }) : void {
+    private _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number }) : void {
 
         if ( this._view_single_protein_inner_overlay_div_Width !== width ) {
 
