@@ -1149,27 +1149,22 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
             reportLineParts_AllLines.push( reportLineParts );
 		}
 
-		//  Join all line parts into strings, delimit on '\t'
+        //  Join all line parts into string for each line, delimit on '\t'
 
-		const reportLine_AllLines = [];
+        const reportLine_AllLines = [];
 
-		let reportLineParts_AllLinesIndex = -1; // init to -1 since increment first
-		const reportLineParts_AllLinesIndex_Last = reportLineParts_AllLines.length - 1;
+        for ( const reportLineParts of reportLineParts_AllLines ) {
 
-		for ( const reportLineParts of reportLineParts_AllLines ) {
+            const reportLine = reportLineParts.join( "\t" );
+            reportLine_AllLines.push( reportLine );
+        }
 
-			reportLineParts_AllLinesIndex++;
+        //  Add empty string to array so get \n at end of last line when do reportLine_AllLines.join( '\n' );
+        reportLine_AllLines.push("");
 
-			let reportLine = reportLineParts.join( "\t" );
-			if ( reportLineParts_AllLinesIndex === reportLineParts_AllLinesIndex_Last ) {
-				reportLine += '\n'; // Add '\n' to last line
-			}
-			reportLine_AllLines.push( reportLine );
-		}
+        //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
 
-		//  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
-
-		const reportLinesSingleString = reportLine_AllLines.join( '\n' );
+        const reportLinesSingleString = reportLine_AllLines.join( '\n' );
 
 		return reportLinesSingleString;
 	}
