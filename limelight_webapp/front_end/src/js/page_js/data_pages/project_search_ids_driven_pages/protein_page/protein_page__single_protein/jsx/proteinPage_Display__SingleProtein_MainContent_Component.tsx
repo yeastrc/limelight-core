@@ -140,12 +140,6 @@ const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
 //////////////////////////////////
 
 
-/**
- * 
- */
-export interface ProteinPage_Display__SingleProtein_MainContent_Component_closeOverlayClickHandler {
-    () : void
-}
 
 /**
  * 

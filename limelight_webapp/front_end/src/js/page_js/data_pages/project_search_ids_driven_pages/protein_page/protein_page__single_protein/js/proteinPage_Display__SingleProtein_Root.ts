@@ -56,6 +56,7 @@ import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass";
 import {proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass";
+import {open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex} from "page_js/common_all_pages/limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex";
 
 
 /**
@@ -456,7 +457,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 
         //   Add DOM element to insert ReactDOM render into
 
-        let addedDivElementDOM = undefined;
+        let addedDivElementDOM: HTMLDivElement = undefined;
 
         {
             // Parent Node to insert under
@@ -475,13 +476,8 @@ export class ProteinPage_Display__SingleProtein_Root {
 
             addedDivElementDOM = document.createElement("div");
 
-            // data_page_outermost_divDOMElement.appendChild( addedDivElementDOM );
-
             data_page_outermost_divDOMElement.insertBefore(addedDivElementDOM, footer_outer_container_divDOMElement);
 		}
-
-
-        //  Or insertBefore <div id="footer_outer_container_div">
 
         this._singleProteinContainer_addedDivElementDOM = addedDivElementDOM;
 
@@ -646,23 +642,42 @@ export class ProteinPage_Display__SingleProtein_Root {
 	 */
 	private _closeOverlay_Actual({ no_Call_CloseCallback } : { no_Call_CloseCallback : boolean }) : void {
 
-		//  remove From page:
+		//  Cover with spinner on background since this may take a while
 
-		if ( this._singleProteinContainer_addedDivElementDOM ) {
-			ReactDOM.unmountComponentAtNode( this._singleProteinContainer_addedDivElementDOM );
+		const closingCover = open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex();
 
-			this._singleProteinContainer_addedDivElementDOM.remove();
-		}
+		window.setTimeout( () => {
+			try {
+				//  Remove Single Protein From page:
 
-		this._singleProtein_CentralStateManagerObject.clearAll();
+				if ( this._singleProteinContainer_addedDivElementDOM ) {
+					ReactDOM.unmountComponentAtNode( this._singleProteinContainer_addedDivElementDOM );
 
-		this._resizeWindow_Handler_Remove();
+					this._singleProteinContainer_addedDivElementDOM.remove();
+				}
 
-		const call_CloseCallback = ! no_Call_CloseCallback;
+				this._singleProtein_CentralStateManagerObject.clearAll();
 
-		if ( call_CloseCallback && this._singleProteinCloseCallback ) {
-			this._singleProteinCloseCallback();
-		}
+				this._resizeWindow_Handler_Remove();
+
+				const call_CloseCallback = ! no_Call_CloseCallback;
+
+				if ( call_CloseCallback && this._singleProteinCloseCallback ) {
+					this._singleProteinCloseCallback();
+				}
+
+				//  Remove cover
+
+				closingCover.removeCover();
+
+			} catch( e ) {
+				console.log("Exception caught in _resizeWindow_Handler()");
+				console.log( e );
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		}, 10 );
+
 	}
 
 	//////////////
