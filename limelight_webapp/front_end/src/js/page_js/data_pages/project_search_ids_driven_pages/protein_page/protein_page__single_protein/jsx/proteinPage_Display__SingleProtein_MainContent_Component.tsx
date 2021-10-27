@@ -922,13 +922,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 proteinPositionFilter_UserSelections_StateObject : undefined
             });
 
-            // {
-            //     window.alert( "Download PSMs shown needs update for selected Search Sub Group Ids" )
-            //     const msg = "_downloadPsms_Shown_ClickHandler: Download PSMs shown needs update for selected Search Sub Group Ids"
-            //     console.warn( msg )
-            //     throw Error( msg )
-            // }
-
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
 
             //  Build data for serializing to JSON
@@ -2148,59 +2141,49 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                     throw e;
                                 }
-                            }, 0 );
+                            }, 10 );
             
                             window.setTimeout( () => {
                                 try {
-                                    if ( create_GeneratedReportedPeptideListData_Result.peptideList_Length > 300 ) { //  The cutoff number is an arbitrary guess
-                                        //  Since going to take a while to put new peptide list in DOM, show updating message first, then update peptide list
-            
-                                        this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
-                                            return { updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true }
-                                        });
-            
-                                        window.setTimeout( () => {
-                                            try {
-                                                this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
-                                                    return { 
-                                                        updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
-                                                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                                                        create_GeneratedReportedPeptideListData_Result 
-                                                    }
-                                                });
-                                            } catch( e ) {
-                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                                throw e;
-                                            }
-                                        }, 0 );
-                                    } else {
-                                        //  Should not take long to update DOM for new peptide list so do directly
-                                        this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
-                                            return { 
-                                                updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
-                                                reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                                                create_GeneratedReportedPeptideListData_Result
-                                            }
-                                        });
-                                    }
+                                    // Display Updating message then display new data
+
+                                    this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
+                                        return { updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true }
+                                    });
+
+                                    window.setTimeout( () => {
+                                        try {
+                                            this.setState( (state : ProteinPage_Display__SingleProtein_MainContent_Component_State, props : ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
+                                                return {
+                                                    updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
+                                                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                                                    create_GeneratedReportedPeptideListData_Result
+                                                }
+                                            });
+                                        } catch( e ) {
+                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                            throw e;
+                                        }
+                                    }, 10 );
+
                                 } catch( e ) {
                                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                     throw e;
                                 }
-                            }, 0 );
+                            }, 20 );
 
                         } catch( e ) {
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
                         }
-                    }, 0 );
+                    }, 10 );
             
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
                     //  Update more parts like protein coverage and peptide list
-            }, 0 );
+            }, 10 );
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -2276,17 +2259,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 			this._domMutationObserver_reported_peptides_outer_container = undefined;
 		}
 
-		//  Add MutationObserver to DOM element .selector_reported_peptides_outer_container
-
-		// const $selector_reported_peptides_outer_container = $view_single_protein_overlay_body.find(".selector_reported_peptides_outer_container");
-		// if ( $selector_reported_peptides_outer_container.length === 0 ) {
-		// 	throw Error("Failed find DOM element with class 'selector_reported_peptides_outer_container'");
-		// }
-		// if ( $selector_reported_peptides_outer_container.length > 1 ) {
-		// 	throw Error("Found > 1 DOM element with class 'selector_reported_peptides_outer_container'");
-		// }
-		// const DOMElement = $selector_reported_peptides_outer_container[ 0 ];
-
 		// Options for the observer (which mutations to observe)
 		// const config = { attributes: true, childList: true, subtree: true };
 		const config = { childList: true, subtree: true };
@@ -2326,9 +2298,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
 		// Start observing the target node for configured mutations
 		this._domMutationObserver_reported_peptides_outer_container.observe( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
-
-		// stop observing
-		// this._domMutationObserver_reported_peptides_outer_container.disconnect();
 	}
 
 	/**
@@ -2364,97 +2333,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
             this._updated_OverlayWidth = overlayWidth;
         }
-
-		// this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 	}
-
-	//  NOT CALLED
-
-	// /**
-	//  * _adjustBoxesOnRight So AtRigthtEdgeOfViewPort or right edge of overlay, whichever is further left.
-    //  *
-    //  * This is done by adjusting the width of the containing <div> that contains the grid definition "auto min-content"
-    //  *
-    //  * Called from _resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() or whenever the width of the viewport changes.
-	//  */
-	// _adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() {
-    //
-    //     // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() entered")
-    //
-    //     let widthOverall_For_TopSection = undefined;  // Section above Peptide List.  Keep in viewport if possible
-    //     {
-    //         let overlayWidth = undefined;
-    //
-    //         if ( this._updated_OverlayWidth !== undefined ) {
-    //
-    //             overlayWidth = this._updated_OverlayWidth;
-    //
-    //         } else {
-    //
-    //             overlayWidth = this.props.view_single_protein_inner_overlay_div_Width_Initial;
-    //         }
-    //
-    //         //   window.innerWidth: Per MDN: Width (in pixels) of the browser window viewport INCLUDING, if rendered, the vertical scrollbar.
-    //         // const window_innerWidth = window.innerWidth
-    //
-    //         //  Get Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
-    //         //     Done to position boxes on right correctly from right side, including if vertical scrollbar is rendered
-    //         const rootHTMLelement_Collection = document.getElementsByTagName("html");
-    //         if ( ! ( rootHTMLelement_Collection.length > 0 ) ) {
-    //             const msg = "_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort(): element 'html' not found: true: if ( ! ( rootHTMLelement_Collection.length > 0 ) )"
-    //             console.warn( msg );
-    //             throw Error( msg );
-    //         }
-    //         const rootHTMLelement = rootHTMLelement_Collection[ 0 ];
-    //         const rootHTMLelement_clientWidth = rootHTMLelement.clientWidth; // Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
-    //
-    //         // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() rootHTMLelement_clientWidth: " + rootHTMLelement_clientWidth + ", window_innerWidth: " + window_innerWidth )
-    //
-    //         if ( overlayWidth < rootHTMLelement_clientWidth ) {
-    //
-    //             widthOverall_For_TopSection = overlayWidth;
-    //
-    //         } else {
-    //
-    //             widthOverall_For_TopSection = rootHTMLelement_clientWidth;
-    //         }
-    //     }
-    //
-    //     //  Subtract left and right adding of containing <div>
-    //     widthOverall_For_TopSection = widthOverall_For_TopSection - this.props.view_single_protein_overlay_body_PaddingLeft - this.props.view_single_protein_overlay_body_PaddingRight;
-    //     {
-    //         const div_MainGridAtTo_DOM = this._div_MainGridAtTop_Ref.current;
-    //
-    //         div_MainGridAtTo_DOM.style.width = widthOverall_For_TopSection + "px";
-    //
-    //         div_MainGridAtTo_DOM.style.maxWidth = widthOverall_For_TopSection + "px";
-    //     }
-    //     {
-    //         const div_MainContent_LeftGridEntry_AtTop_DOM = this._div_MainContent_LeftGridEntry_AtTop_Ref.current;
-    //
-    //         let width_LeftGridEntry = (
-    //             widthOverall_For_TopSection
-    //             - _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC - _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC // - _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC
-    //             - 10 //  border width on boxes and just extra
-    //         );
-    //
-    //         if ( width_LeftGridEntry < this.state.widthOf_proteinSequenceWidgetDisplay_Component ) {
-    //             width_LeftGridEntry = this.state.widthOf_proteinSequenceWidgetDisplay_Component
-    //         }
-    //
-    //         if ( width_LeftGridEntry !== this._width_LeftGridEntry_TopMainSection_LastUpdatedValue ) {
-    //
-    //             // Has changed so update saved value and DOM
-    //
-    //             this._width_LeftGridEntry_TopMainSection_LastUpdatedValue = width_LeftGridEntry;
-    //
-    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.width = width_LeftGridEntry + "px";
-    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.maxWidth = width_LeftGridEntry + "px";
-    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.minWidth = width_LeftGridEntry + "px";
-    //         }
-    //     }
-	// }
-
 
     ////////////////////////////////////////
 
@@ -2673,13 +2552,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                         </div>
 
                         {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
-
-                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-
-                        {/* <PeptideFiltersDisplay
-                            peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                            clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                        /> */}
 
                     </div>  {/* END: Main Content above Reported Peptides  */}
 

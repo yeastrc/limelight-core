@@ -1721,9 +1721,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                                 });
 
-                                //  Show loading message for peptide list since may take time to load new values from DB
-                                // reportedPeptideList_ShowLoadingMessage();
-
                                 promise.catch( (reason) => {
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
@@ -1831,9 +1828,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                     return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                                 });
 
-                                //  Show loading message for peptide list since may take time to load new values from DB
-                                // reportedPeptideList_ShowLoadingMessage();
-
                                 promise.catch( (reason) => {
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
@@ -1921,27 +1915,19 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback() : void {
         try {
-            // window.setTimeout( () => {
-            //     try {
-            //         this._AAAAAA_Change_UpdateURL();  //  Update URL
+            window.setTimeout( () => {
+                try {
+                    this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
 
-                    window.setTimeout( () => {
-                        try {
-                            this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
+                    //  Now update dependent page parts
+                    this._updateRestOfPage_ForUserInteraction();
 
-                            //  Now update dependent page parts
-                            this._updateRestOfPage_ForUserInteraction();
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 0 );
 
-                        } catch( e ) {
-                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                            throw e;
-                        }
-                    }, 0 );
-            //     } catch( e ) {
-            //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            //         throw e;
-            //     }
-            // }, 0 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -2008,9 +1994,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                             return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true };
                         });
-                        
-                        //  Show loading message for peptide list since may take time to load new values from DB
-                        // reportedPeptideList_ShowLoadingMessage();
 
                         promise.catch( (reason) => {
                             try {
@@ -2213,14 +2196,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     if ( promise ) {
                         this._load_ProteinCoverage_InProgress = true;
 
-                        // console.log("_updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback(): Loading Reporter Ion Masses so display Loading Data Message");
                         this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
 
                             return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true };
                         });
-
-                        //  Show loading message for peptide list since may take time to load new values from DB
-                        // reportedPeptideList_ShowLoadingMessage();
 
                         promise.catch( (reason) => {
                             try {
@@ -2334,9 +2313,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                             return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
                         });
-
-                        //  Show loading message for peptide list since may take time to load new values from DB
-                        // reportedPeptideList_ShowLoadingMessage();
 
                         promise.catch( (reason) => {
                             try {
@@ -2499,55 +2475,45 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                             window.setTimeout( () => {
                                 try {
-                                    if ( create_GeneratedReportedPeptideListData_Result.peptideList_Length > 300 ) { //  The cutoff number is an arbitrary guess
-                                        //  Since going to take a while to put new peptide list in DOM, show updating message first, then update peptide list
-            
-                                        this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-                                            return { updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true }
-                                        });
-            
-                                        window.setTimeout( () => {
-                                            try {
-                                                this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-                                                    return { 
-                                                        updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
-                                                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                                                        create_GeneratedReportedPeptideListData_Result 
-                                                    }
-                                                });
-                                            } catch( e ) {
-                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                                throw e;
-                                            }
-                                        }, 0 );
-                                    } else {
-                                        //  Should not take long to update DOM for new peptide list so do directly
-                                        this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-                                            return { 
-                                                updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
-                                                reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                                                create_GeneratedReportedPeptideListData_Result
-                                            }
-                                        });
-                                    }
+                                    // Display Updating message then display new data
+
+                                    this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                        return { updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true }
+                                    });
+
+                                    window.setTimeout( () => {
+                                        try {
+                                            this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                                return {
+                                                    updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
+                                                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                                                    create_GeneratedReportedPeptideListData_Result
+                                                }
+                                            });
+                                        } catch( e ) {
+                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                            throw e;
+                                        }
+                                    }, 10 );
+
                                 } catch( e ) {
                                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                     throw e;
                                 }
-                            }, 0 );
+                            }, 10 );
 
                         } catch( e ) {
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
                         }
-                    }, 0 );
+                    }, 10 );
             
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
                     //  Update more parts like protein coverage and peptide list
-            }, 0 );
+            }, 10 );
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -2879,12 +2845,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                 {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
 
-                {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-
-                {/* <PeptideFiltersDisplay
-                    peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                    clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                /> */}
             </React.Fragment>
         )
     }

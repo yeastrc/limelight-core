@@ -6,11 +6,6 @@
  * Shown when A Protein is clicked
  */
 
-
- ///  Removed "Updating Message" since wasn't being displayed anyway.  
- ///  Need a paint cycle to end after add updating message before actually updating the peptide list
-
-
 import React from 'react'
 
 //   From data_pages_common
@@ -79,7 +74,6 @@ export interface ProteinPage_Display__SingleProtein_GeneratedReportedPeptideList
 interface ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State {
 
     placeholder?: any
-    // showUpdatingMessage? : boolean 
 }
 
 
@@ -94,79 +88,8 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
     constructor(props : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props) {
         super(props);
 
-        this.state = { 
-            // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId : this.props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId
-        };
+        this.state = {};
     }
-
-    /**
-     * Must be Static
-     * Called before 
-     *   Initial render: 'render()'
-     *   Rerender : 'shouldComponentUpdate()'
-     * 
-     * Return new state (like return from setState(callback)) or null
-     */
-    // static getDerivedStateFromProps( props : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props, state : ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State ) : ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State {
-
-    //     // console.log("called: static getDerivedStateFromProps(): " );
-
-    //     //    Return new state (like return from setState(callback)) or null
-
-    //     if ( props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId !== state.prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId ) {
-
-    //         //   reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId changed so update showUpdatingMessage
-            
-    //         return { 
-    //             showUpdatingMessage : true, 
-    //             prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId : props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId
-    //         };
-    //     }
-            
-    //     return null;
-    // }
-    
-    // /**
-    //  * @returns true if should update, false otherwise
-    //  */
-    // shouldComponentUpdate(nextProps : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props, nextState : ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State ) {
-
-    //     // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
-
-    //     //  Only update if changed: props or state: 
-
-    //     if ( this.state. !== nextState. ) {
-    //         return true;
-    //     }
-    //     return false;
-
-    //     //  If Comment out prev code, comment out this method
-    // }
-
-    //  returns snapshot which is passed to componentDidUpdate
-    // getSnapshotBeforeUpdate(prevProps, prevState)
-
-    // componentDidUpdate(
-    //     prevProps : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props, 
-    //     prevState : ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State, 
-    //     snapshot
-    // ) : void {
-
-    //     if ( this.state.showUpdatingMessage ) {
-    //         window.setTimeout( () => {
-    //             try {
-    //                 this.setState( (state: ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State, props: ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props ) : ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State => {
-
-    //                     return { showUpdatingMessage : false };
-    //                 });
-    //             } catch( e ) {
-    //                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    //                 throw e;
-    //             }
-    //         }, 20 );
-    //     }
-    // }
-    
 
     /**
      * 
@@ -258,8 +181,8 @@ export interface ReportedPeptideList_Component_Props {
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     dataPageStateManager : DataPageStateManager
-    showUpdatingMessage : boolean
-    showProteins? : boolean  // For Peptide Page
+    showUpdatingMessage : boolean  //  shouldComponentUpdate: return false when showUpdatingMessage is true //  Never update when showing updating message
+    showProteins : boolean  // For Peptide Page
 
     //  Required when showProteins is true.  For Peptide Page
     proteinName_Clicked_Callback_Function? : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function
@@ -274,8 +197,6 @@ export interface ReportedPeptideList_Component_Props {
 interface ReportedPeptideList_Component_State {
 
     placeholder?: any
-    // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId? : Map<number, Array<number>>
-    // showUpdatingMessage? : boolean 
 }
 
 
@@ -290,17 +211,13 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
     constructor(props : ReportedPeptideList_Component_Props) {
         super(props);
 
-        this.state = { 
-            // prev_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId : this.props.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId_Map_KeyProjectSearchId
-        };
+        this.state = {};
     }
 
     /**
      * @returns true if should update, false otherwise
      */
     shouldComponentUpdate(nextProps : ReportedPeptideList_Component_Props, nextState : ReportedPeptideList_Component_State ) {
-
-        // console.log("ModificationMass_UserSelections_Variable_or_Open_Modifications: shouldComponentUpdate")
 
         //  Only update if changed: props or state: 
 
@@ -486,9 +403,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                 <div >
 
                     {/* Container for Reported Peptides using Data Table - */}
-                    <div className="  "
-                        >
-                        {/* Loading Reported Peptides  */}
+                    <div>
                         { peptideListTable }
                     </div>
                     { noPeptidesMessage }
