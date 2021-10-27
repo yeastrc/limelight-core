@@ -9,43 +9,41 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
 
-import { StringDownloadUtils } from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
-
+import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 //   From data_pages_common
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
+import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
-import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
-
-import { SaveView_Create_Component_React_Type, SaveView_Create_Component_React_Result } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
-
-import { SharePage_Component } from 'page_js/data_pages/sharePage_React/sharePage_Component_React';
-
-//   Modification Mass Rounding to provide some level of commonality between searches
 import {
-    modificationMass_CommonRounding_ReturnNumber
-} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
+    SaveView_Create_Component_React_Result,
+    SaveView_Create_Component_React_Type
+} from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
 
-import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import {SharePage_Component} from 'page_js/data_pages/sharePage_React/sharePage_Component_React';
+//   Modification Mass Rounding to provide some level of commonality between searches
+import {modificationMass_CommonRounding_ReturnNumber} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
-import { PeptideSequence_UserSelections_StateObject } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject';
-import { PeptideSequence_UserSelections_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_ComponentData';
+import {ProteinView_LoadedDataCommonHolder} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
+import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
-import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
-import { ModificationMass_UserSelections_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData';
+import {PeptideSequence_UserSelections_StateObject} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject';
+import {PeptideSequence_UserSelections_ComponentData} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_ComponentData';
 
-import { ReporterIonMass_UserSelections_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_BuildData_ForReactComponent';
-import { ReporterIonMass_UserSelections_StateObject } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject';
+import {ModificationMass_UserSelections_StateObject} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
+import {ModificationMass_UserSelections_ComponentData} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData';
 
-import { ModificationMass_UserSelections_Root } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/jsx/modificationMass_UserSelections_Root';
+import {ReporterIonMass_UserSelections_ComponentData} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_BuildData_ForReactComponent';
+import {ReporterIonMass_UserSelections_StateObject} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject';
 
-import { ReporterIonMass_UserSelections } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/jsx/reporterIonMass_UserSelections';
+import {ModificationMass_UserSelections_Root} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/jsx/modificationMass_UserSelections_Root';
 
-import { PeptideSequence_UserSelections } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/jsx/peptideSequence_UserSelections';
+import {ReporterIonMass_UserSelections} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/jsx/reporterIonMass_UserSelections';
 
-import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
+import {PeptideSequence_UserSelections} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/jsx/peptideSequence_UserSelections';
+
+import {PeptideFiltersDisplay_ComponentData} from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 
 
 import {
@@ -55,14 +53,11 @@ import {
 
 
 import {
-    downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds,
-    DownloadPSMs_PerProjectSearchId_Entry, DownloadPSMs_PerReportedPeptideId
+    DownloadPSMs_PerProjectSearchId_Entry,
+    DownloadPSMs_PerReportedPeptideId,
+    downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
 } from 'page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds';
-
-
-////
-
-import { PeptidePage_Display_MainContent_Component_nonClass_Functions } from './peptidePage_Display_MainContent_Component_nonClass_Functions';
+import {PeptidePage_Display_MainContent_Component_nonClass_Functions} from './peptidePage_Display_MainContent_Component_nonClass_Functions';
 
 import {
     SearchDetailsAndFilterBlock_MainPage_Root,
@@ -123,14 +118,16 @@ import {
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 import {
     create_GeneratedReportedPeptideListData__SingleProtein,
-    Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
-    CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
+    Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 import {
     ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component,
     ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback,
     ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component";
+
+
+////
 
 
 /////////////////////////
@@ -659,36 +656,28 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             loadedDataCommonHolder
         } );
 
+        this.setState({
+            mainDisplayData_Loaded : true,
 
-        // console.log("Peptide List Data Generated (in call to _recompute_FullPage_Except_SearchDetails__SubPart): create_GeneratedReportedPeptideListData_Result.peptideList_Length: "
-        //     + create_GeneratedReportedPeptideListData_Result.peptideList_Length
-        //     + ", create_GeneratedReportedPeptideListData_Result: ", create_GeneratedReportedPeptideListData_Result )
+            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+            loadedDataCommonHolder,
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+            searchSubGroup_Are_All_SearchSubGroupIds_Selected,
+            searchSubGroup_PropValue,
 
-            return {
-                mainDisplayData_Loaded : true,
+            psmCountForUnfilteredDisplay,
 
-                loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                loadedDataCommonHolder,
+            modificationMass_UserSelections_ComponentData,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData,
+            reporterIons_UserSelections_ComponentData,
+            peptideUnique_UserSelection_ComponentData,
+            peptideSequence_UserSelections_ComponentData,
+            proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
+            peptideFiltersDisplay_ComponentData,
 
-                searchSubGroup_Are_All_SearchSubGroupIds_Selected,
-                searchSubGroup_PropValue,
+            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
 
-                psmCountForUnfilteredDisplay,
-
-                modificationMass_UserSelections_ComponentData,
-                modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData,
-                reporterIons_UserSelections_ComponentData,
-                peptideUnique_UserSelection_ComponentData,
-                peptideSequence_UserSelections_ComponentData,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-                peptideFiltersDisplay_ComponentData,
-
-                reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-
-                create_GeneratedReportedPeptideListData_Result,
-            };
+            create_GeneratedReportedPeptideListData_Result,
         });
     }
 
@@ -746,10 +735,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         const searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean =
             PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected({ propsValue : this.props.propsValue });
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { searchSubGroup_PropValue, searchSubGroup_Are_All_SearchSubGroupIds_Selected };
-        });
+        this.setState({ searchSubGroup_PropValue, searchSubGroup_Are_All_SearchSubGroupIds_Selected });
     }
 
     /**
@@ -1298,10 +1284,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             if ( promise ) {
                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                    return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
-                });
+                this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true });
 
                 //  Show Loading Message
 
@@ -1320,10 +1303,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                         //  Remove Loading Message
                         modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
-                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                        });
+                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
                     } catch( e ) {
                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                         throw e;
@@ -1337,10 +1317,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                         //  Remove Loading Message
                         modificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage_Overlay.removeContents_AndContainer_FromDOM();
 
-                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                        });
+                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
                         //  Now open the overlay
 
@@ -1466,19 +1443,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             if ( promise ) {
                                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                    return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
-                                });
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true });
 
                                 promise.catch( (reason) => {
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
-                                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                                        });
                                     } catch( e ) {
                                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                         throw e;
@@ -1489,10 +1461,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                                        });
+                                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
                                         //  Now update dependent page parts
 
@@ -1573,19 +1542,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             if ( promise ) {
                                 this._load_PsmOpenModificationMasses_InProgress = true;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                    return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
-                                });
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true });
 
                                 promise.catch( (reason) => {
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
-                                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                                        });
                                     } catch( e ) {
                                         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                         throw e;
@@ -1596,10 +1560,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                     try {
                                         this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                                        });
+                                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
                                         //  Now update dependent page parts
 
@@ -1654,10 +1615,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
             });
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { modificationMass_UserSelections_ComponentData };
-        });
+        this.setState({ modificationMass_UserSelections_ComponentData });
     }
 
     /**
@@ -1689,8 +1647,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData() {
 
-        let existing_modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData = this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData;
-
         const modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData =
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent({
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
@@ -1698,12 +1654,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
             });
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            let existingState_modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData = state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData;
-
-            return { modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData };
-        });
+        this.setState({ modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData });
     }
 
 
@@ -1740,19 +1691,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                         this._load_ReporterIonMasses_InProgress = true;
 
                         // console.log("_updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback(): Loading Reporter Ion Masses so display Loading Data Message");
-                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                            return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true };
-                        });
+                        this.setState({ gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true });
 
                         promise.catch( (reason) => {
                             try {
                                 this._load_ReporterIonMasses_InProgress = false;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false });
 
-                                    return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false };
-                                });
                             } catch( e ) {
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
@@ -1763,10 +1709,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             try {
                                 this._load_ReporterIonMasses_InProgress = false;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                    return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false };
-                                });
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false });
 
                                 //  Now update dependent page parts
                 
@@ -1817,10 +1760,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
         });
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { reporterIons_UserSelections_ComponentData };
-        });
+        this.setState({ reporterIons_UserSelections_ComponentData });
     }
 
     /**
@@ -1864,10 +1804,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject
         });
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { peptideUnique_UserSelection_ComponentData };
-        });
+        this.setState({ peptideUnique_UserSelection_ComponentData });
     }
 
     /**
@@ -1909,10 +1846,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject
         });
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { peptideSequence_UserSelections_ComponentData };
-        });
+        this.setState({ peptideSequence_UserSelections_ComponentData });
     }
 
     /**
@@ -1946,19 +1880,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     if ( promise ) {
                         this._load_ProteinCoverage_InProgress = true;
 
-                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                            return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true };
-                        });
+                        this.setState({ gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : true });
 
                         promise.catch( (reason) => {
                             try {
                                 this._load_ProteinCoverage_InProgress = false;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false });
 
-                                    return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false };
-                                });
                             } catch( e ) {
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
@@ -1969,10 +1898,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             try {
                                 this._load_ProteinCoverage_InProgress = false;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                    return { gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false };
-                                });
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : false });
 
                                 //  Now update dependent page parts
 
@@ -2055,19 +1981,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     if ( promise ) {
                         this._load_PsmOpenModificationMasses_InProgress = true;
 
-                        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                            return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true };
-                        });
+                        this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : true });
 
                         promise.catch( (reason) => {
                             try {
                                 this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
-                                    return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                                });
                             } catch( e ) {
                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                                 throw e;
@@ -2078,10 +1999,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             try {
                                 this._load_PsmOpenModificationMasses_InProgress = false;
 
-                                this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-                                    return { gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false };
-                                });
+                                this.setState({ gettingDataFor_Filtering_reportedPeptideIdsForDisplay : false });
 
                                 //  Now update dependent page parts
 
@@ -2223,18 +2141,14 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 try {
                                     // Display Updating message then display new data
 
-                                    this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-                                        return { updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true }
-                                    });
+                                    this.setState({ updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : true });
 
                                     window.setTimeout( () => {
                                         try {
-                                            this.setState( (state : PeptidePage_Display_MainContent_Component_State, props : PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-                                                return {
-                                                    updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
-                                                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                                                    create_GeneratedReportedPeptideListData_Result
-                                                }
+                                            this.setState({
+                                                updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
+                                                reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                                                create_GeneratedReportedPeptideListData_Result
                                             });
                                         } catch( e ) {
                                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -2285,10 +2199,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             searchSubGroup_PropValue : this.state.searchSubGroup_PropValue
         };
 
-        this.setState( (state: PeptidePage_Display_MainContent_Component_State, props: PeptidePage_Display_MainContent_Component_Props ) : PeptidePage_Display_MainContent_Component_State => {
-
-            return { peptideFiltersDisplay_ComponentData };
-        });
+        this.setState({ peptideFiltersDisplay_ComponentData });
     }
 
     ////////////////////////////////////////

@@ -276,19 +276,14 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         this._displayChildTable = ! this._displayChildTable;
 
-        this.setState( ( prevState : DataTable_Table_DataRow_State, props : DataTable_Table_DataRow_Props ) : DataTable_Table_DataRow_State => {
-
-            return { displayChildTable : this._displayChildTable };
-        });
+        this.setState({ displayChildTable : this._displayChildTable });
 
         if ( this._displayChildTable && ( ! this.state.childDataTable_RootTableObject ) ) {
 
             //   state.childDataTable_RootTableObject not exist so create it and set in state
 
 
-            this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
-                return {show_Loading_childContent_Message: true}
-            });
+            this.setState({show_Loading_childContent_Message: true});
 
             let childDataTable_RootTableObject: DataTable_RootTableObject = undefined
             let promise_childDataTable_RootTableObject: Promise<DataTable_RootTableObject> = undefined
@@ -363,9 +358,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                             throw Error(msg);
                         }
 
-                        this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
-                            return {childDataTable_RootTableObject, show_Loading_childContent_Message: false};
-                        });
+                        this.setState({childDataTable_RootTableObject, show_Loading_childContent_Message: false});
 
                     } catch (e) {
                         console.warn("Error Caught: ", e);
@@ -397,18 +390,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
         this._displayChildTable = !this._displayChildTable;
 
-        this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
-
-            return {displayChildTable: this._displayChildTable};
-        });
+        this.setState({displayChildTable: this._displayChildTable});
 
         if (this._displayChildTable && (!this.state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender)) {
 
             //   state.dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender not exist so create it and set in state
 
-            this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
-                return {show_Loading_childContent_Message: true}
-            });
+            this.setState({show_Loading_childContent_Message: true});
 
             let dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = undefined
             let promise_childContent_Callback: Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent> = undefined
@@ -482,11 +470,9 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                             throw Error(msg);
                         }
 
-                        this.setState((prevState: DataTable_Table_DataRow_State, props: DataTable_Table_DataRow_Props): DataTable_Table_DataRow_State => {
-                            return {
-                                dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: getChildContent_Callback,
-                                show_Loading_childContent_Message: false
-                            };
+                        this.setState({
+                            dataRow_Get_RowChildContent_Return_ChildContent__FINAL_CallOnRender: getChildContent_Callback,
+                            show_Loading_childContent_Message: false
                         });
 
                     } catch (e) {

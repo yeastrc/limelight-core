@@ -327,21 +327,11 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
             //  Update differed until after displaying updating message
 
-            this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
-
-                // Important: read `existingState` instead of `this.state` when updating.
-
-                return { show_updatingTableOrder_Message : true };
-            });
+            this.setState({ show_updatingTableOrder_Message : true });
 
             window.setTimeout(() => {
                     
-                this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
-
-                    // Important: read `existingState` instead of `this.state` when updating.
-
-                    return { show_updatingTableOrder_Message : false };
-                });
+                this.setState({ show_updatingTableOrder_Message : false });
 
                 this.setState( (existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props ) : DataTable_TableRoot_State => {
 
@@ -606,9 +596,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
             //  Run Page change immediately
 
-            this.setState((existingState: DataTable_TableRoot_State, props: DataTable_TableRoot_Props): DataTable_TableRoot_State => {
-                return {currentPage_CurrentValue: newValue}
-            });
+            this.setState({currentPage_CurrentValue: newValue});
         }
     }
 
