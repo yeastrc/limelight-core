@@ -11,6 +11,10 @@
 	<div style="margin-top: 5px; white-space: nowrap;">Drag Search to a folder to move to that folder</div>
 	<div style="margin-top: 20px;">Search Name:</div>
 	<div style="margin-top: 5px;">{{name}} ({{ searchId }})</div>
+    {{#if formattedLoadTime }}
+        <div style="margin-top: 20px;">Upload:</div>
+        <div style="margin-top: 5px;">{{formattedLoadTime}}</div>
+    {{/if}}
 </div>   		  
 
 

@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,16 +222,26 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 	 * @return
 	 */
 	private List<WebserviceResultSearchItem> convertSearchItemMinimalToWebserviceResultSearchItem( List<SearchItemMinimal> searches ) {
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 		List<WebserviceResultSearchItem> webserviceResultSearchItemList = new ArrayList<>( searches.size() );
 		for ( SearchItemMinimal searchItemMinimal : searches ) {
 			
 			String searchNameDisplay = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
+
+			String formattedLoadTime = null;
+			
+			if ( searchItemMinimal.getImportEndTimestamp() != null ) {
+				formattedLoadTime = simpleDateFormat.format( searchItemMinimal.getImportEndTimestamp() );
+			}
 			
 			WebserviceResultSearchItem searchItem = new WebserviceResultSearchItem();
 			searchItem.id = searchItemMinimal.getProjectSearchId();
 			searchItem.searchId = searchItemMinimal.getSearchId();
 			searchItem.displayOrder = searchItemMinimal.getDisplayOrder();
 			searchItem.name = searchNameDisplay;
+			searchItem.formattedLoadTime = formattedLoadTime;
 			webserviceResultSearchItemList.add( searchItem );
 		}
 		return webserviceResultSearchItemList;
@@ -313,6 +324,7 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 		private int searchId;
 		private int displayOrder;
 		private String name;
+		private String formattedLoadTime;
 		
 		public int getId() {
 			return id;
@@ -334,6 +346,9 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 		}
 		public int getDisplayOrder() {
 			return displayOrder;
+		}
+		public String getFormattedLoadTime() {
+			return formattedLoadTime;
 		}
 	}
 

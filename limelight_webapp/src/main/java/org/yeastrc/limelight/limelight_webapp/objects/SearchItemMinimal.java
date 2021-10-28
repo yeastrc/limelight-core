@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.objects;
 
+import java.util.Date;
+
 /**
  * Single Search Minimal - only name, search id, projectSearchId
  *
@@ -29,14 +31,15 @@ public class SearchItemMinimal {
 	private int displayOrder;
 	private String name;
 	private boolean searchHasSubgroups;
-	
+	private Date importEndTimestamp;
+
 	@Override
 	public String toString() {
 		return "SearchItemMinimal [projectSearchId=" + projectSearchId + ", searchId=" + searchId + ", projectId="
 				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + ", searchHasSubgroups="
-				+ searchHasSubgroups + "]";
+				+ searchHasSubgroups + ", importEndTimestamp=" + importEndTimestamp + "]";
 	}
-
+	
 	/**
 	 * @@@  WARNING:  Will return null if user did not assign a name to the search !!!
 	 * @return
@@ -77,6 +80,14 @@ public class SearchItemMinimal {
 	}
 	public void setSearchHasSubgroups(boolean searchHasSubgroups) {
 		this.searchHasSubgroups = searchHasSubgroups;
+	}
+
+	public Date getImportEndTimestamp() {
+		return importEndTimestamp;
+	}
+
+	public void setImportEndTimestamp(Date importEndTimestamp) {
+		this.importEndTimestamp = importEndTimestamp;
 	}
 		
 }
