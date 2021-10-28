@@ -223,12 +223,9 @@ export class ProteinExperimentPage_RootClass_Common {
 		
 		// //  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
-		
-		// let testPageComponent = new TestPageComponent( { centralPageStateManager : this._centralPageStateManager } );
-		// testPageComponent.initialize();
-		
-		// testPageComponent.setValue( { key : 'b', value : 'rtw' } );
 
+		//  Save centralPageStateManager to URL '/q/...' on page load
+		this._centralPageStateManager._updateURL();
 
 		{
 			const mainPagesPopulateHeader = new MainPagesPopulateHeader();
