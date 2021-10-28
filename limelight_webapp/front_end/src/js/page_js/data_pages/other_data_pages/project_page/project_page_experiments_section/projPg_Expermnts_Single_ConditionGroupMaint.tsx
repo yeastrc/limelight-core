@@ -1258,6 +1258,12 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
                         onClick={ this._labelEdit_LabelClicked_BindThis }
                         >
                         { conditionContainer.conditionLabel }
+                        <img
+                            className=" fake-link-image icon-small "
+                            style={ { marginLeft: 2 } }
+                            title="Change Condition Label"
+                            src="static/images/icon-edit.png"
+                        />
                     </div>
                 </div>
             );
