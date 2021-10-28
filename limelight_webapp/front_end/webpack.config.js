@@ -90,6 +90,9 @@ const mainConfig = {
 		'data_pages/modViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_LoggedInUsers.ts',
 		'data_pages/modViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_PublicUser.ts',
 
+		'data_pages/qcViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcViewPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/qcViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcViewPage_RootLaunch_PublicUser.ts',
+
 		//  Experiment Data pages
 
 		'data_pages/peptideExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPage_RootLaunch_LoggedInUsers.ts',
@@ -139,6 +142,10 @@ const mainConfig = {
 
 	module:{
 		rules:[
+			{
+				test: /node_modules/,
+				loader: 'ify-loader'
+			},
 				{
 					test: /\.(ts|tsx)$/,
 					exclude: /(node_modules|bower_components)/,

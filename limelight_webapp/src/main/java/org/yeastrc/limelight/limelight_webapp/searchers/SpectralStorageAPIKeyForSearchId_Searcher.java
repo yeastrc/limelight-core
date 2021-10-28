@@ -16,15 +16,43 @@ import java.util.List;
 public class SpectralStorageAPIKeyForSearchId_Searcher extends Limelight_JDBC_Base implements SpectralStorageAPIKeyForSearchId_SearcherIF {
 
     private static final Logger log = LoggerFactory.getLogger( SpectralStorageAPIKeyForSearchId_Searcher.class );
+    
+    public static class SpectralStorageAPIKeyForSearchId_Searcher_Result {
+    	
+    	private List<SpectralStorageAPIKeyForSearchId_Searcher_Result_Item> resultItems;
+
+		public List<SpectralStorageAPIKeyForSearchId_Searcher_Result_Item> getResultItems() {
+			return resultItems;
+		}
+    }
+    
+
+    public static class SpectralStorageAPIKeyForSearchId_Searcher_Result_Item {
+    	
+    	private int searchScanFileId;
+    	private String spectralStorageAPIKey;
+    	
+		public int getSearchScanFileId() {
+			return searchScanFileId;
+		}
+		public String getSpectralStorageAPIKey() {
+			return spectralStorageAPIKey;
+		}
+    }
 
     private static final String QUERY_SQL =
-            "SELECT a.spectral_storage_api_key FROM scan_file_tbl AS a INNER JOIN search_scan_file_tbl AS b " +
-                    "ON a.id = b.scan_file_id WHERE b.search_id = ?";
+            "SELECT a.spectral_storage_api_key, b.id AS search_scan_file_id "
+            + " FROM scan_file_tbl AS a "
+            + " INNER JOIN search_scan_file_tbl AS b ON a.id = b.scan_file_id "
+                    + " WHERE b.search_id = ?";
 
     @Override
-    public List<String> getSpectralStorageAPIKeyForSearchId(int searchId) throws SQLException {
+    public SpectralStorageAPIKeyForSearchId_Searcher_Result get_SearchScanFileId_SpectralStorageAPIKey_Entries_ForSearchId(int searchId) throws SQLException {
 
-        List<String> resultList = new ArrayList<>();
+    	SpectralStorageAPIKeyForSearchId_Searcher_Result result = new SpectralStorageAPIKeyForSearchId_Searcher_Result();
+    	
+    	List<SpectralStorageAPIKeyForSearchId_Searcher_Result_Item> resultItems = new ArrayList<>();
+    	result.resultItems = resultItems;
 
         final String querySQL = QUERY_SQL;
 
@@ -35,7 +63,11 @@ public class SpectralStorageAPIKeyForSearchId_Searcher extends Limelight_JDBC_Ba
 
             try ( ResultSet rs = preparedStatement.executeQuery() ) {
                 while ( rs.next() ) {
-                    resultList.add( rs.getString( 1 ) );
+                	SpectralStorageAPIKeyForSearchId_Searcher_Result_Item item = new SpectralStorageAPIKeyForSearchId_Searcher_Result_Item();
+                	resultItems.add(item);
+                	
+                    item.spectralStorageAPIKey = rs.getString( "spectral_storage_api_key" );
+                    item.searchScanFileId = rs.getInt( "search_scan_file_id" );
                 }
             }
         } catch ( SQLException e ) {
@@ -43,6 +75,6 @@ public class SpectralStorageAPIKeyForSearchId_Searcher extends Limelight_JDBC_Ba
             throw e;
         }
 
-        return resultList;
+        return result;
     }
 }

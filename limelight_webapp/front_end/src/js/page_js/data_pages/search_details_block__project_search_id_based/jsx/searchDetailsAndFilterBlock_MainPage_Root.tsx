@@ -40,6 +40,7 @@ import {
     SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import {Limelight_Colors_For_MultipleSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_MultipleSearches";
 
 
 /**
@@ -72,6 +73,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
     filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
 
     searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
+    limelight_Colors_For_MultipleSearches: Limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
 
     constructor(  //  Not every use calls the constructor
         {
@@ -83,7 +85,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
             dataPageStateManager_DataFrom_Server,
             searchDetailsBlockDataMgmtProcessing,
             filterValuesChanged_Callback,
-            searchSubGroup_PropValue
+            searchSubGroup_PropValue,
+            limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
         } : {
 
             displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
@@ -95,6 +98,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
             searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
             filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
             searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
+            limelight_Colors_For_MultipleSearches: Limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
         }) {
 
         this.displayOnly = displayOnly
@@ -106,6 +110,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
         this.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing
         this.filterValuesChanged_Callback = filterValuesChanged_Callback
         this.searchSubGroup_PropValue = searchSubGroup_PropValue
+        this.limelight_Colors_For_MultipleSearches = limelight_Colors_For_MultipleSearches
     }
 }
 
@@ -848,9 +853,23 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
             searchDetailsContainer_div_Style.display = "none";
         }
 
+        let colorBlockForSearch_Color : string = undefined;
+        if ( this.props.propValue.limelight_Colors_For_MultipleSearches ) {
+
+            colorBlockForSearch_Color = "#" + this.props.propValue.limelight_Colors_For_MultipleSearches.get_Color_AsHexString_By_ProjectSearchId(projectSearchId);
+        }
+
         return (
             <React.Fragment>
                 <td style={ { verticalAlign : "top" } }>
+
+                    { ( colorBlockForSearch_Color ) ? (
+                        <span
+                            style={ { marginRight: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: colorBlockForSearch_Color } }
+                            >
+                        </span>
+                    ): null }
+
                     { ( this.state.showSearchDetails ) ? (
                         <img className="icon-small fake-link-image "
                              onClick={ this._hideSearchDetails_Clicked_BindThis }

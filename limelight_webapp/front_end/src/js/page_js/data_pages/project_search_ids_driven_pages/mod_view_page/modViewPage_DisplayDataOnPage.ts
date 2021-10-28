@@ -147,7 +147,8 @@ export class ModViewPage_DisplayDataOnPage {
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 			filterValuesChanged_Callback : this._filterValuesChanged_Callback_BindThis,
-			searchSubGroup_PropValue : undefined
+			searchSubGroup_PropValue : undefined,
+			limelight_Colors_For_MultipleSearches: undefined
 		})
 
 		const jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = (

@@ -87,8 +87,11 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
 
         let background_ClassName_Addition = "";
 
+        let backgroundOnClickHandler = null;
+
         if ( this.props.close_OnBackgroundClick ) {
             background_ClassName_Addition = " modal-overlay-page-background-clickable "
+            backgroundOnClickHandler = this.props.callbackOnClicked_Close
         }
 
         const background_ClassName = background_ClassName_Main + background_ClassName_Addition;
@@ -151,7 +154,9 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
 
         return (
             <div >
-                <div className={ background_ClassName } >
+                <div className={ background_ClassName }
+                    onClick={ backgroundOnClickHandler }
+                >
                 </div>
 
                 <div className="modal-overlay-container modal-overlay-flexbox-overflow-control-no-header-container"

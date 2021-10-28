@@ -55,6 +55,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_F
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
@@ -280,18 +281,21 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+
+			List<Integer> searchIds = new ArrayList<>( 1 );
+			searchIds.add(searchId);
 			
-			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result =
-					searchFlagsForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
-			
-			if ( searchFlagsForSearchIdSearcher_Result == null ) {
-				String msg = "No searchFlagsForSearchIdSearcher_Result for searchId: " + searchId + ", projectSearchId: " + projectSearchId;
+			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds);
+			if ( searchFlagsForSearchIdSearcher_Result == null || searchFlagsForSearchIdSearcher_Result.getResultItems().isEmpty() ) {
+				String msg = "No searchFlagsForSearchIdSearcher_Result for searchId: " + searchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-
-    		boolean searchFlags_anyPsmHas_VariableDynamicModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_DynamicModifications();
-    		boolean searchFlags_anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_OpenModifications();
+			
+			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSearchIdSearcher_Result.getResultItems().get(0);
+			
+    		boolean searchFlags_anyPsmHas_VariableDynamicModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_DynamicModifications();
+    		boolean searchFlags_anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_OpenModifications();
     		
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );

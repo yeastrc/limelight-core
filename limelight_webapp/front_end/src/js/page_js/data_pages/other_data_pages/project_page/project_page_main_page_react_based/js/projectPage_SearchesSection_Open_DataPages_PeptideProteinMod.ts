@@ -13,6 +13,7 @@ import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserv
 
 let initialized = false;
 
+let url_path__qc: string;
 let url_path__peptide: string;
 let url_path__protein: string;
 let url_path__mod_view: string;
@@ -36,6 +37,12 @@ export const projectPage_SearchesSection_Open_DataPages_PeptideProteinMod__Initi
      * DOM <script> tags hold the paths to the data pages
      */
 
+
+    let url_path__qcElement = document.getElementById("url_path__qc");
+    if (!url_path__qcElement) {
+        throw Error("No DOM element for id 'url_path__qc'");
+    }
+    url_path__qc = url_path__qcElement.innerHTML;
 
     let url_path__peptideElement = document.getElementById("url_path__peptide");
     if (!url_path__peptideElement) {
@@ -84,6 +91,16 @@ export class ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__Input
 
 export type ProjectPage_SearchesSection_Open_DataPage_PeptideProteinMod =
     ( params: ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams ) => void
+
+/**
+ * QC View
+ */
+const qc_View_OpenDataPage = function ( params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams ) : void {
+
+    const urlPath = url_path__qc;
+
+    _openDataPage( params, urlPath )
+};
 
 /**
  * Peptide View
@@ -262,6 +279,7 @@ const _getSearchDataLookupParamsCode = function (
  *
  */
 export class ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod {
+    static qc_View_OpenDataPage = qc_View_OpenDataPage
     static peptide_View_OpenDataPage = peptide_View_OpenDataPage
     static protein_View_OpenDataPage = protein_View_OpenDataPage
     static mod_View_OpenDataPage = mod_View_OpenDataPage

@@ -349,6 +349,7 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
     private _deleteSearch_Clicked_BindThis = this._deleteSearch_Clicked.bind(this);
 
+    private _qc_Page_FakeLink_Clicked_BindThis = this._qc_Page_FakeLink_Clicked.bind(this);
     private _peptide_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
     private _protein_Page_FakeLink_Clicked_BindThis = this._protein_Page_FakeLink_Clicked.bind(this);
     private _modifications_Page_FakeLink_Clicked_BindThis = this._modifications_Page_FakeLink_Clicked.bind(this);
@@ -545,6 +546,26 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
     /**
      *
      */
+    private _qc_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        event.stopPropagation();
+
+        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        const projectSearchIds = new Set<number>();
+        projectSearchIds.add( projectSearchId );
+
+        const projectSearchIdCodes = new Set<string>();
+        projectSearchIdCodes.add( projectSearchIdCode );
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.qc_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
+    }
+
+    /**
+     *
+     */
     private _peptide_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
 
         event.stopPropagation();
@@ -722,6 +743,13 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
                                 {/* Navigation Fake Links to Peptide, Protein, Modifications pages for Single Search */}
 
+                                <span
+                                    className=" fake-link "
+                                    onClick={ this._qc_Page_FakeLink_Clicked_BindThis }
+                                >
+                                    [Stats/QC]
+                                </span>
+                                <span> </span>
                                 <span
                                     className=" fake-link "
                                     onClick={ this._peptide_Page_FakeLink_Clicked_BindThis }

@@ -25,6 +25,8 @@
  		For use in Handlebars template file single_search_template.handlebars
   --%>
 
+  <script id="url_path__qc" type="text/text"><%= AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER %></script>
+
   <script id="url_path__peptide" type="text/text"><%= AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER %></script>
 
   <script id="url_path__protein" type="text/text"><%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %></script>

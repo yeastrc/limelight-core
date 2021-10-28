@@ -308,6 +308,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Override
 	public void clearCacheData() throws Exception {
 		
+		//  Delete existing cache
+		dataCache_SoftReference = null;
+		
 		//  Create new Cache
 		create_Cache_IfNotExist();
 		
@@ -412,7 +415,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 * @throws Exception 
 	 * 
 	 */
-	private Cache<LocalCacheKey, LocalCacheValue> create_Cache() throws Exception {
+	private synchronized Cache<LocalCacheKey, LocalCacheValue> create_Cache() throws Exception {
 				
 		int cacheTimeout = CACHE_TIMEOUT;
 		

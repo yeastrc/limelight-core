@@ -123,15 +123,15 @@ export const loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_
         }
     }
 
-        // { //  Get PSM annotation values for annotation ids being filtered on
-        //     const promise = _loadDataFor_PSM_FilterableAnnotationValues_ForBeingFilteredOn__Per_ReportedPeptideId_For_ProteinSequenceVersionId({
-        //         proteinSequenceVersionId, projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder
-        //     })
-        //
-        //     if (promise) {
-        //         promises.push(promise)
-        //     }
-        // }
+    // { //  Get PSM annotation values for annotation ids being filtered on
+    //     const promise = _loadDataFor_PSM_FilterableAnnotationValues_ForBeingFilteredOn__Per_ReportedPeptideId_For_ProteinSequenceVersionId({
+    //         proteinSequenceVersionId, projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder
+    //     })
+    //
+    //     if (promise) {
+    //         promises.push(promise)
+    //     }
+    // }
 
 
 
@@ -776,7 +776,7 @@ const _loadDataFor_PSM_OpenModificationMasses_For_ReportedPeptideIdsToLoadDataFo
                                 psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.set(
                                     reportedPeptideId,
                                     { reportedPeptideId, psmIds_ContainAnyOpenModificationMass, openModificationMass_RoundedMap : psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap }
-                                    );
+                                );
                             } else {
                                 psmIds_ContainAnyOpenModificationMass = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap_Object.psmIds_ContainAnyOpenModificationMass;
                                 psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap = psmOpenModificationMasses_PsmIdSet_Per_RoundedMassMap_Object.openModificationMass_RoundedMap;
@@ -843,6 +843,58 @@ const _loadDataFor_PSM_OpenModificationMasses_For_ReportedPeptideIdsToLoadDataFo
 
                     if ( reportedPeptideIdsToLoadDataFor_AsSet.size !== 0 ) {
                         console.warn("reportedPeptideIdsToLoadDataFor_AsSet not empty after processing AJAX response");
+                    }
+
+                    {  //  Rebuild _psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs
+
+                        //    Copy from _psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs but remove all Mod Masses that round to zero
+
+                        const psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs :
+                            Map<number, { reportedPeptideId : number, psmOpenModificationMassPerPSM_ForPsmIdMap :
+                                    Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
+                                        positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> }> = new Map()
+
+                        for ( const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_Entry of psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.entries() ) {
+
+                            const reportedPeptideId = psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_Entry[0];
+                            const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_MapValue = psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_Entry[1];
+
+                            const psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_Result :
+                                Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
+                                    positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> = new Map()
+
+                            psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_MapValue.reportedPeptideId
+
+                            for ( const psmOpenModificationMassPerPSM_ForPsmIdMapEntry of psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_MapValue.psmOpenModificationMassPerPSM_ForPsmIdMap ) {
+
+                                const psmOpenModificationMassPerPSM_ForPsmIdMapValue = psmOpenModificationMassPerPSM_ForPsmIdMapEntry[1];
+
+                                if ( psmOpenModificationMassPerPSM_ForPsmIdMapValue.openModificationMass_Rounded > 0 ) {
+
+                                    const psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmId_Result : { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
+                                        positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> } = {
+                                        psmId: psmOpenModificationMassPerPSM_ForPsmIdMapValue.psmId,
+                                        openModificationMass: psmOpenModificationMassPerPSM_ForPsmIdMapValue.openModificationMass,
+                                        openModificationMass_Rounded: psmOpenModificationMassPerPSM_ForPsmIdMapValue.openModificationMass_Rounded,
+                                        positionsMap_KeyPosition: psmOpenModificationMassPerPSM_ForPsmIdMapValue.positionsMap_KeyPosition
+                                    }
+                                    psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_Result.set(
+                                        psmOpenModificationMassPerPSM_ForPsmIdMapValue.psmId, psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmId_Result
+                                    );
+                                }
+                            }
+
+                            if ( psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_Result.size > 0 ) {
+
+                                psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.set(
+                                    reportedPeptideId, { reportedPeptideId, psmOpenModificationMassPerPSM_ForPsmIdMap : psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_Result }
+                                );
+                            }
+                        }
+
+                        loadedDataPerProjectSearchIdHolder.set_psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs(
+                            psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs
+                        )
                     }
 
                     resolve();

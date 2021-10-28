@@ -17,7 +17,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_SearcherIF;
-import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_MS2CountFromAPIKey_SpectralStorageWebservice;
+import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_Searcher.SpectralStorageAPIKeyForSearchId_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_Searcher.SpectralStorageAPIKeyForSearchId_Searcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_MS2CountFromAPIKey_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -109,8 +110,9 @@ public class MS2Count_For_ProjectSearchIds_RestWebserviceController {
                 throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
             }
 
-            List<String> scanFileAPIKeys = spectralStorageAPIKeyForSearchId_Searcher.getSpectralStorageAPIKeyForSearchId( searchId );
-            for(String scanFileAPIKey : scanFileAPIKeys ) {
+            SpectralStorageAPIKeyForSearchId_Searcher_Result spectralStorageAPIKeyForSearchId_Searcher_Result = spectralStorageAPIKeyForSearchId_Searcher.get_SearchScanFileId_SpectralStorageAPIKey_Entries_ForSearchId( searchId );
+            for( SpectralStorageAPIKeyForSearchId_Searcher_Result_Item resultItem: spectralStorageAPIKeyForSearchId_Searcher_Result.getResultItems() ) {
+            	String scanFileAPIKey = resultItem.getSpectralStorageAPIKey();
                 if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
                     String msg = "Got empty scanFileAPIKey for search id: " + searchId;
                     log.error( msg );

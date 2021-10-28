@@ -68,6 +68,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSe
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -242,12 +243,17 @@ public class PSM_List_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
-			if ( searchFlagsForSearchIdSearcher_Result == null ) {
+			List<Integer> searchIds = new ArrayList<>( 1 );
+			searchIds.add(searchId);
+			
+			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds);
+			if ( searchFlagsForSearchIdSearcher_Result == null || searchFlagsForSearchIdSearcher_Result.getResultItems().isEmpty() ) {
 				String msg = "No searchFlagsForSearchIdSearcher_Result for searchId: " + searchId;
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+			
+			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSearchIdSearcher_Result.getResultItems().get(0);
 			
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
@@ -272,7 +278,7 @@ public class PSM_List_RestWebserviceController {
 
     		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
 			
-    		if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
+    		if ( searchFlagsForSearchIdSearcher_Result_Item.isHasScanData() ) {
 
     			//  Get Scan Info from Spectral Storage Service
     			
@@ -372,7 +378,7 @@ public class PSM_List_RestWebserviceController {
     				
     				//  Execute ONLY if one or both of PSM not populated for RT or M/Z
 	
-	    			if ( searchFlagsForSearchIdSearcher_Result.isHasScanData() ) {
+	    			if ( searchFlagsForSearchIdSearcher_Result_Item.isHasScanData() ) {
 	    				
 	    				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
 	    						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
@@ -457,13 +463,13 @@ public class PSM_List_RestWebserviceController {
     		
     		webserviceResult.resultList = resultList;
     		
-    		webserviceResult.searchHasScanData = searchFlagsForSearchIdSearcher_Result.isHasScanData();
+    		webserviceResult.searchHasScanData = searchFlagsForSearchIdSearcher_Result_Item.isHasScanData();
 
-    		webserviceResult.search_hasScanFilenames = searchFlagsForSearchIdSearcher_Result.isHasScanFilenames();
-    		webserviceResult.search_hasIsotopeLabel = searchFlagsForSearchIdSearcher_Result.isHasIsotopeLabel();
-    		webserviceResult.search_anyPsmHas_DynamicModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_DynamicModifications();
-    		webserviceResult.search_anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_OpenModifications();
-    		webserviceResult.search_anyPsmHas_ReporterIons = searchFlagsForSearchIdSearcher_Result.isAnyPsmHas_ReporterIons();
+    		webserviceResult.search_hasScanFilenames = searchFlagsForSearchIdSearcher_Result_Item.isHasScanFilenames();
+    		webserviceResult.search_hasIsotopeLabel = searchFlagsForSearchIdSearcher_Result_Item.isHasIsotopeLabel();
+    		webserviceResult.search_anyPsmHas_DynamicModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_DynamicModifications();
+    		webserviceResult.search_anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_OpenModifications();
+    		webserviceResult.search_anyPsmHas_ReporterIons = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_ReporterIons();
     	
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );

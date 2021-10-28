@@ -52,6 +52,10 @@
 	{
 	"nav_entries" : [
 		{
+		"label" : "Stats/QC",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER %>"
+		},
+		{
 		"label" : "Peptides View",
 		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER %>"
 		},

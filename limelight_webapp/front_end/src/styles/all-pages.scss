@@ -17,6 +17,10 @@ body {
   font-weight:500;
 }
 
+.standard-background-color { // Same as assigned to <body>
+  background-color: $color-white;
+}
+
 //  Placed here from 'data-pages.scss' since used on Acct Management page by using main page header
 div.outermost-div {
   min-height: 100%;

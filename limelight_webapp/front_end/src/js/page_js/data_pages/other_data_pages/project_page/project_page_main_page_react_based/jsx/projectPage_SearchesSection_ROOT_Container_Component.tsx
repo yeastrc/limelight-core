@@ -64,6 +64,7 @@ interface ProjectPage_SearchesSection_ROOT_Component_State {
  */
 export class ProjectPage_SearchesSection_ROOT_Component extends React.Component< ProjectPage_SearchesSection_ROOT_Component_Props, ProjectPage_SearchesSection_ROOT_Component_State > {
 
+    private _compare_Stats_QC_Clicked_BindThis = this._compare_Stats_QC_Clicked.bind(this);
     private _compare_Peptides_Clicked_BindThis = this._compare_Peptides_Clicked.bind(this);
     private _compare_Proteins_Clicked_BindThis = this._compare_Proteins_Clicked.bind(this);
     private _compare_Mods_Clicked_BindThis = this._compare_Mods_Clicked.bind(this);
@@ -182,6 +183,19 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
 
             return { showNoSearchesMessage };
         });
+    }
+
+    /**
+     *
+     */
+    private _compare_Stats_QC_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        const projectSearchIds = this.state.projectSearchIds_Selected_InProgress;
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        const projectSearchIdCodes = this._get_projectSearchIdCodes__From_projectSearchIds({ projectSearchIds });
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.qc_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
     }
 
     /**
@@ -424,6 +438,23 @@ export class ProjectPage_SearchesSection_ROOT_Component extends React.Component<
                     />
 
                     <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
+
+                        {/*  compare QC */}
+                        <div style={ { position: "relative", display: "inline-block" } }>
+                            <input type="button" value="Compare Stats/QC View"
+                                   disabled={ this.state.compareButtonsDisabled }
+                                   onClick={ this._compare_Stats_QC_Clicked_BindThis }
+                            />
+                            { ( this.state.compareButtonsDisabled ) ? (
+                                // overlay when button is disabled to show tooltip
+                                <div
+                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                    title="Select 2 or more searches to compare searches"
+                                ></div>
+                            ): null }
+                        </div>
+
+                        <span > </span>
 
                           {/*  compare peptide */}
                         <div style={ { position: "relative", display: "inline-block" } }>

@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -37,12 +39,27 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 
 	private static final Logger log = LoggerFactory.getLogger( SearchFlagsForSearchIdSearcher.class );
 	
+
 	/**
 	 * 
 	 *
 	 */
 	public static class SearchFlagsForSearchIdSearcher_Result {
 		
+		List<SearchFlagsForSearchIdSearcher_Result_Item> resultItems;
+
+		public List<SearchFlagsForSearchIdSearcher_Result_Item> getResultItems() {
+			return resultItems;
+		}
+	}
+	
+	/**
+	 * 
+	 *
+	 */
+	public static class SearchFlagsForSearchIdSearcher_Result_Item {
+		
+		private int searchId;
 		private boolean hasScanFilenames;
 		private boolean hasScanData;
 		private boolean hasIsotopeLabel;
@@ -72,11 +89,15 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		public boolean isAnyPsmHas_OpenModifications() {
 			return anyPsmHas_OpenModifications;
 		}
+		public int getSearchId() {
+			return searchId;
+		}
 		
 	}
 		
 	private static final String QUERY_SQL = 
 			"SELECT "
+			+ " id, "
 			+ " has_scan_filenames, has_scan_data,"
 			+ " has_isotope_label,"
 			+ " any_psm_has_dynamic_modifications, "
@@ -85,53 +106,81 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 			+ " reported_peptide_matched_protein_mapping_provided "
 			+ " FROM "
 			+ " search_tbl  "
-			+ " WHERE id = ?";
+			+ " WHERE id IN ( ";
 
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF#getSearchHasScanDataForSearchId(int)
 	 */
 	@Override
-	public SearchFlagsForSearchIdSearcher_Result  getSearchHasScanDataForSearchId( int searchId ) throws SQLException {
+	public SearchFlagsForSearchIdSearcher_Result  getSearchFlags_ForSearchIds( List<Integer> searchIds ) throws SQLException {
+		
+		if ( searchIds.isEmpty() ) {
+			throw new IllegalArgumentException( "searchIds cannot be empty" );
+		}
 
-		SearchFlagsForSearchIdSearcher_Result result = null;
+		SearchFlagsForSearchIdSearcher_Result result = new SearchFlagsForSearchIdSearcher_Result();
 
-		final String querySQL = QUERY_SQL;
+		int searchIds_size = searchIds.size();
+		
+		result.resultItems = new ArrayList<>( searchIds_size );
+		
+		StringBuilder querySQL_SB = new StringBuilder( 1000 );
+		
+		querySQL_SB.append( QUERY_SQL );
+		
+		for ( int counter = 1; counter <= searchIds_size; counter++ ) {
+			if ( counter > 1 ) {
+				querySQL_SB.append(",");
+			}
+			querySQL_SB.append("?");
+		}
+		querySQL_SB.append(")"); // Close IN
+			
+
+		final String querySQL = querySQL_SB.toString();
 				
 		try ( Connection connection = super.getDBConnection();
 			     PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
 			
-			preparedStatement.setInt( 1, searchId );
+			int counter = 0;
+			
+			for ( Integer searchId : searchIds ) {
+				counter++;
+				preparedStatement.setInt( counter, searchId );
+			}
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
-				if ( rs.next() ) {
-					result = new SearchFlagsForSearchIdSearcher_Result();
+				while ( rs.next() ) {
+					SearchFlagsForSearchIdSearcher_Result_Item resultItem = new SearchFlagsForSearchIdSearcher_Result_Item();
+					result.resultItems.add(resultItem);
 
+					resultItem.searchId = rs.getInt( "id" );
 					int hasScanFilenames = rs.getInt( "has_scan_filenames" );
 					if ( hasScanFilenames == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.hasScanFilenames = true;
+						resultItem.hasScanFilenames = true;
 					}
 					int hasScanData = rs.getInt( "has_scan_data" );
 					if ( hasScanData == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.hasScanData = true;
+						resultItem.hasScanData = true;
 					}
 					int hasIsotopeLabel = rs.getInt( "has_isotope_label" );
 					if ( hasIsotopeLabel == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.hasIsotopeLabel = true;
+						resultItem.hasIsotopeLabel = true;
 					}
 					int anyPsmHas_DynamicModifications = rs.getInt( "any_psm_has_dynamic_modifications" );
 					if ( anyPsmHas_DynamicModifications == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.anyPsmHas_DynamicModifications = true;
+						resultItem.anyPsmHas_DynamicModifications = true;
 					}
 					int any_psm_has_open_modificaton_masses = rs.getInt( "any_psm_has_open_modificaton_masses" );
 					if ( any_psm_has_open_modificaton_masses == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.anyPsmHas_OpenModifications = true;
+						resultItem.anyPsmHas_OpenModifications = true;
 					}
 					int anyPsmHas_ReporterIons = rs.getInt( "any_psm_has_reporter_ions" );
 					if ( anyPsmHas_ReporterIons == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.anyPsmHas_ReporterIons = true;
+						resultItem.anyPsmHas_ReporterIons = true;
 					}
 					int reportedPeptideMatchedProteinMappingProvided = rs.getInt( "reported_peptide_matched_protein_mapping_provided" );
 					if ( reportedPeptideMatchedProteinMappingProvided == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-						result.reportedPeptideMatchedProteinMappingProvided = true;
+						resultItem.reportedPeptideMatchedProteinMappingProvided = true;
 					}
 				}
 			}

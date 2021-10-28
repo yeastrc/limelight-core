@@ -1,0 +1,50 @@
+/*
+ * styles related specifically to the QC page
+ *
+ */
+
+body.qc-page {
+
+  div.top-level-label {
+    margin-left: 10px;  //  Distance from Triangle icon on left
+  }
+
+  div.section-content-block {
+    margin-left: 40px;  //  Indent whole section under label
+
+    div.section--chart-container-block {
+
+      $single-chart-margin-bottom: 20px; //  Also value / 2 used for margin-right of charts on same row
+
+      div.section--chart-block--single-chart-no-margin-bottom-container {
+        margin-bottom: $single-chart-margin-bottom;
+      }
+
+      div.section--single-chart-not-in-multiple-in-row-container {
+        margin-bottom: $single-chart-margin-bottom;
+      }
+
+      div.section--single-chart-not-in-multiple-in-row-container {
+        margin-bottom: $single-chart-margin-bottom;
+      }
+
+      div.chart-container-multiple-on-same-row-block {
+
+        // Split $single-chart-margin-bottom between this div and child div
+        margin-bottom: $single-chart-margin-bottom / 2;
+
+        div.chart-container-multiple-on-same-row {
+
+          float: left;
+          margin-right: $single-chart-margin-bottom / 2;
+          margin-bottom: $single-chart-margin-bottom / 2;
+        }
+
+        div.chart-container-multiple-on-same-row-stop-float {
+
+          clear: both;
+        }
+      }
+    }
+  }
+}

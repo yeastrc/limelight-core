@@ -144,6 +144,12 @@ public class AA_PageControllerPaths_Constants {
 	public static final String MOD_VIEW_PAGE_CONTROLLER = "d/pg/psb/mod-view/";
 	
 
+	/**
+	 * QC View - QC View - 1 or multiple project search ids
+	 */
+	public static final String QC_VIEW_PAGE_CONTROLLER = "d/pg/psb/qc-view/";
+	
+
 	///////////////
 	
 	//  Experiment Id "ONLY" based pages paths after each page type (ie: '/exp/protein/').

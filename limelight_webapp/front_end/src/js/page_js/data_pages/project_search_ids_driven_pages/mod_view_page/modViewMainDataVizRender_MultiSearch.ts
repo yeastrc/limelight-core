@@ -102,10 +102,12 @@ export class ModViewDataVizRenderer_MultiSearch {
         const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds:vizOptionsData.data.projectSearchIds, heightDefs});
 
         // set up our scales
+        // @ts-ignore
         let xScale = d3.scaleBand()
             .domain(sortedModMasses)
             .range([0,width]);
 
+        // @ts-ignore
         let yScale = d3.scaleBand()
             .domain(vizOptionsData.data.projectSearchIds)
             .range([0, height]);
@@ -118,11 +120,13 @@ export class ModViewDataVizRenderer_MultiSearch {
                 minCount = 0;
                 maxCount = 1;
 
+                // @ts-ignore
                 colorScale = d3.scalePow()
                     .exponent(0.25)
                     .domain([1, 0.05, 0])
                     .range(["white", "#57c4ad", "#006164"]);
             } else {
+                // @ts-ignore
                 colorScale = d3.scalePow()
                     .exponent(1.4)
                     .domain([minCount, minCount / 2, 0, maxCount / 2, maxCount])
@@ -132,6 +136,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             //const logScale = d3.scaleSqrt().domain([minCount, maxCount]);
             //colorScale = d3.scaleSequential((d) => d3.interpolatePlasma(logScale(d)));
 
+            // @ts-ignore
             colorScale = d3.scaleLinear()
                 .domain([0, maxCount/2, maxCount])
                 .range(["white", "#57c4ad", "#006164"]);
@@ -596,6 +601,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .on( "mousedown", function() {
 
                 // reset selected state object unless control is being held down
+                // @ts-ignore
                 if(!d3.event.ctrlKey && !d3.event.metaKey) {
                     svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
                     selectedStateObject.data = {};
@@ -697,6 +703,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .on("keydown", function() {
 
                 // capture escape key press, reset viz
+                // @ts-ignore
                 if(d3.event.keyCode === 27) {
                     selectedStateObject.data = {};
 
@@ -754,6 +761,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }) {
 
         // reset selected state object unless control is being held down
+        // @ts-ignore
         if(!d3.event || (!d3.event.ctrlKey && !d3.event.metaKey)) {
             svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
         }
@@ -907,6 +915,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .on("click", function(d,i) {
 
                 // reset selected state object unless control is being held down
+                // @ts-ignore
                 if(!d3.event.ctrlKey && !d3.event.metaKey) {
                     svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
                     selectedStateObject.data = {};
@@ -954,6 +963,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     static handleSearchLabelDrag({ draggedObject }) {
 
         d3.select(draggedObject)
+            // @ts-ignore
             .attr("y", d3.event.y)
     }
 
@@ -978,6 +988,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
 
+        // @ts-ignore
         const newTextYStart = d3.event.y;
 
         const insertionData = ModViewDataVizRenderer_MultiSearch.getInsertionPointForProjectSearchId({

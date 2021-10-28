@@ -357,7 +357,6 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	// Results from Multiple Project Search Ids and Other Criteria
 
-
 	// Results from Single Project Search Id and Other Criteria
 
 	//  !!  NOT currently used
@@ -365,6 +364,10 @@ public class AA_RestWSControllerPaths_Constants {
 	//  Search SubGroups at Search Level for Project Search Id
 //	public static final String SEARCH_SUB_GROUPS_SEARCH_LEVEL_SINGLE_PROJECT_SEARCH_ID =
 //			"d/rws/for-page/psb/search-sub-groups-search-level-single-project-search-id";
+
+	//  Search Scan File Data for Project Search Id
+	public static final String GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/get-search-scan-file-data-for-project-search-id";
 
 	//  Static Mods for Project Search Id
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =
@@ -374,6 +377,19 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String REPORTER_ION_MASSES_UNIQUE_SEARCH_LEVEL_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/reporter-ion-masses-unique-search-level-single-project-search-id";
 
+	//  Get Summary Data for Single Scan File from Spectra Storage Data (Spectr) but NO Peaks for a search scan file id and project search id
+	public static final String SCAN_FILE_SUMMARY_DATA_FROM_SPECTRAL_STORAGE_DATA__SEARCH_SCAN_FILE_ID_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/scan-file-summary-data-from-spectral-storage-data--search-scan-file-id-single-project-search-id";
+
+	//  Get Peak Intensity Binned On RT MZ JSON for Single Scan File from Spectra Storage Data (Spectr) but NO Peaks for a search scan file id and project search id
+	public static final String SCAN_FILE_PEAK_INTENSITY_BINNED_ON_RT_MZ_JSON_FROM_SPECTRAL_STORAGE_DATA__SEARCH_SCAN_FILE_ID_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/scan-file-peak-intensity-binned-on-rt-mz-json-from-spectral-storage-data--search-scan-file-id-single-project-search-id";
+	
+	
+	//  Get Spectra Storage Data (Spectr) but NO Peaks for a project search id
+	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/spectral-storage-data--no-peaks--single-project-search-id";
+	
 	//  Get MS2 count for a project search id
 	public static final String MS2_COUNT_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/ms2-count-single-project-search-id";
@@ -417,6 +433,21 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PSM_INFO_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
 			"d/rws/for-page/psb/psm-info-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
+
+	public static final String PSM_TABLE_DATA_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-table-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
+
+	public static final String PSM_TABLE_DATA_UNFILTERED_FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-table-data-unfiltered-for-single-project-search-id-version-0001";
+
+	public static final String PSM_FILTERABLE_ANNOTATION_DATA_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-filterable-annotation-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
+
+	public static final String PSM_FILTERABLE_ANNOTATION_DATA_NO_FILTERING_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-filterable-annotation-data--no-filtering--single-project-search-id-version-0001";
+
+	public static final String PSM_PPM_ERROR_DATA_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-ppm-error-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
 
 	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
@@ -479,7 +510,11 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String MOD_PAGE_SPECIAL__PROTEIN_POSITIONS_VAR_MODS_FOR_REPORTED_PEPTIDES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
 			"d/rws/for-page/psb/mod-page-special-protein-positions-var-mods-per-reported-peptide-single-project-search-id-version-0001";
 
-	
+
+	//  !! SPECIAL !!  for QC PAGE  General Search Info
+	public static final String QC_PAGE_SEARCH_INFO_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/qc-page-search-info-list-from-psi";
+
 	
 	//  Reported Peptide Modifications for each Reported Peptide Id in request
 	public static final String DYNAMIC_MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
@@ -498,5 +533,9 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String SEARCH_PROGRAMS_PER_SEARCH_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-programs-per-search-list-from-psi";
 
 	public static final String SEARCH_ANNOTATION_TYPE_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
+
+	//  Currently only QC Page
+	
+	public static final String SEARCH_FLAGS_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-flags-list-from-psi";
 
 }
