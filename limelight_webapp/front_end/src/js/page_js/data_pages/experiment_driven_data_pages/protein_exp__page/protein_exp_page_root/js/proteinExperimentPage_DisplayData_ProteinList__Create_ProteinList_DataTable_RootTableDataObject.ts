@@ -170,63 +170,63 @@ const _getProteinDataTableColumns = function( { conditions_with_their_project_se
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    {  //  Counts overall
-
-        {  // PSM count overall
-
-            const displayName = 'PSMs';
-
-            const column = new DataTable_Column({
-                id :           'psms',
-                displayName,
-                width :        80,
-                sortable : true,
-                onlyShow_ValueDisplay_FirstRowOfGroup: true
-            });
-
-            columns.push( column );
-
-            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-        }
-
-        {  //  Reported Peptides count overall
-
-            const displayName = 'Distinct Peptides';
-
-            const column = new DataTable_Column({
-                id: 'peptides',
-                displayName,
-                width: 80,
-                sortable: true,
-                onlyShow_ValueDisplay_FirstRowOfGroup: true
-            });
-
-            columns.push(column);
-
-            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
-            dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
-        }
-        {  //  Reported Peptides Unique count overall
-
-            const displayName = 'Unique Peptides';
-
-            const column = new DataTable_Column({
-                id: 'peptidesUnique',
-                displayName,
-                width: 80,
-                columnHeader_Tooltip_HTML_TitleAttribute: "distinct unique peptides",
-                sortable: true,
-                onlyShow_ValueDisplay_FirstRowOfGroup: true
-            });
-
-            columns.push(column);
-
-            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
-            dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
-        }
-
-    }
+    // {  //  Counts overall
+    //
+    //     {  // PSM count overall
+    //
+    //         const displayName = 'PSMs';
+    //
+    //         const column = new DataTable_Column({
+    //             id :           'psms',
+    //             displayName,
+    //             width :        80,
+    //             sortable : true,
+    //             onlyShow_ValueDisplay_FirstRowOfGroup: true
+    //         });
+    //
+    //         columns.push( column );
+    //
+    //         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+    //         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    //     }
+    //
+    //     {  //  Reported Peptides count overall
+    //
+    //         const displayName = 'Distinct Peptides';
+    //
+    //         const column = new DataTable_Column({
+    //             id: 'peptides',
+    //             displayName,
+    //             width: 80,
+    //             sortable: true,
+    //             onlyShow_ValueDisplay_FirstRowOfGroup: true
+    //         });
+    //
+    //         columns.push(column);
+    //
+    //         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
+    //         dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
+    //     }
+    //     {  //  Reported Peptides Unique count overall
+    //
+    //         const displayName = 'Unique Peptides';
+    //
+    //         const column = new DataTable_Column({
+    //             id: 'peptidesUnique',
+    //             displayName,
+    //             width: 80,
+    //             columnHeader_Tooltip_HTML_TitleAttribute: "distinct unique peptides",
+    //             sortable: true,
+    //             onlyShow_ValueDisplay_FirstRowOfGroup: true
+    //         });
+    //
+    //         columns.push(column);
+    //
+    //         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
+    //         dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
+    //     }
+    //
+    // }
     {
         //  PSM Counts
 
@@ -554,71 +554,71 @@ const _createProteinItem_DataTableEntry = function(
         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
 
-    {  // Overall: Num PSMs, Reported Peptides, and Reported Peptides Unique
-
-        {  //  Num PSMs
-
-            let num = -998;
-
-            if ( proteinListItem.numPsms_Overall !== undefined && proteinListItem.numPsms_Overall !== null ) {
-                num = proteinListItem.numPsms_Overall;
-            }
-            const valueDisplay = num.toLocaleString();
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort : num
-            })
-            columnEntries.push( columnEntry );
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-        }
-        { // Num Reported Peptides Unique
-
-            let num = -998;
-
-            if ( proteinListItem.peptideCount_Overall !== undefined && proteinListItem.peptideCount_Overall !== null ) {
-                num = proteinListItem.peptideCount_Overall;
-            }
-
-            const valueDisplay = num.toLocaleString();
-            const searchEntriesForColumn: Array<string> = [valueDisplay]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort: num
-            })
-            columnEntries.push(columnEntry);
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
-            dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
-        }
-        { // Reported Peptides Unique
-
-            let num = -998;
-
-            if ( proteinListItem.uniquePeptideCount_Overall !== undefined && proteinListItem.uniquePeptideCount_Overall !== null ) {
-                num = proteinListItem.uniquePeptideCount_Overall;
-            }
-
-            const valueDisplay = num.toLocaleString();
-            const searchEntriesForColumn: Array<string> = [valueDisplay]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort: num
-            })
-            columnEntries.push(columnEntry);
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
-            dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
-        }
-    }
+    // {  // Overall: Num PSMs, Reported Peptides, and Reported Peptides Unique
+    //
+    //     {  //  Num PSMs
+    //
+    //         let num = -998;
+    //
+    //         if ( proteinListItem.numPsms_Overall !== undefined && proteinListItem.numPsms_Overall !== null ) {
+    //             num = proteinListItem.numPsms_Overall;
+    //         }
+    //         const valueDisplay = num.toLocaleString();
+    //         const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+    //         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+    //         const columnEntry = new DataTable_DataRow_ColumnEntry({
+    //             searchTableData,
+    //             valueDisplay,
+    //             valueSort : num
+    //         })
+    //         columnEntries.push( columnEntry );
+    //
+    //         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+    //         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+    //     }
+    //     { // Num Reported Peptides Unique
+    //
+    //         let num = -998;
+    //
+    //         if ( proteinListItem.peptideCount_Overall !== undefined && proteinListItem.peptideCount_Overall !== null ) {
+    //             num = proteinListItem.peptideCount_Overall;
+    //         }
+    //
+    //         const valueDisplay = num.toLocaleString();
+    //         const searchEntriesForColumn: Array<string> = [valueDisplay]
+    //         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+    //         const columnEntry = new DataTable_DataRow_ColumnEntry({
+    //             searchTableData,
+    //             valueDisplay,
+    //             valueSort: num
+    //         })
+    //         columnEntries.push(columnEntry);
+    //
+    //         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+    //         dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+    //     }
+    //     { // Reported Peptides Unique
+    //
+    //         let num = -998;
+    //
+    //         if ( proteinListItem.uniquePeptideCount_Overall !== undefined && proteinListItem.uniquePeptideCount_Overall !== null ) {
+    //             num = proteinListItem.uniquePeptideCount_Overall;
+    //         }
+    //
+    //         const valueDisplay = num.toLocaleString();
+    //         const searchEntriesForColumn: Array<string> = [valueDisplay]
+    //         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+    //         const columnEntry = new DataTable_DataRow_ColumnEntry({
+    //             searchTableData,
+    //             valueDisplay,
+    //             valueSort: num
+    //         })
+    //         columnEntries.push(columnEntry);
+    //
+    //         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+    //         dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+    //     }
+    // }
 
     {
         // Per group:  numPsms

@@ -204,7 +204,11 @@ const _getProteinDataTableColumns = function( { projectSearchIds, searchSubGroup
         }
     }
 
-    {  //  Counts overall
+    if ( projectSearchIds.length === 1 ) {
+
+        //  Only 1 search
+
+        //  Counts overall
 
         {  // PSM count overall
 
@@ -725,7 +729,11 @@ const _createProteinItem_DataTableEntry = function(
     }
 
 
-    {  // Overall: Num PSMs, Reported Peptides, and Reported Peptides Unique
+    if ( projectSearchIds.length === 1 ) {
+
+        //  Only 1 search
+
+        // Overall: Num PSMs, Reported Peptides, and Reported Peptides Unique
 
         {  //  Num PSMs
 
