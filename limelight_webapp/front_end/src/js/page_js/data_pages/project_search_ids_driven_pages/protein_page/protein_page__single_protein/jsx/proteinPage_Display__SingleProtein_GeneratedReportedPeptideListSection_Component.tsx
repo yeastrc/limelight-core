@@ -296,41 +296,41 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
 
             havePeptideDataTableContentsForDownload = true;
 
-            if ( dataTableCellCount > maxDisplay_dataTableCellCount ) {
-
-                peptideListTable_TooLarge = (
-                    <div style={ { marginTop: 20, marginLeft: 20 } }>
-                        <div>
-                            <span style={{ fontWeight: "bold", fontSize: 18, paddingRight: 8 }}>
-                                The peptide table is too large to display
-                            </span>
-                            (the peptide download link will download what would have been shown).
-                        </div>
-                        <div style={ { marginTop: 20 } }>
-                            To reduce the size of the table:
-                        </div>
-                        <div style={ { marginTop: 5, marginLeft: 20, marginBottom: 30 } }>
-                            <div>
-                                Filter the data
-                            </div>
-                            <div>
-                                Change the <span style={ { fontWeight: "bold" } }>Show in Peptides:</span>
-                            </div>
-                            <div>
-                                Reduce the number of merged searches
-                            </div>
-                        </div>
-                    </div>
-                );
-
-            } else {
+            // if ( dataTableCellCount > maxDisplay_dataTableCellCount ) {
+            //
+            //     peptideListTable_TooLarge = (
+            //         <div style={ { marginTop: 20, marginLeft: 20 } }>
+            //             <div>
+            //                 <span style={{ fontWeight: "bold", fontSize: 18, paddingRight: 8 }}>
+            //                     The peptide table is too large to display
+            //                 </span>
+            //                 (the peptide download link will download what would have been shown).
+            //             </div>
+            //             <div style={ { marginTop: 20 } }>
+            //                 To reduce the size of the table:
+            //             </div>
+            //             <div style={ { marginTop: 5, marginLeft: 20, marginBottom: 30 } }>
+            //                 <div>
+            //                     Filter the data
+            //                 </div>
+            //                 <div>
+            //                     Change the <span style={ { fontWeight: "bold" } }>Show in Peptides:</span>
+            //                 </div>
+            //                 <div>
+            //                     Reduce the number of merged searches
+            //                 </div>
+            //             </div>
+            //         </div>
+            //     );
+            //
+            // } else {
 
                 peptideListTable = (
                     <DataTable_TableRoot
                         tableObject={dataTable_RootTableObject}
                     />
                 );
-            }
+            // }
         }
 
         const numberOfPeptidesShown = this.props.create_GeneratedReportedPeptideListData_Result.peptideList_Length.toLocaleString();
