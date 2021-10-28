@@ -157,8 +157,8 @@ public class PeptideSequenceStringList_From_ReportedPeptideIds_RestWebserviceCon
    		
     		    		
     		List<Integer> reportedPeptideIds = webserviceRequest.getReportedPeptideIds();
-    		if ( reportedPeptideIds == null || reportedPeptideIds.isEmpty() ) {
-    			log.warn( "No reportedPeptideIds.  projectSearchId: " + projectSearchId );
+    		if ( reportedPeptideIds == null ) {
+    			log.warn( "No reportedPeptideIds == null.  projectSearchId: " + projectSearchId );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
@@ -167,36 +167,47 @@ public class PeptideSequenceStringList_From_ReportedPeptideIds_RestWebserviceCon
     			log.warn( "projectSearchId not in DB:" + projectSearchId );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-			
-    		List<PeptideSequenceStringsForSearchIdReportedPeptideId_Item> searcherResultList = 
-    				peptideSequenceStringsForSearchIdReportedPeptideIdsSearcher
-    				.getPeptideSequenceStringsForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
-			
-    		List<WebserviceResulItem> resultList = new ArrayList<>( searcherResultList.size() );
-    		
-    		//  Validate all ReportedPeptideId found in DB
-    		Set<Integer> reportedPeptideIdsRequestedAsSet = new HashSet<>( reportedPeptideIds );
-    		
-    		for ( PeptideSequenceStringsForSearchIdReportedPeptideId_Item searcherResult : searcherResultList ) {
 
-    			WebserviceResulItem resultItem = new WebserviceResulItem();
-    			resultItem.setReportedPeptideId( searcherResult.getReportedPeptideId() );
-    			resultItem.setPeptideId( searcherResult.getPeptideId() );
-    			resultItem.setPeptideSequence( searcherResult.getPeptideSequence() );
-    			resultList.add( resultItem );
-    			
-        		//  Validate all ReportedPeptideId found in DB
-    			reportedPeptideIdsRequestedAsSet.remove( searcherResult.getReportedPeptideId() );
-    		}
-    		
-    		//  Validate all ReportedPeptideId found in DB
-    		boolean foundAllReportedPeptideIdsForProjectSearchId = true;
-    		if ( ! reportedPeptideIdsRequestedAsSet.isEmpty() ) {
-    			foundAllReportedPeptideIdsForProjectSearchId = false;
-    			String msg = "For projectSearchId: " + projectSearchId
-    					+ ", Failed to get Peptide Ids.  reportedPeptideIds Not Found: " + reportedPeptideIdsRequestedAsSet;
-    			log.warn( msg );
-    		}
+    		List<WebserviceResulItem> resultList = null;
+
+			//  Validate all ReportedPeptideId found in DB
+			boolean foundAllReportedPeptideIdsForProjectSearchId = true;
+			
+			if ( reportedPeptideIds.isEmpty() ) {
+				
+				resultList = new ArrayList<>();
+				
+			} else {
+
+				List<PeptideSequenceStringsForSearchIdReportedPeptideId_Item> searcherResultList = 
+						peptideSequenceStringsForSearchIdReportedPeptideIdsSearcher
+						.getPeptideSequenceStringsForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
+
+				resultList = new ArrayList<>( searcherResultList.size() );
+
+				//  Validate all ReportedPeptideId found in DB
+				Set<Integer> reportedPeptideIdsRequestedAsSet = new HashSet<>( reportedPeptideIds );
+
+				for ( PeptideSequenceStringsForSearchIdReportedPeptideId_Item searcherResult : searcherResultList ) {
+
+					WebserviceResulItem resultItem = new WebserviceResulItem();
+					resultItem.setReportedPeptideId( searcherResult.getReportedPeptideId() );
+					resultItem.setPeptideId( searcherResult.getPeptideId() );
+					resultItem.setPeptideSequence( searcherResult.getPeptideSequence() );
+					resultList.add( resultItem );
+
+					//  Validate all ReportedPeptideId found in DB
+					reportedPeptideIdsRequestedAsSet.remove( searcherResult.getReportedPeptideId() );
+				}
+
+				//  Validate all ReportedPeptideId found in DB
+				if ( ! reportedPeptideIdsRequestedAsSet.isEmpty() ) {
+					foundAllReportedPeptideIdsForProjectSearchId = false;
+					String msg = "For projectSearchId: " + projectSearchId
+							+ ", Failed to get Peptide Ids.  reportedPeptideIds Not Found: " + reportedPeptideIdsRequestedAsSet;
+					log.warn( msg );
+				}
+			}
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.resultList = resultList;
