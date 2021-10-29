@@ -1411,6 +1411,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 try {
                     this._selectedModificationsChange_UpdateURL();  //  Update URL
 
+                    if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        //  State NOT SET yet so skip this update
+                        return; // EARLY RETURN
+                    }
+
                     window.setTimeout( () => {
                         try {
 
@@ -1508,6 +1513,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 try {
                     this._selectedModificationsChange_UpdateURL();  //  Update URL
 
+                    if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        //  State NOT SET yet so skip this update
+                        return; // EARLY RETURN
+                    }
+
                     window.setTimeout( () => {
                         try {
                             this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
@@ -1603,6 +1613,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */ 
     _modificationMass_Update_modificationMass_UserSelections_ComponentData() {
 
+        if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+            //  State NOT SET yet so skip this update
+            return; // EARLY RETURN
+        }
+
         const modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData =
             PeptidePage_Display_MainContent_Component_nonClass_Functions.create_ModificationMass_UserSelections_ComponentData({
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
@@ -1618,6 +1633,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback() : void {
         try {
+            if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                //  State NOT SET yet so skip this update
+                return; // EARLY RETURN
+            }
+
             window.setTimeout( () => {
                 try {
                     this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData();
@@ -1642,6 +1662,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Update_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData_ComponentData() {
 
+        if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+            //  State NOT SET yet so skip this update
+            return; // EARLY RETURN
+        }
+
         const modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData =
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent({
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
@@ -1661,6 +1686,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             window.setTimeout( () => {
                 try {
                     this._reporterIonMassesChange_UpdateURL();  //  Update URL
+
+                    if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        //  State NOT SET yet so skip this update
+                        return; // EARLY RETURN
+                    }
 
                     if ( this._load_ReporterIonMasses_InProgress ) {
 
@@ -1749,6 +1779,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */ 
     _reporterIonMass_Update_reporterIonMass_UserSelections_ComponentData() {
 
+        if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+            //  State NOT SET yet so skip this update
+            return; // EARLY RETURN
+        }
+
         const reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData = PeptidePage_Display_MainContent_Component_nonClass_Functions.create_ReporterIons_UserSelections_ComponentData({
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             projectSearchIds : this.props.propsValue.projectSearchIds,
@@ -1766,6 +1801,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             window.setTimeout( () => {
                 try {
                     this._selectedPeptideUniqueChange_UpdateURL();  //  Update URL
+
+                    if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        //  State NOT SET yet so skip this update
+                        return; // EARLY RETURN
+                    }
 
                     window.setTimeout( () => {
                         try {
@@ -1795,6 +1835,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _peptideUnique_Update_PeptideUnique_UserSelection_ComponentData() {
 
+        if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+            //  State NOT SET yet so skip this update
+            return; // EARLY RETURN
+        }
+
         const peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData = peptideUnique_UserSelection_BuildData_ForReactComponent({
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject
         });
@@ -1810,6 +1855,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             window.setTimeout( () => {
                 try {
                     this._selectedPeptideSequenceChange_UpdateURL();  //  Update URL
+
+                    if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        //  State NOT SET yet so skip this update
+                        return; // EARLY RETURN
+                    }
 
                     window.setTimeout( () => {
                         try {
@@ -1837,6 +1887,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */ 
     _peptideSequence_Update_peptideSequence_UserSelections_ComponentData() {
 
+        if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+            //  State NOT SET yet so skip this update
+            return; // EARLY RETURN
+        }
+
         const peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData = PeptidePage_Display_MainContent_Component_nonClass_Functions.create_PeptideSequence_UserSelections_ComponentData({
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject
         });
@@ -1852,6 +1907,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             window.setTimeout( () => {
                 try {
                     this._selectedProteinPositionFilterChange_UpdateURL();  //  Update URL
+
+                    if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                        //  State NOT SET yet so skip this update
+                        return; // EARLY RETURN
+                    }
 
                     this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object();
 
@@ -1947,6 +2007,11 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
      */
     _updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback() : void {
         try {
+            if ( ! this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds ) {
+                //  State NOT SET yet so skip this update
+                return; // EARLY RETURN
+            }
+
             window.setTimeout( () => {
                 try {
                     if ( ( this.props.propsValue.generatedPeptideContents_UserSelections_StateObject.getOpenModifications_Selected()
