@@ -727,23 +727,15 @@ const _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificati
 
     }): void {
 
-    // const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
-
+    // may be NOT Set (undefined) if No Open Mods for this search
     const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
 
-    //  All PSM IDs for each reported peptide id for current cutoffs
-    const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
+    if ( ! psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs ) {
+        //  Skip when Search has NO Open Mods
+        return; // EARLY RETURN
+    }
 
-    const existing_reportedPeptideIds_All = new Set(reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds())
-
-    for (const reportedPeptideId of existing_reportedPeptideIds_All) {
-
-        const psmIdsForReportedPeptideId = psmIdsForReportedPeptideIdMap.get(reportedPeptideId);
-        if (!psmIdsForReportedPeptideId) {
-            const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId
-            console.warn(msg)
-            throw Error(msg)
-        }
+    for (const reportedPeptideId of reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds()) {
 
         const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId = psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs.get(reportedPeptideId);
         if ((!psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId)
@@ -752,6 +744,21 @@ const _updateFor__SelectionType_ALL___For__Unmodified_Selected_In_OpenModificati
 
         } else {
             //  Have at least one Open Modification for reportedPeptideId so Add reportedPeptideId and exclude PSM Ids that have Open Modifications
+
+            //  All PSM IDs for each reported peptide id for current cutoffs
+            const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
+            if ( ! psmIdsForReportedPeptideIdMap ) {
+                const msg = "Have at least one Open Modification for reportedPeptideId and loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap(); returns NOTHING. projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            const psmIdsForReportedPeptideId = psmIdsForReportedPeptideIdMap.get(reportedPeptideId);
+            if (!psmIdsForReportedPeptideId) {
+                const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
 
             //  Get Existing entry
             const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Entry = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_EntryFor_reportedPeptideId(reportedPeptideId)

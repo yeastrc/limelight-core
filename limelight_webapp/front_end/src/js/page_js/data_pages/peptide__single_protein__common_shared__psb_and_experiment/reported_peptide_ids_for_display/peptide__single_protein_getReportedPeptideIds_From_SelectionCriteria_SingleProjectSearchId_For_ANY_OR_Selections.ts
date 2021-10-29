@@ -772,7 +772,6 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_OpenModifi
     const openModificationsOnReportedPeptide_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_openModificationsOnReportedPeptide_KeyReportedPeptideId();
 
     const psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs();
-    const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs = loadedDataPerProjectSearchIdHolder.get_psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs();
 
     if (!psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideIdMap_CurrentCutoffs) {
         //  No values for this search, Add Everything
@@ -780,8 +779,6 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_OpenModifi
         return { includeAll: true }; // EARLY RETURN
     }
 
-    //  All PSM IDs for each reported peptide id for current cutoffs
-    const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
     const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
 
     for (const reportedPeptideId of reportedPeptideIds_All) {
@@ -819,6 +816,14 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_OpenModifi
                     //  All PSM IDs for reportedPeptideId have Open Mods And Not Treating Zero Mod mass as unmodified  so skip processing
 
                 } else {
+
+                    //  All PSM IDs for each reported peptide id for current cutoffs
+                    const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
+                    if ( ! psmIdsForReportedPeptideIdMap ) {
+                        const msg = "Have at least one Open Modification for reportedPeptideId and loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap(); returns NOTHING. projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
 
                     //  Create a Set of PSM IDs for reportedPeptideId that are NOT in psmOpenModificationMasses_PsmIdSet_Per_RoundedMass_ForReportedPeptideId.psmIds_ContainAnyOpenModificationMass
 

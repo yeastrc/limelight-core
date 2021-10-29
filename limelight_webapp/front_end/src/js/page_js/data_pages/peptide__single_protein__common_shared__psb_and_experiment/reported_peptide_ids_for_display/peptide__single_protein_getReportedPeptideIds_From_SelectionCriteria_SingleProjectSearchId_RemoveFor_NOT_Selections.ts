@@ -28,9 +28,6 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
     }
 ) : void {
 
-    //  All PSM IDs for each reported peptide id for current cutoffs
-    const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
-
     const reportedPeptideIds_Copy = Array.from(reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds());
 
     for (const reportedPeptideId of reportedPeptideIds_Copy) {
@@ -62,6 +59,14 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
 
         } else {
 
+            //  All PSM IDs for each reported peptide id for current cutoffs
+            const psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
+            if ( ! psmIdsForReportedPeptideIdMap ) {
+                const msg = "else of 'if ( entry_MAIN_Selection_For_reportedPeptideId.psmIds_Include ) ': loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap(); returns NOTHING. projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
+
             const psmIdsForReportedPeptideId = psmIdsForReportedPeptideIdMap.get(reportedPeptideId);
             if (!psmIdsForReportedPeptideId) {
                 const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId
@@ -87,7 +92,4 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(newEntry);
         }
     }
-    // reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.
-
-
 }
