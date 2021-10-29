@@ -40,13 +40,11 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.objects.ProteinInfoPerProteinVersionId;
-import org.yeastrc.limelight.limelight_webapp.objects.ProteinInfoProteinAnnotationEntry;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinSequenceLengths_For_SearchID_ProteinVersionIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher.ProteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceVersionAnnotationItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_request_objects.controller_request_root.ProteinsInfo_ForProteinSequenceVersionIds_Single_PSID_RequestRoot;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -74,7 +72,7 @@ public class ProteinsInfo_ProteinSeqVersionIds_Single_ProjSearchID_RestWebservic
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 
 	@Autowired
-	private ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF proteinAnnotations_For_SearchID_ProteinVersionId_Searcher;
+	private ProteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher_IF proteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher;
 	
 	@Autowired
 	private ProteinSequenceLengths_For_SearchID_ProteinVersionIds_SearcherIF proteinSequenceLengths_For_SearchID_ProteinVersionIds_Searcher;
@@ -179,43 +177,41 @@ public class ProteinsInfo_ProteinSeqVersionIds_Single_ProjSearchID_RestWebservic
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
 
     		
+    		List<ProteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher_ResultItem> proteinAnnotationsList = 
+    				proteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher
+    				.getProteinAnnotations_For_SearchID_ProteinVersionIdList_Searcher(searchId, webserviceRequest.getProteinSequenceVersionIds() );
+    		
     		List<ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item> proteinLengthsByproteinSequenceVersionIdList = 
     				proteinSequenceLengths_For_SearchID_ProteinVersionIds_Searcher
     				.getProteinSequences_For_ProteinVersionIdsSearchId( webserviceRequest.getProteinSequenceVersionIds(), searchId );
 
-    		//  TODO  Optimize to use a Single Database Query.  Coded this way since DB query already written.
-    		
-    		Map<Integer, ProteinInfoPerProteinVersionId> proteinInfoMapKeyProteinSequenceVersionId = new HashMap<>();
 
-    		for ( ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item item : proteinLengthsByproteinSequenceVersionIdList ) {
-    			
-    			int proteinVersionId = item.getProteinVersionId();
-    			int proteinLength = item.getProteinSequenceLength();
-    			
-    			List<ProteinSequenceVersionAnnotationItem> proteinAnnotationDBList = 
-    					proteinAnnotations_For_SearchID_ProteinVersionId_Searcher
-    					.getProteinAnnotations_For_SearchID_ProteinVersionId_Searcher( searchId, proteinVersionId );
-    			
-    			List<ProteinInfoProteinAnnotationEntry> annotations = new ArrayList<>( proteinAnnotationDBList.size() );
-    			
-    			for ( ProteinSequenceVersionAnnotationItem proteinAnnotationDBEntry : proteinAnnotationDBList ) {
-    			
-    				ProteinInfoProteinAnnotationEntry annotation = new ProteinInfoProteinAnnotationEntry();
-    				annotation.setName( proteinAnnotationDBEntry.getName() );
-    				annotation.setDescription( proteinAnnotationDBEntry.getDescription() );
-    				annotation.setTaxonomy( proteinAnnotationDBEntry.getTaxonomy() );
-    				annotations.add( annotation );
-    			}
-    			
-    			ProteinInfoPerProteinVersionId proteinInfoPerProteinVersionId = new ProteinInfoPerProteinVersionId();
-    			proteinInfoPerProteinVersionId.setProteinLength( proteinLength );
-    			proteinInfoPerProteinVersionId.setAnnotations( annotations );
-    			
-    			proteinInfoMapKeyProteinSequenceVersionId.put( proteinVersionId, proteinInfoPerProteinVersionId );
-    		}
+        	List<WebserviceResult_ProteinAnnotation_Item> proteinAnnotationList = new ArrayList<>( proteinAnnotationsList.size() );  // Multiple per proteinSequenceVersionId
+        	List<WebserviceResult_ProteinLength_Item> proteinLengthList = new ArrayList<>( proteinLengthsByproteinSequenceVersionIdList.size() );  //  One per proteinSequenceVersionId
+        	
+        	for ( ProteinAnnotations_For_SearchId_ProteinVersionIdList_Searcher_ResultItem proteinAnnotation : proteinAnnotationsList ) {
+        		WebserviceResult_ProteinAnnotation_Item resultItem = new WebserviceResult_ProteinAnnotation_Item();
+        		proteinAnnotationList.add( resultItem );
+        		
+        		resultItem.psvid = proteinAnnotation.getProteinSequenceVersionId();
+        		resultItem.name = proteinAnnotation.getName();
+        		resultItem.desc = proteinAnnotation.getDescription();
+        		resultItem.tax = proteinAnnotation.getTaxonomy();
+        	}
+
+        	for ( ProteinSequenceLengths_For_ProteinVersionIds_SearchId_Item proteinLengthsByproteinSequenceVersionId : proteinLengthsByproteinSequenceVersionIdList ) {
+        		WebserviceResult_ProteinLength_Item resultItem = new WebserviceResult_ProteinLength_Item();
+        		proteinLengthList.add( resultItem );
+        		
+        		resultItem.psvid = proteinLengthsByproteinSequenceVersionId.getProteinVersionId();
+        		resultItem.protLen = proteinLengthsByproteinSequenceVersionId.getProteinSequenceLength();
+        	}
+        	
+    		
     		
     		WebserviceResult webserviceResult = new WebserviceResult();
-    		webserviceResult.proteinInfoMapKeyProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionId;
+    		webserviceResult.proteinAnnotationList = proteinAnnotationList;
+    		webserviceResult.proteinLengthList = proteinLengthList;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
     		
@@ -238,19 +234,51 @@ public class ProteinsInfo_ProteinSeqVersionIds_Single_ProjSearchID_RestWebservic
      *
      */
     public static class WebserviceResult {
-    	Map<Integer, ProteinInfoPerProteinVersionId> proteinInfoMapKeyProteinSequenceVersionId;
 
-		public Map<Integer, ProteinInfoPerProteinVersionId> getProteinInfoMapKeyProteinSequenceVersionId() {
-			return proteinInfoMapKeyProteinSequenceVersionId;
+    	private List<WebserviceResult_ProteinAnnotation_Item> proteinAnnotationList;  // Multiple per proteinSequenceVersionId
+    	private List<WebserviceResult_ProteinLength_Item> proteinLengthList;  //  One per proteinSequenceVersionId
+    	
+		public List<WebserviceResult_ProteinAnnotation_Item> getProteinAnnotationList() {
+			return proteinAnnotationList;
 		}
-
-		public void setProteinInfoMapKeyProteinSequenceVersionId(
-				Map<Integer, ProteinInfoPerProteinVersionId> proteinInfoMapKeyProteinSequenceVersionId) {
-			this.proteinInfoMapKeyProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionId;
+		public List<WebserviceResult_ProteinLength_Item> getProteinLengthList() {
+			return proteinLengthList;
 		}
-
-
     }
+
+	public static class WebserviceResult_ProteinAnnotation_Item {
+
+		private int psvid;   //  proteinSequenceVersionId
+		private String name; //  name
+		private String desc; //  description
+		private int tax;     //  taxonomy
+
+		public String getName() {
+			return name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public int getTax() {
+			return tax;
+		}
+		public int getPsvid() {
+			return psvid;
+		}
+	}
+
+	public static class WebserviceResult_ProteinLength_Item {
+		
+		private int psvid;   //  proteinSequenceVersionId
+		private int protLen; //  proteinLength
+		
+		public int getPsvid() {
+			return psvid;
+		}
+		public int getProtLen() {
+			return protLen;
+		}
+	}
 }
 
 

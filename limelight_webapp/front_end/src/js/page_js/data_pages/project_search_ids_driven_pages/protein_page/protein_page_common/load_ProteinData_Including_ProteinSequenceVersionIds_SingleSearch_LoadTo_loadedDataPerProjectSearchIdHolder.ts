@@ -8,6 +8,8 @@
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
+import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 
 /**
@@ -148,10 +150,10 @@ const _get_ProteinInfo_From_proteinSequenceVersionIds = function (
         try {
             let proteinSequenceVersionIds = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsArray();
             _getProteinInfoFromProteinSequenceVersionIds( { projectSearchId, proteinSequenceVersionIds } )
-                .then(function( proteinInfoMapKeyProteinSequenceVersionId ) {
+                .then(function( resultFromServer ) {
                     try {
                         _processProteinInfoFromServer_Populate_loadedData( {
-                            proteinInfoMapKeyProteinSequenceVersionIdFromServer : proteinInfoMapKeyProteinSequenceVersionId,
+                            resultFromServer,
                             loadedDataPerProjectSearchIdHolder
                         } );
                         resolve();
@@ -182,26 +184,107 @@ const _get_ProteinInfo_From_proteinSequenceVersionIds = function (
  */
 const _processProteinInfoFromServer_Populate_loadedData = function (
     {
-        proteinInfoMapKeyProteinSequenceVersionIdFromServer,
+        resultFromServer,
         loadedDataPerProjectSearchIdHolder
     } : {
-        proteinInfoMapKeyProteinSequenceVersionIdFromServer: any
+        resultFromServer: any
         loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     } ) : void {
 
-    //  JS Object.  Key proteinSequenceVersionId, value, Object Protein Info
-    // proteinInfoMapKeyProteinSequenceVersionIdFromServer
+    const proteinAnnotationList = resultFromServer.proteinAnnotationList;
+    const proteinLengthList = resultFromServer.proteinLengthList;
 
-    let proteinInfoMapKeyProteinSequenceVersionId = new Map();
+    const proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}> = new Map();
 
-    let proteinInfoMapKeyProteinSequenceVersionIdFromServer_Keys = Object.keys( proteinInfoMapKeyProteinSequenceVersionIdFromServer );
+    for ( const proteinLengthServerItem of proteinLengthList ) {
 
-    for ( const proteinSequenceVersionIdString of proteinInfoMapKeyProteinSequenceVersionIdFromServer_Keys ) {
-        const proteinSequenceVersionIdInt = Number.parseInt( proteinSequenceVersionIdString );
-        const proteinInfoForProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionIdFromServer[ proteinSequenceVersionIdString ];
+        const proteinSequenceVersionId = proteinLengthServerItem.psvid;
+        const proteinLength = proteinLengthServerItem.protLen;
 
-        proteinInfoMapKeyProteinSequenceVersionId.set( proteinSequenceVersionIdInt, proteinInfoForProteinSequenceVersionId );
+        if ( proteinSequenceVersionId === undefined || proteinSequenceVersionId === null ) {
+            const msg = "( proteinSequenceVersionId === undefined || proteinSequenceVersionId === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( ! variable_is_type_number_Check( proteinSequenceVersionId ) ) {
+            const msg = "proteinSequenceVersionId is not a number.  proteinSequenceVersionId: " + proteinSequenceVersionId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( proteinLength === undefined || proteinLength === null ) {
+            const msg = "( proteinLength === undefined || proteinLength === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( ! variable_is_type_number_Check( proteinLength ) ) {
+            const msg = "proteinLength is not a number.  proteinLength: " + proteinLength;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        const proteinInfo = { proteinLength, annotations: [] }
+
+        proteinInfoMapKeyProteinSequenceVersionId.set( proteinSequenceVersionId, proteinInfo );
+    }
+
+    for ( const proteinAnnotationServerItem of proteinAnnotationList ) {
+
+        const proteinSequenceVersionId = proteinAnnotationServerItem.psvid;
+        const name = proteinAnnotationServerItem.name;
+        const description = proteinAnnotationServerItem.desc;
+        const taxonomy = proteinAnnotationServerItem.tax;
+
+        if ( proteinSequenceVersionId === undefined || proteinSequenceVersionId === null ) {
+            const msg = "( proteinSequenceVersionId === undefined || proteinSequenceVersionId === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( ! variable_is_type_number_Check( proteinSequenceVersionId ) ) {
+            const msg = "proteinSequenceVersionId is not a number.  proteinSequenceVersionId: " + proteinSequenceVersionId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( name === undefined || name === null ) {
+            const msg = "( taxonomy === undefined || taxonomy === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( ! limelight__IsVariableAString( name ) ) {
+            const msg = "name is not a string.  name: " + name;
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( description ) {
+            if ( ! limelight__IsVariableAString( description ) ) {
+                const msg = "description is populated and is not a string.  description: " + description;
+                console.warn(msg);
+                throw Error(msg);
+            }
+        }
+        if ( taxonomy === undefined || taxonomy === null ) {
+            const msg = "( taxonomy === undefined || taxonomy === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( ! variable_is_type_number_Check( taxonomy ) ) {
+            const msg = "taxonomy is not a number.  taxonomy: " + taxonomy;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        const annotation = {
+            name, description, taxonomy
+        };
+
+        const proteinInfo = proteinInfoMapKeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+        if ( ! proteinInfo ) {
+            const msg = "Processing Protein Annotations. No proteinInfo for proteinSequenceVersionId: " + proteinSequenceVersionId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        proteinInfo.annotations.push( annotation );
     }
 
     loadedDataPerProjectSearchIdHolder.set_proteinInfoMapKeyProteinSequenceVersionId( proteinInfoMapKeyProteinSequenceVersionId );
@@ -304,7 +387,7 @@ const _getProteinInfoFromProteinSequenceVersionIds = function (
 
                     //  JS Object.  Key ProteinSequenceVersionId, value, Protein Info
 
-                    resolve( responseData.proteinInfoMapKeyProteinSequenceVersionId );
+                    resolve( responseData );
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
