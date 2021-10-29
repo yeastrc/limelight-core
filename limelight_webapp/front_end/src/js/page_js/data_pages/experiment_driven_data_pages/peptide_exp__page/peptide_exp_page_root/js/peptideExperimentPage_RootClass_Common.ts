@@ -76,6 +76,7 @@ import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
 import {SingleProtein_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass";
+import {navigation_dataPages_Maint_Instance} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint";
 
 /**
  * 
@@ -235,6 +236,10 @@ export class PeptideExperimentPage_RootClass_Common {
 		
 		// //  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
+
+		navigation_dataPages_Maint_Instance.initializePageOnLoad({
+			isManageNavigationOnPage : true, navigationChange_Callback : undefined, isExperimentPage : true, isSingleSearch: false, isMultipleSearches: false
+		}); // Initialize
 
 		//  Save centralPageStateManager to URL '/q/...' on page load
 		this._centralPageStateManager._updateURL();

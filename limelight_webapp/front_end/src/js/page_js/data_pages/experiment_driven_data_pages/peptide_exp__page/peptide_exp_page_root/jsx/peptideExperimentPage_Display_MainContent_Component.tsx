@@ -2553,8 +2553,6 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                         {/* Main Content above Reported Peptides  */}
 
                         <div >
-                            <h3>List Peptides</h3>
-
                             <h3>
                                 Experiment: <span id="experiment_name">{ this.props.propsValue.experimentName }</span>
                             </h3>

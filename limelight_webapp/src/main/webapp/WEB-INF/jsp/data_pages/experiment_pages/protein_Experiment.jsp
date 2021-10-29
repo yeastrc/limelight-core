@@ -36,10 +36,17 @@
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
    	<%--  <div> to contain main display --%>
-   
-   	<div id="protein_experiment_data_page_overall_enclosing_block_div">
-   	</div>
    	
+   	<div >
+         <h3>List Proteins</h3>
+   
+		<!--  Navigation Links --> <%--  Contents inserted by Javascript --%>
+		<div id="data_pages_nav_links_page_container" ></div>
+		
+	   	<div id="protein_experiment_data_page_overall_enclosing_block_div">
+	   	</div>
+	</div>
+   	   	
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>

@@ -64,6 +64,7 @@ import {
 	ProteinExperimentPage_Display_Root_Component_Props
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/jsx/proteinExperimentPage_Display_Root_Component";
 import {SingleProtein_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass";
+import {navigation_dataPages_Maint_Instance} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint";
 
 /**
  * 
@@ -223,6 +224,10 @@ export class ProteinExperimentPage_RootClass_Common {
 		
 		// //  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
+
+		navigation_dataPages_Maint_Instance.initializePageOnLoad({
+			isManageNavigationOnPage : true, navigationChange_Callback : undefined, isExperimentPage : true, isSingleSearch: false, isMultipleSearches: false
+		}); // Initialize
 
 		//  Save centralPageStateManager to URL '/q/...' on page load
 		this._centralPageStateManager._updateURL();

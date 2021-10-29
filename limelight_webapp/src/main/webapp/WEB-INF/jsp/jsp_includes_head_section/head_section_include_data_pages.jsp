@@ -48,7 +48,8 @@
 
 <script type="text/text" id="page_navigation_links_data_json"
 >
-{"single_search" :
+{
+  "single_search" : <%-- Also used for multiple search  --%>
 	{
 	"nav_entries" : [
 		{
@@ -66,6 +67,19 @@
 		{
 		"label" : "Modifications View",
 		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER %>"
+		}
+	]
+	},
+  "experiment":
+	{
+	"nav_entries" : [
+		{
+		"label" : "Peptides View",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.EXPERIMENT___PEPTIDE_VIEW_PAGE_CONTROLLER %>"
+		},
+		{
+		"label" : "Proteins View",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER %>"
 		}
 	]
 	}

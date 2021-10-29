@@ -146,15 +146,6 @@ class Navigation_dataPages_Maint {
 	 */
 	public updateNavLinks() {
 
-		if ( ( ! this._isSingleSearch ) && ( ! this._isMultipleSearches ) ) {
-
-			//  Not Single Search so skip
-
-			console.warn( "ONLY Single Search or Multiple Searches supported for Nav for Now");
-
-			return; // EARLY RETURN
-		}
-
 		const controllerPath_forCurrentPage = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
 
 		//  Create URL Path to append to base page controller paths for links
@@ -177,8 +168,12 @@ class Navigation_dataPages_Maint {
 
 		if ( this._isSingleSearch || this._isMultipleSearches ) {
 			perSearchExperimentType = this._page_navigation_links_data.single_search
+
+		} else if ( this._isExperimentPage ) {
+			perSearchExperimentType = this._page_navigation_links_data.experiment
+
 		} else {
-			const msg = "ONLY Single Search or Multiple Searches supported for Nav for Now. Should NOT get here.";
+			const msg = "NOT Single Search or Multiple Searches or Experiment. Should NOT get here.";
 			console.warn( msg );
 			throw Error( msg )
 		}

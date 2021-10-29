@@ -237,7 +237,7 @@ export class CentralPageStateManager {
 
 			//  Update Navigation Links for Experiment Id Based URLs
 
-
+			navigation_dataPages_Maint_Instance.updateNavLinks();
 
 		} else {
 			const msg = "ERROR: _updateURL(): newURL does not contain '" + controller_path_prefix_ProjectSearchId_Based + "' or '" + controller_path_prefix_ExperimentId_Based + "'.  newURL: " + newURL;

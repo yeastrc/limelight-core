@@ -37,7 +37,14 @@
    
    	<%--  <div> to contain main display --%>
    	
-   	<div id="main_peptide_view_outer_block_react_root_container">
+   	<div >
+		<h3>List Peptides</h3>
+	   	
+		<!--  Navigation Links --> <%--  Contents inserted by Javascript --%>
+		<div id="data_pages_nav_links_page_container" ></div>
+		
+	   	<div id="main_peptide_view_outer_block_react_root_container">
+	   	</div>
    	</div>
    	
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
