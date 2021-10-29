@@ -35,16 +35,26 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
-      <%--   REMOVE this when have working page   --%>
-   	<div style="margin-top: 20px; font-weight: bold">
-		Experiment Mod Page Shell.  This is only a Page Stub with NO functionality.    	
-   	</div>
-   
    	<%--  <div> to contain main display --%>
+
+   	<div >
+		<h3>List Mods</h3>
+	   	
+	      <%--   REMOVE this when have working page   --%>
+	   	<div style="margin-top: 20px; font-weight: bold">
+			Experiment Mod Page Shell.  This is only a Page Stub with NO functionality.    	
+	   	</div>
    
-   	<div id="mod_experiment_data_page_overall_enclosing_block_div" style="display: none;"> <%--  Hidden until Javascript has loaded and displays it --%>
+		<!--  Navigation Links --> <%--  Contents inserted by Javascript --%>
+		<%--  
+			Update Navigation Links in head_section_include_data_pages.jsp to add Experiment Mod page
+		<div id="data_pages_nav_links_page_container" ></div>
+		--%>
+		
+	   	<div id="mod_experiment_data_page_overall_enclosing_block_div">
+	   	</div>
    	</div>
-   	
+   	   
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>
 	
   <%@ include file="/WEB-INF/jsp/jsp_header_footer/footer_main.jsp" %>
