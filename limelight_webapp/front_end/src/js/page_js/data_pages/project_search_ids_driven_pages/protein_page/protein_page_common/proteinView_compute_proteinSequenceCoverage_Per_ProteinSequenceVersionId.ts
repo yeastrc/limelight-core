@@ -75,7 +75,7 @@ export class ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVers
 			const proteinLength = proteinInfo.proteinLength;
 			
 			const proteinSequenceCoverageData_For_ProteinSequenceVersionId = new ProteinSequenceCoverageData_For_ProteinSequenceVersionId({
-				proteinLength, proteinCoverageEntries_PerReportedPeptideId_Array, proteinCoverageMergedRanges : proteinCoverageMergedRanges_Entry
+				proteinSequenceVersionId, proteinLength, proteinCoverageEntries_PerReportedPeptideId_Array, proteinCoverageMergedRanges : proteinCoverageMergedRanges_Entry
 			} );
 
 			proteinCoverageEntries_Result_Map.set( proteinSequenceVersionId, proteinSequenceCoverageData_For_ProteinSequenceVersionId );

@@ -737,11 +737,13 @@ const _createProteinItem_DataTableEntry = function(
 
         {  //  Num PSMs
 
-            let num = -998;
-
-            if ( proteinListItem.numPsms_Overall !== undefined && proteinListItem.numPsms_Overall !== null ) {
-                num = proteinListItem.numPsms_Overall;
+            if ( proteinListItem.numPsms_Overall === undefined || proteinListItem.numPsms_Overall === null ) {
+                const msg = "( proteinListItem.numPsms_Overall === undefined || proteinListItem.numPsms_Overall === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
+                console.warn(msg);
+                throw Error(msg);
             }
+            const num = proteinListItem.numPsms_Overall;
+
             const valueDisplay = num.toLocaleString();
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
@@ -757,11 +759,12 @@ const _createProteinItem_DataTableEntry = function(
         }
         { // Num Reported Peptides Unique
 
-            let num = -998;
-
-            if ( proteinListItem.peptideCount_Overall !== undefined && proteinListItem.peptideCount_Overall !== null ) {
-                num = proteinListItem.peptideCount_Overall;
+            if ( proteinListItem.peptideCount_Overall === undefined || proteinListItem.peptideCount_Overall === null ) {
+                const msg = "( proteinListItem.peptideCount_Overall === undefined || proteinListItem.peptideCount_Overall === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
+                console.warn(msg);
+                throw Error(msg);
             }
+            const num = proteinListItem.peptideCount_Overall;
 
             const valueDisplay = num.toLocaleString();
             const searchEntriesForColumn: Array<string> = [valueDisplay]
@@ -778,11 +781,12 @@ const _createProteinItem_DataTableEntry = function(
         }
         { // Reported Peptides Unique
 
-            let num = -998;
-
-            if ( proteinListItem.uniquePeptideCount_Overall !== undefined && proteinListItem.uniquePeptideCount_Overall !== null ) {
-                num = proteinListItem.uniquePeptideCount_Overall;
+            if ( proteinListItem.uniquePeptideCount_Overall === undefined || proteinListItem.uniquePeptideCount_Overall === null ) {
+                const msg = "( proteinListItem.uniquePeptideCount_Overall === undefined || proteinListItem.uniquePeptideCount_Overall === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
+                console.warn(msg);
+                throw Error(msg);
             }
+            const num = proteinListItem.uniquePeptideCount_Overall;
 
             const valueDisplay = num.toLocaleString();
             const searchEntriesForColumn: Array<string> = [valueDisplay]

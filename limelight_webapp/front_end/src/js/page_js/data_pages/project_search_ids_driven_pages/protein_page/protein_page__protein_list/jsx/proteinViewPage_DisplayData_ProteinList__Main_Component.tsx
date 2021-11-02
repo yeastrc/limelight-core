@@ -1326,11 +1326,31 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                     for (const proteinListItem of proteinDisplayData.proteinList) {
 
+                        const protein_SubItem = proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+                        if ( ! protein_SubItem ) {
+                            const msg = "proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        const reportedPeptideIds_For_Protein = new Set<number>();
+
+                        if ( protein_SubItem.reportedPeptideIds_AndTheirPsmIds && protein_SubItem.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
+                            for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_AndTheirPsmIds.keys() ) {
+                                reportedPeptideIds_For_Protein.add( reportedPeptideId );
+                            }
+                        }
+                        if ( protein_SubItem.reportedPeptideIds_NoPsmFilters && protein_SubItem.reportedPeptideIds_NoPsmFilters.size > 0 ) {
+                            for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_NoPsmFilters ) {
+                                reportedPeptideIds_For_Protein.add( reportedPeptideId );
+                            }
+                        }
+
                         const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get(proteinListItem.proteinSequenceVersionId);
                         if (proteinCoverageObject === undefined) {
                             throw Error("No proteinCoverageObject found.  proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId);
                         }
-                        const proteinCoverageRatio = proteinCoverageObject.getProteinSequenceCoverageRatio();
+                        const proteinCoverageRatio = proteinCoverageObject.getProteinSequenceCoverageRatio_FilteringOnReportedPeptideIds({ reportedPeptideIds_For_Protein });
 
                         proteinListItem.proteinCoverageRatio_SingleSearch_NoSubGroups = proteinCoverageRatio;
                         proteinListItem.proteinCoverageRatioDisplay_SingleSearch_NoSubGroups = proteinCoverageRatio.toFixed(3);
