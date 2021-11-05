@@ -150,13 +150,27 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__
                 variableModificationsRoundedArray_KeyPosition = variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId.get( reportedPeptideId ) ;
             }
 
-            if ( _anyOpenMods_For_ReportedPeptide({ reportedPeptideId, loadedDataPerProjectSearchIdHolder })
-                && ( proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject && proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) ) {
+            const anyOpenMods_For_ReportedPeptide = _anyOpenMods_For_ReportedPeptide({ reportedPeptideId, loadedDataPerProjectSearchIdHolder });
+
+            let generatedReportedPeptide_UserSelected_Add_Variable_Modifications = false;
+            if ( proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject && proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject.getVariableModifications_Selected() ) {
+                generatedReportedPeptide_UserSelected_Add_Variable_Modifications = true;
+            }
+
+            let generatedReportedPeptide_UserSelected_Add_Open_Modifications = false;
+            if ( proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject && proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject.getOpenModifications_WithLocalization_Selected() ) {
+                generatedReportedPeptide_UserSelected_Add_Open_Modifications = true;
+            }
+
+            if ( anyOpenMods_For_ReportedPeptide ) {
 
                 _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMIds_AndOpenMods({
 
                     reportedPeptideId,
                     psmIds_ToProcess : psmIds_Include,
+
+                    generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+                    generatedReportedPeptide_UserSelected_Add_Open_Modifications,
 
                     searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
 
@@ -171,12 +185,15 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__
                 });
 
             } else {
-                //  No Open Mods or Not showing Open Mods
+                //  No Open Mods
 
                 _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM({
 
                     reportedPeptideId,
                     psmIds_ToAdd : undefined,
+
+                    generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+                    generatedReportedPeptide_UserSelected_Add_Open_Modifications,
 
                     searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                     psmCount_after_Include_Map_Key_SearchSubGroupId,
@@ -247,6 +264,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         reportedPeptideId,
         psmIds_ToProcess,
 
+        generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+        generatedReportedPeptide_UserSelected_Add_Open_Modifications,
+
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
 
         peptideId,
@@ -261,6 +281,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
     } : {
         reportedPeptideId : number
         psmIds_ToProcess : ReadonlySet<number>  // Optional
+
+        generatedReportedPeptide_UserSelected_Add_Variable_Modifications: boolean  //  True when add Variable Modifications to the Generated Distinct Peptide
+        generatedReportedPeptide_UserSelected_Add_Open_Modifications: boolean  //  True when add Open Modifications to the Generated Distinct Peptide
 
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
 
@@ -387,6 +410,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                 reportedPeptideId,
                 psmIds_ToAdd,
 
+                generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+                generatedReportedPeptide_UserSelected_Add_Open_Modifications,
+
                 searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                 psmCount_after_Include_Map_Key_SearchSubGroupId : psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall,
 
@@ -413,6 +439,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
                     reportedPeptideId,
                     psmIds_ToAdd,
+
+                    generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+                    generatedReportedPeptide_UserSelected_Add_Open_Modifications,
 
                     searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                     psmCount_after_Include_Map_Key_SearchSubGroupId : psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall,
@@ -448,6 +477,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                             reportedPeptideId,
                             psmIds_ToAdd,
 
+                            generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+                            generatedReportedPeptide_UserSelected_Add_Open_Modifications,
+
                             searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                             psmCount_after_Include_Map_Key_SearchSubGroupId : psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall,
 
@@ -480,6 +512,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         reportedPeptideId,
         psmIds_ToAdd,
 
+        generatedReportedPeptide_UserSelected_Add_Variable_Modifications,
+        generatedReportedPeptide_UserSelected_Add_Open_Modifications,
+
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         psmCount_after_Include_Map_Key_SearchSubGroupId,
 
@@ -494,7 +529,11 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         peptideItems_Map_Key_reportedPeptide_CommonValue_EncodedString //  UPDATED
     } : {
         reportedPeptideId : number
-        psmIds_ToAdd : Set<number>  // Optional
+
+        psmIds_ToAdd : ReadonlySet<number>  // Optional
+
+        generatedReportedPeptide_UserSelected_Add_Variable_Modifications: boolean  //  True when add Variable Modifications to the Generated Distinct Peptide
+        generatedReportedPeptide_UserSelected_Add_Open_Modifications: boolean  //  True when add Open Modifications to the Generated Distinct Peptide
 
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         psmCount_after_Include_Map_Key_SearchSubGroupId: ReadonlyMap<number, number>
@@ -517,36 +556,46 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         throw Error( msg );
     }
 
-    //  First combine all positional mods together into single map since will display all as Variable Mods in '[' ']'
+    //  First combine all positional mods (Variable and Open) together into single map since will display all as Variable Mods in '[' ']'
 
     const modifications_combine_temp : Map<number, Array<{ massNumber : number, massString : string }>> = new Map();
 
-    if ( variableModificationsRoundedArray_KeyPosition ) {
-        for ( const entry of variableModificationsRoundedArray_KeyPosition.entries() ) {
-            const position : number = entry[ 0 ];
-            const massesNumber : Array<number> = entry[ 1 ];
+    if ( generatedReportedPeptide_UserSelected_Add_Variable_Modifications ) {
 
-            let modifications_combine_temp_Entry = modifications_combine_temp.get( position );
-            if ( ! modifications_combine_temp_Entry ) {
-                modifications_combine_temp_Entry = new Array<{massNumber: number; massString: string}>()
-                modifications_combine_temp.set( position, modifications_combine_temp_Entry );
-            }
-            for ( const massNumber of massesNumber ) {
-                const massString = modificationMass_CommonRounding_ReturnString( massNumber );
-                modifications_combine_temp_Entry.push({massNumber, massString})
+        //  Add Variable Mod masses to Modifications for reportedPeptide_CommonValue_EncodedString SINCE user has selected "Distinct Peptide Includes:" "Variable Modifications"
+
+        if ( variableModificationsRoundedArray_KeyPosition ) {
+            for ( const entry of variableModificationsRoundedArray_KeyPosition.entries() ) {
+                const position : number = entry[ 0 ];
+                const massesNumber : Array<number> = entry[ 1 ];
+
+                let modifications_combine_temp_Entry = modifications_combine_temp.get( position );
+                if ( ! modifications_combine_temp_Entry ) {
+                    modifications_combine_temp_Entry = new Array<{massNumber: number; massString: string}>()
+                    modifications_combine_temp.set( position, modifications_combine_temp_Entry );
+                }
+                for ( const massNumber of massesNumber ) {
+                    const massString = modificationMass_CommonRounding_ReturnString( massNumber );
+                    modifications_combine_temp_Entry.push({massNumber, massString})
+                }
             }
         }
     }
 
-    if ( open_Modification_Rounded !== undefined && open_Modification_Rounded !== null ) {
+    if ( generatedReportedPeptide_UserSelected_Add_Open_Modifications ) {
 
-        let modifications_combine_temp_Entry = modifications_combine_temp.get( open_Modification_Rounded_Position );
-        if ( ! modifications_combine_temp_Entry ) {
-            modifications_combine_temp_Entry = new Array<{massNumber: number; massString: string}>()
-            modifications_combine_temp.set( open_Modification_Rounded_Position, modifications_combine_temp_Entry );
+        //  Add Open Mod mass to Modifications for reportedPeptide_CommonValue_EncodedString SINCE user has selected "Distinct Peptide Includes:" "Open Modifications"
+
+        if ( open_Modification_Rounded !== undefined && open_Modification_Rounded !== null ) {
+
+            let modifications_combine_temp_Entry = modifications_combine_temp.get( open_Modification_Rounded_Position );
+            if ( ! modifications_combine_temp_Entry ) {
+                modifications_combine_temp_Entry = new Array<{massNumber: number; massString: string}>()
+                modifications_combine_temp.set( open_Modification_Rounded_Position, modifications_combine_temp_Entry );
+            }
+            const massString = modificationMass_CommonRounding_ReturnString( open_Modification_Rounded );
+            modifications_combine_temp_Entry.push({massNumber : open_Modification_Rounded, massString})
         }
-        const massString = modificationMass_CommonRounding_ReturnString( open_Modification_Rounded );
-        modifications_combine_temp_Entry.push({massNumber : open_Modification_Rounded, massString})
     }
 
     const variable_Modifications_RoundedArray_KeyPosition_FinalForFunctionCall : Map<number, Array<string>> = new Map();
@@ -572,16 +621,25 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         variable_Modifications_RoundedArray_KeyPosition_FinalForFunctionCall.set(modifications_combine_tempKey, modsRoundedStringsArray);
     }
 
+    let open_Modification_Rounded_NoPosition__For_reportedPeptide_CommonValue_EncodedString = undefined;
+    if ( generatedReportedPeptide_UserSelected_Add_Open_Modifications ) {
+
+        //  Add Open Mod mass No Position for reportedPeptide_CommonValue_EncodedString SINCE user has selected "Distinct Peptide Includes:" "Open Modifications"
+
+        open_Modification_Rounded_NoPosition__For_reportedPeptide_CommonValue_EncodedString = open_Modification_Rounded_NoPosition
+    }
+
     //  Create a string that represents the peptide with optionally variable and open mods and possibly others based on user selection
 
     const reportedPeptide_CommonValue_EncodedString = create_reportedPeptide_CommonValue_EncodedString({
 
         peptideId,
-        variableModifications_Map_KeyPosition: variable_Modifications_RoundedArray_KeyPosition_FinalForFunctionCall,
+        variableModifications_Map_KeyPosition: variable_Modifications_RoundedArray_KeyPosition_FinalForFunctionCall,  //  Variable Mods and Open Mod at Position
         staticModifications_Map_KeyPosition: undefined,
+        //  No Open Mod at Position passed in since included with the Variable Modifications
         open_Modification_Rounded: undefined, //  Currently added to variable_Modifications_RoundedArray_KeyPosition_FinalForFunctionCall
         open_Modification_Rounded_Position: undefined, //  Currently added to variable_Modifications_RoundedArray_KeyPosition_FinalForFunctionCall
-        open_Modification_Rounded_NoPosition
+        open_Modification_Rounded_NoPosition: open_Modification_Rounded_NoPosition__For_reportedPeptide_CommonValue_EncodedString
     });
 
     let peptideItem : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry =
