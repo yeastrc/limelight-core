@@ -91,6 +91,7 @@ public class SendEmail implements SendEmailIF {
 		} else {
 			
 			String smtpServerHost = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY );
+			String smtpServerPort = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY );
 			
 			if ( StringUtils.isEmpty( smtpServerHost ) ) {
 				
@@ -99,35 +100,91 @@ public class SendEmail implements SendEmailIF {
 				log.error(msg);
 				throw new LimelightWebappConfigException( msg );
 			}
+
+			//  Both smtpAuthUsername and smtpAuthPassword MUST be populated.  Ignored if only one is populated
+							
+			String smtpAuthUsername = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_USERNAME_KEY );
+			String smtpAuthPassword = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY );
 			
-			MimeMessage message = null;
+			
 			// Generate and send the email to the user.
 			try {
-				message = createSMTPMailMessageToSend( sendEmailItem, smtpServerHost );
-				// send the message
-				Transport.send(message);
+				
+				String fromEmailAddress = sendEmailItem.getFromEmailAddress();
+
+				// set the SMTP host property value
+				Properties properties = System.getProperties();
+				
+				final String SMTP_TIMEOUT = "3000";  // in Milliseconds.  String since put in Properties object
+				
+				properties.put("mail.smtp.timeout", SMTP_TIMEOUT);    
+				properties.put("mail.smtp.connectiontimeout", SMTP_TIMEOUT); 
+				
+				properties.put( "mail.smtp.host", smtpServerHost );
+				
+				if ( StringUtils.isNotEmpty(smtpServerPort) ) {
+					properties.put( "mail.smtp.port", smtpServerPort );
+				}
+				
+				
+				// create a JavaMail session
+				javax.mail.Session mailSession = javax.mail.Session.getInstance(properties, null);
+				// create a new MIME message
+				MimeMessage message = new MimeMessage(mailSession);
+				// set the from address
+				Address fromAddress = new InternetAddress( fromEmailAddress );
+				message.setFrom(fromAddress);
+				// set the to address
+				Address[] toAddress = InternetAddress.parse( sendEmailItem.getToEmailAddress() );
+				message.setRecipients(Message.RecipientType.TO, toAddress);
+				// set the subject
+				message.setSubject( sendEmailItem.getEmailSubject() );
+				message.setText( sendEmailItem.getEmailBody() );
+				
+				Transport mailTransport = null;
+				try {
+					mailTransport = mailSession.getTransport("smtp");
+					
+					if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
+						//  YES SMTP Username/Password
+						mailTransport.connect( smtpAuthUsername, smtpAuthPassword );
+					} else {
+						//  NO SMTP Username/Password
+						mailTransport.connect();	
+					}
+					
+					message.saveChanges();      // don't forget this
+					
+					mailTransport.sendMessage(message, message.getAllRecipients());
+					
+				} finally {
+					if ( mailTransport != null ) {
+						mailTransport.close();
+					}
+				}
+				
 			}
 			catch (AddressException e) {
 				// Invalid email address format
 				//				errors.add("email", new ActionMessage("error.resetpassword.sendmailerror"));
-				log.warn( "AddressException: to email address: " + sendEmailItem.getToEmailAddress(), e );
+				log.warn( "Error sending email to Smtp Server.  AddressException: to email address: " + sendEmailItem.getToEmailAddress(), e );
 				throw e; 
 			}
 			catch (SendFailedException e) {
 				// Invalid email address format
-				log.error( "SendFailedException: to email address: " + sendEmailItem.getToEmailAddress()
+				log.error( "Error sending email to Smtp Server.  SendFailedException: to email address: " + sendEmailItem.getToEmailAddress()
 						+ ", Smtp Server Host: " + smtpServerHost, e );
 				throw e; 
 			}
 			catch (MessagingException e) {
 				// Invalid email address format
-				log.error( "MessagingException: to email address: " + sendEmailItem.getToEmailAddress()
+				log.error( "Error sending email to Smtp Server.  MessagingException: to email address: " + sendEmailItem.getToEmailAddress()
 						+ ", Smtp Server Host: " + smtpServerHost, e );
 				throw e; 
 			}
 			catch (Exception e) {
 				// Invalid email address format
-				log.error( "Exception: to email address: " + sendEmailItem.getToEmailAddress()
+				log.error( "Error sending email to Smtp Server.  Exception: to email address: " + sendEmailItem.getToEmailAddress()
 						+ ", Smtp Server Host: " + smtpServerHost, e );
 				throw e; 
 			}
@@ -138,36 +195,5 @@ public class SendEmail implements SendEmailIF {
 		}
 	}
 	
-	/**
-	 * @param sendEmailItem
-	 * @return
-	 * @throws Exception 
-	 */
-	private MimeMessage createSMTPMailMessageToSend( SendEmailItem sendEmailItem, String smtpServerHost ) throws Exception {
-		
-		if ( StringUtils.isEmpty( smtpServerHost ) ) {
-			String msg = "smtpServerHost is empty";
-			log.error( msg );
-			throw new IllegalArgumentException( msg );
-		}
-		// set the SMTP host property value
-		Properties properties = System.getProperties();
-		properties.put( "mail.smtp.host", smtpServerHost );
-		// create a JavaMail session
-		javax.mail.Session mSession = javax.mail.Session.getInstance(properties, null);
-		// create a new MIME message
-		MimeMessage message = new MimeMessage(mSession);
-		// set the from address
-		Address fromAddress = new InternetAddress( sendEmailItem.getFromEmailAddress() );
-		message.setFrom(fromAddress);
-		// set the to address
-		Address[] toAddress = InternetAddress.parse( sendEmailItem.getToEmailAddress() );
-		message.setRecipients(Message.RecipientType.TO, toAddress);
-		// set the subject
-		message.setSubject( sendEmailItem.getEmailSubject() );
-		message.setText( sendEmailItem.getEmailBody() );
-		return message;
-	}
-
 
 }
