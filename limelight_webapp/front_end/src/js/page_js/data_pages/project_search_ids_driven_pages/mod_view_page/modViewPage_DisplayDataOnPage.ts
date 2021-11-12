@@ -21,8 +21,6 @@ import {create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer} 
 import {modViewPage_DisplayDataOnPage_createSearchDetailsSection} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DisplayDataOnPage_createSearchDetailsSection";
 import {SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_Root";
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
-import {Simulate} from "react-dom/test-utils";
-import load = Simulate.load;
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {
 	SearchDataLookupParameters_Root,
@@ -164,14 +162,11 @@ export class ModViewPage_DisplayDataOnPage {
 	 */
 	_filterValuesChanged_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
 
-		//  This is a blunt approach.  A better approach could be taken that preserves other User Input.
+		console.warn("filterValuesChanged_Callback called: params: ", params )
 
-		this.populateSearchDetailsAndOtherFiltersBlock(); //  Update Filter section with new values
+		// throw Error("filterValuesChanged_Callback callback not handled")
 
-		window.setTimeout( () => {
-			//  Run in settimeout so Update to FilterBlock paints first so user gets immediate visual feedback
-			this.populateModDataBlock(); // Update rest of page with new values
-		}, 10 )
+		window.location.reload( true );  // TODO
 	}
 	
 	/**
