@@ -1289,6 +1289,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             const callResult = protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped({
 
                 proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result,
+                searchSubGroup_Ids_Selected: undefined,
                 projectSearchIds,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
             });

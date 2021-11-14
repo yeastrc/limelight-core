@@ -8,6 +8,7 @@
 
 
 import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
+import {ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
 
 /**
  * returned from function
@@ -152,12 +153,12 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
 
     proteinSequenceVersionId: number
     proteinInfo: ProteinDataDisplay_ProteinList_Item_ProteinInfo // Map Value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
-    reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string>
+    reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string> = new Set()
     //  Computed: peptideCount: number // (length of Set),
     uniquePeptideCount?: number //  Computed last across the protein items
     numPsms : number
 
-    //  for downloads
+    dataPerReportedPeptideId_Entries_Array: Array<ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry> = []
 
     reportedPeptideIds_NoPsmFilters: Set<number>
 

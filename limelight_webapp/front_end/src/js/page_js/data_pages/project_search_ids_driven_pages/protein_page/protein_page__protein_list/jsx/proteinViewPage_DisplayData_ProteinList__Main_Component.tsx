@@ -1248,6 +1248,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             const callResult = protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped({
 
                 proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result,
+                searchSubGroup_Ids_Selected,
                 projectSearchIds,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
             });

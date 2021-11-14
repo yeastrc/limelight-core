@@ -127,7 +127,7 @@ export const peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__Fo
 
         } else if ( singleProtein_Filter_SelectionType_Requested === SingleProtein_Filter_SelectionType.NOT ) {
 
-            //  NO "NOT" selections so return all Reported Peptide Ids for this search, also based on searchSubGroup_Ids_Selected if populated
+            //  NO "NOT" selections so return null so nothing is removed from main reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
 
             return null;  // EARLY RETURN
 
