@@ -96,70 +96,56 @@ public class SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReported
 		
 		sqlSB.append( "SELECT search_sub_group_id, psm_ids.psm_id, psm_ids.reported_peptide_id FROM  " ); 
 		
-		if ( psmCutoffValuesList_Reversed.isEmpty() ) {
 		
-			sqlSB.append( " psm_tbl WHERE search_id = ? AND reported_peptide_id IN ( " );
-			
-			for ( int counter = 0; counter < reportedPeptideIds.size(); counter++ ) {
-				if ( counter != 0 ) {
-					sqlSB.append( "," );
-				}
-				sqlSB.append( "?" );
-			}
-			sqlSB.append( " ) " );
-			
-		} else {
-			
-			//  generate sub-selects from outer most to inner most 
-	
-			for ( int counter = 0; counter < psmCutoffValuesList_Reversed.size(); counter++ ) {
+		//  generate sub-selects from outer most to inner most 
 
-				sqlSB.append( " ( SELECT psm_filterable_annotation_tbl.psm_id, reported_peptide_id FROM psm_filterable_annotation_tbl INNER JOIN " );
-			}
-			
-			//  Add innermost subselect on psm_tbl to get psm ids
-			
-			sqlSB.append( " ( SELECT id AS psm_id, reported_peptide_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id IN ( " );
+		for ( int counter = 0; counter < psmCutoffValuesList_Reversed.size(); counter++ ) {
 
-			for ( int counter = 0; counter < reportedPeptideIds.size(); counter++ ) {
-				if ( counter != 0 ) {
-					sqlSB.append( "," );
-				}
-				sqlSB.append( "?" );
-			}
-			sqlSB.append( " ) " ); //  close " reported_peptide_id IN ( "
-
-			sqlSB.append( " ) " ); //  close " ( SELECT id AS psm_id, "
-
-
-			//  Close sub-selects from inner most to outer most 
-	
-			for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList_Reversed ) {
-
-				sqlSB.append( " as psm_ids ON psm_filterable_annotation_tbl.psm_id = psm_ids.psm_id " );
-				sqlSB.append( " WHERE annotation_type_id = ? AND " );
-				sqlSB.append( " value_double " );
-				if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO() == null ) {
-					String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
-					log.error( msg );
-					throw new LimelightInternalErrorException(msg);
-				}
-				if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
-					sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
-				} else if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
-					sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
-				} else {
-					String msg = "ERROR: entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() is unknown value: "
-							+ entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum()
-							+ ".  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
-					log.error( msg );
-					throw new LimelightInternalErrorException(msg);
-				}
-				sqlSB.append( " ? )  " );
-			}
-			sqlSB.append( "  as psm_ids INNER JOIN psm_search_sub_group_tbl ON psm_ids.psm_id = psm_search_sub_group_tbl.psm_id " );
-			
+			sqlSB.append( " ( SELECT psm_filterable_annotation_tbl.psm_id, reported_peptide_id FROM psm_filterable_annotation_tbl INNER JOIN " );
 		}
+
+		//  Add innermost subselect on psm_tbl to get psm ids
+
+		sqlSB.append( " ( SELECT id AS psm_id, reported_peptide_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id IN ( " );
+
+		for ( int counter = 0; counter < reportedPeptideIds.size(); counter++ ) {
+			if ( counter != 0 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( "?" );
+		}
+		sqlSB.append( " ) " ); //  close " reported_peptide_id IN ( "
+
+		sqlSB.append( " ) " ); //  close " ( SELECT id AS psm_id, "
+
+
+		//  Close sub-selects from inner most to outer most 
+
+		for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList_Reversed ) {
+
+			sqlSB.append( " as psm_ids ON psm_filterable_annotation_tbl.psm_id = psm_ids.psm_id " );
+			sqlSB.append( " WHERE annotation_type_id = ? AND " );
+			sqlSB.append( " value_double " );
+			if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO() == null ) {
+				String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+			if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+				sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
+			} else if ( entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
+				sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
+			} else {
+				String msg = "ERROR: entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() is unknown value: "
+						+ entry.getAnnotationTypeDTO().getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum()
+						+ ".  Annotation type id: " + entry.getAnnotationTypeDTO().getId();
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+			sqlSB.append( " ? )  " );
+		}
+		sqlSB.append( "  as psm_ids INNER JOIN psm_search_sub_group_tbl ON psm_ids.psm_id = psm_search_sub_group_tbl.psm_id " );
+
 		
 		String sql = sqlSB.toString();
 		
