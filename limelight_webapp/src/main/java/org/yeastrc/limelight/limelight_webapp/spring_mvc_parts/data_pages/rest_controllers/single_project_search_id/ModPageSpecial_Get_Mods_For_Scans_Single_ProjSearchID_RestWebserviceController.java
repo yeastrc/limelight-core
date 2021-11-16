@@ -525,15 +525,27 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				}
     			}
 
+    			////////////
+    			
         		//  Convert Map to List
-        		
-        		List<WebserviceResultItem> scans = new ArrayList<>( 100000 );
         		
         		/**
             	 * Map< search_scan_file_id, Map< Scan_Number, Object{ variable: Set<mod mass rounded>, open : Set<mod mass rounded> } >>
             	 */
         		// Map<Integer, Map<Integer, WebserviceResultItem>> modMassesPerScan_KeyInner_ScanNumber_KeyOuter_SearchScanFileId = new HashMap<>();
+    			
+    			//  Compute Size of list needed:
+    			
+    			int scanCount = 0;
+        		for ( Map.Entry<Integer, Map<Integer, WebserviceResultItem>> entryOuter : modMassesPerScan_KeyInner_ScanNumber_KeyOuter_SearchScanFileId.entrySet() ) {
+        			scanCount += entryOuter.getValue().size();
+        		}
 
+        		//  Create List
+        		List<WebserviceResultItem> scans = new ArrayList<>( scanCount );
+
+        		//  Copy Map to List
+        		
         		for ( Map.Entry<Integer, Map<Integer, WebserviceResultItem>> entryOuter : modMassesPerScan_KeyInner_ScanNumber_KeyOuter_SearchScanFileId.entrySet() ) {
         			for ( Map.Entry<Integer, WebserviceResultItem> entryInner : entryOuter.getValue().entrySet() ) {
         				
