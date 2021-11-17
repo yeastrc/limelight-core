@@ -112,6 +112,8 @@ public class SubmitImportProgram {
 		
 		String userSubmitImportProgramKeyFromCommandLine = null;
 
+		int retryCountLimit = 0;
+		
 		int projectId = -1;
 		String projectIdString = null;
 		
@@ -127,6 +129,8 @@ public class SubmitImportProgram {
 			CmdLineParser.Option limelightWebappURLFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "limelight-web-app-url" );
 
 			CmdLineParser.Option configFileFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'c', "config" );
+
+			CmdLineParser.Option retryCountLimitFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'r', "retry-count-limit" );
 
 			CmdLineParser.Option projectIdFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'p', "project-id" );
 
@@ -242,6 +246,8 @@ public class SubmitImportProgram {
 
 			projectIdString = (String)cmdLineParser.getOptionValue( projectIdFromCommandLineCommandLineOpt );
 			
+			String retryCountLimitString = (String)cmdLineParser.getOptionValue( retryCountLimitFromCommandLineCommandLineOpt );
+			
 
 			limelightXMLFileString = (String)cmdLineParser.getOptionValue( limelightXMLFileFromCommandLineCommandLineOpt );
 
@@ -261,6 +267,16 @@ public class SubmitImportProgram {
 				} catch ( Exception e ) {
 					System.err.println( "Project id on command line must be an integer. Value entered: " + projectIdString );
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+			}
+			if ( StringUtils.isNotEmpty(retryCountLimitString)) {
+				try {
+					retryCountLimit = Integer.parseInt( retryCountLimitString );
+
+				} catch ( Exception e ) {
+					String msg = "Retry Count Limit on command line is NOT an integer.  Value entered will be ignored. Value entered: " + retryCountLimitString;
+					System.err.println( msg );
+					System.out.println( msg );
 				}
 			}
 			if ( StringUtils.isEmpty(limelightXMLFileString) ) {
@@ -453,7 +469,9 @@ public class SubmitImportProgram {
 							userSubmitImportProgramKeyFromCommandLine,
 							
 							projectId, 
-							projectIdString, 
+							projectIdString,
+							
+							retryCountLimit,
 
 							limelightXMLFile, 
 							scanFiles,
