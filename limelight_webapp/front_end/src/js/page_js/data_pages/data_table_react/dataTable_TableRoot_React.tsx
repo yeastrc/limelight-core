@@ -1105,7 +1105,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 </div>
                             ) : null }
 
-                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() > 1 ) ? (
+                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() > 1 || this.state.searchInputValue_CurrentValue ) ? (
 
                                 <div style={ { marginBottom: 5 } }>
                                     <DataTable_TableRoot__FindAllRows_SearchInput_Component
