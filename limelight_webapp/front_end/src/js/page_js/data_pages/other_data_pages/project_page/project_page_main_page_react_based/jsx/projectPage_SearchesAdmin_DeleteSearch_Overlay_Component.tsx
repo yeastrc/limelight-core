@@ -216,18 +216,25 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
                 }
             } else {
 
-                if ( experimentIds_Containing_ProjectSearchId && experimentIds_Containing_ProjectSearchId.length > 0 ) {
+                //  Just reload page since more parts need to be updated.
 
-                    //  Reload page to update Experiment List
+                //  reload current URL
+                window.location.reload(true);
 
-                    //  reload current URL
-                    window.location.reload(true);
+                //  WAS
 
-                    return;  // EARLY RETURN
-                }
-
-                this.props.deleteComplete_Callback();
-                this.props.callback_Close_Overlay();
+                // if ( experimentIds_Containing_ProjectSearchId && experimentIds_Containing_ProjectSearchId.length > 0 ) {
+                //
+                //     //  Reload page to update Experiment List
+                //
+                //     //  reload current URL
+                //     window.location.reload(true);
+                //
+                //     return;  // EARLY RETURN
+                // }
+                //
+                // this.props.deleteComplete_Callback();
+                // this.props.callback_Close_Overlay();
             }
         });
     }
