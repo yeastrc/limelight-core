@@ -692,22 +692,18 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                                     event.preventDefault();
                                                     event.stopPropagation();
 
-                                                    if ( this.state.copyMove_Result.experimentsWhereDeleted ) {
+                                                    //  Show loading message and reload the page
 
-                                                        this.setState({ show_LoadingMessage: true });
-                                                        window.setTimeout( () => {
-                                                            try {
-                                                                window.location.reload(true);
+                                                    this.setState({ show_LoadingMessage: true });
+                                                    window.setTimeout( () => {
+                                                        try {
+                                                            window.location.reload(true);
 
-                                                            } catch (e) {
-                                                                reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
-                                                                throw e;
-                                                            }
-                                                        });
-                                                    } else {
-                                                        this.props.copyMoveSearchesReturnToProject_Callback();
-                                                        this.props.callback_Close_Overlay();
-                                                    }
+                                                        } catch (e) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+                                                            throw e;
+                                                        }
+                                                    });
                                                 } catch (e) {
                                                     reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                                                     throw e;
