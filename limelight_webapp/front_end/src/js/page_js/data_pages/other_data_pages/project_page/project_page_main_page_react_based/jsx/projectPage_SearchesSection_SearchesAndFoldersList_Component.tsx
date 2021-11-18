@@ -481,6 +481,19 @@ class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State 
 
         event.stopPropagation();
 
+        try { // In try/catch block in case not supported in browser
+            const selectionObj = window.getSelection();
+            const selection = selectionObj.toString()
+            if ( selection ) {
+                //  Found a Selection so exit with no further action
+                return; //  EARLY RETURN
+            }
+
+        } catch (e) {
+            //  Eat exception
+            const znothing = 0;
+        }
+
         this.setState( (state, props) : SearchEntry_State => {
 
             return { showSearchDetails: ! state.showSearchDetails };
@@ -890,6 +903,21 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
      *
      */
     private _folderDivClickHandler( event: React.MouseEvent<HTMLDivElement> ): void {
+
+        event.stopPropagation();  // Stop bubbling of event
+
+        try { // In try/catch block in case not supported in browser
+            const selectionObj = window.getSelection();
+            const selection = selectionObj.toString()
+            if ( selection ) {
+                //  Found a Selection so exit with no further action
+                return; //  EARLY RETURN
+            }
+
+        } catch (e) {
+            //  Eat exception
+            const znothing = 0;
+        }
 
         this.props.folderEntry_Expanded_Collapsed_Callback({ flip_isExpanded: true, folderId: this.props.searchDisplayListItem.id });
     }
